@@ -29,7 +29,7 @@ Partial Class frmRptStockParametro
         Me.grdParametros = New DevExpress.XtraGrid.GridControl()
         Me.StockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.ParametrosBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.Parametros = New TOMWMS.Parametros()
+        Me.Parametros = New Parametros()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colStockId = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colPropietario = New DevExpress.XtraGrid.Columns.GridColumn()

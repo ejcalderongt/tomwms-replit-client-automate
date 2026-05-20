@@ -274,13 +274,13 @@ namespace WMS.EntityCore.Ajustes
         {
             IdAjusteDet = idajustedet;
             IdAjusteEnc = idajusteenc;
-            IdStock = IdStock;
-            IdPropietarioBodega = IdPropietarioBodega;
-            IdProductoBodega = IdProductoBodega;
-            IdProductoEstado = IdProductoEstado;
-            IdPresentacion = IdPresentacion;
-            IdUnidadMedida = IdUnidadMedida;
-            IdUbicacion = IdUbicacion;
+            this.IdStock = IdStock;
+            this.IdPropietarioBodega = IdPropietarioBodega;
+            this.IdProductoBodega = IdProductoBodega;
+            this.IdProductoEstado = IdProductoEstado;
+            this.IdPresentacion = IdPresentacion;
+            this.IdUnidadMedida = IdUnidadMedida;
+            this.IdUbicacion = IdUbicacion;
             Lote_original = lote_original ?? "";
             Lote_nuevo = lote_nuevo ?? "";
             Fecha_vence_original = fecha_vence_original;

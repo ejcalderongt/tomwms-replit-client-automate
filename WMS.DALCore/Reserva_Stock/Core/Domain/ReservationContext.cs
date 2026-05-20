@@ -94,6 +94,14 @@ namespace WMS.StockReservation.Core.Domain
         /// </summary>
         public bool EsManufactura { get; set; } = false;
 
+        // ===== VENCIMIENTO (diagnóstico de causa de fallo) =====
+        /// <summary>
+        /// Verdadero si existía stock disponible pero fue eliminado por estar vencido
+        /// (fecha_vence menor o igual a hoy). Permite a DetectStockFailures distinguir
+        /// entre "no hay stock" y "hay stock pero está vencido".
+        /// </summary>
+        public bool HadExpiredStock { get; set; } = false;
+
         // ===== CACHES (evitar consultas repetidas) =====
         public List<clsBeBodega_ubicacion> CachedLocations { get; set; } = new List<clsBeBodega_ubicacion>();
         public List<clsBeProducto_presentacion> CachedPresentations { get; set; } = new List<clsBeProducto_presentacion>();

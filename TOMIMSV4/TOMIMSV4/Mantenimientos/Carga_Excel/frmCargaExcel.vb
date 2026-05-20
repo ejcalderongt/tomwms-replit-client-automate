@@ -50,6 +50,7 @@ Public Class frmCargaExcel
     Private BeEstadoProd As New clsBeProducto_estado
     Public pListObjMov As New List(Of clsBeTrans_movimientos) '#EJC20170913
     Public pListStockMov As New List(Of clsBeStock) '#EJC20170913
+    Private lErroresCargaCambioUbic As New List(Of clsBeResultadoValidacionCambioUbic)
     '#EJC20171006_0516AM: Agregado para validar si es cambio de estado.
     Public Property EsCambioEstado As Boolean = False
     'Public IdBodega_ubicacion As Integer = 0
@@ -1258,11 +1259,12 @@ Public Class frmCargaExcel
                     'GT11082022_1530: validar CLASIFICACION por Id o por descripcion
                     If pDT(i)(2) IsNot DBNull.Value AndAlso pDT(i)(2) IsNot Nothing Then
                         If IsNumeric(pDT(i)(2)) Then
+
                             If clsLnProducto_clasificacion.Exists_By_IdClasificacion_By_IdPropietario(pDT(i)(2), BeProducto.IdPropietario, lConnection, lTransaction) Then
                                 BeProducto.IdClasificacion = CInt(pDT(Indice)(2))
                             Else
                                 'error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación por ID no existe en WMS, Fila: " & i + 1 & " Se intentará por descripción")
+                                clsPublic.Actualizar_Progreso(lblPrg, "La clasificación por ID no existe en WMS, Fila: " & i + 1 & " Se intentará por descripción")
 
                                 '#GT11102023: se intenta busqueda tomando el valor como cadena
                                 Dim pNombreClasificacion = CStr(pDT(Indice)(2))
@@ -1279,7 +1281,7 @@ Public Class frmCargaExcel
 
                                     Else
 
-                                        clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
+                                        clsPublic.Actualizar_Progreso(lblPrg, "La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
 
                                         '#GT21062023: sino existe la clasificación por descripción la insertamos
                                         Dim pClasificacion As New clsBeProducto_clasificacion
@@ -1320,7 +1322,7 @@ Public Class frmCargaExcel
                                     BeProducto.IdClasificacion = pProdClasificacion.IdClasificacion
                                 Else
 
-                                    clsPublic.Actualizar_Progreso(lblPrg, "AVISO_20240724: " & " La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
+                                    clsPublic.Actualizar_Progreso(lblPrg, "La clasificación no existe en WMS, se insertará desde la fila: " & i + 1)
 
                                     '#GT21062023: sino existe la clasificación por descripción la insertamos
                                     Dim pClasificacion As New clsBeProducto_clasificacion
@@ -1434,6 +1436,7 @@ Public Class frmCargaExcel
 
                                     BeProducto.Marca = New clsBeProducto_marca
                                     pMarca.IdMarca = clsLnProducto_marca.MaxID(lConnection, lTransaction)
+                                    pMarca.Codigo = pMarca.IdMarca
                                     pMarca.IdPropietario = BeProducto.IdPropietario
                                     pMarca.Nombre = pNombreMarca.Trim
                                     pMarca.Activo = True
@@ -1512,6 +1515,10 @@ Public Class frmCargaExcel
 
 
                     If pDT(i)(6) IsNot DBNull.Value AndAlso pDT(i)(6) IsNot Nothing Then
+
+
+                        BeProducto.UnidadMedida = New clsBeUnidad_medida
+
                         If IsNumeric(pDT(i)(6)) Then
                             If clsLnUnidad_medida.Exists(pDT(i)(6), lConnection, lTransaction) Then
                                 BeProducto.IdUnidadMedidaBasica = CInt(pDT(Indice)(6))
@@ -1520,18 +1527,41 @@ Public Class frmCargaExcel
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & " La unidad de medida por ID, no existe en WMS. Fila" & i + 1)
                             End If
                         Else
+
                             Dim pNombreUmbas = CStr(pDT(i)(6))
-                            Dim pUmbas As clsBeUnidad_medida = clsLnUnidad_medida.Existe_By_Nombre_By_IdPropietario(pNombreUmbas.Trim,
+
+                            'Crear unidad de medida
+                            Dim vUnidadMedidaBasica = clsPublic.Quitar_Caracteres_No_Permitidos(pNombreUmbas.Trim)
+                            Dim pUmbas As clsBeUnidad_medida = clsLnUnidad_medida.Existe_By_Nombre_By_IdPropietario(vUnidadMedidaBasica.Trim,
                                                                                                                     BeProducto.IdPropietario,
                                                                                                                     lConnection,
                                                                                                                     lTransaction)
                             If Not pUmbas Is Nothing Then
-                                BeProducto.UnidadMedida = New clsBeUnidad_medida
+
                                 BeProducto.UnidadMedida.IdUnidadMedida = pUmbas.IdUnidadMedida
                                 BeProducto.IdUnidadMedidaBasica = pUmbas.IdUnidadMedida
                             Else
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & " La unidad de medida no existe en WMS. Fila" & i + 1)
+
+                                clsPublic.Actualizar_Progreso(lblPrg, "Aviso: " & " La Familia no existe en WMS, se insertará desde la fila: " & i + 1)
+
+                                Dim ObjUM = New clsBeUnidad_medida
+                                ObjUM.IdUnidadMedida = clsLnUnidad_medida.MaxID(lConnection, lTransaction) + 1
+                                ObjUM.Nombre = vUnidadMedidaBasica
+                                ObjUM.Codigo = vUnidadMedidaBasica
+                                ObjUM.Activo = 1
+                                ObjUM.IdPropietario = BeProducto.IdPropietario
+                                ObjUM.IsNew = True
+                                ObjUM.User_agr = AP.UsuarioAp.IdUsuario
+                                ObjUM.User_mod = AP.UsuarioAp.IdUsuario
+                                ObjUM.Fec_agr = Now
+                                ObjUM.Fec_mod = Now
+
+                                clsLnUnidad_medida.InsertarFromInterface(ObjUM, lConnection, lTransaction)
+
+                                BeProducto.UnidadMedida.IdUnidadMedida = ObjUM.IdUnidadMedida
+                                BeProducto.IdUnidadMedidaBasica = ObjUM.IdUnidadMedida
+
+
                             End If
                         End If
                     End If
@@ -1564,18 +1594,28 @@ Public Class frmCargaExcel
                         End If
                     End If
 
+                    '#GT30032026: nombre del producto
                     If pDT(i)(14) Is DBNull.Value AndAlso pDT(i)(14) Is Nothing Then
                         error_producto = True
                         clsPublic.Actualizar_Progreso(lblPrg, "Error: Falta Nombre del producto. Fila " & i + 1)
                     Else
 
-                        Dim tam_nombre = CStr(pDT(i)(14))
-                        If tam_nombre.Length > 100 Then
-                            error_producto = True
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error: El Nombre excede el tamaño permitido. Fila " & i + 1)
+                        Dim tam_nombre As String = CStr(pDT(i)(14))
+
+                        If tam_nombre.Length > 200 Then
+                            BeProducto.Nombre = tam_nombre.Substring(0, 200)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Aviso: El Nombre excedía el tamaño permitido, fue recortado a 200 caracteres. Fila " & (i + 1))
                         Else
-                            BeProducto.Nombre = CStr(pDT(i)(14))
+                            BeProducto.Nombre = tam_nombre
                         End If
+
+                        'Dim tam_nombre = CStr(pDT(i)(14))
+                        'If tam_nombre.Length > 200 Then
+                        '    error_producto = True
+                        '    clsPublic.Actualizar_Progreso(lblPrg, "Error: El Nombre excede el tamaño permitido. Fila " & i + 1)
+                        'Else
+                        '    BeProducto.Nombre = CStr(pDT(i)(14))
+                        'End If
                     End If
 
                     If pDT(i)(15) Is DBNull.Value Then
@@ -1791,15 +1831,20 @@ Public Class frmCargaExcel
                     If pDT(i)(53) IsNot DBNull.Value AndAlso pDT(i)(53) IsNot Nothing Then
                         If IsNumeric(pDT(i)(53)) Then
 
-                            If clsLnProducto_parametro_a.Existe_Parametro_By_Id(pDT(i)(53),
+                            Dim pParametroAnumerico = CInt(pDT(i)(53))
+
+                            '#GT30032026: si es 0, no se debe validar, porque no se maneja el parametro
+                            If pParametroAnumerico > 0 Then
+                                If clsLnProducto_parametro_a.Existe_Parametro_By_Id(pParametroAnumerico,
                                                                                 lConnection,
                                                                                 lTransaction) Then
-                                BeProducto.IdProductoParametroA = CInt(pDT(i)(53))
-                            Else
-                                'Throw New Exception("El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
+                                    BeProducto.IdProductoParametroA = pParametroAnumerico
+                                Else
+                                    error_producto = True
+                                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pDT(i)(53).ToString() & " no existe en WMS. Fila " & i + 1)
+                                End If
                             End If
+
                         Else
                             Dim pProdParametroA = CStr(pDT(i)(53))
                             Dim pParametroA As clsBeProducto_parametro_a = clsLnProducto_parametro_a.GetSingle_By_Name(pProdParametroA.Trim,
@@ -1809,7 +1854,7 @@ Public Class frmCargaExcel
                             If Not pParametroA Is Nothing Then
                                 BeProducto.IdProductoParametroA = pParametroA.IdProductoParametroA
                             Else
-                                'Throw New Exception("El parámetro A: " & pProdParametroA & " no existe en WMS. Fila " & i + 1)
+
                                 error_producto = True
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro A: " & pProdParametroA & " no existe en WMS. Fila " & i + 1)
                             End If
@@ -1821,15 +1866,25 @@ Public Class frmCargaExcel
                     If pDT(i)(54) IsNot DBNull.Value AndAlso pDT(i)(54) IsNot Nothing Then
                         If IsNumeric(pDT(i)(54)) Then
 
-                            If clsLnProducto_parametro_b.Existe_Parametro_By_Id(pDT(i)(54),
+                            Dim pParametroAnumerico = CInt(pDT(i)(54))
+
+                            '#GT30032026: si es 0, no se debe validar, porque no se maneja el parametro
+                            If pParametroAnumerico > 0 Then
+
+                                If clsLnProducto_parametro_b.Existe_Parametro_By_Id(pParametroAnumerico,
                                                                                 lConnection,
                                                                                 lTransaction) Then
-                                BeProducto.IdProductoParametroB = CInt(pDT(i)(54))
-                            Else
-                                error_producto = True
-                                clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pDT(i)(54).ToString() & " no esta registrado en WMS. Fila " & i + 1)
+                                    BeProducto.IdProductoParametroB = pParametroAnumerico
+                                Else
+                                    error_producto = True
+                                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pParametroAnumerico.ToString() & " no esta registrado en WMS. Fila " & i + 1)
+                                End If
+
                             End If
+
+
                         Else
+
                             Dim pProdParametroB = CStr(pDT(i)(54))
                             Dim pParametroB As clsBeProducto_parametro_b = clsLnProducto_parametro_b.GetSingle_By_Name(pProdParametroB.Trim,
                                                                                                                        lConnection,
@@ -1841,6 +1896,7 @@ Public Class frmCargaExcel
                                 error_producto = True
                                 clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "El parámetro B: " & pProdParametroB & " no esta registrado en WMS. Fila " & i + 1)
                             End If
+
                         End If
                     End If
 
@@ -2189,7 +2245,11 @@ Public Class frmCargaExcel
                             End If
 
                         End If
+                    Else
+                        errorCampos = True
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "La talla y el color deben ser válidos. Fila " & i + 1)
                     End If
+
                 End If
 
                 If Not errorCampos Then
@@ -3506,6 +3566,18 @@ Public Class frmCargaExcel
             Cursor = Cursors.WaitCursor
             lObjStock = New List(Of clsBeVW_stock_res)
 
+            lErroresCargaCambioUbic.Clear()
+            pListObjDet = New List(Of clsBeTrans_ubic_hh_det)
+            pListObjMov = New List(Of clsBeTrans_movimientos)
+            pListStockMov = New List(Of clsBeStock)
+            lUbicSel = New List(Of clsBeUbicacionSugeridaList)
+
+            pBodegaOrigen = clsLnBodega.GetSingle_By_Idbodega(AP.IdBodega)
+
+            If pBodegaOrigen Is Nothing Then
+                Throw New Exception("No se pudo obtener la configuración de la bodega.")
+            End If
+
             Dim vCantRegistros As Integer = pDT.Rows.Count
             Dim vIndicadorFila As Integer = 1
 
@@ -3519,6 +3591,10 @@ Public Class frmCargaExcel
 
             For i As Integer = 0 To pDT.Rows.Count - 1
 
+                errorCampos = False
+                Dim motivoFila As String = ""
+                Dim motivosFila As New List(Of String)
+
                 Application.DoEvents()
                 Dim Indice As Integer = i
                 pObjStock = New clsBeVW_stock_res
@@ -3528,56 +3604,61 @@ Public Class frmCargaExcel
 #Region "Datos Ubicación Origen"
 
                 '#GT14062022: valida IdStock.
-                If pDT(i)(0) Is DBNull.Value Then
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error: En la fila " & i + 1 & ", el valor no es válido")
+                If pDT(i)(0) Is DBNull.Value OrElse pDT(i)(0).ToString().Trim() = "" Then
+                    motivoFila = "IdStock no válido en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(0, "", 0, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
-
-                    IdStock = pDT(Indice)(0)
-                    '#GT20062022_0840: consulto la bd para existencia del id
+                    IdStock = CInt(pDT(Indice)(0))
                     pObjStock = clsLnStock.Get_Single_By_IdStock(IdStock)
-
                 End If
 
                 '#GT20062022_1220: valida bodega excel
-                If pDT(i)(1) Is DBNull.Value Or pDT(i)(1) = "" Then
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error: En la fila " & i + 1 & ", el valor no es válido")
+                If pDT(i)(1) Is DBNull.Value OrElse pDT(i)(1).ToString().Trim() = "" Then
+                    motivoFila = "Bodega no válida en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(IdStock, "", 0, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
 
                     '#GT20062022_1210: validamos que la bodegaOrigen del excel coincida con la bodega del encabezado
-                    pIdBodega = pDT(Indice)(1)
+                    pIdBodega = pDT(Indice)(1).ToString().Trim()
                     pBodega = New clsBeBodega
 
                     If IsNumeric(pIdBodega) Then
-                        pBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega)
+                        pBodega = clsLnBodega.GetSingle_By_Idbodega(CInt(pIdBodega))
                     Else
                         pBodega = clsLnBodega.GetSingle_By_Codigo(pIdBodega)
                     End If
 
                     If pBodega Is Nothing Then
-
-                        errorCampos = True
-                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "no existe la bodega en la fila " & i + 1)
-
+                        motivoFila = "No existe la bodega en la fila " & (i + 1)
+                        AgregarErrorCargaCambioUbic(IdStock, "", 0, 0, motivoFila)
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                        Continue For
                     End If
 
                 End If
 
                 '#GT20062022_1220: valida codigo producto
-                If pDT(i)(2) Is DBNull.Value Or pDT(i)(2) = "" Then
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error: En la fila " & i + 1 & ", el codigo producto no es válido.")
+                If pDT(i)(2) Is DBNull.Value OrElse pDT(i)(2).ToString().Trim() = "" Then
+                    motivoFila = "Código de producto no válido en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(IdStock, "", pIdUbicacion, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
-                    pCodigoProducto = pDT(i)(2)
+                    pCodigoProducto = pDT(i)(2).ToString().Trim()
                 End If
 
                 '#GT20062022_1220: valida IdUbicación
-                If pDT(i)(3) Is DBNull.Value Or pDT(i)(3) = "" Then
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error: En la fila " & i + 1 & ", la úbicación no es válida.")
+                If pDT(i)(3) Is DBNull.Value OrElse pDT(i)(3).ToString().Trim() = "" Then
+                    motivoFila = "Ubicación origen no válida en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, 0, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
-                    pIdUbicacion = pDT(i)(3)
+                    pIdUbicacion = CInt(pDT(i)(3))
                 End If
 
 
@@ -3587,13 +3668,16 @@ Public Class frmCargaExcel
                     Dim IdExiste As Boolean = lObjStock.Exists(Function(d) d.IdStock = IdStock)
 
                     If IdExiste Then
-                        errorCampos = True
-                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El IdStock en la fila " & i + 1 & " se encuentra duplicado.")
+                        motivoFila = "El IdStock en la fila " & (i + 1) & " se encuentra duplicado."
+                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, 0, motivoFila)
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                        Continue For
                     Else
-
                         If pObjStock.Codigo_Producto <> pCodigoProducto Then
-                            errores = True
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error: En la fila " & i + 1 & ", el codigo producto no coincide con el registrado con el IdStock.")
+                            motivoFila = "El código producto no coincide con el registrado con el IdStock en la fila " & (i + 1)
+                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, 0, motivoFila)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                            Continue For
                         End If
 
 
@@ -3614,40 +3698,51 @@ Public Class frmCargaExcel
                             preparaObjDet(pObjStock)
 
                         Else
-                            errorCampos = True
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "la bodega " & pIdBodega & ", no coincide con la del proceso actual de reubicación " & pBodegaOrigen.Nombre & ", en la fila " & i + 1)
+                            motivoFila = "La bodega " & pIdBodega & " no coincide con la del proceso actual de reubicación en la fila " & (i + 1)
+                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, 0, motivoFila)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                            Continue For
                         End If
 
                     End If
 
                 Else
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El IdStock en la fila " & i + 1 & " no existe en la BD.")
+                    motivoFila = "El IdStock en la fila " & (i + 1) & " no existe en la BD."
+
+                    AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 End If
 
 #End Region
 
 #Region "Datos Ubicación Destino"
 
-                '#GT14062022: ubicación destion (por id)
-                If pDT(i)(4) Is DBNull.Value AndAlso pDT(i)(4) Is Nothing Then
-                    errorCampos = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "Falta Ubicación destino en la fila " & i + 1)
+                '#GT14062022: ubicación destino (por id)
+                If pDT(i)(4) Is DBNull.Value OrElse pDT(i)(4).ToString().Trim() = "" Then
+                    motivoFila = "Falta ubicación destino en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, 0, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
-                    pIdUbicacionDestino = pDT(i)(4)
+                    pIdUbicacionDestino = CInt(pDT(i)(4))
                 End If
 
                 '#GT20062022_1402: valida que exista una cantidad numerica
-                If pDT(i)(5) Is DBNull.Value AndAlso pDT(i)(5) Is Nothing Then
-                    errores = True
-                    clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "Falta cantidad en la fila " & i + 1)
+                If pDT(i)(5) Is DBNull.Value OrElse pDT(i)(5).ToString().Trim() = "" Then
+                    motivoFila = "Falta cantidad en la fila " & (i + 1)
+                    AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                    clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                    Continue For
                 Else
 
                     If IsNumeric(pDT(i)(5)) Then
-                        pCantidad = pDT(i)(5)
+                        pCantidad = CInt(pDT(i)(5))
                     Else
-                        errorCampos = True
-                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "el valor debe ser númerico en la fila " & i + 1)
+                        motivoFila = "La cantidad debe ser numérica en la fila " & (i + 1)
+                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                        Continue For
                     End If
 
                 End If
@@ -3663,17 +3758,17 @@ Public Class frmCargaExcel
 
                 If Not pObjStock Is Nothing Then
 
-                    If pObjStock.Nombre_Presentacion <> pPresentacion.Trim Then
-                        errorCampos = True
-                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & "La presentación leida, no coincide con la registrada en stock, para la fila " & i + 1)
+                    If pObjStock.Nombre_Presentacion.Trim <> pPresentacion.Trim Then
+                        motivoFila = "La presentación leída no coincide con la registrada en stock en la fila " & (i + 1)
+                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                        clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                        Continue For
                     Else
-                        '#GT21062022_1100: conversión de la cantidad si el idstock tuviera presentacion.
                         If pObjStock.IdPresentacion > 0 Then
                             pCantidadUmbas = pCantidad * pFactor
                         Else
                             pCantidadUmbas = pCantidad
                         End If
-
                     End If
 
                     '#GT15062022_1450: se obtiene la data de la ubicación destino
@@ -3682,11 +3777,56 @@ Public Class frmCargaExcel
 
                     If Not pBeUbicacionDestino Is Nothing Then
 
+                        If pObjStock.IdUbicacion = pIdUbicacionDestino Then
+                            motivoFila = "La ubicación destino no puede ser igual a la ubicación origen en la fila " & (i + 1)
+                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pObjStock.IdUbicacion, pIdUbicacionDestino, motivoFila)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                            Continue For
+                        End If
+                        Dim ubicValidaSegunRegla As Boolean = True
+                        Dim motivoValidacionFuerte As String = ""
+
+                        If Not ValidarReglasUbicacionExcel(pObjStock, pBeUbicacionDestino, motivoValidacionFuerte, ubicValidaSegunRegla) Then
+                            If Not String.IsNullOrWhiteSpace(motivoValidacionFuerte) Then
+                                motivosFila.Add(motivoValidacionFuerte)
+                            End If
+                        End If
+
+                        motivoValidacionFuerte = ""
+                        If Not ValidarCambioRestrictivoExcel(ubicValidaSegunRegla, motivoValidacionFuerte) Then
+                            If Not String.IsNullOrWhiteSpace(motivoValidacionFuerte) Then
+                                motivosFila.Add(motivoValidacionFuerte)
+                            End If
+                        End If
+
+                        motivoValidacionFuerte = ""
+                        If Not ValidarIndiceRotacionDestinoExcel(pObjStock, pBeUbicacionDestino, motivoValidacionFuerte) Then
+                            If Not String.IsNullOrWhiteSpace(motivoValidacionFuerte) Then
+                                motivosFila.Add(motivoValidacionFuerte)
+                            End If
+                        End If
+
+                        motivoValidacionFuerte = ""
+                        If Not ValidarMismoProductoPosicionExcel(pObjStock, pBeUbicacionDestino, motivoValidacionFuerte) Then
+                            If Not String.IsNullOrWhiteSpace(motivoValidacionFuerte) Then
+                                motivosFila.Add(motivoValidacionFuerte)
+                            End If
+                        End If
+
+                        If motivosFila.Count > 0 Then
+                            motivoFila = String.Join(" | ", motivosFila.Distinct())
+                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Error fila " & (i + 1) & ": " & motivoFila)
+                            Continue For
+                        End If
+
                         selUbic = New clsBeUbicacionSugeridaList()
                         selUbic.Descripcion = pBeUbicacionDestino.Descripcion
                         If pObjStock.CantidadUmBas < pCantidadUmbas Then
-                            errorCampos = True
-                            clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "la cantidad a reubicar, es mayor a la disponible en la fila " & i + 1)
+                            motivoFila = "La cantidad a reubicar es mayor a la disponible en la fila " & (i + 1)
+                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                            clsPublic.Actualizar_Progreso(lblPrg, "Error: " & motivoFila)
+                            Continue For
                         Else
                             'selUbic.Ubicar = pCantidadUmbas
                             selUbic.Ubicar = pCantidad
@@ -3705,8 +3845,10 @@ Public Class frmCargaExcel
                         End If
 
                     Else
-                        errorCampos = True
-                        clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "La úbicación destino en la fila " & i + 1 & " no existe")
+                        motivoFila = "La ubicación destino en la fila " & (i + 1) & " no existe"
+                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+                        lObjStock.Add(pObjStock)
+                        Continue For
                     End If
 
                 End If
@@ -3715,35 +3857,17 @@ Public Class frmCargaExcel
 
             Next
 
-            If Not errorCampos Then
-
-                If pListObjDet.Count > 0 Then
-
-                    '#CKFK20220620 Agregué esto porque me daba error de duplicación
-                    Dim MaxId As Integer = clsLnLog_importacion_excel.MaxID() + 1
-                    beLogImportacion.IdImportacion = MaxId
-
-                    '#GT20062022_1640: log del proceso completado.
-                    clsLnLog_importacion_excel.Insertar(beLogImportacion)
-                    Carga_Cambio_Ubicacion = True
-
-                    SplashScreenManager.CloseForm(False)
-                    XtraMessageBox.Show("Se finalizó la lectura del archivo, se procesaran los datos a continuación.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                    DialogResult = DialogResult.OK
-                    'Close()
-
-                End If
-
-            Else
+            If pListObjDet.Count = 0 Then
 
                 Carga_Cambio_Ubicacion = False
 
                 SplashScreenManager.CloseForm(False)
 
-                XtraMessageBox.Show("Se finalizó la lectura del archivo, y tiene errores que deben corregir.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Dim frmErrores As New frmResultadoValidacionCambioUbic()
+                frmErrores.BeListaErrores = lErroresCargaCambioUbic
+                frmErrores.CantidadValidos = 0
+                frmErrores.ShowDialog()
 
-                '#GT15062022_1010: Se limpian los inputs para evitar que se presione cargar nuevamente e intente sobreescribir
                 txtArchivo.Text = ""
                 lObjStock.Clear()
                 DsExcel.Clear()
@@ -3752,8 +3876,30 @@ Public Class frmCargaExcel
                 Grid.ForceInitialize()
 
                 cmdCargar.Enabled = True
+                Return False
 
             End If
+
+            '#CKFK20220620 Agregué esto porque me daba error de duplicación
+            Dim MaxId As Integer = clsLnLog_importacion_excel.MaxID() + 1
+            beLogImportacion.IdImportacion = MaxId
+
+            '#GT20062022_1640: log del proceso completado.
+            clsLnLog_importacion_excel.Insertar(beLogImportacion)
+
+            If lErroresCargaCambioUbic.Count > 0 Then
+                Dim frmErrores As New frmResultadoValidacionCambioUbic()
+                frmErrores.BeListaErrores = lErroresCargaCambioUbic
+                frmErrores.CantidadValidos = pListObjDet.Count
+                frmErrores.ShowDialog()
+            End If
+
+            Carga_Cambio_Ubicacion = True
+
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show("Se finalizó la lectura del archivo, se procesarán los datos a continuación.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            DialogResult = DialogResult.OK
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -4076,6 +4222,23 @@ Public Class frmCargaExcel
 
     End Function
 
+    Private Sub AgregarErrorCargaCambioUbic(idStock As Integer,
+                                        codigoProducto As String,
+                                        idUbicOrigen As Integer,
+                                        idUbicDestino As Integer,
+                                        motivo As String)
+
+        Dim err As New clsBeResultadoValidacionCambioUbic()
+        err.IdStock = idStock
+        err.NombreProducto = clsLnProducto.Get_Nombre_By_Codigo(codigoProducto)
+        err.CodigoProducto = codigoProducto
+        err.IdUbicacionOrigen = idUbicOrigen
+        err.IdUbicacionDestino = idUbicDestino
+        err.Motivo = motivo
+
+        lErroresCargaCambioUbic.Add(err)
+    End Sub
+
     Private Sub preparaObjDet(pObjStock As clsBeVW_stock_res)
 
         pBeTransUbicHHDet = New clsBeTrans_ubic_hh_det()
@@ -4206,6 +4369,328 @@ Public Class frmCargaExcel
 
     End Sub
 
+    Private Function ValidarReglasUbicacionExcel(pStock As clsBeVW_stock_res,
+                                             ubicDestino As clsBeBodega_ubicacion,
+                                             ByRef motivo As String,
+                                             ByRef ubicValidaSegunRegla As Boolean) As Boolean
+        Try
+            ubicValidaSegunRegla = True
+            motivo = ""
+
+            Dim beProducto As New clsBeProducto()
+            beProducto.IdProducto = pStock.IdProducto
+            beProducto = clsLnProducto.Get_Single_By_IdProducto(beProducto.IdProducto)
+
+            If beProducto Is Nothing Then Return True
+            If ubicDestino Is Nothing Then
+                ubicValidaSegunRegla = False
+                motivo = "La ubicación destino no es válida."
+                Return True
+            End If
+
+            ' regla rápida por tipo de rotación
+            If beProducto.IdTipoRotacion > 0 AndAlso ubicDestino.IdTipoRotacion > 0 Then
+                If beProducto.IdTipoRotacion <> ubicDestino.IdTipoRotacion Then
+                    ubicValidaSegunRegla = False
+                    motivo = "La ubicación seleccionada no cumple con las reglas de rotación."
+                    Return True
+                End If
+            End If
+
+            ' regla rápida por estado dañado
+            Dim beEstado As New clsBeProducto_estado()
+            beEstado.IdEstado = pStock.IdProductoEstado
+            beEstado = clsLnProducto_estado.Get_Single_By_IdEstado(beEstado.IdEstado)
+
+            If beEstado IsNot Nothing Then
+                If beEstado.Dañado AndAlso Not ubicDestino.Dañado Then
+                    ubicValidaSegunRegla = False
+                    motivo = "La ubicación seleccionada no es válida para el estado del producto."
+                    Return True
+                End If
+            End If
+
+            Dim dtReglas As DataTable = clsLnRegla_ubic_enc.Listar(AP.IdBodega, AP.IdEmpresa, True)
+            If dtReglas Is Nothing OrElse dtReglas.Rows.Count = 0 Then Return True
+
+            Dim hayReglasAplicables As Boolean = False
+            Dim existeReglaCompatible As Boolean = False
+
+            For Each dr As DataRow In dtReglas.Rows
+                Dim regla As New clsBeRegla_ubic_enc()
+                regla.IdReglaUbicacionEnc = CInt(dr("Código"))
+                clsLnRegla_ubic_enc.GetSingleWithDetails(regla)
+
+                Dim cumple As Boolean = True
+                Dim reglaAplica As Boolean = False
+
+                If regla.listDetRegla_Ubic_Det_Ir IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Ir.Count > 0 Then
+                    reglaAplica = True
+                    If pStock.IdIndiceRotacion = 0 Then
+                        cumple = False
+                    Else
+                        Dim okIndice = regla.listDetRegla_Ubic_Det_Ir.Any(Function(x) x.Activo AndAlso x.IdIndiceRotacion = pStock.IdIndiceRotacion)
+                        cumple = cumple AndAlso okIndice
+                    End If
+                End If
+
+                If regla.listDetRegla_Ubic_Det_Tr IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Tr.Count > 0 Then
+                    reglaAplica = True
+                    If ubicDestino.IdTipoRotacion = 0 Then
+                        cumple = False
+                    Else
+                        Dim okTipoRot = regla.listDetRegla_Ubic_Det_Tr.Any(Function(x) x.Activo AndAlso x.IdTipoRotacion = ubicDestino.IdTipoRotacion)
+                        cumple = cumple AndAlso okTipoRot
+                    End If
+                End If
+
+                If regla.listDetRegla_Ubic_Det_tp IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_tp.Count > 0 Then
+                    reglaAplica = True
+                    If pStock.IdTipoProducto = 0 Then
+                        cumple = False
+                    Else
+                        Dim okTipoProd = regla.listDetRegla_Ubic_Det_tp.Any(Function(x) x.Activo AndAlso x.IdTipoProducto = pStock.IdTipoProducto)
+                        cumple = cumple AndAlso okTipoProd
+                    End If
+                End If
+
+                If regla.listDetRegla_Ubic_Det_Pe IsNot Nothing AndAlso regla.listDetRegla_Ubic_Det_Pe.Count > 0 Then
+                    reglaAplica = True
+                    If pStock.IdProductoEstado = 0 Then
+                        cumple = False
+                    Else
+                        Dim okEstado = regla.listDetRegla_Ubic_Det_Pe.Any(Function(x) x.Activo AndAlso x.IdEstado = pStock.IdProductoEstado)
+                        cumple = cumple AndAlso okEstado
+                    End If
+                End If
+
+                If Not reglaAplica Then Continue For
+
+                hayReglasAplicables = True
+                If cumple Then
+                    existeReglaCompatible = True
+                    Exit For
+                End If
+            Next
+
+            If hayReglasAplicables AndAlso Not existeReglaCompatible Then
+                ubicValidaSegunRegla = False
+                motivo = "La ubicación seleccionada no cumple con las reglas configuradas."
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            motivo = "Error evaluando reglas de ubicación: " & ex.Message
+            Return False
+        End Try
+    End Function
+
+    Private Function ValidarCambioRestrictivoExcel(ubicValidaSegunRegla As Boolean,
+                                               ByRef motivo As String) As Boolean
+        Try
+            If pBodegaOrigen Is Nothing Then Return True
+            If ubicValidaSegunRegla Then Return True
+
+            If pBodegaOrigen.cambio_ubicacion_restrictivo Then
+                If motivo = "" Then motivo = "La ubicación seleccionada no cumple con las reglas configuradas."
+                Return False
+            End If
+
+            Return True
+        Catch ex As Exception
+            motivo = "Error validando cambio de ubicación restrictivo: " & ex.Message
+            Return False
+        End Try
+    End Function
+
+    Private Function ValidarIndiceRotacionDestinoExcel(pStock As clsBeVW_stock_res,
+                                                   ubicDestino As clsBeBodega_ubicacion,
+                                                   ByRef motivo As String) As Boolean
+        Try
+            If pBodegaOrigen Is Nothing Then Return True
+            If ubicDestino Is Nothing Then Return True
+            If pStock.IdIndiceRotacion = 0 Then Return True
+            If ubicDestino.IdIndiceRotacion = 0 Then Return True
+            If pStock.IdIndiceRotacion = ubicDestino.IdIndiceRotacion Then Return True
+
+            If ubicDestino.IdIndiceRotacion < pStock.IdIndiceRotacion Then
+                If pBodegaOrigen.permitir_cambio_ubic_indice_menor Then
+                    motivo = String.Format("No se permite ubicar en un índice menor. Índice producto: {0}, índice ubicación: {1}.",
+                                       pStock.IdIndiceRotacion, ubicDestino.IdIndiceRotacion)
+                    Return False
+                End If
+            End If
+
+            Return True
+        Catch ex As Exception
+            motivo = "Error validando índice de rotación: " & ex.Message
+            Return False
+        End Try
+    End Function
+    Private Function EsRackDobleProfundidadExcel(ByVal ubic As clsBeBodega_ubicacion) As Boolean
+        Try
+            If ubic Is Nothing Then Return False
+            If ubic.IdTramo <= 0 Then Return False
+            If ubic.IdBodega <= 0 Then Return False
+
+            Dim beTramo As clsBeBodega_tramo =
+            clsLnBodega_tramo.GetSingle(ubic.IdTramo, ubic.IdBodega)
+
+            If beTramo Is Nothing Then Return False
+
+            Return beTramo.Es_Rack AndAlso beTramo.IdTipoRack = 4
+
+        Catch ex As Exception
+            Throw New Exception("Error validando si el tramo es rack de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerOrientacionParejaExcel(ByVal orientacion As String) As String
+        If String.IsNullOrWhiteSpace(orientacion) Then Return ""
+
+        Select Case orientacion.Trim().ToUpper()
+            Case "A" : Return "B"
+            Case "B" : Return "A"
+            Case "C" : Return "D"
+            Case "D" : Return "C"
+            Case Else : Return ""
+        End Select
+    End Function
+
+    Private Function ObtenerUbicacionParejaDobleProfundidadExcel(ByVal ubic As clsBeBodega_ubicacion) As clsBeBodega_ubicacion
+        Try
+            If ubic Is Nothing Then Return Nothing
+
+            Dim orientacionPareja As String = ObtenerOrientacionParejaExcel(ubic.Orientacion_pos)
+
+            If String.IsNullOrWhiteSpace(orientacionPareja) Then Return Nothing
+
+            Dim ubicacionesRelacionadas As List(Of clsBeBodega_ubicacion) =
+            clsLnBodega_ubicacion.Get_Ubicaciones_Misma_Posicion(
+                ubic.IdBodega,
+                ubic.IdTramo,
+                ubic.Indice_x,
+                ubic.Nivel,
+                ubic.IdUbicacion)
+
+            If ubicacionesRelacionadas Is Nothing OrElse ubicacionesRelacionadas.Count = 0 Then
+                Return Nothing
+            End If
+
+            Return ubicacionesRelacionadas.
+            FirstOrDefault(Function(x) x IsNot Nothing AndAlso
+                                      Not String.IsNullOrWhiteSpace(x.Orientacion_pos) AndAlso
+                                      x.Orientacion_pos.Trim().ToUpper() = orientacionPareja)
+
+        Catch ex As Exception
+            Throw New Exception("Error obteniendo ubicación relacionada de doble profundidad: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ExisteProductoDistintoEnUbicacionExcel(ByVal idUbicacion As Integer,
+                                                        ByVal idBodega As Integer,
+                                                        ByVal idProductoAUbicar As Integer) As Boolean
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return False
+
+            Return lStock.Any(Function(s) s IsNot Nothing AndAlso
+                                      s.IdProducto > 0 AndAlso
+                                      s.IdProducto <> idProductoAUbicar)
+
+        Catch ex As Exception
+            Throw New Exception("Error validando producto en ubicación: " & ex.Message)
+        End Try
+    End Function
+
+    Private Function ObtenerCodigoProductoEnUbicacionExcel(ByVal idUbicacion As Integer,
+                                                       ByVal idBodega As Integer,
+                                                       ByVal idProductoAUbicar As Integer) As String
+        Try
+            Dim lStock As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(idUbicacion, idBodega)
+
+            If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+            Dim stockDistinto = lStock.FirstOrDefault(Function(s) s IsNot Nothing AndAlso
+                                                              s.IdProducto > 0 AndAlso
+                                                              s.IdProducto <> idProductoAUbicar)
+
+            If stockDistinto Is Nothing Then Return ""
+
+            Return stockDistinto.Codigo_Producto
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
+
+    Private Function ConstruirMensajePosicionPosteriorExcel(ByVal codigoProductoRelacionado As String) As String
+        Return "La posición posterior ya contiene un producto diferente" &
+           If(String.IsNullOrWhiteSpace(codigoProductoRelacionado), "", " (" & codigoProductoRelacionado & ")") &
+           ". Solo se permite ubicar el mismo producto en esta posición."
+    End Function
+
+    Private Function ValidarMismoProductoPosicionExcel(pStock As clsBeVW_stock_res,
+                                                   ubicDestino As clsBeBodega_ubicacion,
+                                                   ByRef motivo As String) As Boolean
+        Try
+            If pBodegaOrigen Is Nothing Then Return True
+            If Not pBodegaOrigen.requerir_mismo_producto_posiciones Then Return True
+            If ubicDestino Is Nothing Then Return True
+
+            Dim idProductoAUbicar As Integer = pStock.IdProducto
+            If idProductoAUbicar <= 0 Then Return True
+
+            ' Validar ubicación destino misma
+            Dim stockDestino As List(Of clsBeVW_stock_res) =
+            clsLnStock.Get_All_By_IdUbicacion(ubicDestino.IdUbicacion, ubicDestino.IdBodega)
+
+            If stockDestino IsNot Nothing AndAlso stockDestino.Count > 0 Then
+                If stockDestino.Any(Function(s) s IsNot Nothing AndAlso
+                                            s.IdProducto > 0 AndAlso
+                                            s.IdProducto <> idProductoAUbicar) Then
+                    motivo = "La ubicación destino ya contiene un producto diferente. Solo se permite ubicar el mismo producto en esa posición."
+                    Return False
+                End If
+            End If
+
+            ' Si no es rack doble profundidad, no aplica validación especial
+            If Not EsRackDobleProfundidadExcel(ubicDestino) Then
+                Return True
+            End If
+
+            ' Buscar solo la ubicación relacionada A<->B / C<->D
+            Dim ubicPareja As clsBeBodega_ubicacion =
+            ObtenerUbicacionParejaDobleProfundidadExcel(ubicDestino)
+
+            If ubicPareja Is Nothing Then
+                Return True
+            End If
+
+            If ExisteProductoDistintoEnUbicacionExcel(
+            ubicPareja.IdUbicacion,
+            ubicPareja.IdBodega,
+            idProductoAUbicar) Then
+
+                Dim codigoProductoRelacionado As String =
+                ObtenerCodigoProductoEnUbicacionExcel(ubicPareja.IdUbicacion,
+                                                      ubicPareja.IdBodega,
+                                                      idProductoAUbicar)
+
+                motivo = ConstruirMensajePosicionPosteriorExcel(codigoProductoRelacionado)
+                Return False
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            motivo = "Error validando mismo producto por posición: " & ex.Message
+            Return False
+        End Try
+    End Function
     Private Sub Cargar_Movimiento(ByVal det As clsBeTrans_ubic_hh_det, ByVal pObjStock As clsBeStock)
 
         Try

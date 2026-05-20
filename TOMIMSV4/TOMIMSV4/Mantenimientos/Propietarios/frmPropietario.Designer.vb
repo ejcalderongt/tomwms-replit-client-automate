@@ -91,7 +91,7 @@ Partial Class frmPropietario
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.Grid = New DevExpress.XtraGrid.GridControl()
         Me.DataBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsPropietario = New TOMWMS.DsPropietario()
+        Me.DsPropietario = New DsPropietario()
         Me.gridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colSeleccion = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.RepositoryItemCheckEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
@@ -512,7 +512,7 @@ Partial Class frmPropietario
         Label10.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label10.AutoSize = True
         Label10.BackColor = System.Drawing.Color.Transparent
-        Label10.Location = New System.Drawing.Point(850, 31)
+        Label10.Location = New System.Drawing.Point(514, 31)
         Label10.Name = "Label10"
         Label10.Size = New System.Drawing.Size(52, 16)
         Label10.TabIndex = 0
@@ -1327,7 +1327,7 @@ Partial Class frmPropietario
         Me.GroupControl5.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(1679, 759)
+        Me.GroupControl5.Size = New System.Drawing.Size(1343, 607)
         Me.GroupControl5.TabIndex = 0
         '
         'GroupControl7
@@ -1341,7 +1341,7 @@ Partial Class frmPropietario
         Me.GroupControl7.Location = New System.Drawing.Point(730, 28)
         Me.GroupControl7.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl7.Name = "GroupControl7"
-        Me.GroupControl7.Size = New System.Drawing.Size(943, 729)
+        Me.GroupControl7.Size = New System.Drawing.Size(607, 577)
         Me.GroupControl7.TabIndex = 2
         Me.GroupControl7.Text = "Destinatarios"
         '
@@ -1349,7 +1349,7 @@ Partial Class frmPropietario
         '
         Me.chkActivoD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkActivoD.EditValue = True
-        Me.chkActivoD.Location = New System.Drawing.Point(910, 27)
+        Me.chkActivoD.Location = New System.Drawing.Point(574, 27)
         Me.chkActivoD.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkActivoD.MenuManager = Me.RibbonControl
         Me.chkActivoD.Name = "chkActivoD"
@@ -1369,7 +1369,7 @@ Partial Class frmPropietario
         Me.GridDestinatario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridDestinatario.MenuManager = Me.RibbonControl
         Me.GridDestinatario.Name = "GridDestinatario"
-        Me.GridDestinatario.Size = New System.Drawing.Size(941, 667)
+        Me.GridDestinatario.Size = New System.Drawing.Size(605, 515)
         Me.GridDestinatario.TabIndex = 2
         Me.GridDestinatario.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewDestinatario, Me.GridView6})
         '
@@ -1395,7 +1395,7 @@ Partial Class frmPropietario
         Me.Panel1.Location = New System.Drawing.Point(667, 28)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(56, 731)
+        Me.Panel1.Size = New System.Drawing.Size(56, 579)
         Me.Panel1.TabIndex = 1
         '
         'cmdAlertas
@@ -1440,7 +1440,7 @@ Partial Class frmPropietario
         Me.GroupControl6.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(658, 735)
+        Me.GroupControl6.Size = New System.Drawing.Size(658, 583)
         Me.GroupControl6.TabIndex = 0
         Me.GroupControl6.Text = "Mensajes"
         '
@@ -1468,7 +1468,7 @@ Partial Class frmPropietario
         Me.GridMensaje.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridMensaje.MenuManager = Me.RibbonControl
         Me.GridMensaje.Name = "GridMensaje"
-        Me.GridMensaje.Size = New System.Drawing.Size(653, 682)
+        Me.GridMensaje.Size = New System.Drawing.Size(653, 530)
         Me.GridMensaje.TabIndex = 2
         Me.GridMensaje.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewMensaje, Me.GridView3})
         '
@@ -1594,7 +1594,7 @@ Partial Class frmPropietario
         Me.dgridUM.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridUM.MenuManager = Me.RibbonControl
         Me.dgridUM.Name = "dgridUM"
-        Me.dgridUM.Size = New System.Drawing.Size(1679, 759)
+        Me.dgridUM.Size = New System.Drawing.Size(1343, 607)
         Me.dgridUM.TabIndex = 3
         Me.dgridUM.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2, Me.GridView5})
         '
@@ -1629,7 +1629,7 @@ Partial Class frmPropietario
         Me.dgridEstados.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridEstados.MenuManager = Me.RibbonControl
         Me.dgridEstados.Name = "dgridEstados"
-        Me.dgridEstados.Size = New System.Drawing.Size(1679, 759)
+        Me.dgridEstados.Size = New System.Drawing.Size(1343, 607)
         Me.dgridEstados.TabIndex = 4
         Me.dgridEstados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvEstados, Me.GridView8})
         '
@@ -1664,7 +1664,7 @@ Partial Class frmPropietario
         Me.dgridProductos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridProductos.MenuManager = Me.RibbonControl
         Me.dgridProductos.Name = "dgridProductos"
-        Me.dgridProductos.Size = New System.Drawing.Size(1679, 759)
+        Me.dgridProductos.Size = New System.Drawing.Size(1343, 607)
         Me.dgridProductos.TabIndex = 5
         Me.dgridProductos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9, Me.GridView10})
         '
@@ -1699,7 +1699,7 @@ Partial Class frmPropietario
         Me.dgridStock.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridStock.MenuManager = Me.RibbonControl
         Me.dgridStock.Name = "dgridStock"
-        Me.dgridStock.Size = New System.Drawing.Size(1679, 759)
+        Me.dgridStock.Size = New System.Drawing.Size(1343, 607)
         Me.dgridStock.TabIndex = 6
         Me.dgridStock.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvStock, Me.GridView12})
         '
@@ -1735,7 +1735,7 @@ Partial Class frmPropietario
         Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridMovimientos.MenuManager = Me.RibbonControl
         Me.dgridMovimientos.Name = "dgridMovimientos"
-        Me.dgridMovimientos.Size = New System.Drawing.Size(1679, 759)
+        Me.dgridMovimientos.Size = New System.Drawing.Size(1343, 607)
         Me.dgridMovimientos.TabIndex = 7
         Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewMovimientos, Me.GridView14})
         '
@@ -1910,7 +1910,7 @@ Partial Class frmPropietario
     Friend WithEvents DireccionTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents EmailTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents DataBindingSource As System.Windows.Forms.BindingSource
-    Friend WithEvents DsPropietario As TOMWMS.DsPropietario
+    Friend WithEvents DsPropietario As DsPropietario
     Friend WithEvents chkActualizarPrecioOC As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents picFoto As System.Windows.Forms.PictureBox
     Friend WithEvents txtCorreoElectronico As DevExpress.XtraEditors.GroupControl

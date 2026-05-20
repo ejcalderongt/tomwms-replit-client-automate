@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
 
@@ -3952,7 +3953,57 @@ Partial Public Class clsLnBodega_ubicacion
 
     '#MA20260304 para obtener rack, estado y licenciadestino
     Public Shared Function Get_Info_Ubicacion_Destino(ByVal pIdUbicacion As Integer,
-                                                  ByVal pIdBodega As Integer) As DataTable
+                                                      ByVal pIdBodega As Integer,
+                                                      lConnection As SqlConnection,
+                                                      lTransaction As SqlTransaction) As DataTable
+
+        Get_Info_Ubicacion_Destino = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT  t.es_rack,
+                                      isnull(s.LicenciaDestino, '') LicenciaDestino ,
+                                      isnull(s.IdProductoEstadoDestino, 0) IdProductoEstadoDestino
+                                    FROM bodega_ubicacion u
+                                    INNER JOIN bodega_tramo t 
+                                        ON u.idtramo = t.idtramo
+                                        AND u.idbodega = t.idbodega
+                                    OUTER APPLY (
+                                        SELECT TOP 1 
+                                            s.lic_plate AS LicenciaDestino,
+                                            s.IdProductoEstado As IdProductoEstadoDestino
+                                        FROM vw_stock_res s
+                                        WHERE s.IdUbicacion = u.IdUbicacion
+                                        AND s.IdBodega = u.IdBodega
+                                        ORDER BY s.IdStock DESC
+                                    ) s
+                                    WHERE u.IdUbicacion = @IdUbicacion
+                                    AND u.IdBodega = @IdBodega"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lDT As New DataTable
+                lDTA.Fill(lDT)
+
+                Get_Info_Ubicacion_Destino = lDT
+
+            End Using
+
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Info_Ubicacion_Destino(ByVal pIdUbicacion As Integer,
+                                                 ByVal pIdBodega As Integer) As DataTable
 
         Get_Info_Ubicacion_Destino = Nothing
 
@@ -3965,20 +4016,21 @@ Partial Public Class clsLnBodega_ubicacion
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Dim vSQL As String = "SELECT  t.es_rack,
-                                        stock.LicenciaDestino,
-                                        stock.IdProductoEstado
+                                      isnull(s.LicenciaDestino, '') LicenciaDestino ,
+                                      isnull(s.IdProductoEstadoDestino, 0) IdProductoEstadoDestino
                                     FROM bodega_ubicacion u
                                     INNER JOIN bodega_tramo t 
                                         ON u.idtramo = t.idtramo
+                                        AND u.idbodega = t.idbodega
                                     OUTER APPLY (
                                         SELECT TOP 1 
                                             s.lic_plate AS LicenciaDestino,
-                                            s.IdProductoEstado
+                                            s.IdProductoEstado As IdProductoEstadoDestino
                                         FROM vw_stock_res s
                                         WHERE s.IdUbicacion = u.IdUbicacion
                                         AND s.IdBodega = u.IdBodega
                                         ORDER BY s.IdStock DESC
-                                    ) stock
+                                    ) s
                                     WHERE u.IdUbicacion = @IdUbicacion
                                     AND u.IdBodega = @IdBodega"
 

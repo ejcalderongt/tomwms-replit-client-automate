@@ -751,7 +751,7 @@ Partial Public Class clsLnBodega
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction()
 
-                    Dim vSQL As String = "SELECT Nombre FROM bodega WHERE IdBodega=@IdBodega"
+                    Dim vSQL As String = "SELECT concat(CODIGO, ' - ', Nombre) as Nombre FROM bodega WHERE IdBodega=@IdBodega"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -2439,7 +2439,8 @@ Partial Public Class clsLnBodega
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    UbicacionesVacias = lReturnValue
+                    'UbicacionesVacias = lReturnValue
+                    UbicacionesVacias = Convert.ToInt32(lReturnValue)
                 Else
                     UbicacionesVacias = 0
                 End If
@@ -2459,7 +2460,8 @@ Partial Public Class clsLnBodega
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    UbicacionesOcupadas = lReturnValue
+                    'UbicacionesOcupadas = lReturnValue
+                    UbicacionesOcupadas = Convert.ToInt32(lReturnValue)
                 Else
                     UbicacionesOcupadas = 0
                 End If
@@ -2468,9 +2470,11 @@ Partial Public Class clsLnBodega
 
             lTransaction.Commit()
 
+            Get_Indicadores_Ocupacion_By_IdBodega = True
+
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+            Throw
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -3646,5 +3650,37 @@ Partial Public Class clsLnBodega
         End Try
     End Function
 
+    Public Shared Function GetUbicacionesVaciasPorArea(idBodega As Integer, area As String) As DataTable
+        Dim dt As New DataTable()
 
+        Try
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand()
+                    cmd.Connection = cn
+                    cmd.CommandType = CommandType.Text
+                    cmd.CommandText =
+                        "SELECT " &
+                        "    Ubicacion, " &
+                        "    Area  " &
+                        " FROM VW_OcupacionBodega " &
+                        "WHERE IdBodega = @IdBodega " &
+                        "  AND Area = @Area " &
+                        "  AND ISNULL(IdStock, 0) = 0 " &
+                        "ORDER BY Ubicacion"
+
+                    cmd.Parameters.AddWithValue("@IdBodega", idBodega)
+                    cmd.Parameters.AddWithValue("@Area", area)
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
+                End Using
+            End Using
+
+            Return dt
+
+        Catch ex As Exception
+            Throw New Exception("Error al obtener ubicaciones vacías por área: " & ex.Message, ex)
+        End Try
+    End Function
 End Class

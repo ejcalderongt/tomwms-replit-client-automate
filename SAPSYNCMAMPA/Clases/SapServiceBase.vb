@@ -3,6 +3,7 @@ Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Text
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Public MustInherit Class SapServiceBase
 
@@ -72,6 +73,77 @@ Public MustInherit Class SapServiceBase
         client.DefaultRequestHeaders.ConnectionClose = True
 
         Return client
+    End Function
+
+    Public Shared Function ObtenerTransacWmsPaginado(filtroFinal As String,
+                                                 sessionCookie As String,
+                                                 baseUrl As String,
+                                                 lblprg As RichTextBox,
+                                                 Optional mensajeProgreso As String = "Líneas obtenidas",
+                                                 Optional pageSize As Integer = 20) As JArray
+
+        Dim skip As Integer = 0
+        Dim hayMas As Boolean = True
+        Dim urlBase As String = baseUrl.TrimEnd("/"c) & "/"
+        Dim allRows As New JArray()
+
+        Using handler As New HttpClientHandler()
+            handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+            handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
+            handler.UseCookies = False
+
+            Using client As New HttpClient(handler)
+                client.DefaultRequestHeaders.ConnectionClose = True
+                client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                While hayMas
+                    Dim url As String =
+                        $"{urlBase}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}&$top={pageSize}&$skip={skip}"
+
+                    Using request As New HttpRequestMessage(HttpMethod.Get, url)
+                        request.Headers.ConnectionClose = True
+
+                        Dim response = client.SendAsync(request).GetAwaiter().GetResult()
+
+                        If Not response.IsSuccessStatusCode Then
+                            Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                            Throw New Exception($"Error al obtener TRANSAC_WMS. Código: {response.StatusCode}, Detalle: {errorDetail}")
+                        End If
+
+                        Dim json As String = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                        Dim parsed As JObject = JObject.Parse(json)
+                        Dim rows As JToken = parsed("value")
+
+                        If rows Is Nothing OrElse Not rows.HasValues Then
+                            hayMas = False
+                            Exit While
+                        End If
+
+                        Dim filasPagina As Integer = rows.Count()
+
+                        For Each row As JToken In rows
+                            allRows.Add(row)
+                        Next
+
+                        If lblprg IsNot Nothing Then
+                            clsPublic.Actualizar_Progreso(lblprg, $"{mensajeProgreso}: {allRows.Count}")
+                        End If
+
+                        skip += filasPagina
+                    End Using
+                End While
+            End Using
+        End Using
+
+        Return allRows
+    End Function
+
+    Public Shared Function CrearJsonResponseDesdeRows(rows As JArray) As String
+        Dim jsonFinal As New JObject(
+            New JProperty("value", rows)
+        )
+        Return jsonFinal.ToString()
     End Function
 
 End Class

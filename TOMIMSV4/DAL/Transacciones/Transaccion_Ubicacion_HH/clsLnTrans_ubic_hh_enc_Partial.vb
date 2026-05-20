@@ -955,7 +955,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 vStockRes.Fecha_ingreso = Now
                 vStockRes.ValorFecha = Now
 
-                clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov, vStockRes, True, lConnection, lTransaction)
+                clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov, vStockRes, bePickingUbicExistente.IdPickingEnc, True, lConnection, lTransaction)
 
             End If
 
@@ -1288,7 +1288,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 vStockRes.Fecha_ingreso = Now
                 vStockRes.ValorFecha = Now
 
-                clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov, vStockRes, True, lConnection, lTransaction)
+                clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov, vStockRes, bePickingUbicExistente.IdPickingEnc, True, lConnection, lTransaction)
 
             End If
 
@@ -1493,7 +1493,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
             pMov.IdEmpresa = IdEmpresa
             pMov.IdBodegaOrigen = IdBodega
-            pMov.IdTransaccion = IIf(Not UbicaAuto, beUbicHHDet.IdTareaUbicacionEnc, 1)
+            'pMov.IdTransaccion = IIf(Not UbicaAuto, beUbicHHDet.IdTareaUbicacionEnc, 1)
+            pMov.IdTransaccion = bePickingUbic.IdPickingEnc
             pMov.IdPropietarioBodega = pBePropietarioBodega.IdPropietarioBodega
             pMov.IdProductoBodega = pStock.IdProductoBodega
             pMov.IdUbicacionOrigen = pStock.IdUbicacion
@@ -1597,6 +1598,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov,
                                                                             vStockRes,
                                                                             False,
+                                                                            bePickingUbic.IdPickingEnc,
                                                                             pConnection,
                                                                             pTransaction)
 
@@ -1859,7 +1861,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
                 clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov,
                                                                             vStockRes,
-                                                                            False,
+                                                                            False, 0,
                                                                             pConnection,
                                                                             pTransaction)
 
@@ -2136,7 +2138,7 @@ Partial Public Class clsLnTrans_ubic_hh_enc
 
                     clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic_En_Picking(pMov,
                                                                                 vStockRes,
-                                                                                False,
+                                                                                False, 0,
                                                                                 pConnection,
                                                                                 pTransaction)
 

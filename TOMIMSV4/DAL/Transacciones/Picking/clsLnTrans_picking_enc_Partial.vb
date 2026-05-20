@@ -1106,6 +1106,8 @@ Partial Public Class clsLnTrans_picking_enc
                                      lConnection,
                                      lTransaction)
 
+
+
             If pBeTareaHH IsNot Nothing Then
                 pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
 
@@ -1381,9 +1383,7 @@ Partial Public Class clsLnTrans_picking_enc
             End If
 
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
             clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
                                                   pIdPedidoEnc:=pBeTransPickingEnc.IdPedidoEnc,
                                                   pIdPickingEnc:=pBeTransPickingEnc.IdPickingEnc,
@@ -1448,13 +1448,15 @@ Partial Public Class clsLnTrans_picking_enc
                                 BeStockPickeado = clsLnStock.GetSingle(BeStockPickeado.IdStock,
                                                                        lConnection,
                                                                        lTransaction)
-                                BeStockPickeado.Cantidad = BeTransPickingUbic.Cantidad_Recibida
-                                BeStockPickeado.Peso = BeTransPickingUbic.Peso_recibido
-                                BeStockPickeado.IdPedidoEnc = 0
-                                BeStockPickeado.IdPickingEnc = 0
-                                BeStockPickeado.IdUbicacion_anterior = BeStockPickeado.IdUbicacion
-                                BeStockPickeado.IdUbicacion = pBePickingEnc.IdUbicacionPicking
-                                lBeStockPickeado.Add(BeStockPickeado)
+                                If BeStockPickeado IsNot Nothing Then
+                                    BeStockPickeado.Cantidad = BeTransPickingUbic.Cantidad_Recibida
+                                    BeStockPickeado.Peso = BeTransPickingUbic.Peso_recibido
+                                    BeStockPickeado.IdPedidoEnc = 0
+                                    BeStockPickeado.IdPickingEnc = 0
+                                    BeStockPickeado.IdUbicacion_anterior = BeStockPickeado.IdUbicacion
+                                    BeStockPickeado.IdUbicacion = pBePickingEnc.IdUbicacionPicking
+                                    lBeStockPickeado.Add(BeStockPickeado)
+                                End If
 
                                 clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
                                                                                  lConnection,
@@ -2528,7 +2530,6 @@ Partial Public Class clsLnTrans_picking_enc
         Dim pEstado As String = ""
         Dim pEstadoPicking As String = ""
 
-
         Try
 
             '#CKFK20240229 Agregué esta validación para que no se actualicen los pedidos con picking 0
@@ -2560,7 +2561,6 @@ Partial Public Class clsLnTrans_picking_enc
                                                                                          pConnection,
                                                                                          pTransaction)
 
-
                     '#GT21032025: infiero que, si verificacion es auto, aplica para cada iteracion pListBeTransPeEnc
                     If (verifica_auto) Then
                         pEstado = "Verificado"
@@ -2586,7 +2586,6 @@ Partial Public Class clsLnTrans_picking_enc
                         enc.Estado = pEstado
 
                         clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-
                     Next
 
                     '#GT21032025: validamos el estado no solo en el pedido, tambien el picking

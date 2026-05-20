@@ -31,11 +31,15 @@ namespace WMSWebAPI.Be
 
         [Column("Location_Code")]
         [DisplayName("Location_Code")]
-        public string Location_Code { get; set; } = "";
+        public string? Location_Code { get; set; } = "";
 
         [Column("Quantity")]
         [DisplayName("Quantity")]
         public double Quantity { get; set; } = 0;
+
+        [Column("Net_Weight")]
+        [DisplayName("Net_Weight")]
+        public double Net_Weight { get; set; } = 0;
 
         [Column("Unit_Of_Measure_Code")]
         [DisplayName("Unit_Of_Measure_Code")]

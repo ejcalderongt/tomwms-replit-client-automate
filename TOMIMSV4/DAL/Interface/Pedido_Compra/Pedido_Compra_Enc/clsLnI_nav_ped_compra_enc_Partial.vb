@@ -1,4 +1,5 @@
-Imports System.Configuration
+﻿Imports System.Configuration
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -642,13 +643,11 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
     '            CnnLog.Open()
 
-    '            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
     '            BeNavEjecucionEnc.IdNavConfigEnc = 1
     '            BeNavEjecucionEnc.Fecha = Now
 
     '            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
-    '            BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLog) + 1
     '            BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
     '            BeNavEjecucionRes.IdNavConfigDet = IdNavConfigDet 'Pedidos de compra
     '            BeNavEjecucionRes.Registros_ws = 0
@@ -2196,13 +2195,13 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
         Try
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID()
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
 
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
             clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
-            BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes() + 1
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
             BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
             BeNavEjecucionRes.IdNavConfigDet = IdNavConfigDet 'Pedidos de compra
             BeNavEjecucionRes.Registros_ws = 0

@@ -94,12 +94,6 @@ Public Class frmBodega
         Buscar_Registro()
         '#MA20260225 Estado defecto rack
         CargarComboEstadosRack()
-        If pBeBodega.Estado_Defecto_Rack > 0 Then
-            cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
-        Else
-            cmbEstadoDefectoRack.EditValue = 0
-        End If
-
         txtCodigo.Focus()
 
     End Sub
@@ -1299,11 +1293,20 @@ Public Class frmBodega
             cmbCentroCostoERP.EditValue = pBeBodega.Centro_Costo_Erp
             cmbCentroCostoDirERP.EditValue = pBeBodega.Centro_Costo_Dir_Erp
             cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
+
             If pBeBodega.Estado_Defecto_Rack > 0 Then
                 cmbEstadoDefectoRack.EditValue = pBeBodega.Estado_Defecto_Rack
             Else
                 cmbEstadoDefectoRack.EditValue = 0
             End If
+
+            chkCambioUbicacionRestrictivo.Checked = pBeBodega.cambio_ubicacion_restrictivo
+            chkPermitirCambioUbicIndiceMenor.Checked = pBeBodega.permitir_cambio_ubic_indice_menor
+            chkRequerirMismoProductoPosiciones.Checked = pBeBodega.requerir_mismo_producto_posiciones
+
+            chkBodegaClienteAjusteByB.Checked = pBeBodega.Bodega_Cliente_Ajuste_ByB
+            chkControlGuia.Checked = pBeBodega.Control_Guia
+            chkUbicImplosionAuto.Checked = pBeBodega.Ubic_Implosion_Auto
 
         Catch ex As Exception
 
@@ -1555,6 +1558,15 @@ Public Class frmBodega
             Else
                 pBeBodega.Estado_Defecto_Rack = 0
             End If
+
+            '#Nuevos parámetros cambio ubicación
+            pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
+            pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
+            pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
+            pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
+            pBeBodega.Control_Guia = chkControlGuia.Checked
+            pBeBodega.Ubic_Implosion_Auto = chkUbicImplosionAuto.Checked
+
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1793,6 +1805,15 @@ Public Class frmBodega
                 Else
                     pBeBodega.Estado_Defecto_Rack = 0
                 End If
+                pBeBodega.Bodega_Cliente_Ajuste_ByB = chkBodegaClienteAjusteByB.Checked
+                pBeBodega.Control_Guia = chkControlGuia.Checked
+                pBeBodega.Ubic_Implosion_Auto = chkUbicImplosionAuto.Checked
+
+                pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
+                '#Nuevos parámetros cambio ubicación
+                pBeBodega.cambio_ubicacion_restrictivo = chkCambioUbicacionRestrictivo.Checked
+                pBeBodega.permitir_cambio_ubic_indice_menor = chkPermitirCambioUbicIndiceMenor.Checked
+                pBeBodega.requerir_mismo_producto_posiciones = chkRequerirMismoProductoPosiciones.Checked
 
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
@@ -5453,4 +5474,5 @@ Public Class frmBodega
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 End Class

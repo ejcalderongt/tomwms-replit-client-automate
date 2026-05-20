@@ -33,6 +33,7 @@ Public Class clsLnI_nav_ped_traslado_enc
                 .Company_Code = IIf(IsDBNull(dr.Item("Comments")), "", dr.Item("Comments"))
                 .IsExport = IIf(IsDBNull(dr.Item("IsExport")), "", dr.Item("IsExport"))
                 .Transportation_Guide = IIf(IsDBNull(dr.Item("Transportation_Guide")), "", dr.Item("Transportation_Guide"))
+                .Transport_Company = IIf(IsDBNull(dr.Item("Transport_Company")), "", dr.Item("Transport_Company"))
 
             End With
 
@@ -83,6 +84,10 @@ Public Class clsLnI_nav_ped_traslado_enc
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then Ins.Add("RoadCodigoVendedor", "@RoadCodigoVendedor", DataType.Parametro)
             End If
 
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then Ins.Add("Transport_Company", "@Transport_Company", DataType.Parametro)
+            End If
+
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
@@ -124,6 +129,10 @@ Public Class clsLnI_nav_ped_traslado_enc
 
             If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor Is Nothing Then
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@RoadCodigoVendedor", oBeI_nav_ped_traslado_enc.RoadCodigoVendedor))
+            End If
+
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@Transport_Company", oBeI_nav_ped_traslado_enc.Transport_Company))
             End If
 
             cmd.Parameters.Add(New SqlParameter("@ISEXPORT", oBeI_nav_ped_traslado_enc.IsExport))
@@ -187,6 +196,10 @@ Public Class clsLnI_nav_ped_traslado_enc
                 If Not oBeI_nav_ped_traslado_enc.RoadCodigoVendedor.Trim = "" Then Upd.Add("RoadCodigoVendedor", "@RoadCodigoVendedor", DataType.Parametro)
             End If
 
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then Upd.Add("Transport_Company", "@Transport_Company", DataType.Parametro)
+            End If
+
             Upd.Where("No = @No")
 
             Dim sp As String = Upd.SQL()
@@ -232,6 +245,10 @@ Public Class clsLnI_nav_ped_traslado_enc
             End If
 
             cmd.Parameters.Add(New SqlParameter("@ISEXPORT", oBeI_nav_ped_traslado_enc.IsExport))
+
+            If Not oBeI_nav_ped_traslado_enc.Transport_Company Is Nothing Then
+                If Not oBeI_nav_ped_traslado_enc.Transport_Company.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@Transport_Company", oBeI_nav_ped_traslado_enc.Transport_Company))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -559,11 +576,24 @@ Public Class clsLnI_nav_ped_traslado_enc
 
         Try
 
-            Dim vSQL As String = "SELECT enc.No,enc.Transfer_from_Code,enc.Transfer_to_Code,det.no as Codigo,det.Description as Producto,det.Quantity as Cantidad
-                    FROM i_nav_ped_traslado_det det inner join 
-                    i_nav_ped_traslado_enc enc on enc.No = det.NoEnc
-                    WHERE enc.no = @Referencia 
-                    Order By det.no"
+            Dim vSQL As String = "SELECT enc.No,enc.Transfer_from_Code,enc.Transfer_to_Code,det.no as Codigo,
+                                         det.Description as Producto,
+                                         det.Quantity as Cantidad,
+                                         IsNull(det.Quantity_Reserved_WMS,0) Cantidad_Reservada,
+                                         CAST(IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0) AS decimal(18,6)) Diferencia_Reserva,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE (IsNull(det.Quantity_Reserved_WMS,0) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Reservado,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE ((IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0)) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Diferencia,
+                                         CASE
+                                             WHEN IsNull(det.Quantity,0) = 0 THEN 'Sin solicitud'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = 0 THEN 'Sin reserva'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) < IsNull(det.Quantity,0) THEN 'Parcial'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = IsNull(det.Quantity,0) THEN 'Completa'
+                                             ELSE 'Exceso'
+                                         END Estado_Reserva
+                                  FROM i_nav_ped_traslado_det det inner join
+                                       i_nav_ped_traslado_enc enc on enc.No = det.NoEnc
+                                  WHERE enc.no = @Referencia
+                                  Order By det.no"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -600,6 +630,16 @@ Public Class clsLnI_nav_ped_traslado_enc
                                          Codigo,det.Description as Producto,det.Quantity as Cantidad, det.Unit_Of_Measure_Code as UM, 
                                          CASE WHEN det.Variant_Code IS NOT NULL THEN PP.nombre ELSE '' END  as Presentacion, 
                                          IsNull(det.Quantity_Reserved_WMS,0) Cantidad_Reservada,
+                                         CAST(IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0) AS decimal(18,6)) Diferencia_Reserva,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE (IsNull(det.Quantity_Reserved_WMS,0) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Reservado,
+                                         CAST(CASE WHEN IsNull(det.Quantity,0) = 0 THEN 0 ELSE ((IsNull(det.Quantity,0) - IsNull(det.Quantity_Reserved_WMS,0)) / NULLIF(det.Quantity,0)) * 100 END AS decimal(18,2)) Porcentaje_Diferencia,
+                                         CASE
+                                             WHEN IsNull(det.Quantity,0) = 0 THEN 'Sin solicitud'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = 0 THEN 'Sin reserva'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) < IsNull(det.Quantity,0) THEN 'Parcial'
+                                             WHEN IsNull(det.Quantity_Reserved_WMS,0) = IsNull(det.Quantity,0) THEN 'Completa'
+                                             ELSE 'Exceso'
+                                         END Estado_Reserva,
                                          det.Status, det.Process_Result as Resultado, det.Size as Talla, det.Color 
                                   FROM i_nav_ped_traslado_det det INNER JOIN 
                                        i_nav_ped_traslado_enc enc on enc.No = det.NoEnc LEFT OUTER JOIN
@@ -762,9 +802,13 @@ Public Class clsLnI_nav_ped_traslado_enc
 
             vIndicadorDeExcepcion = 3
 
+            clsPublic.Actualizar_Progreso(lblprg, "Importando traslado " & BePedidoCliente.External_Document_No & " a tabla intermedia...")
+
             If Importar_Traslado_A_Tabla_Intermedia(BePedidoCliente, lblprg, lConnection, lTransaction) Then
 
                 vIndicadorDeExcepcion = 4
+
+                clsPublic.Actualizar_Progreso(lblprg, "Importando traslado " & BePedidoCliente.External_Document_No & " a tabla TOMWMS...")
 
                 vIdxConfig = lBeConfigInMemory.FindIndex(Function(x) x.Idbodega = vIdBodegaOrigen AndAlso x.IdPropietario = vIdPropietario)
 
@@ -784,6 +828,114 @@ Public Class clsLnI_nav_ped_traslado_enc
                                                                                                    lConnection,
                                                                                                    lTransaction,
                                                                                                    lblprg)
+
+#Region "#CKFK20251208 Creación de picking, verificación y despacho automático"
+
+                    If BePedidoEnc IsNot Nothing Then
+
+                        Dim TieneStockRes As Boolean = clsLnStock_res.Tiene_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                    BePedidoEnc.IdBodega,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+                        If TieneStockRes Then
+
+                            BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
+                            '#EJC20251119: Terminar de afinar el método.
+
+                            If (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS AndAlso
+                                (BePedidoEnc.Bodega_Destino = "" OrElse BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino)) _
+                                OrElse (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa AndAlso BePedidoEnc.Bodega_Destino <> "") Then
+
+                                If Nuevo_Picking(BePedidoEnc, "Cerrado", lConnection, lTransaction) Then
+
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking creado para el documento: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                    Dim pListBePickingUbic As List(Of clsBeTrans_picking_ubic) =
+                                                              clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                                         BePedidoEnc.IdBodega,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
+
+                                    BePedidoEnc.IdPickingEnc = pListBePickingUbic.Item(0).IdPickingEnc
+
+                                    Dim BeListPickingDet As List(Of clsBeTrans_picking_det) =
+                                                            clsLnTrans_picking_det.Get_All_Picking_Det_By_IdPickingEnc(BePedidoEnc.IdPickingEnc,
+                                                                                                                       lConnection,
+                                                                                                                       lTransaction)
+
+                                    Dim BePickingEnc As clsBeTrans_picking_enc = Nothing
+                                    BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePedidoEnc.IdPickingEnc,
+                                                                                lConnection,
+                                                                                lTransaction)
+                                    Dim pListBeStockRes As List(Of clsBeStock_res) =
+                                                            clsLnStock_res.Get_All_StockRes_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                           lConnection,
+                                                                                                           lTransaction)
+
+                                    clsLnTrans_picking_ubic.Procesar_Picking_Desde_BOF(pListBePickingUbic,
+                                                                                       BePedidoEnc.User_agr,
+                                                                                       BeListPickingDet,
+                                                                                       BePickingEnc,
+                                                                                       pListBeStockRes,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("Picking procesado para el documento: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                    BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+
+                                    For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
+                                        BePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(BePedidoDet.IdPedidoDet,
+                                                                                                                                  BePedidoEnc.IdPedidoEnc,
+                                                                                                                                  lConnection,
+                                                                                                                                  lTransaction)
+                                    Next
+
+                                    If BePedidoEnc.IdTipoPedido <> clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor Then
+
+                                        pListBePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc,
+                                                                                                                         BePedidoEnc.IdBodega,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
+
+                                        Dim despachado As Boolean = clsLnTrans_despacho_enc.Guardar_Despacho(pListBePickingUbic,
+                                                                                                             BePedidoEnc,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
+
+                                        If Not despachado Then
+                                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} no pudo ser despachado {2}",
+                                                                                           BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                            BePedidoEnc = Nothing
+                                        End If
+
+                                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Pedido: {0}/{1} despachado {2}",
+                                                                                       BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                                    End If
+
+                                    Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+
+                                End If
+
+                            End If
+
+                        Else
+
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("No se reservó inventario para el pedido: {0}/{1}{2}",
+                                                                                     BePedidoEnc.Referencia, BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino, vbNewLine))
+
+                            Importar_Pedido_Cliente_A_Tabla_Intermedia_If = Nothing
+
+                        End If
+
+                    End If
+#End Region
 
                 End If
 

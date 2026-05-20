@@ -38,6 +38,8 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                                                                         clsTrans.lConnection,
                                                                         clsTrans.lTransaction)
 
+            clsTrans.Commit_Transaction()
+
             If BeBodega Is Nothing Then
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
             End If
@@ -45,10 +47,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
             Await Procesar_Documentos(BeBodega.Codigo,
                                       pNoDocumento,
                                       BeConfigEnc,
-                                      lblprg,
-                                      clsTrans)
-
-            clsTrans.Commit_Transaction()
+                                      lblprg)
 
             ' Éxito: detener cronómetro y reportar tiempo
             sw.Stop()
@@ -246,10 +245,10 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
             ' Filtro encabezado
             Dim filtroFacturaReserva_Cliente As String = "ReserveInvoice eq 'tYES'"
-            'Dim filtroEstado As String = "DocumentStatus eq 'bost_Close'"
+            Dim filtroGuia As String = "U_Guia ne null and U_Guia ne ''"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroFinal As String = $"{filtroFacturaReserva_Cliente} and {filtroEnviado}{filtroDocNum} and {filtroGuia}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}Invoices?$filter={Uri.EscapeDataString(filtroFinal)}"
 
@@ -316,8 +315,9 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
                         .Receipt_Document_Reference = factura_Reserva_Cliente("DocNum").ToString(),
                         .Company_Code = "",
                         .Comments = factura_Reserva_Cliente("Comments")?.ToString(),
-                        .Document_Type = tTipoDocumentoSalida.Pedido_De_Cliente,
+                        .Document_Type = tTipoDocumentoSalida.Factura_Reserva_Cliente,
                         .Transportation_Guide = factura_Reserva_Cliente("U_Guia")?.ToString(),
+                        .Transport_Company = factura_Reserva_Cliente("U_TIPO_GUIA")?.ToString(),
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
 
@@ -376,60 +376,138 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
                                                       ByVal pNoDocumento As String,
                                                       ByVal BeConfigEnc As clsBeI_nav_config_enc,
-                                                      ByVal lblprg As RichTextBox,
-                                                      ByVal clsTrans As clsTransaccion) As Task(Of Boolean)
+                                                      ByVal lblprg As RichTextBox) As Task(Of Boolean)
+
+        Dim procesoExitoso As Boolean = False
+        Dim clsTrans As New clsTransaccion
 
         Try
-
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            'Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Factura_Reserva_Cliente_SAP_SL()
-            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Await Get_Factura_Reserva_Cliente_SAP_SLAsync(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
-            Dim pBePedidoEnc As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistente As New clsBeTrans_pe_enc
+            clsTrans.Begin_Transaction()
 
-            If facturas.Count = 0 Then
+            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) =
+            Await Get_Factura_Reserva_Cliente_SAP_SLAsync(codigoBodega,
+                                                          clsTrans.lConnection,
+                                                          clsTrans.lTransaction,
+                                                          lblprg,
+                                                          pNoDocumento)
+
+            clsTrans.Commit_Transaction()
+            clsTrans.Close_Conection()
+
+            If facturas Is Nothing OrElse facturas.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
                 Return False
             End If
 
             For Each factura In facturas
 
-                clsPublic.Actualizar_Progreso(lblprg, $"Procesando factura de Reserva_Cliente de SAP (OINV): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
+                Try
 
-                '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
-                If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                    clsTrans.Begin_Transaction()
 
-                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando factura de Reserva_Cliente de SAP (OINV): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
 
-                    Dim trasladoSincronizado As Boolean = Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(factura.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                    Dim clienteValido As Boolean =
+                    Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code,
+                                                                       "C",
+                                                                       lblprg,
+                                                                       clsTrans,
+                                                                       vHanaService.SessionCookie,
+                                                                       BD.Instancia.HANA_SL)
 
-                    If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
-                        Return True
+                    If Not clienteValido Then
+                        clsPublic.Actualizar_Progreso(lblprg, $"Cliente no válido en WMS para documento: {factura.No}{vbNewLine}")
+
+                        clsTrans.RollBack_Transaction()
+                        Continue For
                     End If
 
-                End If
+                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(factura,
+                                                                                                                                lblprg,
+                                                                                                                                clsTrans.lConnection,
+                                                                                                                                clsTrans.lTransaction)
+
+                    If pedidoEnc Is Nothing Then
+                        clsPublic.Actualizar_Progreso(lblprg, $"No se pudo importar el pedido para documento: {factura.No}{vbNewLine}")
+
+                        clsTrans.RollBack_Transaction()
+                        Continue For
+                    End If
+
+                    pedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(pedidoEnc.IdPedidoEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    Dim pickingCreado As Boolean = clsLnI_nav_ped_traslado_enc.Nuevo_Picking(pedidoEnc,
+                                                                                             "Pendiente",
+                                                                                             clsTrans.lConnection,
+                                                                                             clsTrans.lTransaction)
+
+                    If Not pickingCreado Then
+                        clsPublic.Actualizar_Progreso(lblprg, $"No se pudo crear picking para documento: {factura.No}{vbNewLine}")
+
+                        clsTrans.RollBack_Transaction()
+                        Continue For
+                    End If
+
+                    clsPublic.Actualizar_Progreso(lblprg,
+                    String.Format("Picking creado para el documento: {0}/{1}{2}",
+                                  pedidoEnc.Referencia,
+                                  pedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino,
+                                  vbNewLine))
+
+                    Dim trasladoSincronizado As Boolean =
+                    Await Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(factura.No,
+                                                                              vHanaService.SessionCookie,
+                                                                              BD.Instancia.HANA_SL,
+                                                                              2)
+
+                    If Not trasladoSincronizado Then
+                        clsPublic.Actualizar_Progreso(lblprg, $"No se pudo marcar como sincronizado en SAP el documento: {factura.No}{vbNewLine}")
+
+                        clsTrans.RollBack_Transaction()
+                        Continue For
+                    End If
+
+                    clsTrans.Commit_Transaction()
+
+                    procesoExitoso = True
+
+                    clsPublic.Actualizar_Progreso(lblprg, $"Documento procesado correctamente: {factura.No}{vbNewLine}")
+
+                Catch exDoc As Exception
+
+                    Try
+                        clsTrans.RollBack_Transaction()
+                    Catch
+                    End Try
+
+                    clsPublic.Actualizar_Progreso(lblprg, $"Error procesando documento {factura.No}: {exDoc.Message}{vbNewLine}")
+
+                    ' Continúa con el siguiente documento
+                    Continue For
+
+                End Try
 
             Next
 
-            Return False
+            Return procesoExitoso
 
         Catch ex As Exception
-            Throw ex
+            Throw
         End Try
 
     End Function
-
-    Private Shared Async Function Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(docEntry As String,
-                                                                                      sessionCookie As String,
-                                                                                      baseUrl As String) As Task(Of Boolean)
+    Public Shared Async Function Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(docEntry As String,
+                                                                                     sessionCookie As String,
+                                                                                     baseUrl As String,
+                                                                                     enviado As Integer) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
 
             Dim requestUrl As String = $"Invoices({docEntry})"
-            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim payload As String = $"{{""U_ENVIADO_WMS"": ""{enviado}""}}"
             Dim httpPatch As New HttpMethod("PATCH")
 
             Using handler As New HttpClientHandler()
@@ -483,7 +561,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
             CnnLog.Open()
             clsTrans.Begin_Transaction()
 
-            lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente)
+            lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente)
 
             If Not lTransaccionesSalida Is Nothing AndAlso lTransaccionesSalida.Count > 0 Then
 
@@ -700,7 +778,9 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
         Dim dto As New DeliveryNoteDto With {
         .CardCode = clsLnCliente.Get_Codigo_By_IdCliente(BePedidoEnc.IdCliente),
-        .DocDate = Today,
+        .DocDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .TaxDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .DocDueDate = Now.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .Comments = $"Entrega generada por WMS sobre Factura de Reserva: {docEntryFacturaReserva} - Ref: {docNumFacturaReserva} - IdWMS: {BePedidoEnc.IdPedidoEnc}",
         .JournalMemo = $"WMS Delivery from ODPI/OINV {docNumFacturaReserva}",
         .U_USR_PICK = vOperadorPickingDefecto,
@@ -712,8 +792,7 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_Tipo = 1,
-        .DocumentLines = New List(Of DeliveryNoteLineDto)()
-    }
+        .DocumentLines = New List(Of DeliveryNoteLineDto)()}
 
         ' Agrupar para armar cantidades y lotes
         Dim grupos = lTransaccionesSalida.
@@ -784,6 +863,8 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
 
         Public Property CardCode As String = ""
         Public Property DocDate As Date = Today
+        Public Property TaxDate As Date = Today
+        Public Property DocDueDate As Date = Today
         Public Property Comments As String = ""
         Public Property JournalMemo As String = ""
         Public Property U_USR_PICK As String = ""

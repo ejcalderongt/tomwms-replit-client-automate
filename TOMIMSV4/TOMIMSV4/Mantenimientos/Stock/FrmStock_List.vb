@@ -12,9 +12,9 @@ Public Class FrmStock_List
     Public Property IdPropietarioBodega As Integer
 
     Private IdBodega As Integer
-    Public pObjStock As clsBeVW_stock_res
-    Public listaStock As New List(Of clsBeVW_stock_res)
-    Public listaStockSeleccionado As New List(Of clsBeVW_stock_res)
+    Public pSingleBEVWStockRes As clsBeVW_stock_res
+    Public listaBeVWSstockRes As New List(Of clsBeVW_stock_res)
+    Public listSeleccionObjVWStockRes As New List(Of clsBeVW_stock_res)
     Public pListObjDet As New List(Of clsBeTrans_ubic_hh_det)
     Public threadListar_Stock As New Thread(AddressOf Listar_Stock_With_Obj) With {.IsBackground = True}
     ReadOnly CallBindProductos_To_Grid As New MethodInvoker(AddressOf BindProductos_To_Grid)
@@ -199,129 +199,6 @@ Public Class FrmStock_List
         End Try
 
     End Sub
-
-    'Private Sub ListarStock()
-
-    '    Dim clsTransaccion As New clsTransaccion
-
-    '    Try
-
-    '        clsTransaccion.Begin_Transaction()
-
-    '        'listaStock = clsLnStock.GetAllStock()
-    '        listaStock = clsLnStock.GetAllStock(AddressOf ChangeLabelMsg,clsTransaccion.lConnection,clsTransaccion.lTransaction)
-
-    '        Dim vCantReservada As Double = 0            
-
-    '        ChangeLabelMsg("Restando cantidades reservadas")
-
-    '        '#EJC20171015_1121PM_R01: Restar cantidades reservadas
-    '        If listaStock.Count > 0 Then
-
-    '            For Each St As clsBeVW_stock_res In listaStock
-
-    '                vCantReservada = clsLnStock_res.GetCantidadReservadaByIdStock(St.IdStock,clsTransaccion.lConnection,clsTransaccion.lTransaction)
-
-    '                If St.IdPresentacion <> 0 Then
-    '                    St.CantidadPresentacion = St.CantidadPresentacion - vCantReservada
-    '                Else
-    '                    St.CantidadUmBas = St.CantidadUmBas - vCantReservada
-    '                End If
-
-    '                ChangeLabelMsg("Procesando: " & St.Codigo)
-
-    '            Next
-
-    '        End If
-
-    '        Dim vCantidadResEnMemoria As Double = 0
-
-    '        ChangeLabelMsg("Restando cantidades reservadas (en memoria)")
-
-    '        For Each s In listaStock
-
-    '            If pListObjDet.Count > 0 Then
-
-    '                vCantidadResEnMemoria = pListObjDet.FindAll(Function(x) x.IdStock = s.IdStock).Sum(Function(y) y.Cantidad)
-
-    '                s.CantidadUmBas -= vCantidadResEnMemoria
-
-    '                ChangeLabelMsg("Procesando: " & s.Codigo)
-
-    '            End If
-
-    '        Next
-
-    '        listaStock = (From S In listaStock Where (S.CantidadUmBas > 0)).ToList()           
-
-    '        Dt.Rows.Clear()
-
-    '        If listaStock IsNot Nothing AndAlso listaStock.Count > 0 Then
-
-    '            Dim BeUbicacionActual As New clsBeBodega_ubicacion
-    '            Dim vCantPres As Double = 0
-    '            Dim vCantUMBas As Double = 0
-
-    '            For Each Obj As clsBeVW_stock_res In listaStock
-
-    '                BeUbicacionActual.IdUbicacion = Obj.IdUbicacionActual
-
-    '                BeUbicacionActual = clsLnBodega_ubicacion.GetSingleWithTramoAndSector(BeUbicacionActual.IdUbicacion,clsTransaccion.lConnection,clsTransaccion.lTransaction)
-
-    '                '#EJC201709F001
-    '                If Obj.IdPresentacion <> 0 Then
-    '                    vCantUMBas = Obj.CantidadUmBas
-    '                    vCantPres = Obj.CantidadPresentacion
-    '                Else
-    '                    vCantPres = 0
-    '                    vCantUMBas = Obj.CantidadUmBas '- Obj.CantidadReservadaUMBas
-    '                End If
-
-    '                Dt.Rows.Add(
-    '                    Obj.IdStock,
-    '                    Obj.IdProductoBodega,
-    '                    Obj.IdUbicacionActual,
-    '                    BeUbicacionActual.NombreCompleto,
-    '                    Obj.Codigo,
-    '                    Obj.Codigo_barra,
-    '                    Obj.Nombre,
-    '                    Obj.UnidadMedida,
-    '                    Obj.Presentacion,
-    '                    Obj.NomEstado,
-    '                    Obj.IdRecepcionEnc,
-    '                    Obj.Fecha_ingreso,
-    '                    Obj.Lote,
-    '                    Obj.Lic_plate,
-    '                    Obj.Serial,
-    '                    vCantPres,
-    '                    vCantUMBas,
-    '                    Obj.Factor,
-    '                    Obj.Añada)
-
-    '                ChangeLabelMsg("Populando lista: " & Obj.Codigo)
-
-    '            Next
-
-    '        End If       
-
-    '        clsTransaccion.Commit_Transaction()
-
-    '        ChangeLabelMsg("Fin")
-
-    '        '#EJC20171112_1109PM:
-    '        ' Make asynchronous function call to Form's thread.
-    '        'GridControl1.DataSource = DTTareas
-    '        BeginInvoke(CallBindProductos_To_Grid)
-
-    '    Catch ex As Exception
-    '        clsTransaccion.RollBack_Transaction()            
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '    Finally
-    '        clsTransaccion.Close_Conection()
-    '    End Try
-
-    'End Sub
-
     Private Sub Listar_Stock_With_Obj()
 
         Dim clsTransaccion As New clsTransaccion
@@ -332,8 +209,8 @@ Public Class FrmStock_List
 
             clsTransaccion.Begin_Transaction()
 
-            If listaStock.Count = 0 OrElse ForceUpdateList Then
-                listaStock = clsLnStock.Get_All_Stock_By_IdBodega_And_IdPropietario(AddressOf ChangeLabelMsg, IdBodega, IdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            If listaBeVWSstockRes.Count = 0 OrElse ForceUpdateList Then
+                listaBeVWSstockRes = clsLnStock.Get_All_Stock_By_IdBodega_And_IdPropietario(AddressOf ChangeLabelMsg, IdBodega, IdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
             End If
 
             Dim vCantReservada As Double = 0
@@ -344,15 +221,15 @@ Public Class FrmStock_List
             Dim vCantUMBas As Double = 0
             'Dim Prese As clsBeProducto_presentacion
 
-            prg.Properties.Maximum = listaStock.Count
+            prg.Properties.Maximum = listaBeVWSstockRes.Count
             prg.Properties.Step = 1
 
             '#EJC20171015_1121PM_R01: Restar cantidades reservadas
-            If listaStock.Count > 0 Then
+            If listaBeVWSstockRes.Count > 0 Then
 
                 Init_DataTable()
 
-                For Each St In listaStock
+                For Each St In listaBeVWSstockRes
 
                     Debug.Print("Procesando: " & St.Codigo_Producto)
 
@@ -494,7 +371,7 @@ Public Class FrmStock_List
 
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
-            If listaStock.Count = 0 OrElse ForceUpdateList Then
+            If listaBeVWSstockRes.Count = 0 OrElse ForceUpdateList Then
                 DTStock = clsLnStock.Get_All_Stock_DT(AP.IdBodega,
                                                       IdPropietarioBodega)
             End If
@@ -533,12 +410,12 @@ Public Class FrmStock_List
                     Dim Dr As DataRowView = grdvStock.GetFocusedRow
                     vIdStock = IIf(IsDBNull(Dr.Item("IdStock")), 0, Dr.Item("IdStock"))
 
-                    pObjStock = clsLnStock.Get_Single_By_IdStock(vIdStock)
-                    pObjStock.CantidadUmBas = IIf(IsDBNull(Dr.Item("Cantidad_UMBas")), 0, Dr.Item("Cantidad_UMBas"))
+                    pSingleBEVWStockRes = clsLnStock.Get_Single_By_IdStock(vIdStock)
+                    pSingleBEVWStockRes.CantidadUmBas = IIf(IsDBNull(Dr.Item("Cantidad_UMBas")), 0, Dr.Item("Cantidad_UMBas"))
 
-                    If Not pObjStock Is Nothing Then
+                    If Not pSingleBEVWStockRes Is Nothing Then
 
-                        BeProducto = clsLnProducto.Get_Single_By_IdProducto(pObjStock.IdProducto)
+                        BeProducto = clsLnProducto.Get_Single_By_IdProducto(pSingleBEVWStockRes.IdProducto)
 
                         If Not BeProducto Is Nothing Then
 
@@ -551,7 +428,7 @@ Public Class FrmStock_List
                             End If
 
                         Else
-                            Throw New Exception("ERROR_202211211302: No se pudo obtener el objeto de producto asociado al identificador: " & pObjStock.IdProducto)
+                            Throw New Exception("ERROR_202211211302: No se pudo obtener el objeto de producto asociado al identificador: " & pSingleBEVWStockRes.IdProducto)
                         End If
 
                         If AplicaAjustePorPropiedadProducto Then
@@ -587,10 +464,8 @@ Public Class FrmStock_List
             grdvStock.OptionsSelection.EnableAppearanceHideSelection = True
             grdvStock.Appearance.FocusedRow.BackColor = ColorTranslator.FromHtml("#CD5E00")
             grdvStock.Appearance.SelectedRow.BackColor = ColorTranslator.FromHtml("#CD5E00")
-
             grdvStock.Appearance.FocusedRow.ForeColor = Color.White
             grdvStock.Appearance.SelectedRow.ForeColor = Color.White
-
             grdvStock.Appearance.SelectedRow.Options.UseBackColor = True
 
         Catch ex As Exception
@@ -801,7 +676,7 @@ Public Class FrmStock_List
         Try
 
             Dim selectedRowHandles As Integer() = grdvStock.GetSelectedRows()
-            listaStockSeleccionado = New List(Of clsBeVW_stock_res)
+            listSeleccionObjVWStockRes = New List(Of clsBeVW_stock_res)
 
             If selectedRowHandles.Length = 0 Then
                 XtraMessageBox.Show("Seleccione al menos un registro",
@@ -822,15 +697,15 @@ Public Class FrmStock_List
                     'DisponibleUMBAs = grdvStock.GetRowCellValue(selectedRowHandles(i), "IdStock")
                     DisponibleUMBAs = grdvStock.GetRowCellValue(selectedRowHandles(i), "Cantidad_UMBas")
 
-                    pObjStock = New clsBeVW_stock_res()
-                    pObjStock = clsLnStock.Get_Single_By_IdStock(IdStock)
-                    pObjStock.CantidadUmBas = DisponibleUMBAs
+                    pSingleBEVWStockRes = New clsBeVW_stock_res()
+                    pSingleBEVWStockRes = clsLnStock.Get_Single_By_IdStock(IdStock)
+                    pSingleBEVWStockRes.CantidadUmBas = DisponibleUMBAs
 
-                    listaStockSeleccionado.Add(pObjStock)
+                    listSeleccionObjVWStockRes.Add(pSingleBEVWStockRes)
 
                 Next
 
-                If listaStockSeleccionado.Count > 0 Then
+                If listSeleccionObjVWStockRes.Count > 0 Then
 
                     SeleccionMultiple = True
                     DialogResult = DialogResult.OK
@@ -944,6 +819,10 @@ Public Class FrmStock_List
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
+
+    End Sub
+
+    Private Sub DGrid_Click(sender As Object, e As EventArgs) Handles DGrid.Click
 
     End Sub
 

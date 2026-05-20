@@ -38,6 +38,7 @@ Partial Class frmAsociacionReglaUbicacion
         Me.chkActivos = New DevExpress.XtraBars.BarCheckItem()
         Me.cmdImprimir = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuMarcarTodos = New DevExpress.XtraBars.BarToggleSwitchItem()
+        Me.BarToggleSwitchItem1 = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -85,10 +86,10 @@ Partial Class frmAsociacionReglaUbicacion
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.mnuMarcarTodos})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.chkActivos, Me.cmdImprimir, Me.mnuMarcarTodos, Me.BarToggleSwitchItem1})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 10
+        Me.RibbonControl.MaxItemId = 11
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -143,6 +144,12 @@ Partial Class frmAsociacionReglaUbicacion
         Me.mnuMarcarTodos.Id = 9
         Me.mnuMarcarTodos.Name = "mnuMarcarTodos"
         '
+        'BarToggleSwitchItem1
+        '
+        Me.BarToggleSwitchItem1.Caption = "Mostrar todo"
+        Me.BarToggleSwitchItem1.Id = 10
+        Me.BarToggleSwitchItem1.Name = "BarToggleSwitchItem1"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
@@ -159,6 +166,7 @@ Partial Class frmAsociacionReglaUbicacion
         'RibbonPageGroup2
         '
         Me.RibbonPageGroup2.ItemLinks.Add(Me.mnuMarcarTodos)
+        Me.RibbonPageGroup2.ItemLinks.Add(Me.BarToggleSwitchItem1)
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         '
         'RibbonStatusBar
@@ -464,4 +472,5 @@ End Sub
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents prg As DevExpress.XtraEditors.ProgressBarControl
     Friend WithEvents CachedrptRecepcionDetalleInfraccion1 As CachedrptRecepcionDetalleInfraccion
+    Friend WithEvents BarToggleSwitchItem1 As DevExpress.XtraBars.BarToggleSwitchItem
 End Class

@@ -116,7 +116,7 @@ Partial Class frmReglaUbicSelProd
         '
         'BindingSource1
         '
-        Me.BindingSource1.DataSource = GetType(TOMWMS.clsBeProducto_SelectionList)
+        Me.BindingSource1.DataSource = GetType(clsBeProducto_SelectionList)
         '
         'colNombre1
         '

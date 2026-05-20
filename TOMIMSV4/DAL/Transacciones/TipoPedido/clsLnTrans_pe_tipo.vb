@@ -39,7 +39,8 @@ Public Class clsLnTrans_pe_tipo
                 .Transferir_Ubicacion = IIf(IsDBNull(dr.Item("transferir_ubicacion")), False, dr.Item("transferir_ubicacion"))
                 .Verificar_con_imagen = IIf(IsDBNull(dr.Item("verificar_con_imagen")), False, dr.Item("verificar_con_imagen"))
                 .Genera_Guia_Remision = IIf(IsDBNull(dr.Item("genera_guia_remision")), False, dr.Item("genera_guia_remision"))
-
+                .Generar_Picking_Auto = IIf(IsDBNull(dr.Item("generar_picking_auto")), False, dr.Item("generar_picking_auto"))
+                .Asignar_Todos_Operadores = IIf(IsDBNull(dr.Item("asignar_todos_operadores")), False, dr.Item("asignar_todos_operadores"))
             End With
 
         Catch ex1 As SqlException
@@ -92,7 +93,9 @@ Public Class clsLnTrans_pe_tipo
             Ins.Add("escanear_muelle_picking", "@escanear_muelle_picking", DataType.Parametro)
             Ins.Add("Transferir_Ubicacion", "@Transferir_Ubicacion", DataType.Parametro)
             Ins.Add("Genera_Guia_Remision", "@Genera_Guia_Remision", DataType.Parametro)
-
+            Ins.Add("Verificar_con_imagen", "@Verificar_con_imagen", DataType.Parametro)
+            Ins.Add("Asignar_Todos_Operadores", "@Asignar_Todos_Operadores", DataType.Parametro)
+            Ins.Add("Generar_Picking_Auto", "@Generar_Picking_Auto", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -139,6 +142,9 @@ Public Class clsLnTrans_pe_tipo
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_MUELLE_PICKING", oBeTrans_pe_tipo.Escanear_Muelle_Picking))
             cmd.Parameters.Add(New SqlParameter("@TRANSFERIR_UBICACION", oBeTrans_pe_tipo.Transferir_Ubicacion))
             cmd.Parameters.Add(New SqlParameter("@GENERA_GUIA_REMISION", oBeTrans_pe_tipo.Genera_Guia_Remision))
+            cmd.Parameters.Add(New SqlParameter("@VERIFICAR_CON_IMAGEN", oBeTrans_pe_tipo.Verificar_con_imagen))
+            cmd.Parameters.Add(New SqlParameter("@ASIGNAR_TODOS_OPERADORES", oBeTrans_pe_tipo.Asignar_Todos_Operadores))
+            cmd.Parameters.Add(New SqlParameter("@GENERAR_PICKING_AUTO", oBeTrans_pe_tipo.Generar_Picking_Auto))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -202,6 +208,9 @@ Public Class clsLnTrans_pe_tipo
 
             Upd.Add("transferir_ubicacion", "@transferir_ubicacion", DataType.Parametro)
             Upd.Add("genera_guia_remision", "@Genera_Guia_Remision", DataType.Parametro)
+            Upd.Add("Verificar_con_imagen", "@Verificar_con_imagen", DataType.Parametro)
+            Upd.Add("Asignar_Todos_Operadores", "@Asignar_Todos_Operadores", DataType.Parametro)
+            Upd.Add("Generar_Picking_Auto", "@Generar_Picking_Auto", DataType.Parametro)
 
             Upd.Where("IdTipoPedido = @IdTipoPedido")
 
@@ -250,6 +259,9 @@ Public Class clsLnTrans_pe_tipo
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_MUELLE_PICKING", oBeTrans_pe_tipo.Escanear_Muelle_Picking))
             cmd.Parameters.Add(New SqlParameter("@TRANSFERIR_UBICACION", oBeTrans_pe_tipo.Transferir_Ubicacion))
             cmd.Parameters.Add(New SqlParameter("@GENERA_GUIA_REMISION", oBeTrans_pe_tipo.Genera_Guia_Remision))
+            cmd.Parameters.Add(New SqlParameter("@VERIFICAR_CON_IMAGEN", oBeTrans_pe_tipo.Verificar_con_imagen))
+            cmd.Parameters.Add(New SqlParameter("@ASIGNAR_TODOS_OPERADORES", oBeTrans_pe_tipo.Asignar_Todos_Operadores))
+            cmd.Parameters.Add(New SqlParameter("@GENERAR_PICKING_AUTO", oBeTrans_pe_tipo.Generar_Picking_Auto))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

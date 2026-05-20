@@ -950,13 +950,15 @@ Partial Public Class clsLnTrans_inv_stock
             "SELECT " &
             "    producto.codigo AS Codigo, " &
             "    producto.nombre AS Producto, " &
-            "    unidad_medida.Nombre AS UMBas, " &
-            "    producto_presentacion.nombre AS Presentacion, " &
+            " CASE " &
+            " WHEN producto_presentacion.nombre IS NULL OR producto_presentacion.nombre = '' " &
+            " THEN unidad_medida.Nombre " &
+            " ELSE producto_presentacion.nombre " &
+            " END AS Presentacion, " &
             "    producto_estado.nombre AS Estado, " &
             "    trans_inv_stock.Lote, " &
             "    trans_inv_stock.Fecha_vence, " &
-            "    trans_inv_stock.Cantidad, " &
-            "    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / NULLIF(producto_presentacion.Factor,0), 0) AS CantidadPresentacion, " &
+            "    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / NULLIF(producto_presentacion.Factor,0), 0) AS Cantidad_Pres, " &
             "    trans_inv_stock.Peso, " &
             "    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion, trans_inv_stock.IdBodega) AS Ubicacion, " &
             "    trans_inv_stock.IdStock, " &
@@ -964,7 +966,13 @@ Partial Public Class clsLnTrans_inv_stock
             "    pt.NombreTipoProducto AS TipoProducto, " &
             "    trans_inv_stock.IdUbicacion, " &
             "    trans_inv_stock.IdProductoBodega, " &
-            "    ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) AS Cantidad_Reservada_UmBas, " &
+            "   CASE " &
+            "   WHEN producto_presentacion.nombre IS NULL OR producto_presentacion.nombre = '' " &
+            "   THEN ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) " &
+            "   WHEN producto_presentacion.Factor > 0 " &
+            "   THEN ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) / producto_presentacion.Factor " &
+            "   ELSE 0 " &
+            "   END AS Cantidad_Reservada_Pres, " &
             "    color.nombre AS Color, " &
             "    talla.codigo AS Talla " &
             "FROM trans_inv_stock " &
@@ -1053,6 +1061,8 @@ Partial Public Class clsLnTrans_inv_stock
                             InvCiclico.IdUnidadMedida = Obj.IdUnidadMedida
                             InvCiclico.Cant_stock = Obj.Cantidad
                             InvCiclico.IdUbicacion = Obj.IdUbicacion
+                            '#AT20260518 Agregue IdProductoTallaColor
+                            InvCiclico.IdProductoTallaColor = Obj.IdProductoTallaColor
                             InvCiclico.EstadoNuevo = ""
 
                             Get_Stock_Congelado_InvCiclico = InvCiclico
@@ -1100,6 +1110,125 @@ Partial Public Class clsLnTrans_inv_stock
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Insertar_Inventario_Congelado_RFID(ByVal DTProductos As DataTable,
+                                                             ByVal IdInventarioEnc As Integer,
+                                                             ByVal IdUsuarioAgrego As Integer,
+                                                             ByVal IdOperadorAsignado As Integer,
+                                                              ByVal pIdBodega As Integer) As Boolean
+
+        Insertar_Inventario_Congelado_RFID = False
+
+        Dim lConection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lInvCongelado As New List(Of clsBeTrans_inv_stock)
+        Dim gBeInventarioCiclico As New clsBeTrans_inv_ciclico
+        Dim Operador As New clsBeTrans_inv_operador
+        Dim Ubicacion As New clsBeTrans_inv_ciclico_ubic
+        Dim inserto_inv As Boolean = False
+        Dim cantReg As Integer = 0
+        Dim cantProd As Integer = 0
+
+        Dim gBeInventarioRFID As New clsBeTrans_inv_ciclico_rfid
+
+        Try
+
+            Dim ProductosSeleccionados = DTProductos.AsEnumerable().[Select](Function(row) New With {
+                                                                                                    Key .IdProductoBodega = row.Field(Of Integer)("IdProductoBodega"),
+                                                                                                    Key .Nombre = row.Field(Of String)("Nombre"),
+                                                                                                    Key .Codigo_barra = row.Field(Of String)("Codigo_barra"),
+                                                                                                    Key .Seleccionado = row.Field(Of Boolean)("Seleccionar")}).Where(Function(e) e.Seleccionado = True).Distinct().ToArray().OrderBy(Function(x) x.IdProductoBodega)
+
+            If ProductosSeleccionados.Count > 0 Then
+
+                lConection.Open() : lTransaction = lConection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                For Each ProdInv In ProductosSeleccionados
+
+                    'validar en la tabla inventario_cic_rfid que no exista previamente el producto para no duplicar el registro.
+                    'Dim listaProducto = clsLnTrans_inv_ciclico_rfid.GetAll_By_IdProducto_And_RFID(ProdInv.IdProductoBodega, ProdInv.Codigo_barra, pIdBodega)
+
+                    Dim listaBarrasPallet = clsLnI_nav_barras_pallet.GetAll_By_IdProducto_And_Barra_And_Idbodega(ProdInv.IdProductoBodega, ProdInv.Codigo_barra, pIdBodega, lConection, lTransaction)
+
+                    cantReg = 0
+
+                    If listaBarrasPallet.Count > 0 Then
+
+                        For Each pProducto In listaBarrasPallet
+
+                            gBeInventarioRFID.Idinvciclico = clsLnTrans_inv_ciclico_rfid.MaxID(lConection, lTransaction)
+                            gBeInventarioRFID.Idinventarioenc = IdInventarioEnc
+                            gBeInventarioRFID.IdPallet = pProducto.IdPallet
+                            gBeInventarioRFID.Codigo = pProducto.Codigo
+                            gBeInventarioRFID.Nombre = pProducto.Nombre
+                            gBeInventarioRFID.Lote = pProducto.Lote
+                            gBeInventarioRFID.Codigo_Barra = pProducto.Codigo_barra
+                            gBeInventarioRFID.SSCC = pProducto.SSCC
+                            gBeInventarioRFID.GTIN = pProducto.GTIN
+                            gBeInventarioRFID.Fecha_Produccion = pProducto.Fecha_Produccion
+                            gBeInventarioRFID.IdProductoBodega = ProdInv.IdProductoBodega
+                            gBeInventarioRFID.User_agr = IdUsuarioAgrego
+                            gBeInventarioRFID.Fec_agr = Now
+                            gBeInventarioRFID.User_mod = IdUsuarioAgrego
+                            gBeInventarioRFID.Fec_mod = Now
+                            gBeInventarioRFID.IdOperador = IdOperadorAsignado
+                            gBeInventarioRFID.Cantidad = 0
+                            gBeInventarioRFID.EsPallet = True
+                            gBeInventarioRFID.IdBodega = pIdBodega
+
+                            clsLnTrans_inv_ciclico_rfid.Insertar(gBeInventarioRFID, lConection, lTransaction)
+
+                            Operador = New clsBeTrans_inv_operador
+                            Operador.Idinvoperador = clsLnTrans_inv_operador.MaxID(lConection, lTransaction)
+                            Operador.Idinventarioenc = IdInventarioEnc
+                            Operador.Idinvencreconteo = 0
+                            Operador.Idubic = 0
+                            Operador.IdBodega = pIdBodega
+                            Operador.Idoperador = IdOperadorAsignado
+
+                            If Operador.Idoperador > 0 Then
+                                If Not clsLnTrans_inv_operador.Existe_Operador_By_IdUbicacion(Operador,
+                                                                                         lConection,
+                                                                                         lTransaction) Then
+                                    clsLnTrans_inv_operador.Insertar(Operador,
+                                                                     lConection,
+                                                                     lTransaction)
+                                End If
+                            End If
+
+                            cantReg += 1
+                            Debug.Print("Registro " & cantReg & " Procesando interno IdPallet: " & pProducto.IdPallet)
+
+                        Next
+
+                        inserto_inv = True
+
+                    Else
+                        inserto_inv = False
+                    End If
+
+                    cantProd += 1
+                    Debug.Print("Producto " & cantProd & " Procesando Externo Código: " & ProdInv.Nombre)
+
+                Next
+
+                lTransaction.Commit()
+
+            Else
+                Throw New Exception("No se marcó ningún registro para asignar al inventario")
+            End If
+
+            Insertar_Inventario_Congelado_RFID = inserto_inv
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConection.State = ConnectionState.Open Then lConection.Close()
+            lConection.Dispose()
         End Try
 
     End Function

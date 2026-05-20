@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Public Class clsLnTrans_pe_det_log_reserva
 
     Public Shared Sub Cargar(ByRef oBeTrans_pe_det_log_reserva As clsBeTrans_pe_det_log_reserva, ByRef dr As DataRow)
@@ -386,13 +386,19 @@ Public Class clsLnTrans_pe_det_log_reserva
 
         Try
 
-            Const sp As String = "  SELECT trans_pe_det.IdPedidoEnc, trans_pe_det.IdPedidoDet, trans_pe_det.no_linea, trans_pe_det.codigo_producto, 
-									trans_pe_det.nombre_producto, trans_pe_det_log_reserva.Caso_Reserva, 
-									trans_pe_det_log_reserva.MensajeLog
-									FROM trans_pe_det_log_reserva RIGHT OUTER JOIN
-									trans_pe_det ON trans_pe_det_log_reserva.IdPedidoDet = trans_pe_det.IdPedidoDet 
-									AND trans_pe_det_log_reserva.IdPedidoEnc = trans_pe_det.IdPedidoEnc 
-									WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc AND trans_pe_det_log_reserva.IdBodega = @IdBodega "
+            Const sp As String = "  SELECT trans_pe_det_log_reserva.IdLogReserva, trans_pe_det.IdPedidoEnc, trans_pe_det.IdPedidoDet,
+                                    trans_pe_det.no_linea, trans_pe_det.codigo_producto, trans_pe_det.nombre_producto,
+                                    trans_pe_det_log_reserva.Fecha, trans_pe_det_log_reserva.IdBodega,
+                                    trans_pe_det_log_reserva.Line_No, trans_pe_det_log_reserva.Item_No,
+                                    trans_pe_det_log_reserva.UmBas, trans_pe_det_log_reserva.Variant_Code,
+                                    trans_pe_det_log_reserva.Cantidad, trans_pe_det_log_reserva.Caso_Reserva,
+                                    trans_pe_det_log_reserva.EsError, trans_pe_det_log_reserva.Referencia_Documento,
+                                    trans_pe_det_log_reserva.Fecha_Vence, trans_pe_det_log_reserva.IdStock,
+                                    trans_pe_det_log_reserva.IdStockRes, trans_pe_det_log_reserva.MensajeLog
+                                    FROM trans_pe_det_log_reserva RIGHT OUTER JOIN
+                                    trans_pe_det ON trans_pe_det_log_reserva.IdPedidoDet = trans_pe_det.IdPedidoDet
+                                    AND trans_pe_det_log_reserva.IdPedidoEnc = trans_pe_det.IdPedidoEnc
+                                    WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc AND trans_pe_det_log_reserva.IdBodega = @IdBodega "
 
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -437,13 +443,19 @@ Public Class clsLnTrans_pe_det_log_reserva
 
         Try
 
-            Const sp As String = "  SELECT trans_pe_det.IdPedidoEnc, trans_pe_det.IdPedidoDet, trans_pe_det.no_linea, trans_pe_det.codigo_producto, 
-									trans_pe_det.nombre_producto, trans_pe_det_log_reserva.Caso_Reserva, 
-									trans_pe_det_log_reserva.MensajeLog
-									FROM trans_pe_det_log_reserva RIGHT OUTER JOIN
-									trans_pe_det ON trans_pe_det_log_reserva.IdPedidoDet = trans_pe_det.IdPedidoDet 
-									AND trans_pe_det_log_reserva.IdPedidoEnc = trans_pe_det.IdPedidoEnc 
-									WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc AND trans_pe_det_log_reserva.IdBodega = @IdBodega "
+            Const sp As String = "  SELECT trans_pe_det_log_reserva.IdLogReserva, trans_pe_det.IdPedidoEnc, trans_pe_det.IdPedidoDet,
+                                    trans_pe_det.no_linea, trans_pe_det.codigo_producto, trans_pe_det.nombre_producto,
+                                    trans_pe_det_log_reserva.Fecha, trans_pe_det_log_reserva.IdBodega,
+                                    trans_pe_det_log_reserva.Line_No, trans_pe_det_log_reserva.Item_No,
+                                    trans_pe_det_log_reserva.UmBas, trans_pe_det_log_reserva.Variant_Code,
+                                    trans_pe_det_log_reserva.Cantidad, trans_pe_det_log_reserva.Caso_Reserva,
+                                    trans_pe_det_log_reserva.EsError, trans_pe_det_log_reserva.Referencia_Documento,
+                                    trans_pe_det_log_reserva.Fecha_Vence, trans_pe_det_log_reserva.IdStock,
+                                    trans_pe_det_log_reserva.IdStockRes, trans_pe_det_log_reserva.MensajeLog
+                                    FROM trans_pe_det_log_reserva RIGHT OUTER JOIN
+                                    trans_pe_det ON trans_pe_det_log_reserva.IdPedidoDet = trans_pe_det.IdPedidoDet
+                                    AND trans_pe_det_log_reserva.IdPedidoEnc = trans_pe_det.IdPedidoEnc
+                                    WHERE trans_pe_det.IdPedidoEnc = @IdPedidoEnc AND trans_pe_det_log_reserva.IdBodega = @IdBodega "
 
             Using lDTA As New SqlDataAdapter(sp, lConnection)
 

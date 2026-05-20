@@ -29,6 +29,9 @@ Public Class clsBeTrans_oc_det_lote
     Public Property IdProductoTallaColor As Integer = 0
     Public Property Talla As String = ""
     Public Property Color As String = ""
+
+    Public Peso_Licencia As Double = 0
+
     Sub New()
     End Sub
 

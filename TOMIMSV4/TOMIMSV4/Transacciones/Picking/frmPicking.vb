@@ -1,7 +1,7 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
+Imports System.Threading.Tasks
 Imports DevExpress.Mvvm.Native
 Imports DevExpress.Utils.DragDrop
 Imports DevExpress.Utils.Menu
@@ -64,6 +64,59 @@ Public Class frmPicking
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Property InvokeCargarPedido As Action(Of SqlConnection, SqlTransaction)
     Public Property InvokeCargarObjetoPedido As Action
+
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
+    ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
+    ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. La notificación se hace después del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+
+    Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Async(ByVal pEstadoPedido As Integer,
+                                                                  ByVal pEstadoFactura As Integer,
+                                                                  ByVal pEstadoGuia As Integer) As Task
+
+        If Not AP.Bodega.Interface_SAP Then Return
+        If String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then Return
+
+        Try
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            For Each ped In lPedidosPicking
+
+                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                    Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
+                        ped.Referencia,
+                        vHanaService.SessionCookie,
+                        SapServiceLayerClient.baseUrl,
+                        pEstadoPedido,
+                        pEstadoFactura,
+                        pEstadoGuia,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now)
+
+                End If
+
+            Next
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+        End Try
+
+    End Function
+
     Sub New(ByVal pModo As TipoTrans, pPickingAuto As Boolean)
         InitializeComponent()
         Modo = pModo
@@ -130,15 +183,21 @@ Public Class frmPicking
         cmdImprimir.Enabled = True
         mnuProcesar.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuProcesarLinea.Enabled = BePickingEnc.Estado <> "Despachado"
-        mnuPendientePicking.Enabled = (BePickingEnc.Estado <> "Nuevo" AndAlso BePickingEnc.Estado <> "Pendiente")
-        mnuPendientePacking.Enabled = BePickingEnc.Requiere_Preparacion
+        mnuPendientePicking.Enabled = (BePickingEnc.Estado <> "Nuevo" AndAlso BePickingEnc.Estado <> "Pendiente" AndAlso BePickingEnc.Estado <> "Despachado")
+        mnuPendientePacking.Enabled = BePickingEnc.Requiere_Preparacion AndAlso BePickingEnc.Estado <> "Despachado"
         mnuActualizarPicking.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdNoPickeado.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdNoVerificado.Enabled = BePickingEnc.Estado <> "Despachado"
         cmdVerificarNuevamente.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuDespachado.Enabled = BePickingEnc.Estado <> "Despachado"
         mnuVerificarPickeados.Enabled = BePickingEnc.Estado <> "Despachado"
-
+        mnuReemplazo.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+        lnkAgregarPedido.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuPendientePicking.Enabled = BePickingEnc.Estado <> "Despachado"
+        cmdNoPickeado.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuEliminarLayoutGrid.Enabled = BePickingEnc.Estado <> "Despachado"
+        mnuReemplazo.Enabled = BePickingEnc.Estado <> "Despachado"
     End Sub
 
     Public Sub SetDatataTable()
@@ -392,18 +451,18 @@ Public Class frmPicking
 
     End Sub
 
-    Private Function Guardar_Picking() As Boolean
+    Private Async Function Guardar_PickingAsync() As Task(Of Boolean)
 
         Dim vContinuar As Boolean = False
-
-        Guardar_Picking = False
 
         Try
 
             '#EJC20220303: Prevent data loss if the HH has already pickings on progres.
             Existen_Diferencias_Memoria_vs_BD(vContinuar)
 
-            If Not vContinuar Then Exit Function
+            If Not vContinuar Then
+                Return False
+            End If
 
             Dim BeTareaHH As New clsBeTarea_hh
 
@@ -417,8 +476,10 @@ Public Class frmPicking
                 BeTareaHH.IdEstado = 1
                 BeTareaHH.IdPrioridad = 1
                 BeTareaHH.IdTipoTarea = clsDataContractDI.tTipoTarea.PIK
+
                 '#EJC20220428:Se asignará en el guardar de la transacción.
                 BeTareaHH.IdTransaccion = BePickingEnc.IdPickingEnc
+
                 BeTareaHH.Tipo = 0
                 BeTareaHH.FechaInicio = dtmHoraIhh.Value
                 BeTareaHH.FechaFin = dtmHoraFhh.Value
@@ -430,45 +491,43 @@ Public Class frmPicking
 
             End If
 
-            BePickingEnc.IdBodega = cmbBodegas.EditValue
-            BePickingEnc.IdPropietarioBodega = cmbPropietario.EditValue
-            BePickingEnc.IdUbicacionPicking = CInt(txtIdUbicacion.Text.Trim)
-            BePickingEnc.Fecha_picking = dtmFechaPicking.EditValue
-            BePickingEnc.Hora_ini = dtmHoraIhh.Value
-            BePickingEnc.Hora_fin = dtmHoraFhh.Value
-            'If BePickingEnc.IsNew Then
-            '    BePickingEnc.Estado = "Guardando"
-            'Else
-            BePickingEnc.Estado = lblEstado.Text
-            'End If
-            BePickingEnc.User_mod = AP.UsuarioAp.IdUsuario
-            BePickingEnc.Fec_mod = Now
-            BePickingEnc.Detalle_operador = chkDetalleOperador.Checked
-            BePickingEnc.Activo = chkActivo.Checked
-            BePickingEnc.verifica_auto = chkverifica_auto.Checked
-            BePickingEnc.procesado_bof = chkProcesarDesdeBOF.Checked
+            With BePickingEnc
 
-            BePickingEnc.Requiere_Preparacion = (chkEmpaqueAGranel.Checked OrElse chkEmpaquePorTarima.Checked)
-            BePickingEnc.Fotografia_Verificacion = chkFotografiaVerificacion.Checked
+                .IdBodega = cmbBodegas.EditValue
+                .IdPropietarioBodega = cmbPropietario.EditValue
+                .IdUbicacionPicking = CInt(txtIdUbicacion.Text.Trim)
+                .Fecha_picking = dtmFechaPicking.EditValue
+                .Hora_ini = dtmHoraIhh.Value
+                .Hora_fin = dtmHoraFhh.Value
+                .Estado = lblEstado.Text
+                .User_mod = AP.UsuarioAp.IdUsuario
+                .Fec_mod = Now
+                .Detalle_operador = chkDetalleOperador.Checked
+                .Activo = chkActivo.Checked
+                .verifica_auto = chkverifica_auto.Checked
+                .procesado_bof = chkProcesarDesdeBOF.Checked
 
-            If BePickingEnc.Requiere_Preparacion Then
-                BePickingEnc.Estado_Preparacion = "Nuevo"
-            Else
-                BePickingEnc.Estado_Preparacion = "N/A"
-            End If
+                .Requiere_Preparacion = (chkEmpaqueAGranel.Checked OrElse chkEmpaquePorTarima.Checked)
+                .Fotografia_Verificacion = chkFotografiaVerificacion.Checked
 
-            BePickingEnc.Fecha_Inicio_Preparacion = New Date(1900, 1, 1)
-            BePickingEnc.Fecha_Fin_Preparacion = New Date(1900, 1, 1)
+                .Fecha_Inicio_Preparacion = New Date(1900, 1, 1)
+                .Fecha_Fin_Preparacion = New Date(1900, 1, 1)
 
-            If BePickingEnc.Requiere_Preparacion Then
-                BePickingEnc.Tipo_Preparacion = IIf(chkEmpaquePorTarima.Checked, chkEmpaquePorTarima.Tag, chkEmpaqueAGranel.Tag)
-            Else
-                BePickingEnc.Tipo_Preparacion = ""
-            End If
+                If .Requiere_Preparacion Then
+                    .Estado_Preparacion = "Nuevo"
+                    .Tipo_Preparacion = If(chkEmpaquePorTarima.Checked,
+                                       chkEmpaquePorTarima.Tag.ToString(),
+                                       chkEmpaqueAGranel.Tag.ToString())
+                Else
+                    .Estado_Preparacion = "N/A"
+                    .Tipo_Preparacion = ""
+                End If
 
-            BePickingEnc.Referencia = txtReferencia.Text
-            BePickingEnc.Observacion = clsPublic.Quitar_Caracteres_No_Permitidos(txtObservacion.Text.Trim)
-            BePickingEnc.IdBodegaMuelle = cmbMuelle.EditValue
+                .Referencia = txtReferencia.Text
+                .Observacion = clsPublic.Quitar_Caracteres_No_Permitidos(txtObservacion.Text.Trim)
+                .IdBodegaMuelle = cmbMuelle.EditValue
+
+            End With
 
             If rbAlto.Checked Then
                 BePickingEnc.IdPrioridadPicking = 2
@@ -478,89 +537,97 @@ Public Class frmPicking
                 BePickingEnc.IdPrioridadPicking = 0
             End If
 
-            If Not Pedidos_Tienen_Picking_Asociado(BePickingEnc.IdPickingEnc) Then
+            If Pedidos_Tienen_Picking_Asociado(BePickingEnc.IdPickingEnc) Then
+                Return False
+            End If
 
-                If Not pListBePickingUbic.Count = 0 Then
+            If pListBePickingUbic.Count = 0 Then
+                Throw New Exception("Al parecer el picking no tiene líneas, no se podrá guardar la transacción.")
+            End If
 
-                    Guardar_Picking = clsLnTrans_picking_enc.Guardar(BePickingEnc,
-                                                                     BeTareaHH,
-                                                                     BeListPickingDet,
-                                                                     BeListPickingParam,
-                                                                     BeListOp,
-                                                                     pListBePickingUbic)
+            Dim guardadoOk As Boolean =
+            clsLnTrans_picking_enc.Guardar(BePickingEnc,
+                                           BeTareaHH,
+                                           BeListPickingDet,
+                                           BeListPickingParam,
+                                           BeListOp,
+                                           pListBePickingUbic)
 
+            If Not guardadoOk Then
+                Return False
+            End If
 
-                    '#GT27022023: se guarda log del picking
-                    If BePickingEnc.IsNew Then
-                        '#MECR23102025: Se agrego bitacora para logs de picking
-                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
-                        clsLnLog_error_wms_pick.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPickingEnc: " & BePickingEnc.IdPickingEnc,
-                                                              pIdEmpresa:=AP.IdEmpresa,
-                                                              pIdBodega:=AP.IdBodega,
-                                                              pUserAgr:=AP.UsuarioAp.IdUsuario,
-                                                              pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
-                                                              pIdPickingEnc:=BePickingEnc.IdPickingEnc)
-                    Else
-                        '#MECR23102025: Se agrego bitacora para logs de picking
-                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPickingEnc: " & BePickingEnc.IdPickingEnc)
-                        clsLnLog_error_wms_pick.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPickingEnc: " & BePickingEnc.IdPickingEnc,
-                                                              pIdEmpresa:=AP.IdEmpresa,
-                                                              pIdBodega:=AP.IdBodega,
-                                                              pUserAgr:=AP.UsuarioAp.IdUsuario,
-                                                              pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
-                                                              pIdPickingEnc:=BePickingEnc.IdPickingEnc)
-                    End If
+            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 2 = Asignado al crear picking.
+            Await Notificar_Estado_SAP_Hana_MAMAPA_Async(2, 2, 1)
 
-                    Cargar_Datos()
+            '#GT27022023: se guarda log del picking
+            Dim mensajeLog As String =
+            If(BePickingEnc.IsNew,
+               $"ADVERTENCIA_202302271656: El IdUsuario: {AP.UsuarioAp.IdUsuario} guardó el IdPickingEnc: {BePickingEnc.IdPickingEnc}",
+               $"ADVERTENCIA_202302271656A: El IdUsuario: {AP.UsuarioAp.IdUsuario} actualizó el IdPickingEnc: {BePickingEnc.IdPickingEnc}")
 
-                    If Not InvokeCargarObjetoPedido Is Nothing Then
-                        InvokeCargarObjetoPedido.Invoke()
-                    End If
+            clsLnLog_error_wms_pick.Agregar_Error(
+            mensajeLog,
+            pIdEmpresa:=AP.IdEmpresa,
+            pIdBodega:=AP.IdBodega,
+            pUserAgr:=AP.UsuarioAp.IdUsuario,
+            pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+            pIdPickingEnc:=BePickingEnc.IdPickingEnc)
 
-                    If Not InvokeCargarPedido Is Nothing Then
+            Cargar_Datos()
 
-                        Dim clsTrans As New clsTransaccion
+            InvokeCargarObjetoPedido?.Invoke()
 
-                        Try
+            If InvokeCargarPedido IsNot Nothing Then
 
-                            clsTrans.Begin_Transaction()
-                            InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
-                            clsTrans.Commit_Transaction()
+                Dim clsTrans As New clsTransaccion
 
-                        Catch ex As Exception
-                            clsTrans.RollBack_Transaction()
-                            'ejc, ambiente controlado, no disparar fuegos artificiales.
-                        End Try
+                Try
 
-                    End If
-                    '#EJC20220610:Duplicado el mensaje.
-                    'XtraMessageBox.Show("Se guardó la tarea de picking", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    clsTrans.Begin_Transaction()
 
-                Else
-                    Throw New Exception("Al parecer el picking no tiene líneas, no se podrá guardar la transacción.")
-                End If
+                    InvokeCargarPedido.Invoke(clsTrans.lConnection,
+                                          clsTrans.lTransaction)
+
+                    clsTrans.Commit_Transaction()
+
+                Catch
+                    clsTrans.RollBack_Transaction()
+                End Try
 
             End If
 
+            Return True
+
         Catch ex As Exception
-            '#MECR23102025: Se agrego bitacora para logs de picking
-            Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
-                                                  pIdEmpresa:=AP.IdEmpresa,
-                                                  pIdBodega:=AP.IdBodega,
-                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
-                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
-                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
-            Throw ex
+
+            clsLnLog_error_wms_pick.Agregar_Error(
+            ex.Message,
+            pIdEmpresa:=AP.IdEmpresa,
+            pIdBodega:=AP.IdBodega,
+            pUserAgr:=AP.UsuarioAp.IdUsuario,
+            pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+            pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+            pStackTrace:=ex.StackTrace)
+
+            Throw
+
         End Try
 
     End Function
-
     Private Sub Validar_Operadores()
 
         Try
+
+            Dim vAsignarTodos As Boolean = False
+
+            If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+                Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
+                Dim pPedido = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(tmpPedidoEnc)
+
+                vAsignarTodos = pPedido.TipoPedido.Asignar_Todos_Operadores
+
+            End If
 
             DsOrdenCompraRecepcionOperador.Clear()
 
@@ -573,7 +640,7 @@ Public Class frmPicking
                 BeListOp = New List(Of clsBeTrans_picking_op)
             End If
 
-            Listar_Operadores()
+            Listar_Operadores(vAsignarTodos)
 
         Catch ex As Exception
 
@@ -602,7 +669,7 @@ Public Class frmPicking
     Private Sub Listar_Operadores(Optional pSeleccionarTodos As Boolean = True,
                                   Optional PresionoBotonNinguno As Boolean = False)
 
-        Dim SeleccionarTodos As Boolean = False
+        Dim SeleccionarTodos As Boolean = pSeleccionarTodos
 
         Try
 
@@ -723,6 +790,7 @@ Public Class frmPicking
                 Next
 
             Else
+
                 XtraMessageBox.Show("ERROR_CONFIG_20220708: Al parecer no hay operadores configurados para tareas de picking, marque en mantenimiento de operadores la opción de Picking para los operadores que corresponden.",
                 Text,
                 MessageBoxButtons.OK,
@@ -739,7 +807,6 @@ Public Class frmPicking
                 RemoveHandler ritem.CheckedChanged, AddressOf ritem_CheckedChanged
                 AddHandler ritem.CheckedChanged, AddressOf ritem_CheckedChanged
             End If
-
 
             If DgridOperadorBodega.RowCount > 0 Then
                 lblRegs1.Caption = String.Format("Registros: {0}", DgridOperadorBodega.RowCount)
@@ -1982,8 +2049,8 @@ Public Class frmPicking
                 If BePedido IsNot Nothing Then
                     If BePedido.TipoPedido.Verificar_con_imagen Then
                         BloquearControles_Por_VerificacionBOF(False)
-                    Else
-                        BloquearControles_Por_VerificacionBOF(True)
+                        'Else
+                        '    BloquearControles_Por_VerificacionBOF(True)
                     End If
                 End If
 
@@ -2138,7 +2205,7 @@ Public Class frmPicking
         Anular_Picking()
     End Sub
 
-    Private Sub Anular_Picking()
+    Private Async Sub Anular_Picking()
 
         Dim vLiberarStock As Boolean = False
 
@@ -2163,6 +2230,9 @@ Public Class frmPicking
                                                          BeListOp,
                                                          AP.IdEmpresa,
                                                          vLiberarStock) Then
+
+                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 1 = Nueva/disponible en SAP cuando se anula el picking y puede reasignarse.
+                    Await Notificar_Estado_SAP_Hana_MAMAPA_Async(1, 1, 1)
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " anuló el picking " & BePickingEnc.IdPickingEnc
                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -2225,7 +2295,7 @@ Public Class frmPicking
 
     End Sub
 
-    Private Sub Process_Guardar_Picking(Optional ByVal Preguntar As Boolean = True)
+    Private Async Sub Process_Guardar_Picking(Optional ByVal Preguntar As Boolean = True)
 
         Try
 
@@ -2242,7 +2312,9 @@ Public Class frmPicking
                 SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                 SplashScreenManager.Default.SetWaitFormDescription("Guardando...")
 
-                If Guardar_Picking() Then
+                Dim guardadoOk As Boolean = Await Guardar_PickingAsync()
+
+                If guardadoOk Then
 
                     Modo = TipoTrans.Editar
 
@@ -2285,10 +2357,10 @@ Public Class frmPicking
 
     End Sub
 
-    Private Sub mnuActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizar.ItemClick
+    Private Async Sub mnuActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizar.ItemClick
 
         mnuActualizar.Enabled = False
-        Guardar_Picking()
+        Await Guardar_PickingAsync()
         mnuActualizar.Enabled = True
 
     End Sub
@@ -2736,7 +2808,7 @@ Public Class frmPicking
 
     End Sub
 
-    Private Sub mnuProcesar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuProcesar.ItemClick
+    Private Async Sub mnuProcesar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuProcesar.ItemClick
 
         Dim pListBeStockRes As New List(Of clsBeStock_res)
         Dim vContinuar As Boolean = True
@@ -2744,7 +2816,7 @@ Public Class frmPicking
         Try
 
             If BePickingEnc.Estado = "" AndAlso lblEstado.Text = "Nuevo" Then
-                Guardar_Picking()
+                Await Guardar_PickingAsync()
                 Exit Sub
             End If
 
@@ -3383,12 +3455,14 @@ Public Class frmPicking
 
                     '#GT30042025: infiero que desde un pedido la lista solo maneja un registro
                     If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+
                         Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
                         Dim pPedido = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(tmpPedidoEnc)
 
                         If pPedido IsNot Nothing AndAlso pPedido.IdMuelle > 0 Then
                             cmbMuelle.EditValue = pPedido.IdMuelle
                         End If
+
                     End If
 
                 Case TipoTrans.Editar
@@ -5015,7 +5089,7 @@ Public Class frmPicking
 
     End Sub
 
-    Private Sub mnuVerificarPickeados_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuVerificarPickeados.ItemClick
+    Private Async Sub mnuVerificarPickeados_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuVerificarPickeados.ItemClick
 
         Dim pListBeStockRes As New List(Of clsBeStock_res)
         Dim vContinuar As Boolean = True
@@ -5023,7 +5097,7 @@ Public Class frmPicking
         Try
 
             If BePickingEnc.Estado = "" AndAlso lblEstado.Text = "Nuevo" Then
-                Guardar_Picking()
+                Await Guardar_PickingAsync()
                 Exit Sub
             End If
 

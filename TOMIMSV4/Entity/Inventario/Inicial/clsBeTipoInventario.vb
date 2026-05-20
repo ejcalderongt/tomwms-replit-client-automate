@@ -3,6 +3,7 @@ Public Class clsBeTipoInventario
 
     Public Property IdTipoInv() As Integer = 0
     Public Property Descripcion() As String = ""
+    Public Property Es_RFID() As Boolean = False
 
     Sub New()
     End Sub

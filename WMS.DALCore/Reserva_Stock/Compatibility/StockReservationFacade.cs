@@ -17,20 +17,21 @@ namespace WMS.StockReservation.Compatibility
         /// Nota C#: no se permiten parametros opcionales antes de un parametro ref.
         /// Por eso pBePedidoDet va antes de los opcionales.
         /// </summary>
-        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
-                                                double DiasVencimiento,
-                                                string MaquinaQueSolicita,
-                                                clsBeI_nav_config_enc pBeConfigEnc,
-                                                ref double pCantidadDisponibleStock,
-                                                int pIdPropietarioBodega,
-                                                ref List<clsBeStock_res> pListStockResOUT,
-                                                SqlConnection lConnection,
-                                                SqlTransaction ltransaction,
-                                                ref clsBeTrans_pe_det pBePedidoDet,
-                                                int No_Linea = 0,
-                                                bool pTarea_Reabasto = false,
-                                                clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
-                                                bool pEsManufactura = false
+        public static bool Reserva_Stock_From_MI3(
+            ref clsBeStock_res pStockResSolicitud,
+            double DiasVencimiento,
+            string MaquinaQueSolicita,
+            clsBeI_nav_config_enc pBeConfigEnc,
+            ref double pCantidadDisponibleStock,
+            int pIdPropietarioBodega,
+            ref List<clsBeStock_res> pListStockResOUT,
+            SqlConnection lConnection,
+            SqlTransaction ltransaction,
+            ref clsBeTrans_pe_det pBePedidoDet,
+            int No_Linea = 0,
+            bool pTarea_Reabasto = false,
+            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
+            bool pEsManufactura = false
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -108,20 +109,21 @@ namespace WMS.StockReservation.Compatibility
         /// SOBRECARGA LEGACY ALTERNATIVA: Para llamadas desde clsLnTrans_pe_det
         /// con firma: (ref stock, dias, maquina, config, ref qty, propietario, ref list, conn, trans, lineNo, tareaReabasto, trasladoDet, pedidoDet)
         /// </summary>
-        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
-                                                  double DiasVencimiento,
-                                                  string MaquinaQueSolicita,
-                                                  clsBeI_nav_config_enc pBeConfigEnc,
-                                                  ref double pCantidadDisponibleStock,
-                                                  int pIdPropietarioBodega,
-                                                  ref List<clsBeStock_res> pListStockResOUT,
-                                                  SqlConnection lConnection,
-                                                  SqlTransaction ltransaction,
-                                                  int No_Linea,
-                                                  bool pTarea_Reabasto,
-                                                  clsBeI_nav_ped_traslado_det pBeTrasladoDet,
-                                                  clsBeTrans_pe_det pBePedidoDet,
-                                                  bool pEsManufactura = false
+        public static bool Reserva_Stock_From_MI3(
+            ref clsBeStock_res pStockResSolicitud,
+            double DiasVencimiento,
+            string MaquinaQueSolicita,
+            clsBeI_nav_config_enc pBeConfigEnc,
+            ref double pCantidadDisponibleStock,
+            int pIdPropietarioBodega,
+            ref List<clsBeStock_res> pListStockResOUT,
+            SqlConnection lConnection,
+            SqlTransaction ltransaction,
+            int No_Linea,
+            bool pTarea_Reabasto,
+            clsBeI_nav_ped_traslado_det pBeTrasladoDet,
+            clsBeTrans_pe_det pBePedidoDet,
+            bool pEsManufactura = false
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -143,19 +145,20 @@ namespace WMS.StockReservation.Compatibility
                 if (pIdPropietarioBodega > 0)
                     pStockResSolicitud.IdPropietarioBodega = pIdPropietarioBodega;
 
-                var reservations = Reserva_Stock_Internal(oBeStockResRequest: pStockResSolicitud,
-                                                          IdProducto: 0,
-                                                          oBeConfigEnc: pBeConfigEnc,
-                                                          cnnSql: lConnection,
-                                                          trSql: ltransaction,
-                                                          oBePedidoDet: pBePedidoDet,
-                                                          oBeI_nav_ped_traslado_det: pBeTrasladoDet,
-                                                          Tarea_Reabasto: pTarea_Reabasto,
-                                                          EsDevolucion: false,
-                                                          LineNumber: No_Linea,
-                                                          MachineName: machineName,
-                                                          DiasVencimiento: DiasVencimiento,
-                                                          EsManufactura: pEsManufactura
+                var reservations = Reserva_Stock_Internal(
+                    oBeStockResRequest: pStockResSolicitud,
+                    IdProducto: 0,
+                    oBeConfigEnc: pBeConfigEnc,
+                    cnnSql: lConnection,
+                    trSql: ltransaction,
+                    oBePedidoDet: pBePedidoDet,
+                    oBeI_nav_ped_traslado_det: pBeTrasladoDet,
+                    Tarea_Reabasto: pTarea_Reabasto,
+                    EsDevolucion: false,
+                    LineNumber: No_Linea,
+                    MachineName: machineName,
+                    DiasVencimiento: DiasVencimiento,
+                    EsManufactura: pEsManufactura
                 );
 
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -184,53 +187,56 @@ namespace WMS.StockReservation.Compatibility
         /// <summary>
         /// SOBRECARGA MODERNA: API simplificada sin parametros ref.
         /// </summary>
-        public static List<clsBeStock_res> Reserva_Stock_From_MI3(clsBeStock_res oBeStockResRequest,
-                                                                    int IdProducto,
-                                                                    clsBeI_nav_config_enc oBeConfigEnc,
-                                                                    SqlConnection cnnSql,
-                                                                    SqlTransaction? trSql = null,
-                                                                    clsBeTrans_pe_det? oBePedidoDet = null,
-                                                                    clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
-                                                                    bool Tarea_Reabasto = false,
-                                                                    bool EsDevolucion = false,
-                                                                    int LineNumber = 0,
-                                                                    string MachineName = "",
-                                                                    double DiasVencimiento = 0,
-                                                                    bool EsManufactura = false
+        public static List<clsBeStock_res> Reserva_Stock_From_MI3(
+            clsBeStock_res oBeStockResRequest,
+            int IdProducto,
+            clsBeI_nav_config_enc oBeConfigEnc,
+            SqlConnection cnnSql,
+            SqlTransaction? trSql = null,
+            clsBeTrans_pe_det? oBePedidoDet = null,
+            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
+            bool Tarea_Reabasto = false,
+            bool EsDevolucion = false,
+            int LineNumber = 0,
+            string MachineName = "",
+            double DiasVencimiento = 0,
+            bool EsManufactura = false
         )
         {
-            return Reserva_Stock_Internal(oBeStockResRequest: oBeStockResRequest,
-                                         IdProducto: IdProducto,
-                                         oBeConfigEnc: oBeConfigEnc,
-                                         cnnSql: cnnSql,
-                                         trSql: trSql,
-                                         oBePedidoDet: oBePedidoDet,
-                                         oBeI_nav_ped_traslado_det: oBeI_nav_ped_traslado_det,
-                                         Tarea_Reabasto: Tarea_Reabasto,
-                                         EsDevolucion: EsDevolucion,
-                                         LineNumber: LineNumber,
-                                         MachineName: MachineName,
-                                         DiasVencimiento: DiasVencimiento,
-                                         EsManufactura: EsManufactura
+            return Reserva_Stock_Internal(
+                oBeStockResRequest: oBeStockResRequest,
+                IdProducto: IdProducto,
+                oBeConfigEnc: oBeConfigEnc,
+                cnnSql: cnnSql,
+                trSql: trSql,
+                oBePedidoDet: oBePedidoDet,
+                oBeI_nav_ped_traslado_det: oBeI_nav_ped_traslado_det,
+                Tarea_Reabasto: Tarea_Reabasto,
+                EsDevolucion: EsDevolucion,
+                LineNumber: LineNumber,
+                MachineName: MachineName,
+                DiasVencimiento: DiasVencimiento,
+                EsManufactura: EsManufactura
             );
         }
 
         /// <summary>
         /// Implementacion interna compartida que ejecuta el pipeline de reserva.
         /// </summary>
-        private static List<clsBeStock_res> Reserva_Stock_Internal(clsBeStock_res oBeStockResRequest,
-                                                                   int IdProducto,
-                                                                   clsBeI_nav_config_enc oBeConfigEnc,
-                                                                   SqlConnection cnnSql,
-                                                                   SqlTransaction? trSql,
-                                                                   clsBeTrans_pe_det? oBePedidoDet,
-                                                                   clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
-                                                                   bool Tarea_Reabasto,
-                                                                   bool EsDevolucion,
-                                                                   int LineNumber,
-                                                                   string MachineName,
-                                                                   double DiasVencimiento = 0,
-                                                                   bool EsManufactura = false
+        private static List<clsBeStock_res> Reserva_Stock_Internal(
+            clsBeStock_res oBeStockResRequest,
+            int IdProducto,
+            clsBeI_nav_config_enc oBeConfigEnc,
+            SqlConnection cnnSql,
+            SqlTransaction? trSql,
+            clsBeTrans_pe_det? oBePedidoDet,
+            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
+            bool Tarea_Reabasto,
+            bool EsDevolucion,
+            int LineNumber,
+            string MachineName,
+            double DiasVencimiento = 0,
+            bool EsManufactura = false
         )
         {
             if (oBeStockResRequest == null)
@@ -306,7 +312,12 @@ namespace WMS.StockReservation.Compatibility
                 if (context.HasError)
                     throw new Exception($"Error en reserva de stock: {context.ErrorMessage ?? "Sin detalle"}");
 
-                return result.Reservations ?? new List<clsBeStock_res>();
+                var reservations = result.Reservations ?? new List<clsBeStock_res>();
+
+                if (reservations.Count == 0 && context.FailureReasons?.Count > 0)
+                    oBeStockResRequest.UltimoMensajeFallo = FormatearMotivoNoReserva(context.FailureReasons.First());
+
+                return reservations;
             }
             catch (Exception ex)
             {
@@ -319,15 +330,16 @@ namespace WMS.StockReservation.Compatibility
         /// <summary>
         /// Version simplificada para casos basicos (sin pedidos/traslados).
         /// </summary>
-        public static List<clsBeStock_res> ReservarStock(int bodegaId,
-                                                         int productoId,
-                                                         double cantidad,
-                                                         int presentacionId,
-                                                         clsBeI_nav_config_enc configuracion,
-                                                         SqlConnection connection,
-                                                         SqlTransaction? transaction = null,
-                                                         string machineName = "",
-                                                         double diasVencimiento = 0
+        public static List<clsBeStock_res> ReservarStock(
+            int bodegaId,
+            int productoId,
+            double cantidad,
+            int presentacionId,
+            clsBeI_nav_config_enc configuracion,
+            SqlConnection connection,
+            SqlTransaction? transaction = null,
+            string machineName = "",
+            double diasVencimiento = 0
         )
         {
             if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
@@ -345,13 +357,14 @@ namespace WMS.StockReservation.Compatibility
                 Cantidad = cantidad
             };
 
-            return Reserva_Stock_From_MI3(oBeStockResRequest: request,
-                                          IdProducto: productoId,
-                                          oBeConfigEnc: configuracion,
-                                          cnnSql: connection,
-                                          trSql: transaction,
-                                          MachineName: machineName,
-                                          DiasVencimiento: diasVencimiento
+            return Reserva_Stock_From_MI3(
+                oBeStockResRequest: request,
+                IdProducto: productoId,
+                oBeConfigEnc: configuracion,
+                cnnSql: connection,
+                trSql: transaction,
+                MachineName: machineName,
+                DiasVencimiento: diasVencimiento
             );
         }
 
@@ -379,6 +392,37 @@ namespace WMS.StockReservation.Compatibility
                 return $"PED_{pedido.IdPedidoEnc}";
 
             return null;
+        }
+
+        private static string FormatearMotivoNoReserva(ReservationFailureReason failure)
+        {
+            var tipo = MapearTipoNoReserva(failure.Code);
+            var motivo = string.IsNullOrWhiteSpace(failure.Message)
+                ? "No hay existencia aplicable valida para la solicitud."
+                : failure.Message.Trim();
+
+            return $"TIPO_NO_RESERVA={tipo} | {motivo}";
+        }
+
+        private static string MapearTipoNoReserva(ReservationFailureCode code)
+        {
+            return code switch
+            {
+                ReservationFailureCode.LOT_NOT_FOUND => "LOTE_NO_ENCONTRADO",
+                ReservationFailureCode.LOCATION_RESTRICTED_NO_STOCK => "UBICACION_CLIENTE_OBLIGATORIA",
+                ReservationFailureCode.PRODUCT_STATE_REQUIRED_NO_STOCK => "ESTADO_PRODUCTO_NO_APLICA",
+                ReservationFailureCode.PICKING_ZONE_REQUIRED_NO_STOCK => "SOLO_NO_PICKING_SIN_EXPLOSION",
+                ReservationFailureCode.NON_PICKING_ZONE_REQUIRED_NO_STOCK => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.RECEPTION_LOCATION_NOT_ALLOWED => "UBICACION_NO_APLICA",
+                ReservationFailureCode.ALL_STOCK_EXPIRED => "SIN_VENCIMIENTO_VALIDO",
+                ReservationFailureCode.ZONE_PRIORITY_CONFLICT => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.PRODUCT_NOT_FOUND => "PRODUCTO_NO_ENCONTRADO",
+                ReservationFailureCode.INVALID_QUANTITY => "CANTIDAD_INVALIDA",
+                ReservationFailureCode.STORAGE_CONDITION_MISMATCH => "CONDICION_ALMACENAJE_NO_APLICA",
+                ReservationFailureCode.MANUFACTURING_DATE_INVALID => "SIN_FECHA_MANUFACTURA_VALIDA",
+                ReservationFailureCode.NO_STOCK => "SIN_STOCK_APLICABLE",
+                _ => "RESERVA_NO_COMPLETADA"
+            };
         }
 
         private static void SafeTrace(Exception ex)

@@ -22,6 +22,8 @@ Partial Class frmImpresion_OC_RFID
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmImpresion_OC_RFID))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.chkSeleccionMultiple = New DevExpress.XtraBars.BarCheckItem()
+        Me.chkEstadoImpreso = New DevExpress.XtraBars.BarCheckItem()
+        Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -34,8 +36,6 @@ Partial Class frmImpresion_OC_RFID
         Me.lblImpresiones = New DevExpress.XtraEditors.LabelControl()
         Me.cmbImpresora = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmdImpresion = New DevExpress.XtraEditors.SimpleButton()
-        Me.chkEstadoImpreso = New DevExpress.XtraBars.BarCheckItem()
-        Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl4.SuspendLayout()
@@ -61,7 +61,7 @@ Partial Class frmImpresion_OC_RFID
         Me.RibbonControl.OptionsMenuMinWidth = 805
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1279, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1566, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'chkSeleccionMultiple
@@ -71,6 +71,21 @@ Partial Class frmImpresion_OC_RFID
         Me.chkSeleccionMultiple.Hint = "Habilita que registros se imprimen y cuales no."
         Me.chkSeleccionMultiple.Id = 1
         Me.chkSeleccionMultiple.Name = "chkSeleccionMultiple"
+        '
+        'chkEstadoImpreso
+        '
+        Me.chkEstadoImpreso.Caption = "ReImpresión"
+        Me.chkEstadoImpreso.CheckBoxVisibility = DevExpress.XtraBars.CheckBoxVisibility.BeforeText
+        Me.chkEstadoImpreso.Hint = "Mostrar registros previamente impresos"
+        Me.chkEstadoImpreso.Id = 2
+        Me.chkEstadoImpreso.Name = "chkEstadoImpreso"
+        '
+        'cmdActualizar
+        '
+        Me.cmdActualizar.Caption = "Actualizar"
+        Me.cmdActualizar.Id = 3
+        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdActualizar.Name = "cmdActualizar"
         '
         'RibbonPage1
         '
@@ -87,11 +102,11 @@ Partial Class frmImpresion_OC_RFID
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 609)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 671)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(8)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1279, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1566, 30)
         '
         'GroupControl4
         '
@@ -101,15 +116,16 @@ Partial Class frmImpresion_OC_RFID
         Me.GroupControl4.Location = New System.Drawing.Point(0, 193)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(10, 12, 10, 12)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1279, 416)
+        Me.GroupControl4.Size = New System.Drawing.Size(1566, 478)
         Me.GroupControl4.TabIndex = 3
         '
         'GroupControl2
         '
         Me.GroupControl2.Controls.Add(Me.grdListaBarraPallets)
-        Me.GroupControl2.Location = New System.Drawing.Point(12, 108)
+        Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GroupControl2.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(983, 286)
+        Me.GroupControl2.Size = New System.Drawing.Size(1305, 448)
         Me.GroupControl2.TabIndex = 43
         Me.GroupControl2.Text = "Lista de impresión"
         '
@@ -120,7 +136,7 @@ Partial Class frmImpresion_OC_RFID
         Me.grdListaBarraPallets.MainView = Me.GridView1
         Me.grdListaBarraPallets.MenuManager = Me.RibbonControl
         Me.grdListaBarraPallets.Name = "grdListaBarraPallets"
-        Me.grdListaBarraPallets.Size = New System.Drawing.Size(979, 256)
+        Me.grdListaBarraPallets.Size = New System.Drawing.Size(1301, 418)
         Me.grdListaBarraPallets.TabIndex = 0
         Me.grdListaBarraPallets.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -135,21 +151,23 @@ Partial Class frmImpresion_OC_RFID
         Me.GroupControl1.Controls.Add(Me.lblImpresiones)
         Me.GroupControl1.Controls.Add(Me.cmbImpresora)
         Me.GroupControl1.Controls.Add(Me.cmdImpresion)
-        Me.GroupControl1.Location = New System.Drawing.Point(1012, 108)
+        Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Right
+        Me.GroupControl1.Location = New System.Drawing.Point(1307, 28)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(8)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(257, 284)
+        Me.GroupControl1.Size = New System.Drawing.Size(257, 448)
         Me.GroupControl1.TabIndex = 42
         Me.GroupControl1.Text = "Impresión"
         '
         'txtCantidadImpresiones
         '
+        Me.txtCantidadImpresiones.Enabled = False
         Me.txtCantidadImpresiones.Location = New System.Drawing.Point(137, 97)
         Me.txtCantidadImpresiones.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.txtCantidadImpresiones.Name = "txtCantidadImpresiones"
         Me.txtCantidadImpresiones.Size = New System.Drawing.Size(98, 23)
         Me.txtCantidadImpresiones.TabIndex = 49
-        Me.txtCantidadImpresiones.Value = New Decimal(New Integer() {2, 0, 0, 0})
+        Me.txtCantidadImpresiones.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'lblImpresiones
         '
@@ -188,26 +206,11 @@ Partial Class frmImpresion_OC_RFID
         Me.cmdImpresion.TabIndex = 46
         Me.cmdImpresion.Text = "Impresión TAG"
         '
-        'chkEstadoImpreso
-        '
-        Me.chkEstadoImpreso.Caption = "ReImpresión"
-        Me.chkEstadoImpreso.CheckBoxVisibility = DevExpress.XtraBars.CheckBoxVisibility.BeforeText
-        Me.chkEstadoImpreso.Hint = "Mostrar registros previamente impresos"
-        Me.chkEstadoImpreso.Id = 2
-        Me.chkEstadoImpreso.Name = "chkEstadoImpreso"
-        '
-        'cmdActualizar
-        '
-        Me.cmdActualizar.Caption = "Actualizar"
-        Me.cmdActualizar.Id = 3
-        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdActualizar.Name = "cmdActualizar"
-        '
         'frmImpresion_OC_RFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1279, 639)
+        Me.ClientSize = New System.Drawing.Size(1566, 701)
         Me.Controls.Add(Me.GroupControl4)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)

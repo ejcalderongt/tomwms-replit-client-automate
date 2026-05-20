@@ -1,24 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
+using WMS.EntityCore.Dtos;
+using WMS.EntityCore.Dtos.Pedido;
+using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 using WMSWebAPI.Services.Salidas;
-using WMS.EntityCore.Dtos.Pedido;
-using WMS.EntityCore.Dtos;
 
 namespace WMSWebAPI.Controllers
 {
     [ApiController]
     [Route("api/sync/salidas")]
-    public class SyncSalidasController : ControllerBase
+    public class SyncSalidasController(ISyncSalidasService service) : ControllerBase
     {
-        private readonly ISyncSalidasService _salidaService;
-
-        public SyncSalidasController(ISyncSalidasService service)
-        {
-            _salidaService = service;
-        }
+        private readonly ISyncSalidasService _salidaService = service;
 
         [HttpPost("documento-salida")]
         public async Task<IActionResult> PostDocumentoSalida([FromBody] List<SalidaTrans_3plDto> dto,
@@ -105,7 +101,11 @@ namespace WMSWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error en GetDetalleOS");
+                if (_logger.IsEnabled(LogLevel.Error))
+                {
+                    _logger.LogError(ex, "Error en GetDetalleOS");
+                }
+
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
@@ -123,7 +123,12 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
-        
+
+        /// <summary>
+        /// Inserta un documento de traslado/pedido desde MI3.
+        /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente
+        /// ANTES de llamar a Datos_Validos(), replicando el patrón de integración SAP HANA.
+        /// </summary>
         [HttpPost("mi3/insertar")]
         public IActionResult PostMi3Documento([FromBody] NavPedTrasladoRequestDto request,
                                               [FromServices] IConfiguration configuration,
@@ -150,41 +155,24 @@ namespace WMSWebAPI.Controllers
 
             try
             {
-                string resultado = string.Empty;
-                var salidaService = _salidaService as SyncSalidasService;
+                var resultado = _salidaService.Insert_salida_mi3(documento);
 
-                if (salidaService == null)
+                if (!resultado.Exito)
                 {
-                    throw new InvalidOperationException("El servicio no implementa la interfaz requerida");
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        _logger.LogWarning("Documento MI3 procesado con errores: {Mensaje}", resultado.Mensaje);
+                    }
+
+                    return StatusCode(422, resultado);
                 }
 
-                // AHORA documento.Lineas_Detalle ya está poblado desde el JSON deserializado                
-                int lineasProcesadas = salidaService.Insert_salida_mi3(ref documento, ref resultado);
-
-                // Validar resultado de texto (errores explicitos)
-                if (!string.IsNullOrEmpty(resultado) && !resultado.Contains("exito"))
+                if (_logger.IsEnabled(LogLevel.Information))
                 {
-                    throw new Exception(resultado);
+                    _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", resultado.LineasProcesadas);
                 }
 
-                // CRITICO: Si no se procesaron lineas, es un error (reserva fallo)
-                if (lineasProcesadas == 0)
-                {
-                    string mensajeError = !string.IsNullOrEmpty(resultado)
-                        ? resultado
-                        : "No se procesaron lineas. Verifique stock disponible y configuracion de bodega.";
-                    throw new Exception(mensajeError);
-                }
-
-                _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", lineasProcesadas);
-
-                return Ok(new
-                {
-                    Exito = true,
-                    Mensaje = "Documento MI3 procesado correctamente.",
-                    LineasProcesadas = lineasProcesadas,
-                    Resultado = resultado
-                });
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
@@ -199,11 +187,11 @@ namespace WMSWebAPI.Controllers
                 });
             }
         }
+
         [HttpGet("mi3/pendientes-procesar")]
-        public IActionResult GetSalidasPendientesDeProcesar(
-    [FromServices] IConfiguration _configuration,
-    [FromQuery] string? noPedido = null,
-    [FromQuery] int? idTipoDocumento = null)
+        public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
+                                                            [FromQuery] string? noPedido = null,
+                                                            [FromQuery] int? idTipoDocumento = null)
         {
             try
             {
@@ -213,16 +201,14 @@ namespace WMSWebAPI.Controllers
                 // 2) Filtro opcional por NoPedido
                 if (!string.IsNullOrWhiteSpace(noPedido))
                 {
-                    data = data.Where(x => x.No_pedido != null &&
-                                           x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))
-                               .ToList();
+                    data = [.. data.Where(x => x.No_pedido != null &&
+                                           x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))];
                 }
 
                 // 3) Filtro opcional por IdTipoDocumento
                 if (idTipoDocumento.HasValue)
                 {
-                    data = data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)
-                               .ToList();
+                    data = [.. data.Where(x => x.IdTipoDocumento == idTipoDocumento.Value)];
                 }
 
                 // 4) Minimal por defecto
@@ -250,7 +236,7 @@ namespace WMSWebAPI.Controllers
                 var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
                 var bodegas = clsLnBodega.GetByIds(_configuration, bodegaIds);
                 var codigoClienteByPedidoId = clsLnTrans_pe_enc.Get_Codigos_Cliente_By_IdsPedidoEnc(_configuration, pedidoIds);
-
+                var usuariosByPedidoId = clsLnTrans_pe_enc.Get_Usuarios_Documento_By_IdsPedidoEnc_Tuple(_configuration, pedidoIds);
                 var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo ?? "");
                 var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
                 var bodegaCodigoById = bodegas.ToDictionary(b => b.IdBodega, b => b.Codigo ?? "");
@@ -277,6 +263,20 @@ namespace WMSWebAPI.Controllers
                                 codigoBodegaOrigen)
                             : null;
 
+                    string usuarioDocumento = "";
+                    string usuarioDespacho = "";
+
+                    // Inicializa siempre con valores seguros
+                    usuarioDocumento = string.Empty;
+                    usuarioDespacho = string.Empty;
+
+                    if (usuariosByPedidoId.TryGetValue(x.Idpedidoenc, out var usuarios) && usuarios != null)
+                    {
+                        usuarioDocumento = usuarios.Item1 ?? string.Empty;
+                        usuarioDespacho = usuarios.Item2 ?? string.Empty;
+                    }
+
+
                     return new SalidaSimpleReturnDto
                     {
                         Idtransaccion = x.Idtransaccion,
@@ -295,7 +295,9 @@ namespace WMSWebAPI.Controllers
                         Codigo_Bodega_Destino = esTraslado ? codigoDestino : "",
                         Codigo_Cliente = esTraslado ? "" : codigoDestino,
                         IdDocIngresoBodDestino = idDocIngresoBodDestino,
-                        IdDocSalidaBodOrigen = x.Idpedidoenc
+                        IdDocSalidaBodOrigen = x.Idpedidoenc,
+                        UsuarioDocumento = usuarioDocumento,
+                        UsuarioDespacho = usuarioDespacho
                     };
                 }).ToList();
 
@@ -310,5 +312,37 @@ namespace WMSWebAPI.Controllers
             }
         }
 
+        [HttpPatch("mi3/pendientes-procesar/marcar-enviadas")]
+        public IActionResult MarcarSalidasComoEnviadas([FromServices] IConfiguration configuration,
+                                                       [FromBody] MarcarTransaccionesEnviadasRequestDto request)
+        {
+            try
+            {
+                if (request?.IdTransacciones == null || request.IdTransacciones.Count == 0)
+                {
+                    return BadRequest(new
+                    {
+                        ok = false,
+                        message = "Debe enviar IdTransacciones (uno o más)."
+                    });
+                }
+
+                int marcadas = _salidaService.Marcar_Salidas_Como_Enviadas(configuration, request.IdTransacciones);
+
+                return Ok(new
+                {
+                    ok = true,
+                    marcadas
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    ok = false,
+                    message = ex.Message
+                });
+            }
+        }
     }
 }

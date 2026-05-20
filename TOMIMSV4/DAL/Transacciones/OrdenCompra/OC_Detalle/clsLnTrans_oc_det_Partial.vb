@@ -4,6 +4,34 @@ Imports System.Reflection
 Partial Public Class clsLnTrans_oc_det
 
     Public Shared Property lProductosInMemory As New List(Of clsBeProducto)
+
+    Public Shared Function Get_Peso_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(idOrdenCompraEnc As Integer, idOrdenCompraDet As Integer) As Double
+
+        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            lConnection.Open()
+
+            Using cmd As New SqlCommand("
+                SELECT ISNULL(SUM(ISNULL(Peso_Licencia,0)),0)
+                FROM trans_oc_det_lote
+                WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+                  AND IdOrdenCompraDet = @IdOrdenCompraDet", lConnection)
+
+                cmd.Parameters.AddWithValue("@IdOrdenCompraEnc", idOrdenCompraEnc)
+                cmd.Parameters.AddWithValue("@IdOrdenCompraDet", idOrdenCompraDet)
+
+                Dim result = cmd.ExecuteScalar()
+                If result IsNot Nothing Then
+                    Return CDec(result)
+                End If
+            End Using
+
+            lConnection.Close()
+
+        End Using
+
+    End Function
+
     Public Shared Function Get_Detalle_OC_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
                                                               ByRef lConnection As SqlConnection,
                                                               ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_det)

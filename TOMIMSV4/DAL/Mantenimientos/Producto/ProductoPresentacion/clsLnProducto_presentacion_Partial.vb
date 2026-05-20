@@ -1,5 +1,4 @@
-﻿Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProducto_presentacion
@@ -576,7 +575,8 @@ Partial Public Class clsLnProducto_presentacion
                 .CamasPorTarima = IIf(IsDBNull(dr.Item("CamasPorTarima")), 0, dr.Item("CamasPorTarima"))
                 .Genera_lp_auto = IIf(IsDBNull(dr.Item("Genera_lp_auto")), False, dr.Item("Genera_lp_auto"))
                 .Permitir_paletizar = IIf(IsDBNull(dr.Item("Permitir_paletizar")), False, dr.Item("Permitir_paletizar"))
-                .Codigo_barra = IIf(IsDBNull(dr.Item("Codigo_barra")), False, dr.Item("Codigo_barra")) '#CKFK 20180403 09:48 AM Agregué el código de barra de la presentacion
+                .Codigo_barra = IIf(IsDBNull(dr.Item("Codigo_barra")), "", dr.Item("Codigo_barra")) '#CKFK 20180403 09:48 AM Agregué el código de barra de la presentacion
+                .Codigo = IIf(IsDBNull(dr.Item("Codigo")), "", dr.Item("Codigo_barra")) '#EJC 20260508  - No estaba.. 
 
             End With
 
@@ -589,8 +589,8 @@ Partial Public Class clsLnProducto_presentacion
     End Sub
 
     Public Shared Sub CargarHH(ByRef oBeProducto_presentacion As clsBeProducto_Presentacion, ByRef dr As DataRow,
-                                             ByRef lConnection As SqlConnection,
-                                             ByRef lTransaction As SqlTransaction)
+                               ByRef lConnection As SqlConnection,
+                               ByRef lTransaction As SqlTransaction)
 
         Try
 
@@ -599,6 +599,7 @@ Partial Public Class clsLnProducto_presentacion
                 .IdProducto = IIf(IsDBNull(dr.Item("IdProducto")), 0, dr.Item("IdProducto"))
                 .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
                 .Codigo_barra = IIf(IsDBNull(dr.Item("codigo_barra")), "", dr.Item("codigo_barra"))
+                .Codigo = IIf(IsDBNull(dr.Item("Codigo")), "", dr.Item("Codigo"))
                 .Nombre = IIf(IsDBNull(dr.Item("nombre")), "", dr.Item("nombre"))
                 .Imprime_barra = IIf(IsDBNull(dr.Item("imprime_barra")), False, dr.Item("imprime_barra"))
                 .Peso = IIf(IsDBNull(dr.Item("peso")), 0.0, dr.Item("peso"))
@@ -756,10 +757,10 @@ Partial Public Class clsLnProducto_presentacion
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT distinct IdPresentacion, nombre, IdProductoBodega, IdPropietarioBodega, IdPropietario, 
-                                          IdProducto, codigo_barra, imprime_barra, peso, alto, largo, ancho, factor, MinimoExistencia, 
-                                          MaximoExistencia, user_agr, fec_agr, user_mod, fec_mod, activo,  IdBodega 
-                                          FROM VW_StockPresentaciones WHERE IdProductoBodega=@IdProductoBodega ORDER BY [Nombre]"
+                    Dim vSQL As String = "SELECT distinct IdPresentacion, nombre, IdProductoBodega, IdPropietarioBodega, IdPropietario,
+                                          IdProducto, codigo_barra, imprime_barra, peso, alto, largo, ancho, factor, MinimoExistencia,
+                                          MaximoExistencia, user_agr, fec_agr, user_mod, fec_mod, activo, IdBodega 
+                                          From VW_StockPresentaciones WHERE IdProductoBodega=@IdProductoBodega ORDER BY [Nombre]"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

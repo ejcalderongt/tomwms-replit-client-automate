@@ -35,7 +35,7 @@ Partial Class frmExistenciasConReserva
         Me.grdExistenciasStock = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsExistenciasConReservaBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsExistenciasConReserva = New TOMWMS.DsExistenciasConReserva()
+        Me.DsExistenciasConReserva = New DsExistenciasConReserva()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colIdProducto = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colPropietario = New DevExpress.XtraGrid.Columns.GridColumn()

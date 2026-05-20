@@ -1,4 +1,5 @@
-﻿Imports System.Net
+﻿Imports System.ComponentModel
+Imports System.Net
 Imports System.Reflection
 Imports System.Threading.Tasks
 Imports DevExpress.Data
@@ -23,10 +24,10 @@ Public Class frmPrincipal02
 
     Private DTTareas As New DataTable("dtTareas")
     Public Call_Listar_Tareas As New MethodInvoker(AddressOf Actualizar_Tareas)
-    Public Call_Set_Indicador_Ocupacion_Bodega As New MethodInvoker(AddressOf Set_Indicador_Ocupacion_Bodega)
-    Public ReadOnly Call_Set_Indicador_Ocupacion_Area_Tipo As Action(Of Integer) = AddressOf Set_Indicador_Ocupacion_DosBodegas
+    'Public Call_Set_Indicador_Ocupacion_Bodega As New MethodInvoker(AddressOf Set_Indicador_Ocupacion_Bodega)
+    Public ReadOnly Call_Set_Indicador_Ocupacion_Area_Tipo As Action(Of Integer, String) = AddressOf Set_Indicador_Ocupacion_Por_Area
     Public Call_Listar_Reabastecimiento_Productos As New MethodInvoker(AddressOf Listar_Reabastecimiento_Productos)
-    Public Call_Set_Indicador_Gen As New MethodInvoker(AddressOf Set_Indicador_Ocupacion_Bodega)
+    'Public Call_Set_Indicador_Gen As New MethodInvoker(AddressOf Set_Indicador_Ocupacion_Bodega)
     Public Property IsInitialized As Boolean = False
     Public Property lOperadoresByBodega As New List(Of clsBeOperador_bodega)
     Private Property EstoyOcupaoChico As Boolean = False
@@ -836,10 +837,9 @@ Public Class frmPrincipal02
 
         Try
 
-            lblCantPosiciones.Text = "Cantidad de ubicaciones " & vbCrLf & AP.Bodega.Nombre
+            dtpFechaInicio.Value = DateAdd(DateInterval.Day, -AP.Bodega.Rango_Dias_Documentos, Now)
 
-            CheckForIllegalCrossThreadCalls = False
-            'CurrencyDataController.DisableThreadingProblemsDetection = True
+            lblCantPosiciones.Text = "Cantidad de ubicaciones " & vbCrLf & AP.Bodega.Nombre
 
             SchedulerP.Start = Now
             SchedulerM.Start = Now
@@ -850,16 +850,8 @@ Public Class frmPrincipal02
                          Get_Tiempos_Tareas()
                      End Sub)
 
-            If AP.Bodega.Mostrar_Area_En_HH Then
-                Task.Run(Sub()
-                             If IsHandleCreated Then
-                                 Me.BeginInvoke(Call_Set_Indicador_Ocupacion_Area_Tipo, AP.IdBodega)
-                             End If
-                         End Sub)
-            Else
-                Task.Run(Sub()
-                             If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-                         End Sub)
+            If Not bgwTareas.IsBusy Then
+                bgwTareas.RunWorkerAsync()
             End If
 
             EstoyOcupaoChico = False
@@ -895,6 +887,7 @@ Public Class frmPrincipal02
         End Try
 
     End Sub
+
     Private Sub GridView1_RowClick(sender As Object, e As RowClickEventArgs) Handles GridView1.RowClick
 
         Try
@@ -1048,9 +1041,9 @@ Public Class frmPrincipal02
                                       End Sub)
                          End Sub)
             ElseIf TabPane1.SelectedPageIndex = 4 Then
-                Task.Run(Sub()
-                             If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-                         End Sub)
+                If Not bgwTareas.IsBusy Then
+                    bgwTareas.RunWorkerAsync()
+                End If
             End If
 
         Catch ex As Exception
@@ -1235,15 +1228,15 @@ Public Class frmPrincipal02
                         End If
 
                         DTTareas.Rows.Add(vIdTransaccion,
-                                                r("Tarea"),
-                                                r("Inicio"),
-                                                r("Ult_Revision"),
-                                                r("TTM"),
-                                                r("Propietario"),
-                                                r("Estado"),
-                                                r("IdTareaHH"),
-                                                vOrigen,
-                                                vDestino,
+                                          r("Tarea"),
+                                          r("Inicio"),
+                                          r("Ult_Revision"),
+                                          r("TTM"),
+                                          r("Propietario"),
+                                          r("Estado"),
+                                          r("IdTareaHH"),
+                                          vOrigen,
+                                          vDestino,
                                           vProgreso,
                                           r("Observacion"))
 
@@ -1553,33 +1546,6 @@ Public Class frmPrincipal02
                     pBeStockDisponibleEnUbicacion.IdPresentacion = vReabasto.IdPresentacion
                 End If
 
-                ''#EJC20211216: Buscar la existencia por función no desde la vista.
-                'If clsLnStock.Get_Existencia_Con_Reserva_By_IdProducto(pBeStockDisponibleEnUbicacion,
-                '                                                       vReabasto.IdBodega,
-                '                                                       vReabasto.IdUbicacion,
-                '                                                       True,
-                '                                                       False,
-                '                                                       0,
-                '                                                       True,
-                '                                                       clsTransaccion.lConnection,
-                '                                                       clsTransaccion.lTransaction) Then
-
-                '    If vReabasto.IdPresentacion = 0 Then
-                '        vReabasto.CantidadSFUbicDestino = pBeStockDisponibleEnUbicacion.Cantidad
-                '    Else
-                '        vReabasto.CantidadSFUbicDestino = Math.Round(pBeStockDisponibleEnUbicacion.Cantidad * vReabasto.FactorAbastecerCon, 6)
-                '    End If
-
-                '    vReabasto.Pickeado = pBeStockDisponible.Añada
-
-                'End If
-
-                'If vReabasto.IdPresentacion = 0 Then
-                '    vReabasto.CantidadSFUbicDestino = pBeStockDisponibleEnUbicacion.Cantidad
-                'Else
-                '    vReabasto.CantidadSFUbicDestino = Math.Round(pBeStockDisponibleEnUbicacion.Cantidad * vReabasto.FactorAbastecerCon, 6)
-                'End If
-
                 '#EJC202303091457: Solicitud de Carolina para BYB - Reabasto.
                 If Not (pBeStockDisponibleEnUbicacion.Cantidad_Reservada - pBeStockDisponibleEnUbicacion.Añada) = 0 Then
 
@@ -1653,8 +1619,6 @@ Public Class frmPrincipal02
 
                 End If
 
-                'Application.DoEvents()
-
                 If vReabasto.IdPresentacionAbastercerCon <> 0 Then
 
                     If Not BePresentacionAbastecerCon Is Nothing Then
@@ -1675,8 +1639,6 @@ Public Class frmPrincipal02
                     vReabasto.Stock_Ubicacion = pBeStockDisponibleEnUbicacion.Cantidad
                     'Reabasto.Stock_Ubicacion = vReabasto.CantidadSFUbicDestino
                 End If
-
-                'Application.DoEvents()
 
                 If (vReabasto.IdPresentacion = 0 AndAlso vReabasto.IdPresentacionAbastercerCon <> 0) Then
 
@@ -2612,34 +2574,62 @@ Public Class frmPrincipal02
 
     End Sub
 
+    'Private Sub dtpFechaInicio_ValueChanged(sender As Object, e As EventArgs) Handles dtpFechaInicio.ValueChanged
+
+    '    Try
+
+    '        Dim fechaInicio As Date = dtpFechaInicio.Value.Date
+    '        Dim fechaFin As Date = dtpFechaFin.Value.Date
+
+    '        If fechaInicio > fechaFin Then
+    '            Throw New Exception("Seleccione un rango de fechas válido.")
+    '        End If
+
+    '        Task.Run(Sub()
+    '                     If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
+    '                 End Sub)
+
+    '        Task.Run(Sub()
+    '                     If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
+    '                 End Sub)
+
+    '        Task.Run(Sub()
+    '                     If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
+    '                 End Sub)
+
+    '        Task.Run(Sub()
+    '                     If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
+    '                 End Sub)
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '        Dim vMsgError As String = ex.Message
+    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
+    '    Finally
+    '        EstoyOcupaoChico = False
+    '    End Try
+
+    'End Sub
+
     Private Sub dtpFechaInicio_ValueChanged(sender As Object, e As EventArgs) Handles dtpFechaInicio.ValueChanged
 
         Try
+            Dim fechaInicio As Date = dtpFechaInicio.Value.Date
+            Dim fechaFin As Date = dtpFechaFin.Value.Date
 
-            If dtpFechaInicio.Value > dtpFechaFin.Value Or dtpFechaFin.Value < dtpFechaInicio.Value Then
+            If fechaInicio > fechaFin Then
                 Throw New Exception("Seleccione un rango de fechas válido.")
             End If
 
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
-                     End Sub)
+            If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
 
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-                     End Sub)
-
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
-                     End Sub)
-
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-                     End Sub)
+            If Not bgwTareas.IsBusy Then
+                bgwTareas.RunWorkerAsync()
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms.Agregar_Error(ex.Message)
         Finally
             EstoyOcupaoChico = False
         End Try
@@ -2649,15 +2639,11 @@ Public Class frmPrincipal02
     Private Sub dtpFechaFin_ValueChanged(sender As Object, e As EventArgs) Handles dtpFechaFin.ValueChanged
 
         Try
+            If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
 
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
-                     End Sub)
-
-            Task.Run(Sub()
-                         If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-                     End Sub)
-
+            If Not bgwTareas.IsBusy Then
+                bgwTareas.RunWorkerAsync()
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -2674,89 +2660,8 @@ Public Class frmPrincipal02
             tmrTareas.Enabled = False
 
             If IsHandleCreated Then BeginInvoke(Call_Listar_Tareas)
-            '#EJC20200122: Deshabilitado temporalmente por rendimiento.
-            'If IsHandleCreated Then BeginInvoke(Call_Set_Indicador_Ocupacion_Bodega)
-            'If Not bgwTareas.IsBusy Then
-            '    bgwTareas.RunWorkerAsync()
-            'End If
 
             tmrTareas.Enabled = True
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
-
-    Private Sub bgwTareas_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bgwTareas.DoWork
-
-        Try
-
-            System.Threading.Thread.Sleep(2000)
-
-            Actualizar_Tareas()
-
-            If AP.Bodega.Mostrar_Area_En_HH Then
-                Set_Indicador_Ocupacion_DosBodegas(AP.IdBodega)
-            Else
-                Set_Indicador_Ocupacion_Bodega()
-            End If
-
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
-
-    Private Sub Set_Indicador_Ocupacion_Bodega()
-
-        Try
-
-            Dim vCantUbicacionesVacias As Integer = 0
-            Dim vCantUbicacionesOcupadas As Integer = 0
-            Dim vTotalUbicaciones As Integer = 0
-
-            clsLnBodega.Get_Indicadores_Ocupacion_By_IdBodega(AP.IdBodega, vCantUbicacionesVacias, vCantUbicacionesOcupadas)
-
-            vTotalUbicaciones = (vCantUbicacionesVacias + vCantUbicacionesOcupadas)
-
-            ArcScaleComponent1.BeginInit()
-            ArcScaleComponent1.MinValue = 0
-            ArcScaleComponent1.MaxValue = 100
-            ArcScaleComponent1.Value = (vCantUbicacionesOcupadas * 100) / vTotalUbicaciones
-            ArcScaleComponent1.EndInit()
-
-            ccOcupacion.BeginInit()
-
-            ''#EJC20180830_0124AM: Barras
-            Dim series1 As New DevExpress.XtraCharts.Series("Pallet Position", ViewType.Bar)
-            series1.Points.Add(New SeriesPoint("Vacías", vCantUbicacionesVacias))
-            series1.Points.Add(New SeriesPoint("Ocupadas", vCantUbicacionesOcupadas))
-            series1.ValueScaleType = ScaleType.Numerical
-
-            ccOcupacion.Series.Clear()
-            ccOcupacion.Series.Add(series1)
-
-            ccOcupacion.EndInit()
-
-            Dim diagram = (CType(ccOcupacion.Diagram, XYDiagram))
-            diagram.AxisY.Title.Text = "Ocupación de bodega por ubicación"
-            diagram.AxisY.Title.Visibility = DefaultBoolean.True
-
-            Application.DoEvents()
-
-            Dim BeOcupacionBodega As New clsBeDh_ocupacion_bodega
-            BeOcupacionBodega.IdOcupacionBodega = clsLnDh_ocupacion_bodega.MaxID() + 1
-            BeOcupacionBodega.IdBodega = AP.IdBodega
-            BeOcupacionBodega.Cant_ubicaciones_ocupadas = vCantUbicacionesOcupadas
-            BeOcupacionBodega.Cant_ubicaciones_vacias = vCantUbicacionesVacias
-            BeOcupacionBodega.Fecha = Now
-            clsLnDh_ocupacion_bodega.Insertar(BeOcupacionBodega)
-
-            txtCantidadPosiciones.Text = vTotalUbicaciones.ToString("N2")
-            txtUbicacionesOcupadas.Text = vCantUbicacionesOcupadas.ToString("N2")
-            txtUbicacionesVacias.Text = vCantUbicacionesVacias.ToString("N2")
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -2931,6 +2836,7 @@ Public Class frmPrincipal02
             Debug.WriteLine("Cambio de index el panel...")
 
             rpgReabasto.Visible = (TabPane1.SelectedPageIndex = 1)
+            chkOcupacionPorArea.Visibility = IIf((TabPane1.SelectedPageIndex = 4), DevExpress.XtraBars.BarItemVisibility.Always, DevExpress.XtraBars.BarItemVisibility.Never)
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
@@ -3292,6 +3198,7 @@ Public Class frmPrincipal02
         End Try
 
     End Sub
+
     Private Sub bgWorker_ProgressChanged(sender As Object, e As System.ComponentModel.ProgressChangedEventArgs) Handles bgWorker.ProgressChanged
 
         Try
@@ -3305,10 +3212,7 @@ Public Class frmPrincipal02
             lblUsedMemory.Text = $"Memoria RAM Utilizada: {systemInfo.UsedMemoryPercentage:F2}%"
             lblAvailableMemory.Text = $"Memoria RAM Disponible: {systemInfo.AvailableMemoryPercentage:F2}%"
             lblAppMemoryUsage.Text = $"Uso de Memoria de la Aplicación: {TOMWMSSystemInfo.Get_Application_Memory_Usage() / 1024 / 1024:F2} MB"
-            'Dim sqlVersion As String = TOMWMSSystemInfo.Get_Sql_Server_Version(clsBD.Instancia.CadenaConexionSQLClient)
-            'lblSqlServerVersion.Text = $"Versión del Servidor SQL: {sqlVersion}"
             lblDotNetVersion.Text = $"Version .NET Framework: {TOMWMSSystemInfo.get_dot_net_framework_version()}"
-            'chkConexionInternet.IsOn = TOMWMSSystemInfo.Is_Online()
 
         Catch ex As Exception
             Console.WriteLine("Error al ejecutar bgWorker_ProgressChanged: " & ex.Message)
@@ -3351,10 +3255,6 @@ Public Class frmPrincipal02
         End Try
 
     End Function
-
-    Private Sub frmPrincipal02_Load(sender As Object, e As EventArgs) Handles Me.Load
-
-    End Sub
 
     Private Sub Configurar_Calendario()
 
@@ -3434,6 +3334,151 @@ Public Class frmPrincipal02
         End If
     End Sub
 
+    Private Sub Set_Indicador_Ocupacion_Por_Area(ByVal idBodega As Integer, ByVal etiquetaBodega As String)
+
+        Try
+            Dim vCantUbicacionesVacias As Integer = 0
+            Dim vCantUbicacionesOcupadas As Integer = 0
+
+            ' 1) Traer datos
+            Dim dt As DataTable = clsLnBodega.GetOcupacionAreaTipoDT(idBodega, vCantUbicacionesVacias, vCantUbicacionesOcupadas)
+            If dt Is Nothing Then dt = New DataTable()
+
+            ' Si no hay estructura/filas
+            If dt.Columns.Count = 0 OrElse dt.Rows.Count = 0 Then
+                ccOcupacion.Series.Clear()
+                ArcScaleComponent1.BeginInit()
+                ArcScaleComponent1.MinValue = 0
+                ArcScaleComponent1.MaxValue = 100
+                ArcScaleComponent1.Value = 0
+                ArcScaleComponent1.EndInit()
+
+                txtCantidadPosiciones.Text = "0.00"
+                txtUbicacionesOcupadas.Text = "0.00"
+                txtUbicacionesVacias.Text = "0.00"
+                Exit Sub
+            End If
+
+            ' 2) Normalizar columnas auxiliares (GENÉRICO: sin GENERAL/FISCAL)
+            If Not dt.Columns.Contains("Serie") Then dt.Columns.Add("Serie", GetType(String))
+            If Not dt.Columns.Contains("SortEstado") Then dt.Columns.Add("SortEstado", GetType(Integer))
+            If Not dt.Columns.Contains("Grupo") Then dt.Columns.Add("Grupo", GetType(String))
+
+            For Each r As DataRow In dt.Rows
+                Dim estado As String = If(r.IsNull("Estado"), "", CStr(r("Estado")).Trim())
+                r("Grupo") = etiquetaBodega
+                r("Serie") = $"{etiquetaBodega} - {estado}"
+                r("SortEstado") = If(String.Equals(estado, "Ocupadas", StringComparison.OrdinalIgnoreCase), 0, 1)
+            Next
+
+            ' 3) Orden
+            Dim dv As New DataView(dt)
+            dv.Sort = "Area ASC, SortEstado ASC, Cantidad DESC"
+
+            ' 4) Chart
+            ccOcupacion.BeginInit()
+            ccOcupacion.Series.Clear()
+            ccOcupacion.DataSource = dv
+
+            ccOcupacion.SeriesDataMember = "Serie"
+            With ccOcupacion.SeriesTemplate
+                .ArgumentDataMember = "Area"
+                .ValueDataMembers.Clear()
+                .ValueDataMembers.AddRange(New String() {"Cantidad"})
+                .ValueScaleType = ScaleType.Numerical
+
+                .View = New SideBySideStackedBarSeriesView()
+
+                Dim lbl As New StackedBarSeriesLabel()
+                lbl.TextPattern = "{V:n0}"
+                lbl.Position = BarSeriesLabelPosition.Center
+                .Label = lbl
+                .LabelsVisibility = DefaultBoolean.False
+            End With
+
+            ccOcupacion.Legend.Visibility = DefaultBoolean.True
+            ccOcupacion.ToolTipEnabled = DefaultBoolean.True
+            ccOcupacion.SeriesTemplate.ToolTipPointPattern =
+            "Área: {A}" & vbCrLf &
+            "Serie: {S}" & vbCrLf &
+            "Valor: {V:n0}"
+
+            ccOcupacion.CrosshairEnabled = DefaultBoolean.True
+            ccOcupacion.SeriesTemplate.CrosshairLabelPattern = "{S}: {V:n0}"
+
+            Dim diagram = TryCast(ccOcupacion.Diagram, XYDiagram)
+            If diagram IsNot Nothing Then
+                diagram.AxisY.Title.Text = "Ubicaciones (cantidad)"
+                diagram.AxisY.Title.Visibility = DefaultBoolean.True
+                diagram.AxisY.Label.TextPattern = "{V:n0}"
+
+                diagram.AxisX.Title.Text = "Área"
+                diagram.AxisX.Title.Visibility = DefaultBoolean.True
+                diagram.AxisX.Label.Angle = -45
+                diagram.AxisX.Label.ResolveOverlappingOptions.AllowRotate = True
+                diagram.AxisX.QualitativeScaleOptions.AutoGrid = False
+                diagram.AxisX.WholeRange.SideMarginsValue = 0.5
+
+                diagram.EnableAxisXScrolling = True
+                diagram.EnableAxisXZooming = True
+            End If
+
+            ccOcupacion.EndInit()
+
+            ' 5) Colores + grupo apilado (si mañana agregás más bodegas, esto ya sirve)
+            For Each s As DevExpress.XtraCharts.Series In ccOcupacion.Series
+                Dim v = TryCast(s.View, SideBySideStackedBarSeriesView)
+                If v Is Nothing Then Continue For
+
+                v.StackedGroup = etiquetaBodega
+                v.BarWidth = 0.8
+
+                Dim esOcupada As Boolean = s.Name.IndexOf("Ocupadas", StringComparison.OrdinalIgnoreCase) >= 0
+                v.Color = If(esOcupada, Color.Firebrick, Color.LimeGreen)
+            Next
+
+            ' 6) Gauge con % (solo esta bodega)
+            Dim ocupadasTotalObj As Object = dt.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'")
+            Dim ocupadasTotal As Decimal = If(IsDBNull(ocupadasTotalObj), 0D, Convert.ToDecimal(ocupadasTotalObj))
+
+            Dim totalUbicObj As Object = dt.Compute("SUM(Cantidad)", Nothing)
+            Dim totalUbic As Decimal = If(IsDBNull(totalUbicObj), 0D, Convert.ToDecimal(totalUbicObj))
+
+            Dim perc As Single = If(totalUbic <= 0D, 0F, CSng((ocupadasTotal * 100D) / totalUbic))
+
+            ArcScaleComponent1.BeginInit()
+            ArcScaleComponent1.MinValue = 0
+            ArcScaleComponent1.MaxValue = 100
+            ArcScaleComponent1.Value = perc
+            ArcScaleComponent1.EndInit()
+
+            ' (Opcional) handler para drilldown por área (si lo usás)
+            RemoveHandler ccOcupacion.ObjectSelected, AddressOf ccOcupacion_ObjectSelected_AreaGauge
+            AddHandler ccOcupacion.ObjectSelected, AddressOf ccOcupacion_ObjectSelected_AreaGauge
+
+            ' 7) Textos (usa los contadores que ya devuelve tu LN)
+            Dim vTotalUbicaciones As Integer = (vCantUbicacionesVacias + vCantUbicacionesOcupadas)
+
+            txtCantidadPosiciones.Text = vTotalUbicaciones.ToString("N2")
+            txtUbicacionesOcupadas.Text = vCantUbicacionesOcupadas.ToString("N2")
+            txtUbicacionesVacias.Text = vCantUbicacionesVacias.ToString("N2")
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al graficar ocupación: " & ex.Message, Text,
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub chkOcupacionPorArea_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkOcupacionPorArea.CheckedChanged
+
+        Task.Run(Sub()
+                     If IsHandleCreated Then
+                         Me.BeginInvoke(Call_Set_Indicador_Ocupacion_Area_Tipo, AP.IdBodega, $"{AP.Bodega.Nombre}")
+                     End If
+                 End Sub)
+    End Sub
+
     Private Sub Set_Indicador_Ocupacion_DosBodegas(ByVal idBodegaGeneral As Integer)
         Try
 
@@ -3500,32 +3545,32 @@ Public Class frmPrincipal02
                 ' Vista apilada lado a lado (dos pilas: GENERAL y FISCAL)
                 .View = New SideBySideStackedBarSeriesView()
 
+                ' Etiquetas (center para stacked; desactivadas para menos ruido)
                 Dim lbl As New StackedBarSeriesLabel()
                 lbl.TextPattern = "{V:n0}"
                 lbl.Position = BarSeriesLabelPosition.Center
-
+                lbl.Visible = False
                 .Label = lbl
-                .LabelsVisibility = DefaultBoolean.False
             End With
 
             ' Leyenda y ayudas
-            ccOcupacion.Legend.Visibility = DefaultBoolean.True
-            ccOcupacion.ToolTipEnabled = DefaultBoolean.True
+            ccOcupacion.Legend.Visibility = DevExpress.Utils.DefaultBoolean.True
+            ccOcupacion.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True
             ccOcupacion.SeriesTemplate.ToolTipPointPattern = "Área: {A}" & vbCrLf &
                                                              "Serie: {S}" & vbCrLf &
                                                              "Valor: {V:n0}"
-            ccOcupacion.CrosshairEnabled = DefaultBoolean.True
+            ccOcupacion.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.True
             ccOcupacion.SeriesTemplate.CrosshairLabelPattern = "{S}: {V:n0}"
 
             ' Ejes y navegación
-            Dim diagram = TryCast(ccOcupacion.Diagram, XYDiagram)
+            Dim diagram = TryCast(ccOcupacion.Diagram, DevExpress.XtraCharts.XYDiagram)
             If diagram IsNot Nothing Then
                 diagram.AxisY.Title.Text = "Ubicaciones (cantidad)"
-                diagram.AxisY.Title.Visibility = DefaultBoolean.True
+                diagram.AxisY.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
                 diagram.AxisY.Label.TextPattern = "{V:n0}"
 
                 diagram.AxisX.Title.Text = "Área"
-                diagram.AxisX.Title.Visibility = DefaultBoolean.True
+                diagram.AxisX.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
                 diagram.AxisX.Label.Angle = -45
                 diagram.AxisX.Label.ResolveOverlappingOptions.AllowRotate = True
                 diagram.AxisX.QualitativeScaleOptions.AutoGrid = False
@@ -3538,7 +3583,7 @@ Public Class frmPrincipal02
             ' Crear series y agrupar pilas por Tipo (GENERAL vs FISCAL)
             ccOcupacion.RefreshData()
             For Each s As DevExpress.XtraCharts.Series In ccOcupacion.Series
-                Dim v = TryCast(s.View, SideBySideStackedBarSeriesView)
+                Dim v = TryCast(s.View, DevExpress.XtraCharts.SideBySideStackedBarSeriesView)
                 If v IsNot Nothing Then
                     v.StackedGroup = If(s.Name.StartsWith("GENERAL", StringComparison.OrdinalIgnoreCase), "GENERAL", "FISCAL")
                     v.BarWidth = 0.8
@@ -3548,6 +3593,7 @@ Public Class frmPrincipal02
             ccOcupacion.EndInit()
 
             ' 6) Actualizar el gauge con % COMBINADO (GENERAL + FISCAL)
+            'Dim ocupadasTotal As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'"))
             Dim result As Object = dtAll.Compute("SUM(Cantidad)", "Estado = 'Ocupadas'")
             Dim ocupadasTotal As Decimal = If(IsDBNull(result), 0D, Convert.ToDecimal(result))
             Dim totalUbic As Decimal = Convert.ToDecimal(dtAll.Compute("SUM(Cantidad)", Nothing))
@@ -3586,7 +3632,7 @@ Public Class frmPrincipal02
     ' Drill-down opcional (click en un área → gauge con % de esa área sobre ambas bodegas)
     Private Sub ccOcupacion_ObjectSelected_AreaGauge(ByVal sender As Object, ByVal e As DevExpress.XtraCharts.HotTrackEventArgs)
         Try
-            Dim p = TryCast(e.HitInfo.SeriesPoint, SeriesPoint)
+            Dim p = TryCast(e.HitInfo.SeriesPoint, DevExpress.XtraCharts.SeriesPoint)
             If p Is Nothing Then Exit Sub
             Dim area As String = p.Argument
             If String.IsNullOrWhiteSpace(area) Then Exit Sub
@@ -3605,9 +3651,176 @@ Public Class frmPrincipal02
             ArcScaleComponent1.Value = perc
             ArcScaleComponent1.EndInit()
         Catch
-    ' Silencioso
-    End Try
+            ' Silencioso
+        End Try
     End Sub
 
+    Private Function BuildDT_OcupacionGrid(dtSource As DataTable) As DataTable
 
+        Dim dt As New DataTable()
+
+        dt.Columns.Add("Area", GetType(String))
+        dt.Columns.Add("Codigo", GetType(String))
+        dt.Columns.Add("Ocupadas", GetType(Integer))
+        dt.Columns.Add("Vacias", GetType(Integer))
+        dt.Columns.Add("Total", GetType(Integer))
+        dt.Columns.Add("Porcentaje", GetType(String))
+
+        If dtSource Is Nothing OrElse dtSource.Rows.Count = 0 Then
+            Return dt
+        End If
+
+        'Agrupar por Área
+        Dim areas = dtSource.DefaultView.ToTable(True, "Area")
+
+        Dim totalOcupadas As Integer = 0
+        Dim totalVacias As Integer = 0
+
+        For Each rArea As DataRow In areas.Rows
+
+            Dim area As String = rArea("Area").ToString()
+
+            Dim ocupadasObj = dtSource.Compute("SUM(Cantidad)", $"Area='{area}' AND Estado='Ocupadas'")
+            Dim vaciasObj = dtSource.Compute("SUM(Cantidad)", $"Area='{area}' AND Estado='Vacías'")
+
+            Dim ocupadas As Integer = If(IsDBNull(ocupadasObj), 0, CInt(ocupadasObj))
+            Dim vacias As Integer = If(IsDBNull(vaciasObj), 0, CInt(vaciasObj))
+
+            Dim total As Integer = ocupadas + vacias
+            Dim porcentaje As Integer = If(total = 0, 0, CInt((ocupadas * 100) / total))
+
+            totalOcupadas += ocupadas
+            totalVacias += vacias
+
+            'Código = las primeras letras o el código de área si existe
+            Dim codigo As String = ""
+            If dtSource.Columns.Contains("Codigo") Then
+                codigo = dtSource.Select($"Area='{area}'")(0)("Codigo").ToString()
+            End If
+
+            dt.Rows.Add(
+                area,
+                codigo,
+                ocupadas,
+                vacias,
+                total,
+                porcentaje.ToString() & "%"
+            )
+
+        Next
+
+        'Fila TOTAL
+        Dim totalGeneral As Integer = totalOcupadas + totalVacias
+        Dim porcGeneral As Integer = If(totalGeneral = 0, 0, CInt((totalOcupadas * 100) / totalGeneral))
+
+        dt.Rows.Add(
+            "TOTAL",
+            "",
+            totalOcupadas,
+            totalVacias,
+            totalGeneral,
+            porcGeneral.ToString() & "%"
+        )
+
+        Return dt
+
+    End Function
+
+    Private Sub mnuImprimirRepOcupacion_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImprimirRepOcupacion.ItemClick
+        Dim vacias As Integer = 0
+        Dim ocupadas As Integer = 0
+
+        Dim dtOcupacion As DataTable = clsLnBodega.GetOcupacionAreaTipoDT(AP.IdBodega, vacias, ocupadas)
+
+        Dim titulo As String = $"Ocupación de bodega: {AP.IdBodega} - {AP.Bodega.Nombre}"
+
+        Using f As New frmReporteOcupacion(AP.IdBodega, dtOcupacion, titulo)
+            f.ShowDialog(Me)   'modal
+        End Using
+    End Sub
+
+    Private Class IndicadorOcupacionResult
+        Public Property Vacias As Integer
+        Public Property Ocupadas As Integer
+        Public ReadOnly Property Total As Integer
+            Get
+                Return Vacias + Ocupadas
+            End Get
+        End Property
+    End Class
+
+    Private Sub Pintar_Indicador_Ocupacion(vCantUbicacionesVacias As Integer,
+                                       vCantUbicacionesOcupadas As Integer)
+
+        Dim vTotalUbicaciones As Integer = vCantUbicacionesVacias + vCantUbicacionesOcupadas
+
+        ArcScaleComponent1.BeginInit()
+        ArcScaleComponent1.MinValue = 0
+        ArcScaleComponent1.MaxValue = 100
+
+        If vTotalUbicaciones > 0 Then
+            ArcScaleComponent1.Value = (vCantUbicacionesOcupadas * 100D) / vTotalUbicaciones
+        Else
+            ArcScaleComponent1.Value = 0
+        End If
+
+        ArcScaleComponent1.EndInit()
+
+        ccOcupacion.BeginInit()
+
+        Dim series1 As New DevExpress.XtraCharts.Series("Pallet Position", ViewType.Bar)
+        series1.Points.Add(New SeriesPoint("Vacías", CDbl(vCantUbicacionesVacias)))
+        series1.Points.Add(New SeriesPoint("Ocupadas", CDbl(vCantUbicacionesOcupadas)))
+        series1.ValueScaleType = ScaleType.Numerical
+
+        ccOcupacion.Series.Clear()
+        ccOcupacion.Series.Add(series1)
+
+        Dim diagram As XYDiagram = TryCast(ccOcupacion.Diagram, XYDiagram)
+
+        If diagram IsNot Nothing Then
+            diagram.AxisY.Title.Text = "Ocupación de bodega por ubicación"
+            diagram.AxisY.Title.Visibility = DefaultBoolean.True
+        End If
+
+        ccOcupacion.EndInit()
+
+        txtCantidadPosiciones.Text = vTotalUbicaciones.ToString("N2")
+        txtUbicacionesOcupadas.Text = vCantUbicacionesOcupadas.ToString("N2")
+        txtUbicacionesVacias.Text = vCantUbicacionesVacias.ToString("N2")
+
+    End Sub
+
+    Private Sub bgwTareas_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles bgwTareas.RunWorkerCompleted
+
+        If e.Error IsNot Nothing Then
+            XtraMessageBox.Show(e.Error.ToString(), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        End If
+
+        If TypeOf e.Result Is IndicadorOcupacionResult Then
+            Dim result = CType(e.Result, IndicadorOcupacionResult)
+            Pintar_Indicador_Ocupacion(result.Vacias, result.Ocupadas)
+        ElseIf CStr(e.Result) = "AREA" Then
+            Set_Indicador_Ocupacion_DosBodegas(AP.IdBodega)
+        End If
+
+    End Sub
+
+    Private Sub bgwTareas_DoWork(sender As Object, e As DoWorkEventArgs) Handles bgwTareas.DoWork
+
+        System.Threading.Thread.Sleep(2000)
+
+        Dim result As New IndicadorOcupacionResult()
+
+        clsLnBodega.Get_Indicadores_Ocupacion_By_IdBodega(
+            AP.IdBodega,
+            result.Vacias,
+            result.Ocupadas
+        )
+
+        e.Result = result
+
+    End Sub
 End Class
+

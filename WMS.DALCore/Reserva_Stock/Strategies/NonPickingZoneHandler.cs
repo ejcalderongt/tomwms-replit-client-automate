@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -115,16 +119,17 @@ namespace WMS.StockReservation.Strategies
                 
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
-                
-                
+
+                // Transacción y pedido
+                Indicador = context.Request.Indicador,
+                Estado = "UNCOMMITED",
+                IdTransaccion = context.Request.IdTransaccion,
+                IdPedido = context.Request.IdTransaccion,
+                IdPedidoDet = context.Request.IdPedidoDet,
+
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName
             };
-
-            if (context.PedidoDet != null)
-            {
-                reservation.IdPedidoDet = context.PedidoDet.IdPedidoDet;
-            }
 
             return reservation;
         }

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using WMS.DALCore.I_nav_ped_traslado_det;
-using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -15,55 +14,33 @@ namespace WMS.StockReservation.Core.Services
 
         public void Execute(ReservationContext context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
-            if (_logger is null) throw new InvalidOperationException("Logger no inicializado.");
-
-            // Normaliza lista para evitar null refs
-            context.CreatedReservations ??= new List<clsBeStock_res>(); // ajusta tipo real
-
             _logger.LogCheckpoint("#MI3_POST_PROCESSING_START");
 
-            // Request es obligatorio para este step (se usa en pasos 1 y 3)
-            if (context.Request is null)
-                throw new InvalidOperationException("ReservationContext.Request es null en PostProcessingStep.");
-
-            // Connection/Transaction se requieren si vas a insertar/actualizar
-            if (context.Connection is null)
-                throw new InvalidOperationException("ReservationContext.Connection es null en PostProcessingStep.");
-
-            if (context.Transaction is null)
-                throw new InvalidOperationException("ReservationContext.Transaction es null en PostProcessingStep.");
-
-            // =========================
-            // PASO 1: INSERTAR RESERVAS
-            // =========================
+            // PASO 1: INSERTAR RESERVAS EN stock_res (ANTES de actualizar TrasladoDet)
             if (context.CreatedReservations.Count > 0)
             {
                 _logger.LogCheckpoint($"#MI3_INSERTING_STOCK_RES - Count: {context.CreatedReservations.Count}");
 
                 var config = new ConfigurationBuilder().Build();
 
-                // Obtener IdPedidoEnc para IdTransaccion
-                int idPedidoEnc = context.Request.IdPedido > 0 ? context.Request.IdPedido : 0;
-
                 foreach (var reservation in context.CreatedReservations)
                 {
-                    if (reservation is null) continue; // por si la lista trae nulos
-
                     try
                     {
+                        // Calcular MaxID ANTES de cada INSERT
                         int maxId = clsLnStock_res.MaxID(context.Connection, context.Transaction);
                         reservation.IdStockRes = maxId + 1;
 
-                        reservation.IdTransaccion = idPedidoEnc;
-
                         _logger.LogCheckpoint(
-                            $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, IdTransaccion: {idPedidoEnc}");
+                            $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, " +
+                            $"IdTransaccion: {reservation.IdTransaccion}, IdPedido: {reservation.IdPedido}, " +
+                            $"IdPedidoDet: {reservation.IdPedidoDet}, Indicador: {reservation.Indicador}, Estado: {reservation.Estado}");
 
-                        int rowsAffected = clsLnStock_res.Insertar(config,
-                                                                   reservation,
-                                                                   context.Connection,
-                                                                   context.Transaction);
+                        int rowsAffected = clsLnStock_res.Insertar(
+                            config,
+                            reservation,
+                            context.Connection,
+                            context.Transaction);
 
                         _logger.LogCheckpoint(
                             $"#MI3_STOCK_RES_INSERTED - " +
@@ -123,12 +100,25 @@ namespace WMS.StockReservation.Core.Services
             if (context.Request == null)
                 throw new InvalidOperationException("ReservationContext.Request es null en el resumen.");
 
-            var pending = context.PendingQuantity; // si es decimal no-nullable
-
-            // Si PendingQuantity es decimal?
-            // var pending = context.PendingQuantity ?? 0m;
+            var pending = context.PendingQuantity;
 
             var totalReserved = context.Request.Cantidad - pending;
+
+            if (context.PendingQuantity > 0.000001 && context.FailureReasons?.Count > 0)
+            {
+                foreach (var failure in context.FailureReasons)
+                {
+                    _logger.LogWarning(
+                        $"EVENTO=NO_RESERVA | RESULTADO=NO_RESERVADO | " +
+                        $"TIPO_NO_RESERVA={MapearTipoNoReserva(failure.Code)} | " +
+                        $"PEDIDO={context.PedidoDet?.IdPedidoEnc ?? 0} | " +
+                        $"DETALLE={context.PedidoDet?.IdPedidoDet ?? 0} | " +
+                        $"LINEA={context.LineNumber} | " +
+                        $"ITEM={context.TrasladoDet?.Item_No ?? context.Product?.codigo ?? string.Empty} | " +
+                        $"CANTIDAD_PENDIENTE={context.PendingQuantity:F6} | " +
+                        $"MOTIVO={failure.Message}");
+                }
+            }
 
             _logger.LogCheckpoint(
                 $"#MI3_SUMMARY - " +
@@ -141,6 +131,28 @@ namespace WMS.StockReservation.Core.Services
             context.ValidateInvariants("POST_PROCESSING_END");
 #endif
 
+            _logger.LogCheckpoint("#MI3_POST_PROCESSING_END");
+        }
+
+        private static string MapearTipoNoReserva(ReservationFailureCode code)
+        {
+            return code switch
+            {
+                ReservationFailureCode.LOT_NOT_FOUND => "LOTE_NO_ENCONTRADO",
+                ReservationFailureCode.LOCATION_RESTRICTED_NO_STOCK => "UBICACION_CLIENTE_OBLIGATORIA",
+                ReservationFailureCode.PRODUCT_STATE_REQUIRED_NO_STOCK => "ESTADO_PRODUCTO_NO_APLICA",
+                ReservationFailureCode.PICKING_ZONE_REQUIRED_NO_STOCK => "SOLO_NO_PICKING_SIN_EXPLOSION",
+                ReservationFailureCode.NON_PICKING_ZONE_REQUIRED_NO_STOCK => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.RECEPTION_LOCATION_NOT_ALLOWED => "UBICACION_NO_APLICA",
+                ReservationFailureCode.ALL_STOCK_EXPIRED => "SIN_VENCIMIENTO_VALIDO",
+                ReservationFailureCode.ZONE_PRIORITY_CONFLICT => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.PRODUCT_NOT_FOUND => "PRODUCTO_NO_ENCONTRADO",
+                ReservationFailureCode.INVALID_QUANTITY => "CANTIDAD_INVALIDA",
+                ReservationFailureCode.STORAGE_CONDITION_MISMATCH => "CONDICION_ALMACENAJE_NO_APLICA",
+                ReservationFailureCode.MANUFACTURING_DATE_INVALID => "SIN_FECHA_MANUFACTURA_VALIDA",
+                ReservationFailureCode.NO_STOCK => "SIN_STOCK_APLICABLE",
+                _ => "RESERVA_NO_COMPLETADA"
+            };
         }
     }
 }

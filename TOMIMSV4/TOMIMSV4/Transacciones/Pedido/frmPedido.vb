@@ -52,6 +52,54 @@ Public Class frmPedido
 
     Private BeConfigBodega As New clsBeI_nav_config_enc()
 
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA desde Pedido.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado; 3=Pickeando; 4=Pickeado; 5=Verificando; 6=Verificado.
+    ' 8=Cerrada/entregada; 11=Anulada al anular/eliminar pedido; 12=Back order. Se notifica despues del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+
+    Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(ByVal pPedidoEnc As clsBeTrans_pe_enc,
+                                                                          ByVal pEstadoPedido As Integer,
+                                                                          ByVal pEstadoFactura As Integer,
+                                                                          ByVal pEstadoGuia As Integer) As Task
+
+        If pPedidoEnc Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(pPedidoEnc.Referencia) Then Return
+        If Not AP.Bodega.Interface_SAP Then Return
+        If String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then Return
+
+        Try
+            If pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+               pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                Dim vHanaService As New SapServiceLayerClient()
+                Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
+                    pPedidoEnc.Referencia,
+                    vHanaService.SessionCookie,
+                    SapServiceLayerClient.baseUrl,
+                    pEstadoPedido,
+                    pEstadoFactura,
+                    pEstadoGuia,
+                    Now,
+                    AP.UsuarioAp.IdUsuario,
+                    Now,
+                    Now,
+                    AP.UsuarioAp.IdUsuario,
+                    Now)
+
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pe.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL desde pedido. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pPedidoEnc.IdPedidoEnc)
+        End Try
+
+    End Function
+
     '#CKFK20220325 Agregué estas dos variables para cuando el cliente se maneje en el detalle del pedido
     Private Cliente_Detalle_Ultimo_Lote As Integer
     Private Cliente_Detalle_Control_Calidad As Integer
@@ -272,28 +320,7 @@ Public Class frmPedido
 
                 grdPedTras.DataSource = DT
 
-                GridView8.OptionsView.ColumnAutoWidth = False
-                GridView8.BestFitColumns(True)
-
-                GridView8.OptionsView.ShowFooter = True
-
-                GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
-                GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
-
-                GridView8.Columns("Cantidad").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
-
-                GridView8.Columns("Cantidad_Reservada").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad_Reservada").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad_Reservada").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad_Reservada").SummaryItem.DisplayFormat = "{0:n6}"
-
-                If Not BeBodega Is Nothing Then
-                    GridView8.Columns("Talla").Visible = BeBodega.Control_Talla_Color
-                    GridView8.Columns("Color").Visible = BeBodega.Control_Talla_Color
-                End If
+                Configurar_Grid_PedidoERP()
 
                 Carga_Datos_PedidoERP = True
 
@@ -322,18 +349,7 @@ Public Class frmPedido
 
                 grdPedTras.DataSource = DT
 
-                GridView8.OptionsView.ColumnAutoWidth = False
-                GridView8.BestFitColumns(True)
-
-                GridView8.OptionsView.ShowFooter = True
-
-                GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
-                GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
-
-                GridView8.Columns("Cantidad").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
+                Configurar_Grid_PedidoERP()
 
                 Carga_Datos_PedidoERP = True
 
@@ -344,6 +360,84 @@ Public Class frmPedido
         End Try
 
     End Function
+
+    Private Sub Configurar_Grid_PedidoERP()
+
+        GridView8.OptionsView.ColumnAutoWidth = False
+        GridView8.OptionsView.ShowFooter = True
+
+        Configurar_Columna_Numerica_PedidoERP("Cantidad", "Solicitado", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Cantidad_Reservada", "Reservado", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Diferencia_Reserva", "Dif.", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Porcentaje_Reservado", "% Res.", "{0:n2}%")
+        Configurar_Columna_Numerica_PedidoERP("Porcentaje_Diferencia", "% Dif.", "{0:n2}%")
+
+        If Not GridView8.Columns("Estado_Reserva") Is Nothing Then
+            GridView8.Columns("Estado_Reserva").Caption = "Estado Res."
+            GridView8.Columns("Estado_Reserva").VisibleIndex = 9
+            GridView8.Columns("Estado_Reserva").Width = 95
+        End If
+
+        If Not GridView8.Columns("No") Is Nothing Then
+            GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
+            GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
+        End If
+
+        Configurar_Barra_Porcentaje_Reserva()
+
+        If Not BeBodega Is Nothing Then
+            If Not GridView8.Columns("Talla") Is Nothing Then
+                GridView8.Columns("Talla").Visible = BeBodega.Control_Talla_Color
+            End If
+
+            If Not GridView8.Columns("Color") Is Nothing Then
+                GridView8.Columns("Color").Visible = BeBodega.Control_Talla_Color
+            End If
+        End If
+
+        GridView8.BestFitColumns(True)
+
+    End Sub
+
+    Private Sub Configurar_Columna_Numerica_PedidoERP(ByVal pFieldName As String,
+                                                      ByVal pCaption As String,
+                                                      ByVal pFormatString As String,
+                                                      Optional ByVal pSummaryType As SummaryItemType = SummaryItemType.None)
+
+        If GridView8.Columns(pFieldName) Is Nothing Then
+            Return
+        End If
+
+        GridView8.Columns(pFieldName).Caption = pCaption
+        GridView8.Columns(pFieldName).DisplayFormat.FormatType = FormatType.Numeric
+        GridView8.Columns(pFieldName).DisplayFormat.FormatString = pFormatString
+        GridView8.Columns(pFieldName).AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far
+
+        If pSummaryType <> SummaryItemType.None Then
+            GridView8.Columns(pFieldName).SummaryItem.SummaryType = pSummaryType
+            GridView8.Columns(pFieldName).SummaryItem.DisplayFormat = pFormatString
+        End If
+
+    End Sub
+
+    Private Sub Configurar_Barra_Porcentaje_Reserva()
+
+        If GridView8.Columns("Porcentaje_Reservado") Is Nothing Then
+            Return
+        End If
+
+        Dim vProgressReserva As New RepositoryItemProgressBar With {
+            .Minimum = 0,
+            .Maximum = 100,
+            .ShowTitle = True,
+            .PercentView = True
+        }
+
+        grdPedTras.RepositoryItems.Add(vProgressReserva)
+        GridView8.Columns("Porcentaje_Reservado").ColumnEdit = vProgressReserva
+        GridView8.Columns("Porcentaje_Reservado").Width = 95
+
+    End Sub
 
     Private Function Inserta_Encabezado(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
 
@@ -645,6 +739,8 @@ Public Class frmPedido
                 lblSociedadSAP.Visible = BeConfigBodega.Interface_SAP
                 txtSociedadSAP.Visible = BeConfigBodega.Interface_SAP
 
+                cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
+
                 txtEsExportacion.Text = IIf(pBePedidoEnc.EsExportacion, "Si", "No")
 
                 If txtEsExportacion.Text = "Si" Then
@@ -838,6 +934,7 @@ Public Class frmPedido
             txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
             txtObservacion.Text = pBePedidoEnc.Observacion
             txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
+            cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -1680,6 +1777,8 @@ Public Class frmPedido
                 pBePedidoEnc.IdMotivoDevolucion = 0
             End If
 
+            pBePedidoEnc.IdEmpresaTransporte = Val(cmbEmpresaTransporte.EditValue)
+
             If chkControlPoliza.Checked Then
 
                 'GT 170820211743: Se obtiene el regimen, pero se valida que este seteado o avisar que la lectura de la poliza no lo asigno correctamente
@@ -1783,7 +1882,7 @@ Public Class frmPedido
 
             If BeConfigBodega.Interface_SAP Then
                 If Not pBePedidoEnc.TipoPedido.Genera_Guia_Remision Then
-                    If txtReferencia.Text = "" OrElse txtSociedadSAP.Text = "" Then
+                    If txtReferencia.Text = "" AndAlso txtSociedadSAP.Text = "" Then
                         pBePedidoEnc.Sync_MI3 = False
                         pBePedidoEnc.Enviado_A_ERP = True
                     End If
@@ -1894,7 +1993,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2248,7 +2347,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -2482,7 +2581,7 @@ Public Class frmPedido
                                 NoLineaCell.Value = 1
                             ElseIf vIdPedidoDet = 0 Then 'Es una nueva línea
                                 NoLineaCell.Value = pBePedidoDetList.Max(Function(x) x.No_linea) + 1
-                            Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
+                            Else 'Se movió hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
                                 NoLineaCell.Value = pBePedidoDet.No_linea
                             End If
 
@@ -4714,8 +4813,7 @@ Public Class frmPedido
                         CantidadCell.ErrorText = result
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = result
                         e.Cancel = True
-                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso
-                        Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
+                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso txtReferencia.Text <> "" AndAlso Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
                         dgrid.Rows(CodProductoCell.RowIndex).ErrorText = ""
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = ""
                         dgrid.Rows(PesoCell.RowIndex).ErrorText = ""
@@ -5572,7 +5670,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub cmdEliminar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEliminar.ItemClick
+    Private Async Sub cmdEliminar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEliminar.ItemClick
 
         Try
 
@@ -5605,7 +5703,10 @@ Public Class frmPedido
                                     SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
                                     If clsLnTrans_pe_enc.Anular_Pedido(pBePedidoEnc.IdPedidoEnc,
-                                                                       .BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+                                                                        .BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+
+                                        '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se anula el pedido desde el documento.
+                                        Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                         '#GT27062024: si anulamos pedido, se anula la póliza asociada)
                                         If AP.Bodega.Es_Bodega_Fiscal Then
@@ -6883,7 +6984,7 @@ Public Class frmPedido
                     valores.Add(BeVW_stock_res.IdProductoTallaColor)
                     valores.Add(BeVW_stock_res.Codigo_Talla)
                     valores.Add(BeVW_stock_res.Codigo_Color)
-                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Talla & BeVW_stock_res.Codigo_Color)
+                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Color & BeVW_stock_res.Codigo_Talla)
                 End If
 
                 DTStockRes.Rows.Add(valores.ToArray())
@@ -6940,8 +7041,6 @@ Public Class frmPedido
             .DisplayFormat = "{0:n6}",
             .ShowInGroupColumnFooter = GridView6.Columns("Cantidad_Pres")}
             GridView6.GroupSummary.Add(item3)
-
-            GridView6.Columns("IdProductoTallaColor").Visible = False
 
             GridView6.BestFitColumns()
 
@@ -7742,14 +7841,19 @@ Public Class frmPedido
 
         Try
 
+            If e.RowHandle < 0 Then
+                Return
+            End If
+
             Dim Existe As Boolean = False
             Dim View As GridView = sender
             Dim vCodigo As String = ""
             vCodigo = IIf(IsDBNull(View.Columns("Código")), "", View.Columns("Código"))
 
-            Dim vCantidad As Object = IIf(IsDBNull(View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad"))), 0, View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad")))
+            Dim vCantidad As Decimal = Get_Valor_Decimal_GridView(View, e.RowHandle, "Cantidad")
+            Dim vCantRes As Decimal = Get_Valor_Decimal_GridView(View, e.RowHandle, "Cantidad_Reservada")
 
-            Dim vCantRes As Object = IIf(IsDBNull(View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad_Reservada"))), 0, View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad_Reservada")))
+            Aplicar_Estilo_Indicador_Reserva(View, e, vCantidad, vCantRes)
 
             If Not vCodigo Is Nothing Then
 
@@ -7777,18 +7881,6 @@ Public Class frmPedido
 
             End If
 
-            If vCantidad <> vCantRes Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                e.Appearance.BackColor = Color.LightCoral
-                e.Appearance.BackColor2 = Color.White
-                e.Appearance.ForeColor = Color.Black
-            Else
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                e.Appearance.BackColor = Color.LightGreen
-                e.Appearance.BackColor2 = Color.White
-                e.Appearance.ForeColor = Color.Black
-            End If
-
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
@@ -7799,6 +7891,82 @@ Public Class frmPedido
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
         End Try
+
+    End Sub
+
+    Private Function Get_Valor_Decimal_GridView(ByVal pView As GridView,
+                                                ByVal pRowHandle As Integer,
+                                                ByVal pFieldName As String) As Decimal
+
+        Try
+
+            If pView.Columns(pFieldName) Is Nothing Then
+                Return 0D
+            End If
+
+            Dim vValor As Object = pView.GetRowCellValue(pRowHandle, pView.Columns(pFieldName))
+
+            If vValor Is Nothing OrElse IsDBNull(vValor) Then
+                Return 0D
+            End If
+
+            Return Convert.ToDecimal(vValor)
+
+        Catch ex As Exception
+            Return 0D
+        End Try
+
+    End Function
+
+    Private Sub Aplicar_Estilo_Indicador_Reserva(ByVal pView As GridView,
+                                                 ByVal e As RowCellStyleEventArgs,
+                                                 ByVal pCantidad As Decimal,
+                                                 ByVal pCantidadReservada As Decimal)
+
+        Dim vEstadoReserva As String = ""
+
+        If Not pView.Columns("Estado_Reserva") Is Nothing Then
+            vEstadoReserva = pView.GetRowCellDisplayText(e.RowHandle, pView.Columns("Estado_Reserva"))
+        End If
+
+        If vEstadoReserva = "" Then
+            If pCantidad = 0D Then
+                vEstadoReserva = "Sin solicitud"
+            ElseIf pCantidadReservada = 0D Then
+                vEstadoReserva = "Sin reserva"
+            ElseIf pCantidadReservada < pCantidad Then
+                vEstadoReserva = "Parcial"
+            ElseIf pCantidadReservada = pCantidad Then
+                vEstadoReserva = "Completa"
+            Else
+                vEstadoReserva = "Exceso"
+            End If
+        End If
+
+        e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
+        e.Appearance.ForeColor = Color.Black
+
+        Select Case vEstadoReserva.ToUpperInvariant()
+            Case "COMPLETA"
+                e.Appearance.BackColor = Color.Honeydew
+                e.Appearance.BackColor2 = Color.LightGreen
+            Case "PARCIAL"
+                e.Appearance.BackColor = Color.LemonChiffon
+                e.Appearance.BackColor2 = Color.Khaki
+            Case "EXCESO"
+                e.Appearance.BackColor = Color.Moccasin
+                e.Appearance.BackColor2 = Color.Orange
+            Case Else
+                e.Appearance.BackColor = Color.MistyRose
+                e.Appearance.BackColor2 = Color.LightCoral
+        End Select
+
+        If e.Column.FieldName = "Estado_Reserva" OrElse
+           e.Column.FieldName = "Porcentaje_Reservado" OrElse
+           e.Column.FieldName = "Porcentaje_Diferencia" OrElse
+           e.Column.FieldName = "Diferencia_Reserva" Then
+            e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
+        End If
 
     End Sub
 
@@ -10043,7 +10211,7 @@ Public Class frmPedido
         Return Nothing
     End Function
 
-    Private Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
+    Private Async Sub mnuEliminarPedido_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedido.ItemClick
 
         Try
 
@@ -10086,6 +10254,30 @@ Public Class frmPedido
                                             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                                             SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
+                                            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
+                                            If AP.Bodega.Interface_SAP AndAlso Not clsBD.Instancia.HANA_SL = "" Then
+
+                                                Dim vHanaService = New SapServiceLayerClient()
+                                                Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                                                Select Case pBePedidoEnc.IdTipoPedido
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
+                                                        Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
+                                                        Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                            vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                        Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                    Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                        Await clsSyncSapFacturaReservaCliente.Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                  vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+
+                                                End Select
+
+                                            End If
+
                                             If wsTOMHHInstance Is Nothing Then
                                                 clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface (WS Interno de TOMWMS)")
                                                 lblprg.BackColor = Color.Firebrick
@@ -10117,8 +10309,11 @@ Public Class frmPedido
                                                     SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
                                                     If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                       AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                       AP.UsuarioAp.IdUsuario) Then
+                                                                                                                        AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                        AP.UsuarioAp.IdUsuario) Then
+
+                                                        '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                        Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                         '#MECR15102025: Se agrego bitacora de logs para pedidos
                                                         'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703B: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Eliminó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
@@ -10152,8 +10347,11 @@ Public Class frmPedido
                                                 SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
 
                                                 If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                   AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                   AP.UsuarioAp.IdUsuario) Then
+                                                                                                                    AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                    AP.UsuarioAp.IdUsuario) Then
+
+                                                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                    Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                     SplashScreenManager.CloseForm(False)
 
@@ -10169,7 +10367,7 @@ Public Class frmPedido
 
                                                     Try
 
-                                                        If vInterfaceSAP Then
+                                                        If vInterfaceSAP AndAlso clsBD.Instancia.HANA_SL = "" Then
 
                                                             Dim vArgumentosAEnviarAInterface As String = ""
                                                             Dim tipoDocumento As New clsDataContractDI.tTipoDocumentoSalida
@@ -10217,8 +10415,11 @@ Public Class frmPedido
                                         Else
 
                                             If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                               AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                               AP.UsuarioAp.IdUsuario) Then
+                                                                                                                AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                AP.UsuarioAp.IdUsuario) Then
+
+                                                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                 SplashScreenManager.CloseForm(False)
 
@@ -10240,8 +10441,11 @@ Public Class frmPedido
                                     Else
 
                                         If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                           AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                           AP.UsuarioAp.IdUsuario) Then
+                                                                                                            AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                            AP.UsuarioAp.IdUsuario) Then
+
+                                            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                            Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                             SplashScreenManager.CloseForm(False)
 
@@ -10280,6 +10484,10 @@ Public Class frmPedido
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
             lblprg.Text = "" : lblprg.Visible = False
+            Try
+                SplashScreenManager.CloseForm(False)
+            Catch ex As Exception
+            End Try
         End Try
 
     End Sub
@@ -11921,20 +12129,29 @@ Public Class frmPedido
             End If
         End If
 
-        ' 3.2 – ¿Mi producto aparece en OTRA línea?
-        Dim productoEnOtraLinea = dgrid.Rows.Cast(Of DataGridViewRow)().
-            Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
-            Any(Function(r)
-                    Dim l2 As Integer = 0 : Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
-                    Dim p2 As String = GetProductoKey(r)
-                    Return p2 = pKey AndAlso l2 <> linea
-                End Function)
+        ' 3.2 – ¿Mi producto aparece en OTRA línea que no es válida?
+        Dim lineasValidas = dgrid.Rows.Cast(Of DataGridViewRow)().
+                Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
+                Where(Function(r) GetProductoKey(r) = pKey).
+                Select(Function(r)
+                           Dim l2 As Integer = 0
+                           Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
+                           Return l2
+                       End Function).
+                Where(Function(l) l > 0).
+                Distinct().
+                OrderBy(Function(l) l).
+                ToList()
 
-        If productoEnOtraLinea Then
+        Dim lineaValidaParaProducto As Boolean = lineasValidas.Contains(linea)
+
+        If Not lineaValidaParaProducto Then
+            Dim mensaje As String = "El número de línea no es válido para este producto." & Environment.NewLine &
+                    "Líneas permitidas: " & String.Join(", ", lineasValidas)
             ok = False
-            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), "Este producto ya está en otra línea.", row.ErrorText & " Este producto ya está en otra línea.")
+            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), mensaje, row.ErrorText & " " & mensaje)
             If dgrid.Columns.Contains("colCodProducto") Then
-                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea distinto."
+                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea no válido."
             End If
         End If
 
@@ -12111,38 +12328,42 @@ Public Class frmPedido
 
             If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
 
-                'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
-                Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
+                If cmbTipoPedido.Properties.DataSource IsNot Nothing Then
 
-                If fila IsNot Nothing Then
+                    'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
+                    Dim fila As DataRowView = TryCast(cmbTipoPedido.GetSelectedDataRow(), DataRowView)
 
-                    Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
-                    Dim vVerificar As Boolean = fila.Item("Verificar")
-                    Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
-                    Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
+                    If fila IsNot Nothing Then
 
-                    If vControl_Poliza Then
-                        chkControlPoliza.Checked = True
-                        chkControlPoliza.Enabled = False
+                        Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
+                        Dim vVerificar As Boolean = fila.Item("Verificar")
+                        Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
+                        Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
+
+                        If vControl_Poliza Then
+                            chkControlPoliza.Checked = True
+                            chkControlPoliza.Enabled = False
+                        Else
+                            chkControlPoliza.Checked = False
+                            chkControlPoliza.Enabled = False
+                        End If
+
+                        cmbMotivoDevolucion.Visible = vEs_Devolucion
+                        lblMotivoDevolucion.Visible = vEs_Devolucion
+
+                        If vEs_Devolucion Then
+                            Llena_Motivos_Devolucion()
+                        End If
+
+                        grpScanPoliza.Visible = vControl_Poliza
+                        tabPoliza.Visible = vControl_Poliza
+                        tabPoliza.PageVisible = vControl_Poliza
+                        chkVerificar.Checked = vVerificar
+                        chkFotografiaVerificacion.Checked = vFotografiaVerificacion
                     Else
-                        chkControlPoliza.Checked = False
-                        chkControlPoliza.Enabled = False
+                        Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
                     End If
 
-                    cmbMotivoDevolucion.Visible = vEs_Devolucion
-                    lblMotivoDevolucion.Visible = vEs_Devolucion
-
-                    If vEs_Devolucion Then
-                        Llena_Motivos_Devolucion()
-                    End If
-
-                    grpScanPoliza.Visible = vControl_Poliza
-                    tabPoliza.Visible = vControl_Poliza
-                    tabPoliza.PageVisible = vControl_Poliza
-                    chkVerificar.Checked = vVerificar
-                    chkFotografiaVerificacion.Checked = vFotografiaVerificacion
-                Else
-                    Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
                 End If
 
             End If

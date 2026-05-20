@@ -1,6 +1,6 @@
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
 using WMS.EntityCore.Producto;
 
 namespace WMSWebAPI.Be
@@ -45,7 +45,7 @@ namespace WMSWebAPI.Be
 
         [Column("fecha_vence")]
         [DisplayName("fecha_vence")]
-        public DateTime Fecha_vence { get; set; } = DateTime.Now;
+        public DateTime Fecha_vence { get; set; } = new DateTime(1900, 1, 1);
 
         [Column("lic_plate")]
         [DisplayName("lic_plate")]
@@ -94,8 +94,8 @@ namespace WMSWebAPI.Be
         public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
         public int IdProductoTallaColor { get; set; } = 0;
         public string Talla { get; set; } = "";
-        public string Color { get; set; } = "";
-
+        public string Color { get; set; } = "";        
+        public double Peso_Licencia { get; set; } = 0;
         public clsBeTrans_oc_det_lote() { }
 
         public object Clone()

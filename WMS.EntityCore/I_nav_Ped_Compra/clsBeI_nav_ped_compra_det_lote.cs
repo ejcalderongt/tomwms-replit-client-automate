@@ -48,6 +48,8 @@ namespace WMSWebAPI.Be
         [Column("fec_agr")]
         [DisplayName("fec_agr")]
         public DateTime Fec_agr { get; set; } = DateTime.Now;
+        public Double Pallet_Weight { get; set; } = 0;
+        public string Pallet_License_No { get; set; } = "";
 
         public clsBeI_nav_ped_compra_det_lote() { }
 

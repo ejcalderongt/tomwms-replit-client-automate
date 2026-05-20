@@ -114,7 +114,7 @@ namespace WMS.StockReservation.Core.Services
             context.OriginalRequestedQuantity = context.Request.Cantidad;
             
             // Si NO hay presentacion (IdPresentacion <= 0), cantidad ya esta en unidades
-            if (context.Request.IdPresentacion <= 0 || context.DefaultPresentation == null)
+            if (context.Request.IdPresentacion <= 0)
             {
                 context.WasQuantityInPresentation = false;
                 context.ConversionFactor = 1;
@@ -122,9 +122,13 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
+            var requestedPresentation = ResolveRequestedPresentation(context);
+            if (requestedPresentation == null)
+                throw new InvalidOperationException($"Presentacion {context.Request.IdPresentacion} no encontrada para convertir cantidad a unidades.");
+
             // Si HAY presentacion (IdPresentacion > 0), SIEMPRE convertir a unidades
             // Ejemplo: 96 cajas x 24 unidades/caja = 2304 unidades
-            double factor = context.DefaultPresentation.Factor;
+            double factor = requestedPresentation.Factor;
             if (factor <= 0) factor = 1;
             
             context.ConversionFactor = factor;
@@ -136,6 +140,34 @@ namespace WMS.StockReservation.Core.Services
             context.WasQuantityInPresentation = true;
             
             _logger?.LogInfo($"#CONVERSION_APPLIED | {context.OriginalRequestedQuantity:F6} presentaciones x Factor: {factor:F0} = {quantityInUnits:F6} unidades");
+        }
+
+        private clsBeProducto_presentacion? ResolveRequestedPresentation(ReservationContext context)
+        {
+            var presentation = context.CachedPresentations?
+                .FirstOrDefault(p => p.IdPresentacion == context.Request.IdPresentacion);
+
+            if (presentation != null)
+                return presentation;
+
+            presentation = clsLnProducto_presentacion.GetSingle(
+                context.Request.IdPresentacion,
+                context.Connection!,
+                context.Transaction!);
+
+            if (presentation != null)
+            {
+                context.CachedPresentations ??= new List<clsBeProducto_presentacion>();
+                if (!context.CachedPresentations.Any(p => p.IdPresentacion == presentation.IdPresentacion))
+                    context.CachedPresentations.Add(presentation);
+
+                return presentation;
+            }
+
+            if (context.DefaultPresentation?.IdPresentacion == context.Request.IdPresentacion)
+                return context.DefaultPresentation;
+
+            return null;
         }
     }
 }

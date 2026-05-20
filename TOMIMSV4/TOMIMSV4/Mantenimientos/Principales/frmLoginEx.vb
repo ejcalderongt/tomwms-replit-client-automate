@@ -57,6 +57,8 @@ Public Class frmLoginEx
             Configuration.ConfigurationManager.AppSettings("IMS4MB_QAConnectionStringPrograN") = clsBD.Instancia.CadenaConexionSQLClient
             Configuration.ConfigurationManager.AppSettings("IMS4MB_PRDConnectionString") = clsBD.Instancia.CadenaConexionSQLClient
             Configuration.ConfigurationManager.AppSettings("CST_ERP") = clsBD.Instancia.Cadena_Conexion_SQL_ERP
+            Configuration.ConfigurationManager.AppSettings("WMS_MODO_DEBUG") = IIf(clsBD.Instancia.Modo_Debug, "ON", "OFF")
+            Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE") = IIf(clsBD.Instancia.Modo_Debug, "ON", "OFF")
             'clsBD.Instancia.WSTOMHH
             If clsBD.Instancia.WSTOMHH.Trim <> "" Then
 
@@ -691,6 +693,8 @@ Public Class frmLoginEx
             lLicenciasProgramacion.Add("DESKTOP-5BM5P11")
             lLicenciasProgramacion.Add("DESKTOP-790O7S2")
             lLicenciasProgramacion.Add("Marcela1306")
+            lLicenciasProgramacion.Add("AbigailAlvarado")
+
 
             '#EJC20210517: Cuando lo encuentren, 
             'agreguen sus Identificadores en la lista para que en caso de que no tenga licencia, no les pida.
@@ -1203,6 +1207,9 @@ Public Class frmLoginEx
             'Enviar_Transacciones_De_Salida(clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa)
 
             'GenerateVoicePickCode("17404003900174", "000455", "250225")
+
+            'Dim FRM As New FrmNotificacionEventoMnt
+            'FRM.ShowDialog()
 
         Catch ex As Exception
 

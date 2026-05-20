@@ -312,14 +312,13 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
     Private Shared Sub Iniciar_Ejecucion(cnnLog As SqlConnection)
         BeNavEjecucionEnc = New clsBeI_nav_ejecucion_enc With {
-            .IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(cnnLog),
             .IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface,
             .Fecha = Now
         }
+        '#EJCCKFK20260520: Cambio por Identity en tabla.
         clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, cnnLog)
 
         BeNavEjecucionRes = New clsBeI_nav_ejecucion_res With {
-            .IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(cnnLog) + 1,
             .IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc,
             .IdNavConfigDet = BeConfigDet.Idnavconfigdet,
             .Registros_ws = 0,
@@ -327,6 +326,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             .Registros_WMS = 0,
             .Exitosa = False
         }
+        '#EJCCKFK20260520: Cambio por Identity en tabla.
         clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, cnnLog)
     End Sub
 
@@ -759,7 +759,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             Dim filtro As New Text.StringBuilder()
 
             filtro.Append("U_Grupo ne '19' and " &
-                     If(codigo <> "", "", "U_ENVIADO_WMS eq null and ") &
+                     If(codigo <> "", "", " (U_ENVIADO_WMS eq null or U_ENVIADO_WMS eq 2) and ") &
                       " Valid eq 'tYES' and " &
                       " InventoryUOM ne '' ")
 
@@ -832,7 +832,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
                                 prod.Inventory = 0D
                                 prod.Unit_Cost = 0D
-                                prod.BatchControl = (SafeGetString(row, "ManageBatchNumbers") = "tYES")
+                                prod.BatchControl = False
 
                                 prod.Item_Category_Name = String.Empty
                                 prod.Producto_Group_Name = String.Empty
@@ -879,6 +879,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                             skip += filasPagina
                         End Using
                     End While
+
                 End Using
 
             End Using

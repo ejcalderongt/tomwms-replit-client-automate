@@ -284,15 +284,6 @@ Partial Public Class clsLnTrans_prefactura_enc
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            'Dim pTimeOut = clsBD.Instancia.TimeOutConBD
-
-            'lblPrg.AppendText(vbNewLine)
-            'lblPrg.AppendText("Ejecutando SP para insertar desfase...")
-            'lblPrg.AppendText(vbNewLine)
-            'lblPrg.Refresh()
-            'lblPrg.SelectionStart = lblPrg.TextLength
-            'lblPrg.ScrollToCaret()
-
             '#GT09082024: variables para enviar prefactura a SP
             Dim PrefacturaDetalle = New DataTable
             PrefacturaDetalle.Columns.Add("correlativo_detalleacuerdo", GetType(Integer))
@@ -330,44 +321,6 @@ Partial Public Class clsLnTrans_prefactura_enc
             If returnValue < 0 Then
                 Throw New Exception("Aritec-sp_cortes_integrados retorna valor " & returnValue)
             End If
-            '    Insertar_Prefactura_ERP = True
-
-            'Else
-
-            'End If
-
-            'cmd.Parameters.Add("@PrefacturaDetalle", SqlDbType.Structured)
-            'cmd.Parameters("@RegistrosARevisar").Direction = ParameterDirection.Output
-            'If pTimeOut > 0 Then
-            '    cmd.CommandTimeout = pTimeOut
-            'End If
-
-            'returnValue = cmd.ExecuteNonQuery()
-
-            'If returnValue > 0 Then
-            '    Insertar_Prefactura_ERP = True
-            'Else
-
-            'End If
-
-
-            'If (returnValue > 0) Then
-
-            '    lblPrg.AppendText(vbNewLine)
-            '    lblPrg.AppendText("Aviso: El proceso histórico con retroactivo faltante agregó " & returnValue & " registros.")
-            '    lblPrg.AppendText(vbNewLine)
-            '    lblPrg.Refresh()
-            '    lblPrg.SelectionStart = lblPrg.TextLength
-            '    lblPrg.ScrollToCaret()
-            'Else
-            '    lblPrg.AppendText(vbNewLine)
-            '    lblPrg.AppendText("Error: El proceso histórico con retroactivo no devolvió cuantos registros inserto!.")
-            '    lblPrg.AppendText(vbNewLine)
-            '    lblPrg.Refresh()
-            '    lblPrg.SelectionStart = lblPrg.TextLength
-            '    lblPrg.ScrollToCaret()
-
-            'End If
 
             lTransaction.Commit()
 

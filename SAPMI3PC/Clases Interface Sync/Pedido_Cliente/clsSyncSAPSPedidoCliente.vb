@@ -206,8 +206,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                         End If
 
-                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
-                                                                                                                                               lblprg)
+                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
+                                                                                                                                               lblprg, Nothing, Nothing)
 
                         If Not BePedidoEncResult Is Nothing Then
 
@@ -1442,47 +1442,47 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                                                                                                           clsTransaccion.lConnection,
                                                                                                           clsTransaccion.lTransaction)
 
-                                ' Si el producto tiene control por lote
-                                If vControlPorLote Then
-                                    ' Agrupar los lotes recibidos por estado
-                                    Dim LotesRecibidosPorEstado = lINavTransaccionesOut.
-                                        Where(Function(x) x.Codigo_producto = ProductoSalida.Codigo_producto _
-                                              AndAlso x.No_linea = ProductoSalida.No_linea).
-                                        GroupBy(Function(x) x.Idproductoestado).
-                                        Select(Function(g) New With {
-                                            .Idproductoestado = g.Key,
-                                            .Lotes = g.GroupBy(Function(x) New With {Key x.Lote, Key x.Codigo_producto, Key x.No_linea, Key x.Fecha_vence}).
-                                                       Select(Function(lg) New With {
-                                                           .Codigo_producto = lg.Key.Codigo_producto,
-                                                           .No_linea = lg.Key.No_linea,
-                                                           .Lote = lg.Key.Lote,
-                                                           .Fecha_vence = lg.Key.Fecha_vence,
-                                                           .CantidadTotal = lg.Sum(Function(x) x.Cantidad),
-                                                           .CantidadEnviada = lg.Sum(Function(x) x.Cantidad_Enviada),
-                                                           .CantidadPendiente = lg.Sum(Function(x) x.Cantidad_Pendiente)
-                                                       }).ToList()
-                                        }).ToList()
+                                ' Agrupar los lotes recibidos por estado
+                                Dim LotesRecibidosPorEstado = lINavTransaccionesOut.
+                                    Where(Function(x) x.Codigo_producto = ProductoSalida.Codigo_producto _
+                                          AndAlso x.No_linea = ProductoSalida.No_linea).
+                                    GroupBy(Function(x) x.Idproductoestado).
+                                    Select(Function(g) New With {
+                                        .Idproductoestado = g.Key,
+                                        .Lotes = g.GroupBy(Function(x) New With {Key x.Lote, Key x.Codigo_producto, Key x.No_linea, Key x.Fecha_vence}).
+                                                   Select(Function(lg) New With {
+                                                       .Codigo_producto = lg.Key.Codigo_producto,
+                                                       .No_linea = lg.Key.No_linea,
+                                                       .Lote = lg.Key.Lote,
+                                                       .Fecha_vence = lg.Key.Fecha_vence,
+                                                       .CantidadTotal = lg.Sum(Function(x) x.Cantidad),
+                                                       .CantidadEnviada = lg.Sum(Function(x) x.Cantidad_Enviada),
+                                                       .CantidadPendiente = lg.Sum(Function(x) x.Cantidad_Pendiente)
+                                                   }).ToList()
+                                    }).ToList()
 
-                                    ' Si hay lotes recibidos
-                                    If LotesRecibidosPorEstado.Count > 0 Then
-                                        ' Llamar a AgregarLineaEntrega con todos los lotes asociados
-                                        Agregar_Linea_Entrega(oEntrega,
-                                                              oOrderSales,
-                                                              _Docentry,
-                                                              vNoLineaOCSAP,
-                                                              LotesRecibidosPorEstado.FirstOrDefault,
-                                                              LotesSAP,
-                                                              lblprg,
-                                                              lINavTransaccionesOut,
-                                                              Lista_A_Actualizar)
-                                        If Lista_A_Actualizar.Count > 0 AndAlso Lista_A_Actualizar.Sum(Function(x) x.Cantidad_Enviada) > 0 Then
-                                            NoLineaEntrega += 1
-                                        End If
+                                ' Si hay lotes recibidos
+                                If LotesRecibidosPorEstado.Count > 0 Then
+                                    ' Llamar a AgregarLineaEntrega con todos los lotes asociados
+                                    Agregar_Linea_Entrega(oEntrega,
+                                                          oOrderSales,
+                                                          _Docentry,
+                                                          vNoLineaOCSAP,
+                                                          LotesRecibidosPorEstado.FirstOrDefault,
+                                                          LotesSAP,
+                                                          lblprg,
+                                                          lINavTransaccionesOut,
+                                                          Lista_A_Actualizar,
+                                                          vControlPorLote)
+                                    If Lista_A_Actualizar.Count > 0 AndAlso Lista_A_Actualizar.Sum(Function(x) x.Cantidad_Enviada) > 0 Then
+                                        NoLineaEntrega += 1
                                     End If
                                 End If
                             Else
                                 Throw New Exception("WMS está intentando generar una entrega por una cantidad mayor a la que permite SAP.")
                             End If
+                        Else
+                            Throw New Exception("WMS está intentando generar una entrega por una cantidad mayor a la que permite SAP.")
                         End If
                     Next
                 End If
@@ -1539,15 +1539,15 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
 
     ' Función para agregar una línea de entrega
-    Private Sub Agregar_Linea_Entrega(ByRef oEntrega As Documents,
-                                      ByRef oOrderSales As Documents,
-                                      ByVal _Docentry As Integer,
-                                      ByVal vNoLineaOCSAP As Integer,
-                                      ByVal LotesRecibidosPorEstado As Object,
-                                      ByVal LotesSAP As clsSyncLotes,
-                                      ByRef lblprg As RichTextBox,
-                                      ByRef lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
-                                      ByRef Lista_A_Actualizar As List(Of clsBeI_nav_transacciones_out))
+    Private Sub Agregar_Linea_EntregaAnterior(ByRef oEntrega As Documents,
+                                              ByRef oOrderSales As Documents,
+                                              ByVal _Docentry As Integer,
+                                              ByVal vNoLineaOCSAP As Integer,
+                                              ByVal LotesRecibidosPorEstado As Object,
+                                              ByVal LotesSAP As clsSyncLotes,
+                                              ByRef lblprg As RichTextBox,
+                                              ByRef lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                              ByRef Lista_A_Actualizar As List(Of clsBeI_nav_transacciones_out))
         Try
 
             Dim CantidadTotalAEnviar As Double = 0
@@ -1686,6 +1686,169 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             ' Manejar cualquier error que ocurra fuera del proceso de los lotes
             Throw New Exception("Error al procesar la línea de entrega para el producto: " & oOrderSales.Lines.ItemCode & ". Detalles del error: " & ex.Message)
         End Try
+    End Sub
+
+
+    Private Sub Agregar_Linea_Entrega(ByRef oEntrega As Documents,
+                                      ByRef oOrderSales As Documents,
+                                      ByVal _Docentry As Integer,
+                                      ByVal vNoLineaOCSAP As Integer,
+                                      ByVal LotesRecibidosPorEstado As Object,
+                                      ByVal LotesSAP As clsSyncLotes,
+                                      ByRef lblprg As RichTextBox,
+                                      ByRef lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                      ByRef Lista_A_Actualizar As List(Of clsBeI_nav_transacciones_out),
+                                      ByVal pControlLote As Boolean)
+        Try
+
+            Dim CantidadDisponibleSAP As Double = 0
+            Dim TotalDisponibleSAP As Double = 0
+            Dim vExistenciaSAP As Double = 0
+
+            Dim ItemCode As String = oOrderSales.Lines.ItemCode
+            Dim WhsCode As String = oOrderSales.Lines.WarehouseCode
+
+            ' Fase 1: Calcular total disponible en SAP
+            For Each lote In LotesRecibidosPorEstado.Lotes
+                Try
+
+                    Dim CantidadPendienteWMS As Double = lote.CantidadTotal - lote.CantidadEnviada
+
+                    If pControlLote Then
+                        CantidadDisponibleSAP = LotesSAP.Existe_Lote_SAP(oCompany,
+                                                                     ItemCode,
+                                                                     lote.Lote,
+                                                                     WhsCode)
+                    Else
+                        CantidadDisponibleSAP = LotesSAP.Existe_Disponible_SAP(oCompany,
+                                                                           ItemCode,
+                                                                           WhsCode)
+                    End If
+
+                    vExistenciaSAP = CantidadDisponibleSAP
+
+                    Dim CantidadAEnviar As Double = Math.Min(CantidadPendienteWMS, CantidadDisponibleSAP)
+
+                    If CantidadAEnviar < CantidadPendienteWMS Then
+                        If pControlLote Then
+                            clsPublic.Actualizar_Progreso(lblprg,
+                            String.Format("Advertencia: El lote {0} tiene menos cantidad en SAP ({1}) que la solicitada ({2}). Se enviarán {1} unidades.",
+                                          lote.Lote, CantidadAEnviar, CantidadPendienteWMS))
+                        Else
+                            clsPublic.Actualizar_Progreso(lblprg,
+                            String.Format("Advertencia: El producto sin lote {0} tiene menos cantidad en SAP ({1}) que la solicitada ({2}). Se enviarán {1} unidades.",
+                                          ItemCode, CantidadAEnviar, CantidadPendienteWMS))
+                        End If
+                    End If
+
+                    TotalDisponibleSAP += CantidadAEnviar
+
+                Catch ex As Exception
+                    clsPublic.Actualizar_Progreso(lblprg,
+                    String.Format("Error al procesar el producto {0}: {1}", ItemCode, ex.Message))
+                    Continue For
+                End Try
+            Next
+
+            If TotalDisponibleSAP > 0 Then
+
+                oEntrega.Lines.SetCurrentLine(oEntrega.Lines.Count - 1)
+                oEntrega.Lines.BaseType = BoObjectTypes.oOrders
+                oEntrega.Lines.BaseEntry = _Docentry
+                oEntrega.Lines.BaseLine = vNoLineaOCSAP
+                oEntrega.Lines.ItemCode = ItemCode
+                oEntrega.Lines.Quantity = TotalDisponibleSAP
+
+                ' Fase 2: Agregar detalle según maneje lote o no
+                For Each lote In LotesRecibidosPorEstado.Lotes
+                    Try
+
+                        Dim CantidadPendienteWMS As Double = lote.CantidadTotal - lote.CantidadEnviada
+
+                        If pControlLote Then
+                            CantidadDisponibleSAP = LotesSAP.Existe_Lote_SAP(oCompany,
+                                                                         ItemCode,
+                                                                         lote.Lote,
+                                                                         WhsCode)
+                        Else
+                            CantidadDisponibleSAP = LotesSAP.Existe_Disponible_SAP(oCompany,
+                                                                               ItemCode,
+                                                                               WhsCode)
+                        End If
+
+                        vExistenciaSAP = CantidadDisponibleSAP
+
+                        Dim CantidadAEnviar As Double = Math.Min(CantidadPendienteWMS, CantidadDisponibleSAP)
+
+                        If CantidadAEnviar > 0 Then
+
+                            If pControlLote Then
+                                oEntrega.Lines.BatchNumbers.SetCurrentLine(oEntrega.Lines.BatchNumbers.Count - 1)
+                                oEntrega.Lines.BatchNumbers.BatchNumber = lote.Lote
+                                oEntrega.Lines.BatchNumbers.Quantity = CantidadAEnviar
+                                oEntrega.Lines.BatchNumbers.Add()
+                            End If
+
+                            If CantidadAEnviar = CantidadPendienteWMS Then
+                                ActualizarCantidadEnWMS(lINavTransaccionesOut,
+                                                    Lista_A_Actualizar,
+                                                    oOrderSales.DocEntry,
+                                                    vNoLineaOCSAP,
+                                                    ItemCode,
+                                                    lote.Lote,
+                                                    CantidadAEnviar)
+                            Else
+                                ActualizarCantidadParcialEnWMS(lINavTransaccionesOut,
+                                                           Lista_A_Actualizar,
+                                                           oOrderSales.DocEntry,
+                                                           vNoLineaOCSAP,
+                                                           ItemCode,
+                                                           lote.Lote,
+                                                           vExistenciaSAP)
+                            End If
+
+                        End If
+
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblprg,
+                        String.Format("Error al agregar producto {0}: {1}", ItemCode, ex.Message))
+                        Continue For
+                    End Try
+                Next
+
+                If oEntrega.Lines.Count > 0 Then
+                    oEntrega.Lines.Add()
+                End If
+
+            Else
+
+                clsPublic.Actualizar_Progreso(lblprg,
+                String.Format("No hay cantidades disponibles en SAP para el producto: {0}.", ItemCode))
+
+                For Each lote In LotesRecibidosPorEstado.Lotes
+                    Try
+                        ActualizarCantidadParcialEnWMS(lINavTransaccionesOut,
+                                                   Lista_A_Actualizar,
+                                                   oOrderSales.DocEntry,
+                                                   vNoLineaOCSAP,
+                                                   ItemCode,
+                                                   lote.Lote,
+                                                   vExistenciaSAP)
+                    Catch ex As Exception
+                        clsPublic.Actualizar_Progreso(lblprg,
+                        String.Format("Error al actualizar WMS para producto {0}: {1}", ItemCode, ex.Message))
+                        Continue For
+                    End Try
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Throw New Exception("Error al procesar la línea de entrega para el producto: " &
+                            oOrderSales.Lines.ItemCode &
+                            ". Detalles del error: " & ex.Message)
+        End Try
+
     End Sub
 
     ' Funciones auxiliares para actualizar cantidades en WMS

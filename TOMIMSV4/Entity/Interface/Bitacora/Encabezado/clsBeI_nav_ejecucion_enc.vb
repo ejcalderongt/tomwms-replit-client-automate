@@ -86,7 +86,6 @@ Public Class clsBeI_nav_ejecucion_enc
             mExitosa = Value
         End Set
     End Property
-
     ''' <summary>
     ''' Initializes a new instance of the <see cref="clsBeI_nav_ejecucion_enc"/> class.
     ''' </summary>

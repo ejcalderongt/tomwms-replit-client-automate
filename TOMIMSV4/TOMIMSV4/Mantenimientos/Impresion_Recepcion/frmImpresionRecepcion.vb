@@ -188,13 +188,26 @@ Public Class frmImpresionRecepcion
                     Dim tmpZPLString = Tipo_Etiqueta.codigo_zpl
 
                     If tmpZPLString <> "" Then
-                        ZPLString = String.Format(tmpZPLString, AP.Bodega.Codigo + " - " + AP.Bodega.Nombre,
-                                                  vEmpresa,
-                                                  vCodigoProducto + " - " + vNombreProducto.Trim,
-                                                  vCodigoBarra,
-                                                  AP.UsuarioAp.Nombres + " " + AP.UsuarioAp.Apellidos + " / " + Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                                                  vLote,
-                                                  vFechaVence)
+                        'ZPLString = String.Format(tmpZPLString, AP.Bodega.Codigo + " - " + AP.Bodega.Nombre,
+                        '                          vEmpresa,
+                        '                          vCodigoProducto + " - " + vNombreProducto.Trim,
+                        '                          vCodigoBarra,
+                        '                          AP.UsuarioAp.Nombres + " " + AP.UsuarioAp.Apellidos + " / " + Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                        '                          vLote,
+                        '                          vFechaVence)
+
+                        ZPLString = String.Format(tmpZPLString,
+                                                AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,                      ' {0}
+                                                vEmpresa,                                                         ' {1}
+                                                vCodigoProducto & " - " & vNombreProducto.Trim(),                 ' {2}
+                                                vCodigoBarra,                                                     ' {3}
+                                                AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"), ' {4}
+                                                vLote,                                                            ' {5}
+                                                vFechaVence,                                                      ' {6}
+                                                pReDet.Nombre_presentacion,                                                    ' {7}
+                                                pReDet.cantidad_recibida                                                         ' {8}
+                                            )
+
                     End If
 
                     If ZPLString <> "" Then

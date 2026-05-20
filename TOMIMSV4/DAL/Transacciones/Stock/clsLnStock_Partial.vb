@@ -7,29 +7,6 @@ Partial Public Class clsLnStock
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
 
-    'Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-    '                             ByVal pTransaction As SqlTransaction) As Integer
-
-    '    Try
-
-    '        Dim lMax As Integer = 0
-    '        Dim vSQL As String = "SELECT ISNULL(Max(IdStock),0) FROM stock"
-
-    '        Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-    '            Dim lReturnValue As Object = lCommand.ExecuteScalar()
-    '            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-    '                lMax = CInt(lReturnValue)
-    '            End If
-    '        End Using
-
-    '        Return lMax
-
-    '    Catch ex As Exception
-    '        Throw ex
-    '    End Try
-
-    'End Function
-
     ''' <summary>
     ''' Busca las existencias para un IdPropietarioBodega
     ''' </summary>
@@ -7183,19 +7160,15 @@ Partial Public Class clsLnStock
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
 
-                        '#GT15062022_1010: deje el Obj fuera, para retornar nothing sino hay filas que setear.
                         Obj = Nothing
 
                         If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                            'clsLnVW_stock_res.Cargar(Obj, lDataTable.Rows(0), lConnection, lTransaction)
 
                             For Each lRow As DataRow In lDataTable.Rows
                                 Obj = New clsBeVW_stock_res()
                                 clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
                             Next
-                            'Else
-                            'Obj = Nothing
 
                         End If
 
@@ -9152,7 +9125,10 @@ Partial Public Class clsLnStock
 									Ubicacion_Indice_X, 
 									Ubicacion_Nombre, 
 									Ubicacion_Tramo, 
-									Nombre_Completo 
+									Nombre_Completo,
+                                    IdProductoTallaColor, 
+                                    Talla, 
+                                    Color
 									FROM VW_Stock_CambioUbic 
 									WHERE ISNULL(CantidadSF,0) - ISNULL(CantidadReservada,0) > 0 
 										   AND fecha_vence = @FechaVence "
@@ -9225,7 +9201,10 @@ Partial Public Class clsLnStock
 								Ubicacion_Indice_X, 
 								Ubicacion_Nombre, 
 								Ubicacion_Tramo, 
-								Nombre_Completo "
+								Nombre_Completo,
+                                IdProductoTallaColor, 
+                                Talla, 
+                                Color "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -12251,7 +12230,7 @@ Por favor reportar este problema a DevOps."
 	                                   CASE WHEN v.IdPresentacion IS NULL THEN v.CantidadReservadaUmBas - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_UMBas,
 	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_Pickeada_Presentacion,
 	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN v.Cantidad_Reservada_Pres - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_Presentacion,
-                                v.Codigo_Talla as Talla, v.Codigo_Color as Color 
+                                v.Codigo_Talla as Talla, v.Codigo_Color as Color, DATEDIFF(DAY, GETDATE(), v.fecha_vence) Vence_En
                                 FROM VW_Stock_Res v left outer join 
                                      (SELECT r.IdStock, sum(u.cantidad_recibida) Cant_Pickeada
 	                                  FROM trans_picking_ubic u inner join

@@ -160,6 +160,71 @@ Entity
  </summary>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsBENotificacionCola.PuedeReintentar">
+ <summary>
+ Verifica si el registro puede reintentarse
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.EsReintentoValido">
+ <summary>
+ Verifica si el reintento es válido
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.RegistrarIntento">
+ <summary>
+ Registra un nuevo intento de procesamiento
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.MarcarComoProcesado">
+ <summary>
+ Marca el registro como procesado exitosamente
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.MarcarComoError(System.String)">
+ <summary>
+ Marca el registro como error
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.MarcarComoFinalizado">
+ <summary>
+ Marca el registro como finalizado (máximo de intentos alcanzado)
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.MarcarComoPendiente">
+ <summary>
+ Marca el registro como pendiente para reintentar
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.ObtenerClaveUnica">
+ <summary>
+ Obtiene una clave única para identificar el registro
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.EstaPendiente">
+ <summary>
+ Verifica si el registro está pendiente de procesamiento
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.EstaProcesado">
+ <summary>
+ Verifica si el registro ya fue procesado exitosamente
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.EstaEnError">
+ <summary>
+ Verifica si el registro está en error
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.EstaFinalizado">
+ <summary>
+ Verifica si el registro está finalizado (máximo intentos)
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBENotificacionCola.ReiniciarIntentos">
+ <summary>
+ Reinicia el contador de intentos
+ </summary>
+</member>
 <member name="T:TOMWMS.clsBeProveedor_tiempos">
  <summary>
  Class clsBeProveedor_tiempos.
@@ -969,12 +1034,6 @@ Entity
  </summary>
  <value>The identifier empresa.</value>
 </member>
-<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
- <summary>
- Gets or sets the identifier bodega.
- </summary>
- <value>The identifier bodega.</value>
-</member>
 <member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdPropietario">
  <summary>
  Gets or sets the identifier propietario.
@@ -1052,6 +1111,12 @@ Entity
  Gets or sets the referencia.
  </summary>
  <value>The referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
 </member>
 <member name="T:TOMWMS.clsBeI_nav_ejecucion_res">
  <summary>

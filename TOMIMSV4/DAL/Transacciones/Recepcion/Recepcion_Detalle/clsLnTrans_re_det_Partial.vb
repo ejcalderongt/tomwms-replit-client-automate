@@ -1790,7 +1790,7 @@ Partial Public Class clsLnTrans_re_det
 
     End Sub
 
-    Public Shared Sub Guarda_Trans_re_det(ByVal pListRecDet As List(Of clsBeTrans_re_det),
+    Public Shared Sub Guarda_Trans_re_det(ByRef pListRecDet As List(Of clsBeTrans_re_det),
                                           ByVal Comparar_Detalle_Actual As Boolean,
                                           ByVal pRecEnc As clsBeTrans_re_enc,
                                           ByRef lConnection As SqlConnection,
@@ -2543,7 +2543,6 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-
     ''' <summary>
     ''' #EJC202209211314: Concurrencia y copias de stock.
     ''' </summary>
@@ -2551,10 +2550,10 @@ Partial Public Class clsLnTrans_re_det
     ''' <param name="pListaStockRec"></param>
     ''' <param name="lConnection"></param>
     ''' <param name="lTransaction"></param>
-    Public Shared Function Guarda_Trans_re_det(ByVal pListRecDet As List(Of clsBeTrans_re_det),
-                                              ByRef pListaStockRec As List(Of clsBeStock_rec),
-                                              ByRef lConnection As SqlConnection,
-                                              ByRef lTransaction As SqlTransaction) As Integer
+    Public Shared Function Guarda_Trans_re_det(ByRef pListRecDet As List(Of clsBeTrans_re_det),
+                                               ByRef pListaStockRec As List(Of clsBeStock_rec),
+                                               ByRef lConnection As SqlConnection,
+                                               ByRef lTransaction As SqlTransaction) As Integer
 
         Dim vFilas As Integer = 0
 
@@ -2565,15 +2564,22 @@ Partial Public Class clsLnTrans_re_det
             For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
 
                 If BeTransReDet.IsNew Then
+
                     MaxIdRecepcionDet = 0 'now is identity EJC20260226
+
                     pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
-                    BeTransReDet.IdRecepcionDet = MaxIdRecepcionDet
+
                     BeTransReDet.Fecha_ingreso = Now
                     BeTransReDet.Fec_agr = Now
+
                     If BeTransReDet.IdPresentacion = -1 Then
                         BeTransReDet.IdPresentacion = 0
                     End If
-                    vFilas += Insertar(BeTransReDet, lConnection, lTransaction)
+
+                    Insertar(BeTransReDet, lConnection, lTransaction)
+
+                    vFilas += 1
+
                 Else
                     vFilas += Actualizar(BeTransReDet, lConnection, lTransaction)
                 End If
@@ -2629,7 +2635,7 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-    Public Shared Function Guarda_Trans_re_det(ByVal BeTransReDet As clsBeTrans_re_det,
+    Public Shared Function Guarda_Trans_re_det(ByRef BeTransReDet As clsBeTrans_re_det,
                                                ByRef pListaStockRec As List(Of clsBeStock_rec),
                                                ByRef lConnection As SqlConnection,
                                                ByRef lTransaction As SqlTransaction) As Integer
@@ -2639,31 +2645,32 @@ Partial Public Class clsLnTrans_re_det
         Try
 
             Dim MaxIdRecepcionDet As Integer = 0
+            Dim IdRecepcionDetOrigen As Integer = 0
 
             If BeTransReDet.IsNew Then
 
                 MaxIdRecepcionDet = 0 'now is identity EJC20260226
 
-                pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
-
-                BeTransReDet.IdRecepcionDet = MaxIdRecepcionDet
+                'BeTransReDet.IdRecepcionDet = MaxIdRecepcionDet
                 BeTransReDet.Fecha_ingreso = Now
                 BeTransReDet.Fec_agr = Now
 
-                vFilas += Insertar(BeTransReDet, lConnection, lTransaction)
+                IdRecepcionDetOrigen = BeTransReDet.IdRecepcionDet
+
+                Insertar(BeTransReDet, lConnection, lTransaction)
+                MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
+
+                pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = IdRecepcionDetOrigen).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
+
+                vFilas += 1
 
                 If BeTransReDet.Lic_plate.Equals("") Then
+
                     '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                     Dim vMsgError As String = "AVISO_02122024: insert rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                         pIdUsuarioAgr:=BeTransReDet.User_agr,
-                                                         pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
-                                                         pNumeroLinea:=BeTransReDet.No_Linea,
-                                                         pUMBas:=BeTransReDet.UnidadMedida.Nombre,
-                                                         pVariantCode:=BeTransReDet.Codigo_Producto,
-                                                         pCantidad:=BeTransReDet.cantidad_recibida,
-                                                         pConection:=lConnection,
-                                                         pTransaction:=lTransaction)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError, BeTransReDet.User_agr, BeTransReDet.IdRecepcionEnc, BeTransReDet.No_Linea,
+                                                         BeTransReDet.UnidadMedida.Nombre, BeTransReDet.Codigo_Producto, BeTransReDet.cantidad_recibida,
+                                                         pConection:=lConnection, pTransaction:=lTransaction)
                 End If
 
             Else
@@ -2673,15 +2680,9 @@ Partial Public Class clsLnTrans_re_det
                 If BeTransReDet.Lic_plate.Equals("") Then
                     '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                     Dim vMsgError As String = "AVISO_02122024: update rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                         pIdUsuarioAgr:=BeTransReDet.User_agr,
-                                                         pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
-                                                         pNumeroLinea:=BeTransReDet.No_Linea,
-                                                         pUMBas:=BeTransReDet.UnidadMedida.Nombre,
-                                                         pVariantCode:=BeTransReDet.Codigo_Producto,
-                                                         pCantidad:=BeTransReDet.cantidad_recibida,
-                                                         pConection:=lConnection,
-                                                         pTransaction:=lTransaction)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError, BeTransReDet.User_agr, BeTransReDet.IdRecepcionEnc, BeTransReDet.No_Linea,
+                                                         BeTransReDet.UnidadMedida.Nombre, BeTransReDet.Codigo_Producto, BeTransReDet.cantidad_recibida,
+                                                         pConection:=lConnection, pTransaction:=lTransaction)
                 End If
 
             End If
@@ -3090,6 +3091,30 @@ Partial Public Class clsLnTrans_re_det
                     Else
                         Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
                     End If
+
+                End If
+
+                FilasAfectadas = clsLnI_nav_barras_pallet.Actualizar_Barra_No_Recibida(pRecDet.IdOrdenCompraEnc,
+                                                                                       pRecDet.IdOrdenCompraDet,
+                                                                                       pRecDet.Lic_plate,
+                                                                                       pRecDet.IdRecepcionEnc,
+                                                                                       lConnection, lTrans)
+
+                If FilasAfectadas Then
+
+                    Resultado += String.Format("Se actualizó la barra {0} de la tabla i_nav_barras_pallet ", pRecDet.Lic_plate)
+
+                    Dim vMsgError As String = String.Format("Se actualizó la barra {0} de la tabla i_nav_barras_pallet ", pRecDet.Lic_plate)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
 
                 End If
 

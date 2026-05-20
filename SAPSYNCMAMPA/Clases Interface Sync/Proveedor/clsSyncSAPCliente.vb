@@ -19,15 +19,14 @@ Public Class clsSyncSAPCliente
     Public Shared Sub Iniciar_Ejecucion(lbl As RichTextBox, cnnLog As SqlConnection)
         Try
             BeNavEjecucionEnc = New clsBeI_nav_ejecucion_enc With {
-                .IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(cnnLog),
                 .IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface,
                 .Fecha = Now
             }
 
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
             clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, cnnLog)
 
             BeNavEjecucionRes = New clsBeI_nav_ejecucion_res With {
-                .IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(cnnLog) + 1,
                 .IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc,
                 .IdNavConfigDet = BeConfigDet.Idnavconfigdet,
                 .Registros_ws = 0,
@@ -36,6 +35,7 @@ Public Class clsSyncSAPCliente
                 .Exitosa = False
             }
 
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
             clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, cnnLog)
             clsPublic.Actualizar_Progreso(lbl, $"Inicio de ejecución {BeNavEjecucionEnc.IdEjecucionEnc}")
         Catch ex As Exception

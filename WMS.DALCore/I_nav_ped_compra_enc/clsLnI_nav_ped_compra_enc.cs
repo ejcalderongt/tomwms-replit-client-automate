@@ -17,8 +17,8 @@ using WMSWebAPI.Be;
 public class clsLnI_nav_ped_compra_enc
 {
 
-    private static clsInsert Ins = new clsInsert();
-    private static clsUpdate Upd = new clsUpdate();
+    private static clsInsert Ins = new();
+    private static clsUpdate Upd = new();
 
     public static void Cargar(ref clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc, DataRow dr)
     {
@@ -66,7 +66,7 @@ public class clsLnI_nav_ped_compra_enc
     {
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -139,15 +139,13 @@ public class clsLnI_nav_ped_compra_enc
             cmd.Dispose();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+                lTransaction?.Commit();
 
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -159,8 +157,8 @@ public class clsLnI_nav_ped_compra_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
         return rowsAffected;
     }    
@@ -168,7 +166,7 @@ public class clsLnI_nav_ped_compra_enc
     {
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -204,7 +202,7 @@ public class clsLnI_nav_ped_compra_enc
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            SqlCommand cmd = new() { CommandType = CommandType.Text };
 
             bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
 
@@ -244,15 +242,13 @@ public class clsLnI_nav_ped_compra_enc
             rowsAffected = cmd.ExecuteNonQuery();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+                lTransaction?.Commit();
 
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -264,15 +260,15 @@ public class clsLnI_nav_ped_compra_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
         return rowsAffected;
     }
-    public int Eliminar(IConfiguration config, clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Eliminar(IConfiguration config, clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -283,7 +279,7 @@ public class clsLnI_nav_ped_compra_enc
 
             bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            SqlCommand cmd = new() { CommandType = CommandType.Text };
 
             if (Es_Transaccion_Remota)
             {
@@ -300,16 +296,14 @@ public class clsLnI_nav_ped_compra_enc
             int rowsAffected = cmd.ExecuteNonQuery();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+                lTransaction?.Commit();
 
             return rowsAffected;
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -321,23 +315,23 @@ public class clsLnI_nav_ped_compra_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
     }
-    public DataTable Listar(IConfiguration config)
+    public static DataTable Listar(IConfiguration config)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
         {
             const string sp = "Select * FROM I_nav_ped_compra_enc";
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
-            SqlDataAdapter dad = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
+            SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            using var dad = new SqlDataAdapter(cmd);
+            DataTable dt = new();
             dad.Fill(dt);
 
             lTransaction.Commit();
@@ -347,8 +341,7 @@ public class clsLnI_nav_ped_compra_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -360,14 +353,14 @@ public class clsLnI_nav_ped_compra_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
     }
     public static bool GetSingle(IConfiguration config, ref clsBeI_nav_ped_compra_enc pBeI_nav_ped_compra_enc)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
         try
@@ -379,8 +372,8 @@ public class clsLnI_nav_ped_compra_enc
 
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
-            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new(cmd);
 
             dad.SelectCommand.Parameters.Add(new SqlParameter("@No", pBeI_nav_ped_compra_enc.No));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Buy_From_Vendor_No", pBeI_nav_ped_compra_enc.Buy_From_Vendor_No));
@@ -405,7 +398,7 @@ public class clsLnI_nav_ped_compra_enc
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Company_Code", pBeI_nav_ped_compra_enc.Company_Code));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@No_Document_Wms", pBeI_nav_ped_compra_enc.No_Document_Wms));
 
-            DataTable dt = new DataTable();
+            DataTable dt = new();
             dad.Fill(dt);
 
             lTransaction.Commit();
@@ -421,8 +414,7 @@ public class clsLnI_nav_ped_compra_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -434,8 +426,8 @@ public class clsLnI_nav_ped_compra_enc
         finally
         {
             if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
         }
         return false;
 
@@ -444,27 +436,27 @@ public class clsLnI_nav_ped_compra_enc
     {
 
         SqlTransaction? lTransaction = null;
-        List<clsBeI_nav_ped_compra_enc> lreturnList = new List<clsBeI_nav_ped_compra_enc>();
+        List<clsBeI_nav_ped_compra_enc> lreturnList = new();
 
         try
         {
             const string sp = "Select * FROM I_nav_ped_compra_enc";
 
-            using (SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            using (SqlConnection lConnection = new(config.GetConnectionString("CST")))
             {
 
                 lConnection.Open();
 
                 using (lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    using (SqlDataAdapter lDTA = new SqlDataAdapter(sp, lConnection))
+                    using (SqlDataAdapter lDTA = new(sp, lConnection))
                     {
                         lDTA.SelectCommand.CommandType = CommandType.Text;
                         lDTA.SelectCommand.Transaction = lTransaction;
-                        DataTable lDataTable = new DataTable();
+                        DataTable lDataTable = new();
                         lDTA.Fill(lDataTable);
 
-                        clsBeI_nav_ped_compra_enc vBeI_nav_ped_compra_enc = new clsBeI_nav_ped_compra_enc();
+                        clsBeI_nav_ped_compra_enc vBeI_nav_ped_compra_enc = new();
 
                         foreach (DataRow dr in lDataTable.Rows)
                         {
@@ -487,8 +479,7 @@ public class clsLnI_nav_ped_compra_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -510,15 +501,15 @@ public class clsLnI_nav_ped_compra_enc
 
             const string sp = "Select ISNULL(Max(No),0) FROM I_nav_ped_compra_enc";
 
-            using (SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            using (SqlConnection lConnection = new(config.GetConnectionString("CST")))
             {
                 lConnection.Open();
 
                 using (lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    using (SqlCommand lCommand = new SqlCommand(sp, lConnection) { CommandType = CommandType.Text })
+                    using (SqlCommand lCommand = new(sp, lConnection) { CommandType = CommandType.Text })
                     {
-                        Object lreturnValue = lCommand.ExecuteScalar();
+                        var lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
                             lMax = int.Parse((String)lreturnValue);
@@ -535,8 +526,7 @@ public class clsLnI_nav_ped_compra_enc
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -549,7 +539,7 @@ public class clsLnI_nav_ped_compra_enc
     public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlConnection lConnection = new(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
         int lMax = 0;
         try
@@ -570,24 +560,22 @@ public class clsLnI_nav_ped_compra_enc
                 cmd = new SqlCommand(sp, lConnection, lTransaction);
             }
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            var lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                lMax = int.Parse((string)lreturnValue);
             }
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+                lTransaction?.Commit();
 
             return lMax;
 
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            lTransaction?.Rollback();                   
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
@@ -637,188 +625,127 @@ public class clsLnI_nav_ped_compra_enc
         }
 
         return datosValidos;
-    }   
+    }
 
-    public static int Insert_Single_Pedido_From_ERP(IConfiguration config,clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc)
+    public static int Insert_Single_Pedido_From_ERP(IConfiguration config, clsBeI_nav_ped_compra_enc oBeI_nav_ped_compra_enc)
     {
         ArgumentNullException.ThrowIfNull(config);
-        ArgumentNullException.ThrowIfNull(oBeI_nav_ped_compra_enc);
-
-        int result = 0;
+        ArgumentNullException.ThrowIfNull(oBeI_nav_ped_compra_enc);        
 
         var connectionString = config.GetConnectionString("CST")
             ?? throw new InvalidOperationException("Missing connection string 'CST'.");
 
         var lConnection = new SqlConnection(connectionString);
         lConnection.Open();
-        
+
         var lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
         try
         {
             var BeProductoBodega = new clsBeProducto_bodega();
-            int vContador = 0;
             int RegistrosAfectados = 0;
             bool Bodega_Es_Valida_Para_Recepcion = false;
             int vIdBodega = 0;
 
             if (!Exist(oBeI_nav_ped_compra_enc.No, lConnection, lTransaction))
-            {
                 RegistrosAfectados += Insertar(config, oBeI_nav_ped_compra_enc, lConnection, lTransaction);
-            }
             else
-            {
                 RegistrosAfectados += Actualizar(config, oBeI_nav_ped_compra_enc, lConnection, lTransaction);
-            }
-
-            vContador += 1;
 
             lTransaction.Save("Encabezado");
 
-            if (oBeI_nav_ped_compra_enc.Lineas_Detalle != null)
+            if (oBeI_nav_ped_compra_enc.Lineas_Detalle == null)
+                throw new Exception($"Pedido de compra No: {oBeI_nav_ped_compra_enc.No} sin lineas de detalle");
+
+            foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
             {
-                foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
+                if (Det == null) continue;
+                
+                string locationToUse = !string.IsNullOrWhiteSpace(Det.Location_Code)
+                    ? Det.Location_Code.Trim()
+                    : oBeI_nav_ped_compra_enc.Location_Code?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(locationToUse))
+                    throw new Exception($"No está definida bodega para producto: {Det.No}");
+
+                try
                 {
-                    if (Det == null) continue;
-                    
-                    string locationToUse = Det.Location_Code;
-                    if (string.IsNullOrWhiteSpace(locationToUse?.Trim()))
+                    if ((Det.Type?.ToString()) == "2")
                     {
-                        locationToUse = oBeI_nav_ped_compra_enc.Location_Code.Trim();
-                    }
-
-                    try
-                    {
-                     
-                        //tipo 2 es producto, tipo 1 es servicio, y se omite
-                        if ((Det.Type?.ToString()) == "2")
+                        if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
                         {
-                            if (Det.Location_Code != null)
+                            Bodega_Es_Valida_Para_Recepcion =
+                                clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);
+
+                            if (!Bodega_Es_Valida_Para_Recepcion)
                             {
-                                if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                {
-                                    Bodega_Es_Valida_Para_Recepcion = clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);                                    
-
-                                    if (!Bodega_Es_Valida_Para_Recepcion)
-                                    {
-                                        throw new Exception(string.Format(
-                                            "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                            "Mantenimientos->Cliene: Verifique que exista un cliente con el código: {0}",
-                                            Det.Location_Code, Det.No));
-                                    }
-                                }
-                                else
-                                {
-                                    Bodega_Es_Valida_Para_Recepcion =
-                                        clsLnBodega.Exists_By_Codigo(locationToUse, lConnection, lTransaction);
-
-                                    if (!Bodega_Es_Valida_Para_Recepcion)
-                                    {
-                                        throw new Exception(string.Format(
-                                            "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                            "Mantenimientos->Bodega: Verifique que exista una bodega con el código: {0}",
-                                            Det.Location_Code, Det.No));
-                                    }
-                                }
-
-                                if (Bodega_Es_Valida_Para_Recepcion)
-                                {
-                                    vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(locationToUse, lConnection, lTransaction);
-                                    if (vIdBodega == 0)
-                                        throw new Exception("No se pudo obtener el identificador para la bodega: " + locationToUse);
-
-                                    BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(
-                                        Det.No ?? string.Empty, vIdBodega, lConnection, lTransaction);
-
-                                    if (BeProductoBodega != null)
-                                    {
-                                        if (Det.Quantity != Det.Quantity_Received)
-                                        {
-                                            if (clsLnI_nav_ped_compra_det.Exist(Det, lConnection, lTransaction))
-                                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Actualizar(config, Det, lConnection, lTransaction);
-                                            else
-                                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Insertar(config, Det, lConnection, lTransaction);
-                                        }
-
-                                        if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes != null)
-                                        {
-                                            if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes.Count > 0)
-                                            {
-                                                foreach (var Lote in oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes)
-                                                {
-                                                    if (!clsLnI_nav_ped_compra_det_lote.Exist(Lote, lConnection, lTransaction))
-                                                        RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Insertar(config, Lote, lConnection, lTransaction);
-                                                    else
-                                                        RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Actualizar(config, Lote, lConnection, lTransaction);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                                {
-                                                    throw new Exception("Error_202301191027A: El documento de transferencia interna no tiene definidos los lotes y fechas de vencimiento count(0). " +
-                                                        "Is_Internal_Transfer = " + oBeI_nav_ped_compra_enc.Is_Internal_Transfer);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
-                                            {
-                                                throw new Exception(string.Format(
-                                                    "El documento de transferencia interna No: {0}. No tiene definidos los lotes y fechas de vencimiento",
-                                                    Det.No));
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new Exception(string.Format(
-                                            "El código de producto: {0} no existe en maestro o no está asociado a la bodega: {1}",
-                                            Det.No, Det.Location_Code));
-                                    }
-                                }
-                                else
-                                {
-                                    // Rollback parcial al savepoint y re-lanzar
-                                    lTransaction.Rollback("Encabezado");
-
-                                    throw new Exception(string.Format(
-                                        "La bodega: {0} para el producto: {1} no se encuentra en la lista de bodegas válidas para recepción. " +
-                                        "Si es una transferencia interna: la bodega debe existir en el maestro de bodegas. " +
-                                        "Si no es T.I. el código de bodega debe existir en maestro de clientes",
-                                        Det.Location_Code, Det.No));
-                                }
-                            }
-                            else if (Det.No != null)
-                            {
-                                throw new Exception($"No está definida bodega para producto: {Det.No}, no se importará");
+                                throw new Exception(
+                                    $"La bodega: {locationToUse} para el producto: {Det.No} no es válida para recepción.");
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Re-lanzar con contexto sin perder stack original
-                        throw new Exception("Error procesando línea de detalle.", ex);
+                        else
+                        {
+                            Bodega_Es_Valida_Para_Recepcion =
+                                clsLnBodega.Exists_By_Codigo(locationToUse, lConnection, lTransaction);
+
+                            if (!Bodega_Es_Valida_Para_Recepcion)
+                            {
+                                throw new Exception(
+                                    $"La bodega: {locationToUse} no existe en maestro de bodegas.");
+                            }
+                        }
+
+                        if (!Bodega_Es_Valida_Para_Recepcion)
+                        {
+                            lTransaction.Rollback("Encabezado");
+                            throw new Exception($"Bodega inválida: {locationToUse}");
+                        }
+
+                        vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(locationToUse, lConnection, lTransaction);
+                        if (vIdBodega == 0)
+                            throw new Exception("No se pudo obtener Id de bodega: " + locationToUse);
+
+                        BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(
+                            Det.No ?? string.Empty, vIdBodega, lConnection, lTransaction) ?? throw new Exception($"Producto {Det.No} no asociado a bodega {locationToUse}");
+
+                        if (Det.Quantity != Det.Quantity_Received)
+                        {
+                            if (clsLnI_nav_ped_compra_det.Exist(Det, lConnection, lTransaction))
+                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Actualizar(config, Det, lConnection, lTransaction);
+                            else
+                                RegistrosAfectados += clsLnI_nav_ped_compra_det.Insertar(config, Det, lConnection, lTransaction);
+                        }
+
+                        // LOTES
+                        if (oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes != null &&
+                            oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes.Count > 0)
+                        {
+                            foreach (var Lote in oBeI_nav_ped_compra_enc.Lineas_Detalle_Lotes)
+                            {
+                                if (!clsLnI_nav_ped_compra_det_lote.Exist(Lote, lConnection, lTransaction))
+                                    RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Insertar(config, Lote, lConnection, lTransaction);
+                                else
+                                    RegistrosAfectados += clsLnI_nav_ped_compra_det_lote.Actualizar(config, Lote, lConnection, lTransaction);
+                            }
+                        }
+                        else if (oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
+                        {
+                            throw new Exception("Transferencia interna sin lotes definidos.");
+                        }
                     }
                 }
-
-                result = RegistrosAfectados;
-            }
-            else
-            {
-                Console.WriteLine("Pedido de compra sin lineas de detalle?");
-                throw new Exception($"Pedido de compra No: {oBeI_nav_ped_compra_enc.No} sin lineas de detalle");
+                catch (Exception ex)
+                {
+                    throw new Exception("Error procesando línea de detalle.", ex);
+                }
             }
 
-            // Si todo fue bien, commit al final
             lTransaction.Commit();
-            return result;
+            return RegistrosAfectados;
         }
         catch (Exception ex)
         {
-            // Rollback global; si ya se hizo uno parcial, esto garantiza consistencia
-            try { lTransaction.Rollback(); } catch { /* opcional: log del fallo de rollback */ }
+            try { lTransaction.Rollback(); } catch { }
             throw new Exception($"{nameof(Insert_Single_Pedido_From_ERP)} failed.", ex);
         }
         finally
@@ -839,17 +766,15 @@ public class clsLnI_nav_ped_compra_enc
                                 FROM I_nav_ped_compra_enc
                                 WHERE No = @No";
 
-            using (var cmd = new SqlCommand(sp, lConnection, lTrans))
-            {
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add(new SqlParameter("@No", pNo));
+            using var cmd = new SqlCommand(sp, lConnection, lTrans);
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.Add(new SqlParameter("@No", pNo));
 
-                using (var dad = new SqlDataAdapter(cmd))
-                {
-                    var dt = new DataTable();
-                    dad.Fill(dt);
-                    exist = dt.Rows.Count > 0;
-                }
+            using var dad = new SqlDataAdapter(cmd);
+            {
+                var dt = new DataTable();
+                dad.Fill(dt);
+                exist = dt.Rows.Count > 0;
             }
         }
         catch (Exception ex)
@@ -875,7 +800,7 @@ public class clsLnI_nav_ped_compra_enc
     {
         try
         {
-            clsBeTrans_re_enc? OutBeRecepcionEnc = new clsBeTrans_re_enc();
+            clsBeTrans_re_enc? OutBeRecepcionEnc = new();
 
             if (lConnection != null && lTransInterface != null) {
                 if (BeConfigEnc !=null)
@@ -967,7 +892,7 @@ public class clsLnI_nav_ped_compra_enc
                 return false;
             }
             
-            clsBeTrans_oc_det BePedidoCompraDet = new clsBeTrans_oc_det()
+            clsBeTrans_oc_det BePedidoCompraDet = new()
             {
                 IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc,
                 IdOrdenCompraDet = clsLnTrans_oc_det.MaxID(gBeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransInterface) + 1
@@ -1056,7 +981,7 @@ public class clsLnI_nav_ped_compra_enc
             {
                 if (!convertir && vCantidadDecimalUMBas > 0)
                 {
-                    clsBeTrans_oc_det BePedidoCompraDetUmBas = new clsBeTrans_oc_det();
+                    clsBeTrans_oc_det BePedidoCompraDetUmBas = new();
                     clsPublic.CopyObject(BePedidoCompraDet, ref BePedidoCompraDetUmBas);
 
                     BePedidoCompraDetUmBas.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc;
@@ -1090,7 +1015,7 @@ public class clsLnI_nav_ped_compra_enc
                     (esTransferencia && hayPickingFuente && !string.IsNullOrWhiteSpace(codigoFiltro) && lineaFiltro > 0)
                         ? pDetallePickingUbic!
                             .Where(x => x.CodigoProducto == codigoFiltro && x.No_Linea == lineaFiltro)
-                        : Enumerable.Empty<clsBeTrans_picking_ubic>();
+                        : [];
 
                 // Materializa una sola vez (evita enumerar dos veces con Any + foreach)
                 var pickingList = filtroPicking as IList<clsBeTrans_picking_ubic> ?? filtroPicking.ToList();
@@ -1482,6 +1407,7 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.Nombre_producto = BeProductoBodega?.Producto?.nombre ?? string.Empty;
             BePedidoCompraDet.Camas_Tarima = navPedidoCompraDet.LayersPallet;
             BePedidoCompraDet.Cajas_Cama = navPedidoCompraDet.BoxesLayer;
+            BePedidoCompraDet.Peso_neto = navPedidoCompraDet.Net_Weight;
 
             clsBeBodega? BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,lConnection,lTransInterface);
 
@@ -1489,7 +1415,7 @@ public class clsLnI_nav_ped_compra_enc
                 if (BeBodega.Control_Talla_Color) {
                     if (!string.IsNullOrEmpty(navPedidoCompraDet.Barcode))
                     {
-                        clsBeProducto_talla_color? BeProductoTallaColor = new clsBeProducto_talla_color();
+                        clsBeProducto_talla_color? BeProductoTallaColor = new();
                         if (BeProductoBodega != null && BeProductoBodega.IdProducto > 0)
                         {
                             BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface);
@@ -1657,10 +1583,7 @@ public class clsLnI_nav_ped_compra_enc
                 BeConfigEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(gBeOrdenCompraEnc.IdBodega,
                                                                                          vIdEmpresa,
                                                                                          lConnection,
-                                                                                         lTransInterface);
-
-                if (BeConfigEnc is null)
-                    throw new Exception("20251202: La configuración de interface para la bodega no fue definida");
+                                                                                         lTransInterface) ?? throw new Exception("20251202: La configuración de interface para la bodega no fue definida");
 
                 BeConfigEnc.IdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(
                     navPedidoCompraEnc.Product_Owner_Code,
@@ -1873,24 +1796,18 @@ public class clsLnI_nav_ped_compra_enc
                     lTransInterface);
 
                 // 2️Si no existe, buscar por parte
-                if (productoBodega == null)
-                {
-                    productoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(
+                productoBodega ??= clsLnProducto_bodega.Existe_Parte_By_IdBodega(
                         navPedidoCompraDet.No,
                         IdBodegaDestino,
                         lConnection,
                         lTransInterface);
-                }
 
-                // 3️⃣ Si tampoco, buscar por número de serie
-                if (productoBodega == null)
-                {
-                    productoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(
+                // 3️ Si tampoco, buscar por número de serie
+                productoBodega ??= clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(
                         navPedidoCompraDet.No,
                         IdBodegaDestino,
                         lConnection,
                         lTransInterface);
-                }
             }
             else
             {
@@ -1928,7 +1845,7 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega;
             BePedidoCompraDet.Codigo_producto = BeProductoBodega.Producto?.codigo ?? string.Empty;
             BePedidoCompraDet.Nombre_producto = clsPublic.Quitar_Caracteres_No_Permitidos(navPedidoCompraDet.Description);
-
+            BePedidoCompraDet.Peso_neto = navPedidoCompraDet.Net_Weight;
             BePedidoCompraDet.Nombre_unidad_medida_basica =
                 string.IsNullOrEmpty(navPedidoCompraDet.Variant_Code)
                     ? navPedidoCompraDet.Unit_Of_Measure_Code
@@ -2016,11 +1933,14 @@ public class clsLnI_nav_ped_compra_enc
                     No_linea = Lote.Source_Prod_Order_Line,
                     IdProductoBodega = BePedidoCompraDet.IdProductoBodega,
                     Lote = Lote.Lot_No,
+                    Fecha_vence = Lote.Expiration_Date,
                     Cantidad_recibida = 0,
                     Codigo_producto = Lote.Item_No,
                     IdUnidadMedidaBasica = BePedidoCompraDet.IdUnidadMedidaBasica,
                     IdPresentacion = BePedidoCompraDet.IdPresentacion,
                     No_documento = navPedidoCompraEnc.No,
+                    Lic_plate = navPedidoCompraDet.Barcode,
+                    Peso_Licencia = Lote.Pallet_Weight,
                     Activo = true
                 };
 
@@ -2055,7 +1975,7 @@ public class clsLnI_nav_ped_compra_enc
         {
             if (!clsLnProveedor.Existe_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No, lConnection, lTransaction))
             {
-                clsBeProveedor BeProveedorIngresoDefecto = new clsBeProveedor
+                clsBeProveedor BeProveedorIngresoDefecto = new()
                 {
                     IdProveedor = clsLnProveedor.MaxID(lConnection, lTransaction) + 1,
                     IdEmpresa = clsLnBodega.Get_IdEmpresa_By_IdBodega(gBeOrdenCompraEnc.IdBodega, lConnection, lTransaction),
@@ -2099,16 +2019,16 @@ public class clsLnI_nav_ped_compra_enc
     {
         bool result = false;
 
-        clsBeI_nav_config_enc? BeConfigEnc = new clsBeI_nav_config_enc();
+        clsBeI_nav_config_enc? BeConfigEnc = new();
         int IdNavConfigDet = 101;
         int VContadorBitacoraTOMWMS = 0;
         clsBeTrans_oc_enc? gBeOrdenCompraEnc = null;
         clsBeTrans_oc_enc? PedidoCompraExistente = null;
         int vContadorLineasDetInsertadas = 0;
         bool InsertoEncabezado = false;
-        clsBeTrans_oc_det_lote BeOcDetLote = new clsBeTrans_oc_det_lote();
-        clsBeTrans_oc_ti BeTipoDocumento = new clsBeTrans_oc_ti();
-        List<clsBeTrans_oc_det_lote> LotesExistentes = new List<clsBeTrans_oc_det_lote>();
+        clsBeTrans_oc_det_lote BeOcDetLote = new();
+        clsBeTrans_oc_ti BeTipoDocumento = new();
+        List<clsBeTrans_oc_det_lote> LotesExistentes = [];
         double vCantidadDecimalUMBas = 0;
         double vCantidadEnteraPres = 0;
         int vProductoNoExiste = 0;
@@ -2151,7 +2071,6 @@ public class clsLnI_nav_ped_compra_enc
 
                     gBeOrdenCompraEnc.Activo = true;
                     gBeOrdenCompraEnc.IdCampaña = navPedidoCompraEnc.Campaign_No;
-
                     gBeOrdenCompraEnc.Serie = navPedidoCompraEnc.Series;
                     gBeOrdenCompraEnc.Usr_Documento = navPedidoCompraEnc.User_Document;
                     gBeOrdenCompraEnc.Comentarios = navPedidoCompraEnc.Comments;
@@ -2163,10 +2082,7 @@ public class clsLnI_nav_ped_compra_enc
                                                                                                                      BeConfigEnc.Idbodega,
                                                                                                                      lConnection,
                                                                                                                      lTransInterface
-                    );
-
-                    if (BeProveedorBodega == null)
-                        throw new Exception($"No se encontró proveedor bodega para: {navPedidoCompraEnc.Buy_From_Vendor_No}");
+                    ) ?? throw new Exception($"No se encontró proveedor bodega para: {navPedidoCompraEnc.Buy_From_Vendor_No}");
 
                     BeTipoDocumento = AsignarTipoDocumentoIngreso(navPedidoCompraEnc, ref gBeOrdenCompraEnc, ref BeTipoDocumento, lConnection, lTransInterface);
                     ConfigurarEncabezadoOrdenCompra(navPedidoCompraEnc,
@@ -2184,7 +2100,7 @@ public class clsLnI_nav_ped_compra_enc
                     {
                         try
                         {
-                            clsBeProducto_presentacion BePresentacion = new clsBeProducto_presentacion();
+                            clsBeProducto_presentacion BePresentacion = new();
                             clsBeUnidad_medida? BeUnidadMedidaPedCompra = null;
                             clsBeProducto_bodega BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet, IdBodegaDestino, BeConfigEnc, lConnection, lTransInterface);
 
@@ -2245,7 +2161,7 @@ public class clsLnI_nav_ped_compra_enc
                 {
                     try
                     {
-                        List<clsBeTrans_picking_ubic>? DetallePickingUbic = new List<clsBeTrans_picking_ubic>();
+                        List<clsBeTrans_picking_ubic>? DetallePickingUbic = new();
 
                         bool creada = InicializarEncabezadoNuevaOC(navPedidoCompraEnc,
                                                                   BeConfigEnc,
@@ -2260,8 +2176,8 @@ public class clsLnI_nav_ped_compra_enc
                         InsertoEncabezado = true;
                         VContadorBitacoraTOMWMS += 1;
 
-                        clsBeUnidad_medida? BeUnidadMedidaPedCompra = new clsBeUnidad_medida();
-                        clsBeProducto_presentacion? BePresentacion = new clsBeProducto_presentacion();
+                        clsBeUnidad_medida? BeUnidadMedidaPedCompra = new();
+                        clsBeProducto_presentacion? BePresentacion = new();
                         double vCantidadSolicitadaPedido = 0;
 
                         if (!string.IsNullOrEmpty(navPedidoCompraEnc.Internal_Transfer_Document_No) && IsNumeric(navPedidoCompraEnc.Internal_Transfer_Document_No))
@@ -2325,7 +2241,7 @@ public class clsLnI_nav_ped_compra_enc
                             }
                             else
                             {
-                                clsBeProducto? beProducto = new clsBeProducto();
+                                clsBeProducto? beProducto = new();
                                 beProducto = clsLnProducto.Get_Single_By_Codigo(navPedidoCompraDet.No, lConnection, lTransInterface);
                                 if (beProducto != null)
                                 {

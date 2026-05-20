@@ -224,6 +224,12 @@ Public Class SapServiceLayerClient
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
             End If
 
+            If vEsImportacion Then
+                If String.IsNullOrWhiteSpace(vCodigoBodegaImportacion) Then
+                    Throw New Exception("❌ ERROR: No está configurada la bodega de prorrateo en la configuración de integración.")
+                End If
+            End If
+
             '--- Documento ÚNICO de entrega ---
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
@@ -304,6 +310,10 @@ Public Class SapServiceLayerClient
                         If DT IsNot Nothing AndAlso DT.Rows.Count > 0 Then
                             vColor = DT.Rows(0)("Color").ToString()
                             vTalla = DT.Rows(0)("Talla").ToString()
+                        Else
+                            Dim erromsg As String = "❌ ERROR: No se encontró la combinación de talla/color para IdProductoTallaColor: " & ProductoIngreso.IdProductoTallaColor
+                            clsPublic.Actualizar_Progreso(lblprg, erromsg)
+                            Throw New Exception(erromsg)
                         End If
 
                         Dim qtyRecibida As Double = Math.Max(0, ProductoIngreso.Cantidad_Total)
@@ -335,7 +345,9 @@ Public Class SapServiceLayerClient
                         ' Línea a bodega de faltantes
                         If qtyFaltante > 0 Then
                             If String.IsNullOrWhiteSpace(BeINavConfigEnc.Bodega_Faltante) Then
-                                Throw New Exception("❌ ERROR: No está configurada la bodega de faltantes en la configuración de integración.")
+                                Dim erromsg As String = "❌ ERROR: No está configurada la bodega de faltantes en la configuración de integración."
+                                clsPublic.Actualizar_Progreso(lblprg, erromsg)
+                                Throw New Exception(erromsg)
                             End If
 
                             Dim batchFal As New List(Of BatchNumberDto) From {
@@ -495,6 +507,12 @@ Public Class SapServiceLayerClient
             If Not BeTransOCTi Is Nothing Then
                 vEsImportacion = BeTransOCTi.Es_Importacion
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
+            End If
+
+            If vEsImportacion Then
+                If String.IsNullOrWhiteSpace(vCodigoBodegaImportacion) Then
+                    Throw New Exception("❌ ERROR: No está configurada la bodega de prorrateo en la configuración de integración.")
+                End If
             End If
 
             BeReOc = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(BeTransOCEnc.IdOrdenCompraEnc, lINavTransaccionesOut.FirstOrDefault.Idrecepcionenc, lConnection, lTransaction)
@@ -817,7 +835,6 @@ Public Class SapServiceLayerClient
                                 clsPublic.Actualizar_Progreso(lblprg, $"❌ EXCEPCIÓN PATCH OC: {ex.Message}")
                             End Try
                             ' ====== FIN PATCH ======
-
 
                         Else
                             clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR {postResp.StatusCode}:")

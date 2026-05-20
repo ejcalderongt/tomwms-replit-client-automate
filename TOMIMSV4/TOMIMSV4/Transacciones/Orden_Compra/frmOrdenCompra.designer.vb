@@ -283,7 +283,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.grdEncRec = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOC = New TOMWMS.DsOC()
+        Me.DsOC = New DsOC()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colCódigo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colBodega = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -1087,7 +1087,7 @@ Partial Class frmOrdenCompra
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
         '
@@ -1349,7 +1349,6 @@ Partial Class frmOrdenCompra
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEliminar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.SubImprimir)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuCerrarPedidoCompra)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdBackorder)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizarDetalle)
@@ -1969,7 +1968,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -3673)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -4092)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -1991,7 +1990,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -3721)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -4140)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -2012,7 +2011,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -3721)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -4140)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2033,7 +2032,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -3722)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -4141)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
@@ -2467,13 +2466,13 @@ Partial Class frmOrdenCompra
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("0edba7b8-5062-4fcb-b46c-8fbffdcf2fc4")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 784)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 123)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1554, 123)
+        Me.DockPanel1.Size = New System.Drawing.Size(1632, 154)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -2490,7 +2489,7 @@ Partial Class frmOrdenCompra
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1546, 85)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1624, 116)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtraOrdenCompra

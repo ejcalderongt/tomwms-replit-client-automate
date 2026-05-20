@@ -5162,25 +5162,54 @@ Partial Public Class clsLnProducto
 
     ''' <summary>
     ''' Creado por Ricardo García
+    ''' Update GT30032026 mostrar que producto esta dando la excepcion
     ''' </summary>
     ''' <param name="pListObjP"></param>
     ''' <remarks></remarks>
     Public Shared Sub Guardar_Transaccion(ByRef pListObjP As List(Of clsBeProducto),
-                                          ByRef lConnection As SqlConnection,
-                                          ByRef lTransaction As SqlTransaction)
+                                      ByRef lConnection As SqlConnection,
+                                      ByRef lTransaction As SqlTransaction)
+
+        Dim objActual As clsBeProducto = Nothing
 
         Try
 
             For Each Obj As clsBeProducto In pListObjP
+                objActual = Obj
                 Insertar(Obj, lConnection, lTransaction)
             Next
 
-
         Catch ex As Exception
-            Throw New Exception(ex.Message)
+            Dim codigo As String = If(objActual IsNot Nothing, objActual.Codigo, "Sin código")
+            Throw New Exception("Error al guardar la transacción. Código producto: " & codigo & ". Detalle: " & ex.Message, ex)
         End Try
 
     End Sub
+
+
+
+    'Public Shared Sub Guardar_Transaccion(ByRef pListObjP As List(Of clsBeProducto),
+    '                                      ByRef lConnection As SqlConnection,
+    '                                      ByRef lTransaction As SqlTransaction)
+
+    '    Try
+
+    '        For Each Obj As clsBeProducto In pListObjP
+
+    '            If Obj.Codigo = "260H8ZA0" Then
+    '                Debug.WriteLine(Obj.Codigo)
+    '            End If
+
+    '            Insertar(Obj, lConnection, lTransaction)
+
+    '        Next
+
+
+    '    Catch ex As Exception
+    '        Throw New Exception(ex.Message)
+    '    End Try
+
+    'End Sub
 
     ''' <summary>
     ''' Creado por Ricardo García
@@ -9286,7 +9315,9 @@ Partial Public Class clsLnProducto
 
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT * FROM VW_ProductoOC WHERE 1 > 0 "
+                    Dim vSQL As String = "SELECT DISTINCT IdProducto,Clasificación,Familia,Marca,[Unidad Medida], 
+                                                 Codigo, Codigo_Barra,Nombre,Costo,Precio,Kit,Fec_Agr 
+                                          FROM VW_ProductoOC WHERE 1 > 0 "
 
                     If pIdPropietario <> 0 Then
                         vSQL += String.Format(" AND IdPropietario={0}", pIdPropietario)
@@ -11068,6 +11099,138 @@ Partial Public Class clsLnProducto
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Nombre_By_Codigo(ByVal pCodigo As String) As String
+
+        Get_Nombre_By_Codigo = ""
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT p.nombre
+                        FROM producto p                        
+                        WHERE (p.Codigo=@Codigo)"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Get_Nombre_By_Codigo = CType(lRow("nombre"), String)
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    '#GT04052026: listar producto con existencia en barras_pallet para RFID
+    Public Shared Function Get_All_By_IdPropietario_And_Bodega_Para_Inventario_RFID(ByVal pIdPropietario As Integer,
+                                                                                    ByVal pIdBodega As Integer,
+                                                                                    ByVal pIdInventarioEnc As Integer) As DataTable
+
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Get_All_By_IdPropietario_And_Bodega_Para_Inventario_RFID = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT
+                        convert(bit,0) as Seleccionar,
+                        propietarios.nombre_comercial as Propietario,
+                        producto.codigo AS Codigo, 
+                        producto.codigo_barra AS Codigo_Barra,
+                        producto.nombre AS Nombre,                            
+                        producto_clasificacion.nombre AS Clasificacion, 
+                        producto_familia.nombre AS Familia,
+                        producto_tipo.NombreTipoProducto, 
+                        tipo_rotacion.Descripcion AS TipoRotacion, 
+                        indice_rotacion.Descripcion AS IndiceRotacion,
+                        producto_bodega.IdProductoBodega,
+                        producto.IdProducto, 
+                        producto_familia.IdFamilia, 
+                        producto_clasificacion.IdClasificacion
+                        FROM producto LEFT OUTER JOIN
+                        producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
+                        producto_bodega ON producto.IdProducto = producto_bodega.IdProducto LEFT OUTER JOIN
+                        tipo_rotacion ON producto.IdTipoRotacion = tipo_rotacion.IdTipoRotacion LEFT OUTER JOIN
+                        indice_rotacion ON producto.IdIndiceRotacion = indice_rotacion.IdIndiceRotacion LEFT OUTER JOIN
+                        producto_familia ON producto.IdFamilia = producto_familia.IdFamilia LEFT OUTER JOIN
+                        producto_clasificacion ON producto.IdClasificacion = producto_clasificacion.IdClasificacion INNER JOIN
+						propietarios on producto.IdPropietario = propietarios.IdPropietario
+                        WHERE 1 > 0 "
+
+            If pIdBodega <> 0 Then
+                vSQL += " AND producto_bodega.IdBodega=@IdBodega"
+            End If
+
+            If pIdPropietario <> 0 Then
+                vSQL += " AND producto.IdPropietario=@IdPropietario"
+            End If
+
+            'If pConExistencia Then
+            '    '#EJC20180809: Buscar el el inventario congelado cuales tienen existencia y no en el stock actual porque puede variar si es a puerta abierta
+            '    vSQL += " AND producto_bodega.IdProductoBodega in (select IdProductoBodega from trans_inv_stock where IdInventario = @IdInventarioEnc)"
+            'End If
+
+            '#EJC20180809: Listar solo aquellos productos que aún no han sido adicionados al inventario
+            vSQL += " AND producto_bodega.IdProductoBodega NOT in (select IdProductoBodega from trans_inv_ciclico where IdInventarioEnc = @IdInventarioEnc)"
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                If pIdPropietario > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+                End If
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Get_All_By_IdPropietario_And_Bodega_Para_Inventario_RFID = lDataTable
+
+            End Using
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
     End Function

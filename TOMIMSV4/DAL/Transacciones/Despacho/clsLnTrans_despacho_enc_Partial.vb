@@ -1,7 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data.SqlClient
-Imports System.Diagnostics
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_despacho_enc
@@ -450,6 +447,7 @@ Partial Public Class clsLnTrans_despacho_enc
             Dim BeTipoDocumentoSalida As New clsBeTrans_pe_tipo()
             Dim vConfigInterGenDocIngresoBodDest As Boolean = False
             Dim vIdPropietario As Integer = 0
+            Dim resultado As Boolean = False
 
             If BeDespachoEnc IsNot Nothing Then
 
@@ -460,6 +458,13 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                                           lConnection,
                                                                                           lTransaction)
 
+                    If (BePedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS AndAlso
+                               BePedidoEnc.Cliente.Codigo = BePedidoEnc.Bodega_Destino) Then
+                        BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino = True
+                        BeTipoDocumentoSalida.Generar_Recepcion_Auto_Bodega_Destino = True
+                        BeTipoDocumentoSalida.Recibir_Producto_Auto_Bodega_Destino = True
+                    End If
+
                     '#EJC20190710:
                     'Si existe configuración de interface, y la interface dice que no se genera auto (puede que el ERP genere el ingreso atraves de mi3 en demanda en la bodega destino)
                     If Not BeInterfaceConfig Is Nothing Then
@@ -469,6 +474,24 @@ Partial Public Class clsLnTrans_despacho_enc
                     '#EJC20210714:REC20200303C1
                     'Por tipo de documento se debe determinar cuáles si y cuáles no generan una tarea de recepción en el proceso de desapacho de la bodega origen.
                     'If vConfigInterGenDocIngresoBodDest OrElse BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
+
+                    '#CKFK20260416 Agregué esta validación para evitar que no se generen los ingresos y las recepciones por mala configuración del cliente asociado a la bodega destino   
+                    If vConfigInterGenDocIngresoBodDest AndAlso BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
+
+                        Dim vEsBodegaTraslado As Boolean = BePedidoEnc.Cliente.Es_Bodega_Traslado
+                        Dim vEsBodegaRecepcion As Boolean = BePedidoEnc.Cliente.Es_bodega_recepcion
+                        Dim vUbicacionVirtual As Integer = BePedidoEnc.Cliente.IdUbicacionVirtual
+
+                        If vUbicacionVirtual <> 0 Then
+                            If Not vEsBodegaTraslado Then
+                                Throw New Exception("El cliente asociado a la bodega debe estar configurada como bodega de traslado: " & BePedidoEnc.Cliente.Codigo & "-" & BePedidoEnc.Cliente.Nombre_comercial)
+                            End If
+                            If Not vEsBodegaRecepcion Then
+                                Throw New Exception("El cliente asociado a la bodega debe estar configurada como bodega de recepción: " & BePedidoEnc.Cliente.Codigo & "-" & BePedidoEnc.Cliente.Nombre_comercial)
+                            End If
+                        End If
+
+                    End If
 
                     'EJC20220428: si cumple las 2 condiciones para ser transfer, aunque tipo doc sea pedido cliente
                     If vConfigInterGenDocIngresoBodDest AndAlso BeTipoDocumentoSalida.Generar_pedido_ingreso_bodega_destino Then
@@ -1017,6 +1040,8 @@ Partial Public Class clsLnTrans_despacho_enc
 
                             End If
 
+                            resultado = (vContadorDocumentosOC > 0)
+
                         Else
 
                             'GT16022022: se elimina del stock porque se transfiere a otra bodega
@@ -1028,6 +1053,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                       AllowNegativeExceptionOnStock,
                                                                       lConnection,
                                                                       lTransaction)
+
+                            resultado = True
 
                         End If
 
@@ -1044,6 +1071,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                        lConnection,
                                                                        lTransaction)
 
+                            resultado = True
+
                         Else
 
                             Guarda_Trans_Despacho_Stock_Restar_Origen(BeDespachoEnc,
@@ -1054,6 +1083,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                       AllowNegativeExceptionOnStock,
                                                                       lConnection,
                                                                       lTransaction)
+
+                            resultado = True
 
                         End If
 
@@ -1069,6 +1100,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                   lConnection,
                                                                   lTransaction)
 
+
+                        resultado = True
 
                     End If
 
@@ -1091,7 +1124,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
             End If
 
-            Guardar_Despacho_Stock = (vContadorDocumentosOC > 0)
+            Guardar_Despacho_Stock = resultado
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -2274,11 +2307,15 @@ Partial Public Class clsLnTrans_despacho_enc
                                                                                                                                          lTransaction)
 
 
+                                        If BeProductoEstado Is Nothing Then
+                                            Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: No se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega & " Revise configuración de estado de producto por bodega."
+                                            Throw New Exception(vMensajeLog)
+                                        End If
+
                                         If String.IsNullOrEmpty(BeProductoEstado.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega
                                             clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
-
 
                                         BeUnidadMedida = clsLnUnidad_medida.GetSingle(BePickingUbic.IdUnidadMedida, lConnection, lTransaction)
 
@@ -2359,16 +2396,16 @@ Partial Public Class clsLnTrans_despacho_enc
                                             clsLnTrans_re_det.Insertar(BeTransReDet, lConnection, lTransaction)
 
                                             clsLnStock.Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino(BePickingUbic,
-                                                                                                             IdUbicacionRecBodDest,
-                                                                                                             BeDespachoEnc,
-                                                                                                             pIdBodega,
-                                                                                                             IdBodegaWMSDestino,
-                                                                                                             pIdEmpresa,
-                                                                                                             BeOrdenCompraEnc,
-                                                                                                             BeRecepcionEnc.IdRecepcionEnc,
-                                                                                                             BeTransReDet,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
+                                                                                                              IdUbicacionRecBodDest,
+                                                                                                              BeDespachoEnc,
+                                                                                                              pIdBodega,
+                                                                                                              IdBodegaWMSDestino,
+                                                                                                              pIdEmpresa,
+                                                                                                              BeOrdenCompraEnc,
+                                                                                                              BeRecepcionEnc.IdRecepcionEnc,
+                                                                                                              BeTransReDet,
+                                                                                                              lConnection,
+                                                                                                              lTransaction)
 
 
                                         Else
@@ -3191,6 +3228,7 @@ Partial Public Class clsLnTrans_despacho_enc
         End Try
 
     End Function
+
     Public Shared Function Guardar_Despacho(ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
                                             ByVal pBePedidoEnc As clsBeTrans_pe_enc,
                                             ByVal pConnection As SqlConnection,
@@ -3340,30 +3378,32 @@ Partial Public Class clsLnTrans_despacho_enc
             Dim OutBeRecepcionEnc As New clsBeTrans_re_enc()
 
             '#GT21012025: si tipo doc permite, se genera transferencia hacia otra bodega (aca hace el registro de oc y recepcion)
-            Guardar_Despacho_Stock(pBeDespachoEnc,
+            If Guardar_Despacho_Stock(pBeDespachoEnc,
                                    BeInterfaceConfig,
                                    OutBePedidoCompraEnc,
                                    False,
                                    lConnection,
-                                   lTransaction)
+                                   lTransaction) Then
 
-            'Estado en Pickings asociados
-            Verifica_Status_Picking(pBeDespachoEnc,
-                                    lConnection,
-                                    lTransaction)
+                'Estado en Pickings asociados
+                Verifica_Status_Picking(pBeDespachoEnc,
+                                        lConnection,
+                                        lTransaction)
 
-            Guarda_Trans_Packing_Enc(pBeDespachoEnc,
-                                     lConnection,
-                                     lTransaction)
+                Guarda_Trans_Packing_Enc(pBeDespachoEnc,
+                                         lConnection,
+                                         lTransaction)
 
-            'Tabla intermedia para interface.
-            clsLnI_nav_transacciones_out.Insertar_Salida(pBeDespachoEnc.IdEmpresa,
-                                                         pBeDespachoEnc.IdBodega,
-                                                         pBeDespachoEnc,
-                                                         lConnection,
-                                                         lTransaction)
+                'Tabla intermedia para interface.
+                clsLnI_nav_transacciones_out.Insertar_Salida(pBeDespachoEnc.IdEmpresa,
+                                                             pBeDespachoEnc.IdBodega,
+                                                             pBeDespachoEnc,
+                                                             lConnection,
+                                                             lTransaction)
 
-            Guardar_Auto = True
+                Guardar_Auto = True
+
+            End If
 
         Catch ex As Exception
             Throw ex

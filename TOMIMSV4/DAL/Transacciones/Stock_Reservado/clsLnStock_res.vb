@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnStock_res
@@ -170,6 +170,7 @@ Public Class clsLnStock_res
 
             Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
             oBeStock_res.IdStockRes = newId
+            clsLnStock_res.Limpiar_Cache_StockReservado_MI3(clsReservaMi3DebugTrace.ObtenerActual())
 
             cmd.Dispose()
 

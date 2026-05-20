@@ -69,7 +69,7 @@ Partial Class frmCuadrilla
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
+        Me.Cliente_direccionTableAdapter1 = New cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
         lblIdCuadrilla = New System.Windows.Forms.Label()
         lblNombre = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()

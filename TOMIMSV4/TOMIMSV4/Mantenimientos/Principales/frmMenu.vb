@@ -7,6 +7,7 @@ Imports System.Timers
 Imports DevExpress.LookAndFeel
 Imports DevExpress.Mvvm.Native
 Imports DevExpress.Skins
+Imports DevExpress.Utils
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
@@ -252,6 +253,8 @@ Public Class frmMenu
                     backgroundWorker.RunWorkerAsync()
                 End If
             End If
+
+            'CargarToolTipsNotificaciones()
 
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
@@ -1426,6 +1429,7 @@ Public Class frmMenu
             .Show()
             .Focus()
         End With
+
         SplashScreenManager.CloseForm(False)
 
     End Sub
@@ -1763,8 +1767,8 @@ Public Class frmMenu
                         BeMenuSistema = lMenuRol.Find(Function(x) (x.Titulo = currenLink.Item.Caption OrElse x.Nombre_lgco = currenLink.Item.Name) AndAlso x.Nivel = 3)
 
                         If Not BeMenuSistema Is Nothing Then
+                            Debug.WriteLine(BeMenuSistema.Nombre_lgco)
                             currenLink.KeyTip = BeMenuSistema.IdMenu
-
                             currenLink.Visible = BeMenuSistema.Visible
                             currenLink.Item.Visibility = BeMenuSistema.Visible
                             currenLink.Item.Enabled = BeMenuSistema.Visible
@@ -5308,6 +5312,104 @@ Public Class frmMenu
 
     End Sub
 
+    Private Function CrearSuperTip(ByVal titulo As String, ByVal descripcion As String) As SuperToolTip
+        Dim st As New SuperToolTip()
+
+        Dim titleItem As New ToolTipTitleItem()
+        titleItem.Text = titulo
+
+        Dim contentItem As New ToolTipItem()
+        contentItem.LeftIndent = 6
+        contentItem.Text = descripcion
+        contentItem.AllowHtmlText = DefaultBoolean.True
+
+        st.Items.Add(titleItem)
+        st.Items.Add(contentItem)
+
+        Return st
+    End Function
+
+    'Private Sub CargarToolTipsNotificaciones()
+
+    '    Me.mnuEventosNotificacion.Hint = "Configura los eventos que generan notificaciones"
+    '    Me.mnuEventosNotificacion.SuperTip = CrearSuperTip(
+    '        "Eventos de notificación",
+    '        "Define <b>qué situaciones del sistema generan una notificación</b>." & Environment.NewLine &
+    '        "Ejemplo: transferencia reversada, despacho enviado o recepción confirmada."
+    '    )
+
+    '    Me.mnuLayoutsCorreo.Hint = "Configura la estructura visual del correo"
+    '    Me.mnuLayoutsCorreo.SuperTip = CrearSuperTip(
+    '        "Layouts de correo",
+    '        "Configura la <b>estructura visual general del correo</b>: encabezado, pie de página y estilos." & Environment.NewLine &
+    '        "Úselo para mantener una presentación uniforme en todas las notificaciones."
+    '    )
+
+    '    Me.mnuPlantillasNotificacion.Hint = "Administra asuntos y cuerpos de correo"
+    '    Me.mnuPlantillasNotificacion.SuperTip = CrearSuperTip(
+    '        "Plantillas de notificación",
+    '        "Define el <b>asunto y contenido del mensaje</b> para cada evento." & Environment.NewLine &
+    '        "Aquí se redacta el texto del correo y se usan variables como {Numero}, {BodegaOrigen} o {TablaDetalleHtml}."
+    '    )
+
+    '    Me.mnuVariablesEvento.Hint = "Administra variables disponibles por evento"
+    '    Me.mnuVariablesEvento.SuperTip = CrearSuperTip(
+    '        "Variables por evento",
+    '        "Administra las <b>variables disponibles para cada evento</b>." & Environment.NewLine &
+    '        "Sirve para saber qué datos puede usar una plantilla al momento de generar el mensaje."
+    '    )
+
+    '    Me.mnuContactosBodega.Hint = "Administra contactos por empresa, sucursal y bodega"
+    '    Me.mnuContactosBodega.SuperTip = CrearSuperTip(
+    '        "Contactos por bodega",
+    '        "Registra los <b>correos asociados a empresa, sucursal y bodega</b>." & Environment.NewLine &
+    '        "Estos contactos podrán ser usados como destinatarios To, Cc o Bcc según la configuración."
+    '    )
+
+    '    Me.mnuReglasDestinatarios.Hint = "Administra reglas para resolver destinatarios"
+    '    Me.mnuReglasDestinatarios.SuperTip = CrearSuperTip(
+    '        "Reglas de destinatarios",
+    '        "Define <b>cómo se resuelven los destinatarios de cada notificación</b>." & Environment.NewLine &
+    '        "Permite indicar de dónde saldrá el correo: fijo, por bodega, por cliente, por usuario u otro origen configurado."
+    '    )
+
+    '    Me.mnuColaNotificaciones.Hint = "Consulta la cola de notificaciones"
+    '    Me.mnuColaNotificaciones.SuperTip = CrearSuperTip(
+    '        "Cola de notificaciones",
+    '        "Muestra las <b>notificaciones pendientes de procesar o enviar</b>." & Environment.NewLine &
+    '        "Úselo para revisar el flujo operativo, reintentos y estado de ejecución."
+    '    )
+
+    '    Me.mnuLogNotificaciones.Hint = "Consulta el historial de notificaciones"
+    '    Me.mnuLogNotificaciones.SuperTip = CrearSuperTip(
+    '        "Log de notificaciones",
+    '        "Consulta el <b>histórico de notificaciones procesadas</b>." & Environment.NewLine &
+    '        "Permite revisar qué se envió, cuándo se envió, a quién se envió y si ocurrió algún error."
+    '    )
+
+    'End Sub
+
+    'Private Sub mnuEventoNotificacion_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEventosNotificacion.ItemClick
+    '    Try
+    '        Dim frm As New FrmNotificacionEventoMnt
+    '        frm.MdiParent = Me
+    '        frm.Show()
+    '        frm.BringToFront()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+    'End Sub
+
     Private Sub mnuImpresionBarraPallet_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuImpresionBarraPallet.ItemClick
         Try
 
@@ -5344,6 +5446,7 @@ Public Class frmMenu
             Cierra_Instancia_Previa(frmDocIngresoRFID_List)
 
             With frmDocIngresoRFID_List
+                .Modo = frmDocIngresoRFID_List.pModo.Lista
                 .MdiParent = Me
                 .Show()
                 .Focus()
@@ -5369,6 +5472,7 @@ Public Class frmMenu
             Cierra_Instancia_Previa(frmDocSalidaRFID_List)
 
             With frmDocSalidaRFID_List
+                .Modo = frmDocSalidaRFID_List.pModo.Lista
                 .MdiParent = Me
                 .Show()
                 .Focus()
@@ -5383,4 +5487,228 @@ Public Class frmMenu
             MessageBoxIcon.Exclamation)
         End Try
     End Sub
+
+    Private Sub mnuStock_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuStockTag.ItemClick
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmExistenciasRFID)
+
+            With frmExistenciasRFID
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Sub mnuInventarioRFID_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuInventarioRFID.ItemClick
+        'Try
+
+        '    If Not e Is Nothing Then
+        '        If Not permiteMenu(e.Link) Then Return
+        '    End If
+
+        '    Cierra_Instancia_Previa(frmInventarioRFID_Lista)
+
+        With frmInventarioRFID_Lista
+            .Modo = frmInventarioRFID_Lista.pModo.Lista
+            .MdiParent = Me
+            .Show()
+            .Focus()
+        End With
+
+        '    SplashScreenManager.CloseForm(False)
+
+        'Catch ex As Exception
+        '    XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+        '    Text,
+        '    MessageBoxButtons.OK,
+        '    MessageBoxIcon.Exclamation)
+        'End Try
+    End Sub
+
+    'Private Sub mnuLayoutCorreo_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuLayoutsCorreo.ItemClick
+    '    Try
+    '        For Each f As Form In Me.MdiChildren
+    '            If TypeOf f Is FrmNotificacionLayoutMnt Then
+    '                f.Activate()
+    '                Exit Sub
+    '            End If
+    '        Next
+
+    '        Dim frm As New FrmNotificacionLayoutMnt
+    '        frm.MdiParent = Me
+    '        frm.Show()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+
+    'End Sub
+
+    'Private Sub mnuPlantillaNotificacion_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuPlantillasNotificacion.ItemClick
+
+    '    Try
+    '        For Each f As Form In Me.MdiChildren
+    '            If TypeOf f Is FrmNotificacionPlantillaMnt Then
+    '                f.Activate()
+    '                Exit Sub
+    '            End If
+    '        Next
+
+    '        Dim frm As New FrmNotificacionPlantillaMnt
+    '        frm.MdiParent = Me
+    '        frm.Show()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+
+    'End Sub
+
+    'Private Sub mnuVariableEvento_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVariablesEvento.ItemClick
+
+    '    Try
+    '        For Each f As Form In Me.MdiChildren
+    '            If TypeOf f Is FrmNotificacionEventoVariableMnt Then
+    '                f.Activate()
+    '                Exit Sub
+    '            End If
+    '        Next
+
+    '        Dim frm As New FrmNotificacionEventoVariableMnt
+    '        frm.MdiParent = Me
+    '        frm.Show()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+
+    'End Sub
+
+    'Private Sub mnuContactoBodega_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuContactosBodega.ItemClick
+
+    '    Try
+    '        For Each f As Form In Me.MdiChildren
+    '            If TypeOf f Is FrmNotificacionContactoBodegaMnt Then
+    '                f.Activate()
+    '                Exit Sub
+    '            End If
+    '        Next
+
+    '        Dim frm As New FrmNotificacionContactoBodegaMnt
+    '        frm.MdiParent = Me
+    '        frm.Show()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+
+    'End Sub
+
+    'Private Sub mnuColaNotificaciones_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuColaNotificaciones.ItemClick
+
+    '    Try
+
+    '        'For Each f As Form In Me.MdiChildren
+    '        '    If TypeOf f Is FrmNotificacionColaMnt Then
+    '        '        f.Activate()
+    '        '        Exit Sub
+    '        '    End If
+    '        'Next
+
+    '        'Dim frm As New FrmNotificacionColaMnt
+    '        'frm.MdiParent = Me
+    '        'frm.Show()
+
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(String.Format("{0} {1}",
+    '                                      MethodBase.GetCurrentMethod.Name,
+    '                                      ex.Message),
+    '                        Text,
+    '                        MessageBoxButtons.OK,
+    '                        MessageBoxIcon.Error)
+
+    '        clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}",
+    '                                                  MethodBase.GetCurrentMethod.Name,
+    '                                                  ex.Message))
+    '    End Try
+
+    'End Sub
+
+    Private Sub mnurptIndicadorAjusteProveedor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnurptIndicadorAjusteProveedor.ItemClick
+
+        Try
+
+            If Not e Is Nothing Then
+                If Not permiteMenu(e.Link) Then Return
+            End If
+
+            Cierra_Instancia_Previa(frmIndicadorAjusteProveedor)
+
+            With frmIndicadorAjusteProveedor
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
 End Class

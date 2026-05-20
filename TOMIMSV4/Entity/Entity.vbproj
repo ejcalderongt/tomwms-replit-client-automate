@@ -108,8 +108,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=9.0.0.8, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Packaging.9.0.8\lib\net462\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=10.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Packaging.10.0.5\lib\net462\System.IO.Packaging.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
@@ -218,6 +218,7 @@
     <Compile Include="Interface\Transacciones_Out\clsBeI_nav_transacciones_out_error.vb" />
     <Compile Include="Interface\Transacciones_Push\clsBeI_nav_transacciones_push.vb" />
     <Compile Include="Inventario\Ciclico\clsBeTempComparacionInventario.vb" />
+    <Compile Include="Inventario\Ciclico\RFID\clsBeTrans_inv_ciclico_rfid.vb" />
     <Compile Include="Inventario\clsDataContractDI.vb" />
     <Compile Include="Inventario\Inicial\clsBeTrans_inv_stock_prod_sug.vb" />
     <Compile Include="Inventario\Inicial\Stock\clsBeTrans_inv_stock_partial.vb" />
@@ -227,9 +228,11 @@
     <Compile Include="Log\clsBeLog_importacion_excel.vb" />
     <Compile Include="Log\clsBeLog_sincronizacion_fallos.vb" />
     <Compile Include="Log\clsBeLog_sincronizacion_nube.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_borrador.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_doc.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_enc_Partial.vb" />
     <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodegaSeleccion.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeResultadoValidacionCambioUbic.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsBeTrans_bodega_ubicaciones_excel.vb" />
     <Compile Include="Mantenimientos\Bodega\Smtp_configuracion\Smtp_Configuracion.vb" />
     <Compile Include="Mantenimientos\Campaña\clsBeCampaña.vb" />
@@ -266,6 +269,15 @@
     <Compile Include="Mantenimientos\Menu_Rol\clsBeOpcionesMenuRol.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsBeTrans_oc_pol_motivo_correccion.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsBeTrans_oc_pol_motivo_correccion_bodega.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBEBodegaNotificacionContacto.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionCola.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionContacto.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionContactoBodega.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionDestinatarioRegla.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionEvento.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionEventoVariable.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionLayout.vb" />
+    <Compile Include="Mantenimientos\NotificacionEvento\clsBENotificacionPlantilla.vb" />
     <Compile Include="Mantenimientos\Operador\clsBeOperador_jornada_laboral.vb" />
     <Compile Include="Mantenimientos\Operador\clsBeOperador_montacarga.vb" />
     <Compile Include="Mantenimientos\Operador\ZonaPicking\clsBeOperador_zona_picking_tramo.vb" />
@@ -688,7 +700,9 @@
     <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr.vb" />
     <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr_partial.vb" />
     <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_det.vb" />
+    <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_det_Partial.vb" />
     <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_enc.vb" />
+    <Compile Include="Transacciones\RFID\clsBeI_nav_barras_rfid_enc_Partial.vb" />
     <Compile Include="Transacciones\Servicios\clsBeTrans_servicio_det.vb" />
     <Compile Include="Transacciones\Servicios\clsBeTrans_servicio_enc.vb" />
     <Compile Include="Transacciones\Servicios\clsBe_Servicio.vb" />

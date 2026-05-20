@@ -161,7 +161,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Sub
 
-
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
                                         ByVal pIdEmpresa As Integer,
@@ -747,6 +746,8 @@ Partial Public Class clsLnTrans_ajuste_enc
             Dim BeMov As clsBeTrans_movimientos
             Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdStock As Integer = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
+            Dim detalle_correcto As Integer = 0
+            Dim detalle_incorrecto As Integer = 0
 
             For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
 
@@ -850,6 +851,245 @@ Partial Public Class clsLnTrans_ajuste_enc
             Throw
         End Try
     End Function
+    Public Shared Sub Guardar_Borrador_Ajuste(ByVal BeAjusteEnc As clsBeTrans_ajuste_enc,
+                                              ByVal lBeTransAjusteDet As List(Of clsBeTrans_ajuste_det))
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            'Actualiza encabezado
+            Actualizar(BeAjusteEnc, lConnection, lTransaction)
+
+            'Elimina borradores previos del mismo ajuste antes de volver a guardar
+            clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc(BeAjusteEnc.Idajusteenc,
+                                                                    lConnection,
+                                                                    lTransaction)
+
+            For Each BeAjusteDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+
+                Dim BeBorrador As New clsBeTrans_ajuste_det_borrador
+
+                With BeBorrador
+                    .idajusteenc = BeAjusteEnc.Idajusteenc
+                    .idajustedet = 0
+
+                    .IdStock = BeAjusteDet.IdStock
+                    .IdPropietarioBodega = BeAjusteDet.IdPropietarioBodega
+                    .IdProductoBodega = BeAjusteDet.IdProductoBodega
+                    .IdProductoEstado = BeAjusteDet.IdProductoEstado
+                    .IdPresentacion = BeAjusteDet.IdPresentacion
+                    .IdUnidadMedida = BeAjusteDet.IdUnidadMedida
+                    .IdUbicacion = BeAjusteDet.IdUbicacion
+
+                    .lote_original = BeAjusteDet.Lote_original
+                    .lote_nuevo = BeAjusteDet.Lote_nuevo
+                    .fecha_vence_original = BeAjusteDet.Fecha_vence_original
+                    .fecha_vence_nueva = BeAjusteDet.Fecha_vence_nueva
+                    .peso_original = BeAjusteDet.Peso_original
+                    .peso_nuevo = BeAjusteDet.Peso_nuevo
+
+                    If BeAjusteDet.IdPresentacion <> 0 Then
+                        .cantidad_original = Math.Round(BeAjusteDet.Cantidad_original * BeAjusteDet.Presentacion.Factor, 6)
+                        .cantidad_nueva = Math.Round(BeAjusteDet.Cantidad_nueva * BeAjusteDet.Presentacion.Factor, 6)
+                    Else
+                        .cantidad_original = BeAjusteDet.Cantidad_original
+                        .cantidad_nueva = BeAjusteDet.Cantidad_nueva
+                    End If
+
+                    .codigo_producto = BeAjusteDet.Codigo_producto
+                    .nombre_producto = BeAjusteDet.Nombre_producto
+                    .idtipoajuste = BeAjusteDet.Idtipoajuste
+                    .idmotivoajuste = BeAjusteDet.IdMotivoAjuste
+                    .observacion = BeAjusteDet.Observacion
+                    .codigo_ajuste = BeAjusteDet.Codigo_ajuste
+                    .enviado = False
+                    .IdBodegaERP = BeAjusteDet.IdBodegaERP
+                    .lic_plate = BeAjusteDet.lic_plate
+                    .referencia_ajuste_erp = ""
+                    .estado_ajuste_erp = False
+
+                    .estado_borrador = "BORRADOR"
+                    .confirmado = False
+                    .procesado = False
+                    .fecha_creacion = Date.Now
+                    .usuario_creacion = BeAjusteEnc.Idusuario.ToString()
+                    .fecha_modificacion = Date.Now
+                    .usuario_modificacion = BeAjusteEnc.Idusuario.ToString()
+                End With
+
+                clsLnTrans_ajuste_det_borrador.Insertar(BeBorrador,
+                                                        lConnection,
+                                                        lTransaction)
+
+            Next
+
+            '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C1):
+            'El borrador debe inmovilizar los stocks. Sin esto, despacho/picking/otro
+            'ajuste pueden consumir el stock entre sesiones, dejando el borrador
+            'inválido al reanudar.
+            '
+            'IMPORTANTE: usar Indicador = "ajuste_stock" (NO "ajuste_stock_borrador")
+            'porque clsLnStock_res.Eliminar_All_Stock_Ajuste (DAL clsLnStock_res_Partial
+            'línea 4886) hace literal:
+            '   DELETE FROM stock_res WHERE IdTransaccion = @id AND Indicador = 'ajuste_stock'
+            'Si usáramos otro Indicador, las reservas NUNCA se liberarían al aplicar
+            'el ajuste (Aplicar_Ajuste línea 91 invoca Eliminar_All_Stock_Ajuste).
+            '
+            'Idempotencia: limpiar reservas previas del mismo ajuste antes de
+            're-reservar (permite re-guardar borrador sin duplicar).
+            clsLnStock_res.Eliminar_All_Stock_Ajuste(BeAjusteEnc.Idajusteenc,
+                                                     lConnection,
+                                                     lTransaction)
+
+            For Each BeAjusteDet As clsBeTrans_ajuste_det In lBeTransAjusteDet
+                If BeAjusteDet.IdStock > 0 Then
+                    Reservar_Stock_Para_Borrador(BeAjusteEnc, BeAjusteDet,
+                                                  lConnection, lTransaction)
+                End If
+            Next
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Sub
+
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C1 helper):
+    'Reserva un stock asociado a un ajuste en estado borrador. Replica la lógica
+    'de frmAjusteStock.Reservar_Stock (línea 1041) a nivel DAL puro.
+    '
+    'Usa Indicador = "ajuste_stock" (mismo que el flujo manual líneas 981 y 1054
+    'del form) para que Aplicar_Ajuste libere automáticamente al transformar
+    'borrador → final.
+    Public Shared Sub Reservar_Stock_Para_Borrador(
+            ByVal BeAjusteEnc As clsBeTrans_ajuste_enc,
+            ByVal BeAjusteDet As clsBeTrans_ajuste_det,
+            ByVal lConnection As SqlConnection,
+            ByVal lTransaction As SqlTransaction)
+
+        Dim rs As New clsBeStock_res
+        Dim st As clsBeStock = clsLnStock.GetSingle(BeAjusteDet.IdStock,
+                                                     lConnection, lTransaction)
+        If st Is Nothing OrElse st.IdStock = 0 Then Return
+
+        rs.IdStockRes = 0
+        rs.IdTransaccion = BeAjusteEnc.Idajusteenc
+        rs.Indicador = "ajuste_stock"
+        rs.IdPedidoDet = 0
+        rs.IdStock = st.IdStock
+        rs.IdPropietarioBodega = st.IdPropietarioBodega
+        rs.IdProductoBodega = st.IdProductoBodega
+        rs.IdUbicacion = st.IdUbicacion
+        rs.IdProductoEstado = st.IdProductoEstado
+        rs.IdPresentacion = st.IdPresentacion
+        rs.IdUnidadMedida = st.IdUnidadMedida
+        rs.Lote = st.Lote
+        rs.Lic_plate = st.Lic_plate
+        rs.Serial = st.Serial
+        rs.Cantidad = If(BeAjusteDet.Cantidad_original > 0,
+                         BeAjusteDet.Cantidad_original, st.Cantidad)
+        rs.Peso = st.Peso
+        rs.Estado = ""
+        rs.Fecha_ingreso = st.Fecha_Ingreso
+        rs.Fecha_vence = st.Fecha_vence
+        rs.Uds_lic_plate = st.Uds_lic_plate
+        rs.Ubicacion_ant = st.UbicacionAnterior
+        rs.No_bulto = st.No_bulto
+        rs.IdRecepcion = st.IdRecepcionEnc
+        rs.IdPicking = st.IdPickingEnc
+        rs.IdPedido = st.IdPedidoEnc
+        rs.IdDespacho = st.IdDespachoEnc
+        rs.User_agr = BeAjusteEnc.Idusuario.ToString()
+        rs.Fec_agr = Date.Now
+        rs.User_mod = BeAjusteEnc.Idusuario.ToString()
+        rs.Fec_mod = Date.Now
+        rs.Host = "DAL_BORRADOR"
+        rs.añada = st.Añada
+        rs.Fecha_manufactura = st.Fecha_Manufactura
+        rs.Atributo_Variante_1 = st.Atributo_Variante_1
+        rs.IdBodega = st.IdBodega
+        rs.IdProductoTallaColor = st.IdProductoTallaColor
+        rs.Talla = st.Talla
+        rs.Color = st.Color
+
+        clsLnStock_res.Insertar(rs, lConnection, lTransaction)
+    End Sub
+
+    '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (helper para reanudación de borrador):
+    'Versión standalone para recrear UNA reserva individual cuando al reanudar
+    'un borrador detectamos que la reserva fue eliminada por terceros.
+    'Devuelve True si se pudo reservar, False si el stock ya no está disponible.
+    Public Shared Function Reservar_Stock_Para_Borrador_Standalone(
+            ByVal idstock As Integer,
+            ByVal pIdAjusteEnc As Integer,
+            ByVal pHostName As String,
+            ByVal pIdUsuario As Integer,
+            ByVal lConnection As SqlConnection,
+            ByVal lTransaction As SqlTransaction) As Boolean
+
+        Try
+            Dim st As clsBeStock = clsLnStock.GetSingle(idstock, lConnection, lTransaction)
+            If st Is Nothing OrElse st.IdStock = 0 Then Return False
+            If st.Cantidad <= 0 Then Return False
+
+            Dim rs As New clsBeStock_res
+            rs.IdStockRes = 0
+            rs.IdTransaccion = pIdAjusteEnc
+            rs.Indicador = "ajuste_stock"
+            rs.IdPedidoDet = 0
+            rs.IdStock = st.IdStock
+            rs.IdPropietarioBodega = st.IdPropietarioBodega
+            rs.IdProductoBodega = st.IdProductoBodega
+            rs.IdUbicacion = st.IdUbicacion
+            rs.IdProductoEstado = st.IdProductoEstado
+            rs.IdPresentacion = st.IdPresentacion
+            rs.IdUnidadMedida = st.IdUnidadMedida
+            rs.Lote = st.Lote
+            rs.Lic_plate = st.Lic_plate
+            rs.Serial = st.Serial
+            rs.Cantidad = st.Cantidad
+            rs.Peso = st.Peso
+            rs.Estado = ""
+            rs.Fecha_ingreso = st.Fecha_Ingreso
+            rs.Fecha_vence = st.Fecha_vence
+            rs.Uds_lic_plate = st.Uds_lic_plate
+            rs.Ubicacion_ant = st.UbicacionAnterior
+            rs.No_bulto = st.No_bulto
+            rs.IdRecepcion = st.IdRecepcionEnc
+            rs.IdPicking = st.IdPickingEnc
+            rs.IdPedido = st.IdPedidoEnc
+            rs.IdDespacho = st.IdDespachoEnc
+            rs.User_agr = pIdUsuario.ToString()
+            rs.Fec_agr = Date.Now
+            rs.User_mod = pIdUsuario.ToString()
+            rs.Fec_mod = Date.Now
+            rs.Host = pHostName
+            rs.añada = st.Añada
+            rs.Fecha_manufactura = st.Fecha_Manufactura
+            rs.Atributo_Variante_1 = st.Atributo_Variante_1
+            rs.IdBodega = st.IdBodega
+            rs.IdProductoTallaColor = st.IdProductoTallaColor
+            rs.Talla = st.Talla
+            rs.Color = st.Color
+
+            clsLnStock_res.Insertar(rs, lConnection, lTransaction)
+            Return True
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(
+                "Reservar_Stock_Para_Borrador_Standalone IdStock=" & idstock & ": " & ex.Message)
+            Return False
+        End Try
+    End Function
+
     Public Shared Function Get_All_VW(ByVal pFechaDel As Date,
                                       ByVal pFechaAl As Date,
                                       ByVal pIdBodega As Integer) As DataTable
@@ -879,4 +1119,5 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Function
+
 End Class

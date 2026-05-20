@@ -1,9 +1,9 @@
 ﻿Imports System.Reflection
-Imports System.Runtime.Remoting.Channels.Ipc
 Imports System.Threading.Tasks
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Mask
 Imports DevExpress.XtraEditors.Repository
+Imports DevExpress.XtraSplashScreen
 
 Public Class frmCliente
 
@@ -1680,6 +1680,294 @@ Public Class frmCliente
         End Try
 
 
+    End Sub
+
+    Private Sub cmbBodegaWMS_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbBodegaWMS.KeyDown
+        Try
+            If e.KeyCode = Keys.Delete Then
+                cmbBodegaWMS.EditValue = Nothing
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub tsSeleccionarClientes_Toggled(sender As Object, e As EventArgs) Handles tsSeleccionarClientes.Toggled
+
+        If tsSeleccionarClientes.IsOn Then
+            Seleccionar_Clientes(True)
+        Else
+            Seleccionar_Clientes(False)
+        End If
+
+    End Sub
+
+    Private Sub Seleccionar_Clientes(valor As Boolean)
+
+        For i As Integer = 0 To gridView1.RowCount - 1
+            gridView1.SetRowCellValue(i, "Selección", valor)
+        Next
+
+    End Sub
+
+    Private Sub LlenarGridLookups(ByVal Edicion As Boolean)
+        CargarEstadosProducto()
+        CargarGridLookUpLotes(Edicion)
+    End Sub
+
+    Private Sub CargarGridLookUpLotes(ByVal Edicion As Boolean)
+
+        Try
+
+            If gBeCliente Is Nothing Then Exit Sub
+
+            Dim dtLotes As DataTable = clsLnStock.Get_Lotes_Disponibles_DT_By_IdCliente(AP.IdBodega, gBeCliente.IdCliente, Edicion)
+
+            With cmbLote
+
+                .Properties.DataSource = dtLotes
+                .Properties.DisplayMember = "Lote"
+                .Properties.ValueMember = "Lote"
+                .Properties.PopulateViewColumns()
+
+                Dim view As DevExpress.XtraGrid.Views.Grid.GridView = CType(.Properties.View, DevExpress.XtraGrid.Views.Grid.GridView)
+                view.Columns("IdProductoEstado").Visible = False
+                view.Columns("IdProducto").Visible = False
+
+                cmbLote.Properties.PopupFormWidth = 800
+
+            End With
+
+        Catch ex As Exception
+            MessageBox.Show("Error al cargar los lotes disponibles: " & ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub CargarEstadosProducto()
+
+        Try
+
+            Dim dtEstadosProducto As DataTable = clsLnStock.Get_Estados_Producto_En_Stock()
+
+            With cmbEstadoProducto
+
+                .Properties.DataSource = dtEstadosProducto
+                .Properties.DisplayMember = "nombre"
+                .Properties.ValueMember = "IdEstado"
+                .Properties.PopulateViewColumns()
+
+                Dim view As DevExpress.XtraGrid.Views.Grid.GridView = CType(.Properties.View, DevExpress.XtraGrid.Views.Grid.GridView)
+                view.BestFitColumns()
+
+            End With
+
+        Catch ex As Exception
+            MessageBox.Show("Error al cargar los estados de producto: " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub cmbLote_EditValueChanged(sender As Object, e As EventArgs) Handles cmbLote.EditValueChanged
+
+        Try
+
+            Dim view As DevExpress.XtraGrid.Views.Grid.GridView = CType(cmbLote.Properties.View, DevExpress.XtraGrid.Views.Grid.GridView)
+            Dim selectedRowHandle As Integer = view.FocusedRowHandle
+
+            If selectedRowHandle >= 0 Then
+
+                Dim estado As Integer = view.GetRowCellValue(selectedRowHandle, "IdProductoEstado")
+                Dim idproducto As Integer = view.GetRowCellValue(selectedRowHandle, "IdProducto")
+
+                cmbEstadoProducto.EditValue = estado
+                cmbEstadoProducto.Tag = idproducto
+
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Error al asignar estado del producto: " & ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub mnuNuevoLote_Click(sender As Object, e As EventArgs) Handles mnuNuevoLote.Click
+        Nuevo_Cliente_Lote()
+    End Sub
+
+    Private Sub Nuevo_Cliente_Lote()
+        Try
+
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormCaption("Cargando lotes..")
+
+            txtIdClienteLote.Text = clsLnCliente_lotes.MaxID() + 1
+            txtIdClienteLote.Tag = 0
+            LlenarGridLookups(False)
+
+            cmbLote.EditValue = Nothing
+            txtUsuarioAgregoLote.Text = AP.UsuarioAp.Nombres
+            txtUsuarioModificoLote.Text = AP.UsuarioAp.Nombres
+            dtpFechaAgregoLote.EditValue = Date.Now
+            dtpFechaModificoLote.EditValue = Date.Now
+
+        Catch ex As Exception
+            MessageBox.Show("Error al cargar configuración: " & ex.Message)
+        Finally
+            SplashScreenManager.CloseForm()
+        End Try
+    End Sub
+
+    Private Sub xtrtabClientes_SelectedPageChanged(sender As Object, e As DevExpress.XtraTab.TabPageChangedEventArgs) Handles xtrtabClientes.SelectedPageChanged
+        If e.Page.Name = "tabLotes" Then
+            Listar_Lotes()
+        End If
+    End Sub
+    Private Sub Listar_Lotes()
+        Listar_Lotes_Permitidos() : Listar_Lotes_Bloqueados()
+    End Sub
+    Private Sub Listar_Lotes_Permitidos()
+        Try
+
+            Dim dtLotesPermitidos As DataTable = clsLnCliente_lotes.Get_Lotes_By_IdCliente(gBeCliente.IdCliente, False)
+            dgridLotesPermitidos.DataSource = dtLotesPermitidos
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub Listar_Lotes_Bloqueados()
+        Try
+            Dim dtlotesBloqueados As DataTable = clsLnCliente_lotes.Get_Lotes_By_IdCliente(gBeCliente.IdCliente, True)
+            DgridLotesBloqueados.DataSource = dtlotesBloqueados
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub dgridLotesPermitidos_DoubleClick(sender As Object, e As EventArgs) Handles dgridLotesPermitidos.DoubleClick, DgridLotesBloqueados.DoubleClick
+        Try
+            Dim view As DevExpress.XtraGrid.Views.Grid.GridView = CType(sender.MainView, DevExpress.XtraGrid.Views.Grid.GridView)
+            Dim rowHandle As Integer = view.FocusedRowHandle
+
+            If rowHandle < 0 Then Exit Sub
+
+            LlenarGridLookups(True)
+
+            Dim IdClienteLote As Integer = Convert.ToInt32(view.GetRowCellValue(rowHandle, "IdClienteLote"))
+            Dim BeClienteLote As clsBeCliente_lotes = clsLnCliente_lotes.GetSingle_By_IdClienteLote(IdClienteLote)
+
+            txtIdClienteLote.Text = BeClienteLote.IdClienteLote
+            txtIdClienteLote.Tag = BeClienteLote.IdClienteLote
+            cmbLote.EditValue = BeClienteLote.Lote
+            cmbEstadoProducto.EditValue = BeClienteLote.IdProductoEstado
+            cmbEstadoProducto.Tag = BeClienteLote.IdProducto
+
+            Dim BeUsuarioAgrego As clsBeUsuario = clsLnUsuario.GetSingle(BeClienteLote.User_agr)
+            If Not BeUsuarioAgrego Is Nothing Then
+                txtUsuarioAgregoLote.Text = BeUsuarioAgrego.Nombres
+            Else
+                txtUsuarioAgregoLote.Text = "Desconocido"
+            End If
+
+            Dim BeUsuarioModifico As clsBeUsuario = clsLnUsuario.GetSingle(BeClienteLote.User_mod)
+            If Not BeUsuarioModifico Is Nothing Then
+                txtUsuarioModificoLote.Text = BeUsuarioModifico.Nombres
+            Else
+                txtUsuarioModificoLote.Text = "Desconocido"
+            End If
+
+            dtpFechaAgregoLote.EditValue = BeClienteLote.Fec_agr
+            dtpFechaModificoLote.EditValue = BeClienteLote.Fec_mod
+            chkBloquear.EditValue = BeClienteLote.Bloquear
+            chkActivo.Checked = BeClienteLote.Activo
+
+        Catch ex As Exception
+            MessageBox.Show("Error al seleccionar lote: " & ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub mnuGuardarLote_Click(sender As Object, e As EventArgs) Handles mnuGuardarLote.Click
+
+        Try
+
+            Dim beClienteLote As New clsBeCliente_lotes
+
+            If Val(txtIdClienteLote.Tag) = 0 Then
+
+                beClienteLote.IdClienteLote = clsLnCliente_lotes.MaxID() + 1
+                beClienteLote.IdCliente = gBeCliente.IdCliente
+                beClienteLote.Lote = cmbLote.EditValue
+                beClienteLote.IdProductoEstado = cmbEstadoProducto.EditValue
+                beClienteLote.IdProducto = cmbEstadoProducto.Tag
+                beClienteLote.User_agr = AP.UsuarioAp.IdUsuario
+                beClienteLote.Fec_agr = Date.Now
+                beClienteLote.User_mod = AP.UsuarioAp.IdUsuario
+                beClienteLote.Fec_mod = Date.Now
+                beClienteLote.Bloquear = chkBloquear.IsOn
+                beClienteLote.Activo = True
+                clsLnCliente_lotes.Insertar(beClienteLote)
+
+            Else
+
+                beClienteLote = clsLnCliente_lotes.GetSingle_By_IdClienteLote(CInt(txtIdClienteLote.Tag))
+
+                If Not beClienteLote Is Nothing Then
+
+                    beClienteLote.Lote = cmbLote.EditValue
+                    beClienteLote.IdProductoEstado = cmbEstadoProducto.EditValue
+                    beClienteLote.IdProducto = cmbEstadoProducto.Tag
+                    beClienteLote.User_mod = AP.UsuarioAp.IdUsuario
+                    beClienteLote.Fec_mod = Date.Now
+                    beClienteLote.Bloquear = chkBloquear.IsOn
+                    beClienteLote.Activo = chkLoteActivo.IsOn
+                    clsLnCliente_lotes.Actualizar(beClienteLote)
+
+                End If
+
+            End If
+
+            Nuevo_Cliente_Lote()
+
+            Listar_Lotes()
+
+        Catch ex As Exception
+            MessageBox.Show("Error al guardar lote: " & ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub mnuEliminarLote_Click(sender As Object, e As EventArgs) Handles mnuEliminarLote.Click
+
+        If Not Val(txtIdClienteLote.Tag) = 0 Then
+
+            Dim BeClienteLote As clsBeCliente_lotes = clsLnCliente_lotes.GetSingle_By_IdClienteLote(txtIdClienteLote.Tag)
+
+            If Not BeClienteLote Is Nothing Then
+
+                If XtraMessageBox.Show("¿Eliminar configuración de lote: " & BeClienteLote.IdClienteLote & " ?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
+                    If clsLnCliente_lotes.Eliminar(BeClienteLote.IdClienteLote) > 0 Then
+                        Listar_Lotes() : Nuevo_Cliente_Lote()
+                    End If
+
+                End If
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub txtIdProductoEstadoDefecto_KeyDown(sender As Object, e As KeyEventArgs) Handles txtIdProductoEstadoDefecto.KeyDown
+        Try
+            If e.KeyCode = Keys.Delete Then
+                txtIdProductoEstadoDefecto.EditValue = Nothing
+            End If
+        Catch ex As Exception
+
+        End Try
     End Sub
 
 End Class
