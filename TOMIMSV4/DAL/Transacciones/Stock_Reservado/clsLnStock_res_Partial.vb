@@ -24813,12 +24813,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                         Else
-                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                             vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
-                                                             Reserva_Stock_From_MI3 = False : Exit For
-                                                         End If
+                                                        Else
+                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                            vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
+                                                            Continue For
+                                                        End If
 
                                                      End If
                                                  Else
