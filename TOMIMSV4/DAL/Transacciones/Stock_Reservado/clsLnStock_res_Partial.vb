@@ -24820,7 +24820,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                             Continue For
                                                         End If
 
-                                                     End If
+                                                    End If
                                                  Else
                                                      Dim vMotivoNoAplicaExplosionNivel As String = "#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel
                                                      Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
