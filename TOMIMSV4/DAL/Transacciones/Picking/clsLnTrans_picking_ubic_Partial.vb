@@ -4022,6 +4022,107 @@ Partial Public Class clsLnTrans_picking_ubic
         Return Math.Round(pCantidad * vFactor, 6)
     End Function
 
+    '#EJCCKFK20260520: Blindaje reversa picking; si no hubo ejecución real, devolver stock de staging a origen.
+    Public Shared Function Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
+                                                                          ByVal pIdUbicacionPicking As Integer,
+                                                                          Optional ByVal pConnection As SqlConnection = Nothing,
+                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Restaurar_Ubicacion_Stock_Picking_No_Ejecutado = 0
+
+        If pBePickingUbic Is Nothing Then Return 0
+        If pBePickingUbic.IdStock <= 0 OrElse pBePickingUbic.IdBodega <= 0 Then Return 0
+
+        If pBePickingUbic.Cantidad_Recibida > 0 OrElse
+           pBePickingUbic.Cantidad_Verificada > 0 OrElse
+           pBePickingUbic.Cantidad_despachada > 0 Then Return 0
+
+        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            If Not Es_Transaccion_Remota Then lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim vConnection As SqlConnection = If(Es_Transaccion_Remota, pConnection, lConnection)
+            Dim vTransaction As SqlTransaction = If(Es_Transaccion_Remota, pTransaction, lTransaction)
+
+            If pIdUbicacionPicking <= 0 Then
+                pIdUbicacionPicking = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(pBePickingUbic.IdBodega,
+                                                                                      vConnection,
+                                                                                      vTransaction)
+            End If
+
+            If pIdUbicacionPicking <= 0 Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            Dim vSqlPickingEjecutado As String = "SELECT COUNT(1)
+                                                  FROM trans_picking_ubic
+                                                  WHERE IdPickingUbic = @IdPickingUbic
+                                                    AND IdPickingEnc = @IdPickingEnc
+                                                    AND IdStock = @IdStock
+                                                    AND (ISNULL(cantidad_recibida, 0) > 0
+                                                         OR ISNULL(cantidad_verificada, 0) > 0
+                                                         OR ISNULL(cantidad_despachada, 0) > 0)"
+
+            Using cmd As New SqlCommand(vSqlPickingEjecutado, vConnection, vTransaction)
+                cmd.Parameters.Add(New SqlParameter("@IdPickingUbic", pBePickingUbic.IdPickingUbic))
+                cmd.Parameters.Add(New SqlParameter("@IdPickingEnc", pBePickingUbic.IdPickingEnc))
+                cmd.Parameters.Add(New SqlParameter("@IdStock", pBePickingUbic.IdStock))
+
+                If CInt(cmd.ExecuteScalar()) > 0 Then
+                    If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                    Return 0
+                End If
+            End Using
+
+            Dim BeStockActual As clsBeStock = clsLnStock.Get_Single_Stock_By_IdStock(pBePickingUbic.IdStock,
+                                                                                     vConnection,
+                                                                                     vTransaction)
+
+            If BeStockActual Is Nothing Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion <> pIdUbicacionPicking Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion_anterior <= 0 Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion_anterior = BeStockActual.IdUbicacion Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            Restaurar_Ubicacion_Stock_Picking_No_Ejecutado = clsLnStock.Actualizar_IdUbicacion_By_IdStock(BeStockActual.IdUbicacion_anterior,
+                                                                                                          BeStockActual.IdUbicacion,
+                                                                                                          BeStockActual.IdBodega,
+                                                                                                          BeStockActual.IdStock,
+                                                                                                          vConnection,
+                                                                                                          vTransaction)
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
     Public Shared Sub Marcar_Linea_No_Pickeada(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
                                                ByVal Usuario As Integer,
                                                Optional ByVal pConnection As SqlConnection = Nothing,
@@ -4253,6 +4354,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
 
             If Not BeTransPickingUbicStockExistente Is Nothing Then
+
+                Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(pBePickingUbic,
+                                                               0,
+                                                               IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
+                                                               IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
 
                 Dim BeMovimientoPicking As New clsBeTrans_movimientos
                 BeMovimientoPicking = clsLnTrans_movimientos.Get_Single_By_IdMovimiento(BeTransPickingUbicStockExistente.IdMovimiento,
