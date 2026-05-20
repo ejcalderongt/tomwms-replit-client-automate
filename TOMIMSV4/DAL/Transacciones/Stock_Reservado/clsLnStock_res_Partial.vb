@@ -18433,6 +18433,45 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    '#EJC20260520_RESERVA_BYB_FIX: helpers para que las decisiones de reserva usen cantidad útil,
+    'no solo existencia de filas; esto evita falsos SOLO_NO_PICKING_SIN_EXPLOSION.
+    Private Shared Function Stock_Disponible_MI3(ByVal pListaStock As List(Of clsBeStock)) As List(Of clsBeStock)
+
+        If pListaStock Is Nothing Then
+            Return New List(Of clsBeStock)
+        End If
+
+        Return pListaStock.Where(Function(x) x.Cantidad > 0).ToList()
+
+    End Function
+
+    Private Shared Function Cantidad_Stock_Disponible_MI3(ByVal pListaStock As List(Of clsBeStock)) As Double
+
+        Return Stock_Disponible_MI3(pListaStock).Sum(Function(x) x.Cantidad)
+
+    End Function
+
+    Private Shared Function Picking_Cubre_NoPicking_NoExplosionable_MI3(ByVal pRestoInventarioEnUmBas As Boolean,
+                                                                        ByVal pStockResBusquedaParaExplosion As clsBeStock_res,
+                                                                        ByVal pStockResSolicitud As clsBeStock_res,
+                                                                        ByVal pListaStockPicking As List(Of clsBeStock),
+                                                                        ByVal pCantidadSolicitud As Double) As Boolean
+
+        Dim vCantidadSolicitud As Double = pCantidadSolicitud
+
+        If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitud = 0 Then
+            vCantidadSolicitud = pStockResSolicitud.Cantidad
+        End If
+
+        Return pRestoInventarioEnUmBas _
+               AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+               AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0 _
+               AndAlso pStockResSolicitud.IdPresentacion = 0 _
+               AndAlso vCantidadSolicitud > 0 _
+               AndAlso Cantidad_Stock_Disponible_MI3(pListaStockPicking) >= vCantidadSolicitud
+
+    End Function
+
     Public Shared Function Obtener_Listas_De_Stock(ByRef pStockResSolicitud As clsBeStock_res,
                                                    ByRef BeProducto As clsBeProducto,
                                                    ByVal DiasVencimiento As Integer,
@@ -18916,6 +18955,9 @@ Partial Public Class clsLnStock_res
             Dim pEs_Devolucion As Boolean = False
             Dim vPresReserva As Integer = 0
             Dim vBeCliente As New clsBeCliente
+            '#EJC20260520_RESERVA_BYB_FIX: declaradas fuera de etiquetas GoTo para evitar BC36597 por lambdas en el bloque.
+            Dim vCantidadSolicitudNoPickingFix As Double = 0
+            Dim vPickingCubreNoPickingNoExplosionableRecalculo As Boolean = False
 
 #End Region
 
@@ -19181,16 +19223,16 @@ EXPLOSIONAR_PRODUCTO:
                                                                            0))
                             Else
                                 If Not vCantidadCompletada Then
-                                     Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                    Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
                                                                                      BeProducto.Codigo,
                                                                                      vCantidadSolicitadaPedido,
                                                                                      vCantidadStock)
-                                     clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                     'Exit Function
-                                 End If
-                             End If
-                         End If
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                    Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                    'Exit Function
+                                End If
+                            End If
+                        End If
 
                         '#EJC202312191315: Para BYB, con amor.
                         If Not vBusquedaEnUmBas AndAlso pStockResBusquedaParaExplosion Is Nothing Then
@@ -19246,9 +19288,11 @@ EXPLOSIONAR_PRODUCTO:
                                                                  vCronometroFallbackPickingRestar,
                                                                  lBeStockExistenteZonaPicking)
 
-                        If lBeStockExistenteZonaPicking Is Nothing Then lBeStockExistenteZonaPicking = New List(Of clsBeStock)
+                        '#EJC20260520_RESERVA_BYB_FIX: una lista con filas pero sin cantidad disponible debe
+                        'tratarse como vacia antes de tomar FEFO o bloquear el fallback UMBas.
+                        lBeStockExistenteZonaPicking = Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
 
-                        If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
+                        If lBeStockExistenteZonaPicking.Any() Then
                             vFechaMinimaVenceZonaPicking = lBeStockExistenteZonaPicking.Min(Function(x) x.Fecha_vence)
                             vProcessResult.Add("#MI3_2312201855: Se encontraron " & lBeStockExistenteZonaPicking.Count & " registros. La fecha mínima de picking es: " & vFechaMinimaVenceZonaPicking)
                         End If
@@ -19290,9 +19334,10 @@ EXPLOSIONAR_PRODUCTO:
                                                                  vCronometroFallbackAlmRestar,
                                                                  lBeStockExistenteZonasNoPicking)
 
-                        If lBeStockExistenteZonasNoPicking Is Nothing Then lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
+                        '#EJC20260520_RESERVA_BYB_FIX: FEFO de ALM/no picking solo cuenta si queda cantidad util.
+                        lBeStockExistenteZonasNoPicking = Stock_Disponible_MI3(lBeStockExistenteZonasNoPicking)
 
-                        If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
+                        If lBeStockExistenteZonasNoPicking.Any() Then
                             vFechaMinimaVenceZonaALM = lBeStockExistenteZonasNoPicking.Min(Function(x) x.Fecha_vence)
                         End If
 
@@ -19300,26 +19345,19 @@ EXPLOSIONAR_PRODUCTO:
 
                     End If
 
-                    '#EJCCKFK20260520: Si la zona ALM/no picking exige explosion y picking cubre la solicitud,
+                    '#EJC20260520_RESERVA_BYB_FIX: Si la zona ALM/no picking exige explosion y picking cubre la solicitud,
                     'no se debe descartar el stock picking por FEFO de una ubicacion que no puede reservarse.
                     Dim vCantidadSolicitudFallbackPicking As Double = vCantidadSolicitadaPedido
                     If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitudFallbackPicking = 0 Then
                         vCantidadSolicitudFallbackPicking = pStockResSolicitud.Cantidad
                     End If
 
-                    Dim vCantidadStockZonaPickingFallback As Double = 0
-                    If lBeStockExistenteZonaPicking IsNot Nothing Then
-                        vCantidadStockZonaPickingFallback = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).Sum(Function(x) x.Cantidad)
-                    End If
-
-                    Dim vNoPickingRequiereExplosionNoPermitida As Boolean = vRestoInventarioEnUmBas _
-                                                                              AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
-                                                                              AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0 _
-                                                                              AndAlso pStockResSolicitud.IdPresentacion = 0
-                    Dim vPickingCubreSolicitudFallback As Boolean = vCantidadSolicitudFallbackPicking > 0 _
-                                                                   AndAlso vCantidadStockZonaPickingFallback >= vCantidadSolicitudFallbackPicking
-                    Dim vForzarPickingPorNoExplosion As Boolean = vNoPickingRequiereExplosionNoPermitida _
-                                                                 AndAlso vPickingCubreSolicitudFallback
+                    Dim vCantidadStockZonaPickingFallback As Double = Cantidad_Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
+                    Dim vForzarPickingPorNoExplosion As Boolean = Picking_Cubre_NoPicking_NoExplosionable_MI3(vRestoInventarioEnUmBas,
+                                                                                                             pStockResBusquedaParaExplosion,
+                                                                                                             pStockResSolicitud,
+                                                                                                             lBeStockExistenteZonaPicking,
+                                                                                                             vCantidadSolicitudFallbackPicking)
 
                     If vFechaMinimaVenceZonaALM > vFechaMinimaVenceZonaPicking _
                         OrElse vForzarPickingPorNoExplosion Then
@@ -19922,7 +19960,30 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                         '#CKFK20250919 Agregué esto para que solo tome de la zona de picking lo no reservado
                         If Not lBeStockExistenteZonaPicking Is Nothing Then
-                            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.Cantidad > 0)
+                            lBeStockExistenteZonaPicking = Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
+                        End If
+
+                        '#EJC20260520_RESERVA_BYB_FIX: segunda defensa despues del recalculo FEFO.
+                        'Este bloque evita que ALM/no picking vuelva a ganar la decision si requiere explosion no permitida,
+                        'mientras picking si cubre la cantidad pendiente.
+                        vCantidadSolicitudNoPickingFix = vCantidadPendiente
+                        If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitudNoPickingFix = 0 Then
+                            vCantidadSolicitudNoPickingFix = pStockResSolicitud.Cantidad
+                        End If
+
+                        vPickingCubreNoPickingNoExplosionableRecalculo = Picking_Cubre_NoPicking_NoExplosionable_MI3(vRestoInventarioEnUmBas,
+                                                                                                                      pStockResBusquedaParaExplosion,
+                                                                                                                      pStockResSolicitud,
+                                                                                                                      lBeStockExistenteZonaPicking,
+                                                                                                                      vCantidadSolicitudNoPickingFix)
+
+                        If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "recalculo_fefo_picking_cubre_no_picking_no_explosionable",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(vCantidadSolicitudNoPickingFix),
+                                                           "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(Cantidad_Stock_Disponible_MI3(lBeStockExistenteZonaPicking)),
+                                                           "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                                           "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
                         End If
 
                         If (vFechaMinimaVenceZonaALM.Date > vFechaMinimaVenceZonaPicking.Date) AndAlso
@@ -19966,10 +20027,16 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                             Else
 
                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                    Return False
+                                                    If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                        lBeStockExistente = lBeStockExistenteZonaPicking
+                                                        vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                        vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Return False
+                                                    End If
                                                 End If
 
                                             End If
@@ -19997,12 +20064,18 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                                     Else
 
-                                                         If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                             Return False
-                                                         End If
+                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                            If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                                lBeStockExistente = lBeStockExistenteZonaPicking
+                                                                vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                                vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                            Else
+                                                                vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                                Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                                Return False
+                                                            End If
+                                                        End If
 
                                                     End If
                                                 Else
@@ -20028,12 +20101,18 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                     Return False
-                                                 End If
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                        lBeStockExistente = lBeStockExistenteZonaPicking
+                                                        vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                        vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Return False
+                                                    End If
+                                                End If
 
                                             End If
                                         Else
