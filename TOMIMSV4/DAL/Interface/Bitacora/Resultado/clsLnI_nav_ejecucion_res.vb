@@ -87,7 +87,6 @@ Public Class clsLnI_nav_ejecucion_res
         Try
 
             Upd.Init("i_nav_ejecucion_res")
-            Upd.Add("idejecucionres", "@idejecucionres", DataType.Parametro)
             Upd.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Upd.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Upd.Add("registros_ws", "@registros_ws", DataType.Parametro)

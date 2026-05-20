@@ -85,13 +85,10 @@ public class clsLnStock
         if (pTransaction == null)
             throw new ArgumentNullException(nameof(pTransaction));
 
-        int rowsAffected = 0;
-
         try
         {
             Ins.Init("stock");
             Ins.Add("idbodega", "@idbodega", "F");
-            Ins.Add("idstock", "@idstock", "F");
             Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idproductoestado", "@idproductoestado", "F");
@@ -127,7 +124,7 @@ public class clsLnStock
             Ins.Add("idpickingubic", "@idpickingubic", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQLIdentity("IdStock");
 
             using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
@@ -135,10 +132,11 @@ public class clsLnStock
 
                 BindStockParameters(cmd, oBeStock);
 
-                rowsAffected = cmd.ExecuteNonQuery();
+                object newId = cmd.ExecuteScalar();
+                oBeStock.IdStock = Convert.ToInt32(newId);
             }
 
-            return rowsAffected;
+            return oBeStock.IdStock;
         }
         catch (SqlException ex)
         {
@@ -158,13 +156,10 @@ public class clsLnStock
         if (pTransaction == null)
             throw new ArgumentNullException(nameof(pTransaction));
 
-        int rowsAffected = 0;
-
         try
         {
             Ins.Init("stock");
             Ins.Add("idbodega", "@idbodega", "F");
-            Ins.Add("idstock", "@idstock", "F");
             Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idproductoestado", "@idproductoestado", "F");
@@ -200,7 +195,7 @@ public class clsLnStock
             Ins.Add("idpickingubic", "@idpickingubic", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQLIdentity("IdStock");
 
             using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
@@ -208,10 +203,11 @@ public class clsLnStock
 
                 BindStockParameters_3pl(cmd, oBeStock);
 
-                rowsAffected = cmd.ExecuteNonQuery();
+                object newId = cmd.ExecuteScalar();
+                oBeStock.IdStock = Convert.ToInt32(newId);
             }
 
-            return rowsAffected;
+            return oBeStock.IdStock;
         }
         catch (SqlException ex)
         {
@@ -222,7 +218,6 @@ public class clsLnStock
     public static int Insertar(IConfiguration config, clsBeStock oBeStock)
     {
 
-        int rowsAffected = 0;
         SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? lTransaction = null;
 
@@ -230,7 +225,6 @@ public class clsLnStock
         {
             Ins.Init("stock");
             Ins.Add("idbodega", "@idbodega", "F");
-            Ins.Add("idstock", "@idstock", "F");
             Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Ins.Add("idproductobodega", "@idproductobodega", "F");
             Ins.Add("idproductoestado", "@idproductoestado", "F");
@@ -266,7 +260,7 @@ public class clsLnStock
             Ins.Add("idpickingubic", "@idpickingubic", "F");
             Ins.Add("idpedidodet", "@idpedidodet", "F");
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQLIdentity("IdStock");
 
             SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
 
@@ -275,7 +269,8 @@ public class clsLnStock
 
             BindStockParameters(cmd, oBeStock);
 
-            rowsAffected = cmd.ExecuteNonQuery();
+            object newId = cmd.ExecuteScalar();
+            oBeStock.IdStock = Convert.ToInt32(newId);
 
             if (lTransaction != null)
                 lTransaction.Commit();
@@ -299,7 +294,7 @@ public class clsLnStock
             if (lConnection != null) lConnection.Dispose();
             if (lTransaction != null) lTransaction.Dispose();
         }
-        return rowsAffected;
+        return oBeStock.IdStock;
     }
 
     public static int Actualizar(clsBeStock oBeStock, SqlConnection pConection, SqlTransaction pTransaction)
@@ -319,7 +314,6 @@ public class clsLnStock
         {
             Upd.Init("stock");
             Upd.Add("idbodega", "@idbodega", "F");
-            Upd.Add("idstock", "@idstock", "F");
             Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Upd.Add("idproductobodega", "@idproductobodega", "F");
             Upd.Add("idproductoestado", "@idproductoestado", "F");
@@ -393,7 +387,6 @@ public class clsLnStock
         {
             Upd.Init("stock");
             Upd.Add("idbodega", "@idbodega", "F");
-            Upd.Add("idstock", "@idstock", "F");
             Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Upd.Add("idproductobodega", "@idproductobodega", "F");
             Upd.Add("idproductoestado", "@idproductoestado", "F");
@@ -1023,7 +1016,6 @@ public class clsLnStock
         {
             if (pListBeTransReDet != null)
             {
-                int lMaxS = MaxID(lConnection, lTransaction);
                 clsBeStock BeStock;
                 clsBeStock_rec BeStockRec;
                 clsBeVW_stock_res? BeVWStockRec;
@@ -1039,10 +1031,7 @@ public class clsLnStock
                     {
                         clsPublic.CopyObject(BeTransReDet, ref BeStock);
 
-                        lMaxS += 1;
-
                         BeStock.IdBodega = pIdBodega;
-                        BeStock.IdStock = lMaxS;
                         BeStock.IdPropietarioBodega = BeTransReDet.IdPropietarioBodega;
                         BeStock.IdProductoBodega = BeTransReDet.IdProductoBodega;
                         BeStock.ProductoEstado = new clsBeProducto_estado();
