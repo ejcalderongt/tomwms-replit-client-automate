@@ -2530,7 +2530,6 @@ Partial Public Class clsLnTrans_picking_enc
         Dim pEstado As String = ""
         Dim pEstadoPicking As String = ""
 
-
         Try
 
             '#CKFK20240229 Agregué esta validación para que no se actualicen los pedidos con picking 0
@@ -2561,7 +2560,6 @@ Partial Public Class clsLnTrans_picking_enc
                     pListBeTransPeEnc = clsLnTrans_pe_enc.Get_All_Pedido_By_IdPickingEnc(pIdPickingEnc,
                                                                                          pConnection,
                                                                                          pTransaction)
-
 
                     '#GT21032025: infiero que, si verificacion es auto, aplica para cada iteracion pListBeTransPeEnc
                     If (verifica_auto) Then

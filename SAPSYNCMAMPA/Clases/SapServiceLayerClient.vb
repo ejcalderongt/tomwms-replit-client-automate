@@ -310,6 +310,10 @@ Public Class SapServiceLayerClient
                         If DT IsNot Nothing AndAlso DT.Rows.Count > 0 Then
                             vColor = DT.Rows(0)("Color").ToString()
                             vTalla = DT.Rows(0)("Talla").ToString()
+                        Else
+                            Dim erromsg As String = "❌ ERROR: No se encontró la combinación de talla/color para IdProductoTallaColor: " & ProductoIngreso.IdProductoTallaColor
+                            clsPublic.Actualizar_Progreso(lblprg, erromsg)
+                            Throw New Exception(erromsg)
                         End If
 
                         Dim qtyRecibida As Double = Math.Max(0, ProductoIngreso.Cantidad_Total)
@@ -341,7 +345,9 @@ Public Class SapServiceLayerClient
                         ' Línea a bodega de faltantes
                         If qtyFaltante > 0 Then
                             If String.IsNullOrWhiteSpace(BeINavConfigEnc.Bodega_Faltante) Then
-                                Throw New Exception("❌ ERROR: No está configurada la bodega de faltantes en la configuración de integración.")
+                                Dim erromsg As String = "❌ ERROR: No está configurada la bodega de faltantes en la configuración de integración."
+                                clsPublic.Actualizar_Progreso(lblprg, erromsg)
+                                Throw New Exception(erromsg)
                             End If
 
                             Dim batchFal As New List(Of BatchNumberDto) From {

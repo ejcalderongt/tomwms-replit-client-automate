@@ -505,7 +505,7 @@ Public Class frmPicking
                 Return False
             End If
 
-            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
+            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL.
             If AP.Bodega.Interface_SAP AndAlso Not String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then
 
                 Dim vHanaService As New SapServiceLayerClient()

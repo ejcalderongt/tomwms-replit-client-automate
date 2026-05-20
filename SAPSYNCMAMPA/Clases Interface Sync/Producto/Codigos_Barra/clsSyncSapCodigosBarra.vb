@@ -62,8 +62,7 @@ Public Class clsSyncSapCodigosBarra : Inherits clsInterfaceBase
 
                 Dim vContador As Integer = 0
 
-                clsPublic.Actualizar_Progreso(lblprg,
-                                          "Trasladando codigos de barra de producto desde SAP a TOMWMS...")
+                clsPublic.Actualizar_Progreso(lblprg, "Trasladando codigos de barra de producto desde SAP a TOMWMS...")
 
                 For Each BeSAPProducto As ItemBarcodeDto In lCodigosBarra
 
@@ -131,9 +130,8 @@ Public Class clsSyncSapCodigosBarra : Inherits clsInterfaceBase
                         End If
 
                     Else
-                        clsPublic.Actualizar_Progreso(lblprg,
-                        "No se encontró el itemcode: " & BeSAPProducto.ItemCode &
-                        " en el maestro de productos de WMS.")
+                        clsPublic.Actualizar_Progreso(lblprg, "No se encontró el itemcode: " & BeSAPProducto.ItemCode &
+                                                              " en el maestro de productos de WMS.")
                     End If
 
                     vContador += 1
