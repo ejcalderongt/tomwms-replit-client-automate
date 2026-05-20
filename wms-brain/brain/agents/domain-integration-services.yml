@@ -1,0 +1,96 @@
+slug: domain-integration-services
+nombre: Interfaces - WSHHRN + WMSWebAPI + MI3 + NAV/SAP/DMS
+proposito: |
+  Todas las superficies de integracion del WMS: WebService SOAP/JSON para HH
+  (WSHHRN .asmx), WebAPI moderna .NET Core para clientes B2B (WMSWebAPI), e
+  interfaces salientes a ERPs (Dynamics NAV, SAP, DMS, Cealsa, AWS).
+estado: vigente
+ramas_relevantes: [dev_2023_estable, dev_2028_merge]
+
+componentes:
+  wshhrn:
+    rol: "WebService .asmx legacy para Handheld Android. SOAP/XML + JSON oportunista."
+    runtime: ASP.NET 4.8
+    archivos_clave:
+      - { path: WSHHRN/WebService.asmx.vb, rol: "Endpoints SOAP/JSON consumidos por HH" }
+    patron_json: "Forma A - wrapper {data, error} + JavaScriptSerializer + status 200/500"
+    referencia_HH_lado_cliente: TOMHH2025/.../WebService.java (ver domain-hh-android)
+
+  wmswebapi:
+    rol: "WebAPI .NET Core moderna. Capas DALCore -> EntityCore -> Services -> Controller."
+    runtime: .NET 8.0
+    archivos_clave:
+      - { path: WMSWebAPI/Controllers/, rol: "HTTP routing" }
+      - { path: WMSWebAPI/Services/Salidas/SyncSalidasService.cs, rol: "Sync salidas Core, tocado en commits cb4726b9 + 68045f09" }
+      - { path: WMSWebAPI/Services/Indicadores/, rol: "Endpoints KPI (ver domain-indicadores)" }
+    patron: "DALCore (query puntual) -> EntityCore (DTO) -> Services (composicion) -> Controller (HTTP)"
+    regla_replit: "REGLA 8 replit.md - NO mezclar responsabilidades entre capas"
+
+  mi3_legacy:
+    rol: "Interface MI3 legacy - lectura/escritura interface NAV via tablas i_nav_*"
+    runtime: VB.NET en TOMIMSV4
+    archivos_clave:
+      - { path: TOMIMSV4/DAL/Interface/Pedido_Traslado/Pedido_Traslado_Enc/clsLnI_nav_ped_traslado_enc_Partial.vb, rol: "Pedido_traslado interface MI3" }
+    ver_tambien: domain-reserva  # Reserva_Stock_From_MI3 es el core de este flujo
+
+  nav_dynamics:
+    rol: "Sync con Microsoft Dynamics NAV"
+    archivos_clave:
+      - { path: MDynamicsNavInterface/Clases Interface Sync/Envios_Almacen/clsSyncNavEnvioAlm.vb, rol: "Envio almacen NAV" }
+
+  sap_b1:
+    rol: "Sync SAP Business One (cliente Killios)"
+    referencia: brain/architecture/adr/ADR-007-killios-sap-b1-integration.md
+
+  cealsa_3pl:
+    rol: "Interface dedicada 3PL Cealsa (jornada + prefactura)"
+    referencia: brain/architecture/adr/ADR-009-cealsa-3pl-jornada-prefactura.md
+
+  dms:
+    rol: "DMS - Document Management (sin docs profundos aun)"
+
+  aws:
+    rol: "Interfaces AWS (S3, etc); revisar TOMWMS_BOF para detalles"
+
+patrones_brain:
+  - brain/code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md
+  - brain/code-changes/BOF/PATTERNS-OC-MI3.md
+
+reglas_vinculantes:
+  - "REGLA 1: Migracion XML->JSON oportunista (no se migran legacy estables, todo NUEVO en JSON Forma A)"
+  - "REGLA 2: Patron JSON estandar = Forma A (wrapper data/error + JavaScriptSerializer + 200/500)"
+  - "REGLA 8: Capas WMSWebAPI - DALCore -> EntityCore -> Services -> Controller, no mezclar"
+
+glosario:
+  Forma_A: "Wrapper JSON {data, error} con HTTP 200 (data) / 500 (error). Es el estandar de respuesta WebAPI."
+  MI3: "Interface NAV mediante tablas i_nav_*; el flujo Reserva_Stock_From_MI3 procesa pedidos de NAV"
+  Process_Result: "Estructura de retorno de operaciones; tipifica causa + datos operativos. Homologada legacy<->Core en commit cb4726b9"
+
+huerfanos_evitar:
+  - { path: WMS.StockReservation2/, motivo: "Carpeta huerfana - ver domain-reserva.huerfanos_evitar" }
+  - { path: WMS.StockReservation3/, motivo: "Idem" }
+  - { path: reservastockfrommi3/, motivo: "Idem" }
+
+cross_refs:
+  - domain-reserva         # Reserva_Stock_From_MI3 vive aqui Y alla (es la cocina)
+  - domain-hh-android      # consumer de WSHHRN
+  - domain-bof             # consumer de WMSWebAPI desde forms
+  - domain-database        # toda integracion escribe en BD
+  - domain-indicadores     # endpoints KPI son WMSWebAPI
+
+entry_points:
+  nuevo_endpoint: "Leer PATTERNS-WMSWEBAPI-LAYERS.md, ubicar Controller correspondiente, agregar DTO en EntityCore"
+  json_migracion: "Solo si la funcionalidad es NUEVA. Forma A. Mantener legacy en paralelo."
+  sync_nav_envio: "clsSyncNavEnvioAlm.vb es el punto canonico"
+  homologar_motivos_legacy_core: "Ver commit cb4726b9 como ejemplo - TIPO_NO_RESERVA legacy <-> ReservationFailureCode Core"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-19, caso: "Homologar motivos no-reserva legacy<->WebAPI", commit: cb4726b9, archivos: [clsLnStock_res_Partial.vb, EntityLoadingStep.cs, SyncSalidasService.cs] }
+  - { fecha: 2026-05-19, caso: "Mejoras reserva WebAPI Core MHS v4", commit: 68045f09 }
+  - { fecha: 2026-05-19, caso: "Process_Result overwrite mayor (3 commits)", commits: [35f01749, 07202354, 311d3f29] }
+  - { fecha: 2026-05-20, caso: "MI3 DI estatus endpoint", handoff: brain/handoffs/codex-learning-2026-05-20-mi3-di-estatus-endpoint/ }
+
+extension_points:
+  - "Falta inventario completo de endpoints WSHHRN .asmx (369 vs 340 segun F2)"
+  - "Falta documentar capa Services de WMSWebAPI por familia (Salidas, Entradas, Indicadores)"
+  - "Pattern para DMS sin escribir"

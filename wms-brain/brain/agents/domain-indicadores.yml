@@ -1,0 +1,84 @@
+slug: domain-indicadores
+nombre: Indicadores - KPIs operativos cross-dominio (Modo B sobre WMSWebAPI)
+proposito: |
+  KPIs OPERATIVOS sobre datos vivos del WMS (NO replica del catalogo del portal).
+  Endpoints WMSWebAPI Core que agregan datos en tiempo real por cliente/bodega/periodo:
+  reservas fallidas, danos vs ajustes, tareas HH pendientes, outbox stuck, etc.
+estado: en-construccion  # Modo B confirmado por EJC 2026-05-20, queries pendientes de definir
+ramas_relevantes: [dev_2028_merge]
+
+decision_arquitectonica:
+  modo: B  # confirmado EJC 2026-05-20
+  significado: "KPIs operativos sobre datos WMS reales. NO replicar catalogo del portal."
+  ubicacion_codigo: WMSWebAPI/Services/Indicadores/  # a crear
+  capa: "Sigue REGLA 8 - DALCore -> EntityCore -> Services/Indicadores -> Controller"
+  consumidor_esperado: "Front del portal (eventual) + tools de soporte interno"
+
+kpis_definidos_para_modo_b:
+  ver_detalle: brain/handoffs/2026-05-20-inverso-codex-replicar-kpi-portal-en-bof/PROPOSAL.md
+  lista_propuesta:
+    - dashboard_general:
+        desc: "Stock total, pedidos abiertos, ajustes 7d, reservas fallidas 7d, outbox stuck"
+        params: [IdCliente?, IdBodega?]
+    - by_month:
+        desc: "Volumen pedidos, recepciones, ajustes, danos por mes"
+        params: [IdCliente, FechaDesde, FechaHasta]
+    - by_bodega:
+        desc: "Comparativo bodegas: stock, rotacion, tareas HH"
+        params: [IdCliente, FechaDesde, FechaHasta]
+    - danos_vs_ajustes:
+        desc: "BUG-001 monitoring: danado_picking sin AJCANTN correspondiente"
+        params: [IdCliente, FechaDesde, FechaHasta]
+    - reservas_fallidas:
+        desc: "Conteo por TIPO_NO_RESERVA / ReservationFailureCode"
+        params: [IdCliente, FechaDesde, FechaHasta]
+        depende_de: domain-reserva
+    - tareas_hh_pendientes:
+        desc: "Tareas HH abiertas por operador/bodega"
+        params: [IdCliente, IdBodega?]
+    - outbox_stuck:
+        desc: "Registros outbox sin enviar a ERP por mas de N dias"
+        params: [IdCliente, dias_threshold]
+
+snapshots_referencia:
+  ubicacion: brain/data-deep-dive/<cliente>/snapshot-2026-05-05.md
+  cross: brain/data-deep-dive/CROSS-COMPARATIVA.md
+  uso: "Cada snapshot tiene la query SQL ya escrita; convertir a SP o query en DALCore."
+
+patrones_brain:
+  # falta crear:
+  # - brain/code-changes/BOF/PATTERNS-INDICADORES-WMSWEBAPI.md
+  referencias_actuales:
+    - brain/handoffs/2026-05-20-inverso-codex-replicar-kpi-portal-en-bof/PROPOSAL.md
+    - brain/code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md  # capas Core
+
+tablas_bd_principales:
+  agregaciones:
+    - trans_picking_ubic, trans_movimientos, trans_ajuste_det  # operativa
+    - stock, stock_res                                          # inventario
+    - trans_pe_det_log_reserva                                  # reservas fallidas
+    - tarea_hh                                                  # mobile
+    - tabla_outbox_*                                            # ERP sync
+
+cross_refs:
+  - domain-portal                  # complemento - portal es catalogo, esto es datos vivos
+  - domain-integration-services    # vive como endpoints WMSWebAPI
+  - domain-database                # queries de agregacion
+  - domain-reserva                 # KPI reservas fallidas
+  - domain-bof                     # KPI indicador rapido pedido (frmPedido_List ya tiene uno desktop)
+  - domain-hh-android              # KPI tareas HH
+
+entry_points:
+  primer_endpoint: "Cargar handoff KPI + PATTERNS-WMSWEBAPI-LAYERS.md + snapshots data-deep-dive del cliente piloto"
+  query_referencia: "brain/data-deep-dive/<cliente>/snapshot-2026-05-05.md tiene SQL ya inferido del portal"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-19, caso: "Mejora indicador rapido pedido (frmPedido_List BOF desktop)", commit: 5ffe278e, nota: "Es BOF, no WebAPI. Sirve como referencia de UI pero no es el modelo objetivo." }
+  - { fecha: 2026-05-20, caso: "Handoff KPI portal Modo B confirmado por EJC", handoff: brain/handoffs/2026-05-20-inverso-codex-replicar-kpi-portal-en-bof/ }
+
+extension_points:
+  - "Falta catalogo SQL Modo B listo para envolver (Erik me propuso adelantar esto)"
+  - "Falta decidir si los endpoints son por cliente o multi-cliente"
+  - "Falta decidir si auth basica o solo IP whitelist"
+  - "Falta crear PATTERNS-INDICADORES-WMSWEBAPI.md con la convencion"
+  - "Falta pattern de caching (algunos KPIs son caros si se calculan en cada request)"

@@ -1,0 +1,83 @@
+slug: domain-bof
+nombre: Backend BOF — VB.NET TOMIMSV4 (winforms + DAL + Entity)
+proposito: Logica de negocio winforms del WMS legacy. Solo cosas que NO sean reserva, integracion ni base de datos pura.
+estado: vigente
+ramas_relevantes: [dev_2023_estable, dev_2028_merge]
+runtime: .NET Framework 4.8 / VB.NET / WinForms
+
+solution_layout:
+  proyecto_principal: TOMIMSV4
+  proyectos_relacionados:
+    - Entity            # POCO/DTO legacy VB
+    - DAL               # Acceso datos legacy VB
+    - WSHHRN            # WebService .asmx (ver domain-integration-services)
+    - WMSWebAPI         # API .NET Core (ver domain-integration-services)
+    - WMS.EntityCore    # POCO/DTO Core (ver domain-integration-services)
+    - WMS.DALCore       # Acceso datos Core (ver domain-integration-services)
+    - MDynamicsNavInterface  # Interface NAV
+  ide: Visual Studio 2022, target framework .NET Framework 4.8
+
+archivos_clave:
+  configuracion:
+    - { path: TOMIMSV4/Conn.ini, rol: "Connection string + flags arranque" }
+    - { path: TOMIMSV4/Clases_AP/m_Global.vb, rol: "Estado global aplicacion, sesion operador, parametros runtime" }
+  pedido:
+    - { path: TOMIMSV4/Transacciones/Pedido/frmPedido.vb, rol: "Form principal pedido outbound; merge inserts/updates ERP" }
+    - { path: TOMIMSV4/Transacciones/Pedido/frmPedido_List.vb, rol: "Listado pedidos + indicador rapido (modificado 906 lineas en 5ffe278e)" }
+  recepcion:
+    - { path: TOMIMSV4/Transacciones/Recepcion/frmRecepcion*.vb, rol: "Forms recepcion OC" }
+  ajuste:
+    - { path: TOMIMSV4/Transacciones/Ajuste/frmAjusteStock.vb, rol: "Ajuste manual stock + export Excel (ver pattern AJUSTE-STOCK-EXPORT-EXCEL)" }
+  picking:
+    - { path: TOMIMSV4/Transacciones/Picking/frmPicking*.vb, rol: "Forms picking BOF (escritorio)" }
+
+patrones_brain:
+  - brain/code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md
+  - brain/code-changes/BOF/PATTERNS-PICKING-VERI.md
+  - brain/code-changes/BOF/PATTERNS-OC-MI3.md
+  - brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/README.md
+  - brain/code-changes/INDICADOR-AJUSTE-PROVEEDOR/  # carpeta - revisar contenido
+
+tablas_bd_principales:
+  - trans_pe_enc, trans_pe_det              # pedido
+  - trans_oc_enc, trans_oc_det              # orden compra
+  - trans_re_oc                             # recepcion OC
+  - trans_picking_ubic                      # picking
+  - trans_ajuste_enc, trans_ajuste_det      # ajustes
+  - trans_movimientos                       # log movimientos
+  - i_nav_config_enc                        # 69 flags configurables
+  - i_nav_ped_traslado_enc, i_nav_ped_traslado_det  # interface NAV
+
+glosario:
+  UMBAS: Unidad de Medida Basica (cantidad siempre se persiste en UMBAS)
+  IdPresentacion: FK a producto_presentacion; si > 0 hay conversion
+  IdOperadorBodega_Pickeo: operador que ejecuto el pickeo
+  AJCANTN: tipo de ajuste cantidad negativo
+  IMS4MB: genealogia BD vieja (BECOFARMA/BYB/CEALSA/MAMPA)
+
+huerfanos_evitar:
+  - { path: TOMIMSV4/Transacciones/Pedido/frmPedido_OBSOLETO*, motivo: "Versiones viejas" }
+  - { path: "*.bak, *.orig, *.old", motivo: "Files de backup no productivos" }
+
+cross_refs:
+  - domain-integration-services    # cuando el form llama a WSHHRN/WebAPI
+  - domain-reserva                 # cuando toca stock_res
+  - domain-database                # cuando se inventa una nueva query
+  - domain-hh-android              # contraparte mobile
+
+entry_points:
+  bug_form_ui: "Buscar frmXxxx.vb en TOMIMSV4/Transacciones/, ver eventos Click/Load"
+  ajuste_export_excel: "leer brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/v2-2026-05-13/README.md primero"
+  indicador_pedido: "frmPedido_List.vb - cambios mas recientes en commit 5ffe278e"
+  oc_mi3_estatus: "leer brain/code-changes/BOF/PATTERNS-OC-MI3.md - estatus por trans_oc_enc.Referencia NO IdOrdenCompraEnc"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-13, caso: "Ajuste stock export Excel v2", pattern: brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/v2-2026-05-13/ }
+  - { fecha: 2026-05-19, caso: "Veri movimientos duplicados regularizacion", handoff: brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/ }
+  - { fecha: 2026-05-19, caso: "Mejora visual documento ERP byb (frmPedido.vb)", commit: c0c112a7 }
+  - { fecha: 2026-05-19, caso: "Indicador rapido pedido (frmPedido_List.vb)", commit: 5ffe278e }
+
+extension_points:
+  - "Falta documentar el modulo de Verificacion BOF detalladamente"
+  - "Falta inventario completo de forms en TOMIMSV4/Transacciones/"
+  - "Pattern para flow Despacho->Outbox no esta escrito todavia"

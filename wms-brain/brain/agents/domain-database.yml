@@ -1,0 +1,123 @@
+slug: domain-database
+nombre: Base de datos - SQL Server 2022 (EC2 AWS)
+proposito: Schema, SPs, views, perfiles por cliente, scripts DBA, queries de diagnostico. NO logica de aplicacion.
+estado: en-construccion
+ramas_relevantes: [N/A - cada cliente tiene su BD]
+
+infraestructura:
+  servidor: 52.41.114.122,1437
+  os: Windows Server 2022
+  motor: SQL Server 2022 CU18 Standard (16.0.4185.3)
+  usuario_sa: sa
+  passwords:
+    convencion: WMS_<CLIENTE>_<ENV>_DB_PASSWORD (env var en este replit)
+    activo: WMS_KILLIOS_DB_PASSWORD
+  driver_node: tedious (instalado en raiz del workspace)
+  driver_python: pymssql (para tools/wms-deep-dive/)
+
+bds_conocidas:
+  productivas:
+    - { cliente: KILLIOS,   bd: TOMWMS_KILLIOS_PRD,    genealogia: nueva,  rama_codigo: dev_2023_estable }
+    - { cliente: KILLIOS_2026, bd: TOMWMS_KILLIOS_PRD_2026, genealogia: nueva, rama_codigo: dev_2023_estable }
+    - { cliente: BECOFARMA, bd: IMS4MB_BECOFARMA_PRD,  genealogia: IMS4MB, rama_codigo: dev_2023_estable }
+    - { cliente: BYB,       bd: IMS4MB_BYB_PRD,         genealogia: IMS4MB, rama_codigo: dev_2023_estable, estado: historico }
+    - { cliente: MERCOPAN,  bd: IMS4MB_MERCOPAN_PRD,    genealogia: IMS4MB, rama_codigo: dev_2028_merge }
+    - { cliente: MERHONSA,  bd: IMS4MB_MERHONSA_PRD,    genealogia: IMS4MB, rama_codigo: dev_2028_merge, estado: pre-productivo }
+  qa_pruebas:
+    - { cliente: CEALSA,  bd: IMS4MB_CEALSA_QAS, genealogia: IMS4MB }
+    - { cliente: MAMPA,   bd: TOMWMS_MAMPA_QA,    genealogia: nueva, rama_codigo: dev_2028_merge }
+  fuera_de_contexto_wms:
+    - LIVE, mpos_pollo_express_qa, POD_BETA  # NO usar - otra linea POS/Road
+
+snippet_conexion_node:
+  ver: replit.md  # seccion 5
+
+diferencias_clave_genealogias:
+  IMS4MB:
+    - "No tiene tipo_documento varchar (legacy: IdTipoDocumento int 1/2/3)"
+    - "BDs: BECOFARMA, BYB, CEALSA, MERCOPAN, MERHONSA, (MAMPA NO - es nueva)"
+  nueva:
+    - "Schema moderno con tipo_documento varchar"
+    - "BDs: TOMWMS_KILLIOS_PRD, TOMWMS_KILLIOS_PRD_2026, TOMWMS_MAMPA_QA"
+
+familias_de_tablas:
+  stock:
+    - stock              # stock fisico actual
+    - stock_res          # reservas activas (regla UMBAS)
+    - stock_min          # stock minimo por bodega/producto
+  transacciones:
+    - trans_pe_enc, trans_pe_det                                    # pedido
+    - trans_pe_det_log_reserva                                      # log de reserva
+    - trans_oc_enc, trans_oc_det                                    # orden compra
+    - trans_re_oc                                                   # recepcion OC
+    - trans_picking_ubic                                            # picking
+    - trans_ajuste_enc, trans_ajuste_det                            # ajuste
+    - trans_movimientos                                             # log movimientos (auditoria)
+    - trans_despacho_enc                                            # despacho
+  interface_nav:
+    - i_nav_config_enc, i_nav_config_det      # 69 flags configurables
+    - i_nav_ped_traslado_enc, i_nav_ped_traslado_det
+    - i_nav_transacciones_out                  # FK sentinela 0 (L-017)
+  handheld:
+    - tarea_hh, tarea_hh_estado                # ver catalogo en brain/reference/
+  outbox:
+    - tabla_outbox_*                            # patron outbox para ERP sync
+
+views_relevantes:
+  - VW_Stock_Res          # trabajo en curso (rama ejcalderongt/DBA)
+  # falta inventariar las demas
+
+patrones_brain:
+  - brain/code-changes/BOF/PATTERNS-OC-MI3.md  # estatus OC se resuelve por trans_oc_enc.Referencia
+  # falta crear: PATTERNS-SCHEMA-DIFERENCIAS-IMS4MB-VS-NUEVA.md
+
+snapshots_disponibles:
+  ruta: brain/data-deep-dive/<cliente>/snapshot-2026-05-05.md (+raw .json)
+  cross_comparativa: brain/data-deep-dive/CROSS-COMPARATIVA.md
+  hallazgos_clave:
+    - "BUG-001 confirmado a escala productiva: MERCOPAN 19,607 daños / 0 AJCANTN"
+    - "Schema heterogeneo: 4 IMS4MB sin tipo_documento varchar"
+    - "7 de 8 clientes con >=70% ajustes pendientes Enviado_A_ERP (BYB unico maduro con 29%)"
+    - "MERHONSA: 0 trans_picking_ubic pero 1.014M outbox - patron atipico"
+
+reglas_vinculantes:
+  - "READ-ONLY siempre, salvo permiso explicito EJC para escritura"
+  - "Nunca dropear/alterar sin SP previo de respaldo o autorizacion"
+  - "REGLA 9: Estatus OC MI3 por trans_oc_enc.Referencia, NO IdOrdenCompraEnc"
+  - "REGLA 6: Cantidad UMBAS en stock/movimientos/stock_res"
+  - "Outliers conocidos: trans_ajuste_det idajustedet=638 (4.8B UM mayo-2021, observacion 'sa') - excluir de agregados"
+
+scripts_dba:
+  ubicacion_externa: github ejcalderongt/DBA (no parte de este replit)
+  scripts_en_brain:
+    - brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/SCRIPT_AUDITORIA_REGULARIZACION_VERI_CANTIDAD_UMBAS.sql
+    - brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/SCRIPT_AUDITORIA_REGULARIZACION_VERI_DUPLICADOS.sql
+    - brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/SP_REGULARIZACION_VERI.sql
+
+glosario:
+  UMBAS: Unidad de Medida Basica
+  FK_sentinela_0: "Convencion: FK no aplicable se guarda como 0, no NULL (L-017_DATA_FK-SENTINELA-CERO_APPLIED)"
+  lic_plate: "Identificador universal de stock fisico, cubre 99-100% transacciones outbox (L-018)"
+
+cross_refs:
+  - domain-reserva               # consume stock + stock_res
+  - domain-bof                   # CRUD desde forms
+  - domain-integration-services  # CRUD desde WebAPI + interfaces
+  - domain-indicadores           # agregaciones para KPIs
+  - domain-hh-android            # captura desde mobile
+
+entry_points:
+  diagnostico_sql_cliente: "Cargar brain/data-deep-dive/<cliente>/snapshot-2026-05-05.md + brain/client-index/<cliente>.yml"
+  schema_diferencia: "Cargar brain/data-deep-dive/CROSS-COMPARATIVA.md"
+  vista_nueva: "Trabajo activo en VW_Stock_Res - github ejcalderongt/DBA"
+  performance: "Pendiente - no hay pattern aun"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-05, caso: "Snapshot operativo cross-cliente 8 BDs", artifacts: brain/data-deep-dive/, runner: tools/wms-deep-dive/snapshot_runner.py }
+  - { fecha: 2026-05-19, caso: "SP regularizacion veri duplicados", handoff: brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/ }
+
+extension_points:
+  - "Falta inventario completo de SPs por familia"
+  - "Falta documentar diferencia schema IMS4MB vs nueva con tabla por tabla"
+  - "Falta pattern PATTERNS-OUTBOX-HEALTH.md (suite suites/outbox-health/ ya existe)"
+  - "Falta documentar trabajo en VW_Stock_Res"

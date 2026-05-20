@@ -1,0 +1,65 @@
+slug: domain-portal
+nombre: WikiHub Portal - tomwms-wikidev.replit.app
+proposito: |
+  Portal humano (Replit-hosted) con catalogo navegable del WMS: Jira issues,
+  release notes, wiki tecnica, cambios BD/codigo, tech docs, stats. Tiene API
+  REST publica (algunos endpoints) que se puede consumir desde otros agentes.
+estado: vigente
+ramas_relevantes: [N/A - es un proyecto separado]
+runtime: Replit web app (stack frontend pendiente confirmar)
+
+urls:
+  base: https://tomwms-wikidev.replit.app
+  secciones:
+    - { ruta: /jira,           descripcion: "1,981 issues Jira" }
+    - { ruta: /changelog,      descripcion: "26 releases v5.0-v5.8.0" }
+    - { ruta: /releases,       descripcion: "Idem changelog vista alternativa" }
+    - { ruta: /wiki-tech,      descripcion: "50 procesos, 542 objetos BD, 1,152 modulos" }
+    - { ruta: /db-changes,     descripcion: "2,385 cambios BD" }
+    - { ruta: /code-changes,   descripcion: "Cambios codigo" }
+    - { ruta: /tech-docs,      descripcion: "Docs tecnicos profundos" }
+    - { ruta: /landing,        descripcion: "Stats dashboard" }
+
+api_endpoints_verificados:
+  abiertos:
+    - { metodo: GET, path: /api/release-notes,              retorna: "array de notas" }
+    - { metodo: GET, path: /api/release-notes/:id,           retorna: "detalle nota" }
+    - { metodo: GET, path: /api/release-notes/timeline,      retorna: "timeline cronologico" }
+    - { metodo: GET, path: /api/modules,                     retorna: "1152 modulos" }
+    - { metodo: GET, path: /api/clients,                     retorna: "lista clientes" }
+    - { metodo: GET, path: /api/tech-docs,                   retorna: "lista; el /:id devuelve {error}" }
+    - { metodo: GET, path: /api/stats/dashboard,             retorna: "snapshot stats" }
+    - { metodo: GET, path: /api/stats/by-month,              retorna: "stats agregados por mes" }
+  no_expuestos:
+    - "/api/db-changes (la seccion /db-changes funciona pero no expone API)"
+
+bugs_del_portal_a_no_replicar:
+  ver_detalle: brain/handoffs/2026-05-20-inverso-codex-replicar-kpi-portal-en-bof/PROPOSAL.md
+  resumen:
+    - "Bug 1: /api/tech-docs/:id devuelve {error} en lugar de detalle"
+    - "Bug 2: timeline cuenta mal en algunos meses"
+    - "Bug 3: /api/modules paginado inconsistente"
+    - "Bug 4: stats by-month sin handling de mes parcial"
+    - "Bug 5: catalogo Jira tiene issues duplicadas en algunos proyectos"
+
+patrones_brain:
+  # no hay patterns dedicados al portal aun
+
+reglas_vinculantes:
+  - "Este portal es la FUENTE DE VERDAD HUMANA. Cuando un dato no este en brain ni en replit.md, consultar API del portal ANTES de buscar en codigo."
+  - "Los KPIs operativos van en domain-indicadores (WMSWebAPI Core), NO en el portal. Portal = catalogo humano. Indicadores = datos vivos."
+
+cross_refs:
+  - domain-indicadores  # complementan: portal = catalogo, indicadores = datos vivos
+
+entry_points:
+  reverse_engineer_endpoint: "leer PROPOSAL del handoff KPI portal - tiene shape JSON exacto y SQL inferido"
+  consultar_dato_humano: "GET /api/<seccion> antes de grep en repos"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-20, caso: "Reverse engineer portal + handoff KPI a Mary Jane (Modo B confirmado)", handoff: brain/handoffs/2026-05-20-inverso-codex-replicar-kpi-portal-en-bof/ }
+
+extension_points:
+  - "Falta documentar shape JSON exacto de cada endpoint en un pattern formal"
+  - "Falta saber si el portal tiene auth (Clerk?) y como acceder a endpoints privados"
+  - "Falta corregir §6 de replit.md con la lista de endpoints verificada"

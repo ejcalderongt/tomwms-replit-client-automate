@@ -1,0 +1,105 @@
+slug: domain-reserva
+nombre: Motor de reserva MI3 - legacy VB + Core .NET (paridad en construccion)
+proposito: |
+  Todo lo que toca el calculo y persistencia de stock_res a partir de MI3 (interface NAV).
+  Hay dos implementaciones VIVAS en paralelo: legacy VB (Reserva_Stock_From_MI3, 8337 lineas)
+  y Core .NET (StockReservationFacade + steps). La paridad se esta construyendo.
+estado: vigente
+ramas_relevantes: [dev_2028_merge]
+criticidad: ALTA  # ~30% de casos de soporte cliente
+
+implementaciones:
+  legacy_vb:
+    archivo_principal: TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb
+    metodo_canonico: Reserva_Stock_From_MI3
+    tamano: 8337 lineas (en faaf853437, post-Mary-Jane crece con TIPO_NO_RESERVA)
+    estado: estable + usado en produccion HOY
+    bug_corregido_recientemente:
+      commit: faaf853437
+      descripcion: "Loop en L21489 - GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO cuando estado 102 ya estaba procesado"
+      fix: "GoTo solo la primera vez que marca 102; siguiente vuelta sigue flujo normal"
+
+  core_dotnet:
+    raiz: WMS.DALCore/Reserva_Stock/
+    arquitectura: pipeline de steps
+    archivos_clave:
+      - { path: WMS.DALCore/Reserva_Stock/Core/Domain/ReservationContext.cs, rol: "Estado mutable de la reserva en vuelo" }
+      - { path: WMS.DALCore/Reserva_Stock/Core/Interfaces/ReservationResultDto.cs, rol: "DTO retorno + enum ReservationFailureCode (14 valores)" }
+      - { path: WMS.DALCore/Reserva_Stock/Core/Services/EntityLoadingStep.cs, rol: "Step 1 - carga producto, presentacion, conversion UMBAS" }
+      - { path: WMS.DALCore/Reserva_Stock/Core/Services/PostProcessingStep.cs, rol: "Step final - persiste stock_res" }
+      - { path: WMS.DALCore/Reserva_Stock/Compatibility/StockReservationFacade.cs, rol: "Facade compatibilidad legacy" }
+    estado: parcialmente productivo (MHS via WebAPI v4)
+    falta_paridad_legacy:
+      - "Logica de zonas (picking vs no-picking) - estado 102"
+      - "Logica FEFO completa"
+      - "Algunos motivos de TIPO_NO_RESERVA aun no estan en enum Core"
+
+enum_failure_code:
+  archivo: WMS.DALCore/Reserva_Stock/Core/Interfaces/ReservationResultDto.cs:16
+  valores_documentados: 14
+  ejemplos: [NO_STOCK, NO_PRESENTACION, NO_UBICACION_VALIDA, FECHA_VENCIDA, ...]
+  homologacion_con_legacy: "commit cb4726b9 introdujo TIPO_NO_RESERVA en legacy VB y Clasificar_Motivo_No_Reserva_MI3() para mapear"
+
+patrones_brain:
+  - brain/code-changes/BOF/PATTERNS-RESERVA-MI3-UMBAS.md
+  - brain/code-changes/BOF/PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md
+  - brain/code-changes/BOF/PATTERNS-DIAGNOSTICO-NO-RESERVA-MI3.md
+  # tambien relevante:
+  - brain/architecture/adr/ADR-010-reserva-webapi-vs-wms-legacy.md
+  - brain/architecture/adr/ADR-011-tras-wms-reservastock-decision.md
+
+tablas_bd:
+  lectura: [stock, producto, producto_presentacion, ubicacion, i_nav_ped_traslado_enc, i_nav_ped_traslado_det]
+  escritura: [stock_res, trans_pe_enc, trans_pe_det, trans_pe_det_log_reserva]
+
+reglas_vinculantes:
+  - "REGLA 6: Cantidad SIEMPRE en UMBAS en stock_res. Si IdPresentacion > 0, la conversion es solo de presentacion para el usuario."
+  - "REGLA 6 bis: Sin presentacion -> Nothing/null -> usar UMBAS, NO abortar"
+  - "Concurrencia: lock con HOLDLOCK/UPDLOCK en SELECT stock antes de UPDATE stock_res"
+  - "Idempotencia: Restar_Stock_Reservado debe ser idempotente; commit 0798df6c agrega omision de reprocesos identicos en mismo trace"
+
+huerfanos_evitar:
+  - { path: WMS.StockReservation2/,  motivo: "Carpeta huerfana - intento Core viejo abandonado" }
+  - { path: WMS.StockReservation3/,  motivo: "Carpeta huerfana - segundo intento Core viejo" }
+  - { path: reservastockfrommi3/,    motivo: "Otro intento huerfano, NO referenciar" }
+  - "Recordatorio: hay 4 carpetas Core relacionadas, 3 son huerfanas. La VIGENTE es WMS.DALCore/Reserva_Stock/"
+
+glosario:
+  MI3: "Interface NAV mediante tablas i_nav_*; entrada de pedidos al WMS desde NAV"
+  UMBAS: Unidad de Medida Basica
+  FEFO: First Expired First Out (vencimiento mas proximo primero)
+  Clavaud: "Factor dinamico picking/no-picking; influye en seleccion ubicacion"
+  TIPO_NO_RESERVA: "Tipificacion del motivo cuando la reserva falla parcial o totalmente. Introducido en legacy en cb4726b9."
+  Process_Result: "Estructura {success, motivo, datos_operativos} de retorno. Homologada legacy<->Core."
+  Estado_102: "Estado intermedio en el pipeline legacy - antes del loop fix de faaf853437 causaba reentrada infinita"
+
+cross_refs:
+  - domain-integration-services    # WMSWebAPI/SyncSalidasService.cs es el entry point Core
+  - domain-database                # stock + stock_res + trans_pe_det_log_reserva
+  - domain-bof                     # frmPedido + frmRecepcion disparan reserva
+  - domain-hh-android              # picking HH consume stock_res
+  - domain-indicadores             # KPI "reservas fallidas por motivo"
+
+entry_points:
+  bug_no_reserva: "Leer brain/code-changes/BOF/PATTERNS-DIAGNOSTICO-NO-RESERVA-MI3.md PRIMERO. Tiene los 14 codigos enum y el flowchart de diagnostico."
+  diff_paridad: "Leer brain/code-changes/BOF/PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md. Mapa cobertura legacy 8337 lineas vs Core."
+  performance_reserva: "Trace YAML reserva-mi3-YYYYMMDD-*.yml (pendiente convencion)"
+  fefo: "PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md seccion 5"
+  cantidad_umbas: "PATTERNS-RESERVA-MI3-UMBAS.md"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-19, caso: "BYB EA-153305 FEFO falso negativo (no-reserva)", handoff: brain/handoffs/2026-05-19-codex-learning-byb-mi3-diagnostico-no-reserva/ }
+  - { fecha: 2026-05-19, caso: "BYB MI3 reserva UMBAS", handoff: brain/handoffs/2026-05-19-codex-learning-byb-mi3-reserva-umbas/ }
+  - { fecha: 2026-05-19, caso: "Fix loop L21489 GoTo estado 102", commit: faaf853437 }
+  - { fecha: 2026-05-19, caso: "Optimizar resta stock reservado", commit: 4806210e }
+  - { fecha: 2026-05-19, caso: "Homologar motivos no-reserva legacy<->Core", commit: cb4726b9, archivos: [clsLnStock_res_Partial.vb, EntityLoadingStep.cs] }
+  - { fecha: 2026-05-19, caso: "Tipifica motivos operativos en log legado", commit: 6ff10f45 }
+  - { fecha: 2026-05-19, caso: "Estructura MensajeLog + omite reprocesos identicos", commit: 0798df6c }
+  - { fecha: 2026-05-19, caso: "Mejoras reserva Core MHS v4", commit: 68045f09 }
+  - { fecha: 2026-05-20, caso: "Handoff inverso: Core ya existe, no reinventar", handoff: brain/handoffs/2026-05-20-inverso-codex-reserva-mi3-core-ya-existe/ }
+
+extension_points:
+  - "Falta mapear los 14 valores de ReservationFailureCode contra los TIPO_NO_RESERVA legacy uno-a-uno"
+  - "Falta documentar pipeline Core completo (steps en orden + responsabilidad de cada uno)"
+  - "Falta inventario de las 4 carpetas Core relacionadas (cual viva, cuales huerfanas, por que)"
+  - "Falta pattern PATTERNS-RESERVA-CONCURRENCIA.md (locks, isolation level)"
