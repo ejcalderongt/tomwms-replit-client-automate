@@ -606,6 +606,11 @@ Partial Public Class clsLnTrans_picking_det
 
                                                         If vResultEliminacionStock > 0 Then
 
+                                                            clsLnTrans_picking_ubic.Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(PickingUbic,
+                                                                                                                                   vIdUbicacionPickingDefectoPorBodega,
+                                                                                                                                   lConnection,
+                                                                                                                                   lTransaction)
+
                                                             lPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPickingDet(PickingUbic.IdPickingDet,
                                                                                                                                        PickingUbic.IdPickingEnc,
                                                                                                                                        lConnection,
@@ -1356,6 +1361,11 @@ Partial Public Class clsLnTrans_picking_det
 
                                                                                 If vResultEliminacionStock > 0 Then
 
+                                                                                    clsLnTrans_picking_ubic.Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(PickingUbic,
+                                                                                                                                                           vIdUbicacionPickingDefectoPorBodega,
+                                                                                                                                                           lConnection,
+                                                                                                                                                           lTransaction)
+
 
 
                                                                                     vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_BePickingUbic(PickingUbic,
@@ -1687,7 +1697,12 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                                                         lConnection,
                                                                                                                                                                         lTransaction)
 
-                                                                        If vResultEliminacionStock > 0 Then
+                                                                    If vResultEliminacionStock > 0 Then
+
+                                                                        clsLnTrans_picking_ubic.Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(PickingUbic,
+                                                                                                                                               vIdUbicacionPickingDefectoPorBodega,
+                                                                                                                                               lConnection,
+                                                                                                                                               lTransaction)
 
 
 
@@ -1959,6 +1974,11 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                    lConnection, lTransaction)
 
                                     If vResultEliminacionStock > 0 Then
+
+                                        clsLnTrans_picking_ubic.Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(PickingUbic,
+                                                                                                               vIdUbicacionDefecto,
+                                                                                                               lConnection,
+                                                                                                               lTransaction)
 
                                         vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_BePickingUbic(PickingUbic, lConnection, lTransaction)
 

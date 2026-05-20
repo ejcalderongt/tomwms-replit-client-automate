@@ -978,7 +978,6 @@ Public Class clsLnTrans_oc_encDMS
                                                                 .fecha_regularizacion = pStock_Rec.Fecha_regularizacion,
                                                                 .no_linea = pStock_Rec.No_linea,
                                                                 .atributo_variante_1 = pStock_Rec.Atributo_Variante_1,
-                                                                .impreso = pStock_Rec.Impreso,
                                                                 .IdBodega = pStock_Rec.IdBodega,
                                                                 .pallet_no_estandar = pStock_Rec.Pallet_No_Estandar
                                                       })

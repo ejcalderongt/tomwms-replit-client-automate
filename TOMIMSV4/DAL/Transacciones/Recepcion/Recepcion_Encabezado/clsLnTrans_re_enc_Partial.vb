@@ -6379,8 +6379,10 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                lConnection,
                                                                                                lTransaction)
 
-                                If vResultadoGuardarReDet > 0 Then
+                                If vResultadoGuardarReDet > 0 AndAlso BeTransReDet.IdRecepcionDet > 0 Then
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                Else
+                                    Throw New Exception("ERROR_202605201650_HH_GuardarRecepcion_S: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
                                 End If
 
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
@@ -7250,8 +7252,10 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                lConnection,
                                                                                                lTransaction)
 
-                                If vResultadoGuardarReDet > 0 Then
+                                If vResultadoGuardarReDet > 0 AndAlso BeTransReDet.IdRecepcionDet > 0 Then
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                Else
+                                    Throw New Exception("ERROR_202605201651_GuardarHH_BOF: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
                                 End If
 
                                 '#EJC202402121836: Retornar el MaxIdRecepcionDet (para recepción BOF)
