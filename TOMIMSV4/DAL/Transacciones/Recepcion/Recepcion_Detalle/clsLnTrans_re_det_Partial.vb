@@ -3121,7 +3121,7 @@ Partial Public Class clsLnTrans_re_det
 
                     If pFilasAfectadas = 0 Then
                         '#MECR23092025: Se agrego nueva opcion de log para recepciones.
-                        Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No se pudo eliminar registro de i_nav_transacciones_out, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
+                        '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
                         'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
                         clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                              pNumeroLinea:=pRecDet.No_Linea,
