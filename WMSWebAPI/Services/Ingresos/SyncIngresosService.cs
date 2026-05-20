@@ -479,6 +479,131 @@ namespace WMSWebAPI.Services.Ingresos
             List<clsBeI_nav_transacciones_out> detalles = clsLnI_nav_transacciones_out.Get_All_Ingresos_Pendientes_De_Envio(_configuration);
             return detalles;
         }
+        public DocumentoIngresoEstatusResponseDto GetDocumentoIngresoEstatus(string referencia)
+        {
+            if (string.IsNullOrWhiteSpace(referencia))
+                throw new ArgumentException("Referencia no puede estar vacía.", nameof(referencia));
+
+            var enc = clsLnTrans_oc_enc.Get_Single_By_Referencia(_configuration, referencia);
+            if (enc == null)
+                throw new Exception($"No se encontró la Orden de Compra con Referencia={referencia}.");
+
+            var estadoOC = new clsBeTrans_oc_estado { IdEstadoOC = enc.IdEstadoOC };
+            clsLnTrans_oc_estado.GetSingle(_configuration, ref estadoOC);
+
+            var recepciones = clsLnTrans_re_det.Get_Detalle_Rec_By_IdOrdenCompraEnc(_configuration, enc.IdOrdenCompraEnc);
+            var tareaByRecepcion = recepciones.ToDictionary(
+                r => r.IdRecepcion,
+                r => clsLnTarea_hh.Get_Tarea_Recepcion_By_IdRecepcionEnc(_configuration, r.IdRecepcion));
+
+            var response = new DocumentoIngresoEstatusResponseDto
+            {
+                Referencia = enc.Referencia,
+                IdOrdenCompraEnc = enc.IdOrdenCompraEnc,
+                EstadoOC = new DocumentoIngresoEstadoOCDto
+                {
+                    Id = enc.IdEstadoOC,
+                    Nombre = estadoOC.Nombre
+                }
+            };
+
+            var detallesRecibidos = recepciones
+                .SelectMany(r => r.Detalles.Select(d => new
+                {
+                    IdRecepcionEnc = r.IdRecepcion,
+                    Detalle = d
+                }))
+                .ToList();
+
+            var recibidoPorLinea = detallesRecibidos
+                .GroupBy(d => d.Detalle.no_Linea)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            foreach (var detalleOC in enc.DetalleOC ?? new List<clsBeTrans_oc_det>())
+            {
+                var recibidosLinea = recibidoPorLinea.TryGetValue(detalleOC.No_Linea, out var recibidos)
+                    ? recibidos
+                    : [];
+
+                double cantidadRecibida = recibidosLinea.Sum(x => x.Detalle.cantidad_recibida);
+                double cantidadPendiente = Math.Max(detalleOC.Cantidad - cantidadRecibida, 0);
+                bool recepcionCompleta = cantidadRecibida >= detalleOC.Cantidad;
+
+                var tareasLinea = recibidosLinea
+                    .Select(x => tareaByRecepcion.TryGetValue(x.IdRecepcionEnc, out var tarea) ? tarea : null)
+                    .Where(t => t != null && t.IdTareahh > 0)
+                    .GroupBy(t => t!.IdTareahh)
+                    .Select(g => g.First()!)
+                    .ToList();
+
+                response.Productos.Add(new DocumentoIngresoEstatusProductoDto
+                {
+                    NoLinea = detalleOC.No_Linea,
+                    IdOrdenCompraDet = detalleOC.IdOrdenCompraDet,
+                    IdProductoBodega = detalleOC.IdProductoBodega,
+                    CodigoProducto = detalleOC.Codigo_producto,
+                    NombreProducto = detalleOC.Nombre_producto,
+                    Presentacion = detalleOC.Nombre_presentacion,
+                    UnidadMedida = detalleOC.Nombre_unidad_medida_basica,
+                    CantidadSolicitada = detalleOC.Cantidad,
+                    CantidadRecibida = cantidadRecibida,
+                    CantidadPendiente = cantidadPendiente,
+                    RecepcionCompleta = recepcionCompleta,
+                    Tarea = BuildResumenTareas(tareasLinea)
+                });
+            }
+
+            var todasLasTareas = tareaByRecepcion.Values
+                .Where(t => t != null && t.IdTareahh > 0)
+                .GroupBy(t => t!.IdTareahh)
+                .Select(g => g.First()!)
+                .ToList();
+
+            response.Resumen = new DocumentoIngresoEstatusResumenDto
+            {
+                TotalLineas = response.Productos.Count,
+                LineasCompletas = response.Productos.Count(x => x.RecepcionCompleta),
+                LineasPendientes = response.Productos.Count(x => !x.RecepcionCompleta),
+                RecepcionCompleta = response.Productos.Count > 0 && response.Productos.All(x => x.RecepcionCompleta),
+                TareasFinalizadas = todasLasTareas.Count > 0 && todasLasTareas.All(x => x.IdEstado == 4)
+            };
+
+            return response;
+        }
+
+        private static DocumentoIngresoEstatusTareaResumenDto BuildResumenTareas(List<clsBeTarea_hh> tareas)
+        {
+            return new DocumentoIngresoEstatusTareaResumenDto
+            {
+                Total = tareas.Count,
+                Finalizadas = tareas.Count(x => x.IdEstado == 4),
+                Pendientes = tareas.Count(x => x.IdEstado != 4),
+                Finalizada = tareas.Count > 0 && tareas.All(x => x.IdEstado == 4),
+                Estados = tareas
+                    .GroupBy(x => x.IdEstado)
+                    .OrderBy(g => g.Key)
+                    .Select(g => new DocumentoIngresoEstatusTareaEstadoDto
+                    {
+                        IdEstado = g.Key,
+                        Estado = GetDescripcionEstadoTarea(g.Key),
+                        Cantidad = g.Count()
+                    })
+                    .ToList()
+            };
+        }
+
+        private static string GetDescripcionEstadoTarea(int idEstado)
+        {
+            return idEstado switch
+            {
+                1 => "Nuevo",
+                2 => "Pendiente",
+                3 => "Anulado",
+                4 => "Finalizado",
+                _ => ""
+            };
+        }
+
         public IngresoAsociacionResponseDto BuildIngresoAsociacion(int idEnc)
         {            
             var enc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(_configuration, idEnc);

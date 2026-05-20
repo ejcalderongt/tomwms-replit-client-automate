@@ -57,6 +57,8 @@ Public Class frmLoginEx
             Configuration.ConfigurationManager.AppSettings("IMS4MB_QAConnectionStringPrograN") = clsBD.Instancia.CadenaConexionSQLClient
             Configuration.ConfigurationManager.AppSettings("IMS4MB_PRDConnectionString") = clsBD.Instancia.CadenaConexionSQLClient
             Configuration.ConfigurationManager.AppSettings("CST_ERP") = clsBD.Instancia.Cadena_Conexion_SQL_ERP
+            Configuration.ConfigurationManager.AppSettings("WMS_MODO_DEBUG") = IIf(clsBD.Instancia.Modo_Debug, "ON", "OFF")
+            Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE") = IIf(clsBD.Instancia.Modo_Debug, "ON", "OFF")
             'clsBD.Instancia.WSTOMHH
             If clsBD.Instancia.WSTOMHH.Trim <> "" Then
 

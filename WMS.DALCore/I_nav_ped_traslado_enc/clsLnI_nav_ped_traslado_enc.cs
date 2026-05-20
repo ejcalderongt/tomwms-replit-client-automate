@@ -23,6 +23,31 @@ namespace WMS.DALCore
         private static clsInsert Ins = new clsInsert();
         public static IConfiguration? lconfig = null;
 
+        private static string Limpiar_Motivo_No_Reserva(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            var motivo = texto.Trim();
+            if (motivo.StartsWith("ERROR_202310021910A", StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
+
+            return string.Join(" ", motivo.Split(new[] { '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+                         .Trim();
+        }
+
+        private static string Mensaje_No_Reserva_Interface(string? detalle, bool reproceso = false)
+        {
+            var baseMsg = reproceso
+                ? "ERROR_202310021910A: No se pudo completar la reserva (reproceso)."
+                : "ERROR_202310021910A: No se pudo completar la reserva.";
+
+            var motivo = Limpiar_Motivo_No_Reserva(detalle);
+            return string.IsNullOrWhiteSpace(motivo)
+                ? $"{baseMsg} Motivo: No hay existencia aplicable valida para la solicitud."
+                : $"{baseMsg} Motivo: {motivo}";
+        }
+
         public static clsBeTrans_pe_enc? Importar_Pedido_Cliente_A_Tabla_Intermedia_If(clsBeI_nav_ped_traslado_enc BePedidoCliente,
                                                                                       ref string lblprg,
                                                                                       IConfiguration config)
@@ -527,7 +552,7 @@ namespace WMS.DALCore
 
                             // Marcado de error en tabla intermedia
                             PDet.Status = 0;
-                            PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva, consulte log_error_wms.";
+                            PDet.Process_Result = Mensaje_No_Reserva_Interface(PDet.Process_Result);
                             clsLnI_nav_ped_traslado_det.Actualizar_Status_Det(PDet, lConectionInterface, lTransInterface);
                             clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
 
@@ -601,7 +626,7 @@ namespace WMS.DALCore
                                     mensajesFallo.Add(PDet.Process_Result);
 
                                 PDet.Status = 0;
-                                PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva (reproceso), consulte log_error_wms.";
+                                PDet.Process_Result = Mensaje_No_Reserva_Interface(PDet.Process_Result, reproceso: true);
                                 clsLnI_nav_ped_traslado_det.Actualizar_Status_Det(PDet, lConectionInterface, lTransInterface);
                                 clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet, lConectionInterface, lTransInterface);
                             }
@@ -774,15 +799,18 @@ namespace WMS.DALCore
                     {
                         pBePedidoDet.Nom_presentacion = pBePresentacion.Nombre;
                         pBePedidoDet.IdPresentacion = pBePresentacion.IdPresentacion;
+                        pBePedidoDet.Factor = pBePresentacion.Factor;
                     }
                     else
                     {
                         pBePedidoDet.Nom_presentacion = "";
+                        pBePedidoDet.Factor = 0;
                     }
                 }
                 else
                 {
                     pBePedidoDet.Nom_presentacion = "";
+                    pBePedidoDet.Factor = 0;
                 }
 
                 pBePedidoDet.Nom_unid_med = pBeTrasladoDet.Unit_of_Measure_Code;
@@ -835,14 +863,14 @@ namespace WMS.DALCore
 
                                 vCantidadDecimalUMBas = Math.Round(vCantidadDecimalUMBas * pBePresentacion.Factor);
                                 vCantidadEnteraPres = vCantidadEnteraPres * pBePresentacion.Factor;
+                                vCantidadSolicitadaPedido = vCantidadEnteraPres + vCantidadDecimalUMBas;
 
-                                if (vCantidadEnteraPres > 0)
+                                if (vCantidadDecimalUMBas > 0)
                                 {
-                                    vCantidadSolicitadaPedido = vCantidadEnteraPres;
-                                }
-                                else
-                                {
-                                    vCantidadSolicitadaPedido = vCantidadDecimalUMBas;
+                                    pBePedidoDet.Cantidad = vCantidadSolicitadaPedido;
+                                    pBePedidoDet.Nom_presentacion = "";
+                                    pBePedidoDet.IdPresentacion = 0;
+                                    pBePedidoDet.Atributo_variante_1 = "";
                                     pBeStockRes.Atributo_Variante_1 = "";
                                     pBeStockRes.IdPresentacion = 0;
                                 }

@@ -2161,7 +2161,29 @@ Partial Public Class clsLnTrans_pe_det
 
         lTransaction.Save("Init_Stock")
 
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.Iniciar("Reservar_Stock_Por_Linea_Interface",
+                                                                         pBePedidoDet.IdPedidoEnc,
+                                                                         pBePedidoDet.IdPedidoDet,
+                                                                         pBeTrasladoDet.Line_No,
+                                                                         pBeTrasladoDet.No)
+        clsReservaMi3DebugTrace.EstablecerActual(vReservaMi3Trace)
+
         Try
+
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "payload_interface",
+                                           "NoEnc", pBeTrasladoDet.NoEnc,
+                                           "Line_No", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Line_No),
+                                           "Item_No", pBeTrasladoDet.No,
+                                           "Quantity", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Quantity),
+                                           "Qty_to_Receive", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Qty_to_Receive),
+                                           "Unit_of_Measure_Code", pBeTrasladoDet.Unit_of_Measure_Code,
+                                           "Variant_Code", pBeTrasladoDet.Variant_Code,
+                                           "Quantity_Reserved_WMS", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Quantity_Reserved_WMS),
+                                           "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                           "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion),
+                                           "StockRes_Cantidad", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                           "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
             Dim ResultadoInsert As Integer = 0
             Dim pBeTrasladoTemp As New clsBeI_nav_ped_traslado_det
@@ -2177,11 +2199,31 @@ Partial Public Class clsLnTrans_pe_det
 
                 '#CKFK20221117 Agregué esto para actualizar el pedido con la cantidad solicitada y la unidad de medida correctos
                 If pBeTrasladoDet.Variant_Code <> pBeTrasladoTemp.Variant_Code And pBeTrasladoTemp.Unit_of_Measure_Code <> pBePedidoDet.Nom_presentacion Then
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "normaliza_linea_por_um_variant",
+                                                   "Variant_Code_Interface", pBeTrasladoDet.Variant_Code,
+                                                   "Variant_Code_BD", pBeTrasladoTemp.Variant_Code,
+                                                   "UM_Interface", pBeTrasladoDet.Unit_of_Measure_Code,
+                                                   "Nom_presentacion_Pedido", pBePedidoDet.Nom_presentacion,
+                                                   "Cantidad_Antes", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                   "Factor", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Factor))
                     If Not pBeTrasladoDet Is Nothing Then
                         If pBePedidoDet.IdPresentacion <> 0 Then
+                            Dim vStockResCantidadAntesNormalizacion As Double = pBeStockRes.Cantidad
+                            Dim vStockResIdPresentacionAntesNormalizacion As Integer = pBeStockRes.IdPresentacion
                             pBePedidoDet.Cantidad = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * pBePedidoDet.Factor, 2))
                             pBePedidoDet.Nom_presentacion = ""
                             pBePedidoDet.IdPresentacion = 0
+                            pBeStockRes.Cantidad = pBePedidoDet.Cantidad
+                            pBeStockRes.IdPresentacion = 0
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "linea_convertida_a_umbas",
+                                                           "Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                           "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion),
+                                                           "StockRes_Cantidad_Antes", clsReservaMi3DebugTrace.Valor(vStockResCantidadAntesNormalizacion),
+                                                           "StockRes_IdPresentacion_Antes", clsReservaMi3DebugTrace.Valor(vStockResIdPresentacionAntesNormalizacion),
+                                                           "StockRes_Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                                           "StockRes_IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
                         End If
                     End If
                 End If
@@ -2219,12 +2261,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                           lConnection,
                                                                                           lTransaction)
                     vDifPedidoVrsReservado = pBePedidoDet.Cantidad - vCantidadReservada
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "calcula_diferencia_reserva_existente",
+                                                   "IdStock", clsReservaMi3DebugTrace.Valor(Sr.IdStock),
+                                                   "CantidadPedido", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                   "CantidadReservada", clsReservaMi3DebugTrace.Valor(vCantidadReservada),
+                                                   "Diferencia", clsReservaMi3DebugTrace.Valor(vDifPedidoVrsReservado))
 
                     Select Case vDifPedidoVrsReservado
 
                         Case Is > 0 'Se aumentó la cantidad en el pedido, 'Por lo tanto se debe aumentar la cantidad en picking.                            
 
                             pBeStockRes.Cantidad -= vCantidadReservada
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "reserva_diferencia_pendiente",
+                                                           "StockRes_Cantidad_A_Reservar", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                                           "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
                             If clsLnStock_res.Reserva_Stock_From_MI3(pBeStockRes,
                                                                     vDiasVencimientoCliente,
@@ -2257,9 +2309,13 @@ Partial Public Class clsLnTrans_pe_det
 
                             Else
                                 Reservar_Stock_Por_Linea_Interface = False
+                                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "reserva_stock_from_mi3_false")
                             End If
 
                         Case Is < 0 'Se disminuyó la cantidad en el pedido
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "pedido_disminuido_no_reserva",
+                                                           "Diferencia", clsReservaMi3DebugTrace.Valor(vDifPedidoVrsReservado))
 
                             For Each Pu In pBePedidoDet.ListaPickingUbic.Where(Function(x) (x.Cantidad_Verificada - x.Cantidad_despachada) > 0)
                                 Debug.Print(Pu.IdPickingUbic)
@@ -2275,6 +2331,11 @@ Partial Public Class clsLnTrans_pe_det
             Else
 
                 'Dim pListStockResOUT As New List(Of clsBeStock_res)
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "sin_stock_res_previo_reserva_completa",
+                                               "StockRes_Cantidad", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                               "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
                 If clsLnStock_res.Reserva_Stock_From_MI3(pBeStockRes,
                                                          vDiasVencimientoCliente,
@@ -2297,9 +2358,13 @@ Partial Public Class clsLnTrans_pe_det
             End If
 
         Catch ex As Exception
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "exception", "mensaje", ex.Message)
             If Not lTransaction Is Nothing Then lTransaction.Rollback("Init_Stock")
             Throw New Exception(String.Format(vbNewLine & "{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             'Throw ex
+        Finally
+            clsReservaMi3DebugTrace.Finalizar(vReservaMi3Trace, IIf(Reservar_Stock_Por_Linea_Interface, "OK", "FALSE"))
+            clsReservaMi3DebugTrace.LimpiarActual(vReservaMi3Trace)
         End Try
 
     End Function
@@ -3343,6 +3408,172 @@ Partial Public Class clsLnTrans_pe_det
                 lConnection.Close()
 
             End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_KPI_Picking_Portal_By_IdPedidoEnc_And_IdBodega(ByVal pIdPedidoEnc As Integer,
+                                                                              ByVal pIdBodega As Integer) As DataTable
+
+        Dim lDataTable As New DataTable("KPI_Picking_Portal")
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "
+                        SELECT
+                            ISNULL(fo.Fecha_Hora_Inicio, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Hora_Inicio,
+                            ISNULL(fo.Fecha_Hora_Fin, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Hora_Fin,
+                            ISNULL(a.fecha_picking, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Por_Linea,
+                            o.descripcion AS Tipo_Documento_Pedido,
+                            ISNULL(e.nombre, 'ND') AS Familia,
+                            f.codigo AS Codigo_Departamento,
+                            f.nombre AS Clasificacion,
+                            g.codigo AS Codigo_Categoria,
+                            g.nombretipoproducto AS Categoria,
+                            d.codigo AS Codigo_Producto,
+                            d.nombre AS Nombre_Producto,
+                            t.cantidad AS Cantidad_Solicitada,
+                            ISNULL(a.cantidad_recibida, 0) AS Cantidad_Picking,
+                            ISNULL(h.nombre, '') AS Estado_Producto,
+                            ROUND((t.cantidad - ISNULL(a.cantidad_recibida, 0)), 2) AS Diferencia_Picking,
+                            ISNULL(q.nombre, '') AS Presentacion_MPQ,
+                            CASE
+                                WHEN p.IdPresentacion > 0 AND q.factor > 0
+                                THEN ROUND(ISNULL(a.cantidad_recibida, 0) / q.factor, 2)
+                                ELSE 0
+                            END AS Cantidad_Pickeada_Cajas,
+                            ISNULL(j.IdRecepcionEnc, 0) AS Id_Recepcion,
+                            ISNULL(b.IdPickingEnc, 0) AS IdPickingEnc,
+                            ISNULL(a.fecha_vence, '19000101') AS Fecha_Vence,
+                            ISNULL(a.lic_plate, '') AS Lic_Plate,
+                            ISNULL(a.lic_plate_reemplazo, '') AS Lic_Plate_Reemplazo,
+                            ISNULL(a.IdStock_reemplazo, 0) AS IdStock_Reemplazo,
+                            ISNULL(a.IdUbicacion_reemplazo, 0) AS IdUbicacion_Reemplazo,
+                            ISNULL(l.codigo, 'Operador BOF') AS Codigo_Operador,
+                            ISNULL(l.nombres, 'Operador BOF') + ' ' + ISNULL(l.apellidos, '') AS Operador,
+                            ISNULL(n.codigo, '') AS Codigo_Comprador,
+                            ISNULL(n.nombre_comercial, '') AS Comprador,
+                            ISNULL(w.codigo, '') AS Codigo_Cliente,
+                            ISNULL(w.nombre_comercial, '') AS Cliente,
+                            m.Referencia_Documento_Ingreso_Bodega_Destino AS Solicitud_SAP
+                        FROM trans_pe_enc m WITH (NOLOCK)
+                        INNER JOIN trans_pe_det t WITH (NOLOCK) ON t.IdPedidoEnc = m.IdPedidoEnc
+                        INNER JOIN trans_pe_tipo o WITH (NOLOCK) ON o.IdTipoPedido = m.IdTipoPedido
+                        INNER JOIN producto_bodega c WITH (NOLOCK) ON c.IdProductoBodega = t.IdProductoBodega
+                        INNER JOIN producto d WITH (NOLOCK) ON d.IdProducto = c.IdProducto
+                        LEFT JOIN producto_familia e WITH (NOLOCK) ON e.IdFamilia = d.IdFamilia
+                        LEFT JOIN producto_clasificacion f WITH (NOLOCK) ON f.IdClasificacion = d.IdClasificacion
+                        LEFT JOIN producto_tipo g WITH (NOLOCK) ON g.IdTipoProducto = d.IdTipoProducto
+                        LEFT JOIN trans_picking_ubic a WITH (NOLOCK) ON t.IdPedidoDet = a.IdPedidoDet AND t.IdProductoBodega = a.IdProductoBodega
+                        LEFT JOIN trans_picking_enc b WITH (NOLOCK) ON b.IdPickingEnc = a.IdPickingEnc
+                        LEFT JOIN producto_estado h WITH (NOLOCK) ON h.IdEstado = a.IdProductoEstado
+                        LEFT JOIN (
+                            SELECT
+                                IdOperadorBodega_Pickeo,
+                                IdPickingEnc,
+                                MIN(fecha_picking) AS Fecha_Hora_Inicio,
+                                MAX(fecha_picking) AS Fecha_Hora_Fin
+                            FROM trans_picking_ubic WITH (NOLOCK)
+                            WHERE no_encontrado = 0 AND dañado_picking = 0
+                            GROUP BY IdOperadorBodega_Pickeo, IdPickingEnc
+                        ) fo ON fo.IdOperadorBodega_Pickeo = a.IdOperadorBodega_Pickeo AND fo.IdPickingEnc = a.IdPickingEnc
+                        LEFT JOIN cliente n WITH (NOLOCK) ON n.codigo COLLATE Modern_Spanish_CI_AS = m.bodega_destino COLLATE Modern_Spanish_CI_AS
+                        LEFT JOIN cliente w WITH (NOLOCK) ON w.IdCliente = m.IdCliente
+                        LEFT JOIN stock j WITH (NOLOCK) ON j.IdStock = a.IdStock
+                        LEFT JOIN operador_bodega k WITH (NOLOCK) ON k.IdOperadorBodega = a.IdOperadorBodega_Pickeo
+                        LEFT JOIN operador l WITH (NOLOCK) ON l.IdOperador = k.IdOperador
+                        LEFT JOIN (
+                            SELECT MAX(IdPresentacion) IdPresentacion, IdProducto
+                            FROM producto_presentacion WITH (NOLOCK)
+                            GROUP BY IdProducto
+                        ) p ON c.IdProducto = p.IdProducto AND d.IdProducto = p.IdProducto
+                        LEFT JOIN producto_presentacion q WITH (NOLOCK) ON p.IdPresentacion = q.IdPresentacion
+                        WHERE m.IdPedidoEnc = @IdPedidoEnc
+                          AND m.IdBodega = @IdBodega
+                          AND ISNULL(a.dañado_picking, 0) = 0
+                          AND ISNULL(a.no_encontrado, 0) = 0
+                          AND ISNULL(a.dañado_verificacion, 0) = 0
+                          AND m.estado <> 'Anulado'
+                          AND m.ubicacion <> 'TMP'
+                        ORDER BY b.IdPickingEnc, l.codigo, d.codigo"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = ltransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    ltransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_VW_Tiempos_Picking_Operador_By_IdPedidoEnc_And_IdBodega(ByVal pIdPedidoEnc As Integer,
+                                                                                       ByVal pIdBodega As Integer) As DataTable
+
+        Dim lDataTable As New DataTable("Tiempos_Picking_Operador")
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+        Dim vSQL As String = "SELECT T.*
+                              FROM VW_Tiempos_Picking_Operador T WITH (NOLOCK)
+                                          WHERE T.IdPedidoEnc = @IdPedidoEnc
+                                            AND EXISTS (
+                                                SELECT 1
+                                                FROM trans_pe_enc pe WITH (NOLOCK)
+                                                WHERE pe.IdPedidoEnc = T.IdPedidoEnc
+                                                  AND pe.IdBodega = @IdBodega
+                                            )"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = ltransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    ltransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lDataTable
 
         Catch ex As Exception
             Throw ex

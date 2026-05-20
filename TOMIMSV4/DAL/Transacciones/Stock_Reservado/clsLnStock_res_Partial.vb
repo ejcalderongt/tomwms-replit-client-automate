@@ -10,6 +10,15 @@ Partial Public Class clsLnStock_res
     Private Shared lBeConfigInMemory As New List(Of clsBeI_nav_config_enc)
     Private Shared lProductosInMemory As New List(Of clsBeProducto)
 
+    Private Class clsReservaMi3StockReservadoCache
+        Public IdStocksReservados As System.Collections.Generic.HashSet(Of Integer)
+        Public ReservadoPorStock As New System.Collections.Generic.Dictionary(Of Integer, System.Tuple(Of Double, Double))()
+        Public ListasStockRestadas As New System.Collections.Generic.Dictionary(Of String, String)(StringComparer.Ordinal)
+    End Class
+
+    Private Shared ReadOnly mReservaMi3StockReservadoCacheLock As New Object()
+    Private Shared ReadOnly mReservaMi3StockReservadoCache As New System.Collections.Generic.Dictionary(Of String, clsReservaMi3StockReservadoCache)(StringComparer.OrdinalIgnoreCase)
+
     Public Shared Function Stock_Res_Esta_Pickeado_By_IdPedidoDet(ByVal IdPedidoDet As Integer) As Boolean
 
         Stock_Res_Esta_Pickeado_By_IdPedidoDet = False
@@ -4794,6 +4803,10 @@ Partial Public Class clsLnStock_res
                 BeStockResPreviamenteInsertado.IdStockRes = BeStockRes.IdStockRes
                 BeStockResPreviamenteInsertado.IdProductoBodega = BeStockRes.IdProductoBodega
 
+                clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                       "stock_res_candidato_insert",
+                                                       BeStockRes)
+
                 If Not GetSingle(BeStockResPreviamenteInsertado,
                                  lConnection,
                                  ltransaction) Then
@@ -4804,9 +4817,25 @@ Partial Public Class clsLnStock_res
                     Dim vPermitirDecimales As Boolean = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
                     clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
 
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_insertando",
+                                                           BeStockRes,
+                                                           "PermitirDecimales", clsReservaMi3DebugTrace.Valor(vPermitirDecimales),
+                                                           "CantidadStockDestino", clsReservaMi3DebugTrace.Valor(CantidadStockDestino))
+
                     Insertar(BeStockRes,
                              lConnection,
                              ltransaction)
+
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_insertado",
+                                                           BeStockRes)
+
+                Else
+
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_omitido_ya_existia",
+                                                           BeStockResPreviamenteInsertado)
 
                 End If
 
@@ -8901,6 +8930,151 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(ByVal pIdsStock As List(Of Integer),
+                                                                          ByRef lConnection As SqlConnection,
+                                                                          ByRef lTransaction As SqlTransaction) As Dictionary(Of Integer, System.Tuple(Of Double, Double))
+
+        Dim lReturnValue As New Dictionary(Of Integer, System.Tuple(Of Double, Double))
+
+        Try
+
+            If pIdsStock Is Nothing OrElse pIdsStock.Count = 0 Then
+                Return lReturnValue
+            End If
+
+            Dim lIdsUnicos As New List(Of Integer)(New System.Collections.Generic.HashSet(Of Integer)(pIdsStock))
+            Const vTamanoLote As Integer = 900
+            Dim vIndiceInicio As Integer = 0
+
+            While vIndiceInicio < lIdsUnicos.Count
+
+                Dim lIdsLote As New List(Of Integer)
+                Dim vIndiceFin As Integer = Math.Min(vIndiceInicio + vTamanoLote - 1, lIdsUnicos.Count - 1)
+
+                For vIndice As Integer = vIndiceInicio To vIndiceFin
+                    lIdsLote.Add(lIdsUnicos(vIndice))
+                Next
+
+                Dim lParametros As New List(Of String)
+
+                For vIndice As Integer = 0 To lIdsLote.Count - 1
+                    lParametros.Add("@IdStock" & vIndice.ToString())
+                Next
+
+                Dim vSql As String = "SELECT IdStock, SUM(Cantidad) AS Cantidad, SUM(Peso) AS Peso FROM Stock_res WHERE IdStock IN (" &
+                                     String.Join(",", lParametros) &
+                                     ") GROUP BY IdStock"
+
+                Using cmd As New SqlCommand(vSql, lConnection, lTransaction)
+
+                    cmd.CommandType = CommandType.Text
+
+                    For vIndice As Integer = 0 To lIdsLote.Count - 1
+                        cmd.Parameters.AddWithValue(lParametros(vIndice), lIdsLote(vIndice))
+                    Next
+
+                    Using lDataReader As SqlDataReader = cmd.ExecuteReader()
+
+                        While lDataReader.Read()
+                            Dim vIdStock As Integer = Convert.ToInt32(lDataReader("IdStock"))
+                            Dim vCantidad As Double = If(lDataReader.IsDBNull(1), 0, Convert.ToDouble(lDataReader("Cantidad")))
+                            Dim vPeso As Double = If(lDataReader.IsDBNull(2), 0, Convert.ToDouble(lDataReader("Peso")))
+
+                            lReturnValue(vIdStock) = New System.Tuple(Of Double, Double)(vCantidad, vPeso)
+                        End While
+
+                    End Using
+
+                End Using
+
+                vIndiceInicio = vIndiceFin + 1
+
+            End While
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+        Return lReturnValue
+
+    End Function
+
+    Private Shared Function Obtener_Cache_StockReservado_MI3(ByVal pTrace As String,
+                                                            ByVal pIdBodega As Integer) As clsReservaMi3StockReservadoCache
+
+        If String.IsNullOrWhiteSpace(pTrace) Then Return Nothing
+
+        Dim vKey As String = pTrace & "|" & pIdBodega.ToString(Globalization.CultureInfo.InvariantCulture)
+        Dim vCache As clsReservaMi3StockReservadoCache = Nothing
+
+        SyncLock mReservaMi3StockReservadoCacheLock
+            If Not mReservaMi3StockReservadoCache.TryGetValue(vKey, vCache) Then
+                vCache = New clsReservaMi3StockReservadoCache()
+                mReservaMi3StockReservadoCache(vKey) = vCache
+            End If
+        End SyncLock
+
+        Return vCache
+
+    End Function
+
+    Private Shared Function Obtener_Clave_Lista_Stock_MI3(ByVal lStock As List(Of clsBeStock)) As String
+
+        If lStock Is Nothing Then Return ""
+
+        Return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(lStock).ToString(Globalization.CultureInfo.InvariantCulture)
+
+    End Function
+
+    Private Shared Function Valor_Firma_Stock_MI3(ByVal pValor As Double) As String
+
+        Return Math.Round(pValor, 6).ToString("0.######", Globalization.CultureInfo.InvariantCulture)
+
+    End Function
+
+    Private Shared Function Obtener_Firma_Lista_Stock_MI3(ByVal lStock As List(Of clsBeStock)) As String
+
+        If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+        Dim vFirma As New System.Text.StringBuilder()
+
+        For Each BeStock As clsBeStock In lStock
+            If BeStock Is Nothing Then Continue For
+
+            vFirma.Append(BeStock.IdStock.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(BeStock.IdPresentacion.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(BeStock.IdUbicacion.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(If(BeStock.UbicacionPicking, "1", "0")).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Cantidad)).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Peso)).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Cantidad_Reservada)).Append("~").
+                Append(If(BeStock.Pallet_Completo, "1", "0")).Append("|")
+        Next
+
+        Return vFirma.ToString()
+
+    End Function
+
+    Friend Shared Sub Limpiar_Cache_StockReservado_MI3(ByVal pTrace As String)
+
+        If String.IsNullOrWhiteSpace(pTrace) Then Return
+
+        SyncLock mReservaMi3StockReservadoCacheLock
+            Dim lKeys As List(Of String) = mReservaMi3StockReservadoCache.Keys.
+                Where(Function(x) x.StartsWith(pTrace & "|", StringComparison.OrdinalIgnoreCase)).
+                ToList()
+
+            For Each vKey As String In lKeys
+                mReservaMi3StockReservadoCache.Remove(vKey)
+            Next
+        End SyncLock
+
+    End Sub
+
     Private Shared Function Restar_Stock_Reservado(ByVal lStock As List(Of clsBeStock),
                                                    ByVal pBeConfigEnc As clsBeI_nav_config_enc,
                                                    ByVal lConnection As SqlConnection,
@@ -8919,13 +9093,141 @@ Partial Public Class clsLnStock_res
 
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim BePresentacionStock As New clsBeProducto_Presentacion
             Dim vHash As String = ""
 
-            If lStock Is Nothing Then Return True
+            If lStock Is Nothing OrElse lStock.Count = 0 Then
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_stock_reservado_omitido_lista_vacia",
+                                                     vCronometroTotal)
+                Return True
+            End If
 
             Dim lIdStocksReservados As New List(Of Integer)
-            lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+            Dim hIdStocksReservados As System.Collections.Generic.HashSet(Of Integer) = Nothing
+            Dim vCacheStockReservado As clsReservaMi3StockReservadoCache =
+                Obtener_Cache_StockReservado_MI3(vReservaMi3Trace, pBeConfigEnc.Idbodega)
+            Dim vClaveListaStock As String = Obtener_Clave_Lista_Stock_MI3(lStock)
+            Dim vFirmaListaStockAntes As String = Obtener_Firma_Lista_Stock_MI3(lStock)
+
+            If vCacheStockReservado IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(vClaveListaStock) Then
+                Dim vFirmaListaStockProcesada As String = ""
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    If vCacheStockReservado.ListasStockRestadas.TryGetValue(vClaveListaStock, vFirmaListaStockProcesada) AndAlso
+                       String.Equals(vFirmaListaStockProcesada, vFirmaListaStockAntes, StringComparison.Ordinal) Then
+
+                        Restar_Stock_Reservado = True
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "perf_restar_stock_reservado_omitido_cache_lista",
+                                                                 vCronometroTotal,
+                                                                 lStock,
+                                                                 "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
+                                                                 "ClaveLista", clsReservaMi3DebugTrace.Valor(vClaveListaStock))
+                        Return True
+                    End If
+                End SyncLock
+            End If
+
+            Dim vCacheIds As String = "BD"
+            Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+
+            If vCacheStockReservado IsNot Nothing Then
+                Dim vCargarIds As Boolean = False
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    vCargarIds = (vCacheStockReservado.IdStocksReservados Is Nothing)
+
+                    If Not vCargarIds Then
+                        hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(vCacheStockReservado.IdStocksReservados)
+                        vCacheIds = "Hit"
+                    End If
+                End SyncLock
+
+                If vCargarIds Then
+                    lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+                    hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
+
+                    SyncLock mReservaMi3StockReservadoCacheLock
+                        vCacheStockReservado.IdStocksReservados = hIdStocksReservados
+                    End SyncLock
+
+                    vCacheIds = "Miss"
+                End If
+            Else
+                lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction)
+                hIdStocksReservados = New System.Collections.Generic.HashSet(Of Integer)(lIdStocksReservados)
+            End If
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_get_ids_stock_reservados_bodega_despues",
+                                                 vCronometro,
+                                                 "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
+                                                 "IdsReservados", clsReservaMi3DebugTrace.Valor(If(hIdStocksReservados Is Nothing, 0, hIdStocksReservados.Count)),
+                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lStock.Count),
+                                                 "Cache", clsReservaMi3DebugTrace.Valor(vCacheIds),
+                                                 "Lookup", clsReservaMi3DebugTrace.Valor("HashSet"))
+
+            Dim lIdsStockAProcesar As New List(Of Integer)
+
+            For Each BeStock In lStock
+                If hIdStocksReservados.Contains(BeStock.IdStock) Then
+                    lIdsStockAProcesar.Add(BeStock.IdStock)
+                End If
+            Next
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            Dim dReservadoPorStock As New Dictionary(Of Integer, System.Tuple(Of Double, Double))()
+            Dim vCacheCantidades As String = "BD"
+
+            If vCacheStockReservado IsNot Nothing Then
+                Dim lIdsStockPendientes As New List(Of Integer)
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    For Each vIdStock As Integer In lIdsStockAProcesar
+                        If vCacheStockReservado.ReservadoPorStock.ContainsKey(vIdStock) Then
+                            dReservadoPorStock(vIdStock) = vCacheStockReservado.ReservadoPorStock(vIdStock)
+                        Else
+                            lIdsStockPendientes.Add(vIdStock)
+                        End If
+                    Next
+                End SyncLock
+
+                If lIdsStockPendientes.Count > 0 Then
+                    Dim dReservadoPendiente As Dictionary(Of Integer, System.Tuple(Of Double, Double)) =
+                        Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockPendientes, lConnection, lTransaction)
+
+                    SyncLock mReservaMi3StockReservadoCacheLock
+                        For Each vIdStock As Integer In lIdsStockPendientes
+                            Dim tReservado As System.Tuple(Of Double, Double) = Nothing
+
+                            If dReservadoPendiente.TryGetValue(vIdStock, tReservado) Then
+                                vCacheStockReservado.ReservadoPorStock(vIdStock) = tReservado
+                                dReservadoPorStock(vIdStock) = tReservado
+                            Else
+                                tReservado = New System.Tuple(Of Double, Double)(0, 0)
+                                vCacheStockReservado.ReservadoPorStock(vIdStock) = tReservado
+                                dReservadoPorStock(vIdStock) = tReservado
+                            End If
+                        Next
+                    End SyncLock
+
+                    vCacheCantidades = "Miss"
+                Else
+                    vCacheCantidades = "Hit"
+                End If
+            Else
+                dReservadoPorStock = Get_Cantidades_Y_Pesos_Reservados_By_IdStocks(lIdsStockAProcesar, lConnection, lTransaction)
+            End If
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_get_cantidades_reservadas_stock_batch_despues",
+                                                 vCronometro,
+                                                 "StockAProcesar", clsReservaMi3DebugTrace.Valor(lIdsStockAProcesar.Count),
+                                                 "StockConReserva", clsReservaMi3DebugTrace.Valor(dReservadoPorStock.Where(Function(x) x.Value.Item1 <> 0 OrElse x.Value.Item2 <> 0).Count()),
+                                                 "Cache", clsReservaMi3DebugTrace.Valor(vCacheCantidades))
 
             For Each BeStock In lStock
 
@@ -8934,16 +9236,16 @@ Partial Public Class clsLnStock_res
                     Debug.Write("Hola")
                 End If
 
-                If lIdStocksReservados.Contains(BeStock.IdStock) Then
+                If hIdStocksReservados.Contains(BeStock.IdStock) Then
 
                     BePresentacionStock = BeStock.Presentacion
 
-                    If Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(BeStock.IdStock,
-                                                                    False,
-                                                                    vCantidadReservadaRef,
-                                                                    vPesoReservadoRef,
-                                                                    lConnection,
-                                                                    lTransaction) Then
+                    Dim tReservadoPorStock As System.Tuple(Of Double, Double) = Nothing
+
+                    If dReservadoPorStock.TryGetValue(BeStock.IdStock, tReservadoPorStock) Then
+
+                        vCantidadReservadaRef = tReservadoPorStock.Item1
+                        vPesoReservadoRef = tReservadoPorStock.Item2
 
                         If vCantidadReservadaRef <> 0 Then
 
@@ -9053,6 +9355,8 @@ Partial Public Class clsLnStock_res
 
                         End If
 
+                    Else
+                        BeStock.Pallet_Completo = True
                     End If
 
                 Else
@@ -9062,6 +9366,17 @@ Partial Public Class clsLnStock_res
             Next
 
             Restar_Stock_Reservado = True
+
+            If vCacheStockReservado IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(vClaveListaStock) Then
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    vCacheStockReservado.ListasStockRestadas(vClaveListaStock) = Obtener_Firma_Lista_Stock_MI3(lStock)
+                End SyncLock
+            End If
+
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_restar_stock_reservado_fin",
+                                                     vCronometroTotal,
+                                                     lStock)
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -18130,6 +18445,9 @@ Partial Public Class clsLnStock_res
                                                                                                          lBeStockExistenteZonaPicking As List(Of clsBeStock))
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+            Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
 
             Dim lBeStockExistente As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                              BeProducto,
@@ -18142,9 +18460,29 @@ Partial Public Class clsLnStock_res
                                                                              pTarea_Reabasto,
                                                                              pEs_Devolucion)
 
-            Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_inicial_despues",
+                                                     vCronometro,
+                                                     lBeStockExistente,
+                                                     "ExcluirZonaNoPicking", clsReservaMi3DebugTrace.Valor(IIf(pTarea_Reabasto, True, False)),
+                                                     "ConmutarPresentacion", "False")
 
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_inicial_despues",
+                                                         vCronometro,
+                                                         lBeStockExistente)
+            Else
+                lBeStockExistente = New List(Of clsBeStock)
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_inicial_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim lBeStockExistenteZonasNoPicking As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                                        BeProducto,
                                                                                        DiasVencimiento,
@@ -18155,9 +18493,29 @@ Partial Public Class clsLnStock_res
                                                                                        False,
                                                                                        pTarea_Reabasto,
                                                                                        pEs_Devolucion)
-            Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistenteZonasNoPicking = lBeStockExistenteZonasNoPicking.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_zonas_no_picking_despues",
+                                                     vCronometro,
+                                                     lBeStockExistenteZonasNoPicking,
+                                                     "ExcluirZonaNoPicking", "True",
+                                                     "ConmutarPresentacion", "False")
 
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistenteZonasNoPicking = lBeStockExistenteZonasNoPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_zonas_no_picking_despues",
+                                                         vCronometro,
+                                                         lBeStockExistenteZonasNoPicking)
+            Else
+                lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_zonas_no_picking_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
             Dim lBeStockExistenteZonaPicking As List(Of clsBeStock) = clsLnStock.lStock(pStockResSolicitud,
                                                                                     BeProducto,
                                                                                     DiasVencimiento,
@@ -18169,10 +18527,39 @@ Partial Public Class clsLnStock_res
                                                                                     pTarea_Reabasto,
                                                                                     pEs_Devolucion)
 
-            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.UbicacionPicking = True).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_lstock_zona_picking_despues",
+                                                     vCronometro,
+                                                     lBeStockExistenteZonaPicking,
+                                                     "ExcluirZonaNoPicking", "False",
+                                                     "ConmutarPresentacion", "False")
 
-            Restar_Stock_Reservado(lBeStockExistenteZonaPicking, pBeConfigEnc, lConnection, ltransaction)
-            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+            If lBeStockExistenteZonaPicking Is Nothing Then
+                lBeStockExistenteZonaPicking = New List(Of clsBeStock)
+            Else
+                lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.UbicacionPicking = True).ToList()
+            End If
+
+            vCronometro = clsReservaMi3DebugTrace.IniciarCronometro()
+            If lBeStockExistenteZonaPicking.Count > 0 Then
+                Restar_Stock_Reservado(lBeStockExistenteZonaPicking, pBeConfigEnc, lConnection, ltransaction)
+                lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_restar_reservado_zona_picking_despues",
+                                                         vCronometro,
+                                                         lBeStockExistenteZonaPicking)
+            Else
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_restar_reservado_zona_picking_omitido_lista_vacia",
+                                                     vCronometro)
+            End If
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_obtener_listas_stock_fin",
+                                                 vCronometroTotal,
+                                                 "StockExistente", clsReservaMi3DebugTrace.Valor(lBeStockExistente.Count),
+                                                 "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonasNoPicking.Count),
+                                                 "StockZonaPicking", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPicking.Count))
 
             Return (lBeStockExistente, lBeStockExistenteZonasNoPicking, lBeStockExistenteZonaPicking)
 
@@ -18190,6 +18577,202 @@ Partial Public Class clsLnStock_res
         End Try
     End Function
 
+    Private Shared Function Normalizar_Texto_No_Reserva_MI3(ByVal pTexto As String) As String
+
+        If String.IsNullOrWhiteSpace(pTexto) Then Return ""
+
+        Return pTexto.Replace(vbCr, " ").
+                      Replace(vbLf, " ").
+                      Replace(vbTab, " ").
+                      Trim().
+                      ToUpperInvariant().
+                      Replace("Á", "A").
+                      Replace("É", "E").
+                      Replace("Í", "I").
+                      Replace("Ó", "O").
+                      Replace("Ú", "U")
+
+    End Function
+
+    Private Shared Function Clasificar_Motivo_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vTexto As String = Normalizar_Texto_No_Reserva_MI3(pMotivo)
+
+        If vTexto.Contains("TALLA") OrElse
+           vTexto.Contains("COLOR") OrElse
+           vTexto.Contains("IDPRODUCTOTALLACOLOR") Then
+            Return "TALLA_COLOR_NO_APLICA"
+        End If
+
+        If vTexto.Contains("UBICACION OBLIGATORIA") OrElse
+           vTexto.Contains("UBICACION ABASTECER") OrElse
+           vTexto.Contains("IDUBICACIONABASTECERCON") OrElse
+           vTexto.Contains("SIN STOCK APLICABLE EN UBICACION") Then
+            Return "UBICACION_CLIENTE_OBLIGATORIA"
+        End If
+
+        If vTexto.Contains("EXPLOSION_AUTOMATICA_NIVEL") OrElse
+           vTexto.Contains("NIVEL PARA LA EXPLOSION") OrElse
+           vTexto.Contains("CONDICION DE NIVEL") Then
+            Return "EXPLOSION_NIVEL_NO_APLICA"
+        End If
+
+        If vTexto.Contains("NO SE PUEDE EXPLOSIONAR") AndAlso
+           (vTexto.Contains("NO PICKING") OrElse
+            vTexto.Contains("ALM") OrElse
+            vTexto.Contains("ALMACENAMIENTO") OrElse
+            vTexto.Contains("RACK")) Then
+            Return "SOLO_NO_PICKING_SIN_EXPLOSION"
+        End If
+
+        If vTexto.Contains("FEFO") OrElse
+           vTexto.Contains("FECHA MINIMA") OrElse
+           vTexto.Contains("FECHAMINIMA") OrElse
+           vTexto.Contains("VENCE") OrElse
+           vTexto.Contains("VENCIMIENTO") Then
+
+            If (vTexto.Contains("ZONA PICKING") OrElse vTexto.Contains("ZONAPICKING")) AndAlso
+               (vTexto.Contains("ZONA ALM") OrElse vTexto.Contains("ZONAALM") OrElse vTexto.Contains("ALM")) Then
+                Return "FEFO_BLOQUEA_PICKING"
+            End If
+
+            Return "SIN_VENCIMIENTO_VALIDO"
+        End If
+
+        If vTexto.Contains("PRESENTACION") OrElse
+           vTexto.Contains("PRES=") OrElse
+           vTexto.Contains("PRES ") Then
+            Return "PRESENTACION_NO_APLICA"
+        End If
+
+        If vTexto.Contains("RESERVADO") OrElse
+           vTexto.Contains("RESERVA VIGENTE") OrElse
+           vTexto.Contains("RESERVAS VIGENTES") Then
+            Return "RESERVADO_POR_OTROS"
+        End If
+
+        If vTexto.Contains("LISTA NO TIENE REGISTROS") OrElse
+           vTexto.Contains("NO SE OBTUVO NINGUN REGISTRO") OrElse
+           vTexto.Contains("NO HAY EXISTENCIA") OrElse
+           vTexto.Contains("EXISTENCIA DISPONIBLE") OrElse
+           vTexto.Contains("SIN STOCK") Then
+            Return "SIN_STOCK_APLICABLE"
+        End If
+
+        Return "RESERVA_NO_COMPLETADA"
+
+    End Function
+
+    Private Shared Function Formatear_Motivo_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = pMotivo.Replace(vbCr, " ").
+                                        Replace(vbLf, " ").
+                                        Replace(vbTab, " ").
+                                        Trim()
+        If String.IsNullOrWhiteSpace(vMotivo) Then Return ""
+
+        If vMotivo.IndexOf("TIPO_NO_RESERVA=", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return vMotivo
+        End If
+
+        Return "TIPO_NO_RESERVA=" & Clasificar_Motivo_No_Reserva_MI3(vMotivo) & " | " & vMotivo
+
+    End Function
+
+    Private Shared Function Formatear_Process_Result_No_Reserva_MI3(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = Formatear_Motivo_No_Reserva_MI3(pMotivo)
+        If String.IsNullOrWhiteSpace(vMotivo) Then Return ""
+
+        Dim vProcessResult As String = "No se pudo completar la reserva: " & vMotivo
+
+        If vProcessResult.Length > 600 Then
+            vProcessResult = vProcessResult.Substring(0, 600)
+        End If
+
+        Return vProcessResult
+
+    End Function
+
+    Private Shared Function Actualizar_Process_Result_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                                     ByVal lConnection As SqlConnection,
+                                                                     ByVal ltransaction As SqlTransaction) As Integer
+
+        If pBeTrasladoDet Is Nothing OrElse lConnection Is Nothing OrElse ltransaction Is Nothing Then Return 0
+        If lConnection.State <> ConnectionState.Open Then Return 0
+        If String.IsNullOrWhiteSpace(pBeTrasladoDet.NoEnc) OrElse
+           pBeTrasladoDet.Line_No = 0 OrElse
+           String.IsNullOrWhiteSpace(pBeTrasladoDet.Item_No) Then Return 0
+
+        Const sp As String = "UPDATE i_nav_ped_traslado_det " &
+                             "SET Process_Result = @Process_Result, Qty_to_Receive = @Qty_to_Receive " &
+                             "WHERE NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No"
+
+        Using cmd As New SqlCommand(sp, lConnection, ltransaction)
+            cmd.CommandType = CommandType.Text
+            cmd.Parameters.Add(New SqlParameter("@NOENC", pBeTrasladoDet.NoEnc))
+            cmd.Parameters.Add(New SqlParameter("@LINE_NO", pBeTrasladoDet.Line_No))
+            cmd.Parameters.Add(New SqlParameter("@ITEM_NO", pBeTrasladoDet.Item_No))
+            cmd.Parameters.Add(New SqlParameter("@QTY_TO_RECEIVE", pBeTrasladoDet.Qty_to_Receive))
+            cmd.Parameters.Add(New SqlParameter("@PROCESS_RESULT", pBeTrasladoDet.Process_Result))
+
+            Return cmd.ExecuteNonQuery()
+        End Using
+
+    End Function
+
+    Private Shared Sub Marcar_Motivo_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                    ByVal pMotivo As String,
+                                                    Optional ByVal pStockResSolicitud As clsBeStock_res = Nothing,
+                                                    Optional ByVal pNombreEscenario As String = "",
+                                                    Optional ByVal lConnection As SqlConnection = Nothing,
+                                                    Optional ByVal ltransaction As SqlTransaction = Nothing)
+
+        If pBeTrasladoDet Is Nothing OrElse String.IsNullOrWhiteSpace(pMotivo) Then Exit Sub
+
+        Dim vMotivo As String = Formatear_Motivo_No_Reserva_MI3(pMotivo)
+        If String.IsNullOrWhiteSpace(vMotivo) Then Exit Sub
+        Dim vProcessResult As String = Formatear_Process_Result_No_Reserva_MI3(pMotivo)
+
+        If String.IsNullOrWhiteSpace(pBeTrasladoDet.Process_Result) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "Ok", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "No se pudo completar la reserva.", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(pBeTrasladoDet.Process_Result.Trim(), "No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then
+            pBeTrasladoDet.Process_Result = vProcessResult
+        ElseIf pBeTrasladoDet.Process_Result.IndexOf(vMotivo, StringComparison.OrdinalIgnoreCase) < 0 Then
+            pBeTrasladoDet.Process_Result = pBeTrasladoDet.Process_Result.Trim() & " " & vMotivo
+        End If
+
+        If lConnection IsNot Nothing AndAlso ltransaction IsNot Nothing Then
+            Try
+                Dim vFilasActualizadas As Integer = Actualizar_Process_Result_No_Reserva_MI3(pBeTrasladoDet,
+                                                                                             lConnection,
+                                                                                             ltransaction)
+                If vFilasActualizadas = 0 Then
+                    clsLnLog_error_wms.Agregar_Error("Marcar_Motivo_No_Reserva_MI3 Actualizar_Process_Result sin filas. Documento: " &
+                                                     pBeTrasladoDet.NoEnc &
+                                                     " Linea: " & pBeTrasladoDet.Line_No &
+                                                     " Item: " & pBeTrasladoDet.Item_No)
+                End If
+            Catch ex As Exception
+                clsLnLog_error_wms.Agregar_Error("Marcar_Motivo_No_Reserva_MI3 Actualizar_Process_Result " & ex.Message)
+            End Try
+        End If
+
+        If pStockResSolicitud IsNot Nothing AndAlso
+           lConnection IsNot Nothing AndAlso
+           ltransaction IsNot Nothing Then
+
+            clsLnTrans_pe_det_log_reserva.Agregar_Log_No_Reserva_MI3(pStockResSolicitud,
+                                                                     pBeTrasladoDet,
+                                                                     pNombreEscenario,
+                                                                     vMotivo,
+                                                                     lConnection,
+                                                                     ltransaction)
+        End If
+
+    End Sub
+
     Public Shared Function Reserva_Stock_From_MI3(ByRef pStockResSolicitud As clsBeStock_res,
                                                   ByVal DiasVencimiento As Double,
                                                   ByVal MaquinaQueSolicita As String,
@@ -18205,7 +18788,32 @@ Partial Public Class clsLnStock_res
 
         Reserva_Stock_From_MI3 = False
 
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+        Dim vTraceCreadoLocal As Boolean = False
+
         Try
+
+            If String.IsNullOrWhiteSpace(vReservaMi3Trace) Then
+                vReservaMi3Trace = clsReservaMi3DebugTrace.Iniciar("Reserva_Stock_From_MI3",
+                                                                   pStockResSolicitud.IdPedido,
+                                                                   pStockResSolicitud.IdPedidoDet,
+                                                                   No_Linea,
+                                                                   clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega))
+                clsReservaMi3DebugTrace.EstablecerActual(vReservaMi3Trace)
+                vTraceCreadoLocal = Not String.IsNullOrWhiteSpace(vReservaMi3Trace)
+            End If
+
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "entrada_reserva_stock_from_mi3",
+                                           "IdPedido", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPedido),
+                                           "IdPedidoDet", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPedidoDet),
+                                           "No_Linea", clsReservaMi3DebugTrace.Valor(No_Linea),
+                                           "IdProductoBodega", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega),
+                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                           "DiasVencimiento", clsReservaMi3DebugTrace.Valor(DiasVencimiento),
+                                           "Explosion_Automatica", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Explosion_Automatica),
+                                           "Tarea_Reabasto", clsReservaMi3DebugTrace.Valor(pTarea_Reabasto))
 
 #Region "Variables"
 
@@ -18311,7 +18919,7 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 616 Then
+            If pStockResSolicitud.IdProductoBodega = 19 Then
                 Debug.Print("Aqui " & DiasVencimiento)
             End If
 
@@ -18351,6 +18959,17 @@ Partial Public Class clsLnStock_res
             lBeStockExistente = ListasStock.lBeStockExistente
             lBeStockExistenteZonasNoPicking = ListasStock.lBeStockExistenteZonasNoPicking
             lBeStockExistenteZonaPicking = ListasStock.lBeStockExistenteZonaPicking
+
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "listas_stock_iniciales",
+                                           "Producto_Codigo", BeProducto.Codigo,
+                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.IdPresentacion),
+                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.Factor),
+                                           "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(BePedidoDet.Cantidad),
+                                           "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(BePedidoDet.IdPresentacion),
+                                           "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
+                                           "StockZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Count)),
+                                           "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Count)))
 
             If pStockResSolicitud.IdPresentacion <> 0 AndAlso lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Count > 0 Then
                 lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.UbicacionPicking = True)
@@ -18408,9 +19027,23 @@ INICIAR_CON_NUEVO_LSTOCK:
 
                 vRestoStockReservado = True
 
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "listas_stock_post_restar_reservado",
+                                               "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
+                                               "StockZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Count)),
+                                               "StockZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Count)),
+                                               "CantidadStockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Sum(Function(x) x.Cantidad))),
+                                               "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonaPicking Is Nothing, 0, lBeStockExistenteZonaPicking.Sum(Function(x) x.Cantidad))),
+                                               "CantidadZonasNoPicking", clsReservaMi3DebugTrace.Valor(If(lBeStockExistenteZonasNoPicking Is Nothing, 0, lBeStockExistenteZonasNoPicking.Sum(Function(x) x.Cantidad))))
+
 #End Region
 
 #Region "OBTENER_FECHA_MINIMA_DE_INVENTARIO"
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "calcula_fecha_minima_stock_antes",
+                                               "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                               "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)))
 
                 FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                  DiasVencimiento,
@@ -18423,6 +19056,12 @@ INICIAR_CON_NUEVO_LSTOCK:
                                                                                  vFechaMinimaVenceZonaALM,
                                                                                  lBeStockExistente,
                                                                                  BePresentacionDefecto)
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "calcula_fecha_minima_stock_despues",
+                                               "FechaMinimaVenceStock", clsReservaMi3DebugTrace.Valor(FechaMinimaVenceStock),
+                                               "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                               "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
 
                 If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 AndAlso vFechaMinimaVenceZonaALM < FechaMinimaVenceStock Then
                     lBeStockExistente = lBeStockExistenteZonasNoPicking
@@ -18488,6 +19127,11 @@ EXPLOSIONAR_PRODUCTO:
                     End If
 
                     If vBusquedaEnUmBas Then
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "entra_busqueda_umbas",
+                                                       "CantidadSolicitud_Antes", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                       "IdPresentacion_Antes", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                                       "EncontroExistenciaEnPresentacion", clsReservaMi3DebugTrace.Valor(vEncontroExistenciaEnPresentacion))
                         ' Dividir la cantidad solicitada en su parte entera y decimal
                         Split_Decimal(pStockResSolicitud.Cantidad, vCantidadEnteraPres, vCantidadDecimalUMBas)
 
@@ -18518,6 +19162,13 @@ EXPLOSIONAR_PRODUCTO:
                         pStockResSolicitud.Cantidad = vCantidadSolicitadaPedido
                         pStockResSolicitud.Atributo_Variante_1 = Nothing
                         pStockResSolicitud.IdPresentacion = 0
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "solicitud_convertida_a_umbas",
+                                                       "CantidadEnteraPres", clsReservaMi3DebugTrace.Valor(vCantidadEnteraPres),
+                                                       "CantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas),
+                                                       "CantidadSolicitadaPedido", clsReservaMi3DebugTrace.Valor(vCantidadSolicitadaPedido),
+                                                       "CantidadSolicitud_Despues", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                       "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
                     End If
 
                     If lBeStockExistente.Count = 0 Then
@@ -18530,15 +19181,16 @@ EXPLOSIONAR_PRODUCTO:
                                                                            0))
                             Else
                                 If Not vCantidadCompletada Then
-                                    Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                    BeProducto.Codigo,
-                                                                                    vCantidadSolicitadaPedido,
-                                                                                    vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                    'Exit Function
-                                End If
-                            End If
-                        End If
+                                     Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                     BeProducto.Codigo,
+                                                                                     vCantidadSolicitadaPedido,
+                                                                                     vCantidadStock)
+                                     clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                     'Exit Function
+                                 End If
+                             End If
+                         End If
 
                         '#EJC202312191315: Para BYB, con amor.
                         If Not vBusquedaEnUmBas AndAlso pStockResBusquedaParaExplosion Is Nothing Then
@@ -18557,6 +19209,12 @@ EXPLOSIONAR_PRODUCTO:
                         End If
 
                         '#EJC202309271639: Se busca explosionar primero de zonas de picking.
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "fallback_stock_picking_antes",
+                                                       "BusquedaEnUMBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                       "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(If(vBusquedaEnUmBas, pStockResSolicitud.IdPresentacion, If(pStockResBusquedaParaExplosion Is Nothing, 0, pStockResBusquedaParaExplosion.IdPresentacion))))
+
+                        Dim vCronometroFallbackPicking As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                         lBeStockExistenteZonaPicking = clsLnStock.lStock(IIf(vBusquedaEnUmBas,
                                                                              pStockResSolicitud,
                                                                              pStockResBusquedaParaExplosion),
@@ -18570,16 +19228,37 @@ EXPLOSIONAR_PRODUCTO:
                                                                          pTarea_Reabasto,
                                                                          pEs_Devolucion)
 
-                        Restar_Stock_Reservado(lBeStockExistenteZonaPicking,
-                                               pBeConfigEnc,
-                                               lConnection,
-                                               ltransaction)
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_picking_lstock_despues",
+                                                                 vCronometroFallbackPicking,
+                                                                 lBeStockExistenteZonaPicking)
+
+                        Dim vCronometroFallbackPickingRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                        If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Count > 0 Then
+                            Restar_Stock_Reservado(lBeStockExistenteZonaPicking,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
+                        End If
+
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_picking_despues",
+                                                                 vCronometroFallbackPickingRestar,
+                                                                 lBeStockExistenteZonaPicking)
+
+                        If lBeStockExistenteZonaPicking Is Nothing Then lBeStockExistenteZonaPicking = New List(Of clsBeStock)
 
                         If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
                             vFechaMinimaVenceZonaPicking = lBeStockExistenteZonaPicking.Min(Function(x) x.Fecha_vence)
                             vProcessResult.Add("#MI3_2312201855: Se encontraron " & lBeStockExistenteZonaPicking.Count & " registros. La fecha mínima de picking es: " & vFechaMinimaVenceZonaPicking)
                         End If
 
+                        clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                       "fallback_stock_alm_antes",
+                                                       "BusquedaEnUMBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                       "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(If(vBusquedaEnUmBas, pStockResSolicitud.IdPresentacion, If(pStockResBusquedaParaExplosion Is Nothing, 0, pStockResBusquedaParaExplosion.IdPresentacion))))
+
+                        Dim vCronometroFallbackAlm As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                         lBeStockExistenteZonasNoPicking = clsLnStock.lStock(IIf(vBusquedaEnUmBas,
                                                                   pStockResSolicitud,
                                                                   pStockResBusquedaParaExplosion),
@@ -18593,10 +19272,25 @@ EXPLOSIONAR_PRODUCTO:
                                                               pTarea_Reabasto,
                                                               pEs_Devolucion)
 
-                        Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking,
-                                               pBeConfigEnc,
-                                               lConnection,
-                                               ltransaction)
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_alm_lstock_despues",
+                                                                 vCronometroFallbackAlm,
+                                                                 lBeStockExistenteZonasNoPicking)
+
+                        Dim vCronometroFallbackAlmRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                        If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Count > 0 Then
+                            Restar_Stock_Reservado(lBeStockExistenteZonasNoPicking,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
+                        End If
+
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "fallback_stock_alm_despues",
+                                                                 vCronometroFallbackAlmRestar,
+                                                                 lBeStockExistenteZonasNoPicking)
+
+                        If lBeStockExistenteZonasNoPicking Is Nothing Then lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
 
                         If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
                             vFechaMinimaVenceZonaALM = lBeStockExistenteZonasNoPicking.Min(Function(x) x.Fecha_vence)
@@ -18642,6 +19336,12 @@ EXPLOSIONAR_PRODUCTO:
                             If pStockResSolicitud.IdPresentacion = 0 Then vBusquedaEnUmBas = True
 
                             '#CKFK20231009 Puse el conmutar en false porque aqui solo quiero unidades
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_sin_conmutar_antes",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
+
+                            Dim vCronometroFallbackUMBas As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                             lBeStockExistente = clsLnStock.lStock(pStockResSolicitud,
                                                                   BeProducto,
                                                                   DiasVencimiento,
@@ -18653,14 +19353,28 @@ EXPLOSIONAR_PRODUCTO:
                                                                   pTarea_Reabasto,
                                                                   pEs_Devolucion)
 
-                            Restar_Stock_Reservado(lBeStockExistente,
-                                                   pBeConfigEnc,
-                                                   lConnection,
-                                                   ltransaction)
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_sin_conmutar_lstock_despues",
+                                                                     vCronometroFallbackUMBas,
+                                                                     lBeStockExistente)
+
+                            Dim vCronometroFallbackUMBasRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                                Restar_Stock_Reservado(lBeStockExistente,
+                                                       pBeConfigEnc,
+                                                       lConnection,
+                                                       ltransaction)
+                            End If
 
                             vRestoInventarioEnUmBas = True
 
+                            If lBeStockExistente Is Nothing Then lBeStockExistente = New List(Of clsBeStock)
                             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_sin_conmutar_despues",
+                                                           vCronometroFallbackUMBasRestar,
+                                                           lBeStockExistente)
 
                             If lBeStockExistente.Count > 0 Then
                                 '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
@@ -18690,6 +19404,12 @@ EXPLOSIONAR_PRODUCTO:
                             If pStockResSolicitud.IdPresentacion = 0 Then vBusquedaEnUmBas = True
 
                             '#EJC202309121412: Buscar en zonas de picking  unidades
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "fallback_stock_umbas_picking_con_conmutar_antes",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion))
+
+                            Dim vCronometroUMBasPicking As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                             lBeStockExistente = clsLnStock.lStock(pStockResSolicitud,
                                                                   BeProducto,
                                                                   DiasVencimiento,
@@ -18701,14 +19421,28 @@ EXPLOSIONAR_PRODUCTO:
                                                                   pTarea_Reabasto,
                                                                   pEs_Devolucion)
 
-                            Restar_Stock_Reservado(lBeStockExistente,
-                                                   pBeConfigEnc,
-                                                   lConnection,
-                                                   ltransaction)
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_picking_con_conmutar_lstock_despues",
+                                                                     vCronometroUMBasPicking,
+                                                                     lBeStockExistente)
+
+                            Dim vCronometroUMBasPickingRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+                            If lBeStockExistente IsNot Nothing AndAlso lBeStockExistente.Count > 0 Then
+                                Restar_Stock_Reservado(lBeStockExistente,
+                                                       pBeConfigEnc,
+                                                       lConnection,
+                                                       ltransaction)
+                            End If
 
                             vRestoInventarioEnUmBas = True
 
+                            If lBeStockExistente Is Nothing Then lBeStockExistente = New List(Of clsBeStock)
                             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                     "fallback_stock_umbas_picking_con_conmutar_despues",
+                                                                     vCronometroUMBasPickingRestar,
+                                                                     lBeStockExistente)
 
                             FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                              DiasVencimiento,
@@ -18787,25 +19521,27 @@ EXPLOSIONAR_PRODUCTO:
 
                                             ListaEstadosDeProceso.Add(105)
 
-                                            Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                        BeProducto.Codigo,
-                                                                                        vCantidadSolicitadaPedido,
-                                                                                        vCantidadStock)
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                            Exit Function
+                                             Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                         BeProducto.Codigo,
+                                                                                         vCantidadSolicitadaPedido,
+                                                                                         vCantidadStock)
+                                             clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                             Exit Function
 
-                                        End If
+                                         End If
 
                                     Else
 
-                                        Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
-                                                                                        BeProducto.Codigo,
-                                                                                        vCantidadSolicitadaPedido,
-                                                                                        vCantidadStock)
-                                        clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                        Exit Function
+                                         Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                                         BeProducto.Codigo,
+                                                                                         vCantidadSolicitadaPedido,
+                                                                                         vCantidadStock)
+                                         clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                         Exit Function
 
-                                    End If
+                                     End If
 
                                 End If
 
@@ -19196,11 +19932,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                    Return False
-                                                End If
+                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                     Return False
+                                                 End If
 
                                             End If
                                         Else
@@ -19227,11 +19964,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                                     Else
 
-                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                            Return False
-                                                        End If
+                                                         If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Return False
+                                                         End If
 
                                                     End If
                                                 Else
@@ -19257,11 +19995,12 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                    Return False
-                                                End If
+                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                     Return False
+                                                 End If
 
                                             End If
                                         Else
@@ -21019,8 +21758,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                 ElseIf (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) Then
                                     If Not ListaEstadosDeProceso.Contains(102) Then
                                         ListaEstadosDeProceso.Add(102)
+                                        GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     End If
-                                    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                 Else
                                     If Not ListaEstadosDeProceso.Contains(102) Then
                                         ListaEstadosDeProceso.Add(102)
@@ -23093,11 +23832,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                    Else
-                                                        Reserva_Stock_From_MI3 = False
-                                                    End If
+                                                     Else
+                                                         vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
+                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                         Reserva_Stock_From_MI3 = False
+                                                     End If
 
-                                                End If
+                                                 End If
 
                                             End If
 
@@ -23666,11 +24408,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                        Else
-                                                            Reserva_Stock_From_MI3 = False
-                                                        End If
+                                                         Else
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Reserva_Stock_From_MI3 = False
+                                                         End If
 
-                                                    End If
+                                                     End If
 
                                                 End If
 
@@ -24068,17 +24813,20 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                        Else
-                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                            vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
-                                                            Reserva_Stock_From_MI3 = False : Exit For
-                                                        End If
+                                                         Else
+                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                             vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
+                                                             Reserva_Stock_From_MI3 = False : Exit For
+                                                         End If
 
-                                                    End If
-                                                Else
-                                                    vProcessResult.Add("#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel)
-                                                    Continue For
-                                                End If
+                                                     End If
+                                                 Else
+                                                     Dim vMotivoNoAplicaExplosionNivel As String = "#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                     vProcessResult.Add(vMotivoNoAplicaExplosionNivel)
+                                                     Continue For
+                                                 End If
 
                                             Else
 
@@ -25550,8 +26298,30 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             pListStockResOUT.AddRange(lBeStockAReservar)
 
-                            If Not (vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadDecimalUMBas = 0) Then
-                                vCantidadDecimalUMBas = vCantidadPendiente
+                            '#EJCBYB20250519CKF:
+                            ' BYB QA reporto reservas MI3 en UMBAS que absorbían todo el stock disponible
+                            ' cuando el pedido ya venía en unidad base. En ese caso el pendiente real es
+                            ' vCantidadPendiente; vCantidadDecimalUMBas puede venir de la lógica de fracción /
+                            ' explosión de presentación y no debe reemplazar el remanente a reservar.
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "preparar_recursion_umbas_antes_ckf",
+                                                           "StockResSolicitud_IdPresentacion", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                                           "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                           "vCantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas),
+                                                           "vCantidadCompletada", clsReservaMi3DebugTrace.Valor(vCantidadCompletada),
+                                                           "vBusquedaEnUmBas", clsReservaMi3DebugTrace.Valor(vBusquedaEnUmBas),
+                                                           "Explosion_Automatica", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Explosion_Automatica))
+                            If pStockResSolicitud.IdPresentacion = 0 Then
+                                If vCantidadPendiente > 0 Then
+                                    vCantidadDecimalUMBas = vCantidadPendiente
+                                Else
+                                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                                   "recursion_umbas_omitida_pendiente_no_positivo",
+                                                                   "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                                   "vCantidadDecimalUMBas_Antes", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas))
+                                    vCantidadPendiente = 0
+                                    vCantidadDecimalUMBas = 0
+                                End If
                             ElseIf Not ((vCantidadCompletada AndAlso vCantidadPendiente > 0) AndAlso (pStockResSolicitud.IdPresentacion <> 0 AndAlso vCantidadDecimalUMBas = 0 AndAlso pBeConfigEnc.Explosion_Automatica)) AndAlso vBusquedaEnUmBas Then
                                 If vCantidadDecimalUMBas > 0 Then
                                     vCantidadPendiente = vCantidadDecimalUMBas
@@ -25559,6 +26329,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     vCantidadDecimalUMBas = vCantidadPendiente
                                 End If
                             End If
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "preparar_recursion_umbas_despues_ckf",
+                                                           "vCantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente),
+                                                           "vCantidadDecimalUMBas", clsReservaMi3DebugTrace.Valor(vCantidadDecimalUMBas))
 
                             Reserva_Stock_From_MI3 = True
 
@@ -25573,9 +26347,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         vCantidadDecimalUMBas += vCantidadPendiente
                                     End If
 
-                                    BeStockResUMBas.Cantidad = vCantidadDecimalUMBas
+                                    BeStockResUMBas.Cantidad = Math.Round(vCantidadDecimalUMBas, 6)
                                     BeStockResUMBas.IdPresentacion = 0
                                     BeStockResUMBas.Serial = No_Linea
+                                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                                   "crea_solicitud_recursiva_umbas",
+                                                                   "Cantidad", clsReservaMi3DebugTrace.Valor(BeStockResUMBas.Cantidad),
+                                                                   "IdPresentacion", clsReservaMi3DebugTrace.Valor(BeStockResUMBas.IdPresentacion),
+                                                                   "No_Linea", clsReservaMi3DebugTrace.Valor(No_Linea))
 
                                     If pStockResSolicitud.IdUbicacionAbastecerCon <> 0 Then
                                         BeStockResUMBas.IdUbicacionAbastecerCon = pStockResSolicitud.IdUbicacionAbastecerCon
@@ -26045,11 +26824,15 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             vNombreCasoReservaInternoWMS = "#SR240315"
 
-                            clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeNoExplosionEnZonasNoPicking)
+                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet,
+                                                         vMensajeNoExplosionEnZonasNoPicking,
+                                                         pStockResSolicitud,
+                                                         vNombreCasoReservaInternoWMS,
+                                                         lConnection,
+                                                         ltransaction)
 
                             '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
                             If Not pBeTrasladoDet Is Nothing Then
-                                pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
                                 pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
                                 clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
                                                                                       lConnection,
@@ -26332,7 +27115,18 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
             End If
 
         Catch ex As Exception
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "exception_reserva_stock_from_mi3", "mensaje", ex.Message)
             Throw ex
+        Finally
+            If vTraceCreadoLocal Then
+                clsReservaMi3DebugTrace.Finalizar(vReservaMi3Trace, IIf(Reserva_Stock_From_MI3, "OK", "FALSE"))
+                Limpiar_Cache_StockReservado_MI3(vReservaMi3Trace)
+                clsReservaMi3DebugTrace.LimpiarActual(vReservaMi3Trace)
+            Else
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "salida_reserva_stock_from_mi3",
+                                               "resultado", IIf(Reserva_Stock_From_MI3, "OK", "FALSE"))
+            End If
         End Try
 
     End Function
@@ -26352,20 +27146,41 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
         Try
 
+            Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
+            Dim vCronometroTotal As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
+
             If lBeStockExistente Is Nothing OrElse lBeStockExistente.Count = 0 Then
+                clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                     "perf_procesar_restar_stock_omitido_lista_vacia",
+                                                     vCronometroTotal)
                 Return
             End If
 
             ' Ordenar lista si es necesario
             If vOrdernarListaStockSinPresentacionPrimero Then
+                Dim vCronometroOrden As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
                 lBeStockExistente = lBeStockExistente.OrderBy(Function(x) x.IdPresentacion).ToList()
+                clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                         "perf_ordenar_stock_sin_presentacion_primero_despues",
+                                                         vCronometroOrden,
+                                                         lBeStockExistente)
             End If
 
             ' Restar stock reservado - lógica específica para esta operación
+            Dim vCronometroRestar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             Restar_Stock_Reservado(lBeStockExistente, pBeConfigEnc, lConnection, ltransaction)
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_procesar_restar_stock_despues",
+                                                     vCronometroRestar,
+                                                     lBeStockExistente)
 
             ' Filtrar elementos con cantidad mayor a cero
+            Dim vCronometroFiltrar As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
             lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+            clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                     "perf_filtrar_stock_cantidad_positiva_despues",
+                                                     vCronometroFiltrar,
+                                                     lBeStockExistente)
 
             ' Buscar BePresentacionStock en la lista lPresentaciones
             Dim BePresentacionStock As clsBeProducto_Presentacion = Nothing
@@ -26389,6 +27204,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                vCantidadEnteraTarimasCompletasClavaud,
                                                vCantidadDecimalTarimasCompletasClavaud,
                                                pStockResSolicitud)
+
+            clsReservaMi3DebugTrace.EventoTiempo(vReservaMi3Trace,
+                                                 "perf_procesar_y_restar_stock_reservado_fin",
+                                                 vCronometroTotal,
+                                                 "StockFinal", clsReservaMi3DebugTrace.Valor(lBeStockExistente.Count),
+                                                 "EncontroExistenciaEnPresentacion", clsReservaMi3DebugTrace.Valor(vEncontroExistenciaEnPresentacion))
 
         Catch ex As Exception
             Throw
@@ -26542,9 +27363,27 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
         Dim FechaMinimaVenceRecorrido As Date = vFechaDefecto
         Dim vBusquedaStockEnPresentacion As Boolean = False
         Dim pStockResSolicitudPres As New clsBeStock_res
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.ObtenerActual()
 
 
         Try
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "fecha_minima_inicio",
+                                           "IdProductoBodega", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdProductoBodega),
+                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.Cantidad),
+                                           "IdPresentacionSolicitud", clsReservaMi3DebugTrace.Valor(pStockResSolicitud.IdPresentacion),
+                                           "StockEntrada", clsReservaMi3DebugTrace.Valor(If(pListaStockExistente Is Nothing, 0, pListaStockExistente.Count)),
+                                           "StockRecorrido", clsReservaMi3DebugTrace.Valor(If(lStockRecorrido Is Nothing, 0, lStockRecorrido.Count)))
+
+            If (pListaStockExistente Is Nothing OrElse pListaStockExistente.Count = 0) AndAlso
+               (lStockRecorrido Is Nothing OrElse Not lStockRecorrido.Any(Function(x) x.Cantidad > 0)) Then
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "fecha_minima_omitida_sin_stock_base",
+                                               "motivo", "No hay stock base para ordenar por fecha; las busquedas de fallback se trazan en el flujo principal.")
+                Return vFechaDefecto
+            End If
+
             ' Zona ALM
             Dim lBeStockExistenteZonasALM = pListaStockExistente.Where(Function(x) Not x.UbicacionPicking).ToList()
             If lBeStockExistenteZonasALM.Count > 0 Then
@@ -26577,6 +27416,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                     pStockResSolicitudPres.IdPresentacion = pBePresentacionDefecto.IdPresentacion
 
                     'Zona Picking Presentación
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_picking_antes",
+                                                   "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(pStockResSolicitudPres.IdPresentacion))
+
                     Dim lBeStockExistenteZonaPickingPres = clsLnStock.lStock(pStockResSolicitudPres,
                                                                              BeProducto,
                                                                              DiasVencimiento,
@@ -26589,11 +27432,19 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                     Restar_Stock_Reservado(lBeStockExistenteZonaPickingPres, pBeConfigEnc, lConnection, ltransaction)
                     lBeStockExistenteZonaPickingPres = lBeStockExistenteZonaPickingPres.FindAll(Function(x) x.Cantidad > 0 And x.UbicacionPicking = True)
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_picking_despues",
+                                                   "StockEncontrado", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPickingPres.Count),
+                                                   "CantidadEncontrada", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaPickingPres.Sum(Function(x) x.Cantidad)))
                     If lBeStockExistenteZonaPickingPres.Count > 0 Then
                         FechaMinimaVencePICKPres = lBeStockExistenteZonaPickingPres.Min(Function(x) x.Fecha_vence)
                     End If
 
                     'Zona ALM Presentación
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_alm_antes",
+                                                   "IdPresentacionBusqueda", clsReservaMi3DebugTrace.Valor(pStockResSolicitudPres.IdPresentacion))
+
                     Dim lBeStockExistenteZonaALMPres = clsLnStock.lStock(pStockResSolicitudPres,
                                                                          BeProducto,
                                                                          DiasVencimiento,
@@ -26606,6 +27457,10 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                     Restar_Stock_Reservado(lBeStockExistenteZonaALMPres, pBeConfigEnc, lConnection, ltransaction)
                     lBeStockExistenteZonaALMPres = lBeStockExistenteZonaALMPres.FindAll(Function(x) x.Cantidad > 0)
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "fecha_minima_busca_presentacion_alm_despues",
+                                                   "StockEncontrado", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaALMPres.Count),
+                                                   "CantidadEncontrada", clsReservaMi3DebugTrace.Valor(lBeStockExistenteZonaALMPres.Sum(Function(x) x.Cantidad)))
                     If lBeStockExistenteZonaALMPres.Count > 0 Then
                         FechaMinimaVenceALMPres = lBeStockExistenteZonaALMPres.Min(Function(x) x.Fecha_vence)
                     End If
@@ -34380,4 +35235,483 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
         End Try
 
     End Function
+End Class
+
+Public Class clsReservaMi3DebugTrace
+
+    <ThreadStatic>
+    Private Shared mArchivoActual As String
+
+    <ThreadStatic>
+    Private Shared mPasoActual As Integer
+
+    Private Shared ReadOnly mLock As New Object()
+
+    Private Class clsResumenTimingEtapa
+        Public Etapa As String = ""
+        Public Cantidad As Integer = 0
+        Public TotalMs As Long = 0
+        Public MaxMs As Long = 0
+    End Class
+
+    Private Class clsResumenTimingGap
+        Public EtapaAnterior As String = ""
+        Public DuracionMs As Long = 0
+    End Class
+
+    Public Shared Function EstaActivo() As Boolean
+
+        Try
+            Dim vTrace As String = Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE")
+            Dim vDebug As String = Configuration.ConfigurationManager.AppSettings("WMS_MODO_DEBUG")
+
+            If String.IsNullOrWhiteSpace(vTrace) Then
+                vTrace = vDebug
+            End If
+
+            If String.IsNullOrWhiteSpace(vTrace) Then
+                Return False
+            End If
+
+            vTrace = vTrace.Trim().ToUpperInvariant()
+            Return vTrace = "ON" OrElse vTrace = "TRUE" OrElse vTrace = "1" OrElse vTrace = "SI" OrElse vTrace = "SÍ"
+
+        Catch
+            Return False
+        End Try
+
+    End Function
+
+    Public Shared Function Iniciar(ByVal pOrigen As String,
+                                   ByVal pIdPedidoEnc As Integer,
+                                   ByVal pIdPedidoDet As Integer,
+                                   ByVal pNoLinea As Integer,
+                                   ByVal pItemNo As String) As String
+
+        If Not EstaActivo() Then Return ""
+
+        Try
+            Dim vDirectorio As String = ObtenerDirectorio()
+            System.IO.Directory.CreateDirectory(vDirectorio)
+
+            Dim vCorrelativo As String = String.Format("{0}-{1}-{2}",
+                                                       Date.Now.ToString("yyyyMMdd-HHmmss-fff"),
+                                                       System.Diagnostics.Process.GetCurrentProcess().Id,
+                                                       Guid.NewGuid().ToString("N").Substring(0, 8))
+
+            Dim vNombreArchivo As String = String.Format("reserva-mi3-{0}-ped{1}-det{2}-lin{3}-{4}.yml",
+                                                         vCorrelativo,
+                                                         pIdPedidoEnc,
+                                                         pIdPedidoDet,
+                                                         pNoLinea,
+                                                         LimpiarNombreArchivo(pItemNo))
+
+            Dim vArchivo As String = System.IO.Path.Combine(vDirectorio, vNombreArchivo)
+
+            Dim vLineas As New List(Of String)
+            vLineas.Add("trace:")
+            vLineas.Add("  correlativo: """ & vCorrelativo & """")
+            vLineas.Add("  inicio: """ & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & """")
+            vLineas.Add("  origen: """ & Normalizar(pOrigen) & """")
+            vLineas.Add("  maquina: """ & Normalizar(Environment.MachineName) & """")
+            vLineas.Add("  usuario_windows: """ & Normalizar(Environment.UserName) & """")
+            vLineas.Add("  contexto:")
+            vLineas.Add("    idPedidoEnc: " & pIdPedidoEnc)
+            vLineas.Add("    idPedidoDet: " & pIdPedidoDet)
+            vLineas.Add("    noLinea: " & pNoLinea)
+            vLineas.Add("    itemNo: """ & Normalizar(pItemNo) & """")
+            vLineas.Add("eventos:")
+
+            System.IO.File.WriteAllLines(vArchivo, vLineas, System.Text.Encoding.UTF8)
+            mPasoActual = 0
+            Return vArchivo
+
+        Catch
+            Return ""
+        End Try
+
+    End Function
+
+    Public Shared Sub EstablecerActual(ByVal pArchivo As String)
+        If Not String.IsNullOrWhiteSpace(pArchivo) Then
+            mArchivoActual = pArchivo
+        End If
+    End Sub
+
+    Public Shared Function ObtenerActual() As String
+        Return If(mArchivoActual, "")
+    End Function
+
+    Public Shared Sub LimpiarActual(ByVal pArchivo As String)
+        If String.Equals(mArchivoActual, pArchivo, StringComparison.OrdinalIgnoreCase) Then
+            clsLnStock_res.Limpiar_Cache_StockReservado_MI3(pArchivo)
+            mArchivoActual = ""
+        End If
+    End Sub
+
+    Public Shared Sub Evento(ByVal pArchivo As String,
+                             ByVal pEtapa As String,
+                             ParamArray pPares() As String)
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Return
+
+        Try
+            Dim vLineas As New List(Of String)
+            vLineas.Add("  - ts: """ & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & """")
+            vLineas.Add("    paso: " & SiguientePaso())
+            vLineas.Add("    etapa: """ & Normalizar(pEtapa) & """")
+
+            If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+                vLineas.Add("    datos:")
+
+                Dim i As Integer = 0
+                While i < pPares.Length
+                    Dim vClave As String = pPares(i)
+                    Dim vValor As String = ""
+
+                    If i + 1 < pPares.Length Then
+                        vValor = pPares(i + 1)
+                    End If
+
+                    vLineas.Add("      " & LimpiarClave(vClave) & ": """ & Normalizar(vValor) & """")
+                    i += 2
+                End While
+            End If
+
+            SyncLock mLock
+                System.IO.File.AppendAllLines(pArchivo, vLineas, System.Text.Encoding.UTF8)
+            End SyncLock
+
+        Catch
+        End Try
+
+    End Sub
+
+    Public Shared Sub EventoStockRes(ByVal pArchivo As String,
+                                     ByVal pEtapa As String,
+                                     ByVal pStockRes As clsBeStock_res,
+                                     ParamArray pPares() As String)
+
+        If pStockRes Is Nothing Then
+            Evento(pArchivo, pEtapa, pPares)
+            Return
+        End If
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("IdStockRes")
+        vPares.Add(Valor(pStockRes.IdStockRes))
+        vPares.Add("IdStock")
+        vPares.Add(Valor(pStockRes.IdStock))
+        vPares.Add("IdPedido")
+        vPares.Add(Valor(pStockRes.IdPedido))
+        vPares.Add("IdPedidoDet")
+        vPares.Add(Valor(pStockRes.IdPedidoDet))
+        vPares.Add("IdProductoBodega")
+        vPares.Add(Valor(pStockRes.IdProductoBodega))
+        vPares.Add("IdBodega")
+        vPares.Add(Valor(pStockRes.IdBodega))
+        vPares.Add("IdUbicacion")
+        vPares.Add(Valor(pStockRes.IdUbicacion))
+        vPares.Add("IdPresentacion")
+        vPares.Add(Valor(pStockRes.IdPresentacion))
+        vPares.Add("Cantidad")
+        vPares.Add(Valor(pStockRes.Cantidad))
+        vPares.Add("Peso")
+        vPares.Add(Valor(pStockRes.Peso))
+        vPares.Add("Lote")
+        vPares.Add(pStockRes.Lote)
+        vPares.Add("Lic_plate")
+        vPares.Add(pStockRes.Lic_plate)
+        vPares.Add("Serial")
+        vPares.Add(pStockRes.Serial)
+        vPares.Add("Fecha_vence")
+        vPares.Add(Valor(pStockRes.Fecha_vence))
+        vPares.Add("IdRecepcion")
+        vPares.Add(Valor(pStockRes.IdRecepcion))
+        vPares.Add("IdPicking")
+        vPares.Add(Valor(pStockRes.IdPicking))
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
+    Public Shared Function IniciarCronometro() As System.Diagnostics.Stopwatch
+        Dim vCronometro As New System.Diagnostics.Stopwatch()
+        vCronometro.Start()
+        Return vCronometro
+    End Function
+
+    Public Shared Sub EventoTiempo(ByVal pArchivo As String,
+                                   ByVal pEtapa As String,
+                                   ByVal pInicio As System.Diagnostics.Stopwatch,
+                                   ParamArray pPares() As String)
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("duracion_ms")
+        If pInicio Is Nothing Then
+            vPares.Add("0")
+        Else
+            pInicio.Stop()
+            vPares.Add(Valor(pInicio.ElapsedMilliseconds))
+        End If
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
+    Public Shared Sub EventoListaStock(ByVal pArchivo As String,
+                                       ByVal pEtapa As String,
+                                       ByVal pInicio As System.Diagnostics.Stopwatch,
+                                       ByVal pListaStock As List(Of clsBeStock),
+                                       ParamArray pPares() As String)
+
+        Dim vPares As New List(Of String)
+
+        vPares.Add("duracion_ms")
+        If pInicio Is Nothing Then
+            vPares.Add("0")
+        Else
+            pInicio.Stop()
+            vPares.Add(Valor(pInicio.ElapsedMilliseconds))
+        End If
+
+        vPares.Add("StockEncontrado")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Count)))
+        vPares.Add("CantidadEncontrada")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Sum(Function(x) x.Cantidad))))
+        vPares.Add("StockPicking")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Where(Function(x) x.UbicacionPicking).Count())))
+        vPares.Add("StockNoPicking")
+        vPares.Add(Valor(If(pListaStock Is Nothing, 0, pListaStock.Where(Function(x) Not x.UbicacionPicking).Count())))
+
+        If pPares IsNot Nothing AndAlso pPares.Length > 0 Then
+            vPares.AddRange(pPares)
+        End If
+
+        Evento(pArchivo, pEtapa, vPares.ToArray())
+
+    End Sub
+
+    Public Shared Sub Finalizar(ByVal pArchivo As String, ByVal pEstado As String)
+        AgregarResumenTiming(pArchivo)
+        Evento(pArchivo, "fin", "estado", pEstado)
+    End Sub
+
+    Public Shared Function Valor(ByVal pValor As Object) As String
+        If pValor Is Nothing OrElse pValor Is DBNull.Value Then Return ""
+        Return Convert.ToString(pValor, Globalization.CultureInfo.InvariantCulture)
+    End Function
+
+    Private Shared Function SiguientePaso() As Integer
+        mPasoActual += 1
+        Return mPasoActual
+    End Function
+
+    Private Shared Sub AgregarResumenTiming(ByVal pArchivo As String)
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Return
+
+        Try
+            If Not System.IO.File.Exists(pArchivo) Then Return
+
+            Dim vLineas() As String = System.IO.File.ReadAllLines(pArchivo, System.Text.Encoding.UTF8)
+            Dim vPorEtapa As New System.Collections.Generic.Dictionary(Of String, clsResumenTimingEtapa)(StringComparer.OrdinalIgnoreCase)
+            Dim vGaps As New List(Of clsResumenTimingGap)
+            Dim vEventos As Integer = 0
+            Dim vEventosPerf As Integer = 0
+            Dim vDuraciones As Integer = 0
+            Dim vSumaDuracionesMs As Long = 0
+            Dim vInicioTrace As DateTime = DateTime.MinValue
+            Dim vPrimerTs As DateTime = DateTime.MinValue
+            Dim vUltimoTs As DateTime = DateTime.MinValue
+            Dim vTsAnterior As DateTime = DateTime.MinValue
+            Dim vEtapaActual As String = ""
+            Dim vEtapaAnterior As String = "inicio"
+
+            For Each vLinea As String In vLineas
+                Dim vTexto As String = vLinea.Trim()
+
+                If vTexto.StartsWith("inicio: """) Then
+                    Dim vValorInicio As String = ExtraerValorYaml(vTexto)
+                    DateTime.TryParseExact(vValorInicio,
+                                           "yyyy-MM-dd HH:mm:ss.fff",
+                                           Globalization.CultureInfo.InvariantCulture,
+                                           Globalization.DateTimeStyles.None,
+                                           vInicioTrace)
+
+                ElseIf vTexto.StartsWith("- ts: """) Then
+                    Dim vValorTs As String = ExtraerValorYaml(vTexto)
+                    Dim vTs As DateTime = DateTime.MinValue
+
+                    If DateTime.TryParseExact(vValorTs,
+                                              "yyyy-MM-dd HH:mm:ss.fff",
+                                              Globalization.CultureInfo.InvariantCulture,
+                                              Globalization.DateTimeStyles.None,
+                                              vTs) Then
+
+                        If vPrimerTs = DateTime.MinValue Then vPrimerTs = vTs
+
+                        If vTsAnterior <> DateTime.MinValue Then
+                            Dim vGapMs As Long = CLng((vTs - vTsAnterior).TotalMilliseconds)
+
+                            If vGapMs > 25 Then
+                                vGaps.Add(New clsResumenTimingGap With {
+                                          .EtapaAnterior = vEtapaAnterior,
+                                          .DuracionMs = vGapMs})
+                            End If
+                        End If
+
+                        vTsAnterior = vTs
+                        vUltimoTs = vTs
+                    End If
+
+                ElseIf vTexto.StartsWith("etapa: """) Then
+                    vEtapaActual = ExtraerValorYaml(vTexto)
+                    vEtapaAnterior = vEtapaActual
+                    vEventos += 1
+
+                    If vEtapaActual.StartsWith("perf_", StringComparison.OrdinalIgnoreCase) Then
+                        vEventosPerf += 1
+                    End If
+
+                ElseIf vTexto.StartsWith("duracion_ms: """) Then
+                    Dim vDuracionTexto As String = ExtraerValorYaml(vTexto)
+                    Dim vDuracionMs As Long = 0
+
+                    If Long.TryParse(vDuracionTexto,
+                                     Globalization.NumberStyles.Any,
+                                     Globalization.CultureInfo.InvariantCulture,
+                                     vDuracionMs) Then
+
+                        vDuraciones += 1
+                        vSumaDuracionesMs += vDuracionMs
+
+                        If Not vPorEtapa.ContainsKey(vEtapaActual) Then
+                            vPorEtapa(vEtapaActual) = New clsResumenTimingEtapa With {.Etapa = vEtapaActual}
+                        End If
+
+                        vPorEtapa(vEtapaActual).Cantidad += 1
+                        vPorEtapa(vEtapaActual).TotalMs += vDuracionMs
+
+                        If vDuracionMs > vPorEtapa(vEtapaActual).MaxMs Then
+                            vPorEtapa(vEtapaActual).MaxMs = vDuracionMs
+                        End If
+                    End If
+                End If
+            Next
+
+            Dim vVentanaEventosMs As Long = 0
+            If vPrimerTs <> DateTime.MinValue AndAlso vUltimoTs <> DateTime.MinValue Then
+                vVentanaEventosMs = CLng((vUltimoTs - vPrimerTs).TotalMilliseconds)
+            End If
+
+            Dim vDuracionTotalMs As Long = 0
+            If vInicioTrace <> DateTime.MinValue Then
+                vDuracionTotalMs = CLng((Date.Now - vInicioTrace).TotalMilliseconds)
+            End If
+
+            Dim vPares As New List(Of String)
+            vPares.Add("eventos")
+            vPares.Add(Valor(vEventos))
+            vPares.Add("eventos_perf")
+            vPares.Add(Valor(vEventosPerf))
+            vPares.Add("duraciones")
+            vPares.Add(Valor(vDuraciones))
+            vPares.Add("suma_duraciones_ms")
+            vPares.Add(Valor(vSumaDuracionesMs))
+            vPares.Add("ventana_eventos_ms")
+            vPares.Add(Valor(vVentanaEventosMs))
+            vPares.Add("duracion_total_trace_ms")
+            vPares.Add(Valor(vDuracionTotalMs))
+            vPares.Add("diferencia_ventana_vs_duraciones_ms")
+            vPares.Add(Valor(vVentanaEventosMs - vSumaDuracionesMs))
+
+            Dim vTopEtapas As List(Of clsResumenTimingEtapa) = vPorEtapa.Values.ToList()
+            vTopEtapas.Sort(Function(a, b) b.TotalMs.CompareTo(a.TotalMs))
+
+            For i As Integer = 0 To Math.Min(4, vTopEtapas.Count - 1)
+                vPares.Add("top_etapa_" & (i + 1).ToString(Globalization.CultureInfo.InvariantCulture))
+                vPares.Add(String.Format(Globalization.CultureInfo.InvariantCulture,
+                                         "{0}|total_ms={1}|count={2}|max_ms={3}",
+                                         vTopEtapas(i).Etapa,
+                                         vTopEtapas(i).TotalMs,
+                                         vTopEtapas(i).Cantidad,
+                                         vTopEtapas(i).MaxMs))
+            Next
+
+            vGaps.Sort(Function(a, b) b.DuracionMs.CompareTo(a.DuracionMs))
+
+            For i As Integer = 0 To Math.Min(4, vGaps.Count - 1)
+                vPares.Add("gap_" & (i + 1).ToString(Globalization.CultureInfo.InvariantCulture))
+                vPares.Add(String.Format(Globalization.CultureInfo.InvariantCulture,
+                                         "after={0}|ms={1}",
+                                         vGaps(i).EtapaAnterior,
+                                         vGaps(i).DuracionMs))
+            Next
+
+            Evento(pArchivo, "resumen_timing", vPares.ToArray())
+
+        Catch
+        End Try
+
+    End Sub
+
+    Private Shared Function ExtraerValorYaml(ByVal pLinea As String) As String
+
+        If String.IsNullOrWhiteSpace(pLinea) Then Return ""
+
+        Dim vInicio As Integer = pLinea.IndexOf(""""c)
+        If vInicio < 0 Then Return ""
+
+        Dim vFin As Integer = pLinea.LastIndexOf(""""c)
+        If vFin <= vInicio Then Return ""
+
+        Return pLinea.Substring(vInicio + 1, vFin - vInicio - 1)
+
+    End Function
+
+    Private Shared Function ObtenerDirectorio() As String
+        Dim vDirectorio As String = Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE_PATH")
+
+        If String.IsNullOrWhiteSpace(vDirectorio) Then
+            vDirectorio = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                                                 "TOMWMS",
+                                                 "debug-reserva-mi3")
+        End If
+
+        Return vDirectorio
+    End Function
+
+    Private Shared Function LimpiarNombreArchivo(ByVal pValor As String) As String
+        Dim vValor As String = If(pValor, "item")
+
+        For Each vCaracter As Char In System.IO.Path.GetInvalidFileNameChars()
+            vValor = vValor.Replace(vCaracter, "_"c)
+        Next
+
+        If vValor.Trim() = "" Then vValor = "item"
+        Return vValor.Trim()
+    End Function
+
+    Private Shared Function LimpiarClave(ByVal pValor As String) As String
+        Dim vValor As String = If(pValor, "dato").Trim()
+        If vValor = "" Then vValor = "dato"
+        Return vValor.Replace(" ", "_").Replace("-", "_").Replace(".", "_")
+    End Function
+
+    Private Shared Function Normalizar(ByVal pValor As String) As String
+        If pValor Is Nothing Then Return ""
+        Return pValor.Replace("\", "\\").Replace("""", "'").Replace(vbCr, " ").Replace(vbLf, " ")
+    End Function
+
 End Class
