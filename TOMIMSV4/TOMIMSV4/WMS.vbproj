@@ -229,10 +229,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SAPBOSyncMampa, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\SAPBOSyncMampa.exe</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -565,6 +561,9 @@
       <DependentUpon>frmPrincipal02.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
@@ -1555,6 +1554,12 @@
     <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
     </Compile>
@@ -1585,10 +1590,22 @@
     <Compile Include="Transacciones\Ajustes\frmAjusteStock.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.Designer.vb">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Ajustes\frmAjusteStock_List.Designer.vb">
       <DependentUpon>frmAjusteStock_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Ajustes\frmAjusteStock_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.Designer.vb">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Ajuste\frmAjusteTipo.Designer.vb">
@@ -2988,6 +3005,24 @@
     <Compile Include="Transacciones\Inventario\frmInventarioList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Inventario\frmInventarioVerifica.Designer.vb">
       <DependentUpon>frmInventarioVerifica.vb</DependentUpon>
     </Compile>
@@ -3096,6 +3131,12 @@
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmControlUbicaciones.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Recepcion\Asistente\DsAsistente.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3189,6 +3230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Ajuste\frmAjusteMotivo_List.resx">
       <DependentUpon>frmAjusteMotivo_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.resx">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Backup\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>
@@ -3776,6 +3820,9 @@
     <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
       <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -3792,6 +3839,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Ajustes\frmAjusteStock.resx">
       <DependentUpon>frmAjusteStock.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.resx">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Ajustes\frmAjusteStock_List.resx">
       <DependentUpon>frmAjusteStock_List.vb</DependentUpon>
@@ -4397,6 +4447,15 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioList.resx">
       <DependentUpon>frmInventarioList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioVerifica.resx">
       <DependentUpon>frmInventarioVerifica.vb</DependentUpon>
     </EmbeddedResource>
@@ -4446,6 +4505,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmControlUbicaciones.resx">
       <DependentUpon>frmControlUbicaciones.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Recepcion\Asistente\frmR3Asistente.resx">
       <DependentUpon>frmR3Asistente.vb</DependentUpon>
@@ -5574,6 +5636,9 @@
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>
     </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>5.8.14</Version>
+    </PackageReference>
     <PackageReference Include="Irony">
       <Version>1.5.3</Version>
     </PackageReference>
@@ -5606,6 +5671,10 @@
     <ProjectReference Include="..\..\AppGlobal\AppGlobal.vbproj">
       <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
       <Name>AppGlobal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAPSYNCMAMPA\SAPSYNCMAMPA.vbproj">
+      <Project>{69ea4ff6-c886-49c1-b9d1-f011bc18d0d2}</Project>
+      <Name>SAPSYNCMAMPA</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>

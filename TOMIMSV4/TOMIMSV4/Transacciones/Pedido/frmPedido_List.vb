@@ -3239,30 +3239,30 @@ Public Class frmPedido_List
                                                         SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
                                                         '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
-                                                        'If AP.Bodega.Interface_SAP AndAlso Not clsBD.Instancia.HANA_SL = "" Then
+                                                        If AP.Bodega.Interface_SAP AndAlso Not clsBD.Instancia.HANA_SL = "" Then
 
-                                                        '    Dim vHanaService = New SapServiceLayerClient()
-                                                        '    Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+                                                            Dim vHanaService = New SapServiceLayerClient()
+                                                            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
 
-                                                        Select Case pBePedidoEnc.IdTipoPedido
-                                                            Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
-                                                                Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                    loginResponse.SessionId, SapServiceLayerClient.baseUrl, 2)
-                                                            Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
-                                                                Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                    loginResponse.SessionId,
-                                                                                                                                    SapServiceLayerClient.baseUrl, 2)
-                                                            Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
-                                                                Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
-                                                                                                                                                loginResponse.SessionId,
-                                                                                                                                                SapServiceLayerClient.baseUrl, 2)
+                                                            Select Case pBePedidoEnc.IdTipoPedido
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa
+                                                                    Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS
+                                                                    Await clsSyncSapTrasladosEnvio.Marcar_Traslado_Sincronizado_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                        vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor
+                                                                    Await clsSyncSapDevolProveedor.Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                    vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                                Case clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente
+                                                                    Await clsSyncSapFacturaReservaCliente.Marcar_Factura_Reserva_Cliente_Sincronizada_SLAsync(pBePedidoEnc.Referencia,
+                                                                                                                                                              vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, 2)
+                                                            End Select
 
-                                                                '    End Select
+                                                        End If
 
-                                                                'End If
-
-                                                                '#EJC202211221049: Validar que la instancia no sea nothing para eliminar desde WS
-                                                                If Not wsTOMHHInstance Is Nothing Then
+                                                        '#EJC202211221049: Validar que la instancia no sea nothing para eliminar desde WS
+                                                        If Not wsTOMHHInstance Is Nothing Then
 
                                                                     Dim ArchHeader As New wsTOMHH.clsArchHeader()
                                                                     ArchHeader.Tipo = "WM"
