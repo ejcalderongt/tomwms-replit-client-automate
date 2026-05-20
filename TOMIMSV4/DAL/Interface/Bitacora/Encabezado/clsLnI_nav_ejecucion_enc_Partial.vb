@@ -8,27 +8,28 @@ Partial Public Class clsLnI_nav_ejecucion_enc
         Try
 
             Ins.Init("i_nav_ejecucion_enc")
-            Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigenc", "@idnavconfigenc", DataType.Parametro)
             Ins.Add("fecha", "@fecha", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionenc")
 
             Dim cmd As New SqlCommand(sp, pConection) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_enc.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGENC", oBeI_nav_ejecucion_enc.IdNavConfigEnc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeI_nav_ejecucion_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_enc.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_enc.IdEjecucionEnc = newId
 
             cmd.Dispose()
 
             'If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -48,27 +49,28 @@ Partial Public Class clsLnI_nav_ejecucion_enc
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Ins.Init("i_nav_ejecucion_enc")
-            Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigenc", "@idnavconfigenc", DataType.Parametro)
             Ins.Add("fecha", "@fecha", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionenc")
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_enc.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGENC", oBeI_nav_ejecucion_enc.IdNavConfigEnc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeI_nav_ejecucion_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_enc.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_enc.IdEjecucionEnc = newId
 
             cmd.Dispose()
 
             lTransaction.Commit()
 
-            Insertar_From_Interface = rowsAffected
+            Insertar_From_Interface = newId
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
@@ -259,56 +261,4 @@ Partial Public Class clsLnI_nav_ejecucion_enc
 
     End Function
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionenc),0) FROM i_nav_ejecucion_enc"
-
-            Using lCommand As New SqlCommand(vSQL, pConnection) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue) + 1
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionenc),0) FROM i_nav_ejecucion_enc"
-
-            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue) + 1
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
 End Class

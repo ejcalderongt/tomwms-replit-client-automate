@@ -132,19 +132,19 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                 Await CnnInterface.OpenAsync().ConfigureAwait(False)
 
                 ' 2) Encabezado de ejecución
-                BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
                 BeNavEjecucionEnc.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface
                 BeNavEjecucionEnc.Fecha = Now
+                '#EJCCKFK20260520: Cambio por Identity en tabla.
                 clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, CnnLog)
 
                 ' 3) Crear resultado de ejecución
-                BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLog) + 1
                 BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
                 BeNavEjecucionRes.IdNavConfigDet = BeConfigDet.Idnavconfigdet
                 BeNavEjecucionRes.Registros_ws = 0
                 BeNavEjecucionRes.Registros_ti = 0
                 BeNavEjecucionRes.Registros_WMS = 0
                 BeNavEjecucionRes.Exitosa = False
+                '#EJCCKFK20260520: Cambio por Identity en tabla.
                 clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, CnnLog)
 
                 clsPublic.Actualizar_Progreso(lblprg, vbNewLine)
