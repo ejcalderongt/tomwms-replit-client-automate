@@ -2586,7 +2586,6 @@ Partial Public Class clsLnTrans_picking_enc
                         enc.Estado = pEstado
 
                         clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-
                     Next
 
                     '#GT21032025: validamos el estado no solo en el pedido, tambien el picking

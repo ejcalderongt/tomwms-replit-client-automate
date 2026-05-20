@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_ejecucion_det_error
@@ -28,14 +28,14 @@ Public Class clsLnI_nav_ejecucion_det_error
         Try
 
             Ins.Init("i_nav_ejecucion_det_error")
-            Ins.Add("idejecuciondet", "@idejecuciondet", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("error", "@error", DataType.Parametro)
             Ins.Add("referencia", "@referencia", DataType.Parametro)
             Ins.Add("fecha", "@fecha", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecuciondet")
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -48,20 +48,21 @@ Public Class clsLnI_nav_ejecucion_det_error
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONDET", oBeI_nav_ejecucion_det_error.Idejecuciondet))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_det_error.Idejecucionenc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_det_error.Idnavconfigdet))
             cmd.Parameters.Add(New SqlParameter("@ERROR", oBeI_nav_ejecucion_det_error.vError))
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA", oBeI_nav_ejecucion_det_error.Referencia))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeI_nav_ejecucion_det_error.Fecha))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_det_error.Idejecuciondet = newId
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -314,35 +315,6 @@ Public Class clsLnI_nav_ejecucion_det_error
             End If
 
             Return True
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID() As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Const sp As String = "SELECT ISNULL(Max(idejecuciondet),0) FROM I_nav_ejecucion_det_error"
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-                Using lCommand As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-                    Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                    lConnection.Close()
-                    If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                        lMax = CInt(lReturnValue)
-                    End If
-                End Using
-            End Using
-
-            Return lMax
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)

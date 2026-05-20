@@ -3,32 +3,211 @@ Imports System.Reflection
 
 Partial Public Class clsLnI_nav_ejecucion_enc
 
+    Public Shared Function GetLogEjecucionesDataSet(ByVal pFechaDel As Date,
+                                                    ByVal pFechaAl As Date,
+                                                    Optional ByVal pTexto As String = "",
+                                                    Optional ByVal pTransaccion As String = "",
+                                                    Optional ByVal pProceso As String = "") As DataSet
+
+        Dim lDataSet As New DataSet("LogEjecucionesInterface")
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                Using lEncAdapter As New SqlDataAdapter(GetSqlLogEjecucionesEncabezado(), lConnection),
+                      lResAdapter As New SqlDataAdapter(GetSqlLogEjecucionesResultado(), lConnection),
+                      lErrAdapter As New SqlDataAdapter(GetSqlLogEjecucionesErrores(), lConnection)
+
+                    lEncAdapter.SelectCommand.CommandType = CommandType.Text
+                    lResAdapter.SelectCommand.CommandType = CommandType.Text
+                    lErrAdapter.SelectCommand.CommandType = CommandType.Text
+
+                    AgregarParametrosLog(lEncAdapter.SelectCommand, pFechaDel, pFechaAl, pTexto, pTransaccion, pProceso)
+                    AgregarParametrosLog(lResAdapter.SelectCommand, pFechaDel, pFechaAl, pTexto, pTransaccion, pProceso)
+                    AgregarParametrosLog(lErrAdapter.SelectCommand, pFechaDel, pFechaAl, pTexto, pTransaccion, pProceso)
+
+                    lEncAdapter.Fill(lDataSet, "Encabezado")
+                    lResAdapter.Fill(lDataSet, "Resultados")
+                    lErrAdapter.Fill(lDataSet, "Errores")
+
+                End Using
+
+            End Using
+
+            If lDataSet.Tables.Contains("Encabezado") Then
+                lDataSet.Tables("Encabezado").PrimaryKey = New DataColumn() {lDataSet.Tables("Encabezado").Columns("IdEjecucionEnc")}
+            End If
+
+            If lDataSet.Tables.Contains("Encabezado") AndAlso lDataSet.Tables.Contains("Resultados") Then
+                lDataSet.Relations.Add("Resultados",
+                                       lDataSet.Tables("Encabezado").Columns("IdEjecucionEnc"),
+                                       lDataSet.Tables("Resultados").Columns("IdEjecucionEnc"),
+                                       False)
+            End If
+
+            If lDataSet.Tables.Contains("Encabezado") AndAlso lDataSet.Tables.Contains("Errores") Then
+                lDataSet.Relations.Add("Errores",
+                                       lDataSet.Tables("Encabezado").Columns("IdEjecucionEnc"),
+                                       lDataSet.Tables("Errores").Columns("IdEjecucionEnc"),
+                                       False)
+            End If
+
+            Return lDataSet
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Private Shared Sub AgregarParametrosLog(ByVal pCommand As SqlCommand,
+                                            ByVal pFechaDel As Date,
+                                            ByVal pFechaAl As Date,
+                                            ByVal pTexto As String,
+                                            ByVal pTransaccion As String,
+                                            ByVal pProceso As String)
+
+        Dim lTexto As String = If(pTexto, "").Trim()
+        Dim lTransaccion As String = If(pTransaccion, "").Trim()
+        Dim lProceso As String = If(pProceso, "").Trim()
+
+        pCommand.Parameters.Add("@FechaDel", SqlDbType.DateTime).Value = pFechaDel.Date
+        pCommand.Parameters.Add("@FechaAl", SqlDbType.DateTime).Value = pFechaAl.Date.AddDays(1)
+        pCommand.Parameters.Add("@Texto", SqlDbType.NVarChar, 200).Value = lTexto
+        pCommand.Parameters.Add("@TextoLike", SqlDbType.NVarChar, 210).Value = "%" & lTexto & "%"
+        pCommand.Parameters.Add("@Transaccion", SqlDbType.NVarChar, 100).Value = lTransaccion
+        pCommand.Parameters.Add("@TransaccionLike", SqlDbType.NVarChar, 110).Value = "%" & lTransaccion & "%"
+        pCommand.Parameters.Add("@Proceso", SqlDbType.NVarChar, 100).Value = lProceso
+        pCommand.Parameters.Add("@ProcesoLike", SqlDbType.NVarChar, 110).Value = "%" & lProceso & "%"
+
+    End Sub
+
+    Private Shared Function GetFiltroLogEjecuciones() As String
+
+        Return " enc.fecha >= @FechaDel " &
+               " AND enc.fecha < @FechaAl " &
+               " AND (@Proceso = '' OR EXISTS (SELECT 1 FROM i_nav_config_det fdet INNER JOIN i_nav_ent fent ON fdet.idnavent = fent.idnavent WHERE fdet.idnavconfigenc = enc.idnavconfigenc AND fent.nombre LIKE @ProcesoLike)) " &
+               " AND (@Transaccion = '' OR EXISTS (SELECT 1 FROM i_nav_config_det fdet INNER JOIN i_nav_ent fent ON fdet.idnavent = fent.idnavent WHERE fdet.idnavconfigenc = enc.idnavconfigenc AND (fent.nombre LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), fdet.idnavconfigdet) = @Transaccion))) " &
+               " AND (@Texto = '' " &
+               "      OR CONVERT(NVARCHAR(20), enc.idejecucionenc) LIKE @TextoLike " &
+               "      OR ISNULL(cfg.nombre, '') LIKE @TextoLike " &
+               "      OR ISNULL(emp.nombre, '') LIKE @TextoLike " &
+               "      OR ISNULL(bod.nombre, '') LIKE @TextoLike " &
+               "      OR ISNULL(prop.nombre_comercial, '') LIKE @TextoLike " &
+               "      OR EXISTS (SELECT 1 FROM i_nav_config_det tdet INNER JOIN i_nav_ent tent ON tdet.idnavent = tent.idnavent WHERE tdet.idnavconfigenc = enc.idnavconfigenc AND tent.nombre LIKE @TextoLike) " &
+               "      OR EXISTS (SELECT 1 FROM i_nav_ejecucion_res tres LEFT JOIN i_nav_config_det tdet ON tres.idnavconfigdet = tdet.idnavconfigdet LEFT JOIN i_nav_ent tent ON tdet.idnavent = tent.idnavent WHERE tres.idejecucionenc = enc.idejecucionenc AND (CONVERT(NVARCHAR(20), tres.idejecucionres) LIKE @TextoLike OR CONVERT(NVARCHAR(20), tres.idnavconfigdet) LIKE @TextoLike OR ISNULL(tent.nombre, '') LIKE @TextoLike)) " &
+               "      OR EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error terr WHERE terr.idejecucionenc = enc.idejecucionenc AND (CONVERT(NVARCHAR(20), terr.idejecuciondet) LIKE @TextoLike OR ISNULL(terr.referencia, '') LIKE @TextoLike OR ISNULL(terr.error, '') LIKE @TextoLike OR ISNULL(terr.codigo_producto, '') LIKE @TextoLike OR ISNULL(terr.umbas, '') LIKE @TextoLike OR ISNULL(terr.codigo_presentacion, '') LIKE @TextoLike))) "
+
+    End Function
+
+    Private Shared Function GetSqlLogEjecucionesEncabezado() As String
+
+        Return "SELECT enc.idejecucionenc AS IdEjecucionEnc, " &
+               "       enc.idnavconfigenc AS IdNavConfigEnc, " &
+               "       enc.fecha AS Fecha, " &
+               "       enc.exitosa AS Exitosa, " &
+               "       ISNULL(cfg.nombre, '') AS Configuracion, " &
+               "       ISNULL(emp.nombre, '') AS Empresa, " &
+               "       ISNULL(bod.nombre, '') AS Bodega, " &
+               "       ISNULL(prop.nombre_comercial, '') AS Propietario, " &
+               "       ISNULL(STUFF((SELECT DISTINCT ', ' + ent.nombre " &
+               "                     FROM i_nav_config_det det " &
+               "                     INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
+               "                     WHERE det.idnavconfigenc = enc.idnavconfigenc " &
+               "                     FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, ''), '') AS Procesos, " &
+               "       (SELECT COUNT(1) FROM i_nav_ejecucion_res res WHERE res.idejecucionenc = enc.idejecucionenc) AS CantidadResultados, " &
+               "       (SELECT COUNT(1) FROM i_nav_ejecucion_det_error err WHERE err.idejecucionenc = enc.idejecucionenc) AS CantidadErrores " &
+               "FROM i_nav_ejecucion_enc enc " &
+               "LEFT JOIN i_nav_config_enc cfg ON enc.idnavconfigenc = cfg.idnavconfigenc " &
+               "LEFT JOIN empresa emp ON cfg.idempresa = emp.IdEmpresa " &
+               "LEFT JOIN bodega bod ON cfg.idbodega = bod.IdBodega AND cfg.idempresa = bod.IdEmpresa " &
+               "LEFT JOIN propietarios prop ON cfg.idPropietario = prop.IdPropietario AND cfg.idempresa = prop.IdEmpresa " &
+               "WHERE " & GetFiltroLogEjecuciones() &
+               "ORDER BY enc.fecha DESC, enc.idejecucionenc DESC"
+
+    End Function
+
+    Private Shared Function GetSqlLogEjecucionesResultado() As String
+
+        Return "SELECT res.idejecucionres AS IdEjecucionRes, " &
+               "       res.idejecucionenc AS IdEjecucionEnc, " &
+               "       res.idnavconfigdet AS IdNavConfigDet, " &
+               "       ISNULL(ent.nombre, '') AS Proceso, " &
+               "       res.registros_ws AS RegistrosWS, " &
+               "       res.registros_ti AS RegistrosTI, " &
+               "       res.registros_wms AS RegistrosWMS, " &
+               "       res.exitosa AS Exitosa " &
+               "FROM i_nav_ejecucion_res res " &
+               "INNER JOIN i_nav_ejecucion_enc enc ON res.idejecucionenc = enc.idejecucionenc " &
+               "LEFT JOIN i_nav_config_enc cfg ON enc.idnavconfigenc = cfg.idnavconfigenc " &
+               "LEFT JOIN empresa emp ON cfg.idempresa = emp.IdEmpresa " &
+               "LEFT JOIN bodega bod ON cfg.idbodega = bod.IdBodega AND cfg.idempresa = bod.IdEmpresa " &
+               "LEFT JOIN propietarios prop ON cfg.idPropietario = prop.IdPropietario AND cfg.idempresa = prop.IdEmpresa " &
+               "LEFT JOIN i_nav_config_det det ON res.idnavconfigdet = det.idnavconfigdet " &
+               "LEFT JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
+               "WHERE " & GetFiltroLogEjecuciones() &
+               " AND (@Proceso = '' OR ISNULL(ent.nombre, '') LIKE @ProcesoLike) " &
+               " AND (@Transaccion = '' OR ISNULL(ent.nombre, '') LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), res.idnavconfigdet) = @Transaccion) " &
+               "ORDER BY res.idejecucionenc DESC, res.idejecucionres"
+
+    End Function
+
+    Private Shared Function GetSqlLogEjecucionesErrores() As String
+
+        Return "SELECT err.idejecuciondet AS IdEjecucionDet, " &
+               "       err.idejecucionenc AS IdEjecucionEnc, " &
+               "       err.idnavconfigdet AS IdNavConfigDet, " &
+               "       ISNULL(ent.nombre, '') AS Proceso, " &
+               "       err.fecha AS Fecha, " &
+               "       err.referencia AS Referencia, " &
+               "       err.error AS Error, " &
+               "       err.no_linea AS NoLinea, " &
+               "       err.codigo_producto AS CodigoProducto, " &
+               "       err.umbas AS UMBas, " &
+               "       err.codigo_presentacion AS CodigoPresentacion " &
+               "FROM i_nav_ejecucion_det_error err " &
+               "INNER JOIN i_nav_ejecucion_enc enc ON err.idejecucionenc = enc.idejecucionenc " &
+               "LEFT JOIN i_nav_config_enc cfg ON enc.idnavconfigenc = cfg.idnavconfigenc " &
+               "LEFT JOIN empresa emp ON cfg.idempresa = emp.IdEmpresa " &
+               "LEFT JOIN bodega bod ON cfg.idbodega = bod.IdBodega AND cfg.idempresa = bod.IdEmpresa " &
+               "LEFT JOIN propietarios prop ON cfg.idPropietario = prop.IdPropietario AND cfg.idempresa = prop.IdEmpresa " &
+               "LEFT JOIN i_nav_config_det det ON err.idnavconfigdet = det.idnavconfigdet " &
+               "LEFT JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
+               "WHERE " & GetFiltroLogEjecuciones() &
+               " AND (@Proceso = '' OR ISNULL(ent.nombre, '') LIKE @ProcesoLike) " &
+               " AND (@Transaccion = '' OR ISNULL(ent.nombre, '') LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), err.idnavconfigdet) = @Transaccion) " &
+               "ORDER BY err.idejecucionenc DESC, err.fecha DESC, err.idejecuciondet DESC"
+
+    End Function
+
     Public Shared Function Insertar_From_Interface(ByRef oBeI_nav_ejecucion_enc As clsBeI_nav_ejecucion_enc, ByVal pConection As SqlConnection) As Integer
 
         Try
 
             Ins.Init("i_nav_ejecucion_enc")
-            Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigenc", "@idnavconfigenc", DataType.Parametro)
             Ins.Add("fecha", "@fecha", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionenc")
 
             Dim cmd As New SqlCommand(sp, pConection) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_enc.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGENC", oBeI_nav_ejecucion_enc.IdNavConfigEnc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeI_nav_ejecucion_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_enc.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_enc.IdEjecucionEnc = newId
 
             cmd.Dispose()
 
             'If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return newId
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -48,27 +227,28 @@ Partial Public Class clsLnI_nav_ejecucion_enc
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Ins.Init("i_nav_ejecucion_enc")
-            Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigenc", "@idnavconfigenc", DataType.Parametro)
             Ins.Add("fecha", "@fecha", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionenc")
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_enc.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGENC", oBeI_nav_ejecucion_enc.IdNavConfigEnc))
             cmd.Parameters.Add(New SqlParameter("@FECHA", oBeI_nav_ejecucion_enc.Fecha))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_enc.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_enc.IdEjecucionEnc = newId
 
             cmd.Dispose()
 
             lTransaction.Commit()
 
-            Insertar_From_Interface = rowsAffected
+            Insertar_From_Interface = newId
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
@@ -259,56 +439,4 @@ Partial Public Class clsLnI_nav_ejecucion_enc
 
     End Function
 
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionenc),0) FROM i_nav_ejecucion_enc"
-
-            Using lCommand As New SqlCommand(vSQL, pConnection) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue) + 1
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
-                                 ByVal pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lMax As Integer = 0
-
-            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionenc),0) FROM i_nav_ejecucion_enc"
-
-            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lMax = CInt(lReturnValue) + 1
-                End If
-
-            End Using
-
-            Return lMax
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
 End Class

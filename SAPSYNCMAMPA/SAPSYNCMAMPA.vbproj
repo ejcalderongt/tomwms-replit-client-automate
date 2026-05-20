@@ -104,6 +104,9 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -334,6 +337,12 @@
     <Compile Include="Formas\Reportes\frmEjecuciones.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.Designer.vb">
+      <DependentUpon>frmLogEjecucionesInterface.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\frmStockPorLoteArea.Designer.vb">
       <DependentUpon>frmStockPorLoteArea.vb</DependentUpon>
     </Compile>
@@ -404,6 +413,7 @@
     <None Include="Formas\Reportes\DSEjecuciones.xss">
       <DependentUpon>DSEjecuciones.xsd</DependentUpon>
     </None>
+    <None Include="My Project\app.manifest" />
     <None Include="packages.config" />
     <None Include="Resources\button-power_basic_blue.png" />
     <None Include="Resources\Template.png" />

@@ -181,9 +181,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             CnnLog.Open()
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, CnnLog)
 
             Try
 
@@ -338,9 +339,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             Dim BeBodega As New clsBeBodega
             Dim vContador As Integer = 0
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID()
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
             Try
 
@@ -2000,9 +2002,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             Dim BeBodega As New clsBeBodega
             Dim vContador As Integer = 0
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID()
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
             Try
 
@@ -2269,9 +2272,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             Dim BeBodega As New clsBeBodega
             Dim vContador As Integer = 0
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID()
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
             Try
 
@@ -2430,7 +2434,6 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
         Try
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID() + 1
             BeNavEjecucionEnc.IdNavConfigEnc = 102 'Pedido de cliente
             BeNavEjecucionEnc.Fecha = Now
             BeNavEjecucionEnc.IdBodega = IdBodegaOrigen
@@ -2439,9 +2442,9 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
 
             Dim BeNavEjecucionRes As New clsBeI_nav_ejecucion_res
-            BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes()
             BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
-            BeNavEjecucionRes.IdNavConfigDet = BeNavEjecucionRes.IdEjecucionRes
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            BeNavEjecucionRes.IdNavConfigDet = 102 'Pedido de cliente
             BeNavEjecucionRes.Registros_ws = 0
             BeNavEjecucionRes.Registros_ti = 0
             BeNavEjecucionRes.Registros_WMS = 0
@@ -4170,9 +4173,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             Dim BeBodega As New clsBeBodega
             Dim vContador As Integer = 0
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(lConnection, lTransaction)
             BeNavEjecucionEnc.IdNavConfigEnc = 1
             BeNavEjecucionEnc.Fecha = Now
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            clsLnI_nav_ejecucion_enc.Insertar(BeNavEjecucionEnc, lConnection, lTransaction)
 
             Try
 
