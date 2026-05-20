@@ -147,7 +147,11 @@ Module ModuleMain
                             BD.Instancia.IdConfiguracionInterface = IdConfiguracion
                         End If
 
+                        BD.Instancia.Modo_Debug = True
+
                         Configuration.ConfigurationManager.AppSettings("CST") = BD.Instancia.CadenaConexionSQLClient
+                        Configuration.ConfigurationManager.AppSettings("WMS_MODO_DEBUG") = IIf(BD.Instancia.Modo_Debug, "ON", "OFF")
+                        Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_TRACE") = IIf(BD.Instancia.Modo_Debug, "ON", "OFF")
 
                         If BD.Instancia.WSTOMHH.Trim <> "" Then
                             'Dim BasicHttpBinding As ServiceModel.BasicHttpBinding = New ServiceModel.BasicHttpBinding

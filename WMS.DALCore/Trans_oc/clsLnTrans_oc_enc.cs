@@ -1301,6 +1301,64 @@ public class clsLnTrans_oc_enc
         }
     }
 
+    public static clsBeTrans_oc_enc? Get_Single_By_Referencia(IConfiguration config, string referencia)
+    {
+        if (config == null) throw new ArgumentNullException(nameof(config));
+        if (string.IsNullOrWhiteSpace(referencia))
+            throw new ArgumentException("Referencia no puede estar vacía.", nameof(referencia));
+
+        var connStr = config.GetConnectionString("CST");
+        if (string.IsNullOrWhiteSpace(connStr))
+            throw new Exception("No se encontró la cadena de conexión 'CST' en ConnectionStrings.");
+
+        const string sql = @"
+        SELECT TOP 1 enc.*
+        FROM Trans_oc_enc AS enc
+        WHERE enc.Referencia = @Referencia
+        ORDER BY enc.IdOrdenCompraEnc DESC;
+    ";
+
+        using var cn = new SqlConnection(connStr);
+        cn.Open();
+
+        using var tx = cn.BeginTransaction(IsolationLevel.ReadCommitted);
+
+        try
+        {
+            clsBeTrans_oc_enc? resultado = null;
+
+            using (var cmd = new SqlCommand(sql, cn, tx))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add("@Referencia", SqlDbType.VarChar).Value = referencia.Trim();
+
+                using var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    var beOcEnc = new clsBeTrans_oc_enc();
+                    Cargar(ref beOcEnc, dt.Rows[0]);
+                    beOcEnc.DetalleOC = clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc(beOcEnc.IdOrdenCompraEnc, cn, tx);
+                    beOcEnc.DetalleLotes = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(beOcEnc.IdOrdenCompraEnc, cn, tx);
+                    resultado = beOcEnc;
+                }
+            }
+
+            tx.Commit();
+            return resultado;
+        }
+        catch (Exception ex)
+        {
+            try { tx.Rollback(); } catch { /* opcional: log */ }
+
+            throw new Exception(
+                $"Get_Single_By_Referencia falló. Referencia={referencia}. {ex.Message}",
+                ex
+            );
+        }
+    }
     public static int? Get_IdOrdenCompraEnc_By_IdDespachoEnc_And_CodigoBodegaOrigen(IConfiguration configuration,
                                                                                     int idDespachoEnc,
                                                                                     string? codigoBodegaOrigen)

@@ -24,6 +24,8 @@ Public Class clsBeTrans_inv_ciclico_rfid
 	Public Property Cantidad_reconteo() As Integer = 0
 	Public Property Iddispositivo() As String = ""
 
+	Public Property IdBodega() As Integer = 0
+
 	Sub New()
 		'#EJC: Add your constructor here... 
 	End Sub

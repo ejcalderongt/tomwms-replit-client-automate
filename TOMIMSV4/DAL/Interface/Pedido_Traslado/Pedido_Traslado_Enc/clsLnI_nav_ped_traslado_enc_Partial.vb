@@ -1,12 +1,160 @@
-Imports System.Configuration
-Imports System.Data.Common
+﻿Imports System.Configuration
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.XtraPrinting.Native.Properties
 Partial Public Class clsLnI_nav_ped_traslado_enc
 
     Private Shared lProductoBodegaInMemory As New List(Of clsBeProducto_bodega)
     Private Shared lBeConfigInMemory As New List(Of clsBeI_nav_config_enc)
+
+    Private Shared Function Limpiar_Motivo_No_Reserva(ByVal pTexto As String) As String
+
+        If String.IsNullOrWhiteSpace(pTexto) Then Return ""
+
+        Dim vTexto As String = pTexto.Replace(vbCr, " ").Replace(vbLf, " ").Trim()
+
+        If String.Equals(vTexto, "Ok", StringComparison.OrdinalIgnoreCase) Then Return ""
+        If String.Equals(vTexto, "No se pudo completar la reserva.", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(vTexto, "No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then Return ""
+        If vTexto.IndexOf("No se pudo completar la reserva, consulte log_error_wms", StringComparison.OrdinalIgnoreCase) >= 0 Then Return ""
+
+        Return vTexto
+
+    End Function
+
+    Private Shared Function Normalizar_Texto_Tipo_No_Reserva(ByVal pTexto As String) As String
+
+        If String.IsNullOrWhiteSpace(pTexto) Then Return ""
+
+        Return pTexto.Replace(vbCr, " ").
+                      Replace(vbLf, " ").
+                      Replace(vbTab, " ").
+                      Trim().
+                      ToUpperInvariant().
+                      Replace("Á", "A").
+                      Replace("É", "E").
+                      Replace("Í", "I").
+                      Replace("Ó", "O").
+                      Replace("Ú", "U")
+
+    End Function
+
+    Private Shared Function Clasificar_Motivo_No_Reserva(ByVal pMotivo As String) As String
+
+        Dim vTexto As String = Normalizar_Texto_Tipo_No_Reserva(pMotivo)
+
+        If vTexto.Contains("TALLA") OrElse
+           vTexto.Contains("COLOR") OrElse
+           vTexto.Contains("IDPRODUCTOTALLACOLOR") Then
+            Return "TALLA_COLOR_NO_APLICA"
+        End If
+
+        If vTexto.Contains("UBICACION OBLIGATORIA") OrElse
+           vTexto.Contains("UBICACION ABASTECER") OrElse
+           vTexto.Contains("IDUBICACIONABASTECERCON") OrElse
+           vTexto.Contains("SIN STOCK APLICABLE EN UBICACION") Then
+            Return "UBICACION_CLIENTE_OBLIGATORIA"
+        End If
+
+        If vTexto.Contains("EXPLOSION_AUTOMATICA_NIVEL") OrElse
+           vTexto.Contains("NIVEL PARA LA EXPLOSION") OrElse
+           vTexto.Contains("CONDICION DE NIVEL") Then
+            Return "EXPLOSION_NIVEL_NO_APLICA"
+        End If
+
+        If vTexto.Contains("NO SE PUEDE EXPLOSIONAR") AndAlso
+           (vTexto.Contains("NO PICKING") OrElse
+            vTexto.Contains("ALM") OrElse
+            vTexto.Contains("ALMACENAMIENTO") OrElse
+            vTexto.Contains("RACK")) Then
+            Return "SOLO_NO_PICKING_SIN_EXPLOSION"
+        End If
+
+        If vTexto.Contains("FEFO") OrElse
+           vTexto.Contains("FECHA MINIMA") OrElse
+           vTexto.Contains("FECHAMINIMA") OrElse
+           vTexto.Contains("VENCE") OrElse
+           vTexto.Contains("VENCIMIENTO") Then
+
+            If (vTexto.Contains("ZONA PICKING") OrElse vTexto.Contains("ZONAPICKING")) AndAlso
+               (vTexto.Contains("ZONA ALM") OrElse vTexto.Contains("ZONAALM") OrElse vTexto.Contains("ALM")) Then
+                Return "FEFO_BLOQUEA_PICKING"
+            End If
+
+            Return "SIN_VENCIMIENTO_VALIDO"
+        End If
+
+        If vTexto.Contains("PRESENTACION") OrElse
+           vTexto.Contains("PRES=") OrElse
+           vTexto.Contains("PRES ") Then
+            Return "PRESENTACION_NO_APLICA"
+        End If
+
+        If vTexto.Contains("RESERVADO") OrElse
+           vTexto.Contains("RESERVA VIGENTE") OrElse
+           vTexto.Contains("RESERVAS VIGENTES") Then
+            Return "RESERVADO_POR_OTROS"
+        End If
+
+        If vTexto.Contains("LISTA NO TIENE REGISTROS") OrElse
+           vTexto.Contains("NO SE OBTUVO NINGUN REGISTRO") OrElse
+           vTexto.Contains("NO HAY EXISTENCIA") OrElse
+           vTexto.Contains("EXISTENCIA DISPONIBLE") OrElse
+           vTexto.Contains("SIN STOCK") Then
+            Return "SIN_STOCK_APLICABLE"
+        End If
+
+        Return "RESERVA_NO_COMPLETADA"
+
+    End Function
+
+    Private Shared Function Tipificar_Motivo_No_Reserva(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = Limpiar_Motivo_No_Reserva(pMotivo)
+        If String.IsNullOrWhiteSpace(vMotivo) Then Return ""
+
+        If vMotivo.IndexOf("TIPO_NO_RESERVA=", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return vMotivo
+        End If
+
+        Return "TIPO_NO_RESERVA=" & Clasificar_Motivo_No_Reserva(vMotivo) & " | " & vMotivo
+
+    End Function
+
+    Private Shared Function Obtener_Motivo_No_Reserva(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                      ByVal pMotivoDefecto As String) As String
+
+        Dim vMotivo As String = ""
+
+        If pBeTrasladoDet IsNot Nothing Then
+            vMotivo = Limpiar_Motivo_No_Reserva(pBeTrasladoDet.Process_Result)
+        End If
+
+        If String.IsNullOrWhiteSpace(vMotivo) Then
+            vMotivo = pMotivoDefecto
+        End If
+
+        Return Tipificar_Motivo_No_Reserva(vMotivo)
+
+    End Function
+
+    Private Shared Function Formatear_Process_Result_No_Reserva(ByVal pMotivo As String) As String
+
+        Dim vMotivo As String = Limpiar_Motivo_No_Reserva(pMotivo)
+
+        If String.IsNullOrWhiteSpace(vMotivo) Then
+            Return "No se pudo completar la reserva."
+        End If
+
+        vMotivo = Tipificar_Motivo_No_Reserva(vMotivo)
+
+        If vMotivo.IndexOf("No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+           vMotivo.IndexOf("Reserva fallida", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return vMotivo
+        End If
+
+        Return "No se pudo completar la reserva: " & vMotivo
+
+    End Function
 
     Public Shared Function GetAll(ByRef lConnection As SqlConnection,
                                   ByRef lTrans As SqlTransaction) As List(Of clsBeI_nav_ped_traslado_enc)
@@ -1169,13 +1317,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                           lConectionInterface,
                                                                                           lTransInterface)
 
+                                        Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
+                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
                                         Dim vMensajeEx As String = lblprg.Text
 
                                         If BeCliente.IdUbicacionAbastecerCon = 0 Then
 
                                             vMensajeEx = String.Format(vbNewLine & "ERROR_202310021910: No se pudo completar la reserva para el pedido: {0} línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6} ", PDet.NoEnc,
                                                                                 PDet.Line_No,
-                                                                                "No se pudo completar la reserva",
+                                                                                vMotivoNoReserva,
                                                                                 PDet.Item_No,
                                                                                 PDet.Unit_of_Measure_Code,
                                                                                 PDet.Variant_Code,
@@ -1184,7 +1334,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                                             vMensajeEx = String.Format(vbNewLine & "ERROR_202310021910A: No se pudo completar la reserva para el pedido: {0} línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6} ", PDet.NoEnc,
                                                                                 PDet.Line_No,
-                                                                                "No se pudo completar la reserva (Verifique existencias en ubicación: " & BeCliente.IdUbicacionAbastecerCon & " la reserva se está intentado realizar desde esta ubicación)",
+                                                                                vMotivoNoReserva & " Ubicación obligatoria del cliente: " & BeCliente.IdUbicacionAbastecerCon,
                                                                                 PDet.Item_No,
                                                                                 PDet.Unit_of_Measure_Code,
                                                                                 PDet.Variant_Code,
@@ -1194,7 +1344,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
-                                        PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva, consulte log_error_wms."
+                                        PDet.Process_Result = Formatear_Process_Result_No_Reserva(vMotivoNoReserva)
                                         clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet,
                                                                                               lConectionInterface,
                                                                                               lTransInterface)
@@ -1311,15 +1461,17 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             End If
 
                                             '#EJC202303011454: Log de errores de WMS.
+                                            Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
+                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
                                             Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021911: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", PDet.NoEnc,
                                                                                     PDet.Line_No,
-                                                                                    "No se pudo completar la reserva",
+                                                                                    vMotivoNoReserva,
                                                                                     PDet.Item_No,
                                                                                     PDet.Unit_of_Measure_Code,
                                                                                     PDet.Variant_Code,
                                                                                     PDet.Quantity)
 
-                                            PDet.Process_Result = "ERROR_202310021911A: No se pudo completar la reserva, consulte log_error_wms."
+                                            PDet.Process_Result = Formatear_Process_Result_No_Reserva(vMotivoNoReserva)
 
                                             clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet,
                                                                                                   lConectionInterface,
@@ -1747,15 +1899,17 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 Else
 
                     '#EJC202303011454: Log de errores de WMS.
+                    Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(pBeTrasladoDet,
+                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
                     Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021909: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", pBeTrasladoDet.NoEnc,
                                                             pBeTrasladoDet.Line_No,
-                                                            "No se pudo completar la reserva",
+                                                            vMotivoNoReserva,
                                                             pBeTrasladoDet.Item_No,
                                                             pBeTrasladoDet.Unit_of_Measure_Code,
                                                             pBeTrasladoDet.Variant_Code,
                                                             pBeTrasladoDet.Quantity)
 
-                    pBeTrasladoDet.Process_Result = "ERROR_202310021909A: No se pudo completar la reserva, consulte log_error_wms."
+                    pBeTrasladoDet.Process_Result = Formatear_Process_Result_No_Reserva(vMotivoNoReserva)
 
                     clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
                                                                           lConectionInterface,
@@ -2715,15 +2869,17 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                           lTransInterface)
 
                                         '#EJC202303011454: Log de errores de WMS.
+                                        Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
+                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
                                         Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021910: No se pudo completar la reserva para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6} ", PDet.NoEnc,
                                                                                 PDet.Line_No,
-                                                                                "No se pudo completar la reserva",
+                                                                                vMotivoNoReserva,
                                                                                 PDet.Item_No,
                                                                                 PDet.Unit_of_Measure_Code,
                                                                                 PDet.Variant_Code,
                                                                                 PDet.Quantity)
 
-                                        PDet.Process_Result = "ERROR_202310021910A: No se pudo completar la reserva, consulte log_error_wms."
+                                        PDet.Process_Result = Formatear_Process_Result_No_Reserva(vMotivoNoReserva)
                                         clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet,
                                                                                               lConectionInterface,
                                                                                               lTransInterface)
@@ -2803,15 +2959,17 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         Else
 
                                             '#EJC202303011454: Log de errores de WMS.
+                                            Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
+                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
                                             Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021911: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", PDet.NoEnc,
                                                                                     PDet.Line_No,
-                                                                                    "No se pudo completar la reserva",
+                                                                                    vMotivoNoReserva,
                                                                                     PDet.Item_No,
                                                                                     PDet.Unit_of_Measure_Code,
                                                                                     PDet.Variant_Code,
                                                                                     PDet.Quantity)
 
-                                            PDet.Process_Result = "ERROR_202310021911A: No se pudo completar la reserva, consulte log_error_wms."
+                                            PDet.Process_Result = Formatear_Process_Result_No_Reserva(vMotivoNoReserva)
 
                                             clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(PDet,
                                                                                                   lConectionInterface,
@@ -3290,6 +3448,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 Else
 
                     Dim vMensajeEx As String = ""
+                    Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(pBeTrasladoDet,
+                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
 
                     Dim tieneTallaOColor As Boolean = Not String.IsNullOrWhiteSpace(pBeTrasladoDet.Size) OrElse
                                                      Not String.IsNullOrWhiteSpace(pBeTrasladoDet.Color)
@@ -3297,40 +3457,44 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     If pBeStockRes.IdUbicacionAbastecerCon = 0 Then
                         If tieneTallaOColor Then
                             vMensajeEx = String.Format(vbNewLine &
-                                                    "Reserva fallida. Pedido {0}, línea {1}: {2} (T: {3}, C: {4} IdTc:{5} ) sin stock. Cant: {5}",
+                                                    "Reserva fallida. Pedido {0}, línea {1}: {2} (T: {3}, C: {4} IdTc:{5}). Motivo: {6}. Cant: {7}",
                                                     pBeTrasladoDet.NoEnc,
                                                     pBeTrasladoDet.Line_No,
                                                     pBeTrasladoDet.Item_No,
                                                     pBeTrasladoDet.Size,
                                                     pBeTrasladoDet.Color,
-                                                    pBeTrasladoDet.Quantity,
-                                                    pBeStockRes.IdProductoTallaColor)
+                                                    pBeStockRes.IdProductoTallaColor,
+                                                    vMotivoNoReserva,
+                                                    pBeTrasladoDet.Quantity)
                         Else
                             vMensajeEx = String.Format(vbNewLine &
-                                                        "Reserva fallida. Pedido {0}, línea {1}: {2} sin stock. Cant: {3}",
+                                                        "Reserva fallida. Pedido {0}, línea {1}: {2}. Motivo: {3}. Cant: {4}",
                                                         pBeTrasladoDet.NoEnc,
                                                         pBeTrasladoDet.Line_No,
                                                         pBeTrasladoDet.Item_No,
+                                                        vMotivoNoReserva,
                                                         pBeTrasladoDet.Quantity)
                         End If
                     Else
                         If tieneTallaOColor Then
                             vMensajeEx = String.Format(vbNewLine &
-                                                        "Reserva fallida. Pedido {0}, línea {1}: {2} (T: {3}, C: {4}) sin stock en ubicación {5}. Cant: {6}",
+                                                        "Reserva fallida. Pedido {0}, línea {1}: {2} (T: {3}, C: {4}) sin stock aplicable en ubicación {5}. Motivo: {6}. Cant: {7}",
                                                         pBeTrasladoDet.NoEnc,
                                                         pBeTrasladoDet.Line_No,
                                                         pBeTrasladoDet.Item_No,
                                                         pBeTrasladoDet.Size,
                                                         pBeTrasladoDet.Color,
                                                         pBeStockRes.IdUbicacionAbastecerCon,
+                                                        vMotivoNoReserva,
                                                         pBeTrasladoDet.Quantity)
                         Else
                             vMensajeEx = String.Format(vbNewLine &
-                                                        "Reserva fallida. Pedido {0}, línea {1}: {2} sin stock en ubicación {3}. Cant: {4}",
+                                                        "Reserva fallida. Pedido {0}, línea {1}: {2} sin stock aplicable en ubicación {3}. Motivo: {4}. Cant: {5}",
                                                         pBeTrasladoDet.NoEnc,
                                                         pBeTrasladoDet.Line_No,
                                                         pBeTrasladoDet.Item_No,
                                                         pBeStockRes.IdUbicacionAbastecerCon,
+                                                        vMotivoNoReserva,
                                                         pBeTrasladoDet.Quantity)
                         End If
                     End If

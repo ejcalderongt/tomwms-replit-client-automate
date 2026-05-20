@@ -272,28 +272,7 @@ Public Class frmPedido
 
                 grdPedTras.DataSource = DT
 
-                GridView8.OptionsView.ColumnAutoWidth = False
-                GridView8.BestFitColumns(True)
-
-                GridView8.OptionsView.ShowFooter = True
-
-                GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
-                GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
-
-                GridView8.Columns("Cantidad").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
-
-                GridView8.Columns("Cantidad_Reservada").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad_Reservada").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad_Reservada").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad_Reservada").SummaryItem.DisplayFormat = "{0:n6}"
-
-                If Not BeBodega Is Nothing Then
-                    GridView8.Columns("Talla").Visible = BeBodega.Control_Talla_Color
-                    GridView8.Columns("Color").Visible = BeBodega.Control_Talla_Color
-                End If
+                Configurar_Grid_PedidoERP()
 
                 Carga_Datos_PedidoERP = True
 
@@ -322,18 +301,7 @@ Public Class frmPedido
 
                 grdPedTras.DataSource = DT
 
-                GridView8.OptionsView.ColumnAutoWidth = False
-                GridView8.BestFitColumns(True)
-
-                GridView8.OptionsView.ShowFooter = True
-
-                GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
-                GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
-
-                GridView8.Columns("Cantidad").DisplayFormat.FormatType = FormatType.Numeric
-                GridView8.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
-                GridView8.Columns("Cantidad").SummaryItem.SummaryType = SummaryItemType.Sum
-                GridView8.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
+                Configurar_Grid_PedidoERP()
 
                 Carga_Datos_PedidoERP = True
 
@@ -344,6 +312,84 @@ Public Class frmPedido
         End Try
 
     End Function
+
+    Private Sub Configurar_Grid_PedidoERP()
+
+        GridView8.OptionsView.ColumnAutoWidth = False
+        GridView8.OptionsView.ShowFooter = True
+
+        Configurar_Columna_Numerica_PedidoERP("Cantidad", "Solicitado", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Cantidad_Reservada", "Reservado", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Diferencia_Reserva", "Dif.", "{0:n6}", SummaryItemType.Sum)
+        Configurar_Columna_Numerica_PedidoERP("Porcentaje_Reservado", "% Res.", "{0:n2}%")
+        Configurar_Columna_Numerica_PedidoERP("Porcentaje_Diferencia", "% Dif.", "{0:n2}%")
+
+        If Not GridView8.Columns("Estado_Reserva") Is Nothing Then
+            GridView8.Columns("Estado_Reserva").Caption = "Estado Res."
+            GridView8.Columns("Estado_Reserva").VisibleIndex = 9
+            GridView8.Columns("Estado_Reserva").Width = 95
+        End If
+
+        If Not GridView8.Columns("No") Is Nothing Then
+            GridView8.Columns("No").SummaryItem.SummaryType = SummaryItemType.Count
+            GridView8.Columns("No").SummaryItem.DisplayFormat = "Registros: {0}"
+        End If
+
+        Configurar_Barra_Porcentaje_Reserva()
+
+        If Not BeBodega Is Nothing Then
+            If Not GridView8.Columns("Talla") Is Nothing Then
+                GridView8.Columns("Talla").Visible = BeBodega.Control_Talla_Color
+            End If
+
+            If Not GridView8.Columns("Color") Is Nothing Then
+                GridView8.Columns("Color").Visible = BeBodega.Control_Talla_Color
+            End If
+        End If
+
+        GridView8.BestFitColumns(True)
+
+    End Sub
+
+    Private Sub Configurar_Columna_Numerica_PedidoERP(ByVal pFieldName As String,
+                                                      ByVal pCaption As String,
+                                                      ByVal pFormatString As String,
+                                                      Optional ByVal pSummaryType As SummaryItemType = SummaryItemType.None)
+
+        If GridView8.Columns(pFieldName) Is Nothing Then
+            Return
+        End If
+
+        GridView8.Columns(pFieldName).Caption = pCaption
+        GridView8.Columns(pFieldName).DisplayFormat.FormatType = FormatType.Numeric
+        GridView8.Columns(pFieldName).DisplayFormat.FormatString = pFormatString
+        GridView8.Columns(pFieldName).AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far
+
+        If pSummaryType <> SummaryItemType.None Then
+            GridView8.Columns(pFieldName).SummaryItem.SummaryType = pSummaryType
+            GridView8.Columns(pFieldName).SummaryItem.DisplayFormat = pFormatString
+        End If
+
+    End Sub
+
+    Private Sub Configurar_Barra_Porcentaje_Reserva()
+
+        If GridView8.Columns("Porcentaje_Reservado") Is Nothing Then
+            Return
+        End If
+
+        Dim vProgressReserva As New RepositoryItemProgressBar With {
+            .Minimum = 0,
+            .Maximum = 100,
+            .ShowTitle = True,
+            .PercentView = True
+        }
+
+        grdPedTras.RepositoryItems.Add(vProgressReserva)
+        GridView8.Columns("Porcentaje_Reservado").ColumnEdit = vProgressReserva
+        GridView8.Columns("Porcentaje_Reservado").Width = 95
+
+    End Sub
 
     Private Function Inserta_Encabezado(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
 
@@ -7744,14 +7790,19 @@ Public Class frmPedido
 
         Try
 
+            If e.RowHandle < 0 Then
+                Return
+            End If
+
             Dim Existe As Boolean = False
             Dim View As GridView = sender
             Dim vCodigo As String = ""
             vCodigo = IIf(IsDBNull(View.Columns("Código")), "", View.Columns("Código"))
 
-            Dim vCantidad As Object = IIf(IsDBNull(View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad"))), 0, View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad")))
+            Dim vCantidad As Decimal = Get_Valor_Decimal_GridView(View, e.RowHandle, "Cantidad")
+            Dim vCantRes As Decimal = Get_Valor_Decimal_GridView(View, e.RowHandle, "Cantidad_Reservada")
 
-            Dim vCantRes As Object = IIf(IsDBNull(View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad_Reservada"))), 0, View.GetRowCellDisplayText(e.RowHandle, View.Columns("Cantidad_Reservada")))
+            Aplicar_Estilo_Indicador_Reserva(View, e, vCantidad, vCantRes)
 
             If Not vCodigo Is Nothing Then
 
@@ -7779,18 +7830,6 @@ Public Class frmPedido
 
             End If
 
-            If vCantidad <> vCantRes Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                e.Appearance.BackColor = Color.LightCoral
-                e.Appearance.BackColor2 = Color.White
-                e.Appearance.ForeColor = Color.Black
-            Else
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
-                e.Appearance.BackColor = Color.LightGreen
-                e.Appearance.BackColor2 = Color.White
-                e.Appearance.ForeColor = Color.Black
-            End If
-
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
@@ -7801,6 +7840,82 @@ Public Class frmPedido
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
         End Try
+
+    End Sub
+
+    Private Function Get_Valor_Decimal_GridView(ByVal pView As GridView,
+                                                ByVal pRowHandle As Integer,
+                                                ByVal pFieldName As String) As Decimal
+
+        Try
+
+            If pView.Columns(pFieldName) Is Nothing Then
+                Return 0D
+            End If
+
+            Dim vValor As Object = pView.GetRowCellValue(pRowHandle, pView.Columns(pFieldName))
+
+            If vValor Is Nothing OrElse IsDBNull(vValor) Then
+                Return 0D
+            End If
+
+            Return Convert.ToDecimal(vValor)
+
+        Catch ex As Exception
+            Return 0D
+        End Try
+
+    End Function
+
+    Private Sub Aplicar_Estilo_Indicador_Reserva(ByVal pView As GridView,
+                                                 ByVal e As RowCellStyleEventArgs,
+                                                 ByVal pCantidad As Decimal,
+                                                 ByVal pCantidadReservada As Decimal)
+
+        Dim vEstadoReserva As String = ""
+
+        If Not pView.Columns("Estado_Reserva") Is Nothing Then
+            vEstadoReserva = pView.GetRowCellDisplayText(e.RowHandle, pView.Columns("Estado_Reserva"))
+        End If
+
+        If vEstadoReserva = "" Then
+            If pCantidad = 0D Then
+                vEstadoReserva = "Sin solicitud"
+            ElseIf pCantidadReservada = 0D Then
+                vEstadoReserva = "Sin reserva"
+            ElseIf pCantidadReservada < pCantidad Then
+                vEstadoReserva = "Parcial"
+            ElseIf pCantidadReservada = pCantidad Then
+                vEstadoReserva = "Completa"
+            Else
+                vEstadoReserva = "Exceso"
+            End If
+        End If
+
+        e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
+        e.Appearance.ForeColor = Color.Black
+
+        Select Case vEstadoReserva.ToUpperInvariant()
+            Case "COMPLETA"
+                e.Appearance.BackColor = Color.Honeydew
+                e.Appearance.BackColor2 = Color.LightGreen
+            Case "PARCIAL"
+                e.Appearance.BackColor = Color.LemonChiffon
+                e.Appearance.BackColor2 = Color.Khaki
+            Case "EXCESO"
+                e.Appearance.BackColor = Color.Moccasin
+                e.Appearance.BackColor2 = Color.Orange
+            Case Else
+                e.Appearance.BackColor = Color.MistyRose
+                e.Appearance.BackColor2 = Color.LightCoral
+        End Select
+
+        If e.Column.FieldName = "Estado_Reserva" OrElse
+           e.Column.FieldName = "Porcentaje_Reservado" OrElse
+           e.Column.FieldName = "Porcentaje_Diferencia" OrElse
+           e.Column.FieldName = "Diferencia_Reserva" Then
+            e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
+        End If
 
     End Sub
 

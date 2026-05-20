@@ -1170,13 +1170,14 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioRFID.GTIN = pProducto.GTIN
                             gBeInventarioRFID.Fecha_Produccion = pProducto.Fecha_Produccion
                             gBeInventarioRFID.IdProductoBodega = ProdInv.IdProductoBodega
-                            gBeInventarioRFID.User_agr = "1"
+                            gBeInventarioRFID.User_agr = IdUsuarioAgrego
                             gBeInventarioRFID.Fec_agr = Now
-                            gBeInventarioRFID.User_mod = "1"
+                            gBeInventarioRFID.User_mod = IdUsuarioAgrego
                             gBeInventarioRFID.Fec_mod = Now
                             gBeInventarioRFID.IdOperador = IdOperadorAsignado
-                            gBeInventarioRFID.Cantidad = 1
+                            gBeInventarioRFID.Cantidad = 0
                             gBeInventarioRFID.EsPallet = True
+                            gBeInventarioRFID.IdBodega = pIdBodega
 
                             clsLnTrans_inv_ciclico_rfid.Insertar(gBeInventarioRFID, lConection, lTransaction)
 

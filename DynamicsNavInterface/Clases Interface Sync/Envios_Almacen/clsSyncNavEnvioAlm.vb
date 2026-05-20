@@ -1561,9 +1561,18 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                         If vContador_Lineas_Detalle_Pedido_Insertadas = 0 Then
 
                             If (pBePedidoEnc.IdPedidoEnc <> 0) Then
-                                clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
-                                clsPublic.Actualizar_Progreso_CR(lblprg)
+                                If Not clsLnTrans_pe_enc.Tiene_Detalle(pBePedidoEnc.IdPedidoEnc,
+                                                                       lConnectionInterface,
+                                                                       lTransInterface) Then
+
+                                    clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+
+                                Else
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no insertó líneas nuevas, pero ya tiene detalle en WMS; no se elimina la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+                                End If
                             Else
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} ya existe en el WMS {1}", NAVEnvioAlm.No, vbNewLine))
                                 clsPublic.Actualizar_Progreso_CR(lblprg)
@@ -2225,6 +2234,109 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
     '#CKFK20221012 Renombré la función de arriba que es la que originalmente se utilizaba y creé esta que es una copia de la que esta en la clase clsLnI_nav_ped_traslado_enc
     'y que es la función que llama a clsLnTrans_pe_det.Reservar_Stock_Por_Linea_Interface que a su vez llama a clsLnStock_res.Reserva_Stock_From_MI3 
     'solo le agregué el stockres para que lo devuelva
+    Private Shared Function Get_Process_Result_Actual_EnvioAlm(ByRef pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                               ByRef lConectionInterface As SqlConnection,
+                                                               ByRef lTransactionInterface As SqlTransaction) As String
+
+        Try
+
+            Using Cmd As New SqlCommand()
+                Cmd.Connection = lConectionInterface
+                Cmd.Transaction = lTransactionInterface
+                Cmd.CommandText = "SELECT TOP 1 Process_Result FROM i_nav_ped_traslado_det WHERE NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No"
+                Cmd.Parameters.AddWithValue("@NoEnc", pBeTrasladoDet.NoEnc)
+                Cmd.Parameters.AddWithValue("@Line_No", pBeTrasladoDet.Line_No)
+                Cmd.Parameters.AddWithValue("@Item_No", pBeTrasladoDet.Item_No)
+
+                Dim vResultado As Object = Cmd.ExecuteScalar()
+
+                If vResultado Is Nothing OrElse IsDBNull(vResultado) Then
+                    Return ""
+                End If
+
+                Return vResultado.ToString.Trim
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} Get_Process_Result_Actual_EnvioAlm {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Return ""
+        End Try
+
+    End Function
+
+    Private Shared Sub Actualizar_Process_Result_EnvioAlm(ByRef pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                          ByRef lConectionInterface As SqlConnection,
+                                                          ByRef lTransactionInterface As SqlTransaction)
+
+        Using Cmd As New SqlCommand()
+            Cmd.Connection = lConectionInterface
+            Cmd.Transaction = lTransactionInterface
+            Cmd.CommandText = "UPDATE i_nav_ped_traslado_det SET Process_Result = @Process_Result WHERE NoEnc = @NoEnc AND Line_No = @Line_No AND Item_No = @Item_No"
+            Cmd.Parameters.AddWithValue("@Process_Result", pBeTrasladoDet.Process_Result)
+            Cmd.Parameters.AddWithValue("@NoEnc", pBeTrasladoDet.NoEnc)
+            Cmd.Parameters.AddWithValue("@Line_No", pBeTrasladoDet.Line_No)
+            Cmd.Parameters.AddWithValue("@Item_No", pBeTrasladoDet.Item_No)
+
+            Dim vFilasAfectadas As Integer = Cmd.ExecuteNonQuery()
+
+            If vFilasAfectadas = 0 Then
+                clsLnLog_error_wms.Agregar_Error(String.Format("{0} Actualizar_Process_Result_EnvioAlm sin filas. Documento: {1} Linea: {2} Item: {3} Resultado: {4}",
+                                                               MethodBase.GetCurrentMethod.Name,
+                                                               pBeTrasladoDet.NoEnc,
+                                                               pBeTrasladoDet.Line_No,
+                                                               pBeTrasladoDet.Item_No,
+                                                               pBeTrasladoDet.Process_Result))
+            End If
+        End Using
+
+    End Sub
+
+    Private Shared Function Limpiar_Process_Result_Generico_Reserva(ByVal pProcessResult As String) As String
+
+        Dim vProcessResult As String = ""
+
+        If Not pProcessResult Is Nothing Then
+            vProcessResult = pProcessResult.Trim
+        End If
+
+        If vProcessResult = "" Then
+            Return ""
+        End If
+
+        If String.Equals(vProcessResult, "Ok", StringComparison.OrdinalIgnoreCase) Then
+            Return ""
+        End If
+
+        If String.Equals(vProcessResult, "No se pudo completar la reserva.", StringComparison.OrdinalIgnoreCase) OrElse
+           String.Equals(vProcessResult, "No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then
+            Return ""
+        End If
+
+        Return vProcessResult
+
+    End Function
+
+    Private Shared Function Formatear_Process_Result_No_Reserva_EnvioAlm(ByVal pProcessResultActual As String,
+                                                                         ByVal pMotivoDefecto As String) As String
+
+        Dim vMotivo As String = Limpiar_Process_Result_Generico_Reserva(pProcessResultActual)
+
+        If vMotivo = "" Then
+            vMotivo = Limpiar_Process_Result_Generico_Reserva(pMotivoDefecto)
+        End If
+
+        If vMotivo = "" Then
+            vMotivo = "TIPO_NO_RESERVA=RESERVA_NO_COMPLETADA | No hay existencia aplicable valida para la solicitud. Revise stock disponible, ubicacion de picking/almacenamiento, vencimiento, presentacion y reservas vigentes."
+        End If
+
+        If vMotivo.StartsWith("No se pudo completar la reserva", StringComparison.OrdinalIgnoreCase) Then
+            Return vMotivo
+        End If
+
+        Return "No se pudo completar la reserva: " & vMotivo
+
+    End Function
+
     Private Shared Function Inserta_Linea_Detalle_Pedido(ByVal pIdPedidoEnc As Integer,
                                                          ByRef pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
                                                          ByVal pBePoducto As clsBeProducto,
@@ -2450,23 +2562,28 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                                                                           lTransactionInterface)
                 Else
 
+                    Dim vProcessResultActual As String = Get_Process_Result_Actual_EnvioAlm(pBeTrasladoDet,
+                                                                                           lConectionInterface,
+                                                                                           lTransactionInterface)
+                    Dim vMotivoDefecto As String = ""
+
                     If pBeStockRes.IdUbicacionAbastecerCon > 0 Then
 
                         Dim vNombreUbicacion As String = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(pBeStockRes.IdUbicacionAbastecerCon, pIdBodegaOrigen)
 
-                        pBeTrasladoDet.Process_Result = "MSG_231214: No se pudo completar la reserva, valide disponibilidad de inventario en ubicación (IdUbicacionAbastecerCon): " & vNombreUbicacion
-                        clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                              lConectionInterface,
-                                                                              lTransactionInterface)
+                        vMotivoDefecto = "TIPO_NO_RESERVA=UBICACION_ABASTECER_SIN_STOCK | MSG_231214: No se pudo completar la reserva, valide disponibilidad de inventario en ubicacion (IdUbicacionAbastecerCon): " & vNombreUbicacion
 
                     Else
 
-                        pBeTrasladoDet.Process_Result = "No se pudo completar la reserva."
-                        clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                              lConectionInterface,
-                                                                              lTransactionInterface)
+                        vMotivoDefecto = "TIPO_NO_RESERVA=RESERVA_NO_COMPLETADA | No hay existencia aplicable valida para la solicitud despues de evaluar stock disponible, ubicacion de picking/almacenamiento, vencimiento, presentacion y reservas vigentes."
 
                     End If
+
+                    pBeTrasladoDet.Process_Result = Formatear_Process_Result_No_Reserva_EnvioAlm(vProcessResultActual,
+                                                                                                  vMotivoDefecto)
+                    Actualizar_Process_Result_EnvioAlm(pBeTrasladoDet,
+                                                       lConectionInterface,
+                                                       lTransactionInterface)
 
                 End If
 
@@ -3444,9 +3561,18 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                         If vContador_Lineas_Detalle_Pedido_Insertadas = 0 Then
 
                             If (pBePedidoEnc.IdPedidoEnc <> 0) Then
-                                clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
-                                clsPublic.Actualizar_Progreso_CR(lblprg)
+                                If Not clsLnTrans_pe_enc.Tiene_Detalle(pBePedidoEnc.IdPedidoEnc,
+                                                                       lConnectionInterface,
+                                                                       lTransInterface) Then
+
+                                    clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+
+                                Else
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no insertó líneas nuevas, pero ya tiene detalle en WMS; no se elimina la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+                                End If
                             Else
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} ya existe en el WMS {1}", NAVEnvioAlm.No, vbNewLine))
                                 clsPublic.Actualizar_Progreso_CR(lblprg)

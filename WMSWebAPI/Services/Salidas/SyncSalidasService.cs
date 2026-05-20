@@ -401,6 +401,36 @@ namespace WMSWebAPI.Services.Salidas
             return endIdx >= 0 ? razonText.Substring(0, endIdx).Trim() : razonText.Trim();
         }
 
+        private static string NormalizeProcessResultText(string value)
+        {
+            return string.Join(" ", value.Split(new[] { '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+                         .Trim();
+        }
+
+        private static string ExtractReservationFailureDetail(string processResult)
+        {
+            var text = NormalizeProcessResultText(processResult);
+            const string motivoMarker = "Motivo:";
+
+            var motivoIdx = text.IndexOf(motivoMarker, StringComparison.OrdinalIgnoreCase);
+            if (motivoIdx >= 0)
+            {
+                var motivo = text.Substring(motivoIdx + motivoMarker.Length).Trim();
+                if (!string.IsNullOrWhiteSpace(motivo))
+                    return motivo;
+            }
+
+            const string errorCode = "ERROR_202310021910A";
+            if (text.StartsWith(errorCode, StringComparison.OrdinalIgnoreCase))
+            {
+                text = text.Substring(errorCode.Length).Trim().TrimStart(':', '-', ' ');
+            }
+
+            return string.IsNullOrWhiteSpace(text)
+                ? "No hay existencia aplicable valida para la solicitud"
+                : text;
+        }
+
         private static (string code, string reason) ResolveFailureReason(string? processResult)
         {
             if (string.IsNullOrWhiteSpace(processResult))
@@ -410,7 +440,7 @@ namespace WMSWebAPI.Services.Salidas
                 return ("LINEA_REPROCESO", "Línea ya existente en el pedido — no fue reprocesada en este envío");
 
             if (processResult.StartsWith("ERROR_202310021910A", StringComparison.OrdinalIgnoreCase))
-                return ("RESERVA_FALLIDA", "No se pudo completar la reserva de stock (ver log WMS)");
+                return ("RESERVA_FALLIDA", ExtractReservationFailureDetail(processResult));
 
             if (processResult.Equals("Ok", StringComparison.OrdinalIgnoreCase))
                 return ("SIN_RESERVA_NUEVA", "Línea procesada previamente — sin nueva reserva generada");

@@ -2161,7 +2161,29 @@ Partial Public Class clsLnTrans_pe_det
 
         lTransaction.Save("Init_Stock")
 
+        Dim vReservaMi3Trace As String = clsReservaMi3DebugTrace.Iniciar("Reservar_Stock_Por_Linea_Interface",
+                                                                         pBePedidoDet.IdPedidoEnc,
+                                                                         pBePedidoDet.IdPedidoDet,
+                                                                         pBeTrasladoDet.Line_No,
+                                                                         pBeTrasladoDet.No)
+        clsReservaMi3DebugTrace.EstablecerActual(vReservaMi3Trace)
+
         Try
+
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                           "payload_interface",
+                                           "NoEnc", pBeTrasladoDet.NoEnc,
+                                           "Line_No", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Line_No),
+                                           "Item_No", pBeTrasladoDet.No,
+                                           "Quantity", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Quantity),
+                                           "Qty_to_Receive", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Qty_to_Receive),
+                                           "Unit_of_Measure_Code", pBeTrasladoDet.Unit_of_Measure_Code,
+                                           "Variant_Code", pBeTrasladoDet.Variant_Code,
+                                           "Quantity_Reserved_WMS", clsReservaMi3DebugTrace.Valor(pBeTrasladoDet.Quantity_Reserved_WMS),
+                                           "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                           "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion),
+                                           "StockRes_Cantidad", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                           "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
             Dim ResultadoInsert As Integer = 0
             Dim pBeTrasladoTemp As New clsBeI_nav_ped_traslado_det
@@ -2177,11 +2199,31 @@ Partial Public Class clsLnTrans_pe_det
 
                 '#CKFK20221117 Agregué esto para actualizar el pedido con la cantidad solicitada y la unidad de medida correctos
                 If pBeTrasladoDet.Variant_Code <> pBeTrasladoTemp.Variant_Code And pBeTrasladoTemp.Unit_of_Measure_Code <> pBePedidoDet.Nom_presentacion Then
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "normaliza_linea_por_um_variant",
+                                                   "Variant_Code_Interface", pBeTrasladoDet.Variant_Code,
+                                                   "Variant_Code_BD", pBeTrasladoTemp.Variant_Code,
+                                                   "UM_Interface", pBeTrasladoDet.Unit_of_Measure_Code,
+                                                   "Nom_presentacion_Pedido", pBePedidoDet.Nom_presentacion,
+                                                   "Cantidad_Antes", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                   "Factor", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Factor))
                     If Not pBeTrasladoDet Is Nothing Then
                         If pBePedidoDet.IdPresentacion <> 0 Then
+                            Dim vStockResCantidadAntesNormalizacion As Double = pBeStockRes.Cantidad
+                            Dim vStockResIdPresentacionAntesNormalizacion As Integer = pBeStockRes.IdPresentacion
                             pBePedidoDet.Cantidad = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * pBePedidoDet.Factor, 2))
                             pBePedidoDet.Nom_presentacion = ""
                             pBePedidoDet.IdPresentacion = 0
+                            pBeStockRes.Cantidad = pBePedidoDet.Cantidad
+                            pBeStockRes.IdPresentacion = 0
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "linea_convertida_a_umbas",
+                                                           "Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                           "IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBePedidoDet.IdPresentacion),
+                                                           "StockRes_Cantidad_Antes", clsReservaMi3DebugTrace.Valor(vStockResCantidadAntesNormalizacion),
+                                                           "StockRes_IdPresentacion_Antes", clsReservaMi3DebugTrace.Valor(vStockResIdPresentacionAntesNormalizacion),
+                                                           "StockRes_Cantidad_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                                           "StockRes_IdPresentacion_Despues", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
                         End If
                     End If
                 End If
@@ -2219,12 +2261,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                           lConnection,
                                                                                           lTransaction)
                     vDifPedidoVrsReservado = pBePedidoDet.Cantidad - vCantidadReservada
+                    clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                   "calcula_diferencia_reserva_existente",
+                                                   "IdStock", clsReservaMi3DebugTrace.Valor(Sr.IdStock),
+                                                   "CantidadPedido", clsReservaMi3DebugTrace.Valor(pBePedidoDet.Cantidad),
+                                                   "CantidadReservada", clsReservaMi3DebugTrace.Valor(vCantidadReservada),
+                                                   "Diferencia", clsReservaMi3DebugTrace.Valor(vDifPedidoVrsReservado))
 
                     Select Case vDifPedidoVrsReservado
 
                         Case Is > 0 'Se aumentó la cantidad en el pedido, 'Por lo tanto se debe aumentar la cantidad en picking.                            
 
                             pBeStockRes.Cantidad -= vCantidadReservada
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "reserva_diferencia_pendiente",
+                                                           "StockRes_Cantidad_A_Reservar", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                                           "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
                             If clsLnStock_res.Reserva_Stock_From_MI3(pBeStockRes,
                                                                     vDiasVencimientoCliente,
@@ -2257,9 +2309,13 @@ Partial Public Class clsLnTrans_pe_det
 
                             Else
                                 Reservar_Stock_Por_Linea_Interface = False
+                                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "reserva_stock_from_mi3_false")
                             End If
 
                         Case Is < 0 'Se disminuyó la cantidad en el pedido
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "pedido_disminuido_no_reserva",
+                                                           "Diferencia", clsReservaMi3DebugTrace.Valor(vDifPedidoVrsReservado))
 
                             For Each Pu In pBePedidoDet.ListaPickingUbic.Where(Function(x) (x.Cantidad_Verificada - x.Cantidad_despachada) > 0)
                                 Debug.Print(Pu.IdPickingUbic)
@@ -2275,6 +2331,11 @@ Partial Public Class clsLnTrans_pe_det
             Else
 
                 'Dim pListStockResOUT As New List(Of clsBeStock_res)
+
+                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                               "sin_stock_res_previo_reserva_completa",
+                                               "StockRes_Cantidad", clsReservaMi3DebugTrace.Valor(pBeStockRes.Cantidad),
+                                               "StockRes_IdPresentacion", clsReservaMi3DebugTrace.Valor(pBeStockRes.IdPresentacion))
 
                 If clsLnStock_res.Reserva_Stock_From_MI3(pBeStockRes,
                                                          vDiasVencimientoCliente,
@@ -2297,9 +2358,13 @@ Partial Public Class clsLnTrans_pe_det
             End If
 
         Catch ex As Exception
+            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace, "exception", "mensaje", ex.Message)
             If Not lTransaction Is Nothing Then lTransaction.Rollback("Init_Stock")
             Throw New Exception(String.Format(vbNewLine & "{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             'Throw ex
+        Finally
+            clsReservaMi3DebugTrace.Finalizar(vReservaMi3Trace, IIf(Reservar_Stock_Por_Linea_Interface, "OK", "FALSE"))
+            clsReservaMi3DebugTrace.LimpiarActual(vReservaMi3Trace)
         End Try
 
     End Function

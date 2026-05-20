@@ -67,6 +67,65 @@ Partial Public Class clsLnTrans_movimientos
 
     End Function
 
+    Private Shared Function Get_IdMovimiento_Verificacion_Existente(ByVal pMovimiento As clsBeTrans_movimientos,
+                                                                    ByVal pConnection As SqlConnection,
+                                                                    ByVal pTransaction As SqlTransaction) As Integer
+        Try
+            Dim vSQL As String =
+                "SELECT TOP 1 IdMovimiento " &
+                "FROM trans_movimientos WITH (UPDLOCK, HOLDLOCK) " &
+                "WHERE IdTipoTarea = @IdTipoTarea " &
+                "  AND IdTransaccion = @IdTransaccion " &
+                "  AND ISNULL(IdPedidoEnc, 0) = @IdPedidoEnc " &
+                "  AND ISNULL(IdPedidoDet, 0) = @IdPedidoDet " &
+                "  AND ISNULL(IdRecepcion, 0) = @IdRecepcion " &
+                "  AND ISNULL(IdRecepcionDet, 0) = @IdRecepcionDet " &
+                "  AND ISNULL(IdProductoBodega, 0) = @IdProductoBodega " &
+                "  AND ISNULL(IdUbicacionOrigen, 0) = @IdUbicacionOrigen " &
+                "  AND ISNULL(IdUbicacionDestino, 0) = @IdUbicacionDestino " &
+                "  AND ISNULL(IdPresentacion, 0) = @IdPresentacion " &
+                "  AND ISNULL(IdEstadoOrigen, 0) = @IdEstadoOrigen " &
+                "  AND ISNULL(IdEstadoDestino, 0) = @IdEstadoDestino " &
+                "  AND ISNULL(IdUnidadMedida, 0) = @IdUnidadMedida " &
+                "  AND ISNULL(barra_pallet, '') = @BarraPallet " &
+                "  AND ISNULL(lote, '') = @Lote " &
+                "  AND ISNULL(fecha_vence, CONVERT(DATETIME, '19000101', 112)) = ISNULL(@FechaVence, CONVERT(DATETIME, '19000101', 112)) " &
+                "  AND ABS(ISNULL(cantidad, 0) - @Cantidad) < 0.000001 " &
+                "ORDER BY IdMovimiento"
+
+            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction)
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdTipoTarea", pMovimiento.IdTipoTarea)
+                lCommand.Parameters.AddWithValue("@IdTransaccion", pMovimiento.IdTransaccion)
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pMovimiento.IdPedidoEnc)
+                lCommand.Parameters.AddWithValue("@IdPedidoDet", pMovimiento.IdPedidoDet)
+                lCommand.Parameters.AddWithValue("@IdRecepcion", pMovimiento.IdRecepcion)
+                lCommand.Parameters.AddWithValue("@IdRecepcionDet", pMovimiento.IdRecepcionDet)
+                lCommand.Parameters.AddWithValue("@IdProductoBodega", pMovimiento.IdProductoBodega)
+                lCommand.Parameters.AddWithValue("@IdUbicacionOrigen", pMovimiento.IdUbicacionOrigen)
+                lCommand.Parameters.AddWithValue("@IdUbicacionDestino", pMovimiento.IdUbicacionDestino)
+                lCommand.Parameters.AddWithValue("@IdPresentacion", pMovimiento.IdPresentacion)
+                lCommand.Parameters.AddWithValue("@IdEstadoOrigen", pMovimiento.IdEstadoOrigen)
+                lCommand.Parameters.AddWithValue("@IdEstadoDestino", pMovimiento.IdEstadoDestino)
+                lCommand.Parameters.AddWithValue("@IdUnidadMedida", pMovimiento.IdUnidadMedida)
+                lCommand.Parameters.AddWithValue("@BarraPallet", If(pMovimiento.Barra_pallet, ""))
+                lCommand.Parameters.AddWithValue("@Lote", If(pMovimiento.Lote, ""))
+                lCommand.Parameters.Add(New SqlParameter("@FechaVence", SqlDbType.DateTime) With {.Value = If(pMovimiento.Fecha_vence = Nothing, DBNull.Value, CType(pMovimiento.Fecha_vence, Object))})
+                lCommand.Parameters.AddWithValue("@Cantidad", pMovimiento.Cantidad)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot Nothing AndAlso lReturnValue IsNot DBNull.Value Then
+                    Return CInt(lReturnValue)
+                End If
+            End Using
+
+            Return 0
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
     Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer, ByVal pFechaDel As Date, ByVal pFechaAl As Date, Optional ByVal pLote As String = Nothing) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -3045,7 +3104,10 @@ Partial Public Class clsLnTrans_movimientos
 
                     If Obj.IdMovimiento = 0 Then
                         Obj.IdMovimiento = lMaxMov
-                        Obj.IdTransaccion = IdTareaUbicacionEnc
+                        '#MA20260519 
+                        If Obj.IdTransaccion = 0 Then
+                            Obj.IdTransaccion = IdTareaUbicacionEnc
+                        End If
                         Obj.Fecha = Now
                         Insertar(Obj, lConnection, lTransaction)
                         lMaxMov += 1
@@ -3826,6 +3888,10 @@ Partial Public Class clsLnTrans_movimientos
                 Else
                     BeTransMovimiento.Talla = ""
                     BeTransMovimiento.Color = ""
+                End If
+
+                If Get_IdMovimiento_Verificacion_Existente(BeTransMovimiento, lConnection, lTransaction) > 0 Then
+                    Return 0
                 End If
 
                 Insertar_Movimiento_Verificacion = Insertar(BeTransMovimiento,
