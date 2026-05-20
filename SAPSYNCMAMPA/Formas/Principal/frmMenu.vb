@@ -64,6 +64,10 @@ Public Class frmMenu
 
         Try
 
+            NotifyIcon1.Icon = Me.Icon
+            NotifyIcon1.Visible = True
+            NotifyIcon1.Text = "MI3_TOMWMS"
+
             Set_Info_Conexion()
 
             BarStaticItem1.Caption = gVersionApp & " " & FormatoFechas.tFecha(gFechaVersion)
@@ -124,6 +128,38 @@ Public Class frmMenu
     End Sub
 
     Private Sub frmMenu_DragLeave(sender As Object, e As EventArgs) Handles Me.DragLeave
+
+    End Sub
+
+    Private Sub frmMenu_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+
+        If Me.WindowState = FormWindowState.Minimized Then
+            NotifyIcon1.Visible = True
+            Me.Hide()
+        End If
+
+    End Sub
+
+    Private Sub frmMenu_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+        End If
+
+    End Sub
+
+    Private Sub NotifyIcon1_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon1.DoubleClick
+
+        Me.Show()
+        Me.WindowState = FormWindowState.Maximized
+
+    End Sub
+
+    Private Sub mnuSalir_Click(sender As Object, e As EventArgs) Handles mnuSalir.Click
+
+        NotifyIcon1.Visible = False
+        Application.Exit()
 
     End Sub
 End Class

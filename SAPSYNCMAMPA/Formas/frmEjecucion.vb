@@ -103,13 +103,14 @@ Public Class frmEjecucion
 
     Private Sub BarButtonItem1_ItemClick_1(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuReporteEjecuciones.ItemClick
 
-        With frmEjecuciones
-            .Modo = frmEjecuciones.pModo.Lista
-            .WindowState = FormWindowState.Normal
-            .Show()
-            .Focus()
-        End With
+        'With frmEjecuciones
+        '    .Modo = frmEjecuciones.pModo.Lista
+        '    .WindowState = FormWindowState.Normal
+        '    .Show()
+        '    .Focus()
+        'End With
 
+        '#EJC20260520: NUEVA PANTALLA DE EJECUCIONES
         With frmLogEjecucionesInterface
             .WindowState = FormWindowState.Normal
             .Show()
