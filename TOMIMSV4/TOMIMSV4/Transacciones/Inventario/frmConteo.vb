@@ -14,6 +14,7 @@ Public Class frmConteo
     Private LoteOriginal As String = ""
     Private IdUbicacionOriginal As Integer = 0
     Private EsInvOriginal As Boolean = False
+    Private IdUbicacionSeleccionada As Integer = 0
 
     '#EJC20180801_1118PM:Puntero hacia la fila del del DT asociado al datasource del grid.
     Public DrDetalleInv As DataRow
@@ -89,7 +90,7 @@ Public Class frmConteo
 
             IMS.Listar_ProductoEstado(cmbEstadoProducto)
 
-            If gBeCiclico.IdProductoEstado <> gBeCiclico.IdPresentacion_nuevo AndAlso gBeCiclico.IdProductoEst_nuevo <> 0 Then
+            If gBeCiclico.IdProductoEst_nuevo <> 0 Then
                 cmbEstadoProducto.EditValue = gBeCiclico.IdProductoEst_nuevo
             Else
                 cmbEstadoProducto.EditValue = gBeCiclico.IdProductoEstado
@@ -118,13 +119,21 @@ Public Class frmConteo
             End If
 
             If gBeCiclico.IdUbicacion_nuevo <> 0 Then
+
                 Ubicacion.IdUbicacion = gBeCiclico.IdUbicacion_nuevo
                 clsLnBodega_ubicacion.Obtener(Ubicacion)
+
                 txtUbicacion.Text = Ubicacion.NombreCompleto
+                IdUbicacionSeleccionada = gBeCiclico.IdUbicacion_nuevo
+
             ElseIf gBeCiclico.IdUbicacion > 0 Then
+
                 Ubicacion.IdUbicacion = gBeCiclico.IdUbicacion
                 clsLnBodega_ubicacion.Obtener(Ubicacion)
+
                 txtUbicacion.Text = Ubicacion.NombreCompleto
+                IdUbicacionSeleccionada = gBeCiclico.IdUbicacion
+
             End If
 
             dtpFechaVence.Enabled = Producto.Control_vencimiento
@@ -169,6 +178,37 @@ Public Class frmConteo
             txtPesoAnterior.Value = gBeCiclico.Peso
             txtLicencia.Text = gBeCiclico.lic_plate
 
+            txtGondola.Text = ""
+
+            If DrDetalleInv IsNot Nothing Then
+
+                If DrDetalleInv.Table.Columns.Contains("Góndola") Then
+                    txtGondola.Text = DrDetalleInv.Item("Góndola").ToString()
+                ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
+                    txtGondola.Text = DrDetalleInv.Item("Gondola").ToString()
+                End If
+
+            End If
+
+            If AP.Bodega.Control_Talla_Color Then
+
+                txtLicencia.Enabled = True
+                txtLicencia.Properties.ReadOnly = False
+
+                txtUbicacion.Enabled = True
+                txtUbicacion.Properties.ReadOnly = False
+
+                txtGondola.Enabled = True
+                txtGondola.Properties.ReadOnly = False
+
+            Else
+
+                txtLicencia.Enabled = False
+                txtUbicacion.Enabled = False
+                txtGondola.Enabled = False
+
+            End If
+
             txtLote.Focus()
 
         Catch ex As Exception
@@ -190,10 +230,26 @@ Public Class frmConteo
     End Sub
 
     Private Sub cmdGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdGuardar.ItemClick
-        If Actualizar() Then
-            XtraMessageBox.Show("Conteo Actualizado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Close()
-        End If
+
+        Try
+            cmdGuardar.Enabled = False
+
+            If Actualizar() Then
+                XtraMessageBox.Show("Conteo Actualizado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Close()
+            Else
+                cmdGuardar.Enabled = True
+            End If
+
+        Catch ex As Exception
+            cmdGuardar.Enabled = True
+
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
     End Sub
 
     Private Function Actualizar() As Boolean
@@ -201,7 +257,7 @@ Public Class frmConteo
         Actualizar = False
 
         Dim Presentacion As New clsBeProducto_Presentacion
-        Dim IdProductoTallaColorDestino As Integer
+        Dim IdProductoTallaColorDestino As Integer = gBeCiclico.IdProductoTallaColor
         Dim vCantidadUmBas As Double = 0.0
         Dim vCantidadPres As Double = 0.0
         Dim vPeso As Double = 0.0
@@ -211,34 +267,78 @@ Public Class frmConteo
         Dim cTrans As New clsTransaccion
 
         Try
-            cTrans.Begin_Transaction()
 
             If txtCantidadAnterior.Value = 0 Then
                 XtraMessageBox.Show("La cantidad debe ser mayor que 0", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Function
             End If
 
+            cTrans.Begin_Transaction()
+
+
             If AP.Bodega.Control_Talla_Color Then
+
                 Dim IdProducto = clsLnProducto.Get_IdProducto_By_IdProductoBodega(gBeCiclico.IdProductoBodega)
-                IdProductoTallaColorDestino = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(cmbTalla.EditValue,
-                                                                                                                        cmbColor.EditValue,
-                                                                                                                        IdProducto)
-                If IdProductoTallaColorDestino <> 0 Then
+
+                Dim IdProductoTallaColorTemp As Integer =
+        clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(
+            cmbTalla.EditValue,
+            cmbColor.EditValue,
+            IdProducto
+        )
+
+                XtraMessageBox.Show(
+    "IdProducto: " & IdProducto.ToString() & vbCrLf &
+    "cmbTalla.EditValue: " & cmbTalla.EditValue.ToString() & vbCrLf &
+    "cmbColor.EditValue: " & cmbColor.EditValue.ToString() & vbCrLf &
+    "IdProductoTallaColorOriginal: " & IdProductoTallaColorOriginal.ToString() & vbCrLf &
+    "IdProductoTallaColorTemp: " & IdProductoTallaColorTemp.ToString(),
+    "Debug talla/color",
+    MessageBoxButtons.OK,
+    MessageBoxIcon.Information
+)
+
+                If IdProductoTallaColorTemp <> 0 Then
+
+                    IdProductoTallaColorDestino = IdProductoTallaColorTemp
+
                     If gBeCiclico.IdProductoTallaColor <> IdProductoTallaColorDestino Then
                         gBeCiclico.IdProductoTallaColor_nuevo = IdProductoTallaColorDestino
+                    Else
+                        gBeCiclico.IdProductoTallaColor_nuevo = 0
                     End If
+
                 End If
+
             End If
 
             gBeCiclico.IdProductoEst_nuevo = cmbEstadoProducto.EditValue
             gBeCiclico.IdPresentacion = cmbPresentacion.EditValue
             gBeCiclico.Fecha_vence = dtpFechaVence.EditValue
-            gBeCiclico.Lote = txtLote.Text
+            gBeCiclico.Lote = txtLote.Text.Trim()
             gBeCiclico.Cantidad = txtCantidadAnterior.Value
             gBeCiclico.Peso = txtPesoAnterior.Value
             gBeCiclico.User_agr = AP.UsuarioAp.IdUsuario
             gBeCiclico.Fec_Mod = Now
             gBeCiclico.Idoperador = cmbOperador.EditValue
+            gBeCiclico.lic_plate = txtLicencia.Text.Trim()
+
+            If AP.Bodega.Control_Talla_Color Then
+
+                If txtUbicacion.Text.Trim() = "" OrElse Not IsNumeric(txtUbicacion.Text.Trim()) Then
+                    XtraMessageBox.Show("Ingrese un Id de ubicación válido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Exit Function
+                End If
+
+                IdUbicacionSeleccionada = CInt(txtUbicacion.Text.Trim())
+
+            End If
+
+            If IdUbicacionSeleccionada <> 0 AndAlso IdUbicacionSeleccionada <> gBeCiclico.IdUbicacion Then
+                gBeCiclico.IdUbicacion_nuevo = IdUbicacionSeleccionada
+            Else
+                gBeCiclico.IdUbicacion_nuevo = 0
+            End If
 
             If gBeCiclico.IdPresentacion > 0 Then
 
@@ -263,25 +363,41 @@ Public Class frmConteo
             '#CKFK20241119 Agregué una validación para que si cambia el lote o la fecha o el estado o la ubicación genere una nueva línea
             '#EJC202412041632: Comparar si hay cambios para actualizar.
 
-            If EsInvOriginal Then
-                If FechaVenceOriginal <> dtpFechaVence.EditValue OrElse
-                   (IdProductoEstadoOriginal <> cmbEstadoProducto.EditValue) OrElse
-                   LoteOriginal <> txtLote.Text.Trim() OrElse
-                   (IdUbicacionOriginal <> txtUbicacion.Text.Trim() OrElse
-                   IdProductoTallaColorOriginal <> IdProductoTallaColorDestino) Then
+            Dim cambioFecha As Boolean = FechaVenceOriginal <> CDate(dtpFechaVence.EditValue)
+            Dim cambioEstado As Boolean = IdProductoEstadoOriginal <> CInt(cmbEstadoProducto.EditValue)
+            Dim cambioLote As Boolean = LoteOriginal.Trim() <> txtLote.Text.Trim()
+            Dim cambioUbicacion As Boolean = IdUbicacionOriginal <> IdUbicacionSeleccionada
+            Dim cambioTallaColor As Boolean = IdProductoTallaColorOriginal <> IdProductoTallaColorDestino
 
-                    gBeCiclico.Cant_stock = 0
-                    gBeCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(cTrans.lConnection, cTrans.lTransaction) + 1
-                    clsLnTrans_inv_ciclico.Insertar(gBeCiclico, cTrans.lConnection, cTrans.lTransaction)
+            Dim debeCrearNuevoRegistro As Boolean =
+                                        cambioEstado OrElse
+                                        cambioUbicacion OrElse
+                                        cambioTallaColor
+            XtraMessageBox.Show(
+    "cambioFecha: " & cambioFecha.ToString() & vbCrLf &
+    "cambioEstado: " & cambioEstado.ToString() & vbCrLf &
+    "cambioLote: " & cambioLote.ToString() & vbCrLf &
+    "cambioUbicacion: " & cambioUbicacion.ToString() & vbCrLf &
+    "cambioTallaColor: " & cambioTallaColor.ToString() & vbCrLf &
+    "debeCrearNuevoRegistro: " & debeCrearNuevoRegistro.ToString(),
+    "Debug cambios",
+    MessageBoxButtons.OK,
+    MessageBoxIcon.Information
+)
 
-                Else
-                    clsLnTrans_inv_ciclico.Actualizar(gBeCiclico, cTrans.lConnection, cTrans.lTransaction)
-                End If
+            If EsInvOriginal AndAlso debeCrearNuevoRegistro Then
+
+                gBeCiclico.Cant_stock = 0
+                gBeCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(cTrans.lConnection, cTrans.lTransaction) + 1
+
+                clsLnTrans_inv_ciclico.Insertar(gBeCiclico, cTrans.lConnection, cTrans.lTransaction)
+
             Else
+
                 clsLnTrans_inv_ciclico.Actualizar(gBeCiclico, cTrans.lConnection, cTrans.lTransaction)
+
             End If
 
-            Actualizar = True
 
             '#EJC20180801:Actualizar la fila del del DT asociado al datasource del grid.
             If gBeCiclico.IdPresentacion > 0 Then
@@ -298,10 +414,17 @@ Public Class frmConteo
             DrDetalleInv.Item("PesoConteo") = txtPesoAnterior.Value
             DrDetalleInv.Item("Dif.Cant.UMBas") = vDiferencia * -1
 
+            If DrDetalleInv.Table.Columns.Contains("Góndola") Then
+                DrDetalleInv.Item("Góndola") = txtGondola.Text.Trim()
+            ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
+                DrDetalleInv.Item("Gondola") = txtGondola.Text.Trim()
+            End If
+
             cTrans.Commit_Transaction()
+            Actualizar = True
 
         Catch ex As Exception
-
+            Actualizar = False
             cTrans.RollBack_Transaction()
 
             XtraMessageBox.Show(ex.Message,

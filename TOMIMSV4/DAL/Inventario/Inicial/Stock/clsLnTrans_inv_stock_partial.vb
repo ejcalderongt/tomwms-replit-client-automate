@@ -156,7 +156,9 @@ Partial Public Class clsLnTrans_inv_stock
     End Sub
 
     '#CKFK 20180926 Modifiqué la función Generar_Invenatario_Congelado para que cuando el lote sea nulo guarde en el inventario congelado la cadena vacía.
+    '#MA20260520 Agregar filtro por idbodega
     Public Shared Function Generar_Invenatario_Congelado(ByVal IdInventarioEnc As Integer,
+                                                          ByVal IdBodega As Integer,
                                                          Optional ByVal pConection As SqlConnection = Nothing,
                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
@@ -237,6 +239,7 @@ Partial Public Class clsLnTrans_inv_stock
                                     ISNULL(SUM(sr.cantidad), 0) AS cantidad_reservada_umbas 
                                     From stock s
                                     Left Join stock_res sr ON sr.IdStock = s.IdStock
+                                    WHERE s.IdBodega = @IdBodega
                                     GROUP BY 
                                         s.[IdStock],
                                         s.[IdPropietarioBodega],
@@ -284,7 +287,7 @@ Partial Public Class clsLnTrans_inv_stock
             End If
 
             cmd.Parameters.Add(New SqlParameter("@IDINVENTARIO", IdInventarioEnc))
-
+            cmd.Parameters.Add(New SqlParameter("@IdBodega", IdBodega))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
