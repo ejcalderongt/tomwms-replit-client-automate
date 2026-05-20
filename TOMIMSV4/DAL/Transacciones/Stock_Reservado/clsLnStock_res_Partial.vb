@@ -18613,7 +18613,11 @@ Partial Public Class clsLnStock_res
     End Function
 
     Private Shared Sub Marcar_Motivo_No_Reserva_MI3(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
-                                                    ByVal pMotivo As String)
+                                                    ByVal pMotivo As String,
+                                                    Optional ByVal pStockResSolicitud As clsBeStock_res = Nothing,
+                                                    Optional ByVal pNombreEscenario As String = "",
+                                                    Optional ByVal lConnection As SqlConnection = Nothing,
+                                                    Optional ByVal ltransaction As SqlTransaction = Nothing)
 
         If pBeTrasladoDet Is Nothing OrElse String.IsNullOrWhiteSpace(pMotivo) Then Exit Sub
 
@@ -18625,6 +18629,18 @@ Partial Public Class clsLnStock_res
             pBeTrasladoDet.Process_Result = vMotivo
         ElseIf pBeTrasladoDet.Process_Result.IndexOf(vMotivo, StringComparison.OrdinalIgnoreCase) < 0 Then
             pBeTrasladoDet.Process_Result = pBeTrasladoDet.Process_Result.Trim() & " " & vMotivo
+        End If
+
+        If pStockResSolicitud IsNot Nothing AndAlso
+           lConnection IsNot Nothing AndAlso
+           ltransaction IsNot Nothing Then
+
+            clsLnTrans_pe_det_log_reserva.Agregar_Log_No_Reserva_MI3(pStockResSolicitud,
+                                                                     pBeTrasladoDet,
+                                                                     pNombreEscenario,
+                                                                     vMotivo,
+                                                                     lConnection,
+                                                                     ltransaction)
         End If
 
     End Sub
@@ -19042,7 +19058,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                      vCantidadSolicitadaPedido,
                                                                                      vCantidadStock)
                                      clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                      'Exit Function
                                  End If
                              End If
@@ -19382,7 +19398,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                          vCantidadSolicitadaPedido,
                                                                                          vCantidadStock)
                                              clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                              Exit Function
 
                                          End If
@@ -19394,7 +19410,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                          vCantidadSolicitadaPedido,
                                                                                          vCantidadStock)
                                          clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306)
+                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                          Exit Function
 
                                      End If
@@ -19790,7 +19806,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                                  If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
                                                      vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                      clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                      Return False
                                                  End If
@@ -19822,7 +19838,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                                          If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
                                                              vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                              clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                              Return False
                                                          End If
@@ -19853,7 +19869,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                                  If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
                                                      vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                      clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                      Return False
                                                  End If
@@ -23690,7 +23706,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
 
                                                      Else
                                                          vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
-                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                          clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                          Reserva_Stock_From_MI3 = False
                                                      End If
@@ -24266,7 +24282,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
 
                                                          Else
                                                              vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                              clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                              Reserva_Stock_From_MI3 = False
                                                          End If
@@ -24671,7 +24687,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                                          Else
                                                              vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159A: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking)
+                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                              vProcessResult.Add(vMensajeNoExplosionEnZonasNoPicking)
                                                              Reserva_Stock_From_MI3 = False : Exit For
                                                          End If
@@ -24679,7 +24695,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                      End If
                                                  Else
                                                      Dim vMotivoNoAplicaExplosionNivel As String = "#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel)
+                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
                                                      vProcessResult.Add(vMotivoNoAplicaExplosionNivel)
                                                      Continue For
                                                  End If
@@ -26680,11 +26696,15 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             vNombreCasoReservaInternoWMS = "#SR240315"
 
-                            clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeNoExplosionEnZonasNoPicking)
+                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet,
+                                                         vMensajeNoExplosionEnZonasNoPicking,
+                                                         pStockResSolicitud,
+                                                         vNombreCasoReservaInternoWMS,
+                                                         lConnection,
+                                                         ltransaction)
 
                             '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
                             If Not pBeTrasladoDet Is Nothing Then
-                                pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
                                 pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
                                 clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
                                                                                       lConnection,

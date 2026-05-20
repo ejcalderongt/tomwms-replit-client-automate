@@ -3,6 +3,177 @@ Imports System.Reflection
 
 Partial Public Class clsLnTrans_pe_det_log_reserva
 
+    Private Shared Function Limpiar_Texto_Log_Reserva(ByVal pTexto As String) As String
+
+        If String.IsNullOrWhiteSpace(pTexto) Then Return ""
+
+        Return pTexto.Replace(vbCr, " ").
+                      Replace(vbLf, " ").
+                      Replace(vbTab, " ").
+                      Trim()
+
+    End Function
+
+    Private Shared Function Extraer_Tipo_No_Reserva(ByVal pMensajeLog As String) As String
+
+        Dim vTexto As String = Limpiar_Texto_Log_Reserva(pMensajeLog)
+        Const vMarcador As String = "TIPO_NO_RESERVA="
+
+        Dim vInicio As Integer = vTexto.IndexOf(vMarcador, StringComparison.OrdinalIgnoreCase)
+        If vInicio < 0 Then Return "RESERVA_NO_COMPLETADA"
+
+        vInicio += vMarcador.Length
+        Dim vFin As Integer = vTexto.IndexOf("|", vInicio, StringComparison.OrdinalIgnoreCase)
+
+        If vFin < 0 Then
+            Return vTexto.Substring(vInicio).Trim()
+        End If
+
+        Return vTexto.Substring(vInicio, vFin - vInicio).Trim()
+
+    End Function
+
+    Private Shared Function Caso_No_Reserva(ByVal pNombreEscenario As String,
+                                            ByVal pMensajeLog As String) As String
+
+        Dim vTipo As String = Extraer_Tipo_No_Reserva(pMensajeLog)
+        Dim vEscenario As String = Limpiar_Texto_Log_Reserva(pNombreEscenario)
+
+        If String.IsNullOrWhiteSpace(vEscenario) Then
+            Return "NO_RESERVA_MI3:" & vTipo
+        End If
+
+        If vEscenario.IndexOf(vTipo, StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return vEscenario
+        End If
+
+        Return vEscenario & "|NO_RESERVA:" & vTipo
+
+    End Function
+
+    Private Shared Sub Completar_Datos_Linea_Pedido(ByRef pBeLogReserva As clsBeTrans_pe_det_log_reserva,
+                                                    ByVal pBeStockRes As clsBeStock_res,
+                                                    ByVal lConnection As SqlConnection,
+                                                    ByVal lTransaction As SqlTransaction)
+
+        If pBeLogReserva Is Nothing OrElse pBeStockRes Is Nothing Then Exit Sub
+        If pBeStockRes.IdPedidoDet = 0 Then Exit Sub
+
+        Const sp As String = "SELECT TOP 1 no_linea, codigo_producto, nom_unid_med, referencia " &
+                             "FROM trans_pe_det " &
+                             "WHERE IdPedidoDet = @IdPedidoDet " &
+                             "AND (@IdPedidoEnc = 0 OR IdPedidoEnc = @IdPedidoEnc)"
+
+        Using cmd As New SqlCommand(sp, lConnection, lTransaction)
+            cmd.CommandType = CommandType.Text
+            cmd.Parameters.AddWithValue("@IdPedidoDet", pBeStockRes.IdPedidoDet)
+            cmd.Parameters.AddWithValue("@IdPedidoEnc", pBeStockRes.IdPedido)
+
+            Using dr As SqlDataReader = cmd.ExecuteReader()
+                If dr.Read() Then
+                    If pBeLogReserva.Line_No = 0 AndAlso Not IsDBNull(dr("no_linea")) Then
+                        pBeLogReserva.Line_No = CInt(dr("no_linea"))
+                    End If
+
+                    If String.IsNullOrWhiteSpace(pBeLogReserva.Item_No) AndAlso Not IsDBNull(dr("codigo_producto")) Then
+                        pBeLogReserva.Item_No = CStr(dr("codigo_producto"))
+                    End If
+
+                    If String.IsNullOrWhiteSpace(pBeLogReserva.UmBas) AndAlso Not IsDBNull(dr("nom_unid_med")) Then
+                        pBeLogReserva.UmBas = CStr(dr("nom_unid_med"))
+                    End If
+
+                    If String.IsNullOrWhiteSpace(pBeLogReserva.Referencia_Documento) AndAlso Not IsDBNull(dr("referencia")) Then
+                        pBeLogReserva.Referencia_Documento = CStr(dr("referencia"))
+                    End If
+                End If
+            End Using
+        End Using
+
+    End Sub
+
+    Public Shared Sub Agregar_Log_No_Reserva_MI3(ByVal pStockResSolicitud As clsBeStock_res,
+                                                 ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
+                                                 ByVal pNombreEscenario As String,
+                                                 ByVal pMensajeLog As String,
+                                                 ByVal lConnection As SqlConnection,
+                                                 ByVal lTransaction As SqlTransaction)
+
+        Try
+
+            If pStockResSolicitud Is Nothing OrElse lConnection Is Nothing OrElse lTransaction Is Nothing Then Exit Sub
+            If lConnection.State <> ConnectionState.Open Then Exit Sub
+
+            Dim vMensajeLog As String = Limpiar_Texto_Log_Reserva(pMensajeLog)
+            If String.IsNullOrWhiteSpace(vMensajeLog) Then Exit Sub
+
+            Dim oBeLog_reserva_pedido As New clsBeTrans_pe_det_log_reserva()
+            oBeLog_reserva_pedido.IdLogReserva = MaxID(lConnection, lTransaction) + 1
+            oBeLog_reserva_pedido.MensajeLog = vMensajeLog
+            oBeLog_reserva_pedido.Caso_Reserva = Caso_No_Reserva(pNombreEscenario, vMensajeLog)
+            oBeLog_reserva_pedido.EsError = True
+            oBeLog_reserva_pedido.Fecha = Now
+            oBeLog_reserva_pedido.IdBodega = pStockResSolicitud.IdBodega
+            oBeLog_reserva_pedido.Cantidad = pStockResSolicitud.Cantidad
+            oBeLog_reserva_pedido.IdPedidoEnc = pStockResSolicitud.IdPedido
+            oBeLog_reserva_pedido.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+            oBeLog_reserva_pedido.Fecha_Vence = If(pStockResSolicitud.Fecha_vence > New Date(1900, 1, 1),
+                                                    pStockResSolicitud.Fecha_vence,
+                                                    Date.Today)
+            oBeLog_reserva_pedido.IdStock = pStockResSolicitud.IdStock
+            oBeLog_reserva_pedido.IdStockRes = pStockResSolicitud.IdStockRes
+
+            If pBeTrasladoDet IsNot Nothing Then
+                oBeLog_reserva_pedido.Line_No = pBeTrasladoDet.Line_No
+                oBeLog_reserva_pedido.Item_No = pBeTrasladoDet.Item_No
+                oBeLog_reserva_pedido.UmBas = pBeTrasladoDet.Unit_of_Measure_Code
+                oBeLog_reserva_pedido.Variant_Code = pBeTrasladoDet.Variant_Code
+                oBeLog_reserva_pedido.Referencia_Documento = pBeTrasladoDet.NoEnc
+
+                If oBeLog_reserva_pedido.Cantidad = 0 Then
+                    oBeLog_reserva_pedido.Cantidad = pBeTrasladoDet.Quantity
+                End If
+            Else
+                oBeLog_reserva_pedido.Line_No = pStockResSolicitud.Serial
+                oBeLog_reserva_pedido.Variant_Code = pStockResSolicitud.IdPresentacion.ToString()
+            End If
+
+            If String.IsNullOrWhiteSpace(oBeLog_reserva_pedido.Item_No) AndAlso pStockResSolicitud.IdProductoBodega > 0 Then
+                oBeLog_reserva_pedido.Item_No = clsLnProducto.Get_Codigo_By_IdProductoBodega(pStockResSolicitud.IdProductoBodega,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+            End If
+
+            If String.IsNullOrWhiteSpace(oBeLog_reserva_pedido.UmBas) AndAlso pStockResSolicitud.IdUnidadMedida > 0 Then
+                oBeLog_reserva_pedido.UmBas = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(pStockResSolicitud.IdUnidadMedida,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+            End If
+
+            Completar_Datos_Linea_Pedido(oBeLog_reserva_pedido,
+                                         pStockResSolicitud,
+                                         lConnection,
+                                         lTransaction)
+
+            If Not Existe_By_Parametros(oBeLog_reserva_pedido.IdPedidoEnc,
+                                        oBeLog_reserva_pedido.IdPedidoDet,
+                                        oBeLog_reserva_pedido.IdStock,
+                                        oBeLog_reserva_pedido.Cantidad,
+                                        oBeLog_reserva_pedido.Caso_Reserva,
+                                        lConnection,
+                                        lTransaction) Then
+
+                Insertar(oBeLog_reserva_pedido, lConnection, lTransaction)
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
+
     Public Shared Sub Agregar_Log_Reserva(ByVal pBeStockAReservar As clsBeStock_res,
                                           ByVal pNombreEscenario As String,
                                           ByVal pMensajeLog As String)
@@ -31,6 +202,11 @@ Partial Public Class clsLnTrans_pe_det_log_reserva
                 oBeLog_reserva_pedido.Fecha_Vence = pBeStockAReservar.Fecha_vence
                 oBeLog_reserva_pedido.IdStock = pBeStockAReservar.IdStock
                 oBeLog_reserva_pedido.IdStockRes = pBeStockAReservar.IdStockRes
+
+                Completar_Datos_Linea_Pedido(oBeLog_reserva_pedido,
+                                             pBeStockAReservar,
+                                             lConnection,
+                                             lTransaction)
 
                 If Not Existe_By_Parametros(pBeStockAReservar.IdPedido,
                                             pBeStockAReservar.IdPedidoDet,
@@ -85,6 +261,11 @@ Partial Public Class clsLnTrans_pe_det_log_reserva
                 oBeLog_reserva_pedido.Fecha_Vence = pBeStockAReservar.Fecha_vence
                 oBeLog_reserva_pedido.IdStock = pBeStockAReservar.IdStock
                 oBeLog_reserva_pedido.IdStockRes = pBeStockAReservar.IdStockRes
+
+                Completar_Datos_Linea_Pedido(oBeLog_reserva_pedido,
+                                             pBeStockAReservar,
+                                             lConnection,
+                                             lTransaction)
 
                 If Not Existe_By_Parametros(pBeStockAReservar.IdPedido,
                                             pBeStockAReservar.IdPedidoDet,
