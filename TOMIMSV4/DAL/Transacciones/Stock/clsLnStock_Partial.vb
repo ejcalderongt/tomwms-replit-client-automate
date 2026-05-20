@@ -5838,7 +5838,12 @@ Partial Public Class clsLnStock
                 If pBeStockRes.IdPresentacion <> 0 OrElse Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                     If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                         If pBeStockRes.Atributo_Variante_1 <> "" OrElse pBeStockRes.IdPresentacion <> 0 Then
-                            vSQL += "and (stock.idpresentacion =@idpresentacion) "
+                            '#EJC20260520_RESERVA_BYB_FIX: si la linea ya fue convertida a UMBas, el stock base puede tener IdPresentacion NULL o 0 aunque venga Variant_Code.
+                            If pBeStockRes.IdPresentacion = 0 Then
+                                vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
+                            Else
+                                vSQL += "and (stock.idpresentacion =@idpresentacion) "
+                            End If
                         Else
                             If (pBeConfigEnc.Explosion_Automatica OrElse pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking _
                                 OrElse pBeStockRes.IdPresentacion = 0) Then
@@ -15064,7 +15069,12 @@ Por favor reportar este problema a DevOps."
                 If pBeStockRes.IdPresentacion <> 0 OrElse Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                     If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                         If pBeStockRes.Atributo_Variante_1 <> "" OrElse pBeStockRes.IdPresentacion <> 0 Then
-                            vSQL += "and (stock.idpresentacion =@idpresentacion) "
+                            '#EJC20260520_RESERVA_BYB_FIX: mismo criterio para el flujo SAP; UMBas debe considerar NULL/0.
+                            If pBeStockRes.IdPresentacion = 0 Then
+                                vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
+                            Else
+                                vSQL += "and (stock.idpresentacion =@idpresentacion) "
+                            End If
                         Else
                             If (pBeConfigEnc.Explosion_Automatica OrElse pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking _
                                 OrElse pBeStockRes.IdPresentacion = 0) Then
