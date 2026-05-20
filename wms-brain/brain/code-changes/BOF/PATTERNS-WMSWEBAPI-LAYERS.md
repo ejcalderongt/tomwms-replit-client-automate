@@ -130,3 +130,69 @@ public OrdenCompraEnc GetOcByReferencia(string referencia)
   `wms-brain/brain/handoffs/codex-learning-2026-05-20-mi3-di-estatus-endpoint/PROPOSAL.md`
 - Endpoint de ejemplo: `wms-brain/brain/code-changes/BOF/PATTERNS-OC-MI3.md`
 - Catalogo estados HH: `wms-brain/brain/reference/catalogo-tarea-hh-estados.md`
+
+## Reserva de stock: arquitectura Core ya implementada (agregado 2026-05-20)
+
+El motor `WMS.DALCore/Reserva_Stock/` ya implementa el patron pipeline + contexto + logger que se considera "deseable" en discusiones recientes. **No re-inventar.** Estructura:
+
+```
+WMS.DALCore/Reserva_Stock/
+├── Compatibility/
+│   └── StockReservationFacade.cs       ← 3 sobrecargas Reserva_Stock_From_MI3 + Reserva_Stock_Internal
+├── Core/
+│   ├── Domain/
+│   │   └── ReservationContext.cs       ← ~60 propiedades + helpers AddFailure/AddLotFailure/AddZoneFailure
+│   ├── Interfaces/
+│   │   ├── IPipelineStep.cs
+│   │   ├── IReservationHandler.cs
+│   │   ├── IReservationLogger.cs
+│   │   ├── IReservationPipeline.cs
+│   │   ├── IServiceFactory.cs
+│   │   └── ReservationResultDto.cs     ← enum ReservationFailureCode (14 valores) + ReservationFailureReason + ReservationResultDto.StatusMessage
+│   └── Services/
+│       ├── ValidationStep.cs
+│       ├── EntityLoadingStep.cs
+│       ├── StockQueryStep.cs
+│       ├── DateCalculationStep.cs
+│       ├── ReservationLoopStep.cs      ← loop principal MAX_ITERATIONS=10 + Clavaud dinamico + clamping + fallbacks Explosion/UMBas
+│       ├── PostProcessingStep.cs
+│       ├── DecimalQuantityHandler.cs
+│       ├── QuantityConverter.cs
+│       └── PipelineExecutor.cs
+├── Strategies/
+│   ├── BaseReservationHandler.cs
+│   ├── PickingZoneHandler.cs
+│   ├── NonPickingZoneHandler.cs
+│   ├── CompletePackagesHandler.cs
+│   ├── IncompletePackagesHandler.cs
+│   └── UMBasExplosionHandler.cs
+├── Infrastructure/
+│   ├── ServiceFactory.cs
+│   ├── Logging/ReservationLogger.cs
+│   └── Legacy/clsLnStock_res_Facade.cs ← compat exacta con firma ByRef VB
+```
+
+### Capas (en orden de llamada)
+
+1. **Controller** (cuando aplica desde HH/WebAPI) → invoca el facade.
+2. **Compatibility/StockReservationFacade** → valida request, normaliza, construye `ReservationContext`, llama al pipeline.
+3. **Core/Services/PipelineExecutor** → ejecuta los 7 steps en secuencia con early-exit si `context.HasError` o `context.IsQuantityFullyReserved()`. `PostProcessingStep` siempre corre.
+4. **Core/Domain/ReservationContext** → estado compartido entre steps.
+5. **Strategies/*Handler** → invocados desde `ReservationLoopStep` segun `StartingPoint` (3=Picking, 4=NonPicking, 0=cadena completa).
+6. **Infrastructure/Logging/ReservationLogger** → buffer de mensajes (Checkpoint/Info/Warning/Error/Reservation).
+
+### Carpetas paralelas a IGNORAR (huerfanas)
+
+```
+WMS.StockReservation2/   ← lab antiguo, NO usar
+WMS.StockReservation3/   ← lab intermedio, NO usar
+reservastockfrommi3/     ← lab inicial, NO usar
+```
+
+Antes de borrarlas, verificar referencias con `grep -r "WMS\.StockReservation[23]\|reservastockfrommi3" --include="*.csproj" --include="*.cs"`.
+
+### Cross-ref
+
+- Paridad legacy VB vs Core: `code-changes/BOF/PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md`
+- Diagnostico tipificado (taxonomia 10 motivos): `code-changes/BOF/PATTERNS-DIAGNOSTICO-NO-RESERVA-MI3.md`
+- UMBAS reserva: `code-changes/BOF/PATTERNS-RESERVA-MI3-UMBAS.md`

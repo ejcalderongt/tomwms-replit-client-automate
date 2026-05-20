@@ -180,3 +180,26 @@ promover".
 - Cliente BYB indice: `brain/clients/byb.md`
 - Learnings BYB previos: `brain/learnings/L-023-byb-corte-operativo-2024.md`,
   `brain/learnings/L-024-byb-verificacion-half-implemented.md`
+
+## Hermano: diagnostico de no-reserva MI3 (agregado 2026-05-20)
+
+Este patron cubre el parche UMBAS aplicado en `clsLnStock_res_Partial.vb` linea 25553 (commit `d5ec5e9` `#EJCBYB20250519CKF`). Para el problema apilado — cuando la reserva NO logra completar y el sistema devuelve `"No se pudo completar la reserva"` generico — ver:
+
+- **`code-changes/BOF/PATTERNS-DIAGNOSTICO-NO-RESERVA-MI3.md`**: taxonomia de 10 motivos operativos para tipificar el resultado.
+- **`code-changes/BOF/PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md`**: matriz de paridad con `WMS.DALCore/Reserva_Stock/` (Core ya tiene `enum ReservationFailureCode` con 14 valores + `ReservationContext.FailureReasons` + `context.AddFailure(...)`).
+
+## Commits adicionales detectados en `dev_2028_merge` post-`d5ec5e9` (2026-05-19)
+
+El parche UMBAS no quedo solo. Le siguieron 7+ commits en el mismo archivo `clsLnStock_res_Partial.vb` y proyecto interface BYB:
+
+| SHA | Mensaje | Cobertura |
+|---|---|---|
+| `4806210e` | Optimizar resta de stock reservado en reserva MI3 | Core ya lo cubre via `clsLnStock_res.Restar_Stock_Reservado`. Riesgo de duplicacion. |
+| `a6d394e8` | evento_tiempo logreserva | Core: `IReservationLogger.LogCheckpoint`. Formato YAML legacy especifico. |
+| `ba305b33` | mejora de traza, correccion 1 byb reserva | Core lo cubre. |
+| `be4fbc50` | LOG! para proceso de reserva | Core lo cubre. |
+| `ff9b3f4e` | parametro de debug en proyecto interface byb | **NO en Core**. Flag debug runtime. |
+| `2c3ded78` | set debug on, cuidado!!!! | Operativo (config). |
+| `faaf8534` | Arregle el loop en clsLnStock_res_Partial.vb (line 21489) | **NO en Core** (Core no usa `GoTo`). Bug legacy: estado 102 disparaba `GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO` indefinidamente en zona picking cuando `Fecha_vence > FechaMinimaVenceStock`. Parche: solo `GoTo` la primera vez que se marca 102. |
+
+Ver detalle por commit y mapping legacy<->Core en `PATTERNS-RESERVA-PARIDAD-LEGACY-VS-CORE.md` §7.
