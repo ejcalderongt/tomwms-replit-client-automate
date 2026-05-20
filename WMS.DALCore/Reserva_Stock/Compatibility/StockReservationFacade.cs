@@ -1,10 +1,6 @@
-using System.Data;
-using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
-using WMS.StockReservation.Core.Domain;
-using WMS.StockReservation.Infrastructure;
 using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Compatibility
@@ -319,7 +315,7 @@ namespace WMS.StockReservation.Compatibility
                 var reservations = result.Reservations ?? new List<clsBeStock_res>();
 
                 if (reservations.Count == 0 && context.FailureReasons?.Count > 0)
-                    oBeStockResRequest.UltimoMensajeFallo = context.FailureReasons.First().Message;
+                    oBeStockResRequest.UltimoMensajeFallo = FormatearMotivoNoReserva(context.FailureReasons.First());
 
                 return reservations;
             }
@@ -396,6 +392,37 @@ namespace WMS.StockReservation.Compatibility
                 return $"PED_{pedido.IdPedidoEnc}";
 
             return null;
+        }
+
+        private static string FormatearMotivoNoReserva(ReservationFailureReason failure)
+        {
+            var tipo = MapearTipoNoReserva(failure.Code);
+            var motivo = string.IsNullOrWhiteSpace(failure.Message)
+                ? "No hay existencia aplicable valida para la solicitud."
+                : failure.Message.Trim();
+
+            return $"TIPO_NO_RESERVA={tipo} | {motivo}";
+        }
+
+        private static string MapearTipoNoReserva(ReservationFailureCode code)
+        {
+            return code switch
+            {
+                ReservationFailureCode.LOT_NOT_FOUND => "LOTE_NO_ENCONTRADO",
+                ReservationFailureCode.LOCATION_RESTRICTED_NO_STOCK => "UBICACION_CLIENTE_OBLIGATORIA",
+                ReservationFailureCode.PRODUCT_STATE_REQUIRED_NO_STOCK => "ESTADO_PRODUCTO_NO_APLICA",
+                ReservationFailureCode.PICKING_ZONE_REQUIRED_NO_STOCK => "SOLO_NO_PICKING_SIN_EXPLOSION",
+                ReservationFailureCode.NON_PICKING_ZONE_REQUIRED_NO_STOCK => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.RECEPTION_LOCATION_NOT_ALLOWED => "UBICACION_NO_APLICA",
+                ReservationFailureCode.ALL_STOCK_EXPIRED => "SIN_VENCIMIENTO_VALIDO",
+                ReservationFailureCode.ZONE_PRIORITY_CONFLICT => "FEFO_BLOQUEA_PICKING",
+                ReservationFailureCode.PRODUCT_NOT_FOUND => "PRODUCTO_NO_ENCONTRADO",
+                ReservationFailureCode.INVALID_QUANTITY => "CANTIDAD_INVALIDA",
+                ReservationFailureCode.STORAGE_CONDITION_MISMATCH => "CONDICION_ALMACENAJE_NO_APLICA",
+                ReservationFailureCode.MANUFACTURING_DATE_INVALID => "SIN_FECHA_MANUFACTURA_VALIDA",
+                ReservationFailureCode.NO_STOCK => "SIN_STOCK_APLICABLE",
+                _ => "RESERVA_NO_COMPLETADA"
+            };
         }
 
         private static void SafeTrace(Exception ex)
