@@ -3122,6 +3122,7 @@ Partial Public Class clsLnTrans_re_det
                     If pFilasAfectadas = 0 Then
                         '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                         '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
+                        Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No existe registro de i_nav_transacciones_out para eliminar, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
                         'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
                         clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                              pNumeroLinea:=pRecDet.No_Linea,
@@ -3134,7 +3135,7 @@ Partial Public Class clsLnTrans_re_det
                                                              pConection:=lConnection,
                                                              pTransaction:=lTrans)
 
-                        Throw New Exception("ERROR19122024B_HH_EliminarRecepcion: No se pudo eliminar el registro de i_nav_transacciones_out")
+                        Resultado += " No existia registro de i_nav_transacciones_out para eliminar "
                     Else
                         Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
                     End If
