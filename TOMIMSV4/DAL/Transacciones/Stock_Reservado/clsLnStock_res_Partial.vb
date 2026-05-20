@@ -13,6 +13,7 @@ Partial Public Class clsLnStock_res
     Private Class clsReservaMi3StockReservadoCache
         Public IdStocksReservados As System.Collections.Generic.HashSet(Of Integer)
         Public ReservadoPorStock As New System.Collections.Generic.Dictionary(Of Integer, System.Tuple(Of Double, Double))()
+        Public ListasStockRestadas As New System.Collections.Generic.Dictionary(Of String, String)(StringComparer.Ordinal)
     End Class
 
     Private Shared ReadOnly mReservaMi3StockReservadoCacheLock As New Object()
@@ -9021,6 +9022,43 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    Private Shared Function Obtener_Clave_Lista_Stock_MI3(ByVal lStock As List(Of clsBeStock)) As String
+
+        If lStock Is Nothing Then Return ""
+
+        Return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(lStock).ToString(Globalization.CultureInfo.InvariantCulture)
+
+    End Function
+
+    Private Shared Function Valor_Firma_Stock_MI3(ByVal pValor As Double) As String
+
+        Return Math.Round(pValor, 6).ToString("0.######", Globalization.CultureInfo.InvariantCulture)
+
+    End Function
+
+    Private Shared Function Obtener_Firma_Lista_Stock_MI3(ByVal lStock As List(Of clsBeStock)) As String
+
+        If lStock Is Nothing OrElse lStock.Count = 0 Then Return ""
+
+        Dim vFirma As New System.Text.StringBuilder()
+
+        For Each BeStock As clsBeStock In lStock
+            If BeStock Is Nothing Then Continue For
+
+            vFirma.Append(BeStock.IdStock.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(BeStock.IdPresentacion.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(BeStock.IdUbicacion.ToString(Globalization.CultureInfo.InvariantCulture)).Append("~").
+                Append(If(BeStock.UbicacionPicking, "1", "0")).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Cantidad)).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Peso)).Append("~").
+                Append(Valor_Firma_Stock_MI3(BeStock.Cantidad_Reservada)).Append("~").
+                Append(If(BeStock.Pallet_Completo, "1", "0")).Append("|")
+        Next
+
+        Return vFirma.ToString()
+
+    End Function
+
     Friend Shared Sub Limpiar_Cache_StockReservado_MI3(ByVal pTrace As String)
 
         If String.IsNullOrWhiteSpace(pTrace) Then Return
@@ -9071,6 +9109,28 @@ Partial Public Class clsLnStock_res
             Dim hIdStocksReservados As System.Collections.Generic.HashSet(Of Integer) = Nothing
             Dim vCacheStockReservado As clsReservaMi3StockReservadoCache =
                 Obtener_Cache_StockReservado_MI3(vReservaMi3Trace, pBeConfigEnc.Idbodega)
+            Dim vClaveListaStock As String = Obtener_Clave_Lista_Stock_MI3(lStock)
+            Dim vFirmaListaStockAntes As String = Obtener_Firma_Lista_Stock_MI3(lStock)
+
+            If vCacheStockReservado IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(vClaveListaStock) Then
+                Dim vFirmaListaStockProcesada As String = ""
+
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    If vCacheStockReservado.ListasStockRestadas.TryGetValue(vClaveListaStock, vFirmaListaStockProcesada) AndAlso
+                       String.Equals(vFirmaListaStockProcesada, vFirmaListaStockAntes, StringComparison.Ordinal) Then
+
+                        Restar_Stock_Reservado = True
+                        clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
+                                                                 "perf_restar_stock_reservado_omitido_cache_lista",
+                                                                 vCronometroTotal,
+                                                                 lStock,
+                                                                 "IdBodega", clsReservaMi3DebugTrace.Valor(pBeConfigEnc.Idbodega),
+                                                                 "ClaveLista", clsReservaMi3DebugTrace.Valor(vClaveListaStock))
+                        Return True
+                    End If
+                End SyncLock
+            End If
+
             Dim vCacheIds As String = "BD"
             Dim vCronometro As System.Diagnostics.Stopwatch = clsReservaMi3DebugTrace.IniciarCronometro()
 
@@ -9306,6 +9366,13 @@ Partial Public Class clsLnStock_res
             Next
 
             Restar_Stock_Reservado = True
+
+            If vCacheStockReservado IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(vClaveListaStock) Then
+                SyncLock mReservaMi3StockReservadoCacheLock
+                    vCacheStockReservado.ListasStockRestadas(vClaveListaStock) = Obtener_Firma_Lista_Stock_MI3(lStock)
+                End SyncLock
+            End If
+
             clsReservaMi3DebugTrace.EventoListaStock(vReservaMi3Trace,
                                                      "perf_restar_stock_reservado_fin",
                                                      vCronometroTotal,

@@ -1561,9 +1561,18 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                         If vContador_Lineas_Detalle_Pedido_Insertadas = 0 Then
 
                             If (pBePedidoEnc.IdPedidoEnc <> 0) Then
-                                clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
-                                clsPublic.Actualizar_Progreso_CR(lblprg)
+                                If Not clsLnTrans_pe_enc.Tiene_Detalle(pBePedidoEnc.IdPedidoEnc,
+                                                                       lConnectionInterface,
+                                                                       lTransInterface) Then
+
+                                    clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+
+                                Else
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no insertó líneas nuevas, pero ya tiene detalle en WMS; no se elimina la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+                                End If
                             Else
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} ya existe en el WMS {1}", NAVEnvioAlm.No, vbNewLine))
                                 clsPublic.Actualizar_Progreso_CR(lblprg)
@@ -3444,9 +3453,18 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                         If vContador_Lineas_Detalle_Pedido_Insertadas = 0 Then
 
                             If (pBePedidoEnc.IdPedidoEnc <> 0) Then
-                                clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
-                                clsPublic.Actualizar_Progreso_CR(lblprg)
+                                If Not clsLnTrans_pe_enc.Tiene_Detalle(pBePedidoEnc.IdPedidoEnc,
+                                                                       lConnectionInterface,
+                                                                       lTransInterface) Then
+
+                                    clsLnTrans_pe_enc.Eliminar_Encabezado_Pedido(pBePedidoEnc.IdPedidoEnc, lConnectionInterface, lTransInterface)
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no tiene líneas de detalle válidas para el WMS y se eliminará la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+
+                                Else
+                                    clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} no insertó líneas nuevas, pero ya tiene detalle en WMS; no se elimina la cabecera: {1}", NAVEnvioAlm.No, vbNewLine))
+                                    clsPublic.Actualizar_Progreso_CR(lblprg)
+                                End If
                             Else
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("El envío {0} ya existe en el WMS {1}", NAVEnvioAlm.No, vbNewLine))
                                 clsPublic.Actualizar_Progreso_CR(lblprg)
