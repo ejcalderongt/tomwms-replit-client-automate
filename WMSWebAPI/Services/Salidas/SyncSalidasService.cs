@@ -431,6 +431,30 @@ namespace WMSWebAPI.Services.Salidas
                 : text;
         }
 
+        private static (string? code, string? reason) ExtractTypedFailure(string processResult)
+        {
+            var detail = ExtractReservationFailureDetail(processResult);
+            const string marker = "TIPO_NO_RESERVA=";
+
+            var idx = detail.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+            if (idx < 0)
+                return (null, detail);
+
+            var valueStart = idx + marker.Length;
+            var separatorIdx = detail.IndexOf('|', valueStart);
+
+            var code = separatorIdx >= 0
+                ? detail.Substring(valueStart, separatorIdx - valueStart).Trim()
+                : detail.Substring(valueStart).Trim();
+
+            var reason = separatorIdx >= 0
+                ? detail.Substring(separatorIdx + 1).Trim()
+                : detail;
+
+            return (string.IsNullOrWhiteSpace(code) ? null : code,
+                    string.IsNullOrWhiteSpace(reason) ? detail : reason);
+        }
+
         private static (string code, string reason) ResolveFailureReason(string? processResult)
         {
             if (string.IsNullOrWhiteSpace(processResult))
@@ -440,12 +464,18 @@ namespace WMSWebAPI.Services.Salidas
                 return ("LINEA_REPROCESO", "Línea ya existente en el pedido — no fue reprocesada en este envío");
 
             if (processResult.StartsWith("ERROR_202310021910A", StringComparison.OrdinalIgnoreCase))
-                return ("RESERVA_FALLIDA", ExtractReservationFailureDetail(processResult));
+            {
+                var typed = ExtractTypedFailure(processResult);
+                return (typed.code ?? "RESERVA_FALLIDA",
+                        typed.reason ?? ExtractReservationFailureDetail(processResult));
+            }
 
             if (processResult.Equals("Ok", StringComparison.OrdinalIgnoreCase))
                 return ("SIN_RESERVA_NUEVA", "Línea procesada previamente — sin nueva reserva generada");
 
-            return ("RESERVA_FALLIDA", processResult);
+            var typedFreeText = ExtractTypedFailure(processResult);
+            return (typedFreeText.code ?? "RESERVA_FALLIDA",
+                    typedFreeText.reason ?? processResult);
         }
 
         private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, string noEnc, SqlConnection conn, SqlTransaction? tx)
