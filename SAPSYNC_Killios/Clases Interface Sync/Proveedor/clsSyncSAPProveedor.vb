@@ -291,13 +291,13 @@ Public Class clsSyncSAPProveedor : Inherits clsInterfaceBase
     End Function
     Private Shared Sub InicializarBitacoraEjecucion(cnnLog As SqlConnection)
         cnnLog.Open()
-        BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(cnnLog)
+        BeNavEjecucionEnc.IdEjecucionEnc = 0'clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
         BeNavEjecucionEnc.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface
         BeNavEjecucionEnc.Fecha = Now
         clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, cnnLog)
 
         BeNavEjecucionRes = New clsBeI_nav_ejecucion_res With {
-        .IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(cnnLog) + 1,
+        .IdEjecucionRes = 0,'clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLog) + 1,
         .IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc,
         .IdNavConfigDet = BeConfigDet.Idnavconfigdet,
         .Registros_ws = 0,
