@@ -110,6 +110,12 @@ Public Class frmEjecucion
             .Focus()
         End With
 
+        With frmLogEjecucionesInterface
+            .WindowState = FormWindowState.Normal
+            .Show()
+            .Focus()
+        End With
+
     End Sub
 
     Private Sub frmEjecucion_Shown(sender As Object, e As EventArgs) Handles Me.Shown

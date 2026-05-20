@@ -52,6 +52,54 @@ Public Class frmPedido
 
     Private BeConfigBodega As New clsBeI_nav_config_enc()
 
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA desde Pedido.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado; 3=Pickeando; 4=Pickeado; 5=Verificando; 6=Verificado.
+    ' 8=Cerrada/entregada; 11=Anulada al anular/eliminar pedido; 12=Back order. Se notifica despues del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+
+    Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(ByVal pPedidoEnc As clsBeTrans_pe_enc,
+                                                                          ByVal pEstadoPedido As Integer,
+                                                                          ByVal pEstadoFactura As Integer,
+                                                                          ByVal pEstadoGuia As Integer) As Task
+
+        If pPedidoEnc Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(pPedidoEnc.Referencia) Then Return
+        If Not AP.Bodega.Interface_SAP Then Return
+        If String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then Return
+
+        Try
+            If pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+               pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                Dim vHanaService As New SapServiceLayerClient()
+                Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
+                    pPedidoEnc.Referencia,
+                    vHanaService.SessionCookie,
+                    SapServiceLayerClient.baseUrl,
+                    pEstadoPedido,
+                    pEstadoFactura,
+                    pEstadoGuia,
+                    Now,
+                    AP.UsuarioAp.IdUsuario,
+                    Now,
+                    Now,
+                    AP.UsuarioAp.IdUsuario,
+                    Now)
+
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pe.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL desde pedido. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pPedidoEnc.IdPedidoEnc)
+        End Try
+
+    End Function
+
     '#CKFK20220325 Agregué estas dos variables para cuando el cliente se maneje en el detalle del pedido
     Private Cliente_Detalle_Ultimo_Lote As Integer
     Private Cliente_Detalle_Control_Calidad As Integer
@@ -5576,7 +5624,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub cmdEliminar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEliminar.ItemClick
+    Private Async Sub cmdEliminar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEliminar.ItemClick
 
         Try
 
@@ -5609,7 +5657,10 @@ Public Class frmPedido
                                     SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
                                     If clsLnTrans_pe_enc.Anular_Pedido(pBePedidoEnc.IdPedidoEnc,
-                                                                       .BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+                                                                        .BeMotivoAnulacionBodega.IdMotivoAnulacionBodega) Then
+
+                                        '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se anula el pedido desde el documento.
+                                        Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                         '#GT27062024: si anulamos pedido, se anula la póliza asociada)
                                         If AP.Bodega.Es_Bodega_Fiscal Then
@@ -10143,8 +10194,11 @@ Public Class frmPedido
                                                     SplashScreenManager.Default.SetWaitFormDescription("Anulando...")
 
                                                     If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                       AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                       AP.UsuarioAp.IdUsuario) Then
+                                                                                                                        AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                        AP.UsuarioAp.IdUsuario) Then
+
+                                                        '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                        Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                         '#MECR15102025: Se agrego bitacora de logs para pedidos
                                                         'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703B: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Eliminó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
@@ -10178,8 +10232,11 @@ Public Class frmPedido
                                                 SplashScreenManager.Default.SetWaitFormDescription("Eliminando...")
 
                                                 If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                                   AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                                   AP.UsuarioAp.IdUsuario) Then
+                                                                                                                    AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                    AP.UsuarioAp.IdUsuario) Then
+
+                                                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                    Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                     SplashScreenManager.CloseForm(False)
 
@@ -10243,8 +10300,11 @@ Public Class frmPedido
                                         Else
 
                                             If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                               AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                               AP.UsuarioAp.IdUsuario) Then
+                                                                                                                AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                                AP.UsuarioAp.IdUsuario) Then
+
+                                                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                                Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                                 SplashScreenManager.CloseForm(False)
 
@@ -10266,8 +10326,11 @@ Public Class frmPedido
                                     Else
 
                                         If clsLnTrans_pe_enc.Eliminar_Pedido_By_IdPedidoEnc_And_Referencia(pBePedidoEnc,
-                                                                                                           AP.Bodega.Eliminar_Documento_Salida,
-                                                                                                           AP.UsuarioAp.IdUsuario) Then
+                                                                                                            AP.Bodega.Eliminar_Documento_Salida,
+                                                                                                            AP.UsuarioAp.IdUsuario) Then
+
+                                            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 11 = Anulada cuando se elimina/anula el pedido desde el documento.
+                                            Await Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(pBePedidoEnc, 11, 11, 1)
 
                                             SplashScreenManager.CloseForm(False)
 

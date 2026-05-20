@@ -912,19 +912,19 @@ Public Class frmMenu
             If Not permiteMenu(e.Link) Then Return
         End If
 
-        'Cierra_Instancia_Previa(frmPedido_List)
+        Cierra_Instancia_Previa(frmPedido_List)
 
-        'With frmPedido_List
-        '    .Modo = frmPedido_List.pModo.Lista
-        '    If Not e Is Nothing Then
-        '        .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-        '    End If
-        '    .MdiParent = Me
-        '    .mnuNuevo.Enabled = .OpcionesMenu.Modificar
-        '    .mnuActualizar.Enabled = .OpcionesMenu.Leer
-        '    .Show()
-        '    .Focus()
-        'End With
+        With frmPedido_List
+            .Modo = frmPedido_List.pModo.Lista
+            If Not e Is Nothing Then
+                .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+            End If
+            .MdiParent = Me
+            .mnuNuevo.Enabled = .OpcionesMenu.Modificar
+            .mnuActualizar.Enabled = .OpcionesMenu.Leer
+            .Show()
+            .Focus()
+        End With
 
         SplashScreenManager.CloseForm(False)
 
@@ -1421,15 +1421,16 @@ Public Class frmMenu
     Private Sub mnuPicking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuPicking.ItemClick
         If Not permiteMenu(e.Link) Then Return
 
-        'With frmPicking_List
-        '    .Modo = frmPicking_List.pModo.Lista
-        '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-        '    .mnuNuevo.Enabled = .OpcionesMenu.Modificar
-        '    .mnuActualizar.Enabled = .OpcionesMenu.Leer
-        '    .Show()
-        '    .Focus()
-        'End With
-        'SplashScreenManager.CloseForm(False)
+        With frmPicking_List
+            .Modo = frmPicking_List.pModo.Lista
+            .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+            .mnuNuevo.Enabled = .OpcionesMenu.Modificar
+            .mnuActualizar.Enabled = .OpcionesMenu.Leer
+            .Show()
+            .Focus()
+        End With
+
+        SplashScreenManager.CloseForm(False)
 
     End Sub
 

@@ -337,6 +337,12 @@
     <Compile Include="Formas\Reportes\frmEjecuciones.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.Designer.vb">
+      <DependentUpon>frmLogEjecucionesInterface.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\frmStockPorLoteArea.Designer.vb">
       <DependentUpon>frmStockPorLoteArea.vb</DependentUpon>
     </Compile>
