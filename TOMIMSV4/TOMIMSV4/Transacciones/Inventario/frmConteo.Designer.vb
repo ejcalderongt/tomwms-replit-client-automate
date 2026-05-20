@@ -49,6 +49,8 @@ Partial Class frmConteo
         Me.lblOperador = New System.Windows.Forms.Label()
         Me.txtLicencia = New DevExpress.XtraEditors.TextEdit()
         Me.lblLicPlate = New System.Windows.Forms.Label()
+        Me.txtGondola = New DevExpress.XtraEditors.TextEdit()
+        Me.lblGondola = New System.Windows.Forms.Label()
         Me.txtCantidadStock = New System.Windows.Forms.NumericUpDown()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cmbPresentacion = New DevExpress.XtraEditors.LookUpEdit()
@@ -69,6 +71,7 @@ Partial Class frmConteo
         Me.grpReconteo.SuspendLayout()
         CType(Me.cmbOperador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLicencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtGondola.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadStock, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEstadoProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -302,6 +305,8 @@ Partial Class frmConteo
         Me.grpReconteo.Controls.Add(Me.lblOperador)
         Me.grpReconteo.Controls.Add(Me.txtLicencia)
         Me.grpReconteo.Controls.Add(Me.lblLicPlate)
+        Me.grpReconteo.Controls.Add(Me.txtGondola)
+        Me.grpReconteo.Controls.Add(Me.lblGondola)
         Me.grpReconteo.Controls.Add(Me.txtCantidadStock)
         Me.grpReconteo.Controls.Add(Me.Label1)
         Me.grpReconteo.Controls.Add(Me.cmbPresentacion)
@@ -368,6 +373,25 @@ Partial Class frmConteo
         Me.lblLicPlate.Size = New System.Drawing.Size(48, 13)
         Me.lblLicPlate.TabIndex = 35
         Me.lblLicPlate.Text = "Licencia:"
+        '
+        ' txtGondola
+        '
+        Me.txtGondola.Location = New System.Drawing.Point(564, 253)
+        Me.txtGondola.MenuManager = Me.RibbonControl
+        Me.txtGondola.Name = "txtGondola"
+        Me.txtGondola.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtGondola.Properties.ReadOnly = True
+        Me.txtGondola.Size = New System.Drawing.Size(265, 20)
+        Me.txtGondola.TabIndex = 44
+        '
+        ' lblGondola
+        '
+        Me.lblGondola.AutoSize = True
+        Me.lblGondola.Location = New System.Drawing.Point(458, 257)
+        Me.lblGondola.Name = "lblGondola"
+        Me.lblGondola.Size = New System.Drawing.Size(52, 13)
+        Me.lblGondola.TabIndex = 43
+        Me.lblGondola.Text = "Góndola:"
         '
         'txtCantidadStock
         '
@@ -477,6 +501,7 @@ Partial Class frmConteo
         Me.grpReconteo.PerformLayout()
         CType(Me.cmbOperador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLicencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtGondola.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadStock, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEstadoProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -518,6 +543,8 @@ End Sub
     Friend WithEvents Label1 As Label
     Friend WithEvents txtLicencia As DevExpress.XtraEditors.TextEdit
     Friend WithEvents lblLicPlate As Label
+    Friend WithEvents txtGondola As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lblGondola As Label
     Friend WithEvents cmbOperador As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents lblOperador As Label
     Friend WithEvents cmbTalla As DevExpress.XtraEditors.LookUpEdit
