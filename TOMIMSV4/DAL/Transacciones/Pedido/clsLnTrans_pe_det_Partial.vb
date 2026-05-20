@@ -3415,6 +3415,172 @@ Partial Public Class clsLnTrans_pe_det
 
     End Function
 
+    Public Shared Function Get_KPI_Picking_Portal_By_IdPedidoEnc_And_IdBodega(ByVal pIdPedidoEnc As Integer,
+                                                                              ByVal pIdBodega As Integer) As DataTable
+
+        Dim lDataTable As New DataTable("KPI_Picking_Portal")
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "
+                        SELECT
+                            ISNULL(fo.Fecha_Hora_Inicio, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Hora_Inicio,
+                            ISNULL(fo.Fecha_Hora_Fin, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Hora_Fin,
+                            ISNULL(a.fecha_picking, DATEADD(day, 1, m.Fecha_Pedido)) AS Fecha_Por_Linea,
+                            o.descripcion AS Tipo_Documento_Pedido,
+                            ISNULL(e.nombre, 'ND') AS Familia,
+                            f.codigo AS Codigo_Departamento,
+                            f.nombre AS Clasificacion,
+                            g.codigo AS Codigo_Categoria,
+                            g.nombretipoproducto AS Categoria,
+                            d.codigo AS Codigo_Producto,
+                            d.nombre AS Nombre_Producto,
+                            t.cantidad AS Cantidad_Solicitada,
+                            ISNULL(a.cantidad_recibida, 0) AS Cantidad_Picking,
+                            ISNULL(h.nombre, '') AS Estado_Producto,
+                            ROUND((t.cantidad - ISNULL(a.cantidad_recibida, 0)), 2) AS Diferencia_Picking,
+                            ISNULL(q.nombre, '') AS Presentacion_MPQ,
+                            CASE
+                                WHEN p.IdPresentacion > 0 AND q.factor > 0
+                                THEN ROUND(ISNULL(a.cantidad_recibida, 0) / q.factor, 2)
+                                ELSE 0
+                            END AS Cantidad_Pickeada_Cajas,
+                            ISNULL(j.IdRecepcionEnc, 0) AS Id_Recepcion,
+                            ISNULL(b.IdPickingEnc, 0) AS IdPickingEnc,
+                            ISNULL(a.fecha_vence, '19000101') AS Fecha_Vence,
+                            ISNULL(a.lic_plate, '') AS Lic_Plate,
+                            ISNULL(a.lic_plate_reemplazo, '') AS Lic_Plate_Reemplazo,
+                            ISNULL(a.IdStock_reemplazo, 0) AS IdStock_Reemplazo,
+                            ISNULL(a.IdUbicacion_reemplazo, 0) AS IdUbicacion_Reemplazo,
+                            ISNULL(l.codigo, 'Operador BOF') AS Codigo_Operador,
+                            ISNULL(l.nombres, 'Operador BOF') + ' ' + ISNULL(l.apellidos, '') AS Operador,
+                            ISNULL(n.codigo, '') AS Codigo_Comprador,
+                            ISNULL(n.nombre_comercial, '') AS Comprador,
+                            ISNULL(w.codigo, '') AS Codigo_Cliente,
+                            ISNULL(w.nombre_comercial, '') AS Cliente,
+                            m.Referencia_Documento_Ingreso_Bodega_Destino AS Solicitud_SAP
+                        FROM trans_pe_enc m WITH (NOLOCK)
+                        INNER JOIN trans_pe_det t WITH (NOLOCK) ON t.IdPedidoEnc = m.IdPedidoEnc
+                        INNER JOIN trans_pe_tipo o WITH (NOLOCK) ON o.IdTipoPedido = m.IdTipoPedido
+                        INNER JOIN producto_bodega c WITH (NOLOCK) ON c.IdProductoBodega = t.IdProductoBodega
+                        INNER JOIN producto d WITH (NOLOCK) ON d.IdProducto = c.IdProducto
+                        LEFT JOIN producto_familia e WITH (NOLOCK) ON e.IdFamilia = d.IdFamilia
+                        LEFT JOIN producto_clasificacion f WITH (NOLOCK) ON f.IdClasificacion = d.IdClasificacion
+                        LEFT JOIN producto_tipo g WITH (NOLOCK) ON g.IdTipoProducto = d.IdTipoProducto
+                        LEFT JOIN trans_picking_ubic a WITH (NOLOCK) ON t.IdPedidoDet = a.IdPedidoDet AND t.IdProductoBodega = a.IdProductoBodega
+                        LEFT JOIN trans_picking_enc b WITH (NOLOCK) ON b.IdPickingEnc = a.IdPickingEnc
+                        LEFT JOIN producto_estado h WITH (NOLOCK) ON h.IdEstado = a.IdProductoEstado
+                        LEFT JOIN (
+                            SELECT
+                                IdOperadorBodega_Pickeo,
+                                IdPickingEnc,
+                                MIN(fecha_picking) AS Fecha_Hora_Inicio,
+                                MAX(fecha_picking) AS Fecha_Hora_Fin
+                            FROM trans_picking_ubic WITH (NOLOCK)
+                            WHERE no_encontrado = 0 AND dañado_picking = 0
+                            GROUP BY IdOperadorBodega_Pickeo, IdPickingEnc
+                        ) fo ON fo.IdOperadorBodega_Pickeo = a.IdOperadorBodega_Pickeo AND fo.IdPickingEnc = a.IdPickingEnc
+                        LEFT JOIN cliente n WITH (NOLOCK) ON n.codigo COLLATE Modern_Spanish_CI_AS = m.bodega_destino COLLATE Modern_Spanish_CI_AS
+                        LEFT JOIN cliente w WITH (NOLOCK) ON w.IdCliente = m.IdCliente
+                        LEFT JOIN stock j WITH (NOLOCK) ON j.IdStock = a.IdStock
+                        LEFT JOIN operador_bodega k WITH (NOLOCK) ON k.IdOperadorBodega = a.IdOperadorBodega_Pickeo
+                        LEFT JOIN operador l WITH (NOLOCK) ON l.IdOperador = k.IdOperador
+                        LEFT JOIN (
+                            SELECT MAX(IdPresentacion) IdPresentacion, IdProducto
+                            FROM producto_presentacion WITH (NOLOCK)
+                            GROUP BY IdProducto
+                        ) p ON c.IdProducto = p.IdProducto AND d.IdProducto = p.IdProducto
+                        LEFT JOIN producto_presentacion q WITH (NOLOCK) ON p.IdPresentacion = q.IdPresentacion
+                        WHERE m.IdPedidoEnc = @IdPedidoEnc
+                          AND m.IdBodega = @IdBodega
+                          AND ISNULL(a.dañado_picking, 0) = 0
+                          AND ISNULL(a.no_encontrado, 0) = 0
+                          AND ISNULL(a.dañado_verificacion, 0) = 0
+                          AND m.estado <> 'Anulado'
+                          AND m.ubicacion <> 'TMP'
+                        ORDER BY b.IdPickingEnc, l.codigo, d.codigo"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = ltransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    ltransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_VW_Tiempos_Picking_Operador_By_IdPedidoEnc_And_IdBodega(ByVal pIdPedidoEnc As Integer,
+                                                                                       ByVal pIdBodega As Integer) As DataTable
+
+        Dim lDataTable As New DataTable("Tiempos_Picking_Operador")
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+        Dim vSQL As String = "SELECT T.*
+                              FROM VW_Tiempos_Picking_Operador T WITH (NOLOCK)
+                                          WHERE T.IdPedidoEnc = @IdPedidoEnc
+                                            AND EXISTS (
+                                                SELECT 1
+                                                FROM trans_pe_enc pe WITH (NOLOCK)
+                                                WHERE pe.IdPedidoEnc = T.IdPedidoEnc
+                                                  AND pe.IdBodega = @IdBodega
+                                            )"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = ltransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.Fill(lDataTable)
+
+                    End Using
+
+                    ltransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Get_InfoPedido_By_IdPedidoDet(ByVal pIdPedidoDet As Integer,
                                                          ByRef IdPedidoEnc As Integer,
                                                          ByRef Referencia As String,
