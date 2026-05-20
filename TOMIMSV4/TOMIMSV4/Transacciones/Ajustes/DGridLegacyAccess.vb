@@ -33,13 +33,15 @@ Public Class GridCellAccessor
         _col = col
     End Sub
 
-    ''' <summary>Valor crudo de la celda. Equivalente a Cells(c).Value.</summary>
-    Default Public Property Value As Object
+    ''' <summary>
+    ''' Valor crudo de la celda. Equivalente a Cells(c).Value.
+    ''' </summary>
+    Public Property Value As Object
         Get
             If _view Is Nothing Then Return Nothing
             Return _view.GetRowCellValue(_row, _col)
         End Get
-        Set(v As Object)
+        Set(ByVal v As Object)
             If _view Is Nothing Then Return
             _view.SetRowCellValue(_row, _col, v)
         End Set
@@ -69,9 +71,10 @@ Public Class GridCellAccessor
     End Property
 
     Public ReadOnly Property RowIndex As Integer
-        Get : Return _row : End Get
+        Get
+            Return _row
+        End Get
     End Property
-
 End Class
 
 ''' <summary>

@@ -878,7 +878,11 @@ Public Class clsLnProducto_talla_color
 		End Try
 	End Function
 
-	Public Shared Function Existe_Producto_By_Talla_and_Color(ByVal IdProducto As Integer, ByVal Idtalla As Integer, ByVal IdColor As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
+	Public Shared Function Existe_Producto_By_Talla_and_Color(ByVal IdProducto As Integer,
+															  ByVal Idtalla As Integer,
+															  ByVal IdColor As Integer,
+															  Optional ByVal pConection As SqlConnection = Nothing,
+															  Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
 
 		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim cmd As New SqlCommand()

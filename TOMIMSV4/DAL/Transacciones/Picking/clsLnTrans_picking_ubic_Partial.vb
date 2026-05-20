@@ -1,5 +1,4 @@
-﻿Imports System.Data.Common
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_picking_ubic
@@ -3861,7 +3860,10 @@ Partial Public Class clsLnTrans_picking_ubic
 
                             clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                                     BeStock.IdUbicacion,
-                                                                                    PickingUbic.Cantidad_Recibida,
+                                                                                    Get_Cantidad_Verificacion_UMBAS(PickingUbic,
+                                                                                                                    PickingUbic.Cantidad_Recibida,
+                                                                                                                    If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                                                    If(Es_Transaccion_Remota, pTransaction, ltransaction)),
                                                                                     PickingUbic.Peso_recibido,
                                                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                     If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -3956,7 +3958,10 @@ Partial Public Class clsLnTrans_picking_ubic
 
                         clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                             BeStock.IdUbicacion,
-                                                                            PickingUbic.Cantidad_Recibida,
+                                                                            Get_Cantidad_Verificacion_UMBAS(PickingUbic,
+                                                                                                            PickingUbic.Cantidad_Recibida,
+                                                                                                            If(Es_Transaccion_Remota, pConection, lConnection),
+                                                                                                            If(Es_Transaccion_Remota, pTransaction, ltransaction)),
                                                                             PickingUbic.Peso_recibido,
                                                                             If(Es_Transaccion_Remota, pConection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -4000,6 +4005,22 @@ Partial Public Class clsLnTrans_picking_ubic
             If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
     End Sub
+
+    Private Shared Function Get_Cantidad_Verificacion_UMBAS(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
+                                                            ByVal pCantidad As Double,
+                                                            ByVal pConnection As SqlConnection,
+                                                            ByVal pTransaction As SqlTransaction) As Double
+        If pBePickingUbic Is Nothing OrElse pBePickingUbic.IdPresentacion <= 0 Then Return pCantidad
+
+        Dim vFactor As Double = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pBePickingUbic.IdProductoBodega,
+                                                                                          pBePickingUbic.IdPresentacion,
+                                                                                          pConnection,
+                                                                                          pTransaction)
+
+        If vFactor <= 0 Then Return pCantidad
+
+        Return Math.Round(pCantidad * vFactor, 6)
+    End Function
 
     Public Shared Sub Marcar_Linea_No_Pickeada(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
                                                ByVal Usuario As Integer,
@@ -4246,18 +4267,11 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                    IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
                                                                                    IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
 
-                Verificacion_Auto = clsLnTrans_picking_enc.Get_VerificacionAuto_By_IdPickingEnc(pBePickingUbic.IdPickingEnc,
-                                                                                                IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
-                                                                                                IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
-                If Verificacion_Auto Then
+                If Not BeMovimientoPicking Is Nothing Then
 
-                    If Not BeMovimientoPicking Is Nothing Then
-
-                        clsLnTrans_movimientos.Eliminar_Movimiento_Verificacion_By_PickingUbic(BeMovimientoPicking,
-                                                                                               IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
-                                                                                               IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
-
-                    End If
+                    clsLnTrans_movimientos.Eliminar_Movimiento_Verificacion_By_PickingUbic(BeMovimientoPicking,
+                                                                                           IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
+                                                                                           IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
 
                 End If
 
@@ -5854,9 +5868,9 @@ Partial Public Class clsLnTrans_picking_ubic
                     If BeBodega.Agrupar_Sin_Lic_Veri_No_Cons Then
                         pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.Lote = BePickingUbic.Lote And x.Fecha_Vence = BePickingUbic.Fecha_Vence And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
                     Else
-                pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.Lote = BePickingUbic.Lote And x.Fecha_Vence = BePickingUbic.Fecha_Vence And x.Lic_plate = BePickingUbic.Lic_plate And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
+                        pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.Lote = BePickingUbic.Lote And x.Fecha_Vence = BePickingUbic.Fecha_Vence And x.Lic_plate = BePickingUbic.Lic_plate And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
 
-            End If
+                    End If
                 Else
                     pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.Lote = BePickingUbic.Lote And x.Fecha_Vence = BePickingUbic.Fecha_Vence And x.Lic_plate = BePickingUbic.Lic_plate And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
                 End If

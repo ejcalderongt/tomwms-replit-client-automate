@@ -218,5 +218,47 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { ok = false, message = ex.Message });
             }
         }
+
+        [HttpGet("mi3/di-estatus")]
+        public IActionResult GetDocumentoIngresoEstatus([FromQuery] string? referencia)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(referencia))
+                {
+                    return BadRequest(new
+                    {
+                        data = (object?)null,
+                        error = new
+                        {
+                            message = "Debe enviar referencia."
+                        }
+                    });
+                }
+
+                var data = _service.GetDocumentoIngresoEstatus(referencia);
+
+                return Ok(new
+                {
+                    data,
+                    error = (object?)null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en mi3/di-estatus");
+                var showStackTrace = _configuration.GetValue<bool>("MostrarDetallesErrores");
+
+                return StatusCode(500, new
+                {
+                    data = (object?)null,
+                    error = new
+                    {
+                        message = ex.Message,
+                        details = showStackTrace ? ex.ToString() : null
+                    }
+                });
+            }
+        }
     }
 }

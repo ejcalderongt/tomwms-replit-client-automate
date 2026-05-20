@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_ejecucion_res
@@ -29,7 +29,6 @@ Public Class clsLnI_nav_ejecucion_res
         Try
 
             Ins.Init("i_nav_ejecucion_res")
-            Ins.Add("idejecucionres", "@idejecucionres", DataType.Parametro)
             Ins.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Ins.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Ins.Add("registros_ws", "@registros_ws", DataType.Parametro)
@@ -37,7 +36,8 @@ Public Class clsLnI_nav_ejecucion_res
             Ins.Add("registros_wms", "@registros_wms", DataType.Parametro)
             Ins.Add("exitosa", "@exitosa", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim sp As String = Ins.SQLIdentity("idejecucionres")
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -50,7 +50,6 @@ Public Class clsLnI_nav_ejecucion_res
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONRES", oBeI_nav_ejecucion_res.IdEjecucionRes))
             cmd.Parameters.Add(New SqlParameter("@IDEJECUCIONENC", oBeI_nav_ejecucion_res.IdEjecucionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDNAVCONFIGDET", oBeI_nav_ejecucion_res.IdNavConfigDet))
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WS", oBeI_nav_ejecucion_res.Registros_ws))
@@ -58,13 +57,15 @@ Public Class clsLnI_nav_ejecucion_res
             cmd.Parameters.Add(New SqlParameter("@REGISTROS_WMS", oBeI_nav_ejecucion_res.Registros_WMS))
             cmd.Parameters.Add(New SqlParameter("@EXITOSA", oBeI_nav_ejecucion_res.Exitosa))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            '#EJCCKFK20260520: Cambio por Identity en tabla.
+            Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+            oBeI_nav_ejecucion_res.IdEjecucionRes = newId
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            Return 1
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -86,7 +87,6 @@ Public Class clsLnI_nav_ejecucion_res
         Try
 
             Upd.Init("i_nav_ejecucion_res")
-            Upd.Add("idejecucionres", "@idejecucionres", DataType.Parametro)
             Upd.Add("idejecucionenc", "@idejecucionenc", DataType.Parametro)
             Upd.Add("idnavconfigdet", "@idnavconfigdet", DataType.Parametro)
             Upd.Add("registros_ws", "@registros_ws", DataType.Parametro)

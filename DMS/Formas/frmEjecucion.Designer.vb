@@ -26,6 +26,9 @@ Partial Class frmEjecucion
         Me.cmdIngresos = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdSalidas = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdFechaBaseSync = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdParametrizacion = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdLogErrores = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdReiniciar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -33,15 +36,17 @@ Partial Class frmEjecucion
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.prg = New System.Windows.Forms.ProgressBar()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
+        Me.lblServerAPP = New DevExpress.XtraBars.BarButtonItem()
+        Me.lblBDAPP = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdProductos, Me.cmdPropietarios, Me.BarButtonItem2, Me.cmdIngresos, Me.cmdSalidas, Me.cmdFechaBaseSync})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdProductos, Me.BarButtonItem2, Me.cmdIngresos, Me.cmdSalidas, Me.cmdFechaBaseSync, Me.cmdParametrizacion, Me.cmdLogErrores, Me.cmdReiniciar, Me.lblServerAPP, Me.lblBDAPP})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 8
+        Me.RibbonControl.MaxItemId = 13
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.Size = New System.Drawing.Size(1370, 193)
@@ -75,10 +80,31 @@ Partial Class frmEjecucion
         '
         'cmdFechaBaseSync
         '
-        Me.cmdFechaBaseSync.Caption = "Registrar Fecha Base Sync"
+        Me.cmdFechaBaseSync.Caption = "Registrar Fecha Inicial Sincronización"
         Me.cmdFechaBaseSync.Id = 7
         Me.cmdFechaBaseSync.ImageOptions.SvgImage = CType(resources.GetObject("cmdFechaBaseSync.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdFechaBaseSync.Name = "cmdFechaBaseSync"
+        '
+        'cmdParametrizacion
+        '
+        Me.cmdParametrizacion.Caption = "Configurar horarios"
+        Me.cmdParametrizacion.Id = 8
+        Me.cmdParametrizacion.ImageOptions.SvgImage = CType(resources.GetObject("cmdParametrizacion.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdParametrizacion.Name = "cmdParametrizacion"
+        '
+        'cmdLogErrores
+        '
+        Me.cmdLogErrores.Caption = "Log Eventos"
+        Me.cmdLogErrores.Id = 9
+        Me.cmdLogErrores.ImageOptions.SvgImage = CType(resources.GetObject("cmdLogErrores.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdLogErrores.Name = "cmdLogErrores"
+        '
+        'cmdReiniciar
+        '
+        Me.cmdReiniciar.Caption = "Reiniciar Fecha Sincronización"
+        Me.cmdReiniciar.Id = 10
+        Me.cmdReiniciar.ImageOptions.SvgImage = CType(resources.GetObject("cmdReiniciar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdReiniciar.Name = "cmdReiniciar"
         '
         'RibbonPage1
         '
@@ -102,10 +128,16 @@ Partial Class frmEjecucion
         'RibbonPageGroup3
         '
         Me.RibbonPageGroup3.ItemLinks.Add(Me.cmdFechaBaseSync)
+        Me.RibbonPageGroup3.ItemLinks.Add(Me.cmdParametrizacion)
+        Me.RibbonPageGroup3.ItemLinks.Add(Me.cmdReiniciar)
+        Me.RibbonPageGroup3.ItemLinks.Add(Me.cmdLogErrores)
         Me.RibbonPageGroup3.Name = "RibbonPageGroup3"
+        Me.RibbonPageGroup3.Text = "Configuración"
         '
         'RibbonStatusBar
         '
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblServerAPP)
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblBDAPP)
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 620)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
@@ -117,7 +149,7 @@ Partial Class frmEjecucion
         Me.prg.Location = New System.Drawing.Point(0, 193)
         Me.prg.Margin = New System.Windows.Forms.Padding(4)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1370, 29)
+        Me.prg.Size = New System.Drawing.Size(1370, 173)
         Me.prg.TabIndex = 2
         Me.prg.Visible = False
         '
@@ -125,12 +157,24 @@ Partial Class frmEjecucion
         '
         Me.lblprg.BackColor = System.Drawing.Color.OldLace
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblprg.Location = New System.Drawing.Point(0, 222)
+        Me.lblprg.Location = New System.Drawing.Point(0, 366)
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(1370, 398)
+        Me.lblprg.Size = New System.Drawing.Size(1370, 254)
         Me.lblprg.TabIndex = 3
         Me.lblprg.Text = ""
+        '
+        'lblServerAPP
+        '
+        Me.lblServerAPP.Caption = "Server: "
+        Me.lblServerAPP.Id = 11
+        Me.lblServerAPP.Name = "lblServerAPP"
+        '
+        'lblBDAPP
+        '
+        Me.lblBDAPP.Caption = "BD:"
+        Me.lblBDAPP.Id = 12
+        Me.lblBDAPP.Name = "lblBDAPP"
         '
         'frmEjecucion
         '
@@ -164,4 +208,9 @@ Partial Class frmEjecucion
     Friend WithEvents lblprg As RichTextBox
     Friend WithEvents cmdFechaBaseSync As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents RibbonPageGroup3 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents cmdParametrizacion As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdLogErrores As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdReiniciar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents lblServerAPP As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents lblBDAPP As DevExpress.XtraBars.BarButtonItem
 End Class
