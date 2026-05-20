@@ -67,11 +67,11 @@ Partial Class frmEjecucion
         Me.mnuEnviarFactDeudor = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdFiltros = New DevExpress.XtraBars.BarButtonItem()
         Me.rpInterfaceSAP = New DevExpress.XtraBars.Ribbon.RibbonPage()
+        Me.rpConfiguración = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgDatosMaestros = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgIngresosInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgSalidasInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgResumen = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.rpConfiguración = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.mnuReportesI = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
@@ -399,7 +399,7 @@ Partial Class frmEjecucion
         '
         Me.cmdFiltros.Caption = "Filtros"
         Me.cmdFiltros.Id = 100
-        Me.cmdFiltros.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem5.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdFiltros.ImageOptions.SvgImage = CType(resources.GetObject("cmdFiltros.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdFiltros.Name = "cmdFiltros"
         '
         'rpInterfaceSAP
@@ -407,6 +407,12 @@ Partial Class frmEjecucion
         Me.rpInterfaceSAP.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpConfiguración, Me.rpgDatosMaestros, Me.rpgIngresosInterface, Me.rpgSalidasInterface, Me.rpgResumen})
         Me.rpInterfaceSAP.Name = "rpInterfaceSAP"
         Me.rpInterfaceSAP.Text = "Interface SAP"
+        '
+        'rpConfiguración
+        '
+        Me.rpConfiguración.ItemLinks.Add(Me.cmdFiltros)
+        Me.rpConfiguración.Name = "rpConfiguración"
+        Me.rpConfiguración.Text = "Configuración"
         '
         'rpgDatosMaestros
         '
@@ -448,12 +454,6 @@ Partial Class frmEjecucion
         Me.rpgResumen.ItemLinks.Add(Me.GetToken)
         Me.rpgResumen.Name = "rpgResumen"
         Me.rpgResumen.Text = "Resumen"
-        '
-        'rpConfiguración
-        '
-        Me.rpConfiguración.ItemLinks.Add(Me.cmdFiltros)
-        Me.rpConfiguración.Name = "rpConfiguración"
-        Me.rpConfiguración.Text = "Configuración"
         '
         'RibbonPage1
         '
@@ -543,6 +543,7 @@ Partial Class frmEjecucion
         Me.Controls.Add(Me.prg)
         Me.Controls.Add(Me.lblTLog)
         Me.Controls.Add(Me.rbMain)
+        Me.IconOptions.LargeImage = CType(resources.GetObject("frmEjecucion.IconOptions.LargeImage"), System.Drawing.Image)
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmEjecucion"
         Me.Ribbon = Me.rbMain
@@ -552,9 +553,9 @@ Partial Class frmEjecucion
         CType(Me.PopupMenu1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PopupMenu2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout
+        Me.PerformLayout()
 
-End Sub
+    End Sub
     Friend WithEvents rbMain As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents mnuActualizarProveedores As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents BarButtonItem2 As DevExpress.XtraBars.BarButtonItem

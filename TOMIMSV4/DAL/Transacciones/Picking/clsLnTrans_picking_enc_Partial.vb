@@ -2530,7 +2530,6 @@ Partial Public Class clsLnTrans_picking_enc
         Dim pEstado As String = ""
         Dim pEstadoPicking As String = ""
 
-
         Try
 
             '#CKFK20240229 Agregué esta validación para que no se actualicen los pedidos con picking 0
@@ -2588,7 +2587,6 @@ Partial Public Class clsLnTrans_picking_enc
                         enc.Estado = pEstado
 
                         clsLnTrans_pe_enc.Actualizar_Estado(enc, lConnection, lTransaction)
-
                     Next
 
                     '#GT21032025: validamos el estado no solo en el pedido, tambien el picking
