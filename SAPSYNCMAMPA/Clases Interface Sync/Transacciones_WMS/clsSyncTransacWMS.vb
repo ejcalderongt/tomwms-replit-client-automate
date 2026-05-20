@@ -17,9 +17,13 @@ Public Class clsSyncTransacWMS
     Private Shared vHanaService As SapServiceLayerClient
     Private Const TRANSAC_WMS_OK As Integer = 1
     Private Const TRANSAC_WMS_ERROR As Integer = 2
-    Private Const TRANSAC_WMS_ID_EJECUCION_ENC As Integer = 1900
-    Private Const TRANSAC_WMS_ID_NAV_CONFIG_DET As Integer = 900
+    Private Const TRANSAC_WMS_ID_EJECUCION_ENC_FALLBACK As Integer = 1900
+    Private Const TRANSAC_WMS_ID_NAV_CONFIG_DET_FALLBACK As Integer = 900
+    Private Const TRANSAC_WMS_ORIGEN As String = "TRANSAC_WMS"
+    Private Const TRANSAC_WMS_SENTIDO As String = "PULL_SAP"
     Private Const TRANSAC_WMS_PROCESS_RESULT_MAX As Integer = 250
+    Private Shared mTransacWmsIdEjecucionEnc As Integer = 0
+    Private Shared mTransacWmsIdNavConfigDet As Integer = 0
 
     Private ReadOnly DateFormats As String() = {
        "yyyy-MM-ddTHH:mm:ssK",      ' ISO con zona
@@ -107,9 +111,85 @@ Public Class clsSyncTransacWMS
                                                      causa As String,
                                                      mensaje As String) As String
 
-        Dim texto As String = $"PROCESO={ctx.Proceso};TIPO_DOC={ctx.TipoDocumento};NOENC={ctx.Documento};REF={ctx.Referencia};DOCENTRY={FormatearDocEntries(ctx.DocEntries)};ETAPA={etapa};RESULTADO={resultado};CAUSA={causa};MSG={mensaje}"
+        Dim texto As String = $"ORIGEN={TRANSAC_WMS_ORIGEN};SENTIDO={TRANSAC_WMS_SENTIDO};PROCESO={ctx.Proceso};TIPO_DOC={ctx.TipoDocumento};NOENC={ctx.Documento};REF={ctx.Referencia};DOCENTRY={FormatearDocEntries(ctx.DocEntries)};ETAPA={etapa};RESULTADO={resultado};CAUSA={causa};MSG={mensaje}"
         Return LimitarTexto(texto, TRANSAC_WMS_PROCESS_RESULT_MAX)
     End Function
+
+    Private Shared Function ObtenerIdEjecucionEncTransacWms() As Integer
+
+        Try
+
+            If mTransacWmsIdEjecucionEnc > 0 Then Return mTransacWmsIdEjecucionEnc
+
+            Dim idConfigEnc As Integer = BD.Instancia.IdConfiguracionInterface
+
+            If BeConfigEnc IsNot Nothing AndAlso BeConfigEnc.IdNavConfigEnc > 0 Then
+                idConfigEnc = BeConfigEnc.IdNavConfigEnc
+            End If
+
+            Dim beEjecucion As New clsBeI_nav_ejecucion_enc With {
+                .IdNavConfigEnc = idConfigEnc,
+                .Fecha = Now,
+                .Exitosa = False
+            }
+
+            mTransacWmsIdEjecucionEnc = clsLnI_nav_ejecucion_enc.Insertar_From_Interface(beEjecucion)
+
+            Return mTransacWmsIdEjecucionEnc
+
+        Catch
+            Return TRANSAC_WMS_ID_EJECUCION_ENC_FALLBACK
+        End Try
+
+    End Function
+
+    Private Shared Function ObtenerIdNavConfigDetTransacWms() As Integer
+
+        If mTransacWmsIdNavConfigDet > 0 Then Return mTransacWmsIdNavConfigDet
+
+        Try
+
+            Dim idConfigEnc As Integer = BD.Instancia.IdConfiguracionInterface
+
+            If BeConfigEnc IsNot Nothing AndAlso BeConfigEnc.IdNavConfigEnc > 0 Then
+                idConfigEnc = BeConfigEnc.IdNavConfigEnc
+            End If
+
+            Const sql As String = "SELECT TOP 1 det.idnavconfigdet " &
+                                  "FROM i_nav_config_det det " &
+                                  "INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
+                                  "WHERE det.idnavconfigenc = @idnavconfigenc " &
+                                  "AND (ent.nombre = @nombre OR ent.nombre LIKE @nombreLike) " &
+                                  "ORDER BY det.activo DESC, det.idnavconfigdet"
+
+            Using connection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+                Using command As New SqlCommand(sql, connection) With {.CommandType = CommandType.Text}
+                    command.Parameters.Add("@idnavconfigenc", SqlDbType.Int).Value = idConfigEnc
+                    command.Parameters.Add("@nombre", SqlDbType.NVarChar, 100).Value = TRANSAC_WMS_ORIGEN
+                    command.Parameters.Add("@nombreLike", SqlDbType.NVarChar, 110).Value = "%TRANSAC%"
+
+                    connection.Open()
+                    Dim value As Object = command.ExecuteScalar()
+
+                    If value IsNot Nothing AndAlso value IsNot DBNull.Value Then
+                        mTransacWmsIdNavConfigDet = CInt(value)
+                    End If
+                End Using
+            End Using
+
+        Catch
+            mTransacWmsIdNavConfigDet = 0
+        End Try
+
+        If mTransacWmsIdNavConfigDet <= 0 Then mTransacWmsIdNavConfigDet = TRANSAC_WMS_ID_NAV_CONFIG_DET_FALLBACK
+        Return mTransacWmsIdNavConfigDet
+
+    End Function
+
+    Private Shared Sub ReiniciarContextoLogTransacWms()
+        mTransacWmsIdEjecucionEnc = 0
+        mTransacWmsIdNavConfigDet = 0
+    End Sub
 
     Private Shared Sub RegistrarTrazaTransacWms(ctx As TransacWmsTraceContext,
                                                 etapa As String,
@@ -125,8 +205,8 @@ Public Class clsSyncTransacWMS
         Try
             clsLnI_nav_ejecucion_det_error.Inserta_Log(detalle,
                                                        referencia,
-                                                       TRANSAC_WMS_ID_EJECUCION_ENC,
-                                                       TRANSAC_WMS_ID_NAV_CONFIG_DET)
+                                                       ObtenerIdEjecucionEncTransacWms(),
+                                                       ObtenerIdNavConfigDetTransacWms())
         Catch logEx As Exception
             Try
                 clsLnLog_error_wms.Agregar_Error($"TRANSAC_WMS_LOG_FALLO|{detalle}|LOG_ERROR={NormalizarMensajeError(logEx)}")
@@ -418,6 +498,8 @@ Public Class clsSyncTransacWMS
         Dim sw As New Stopwatch()
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             ' Inicia cronómetro y anuncia inicio
             sw.Start()
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de pedidos de cliente desde SAP.")
@@ -446,7 +528,14 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             ' Error: detener cronómetro y reportar tiempo + log
             If sw.IsRunning Then sw.Stop()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
+            Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("PULL_TRANSAC_WMS",
+                                                                        "",
+                                                                        pNoDocumento,
+                                                                        pNoDocumento,
+                                                                        "",
+                                                                        "",
+                                                                        New List(Of Integer)())
+            RegistrarTrazaTransacWms(ctx, "PULL_TRANSAC_WMS", "ERROR", "EXCEPCION_GENERAL", NormalizarMensajeError(ex))
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
         Finally
@@ -904,6 +993,8 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             Dim ejecutarImportacion As Boolean = True
 
             If ejecutarImportacion Then
@@ -1003,6 +1094,7 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
 
             Dim ejecutarImportacion As Boolean = True
 
@@ -1641,6 +1733,8 @@ Public Class clsSyncTransacWMS
         Dim sw As New Stopwatch()
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             ' Inicia cronómetro y anuncia inicio
             sw.Start()
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de anulación de devoluciones de cliente desde SAP.")
@@ -1669,7 +1763,14 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             ' Error: detener cronómetro y reportar tiempo + log
             If sw.IsRunning Then sw.Stop()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
+            Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("PULL_TRANSAC_WMS",
+                                                                        "15",
+                                                                        pNoDocumento,
+                                                                        pNoDocumento,
+                                                                        "",
+                                                                        "",
+                                                                        New List(Of Integer)())
+            RegistrarTrazaTransacWms(ctx, "PULL_TRANSAC_WMS", "ERROR", "EXCEPCION_GENERAL", NormalizarMensajeError(ex))
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
         Finally
@@ -2034,6 +2135,8 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             Dim ejecutarImportacion As Boolean = True
 
             If ejecutarImportacion Then

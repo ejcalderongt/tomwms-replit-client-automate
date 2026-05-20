@@ -88,7 +88,9 @@ Partial Public Class clsLnI_nav_ejecucion_enc
         Return " enc.fecha >= @FechaDel " &
                " AND enc.fecha < @FechaAl " &
                " AND (@Proceso = '' OR EXISTS (SELECT 1 FROM i_nav_config_det fdet INNER JOIN i_nav_ent fent ON fdet.idnavent = fent.idnavent WHERE fdet.idnavconfigenc = enc.idnavconfigenc AND fent.nombre LIKE @ProcesoLike)) " &
-               " AND (@Transaccion = '' OR EXISTS (SELECT 1 FROM i_nav_config_det fdet INNER JOIN i_nav_ent fent ON fdet.idnavent = fent.idnavent WHERE fdet.idnavconfigenc = enc.idnavconfigenc AND (fent.nombre LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), fdet.idnavconfigdet) = @Transaccion))) " &
+               " AND (@Transaccion = '' " &
+               "      OR EXISTS (SELECT 1 FROM i_nav_config_det fdet INNER JOIN i_nav_ent fent ON fdet.idnavent = fent.idnavent WHERE fdet.idnavconfigenc = enc.idnavconfigenc AND (fent.nombre LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), fdet.idnavconfigdet) = @Transaccion)) " &
+               "      OR EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error ferr WHERE ferr.idejecucionenc = enc.idejecucionenc AND (ISNULL(ferr.error, '') LIKE @TransaccionLike OR ISNULL(ferr.referencia, '') LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), ferr.idnavconfigdet) = @Transaccion))) " &
                " AND (@Texto = '' " &
                "      OR CONVERT(NVARCHAR(20), enc.idejecucionenc) LIKE @TextoLike " &
                "      OR ISNULL(cfg.nombre, '') LIKE @TextoLike " &
@@ -111,6 +113,12 @@ Partial Public Class clsLnI_nav_ejecucion_enc
                "       ISNULL(emp.nombre, '') AS Empresa, " &
                "       ISNULL(bod.nombre, '') AS Bodega, " &
                "       ISNULL(prop.nombre_comercial, '') AS Propietario, " &
+               "       CASE WHEN EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error err WHERE err.idejecucionenc = enc.idejecucionenc AND ISNULL(err.error, '') LIKE '%TRANSAC_WMS%') " &
+               "             OR EXISTS (SELECT 1 FROM i_nav_config_det det INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent WHERE det.idnavconfigenc = enc.idnavconfigenc AND ent.nombre LIKE '%TRANSAC%') " &
+               "            THEN 'TRANSAC_WMS' ELSE '' END AS Origen, " &
+               "       CASE WHEN EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error err WHERE err.idejecucionenc = enc.idejecucionenc AND ISNULL(err.error, '') LIKE '%TRANSAC_WMS%') " &
+               "             OR EXISTS (SELECT 1 FROM i_nav_config_det det INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent WHERE det.idnavconfigenc = enc.idnavconfigenc AND ent.nombre LIKE '%TRANSAC%') " &
+               "            THEN 'PULL SAP' ELSE '' END AS Sentido, " &
                "       ISNULL(STUFF((SELECT DISTINCT ', ' + ent.nombre " &
                "                     FROM i_nav_config_det det " &
                "                     INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
@@ -134,6 +142,8 @@ Partial Public Class clsLnI_nav_ejecucion_enc
                "       res.idejecucionenc AS IdEjecucionEnc, " &
                "       res.idnavconfigdet AS IdNavConfigDet, " &
                "       ISNULL(ent.nombre, '') AS Proceso, " &
+               "       CASE WHEN ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'TRANSAC_WMS' ELSE '' END AS Origen, " &
+               "       CASE WHEN ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'PULL SAP' ELSE '' END AS Sentido, " &
                "       res.registros_ws AS RegistrosWS, " &
                "       res.registros_ti AS RegistrosTI, " &
                "       res.registros_wms AS RegistrosWMS, " &
@@ -159,6 +169,8 @@ Partial Public Class clsLnI_nav_ejecucion_enc
                "       err.idejecucionenc AS IdEjecucionEnc, " &
                "       err.idnavconfigdet AS IdNavConfigDet, " &
                "       ISNULL(ent.nombre, '') AS Proceso, " &
+               "       CASE WHEN ISNULL(err.error, '') LIKE '%TRANSAC_WMS%' OR ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'TRANSAC_WMS' ELSE '' END AS Origen, " &
+               "       CASE WHEN ISNULL(err.error, '') LIKE '%TRANSAC_WMS%' OR ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'PULL SAP' ELSE '' END AS Sentido, " &
                "       err.fecha AS Fecha, " &
                "       err.referencia AS Referencia, " &
                "       err.error AS Error, " &
@@ -176,7 +188,7 @@ Partial Public Class clsLnI_nav_ejecucion_enc
                "LEFT JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
                "WHERE " & GetFiltroLogEjecuciones() &
                " AND (@Proceso = '' OR ISNULL(ent.nombre, '') LIKE @ProcesoLike) " &
-               " AND (@Transaccion = '' OR ISNULL(ent.nombre, '') LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), err.idnavconfigdet) = @Transaccion) " &
+               " AND (@Transaccion = '' OR ISNULL(ent.nombre, '') LIKE @TransaccionLike OR ISNULL(err.error, '') LIKE @TransaccionLike OR ISNULL(err.referencia, '') LIKE @TransaccionLike OR CONVERT(NVARCHAR(20), err.idnavconfigdet) = @Transaccion) " &
                "ORDER BY err.idejecucionenc DESC, err.fecha DESC, err.idejecuciondet DESC"
 
     End Function

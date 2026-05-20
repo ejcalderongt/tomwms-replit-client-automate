@@ -4,18 +4,29 @@ Imports System.Reflection
 
 Public Class frmLogEjecucionesInterface
 
+    Private Const FILTRO_TRANSAC_WMS As String = "TRANSAC_WMS"
     Private mDataSet As DataSet
+    Private mAplicarFiltroTransacWmsDefault As Boolean = True
+
+    Public Sub New()
+        InitializeComponent()
+    End Sub
+
+    Public Sub New(ByVal pAplicarFiltroTransacWmsDefault As Boolean)
+        Me.New()
+        mAplicarFiltroTransacWmsDefault = pAplicarFiltroTransacWmsDefault
+    End Sub
 
     Private Sub frmLogEjecucionesInterface_Load(sender As Object, e As EventArgs) Handles Me.Load
-        InicializarFiltros()
+        InicializarFiltros(mAplicarFiltroTransacWmsDefault)
         Cargar()
     End Sub
 
-    Private Sub InicializarFiltros()
+    Private Sub InicializarFiltros(Optional ByVal pAplicarFiltroTransacWms As Boolean = True)
         dtDesde.EditValue = Date.Today.AddDays(-7)
         dtHasta.EditValue = Date.Today
         txtTexto.EditValue = String.Empty
-        txtTransaccion.EditValue = String.Empty
+        txtTransaccion.EditValue = If(pAplicarFiltroTransacWms, FILTRO_TRANSAC_WMS, String.Empty)
         txtProceso.EditValue = String.Empty
     End Sub
 
@@ -111,6 +122,8 @@ Public Class frmLogEjecucionesInterface
         SetCaption(gvEjecuciones, "Empresa", "Empresa")
         SetCaption(gvEjecuciones, "Bodega", "Bodega")
         SetCaption(gvEjecuciones, "Propietario", "Propietario")
+        SetCaption(gvEjecuciones, "Origen", "Origen")
+        SetCaption(gvEjecuciones, "Sentido", "Sentido")
         SetCaption(gvEjecuciones, "Procesos", "Procesos")
         SetCaption(gvEjecuciones, "CantidadResultados", "Resultados")
         SetCaption(gvEjecuciones, "CantidadErrores", "Errores")
@@ -125,6 +138,8 @@ Public Class frmLogEjecucionesInterface
         SetCaption(gvResultados, "IdEjecucionEnc", "Id Ejecucion")
         SetCaption(gvResultados, "IdNavConfigDet", "Id Det Config")
         SetCaption(gvResultados, "Proceso", "Proceso")
+        SetCaption(gvResultados, "Origen", "Origen")
+        SetCaption(gvResultados, "Sentido", "Sentido")
         SetCaption(gvResultados, "RegistrosWS", "Registros WS")
         SetCaption(gvResultados, "RegistrosTI", "Registros TI")
         SetCaption(gvResultados, "RegistrosWMS", "Registros WMS")
@@ -140,6 +155,8 @@ Public Class frmLogEjecucionesInterface
         SetCaption(gvErrores, "IdEjecucionEnc", "Id Ejecucion")
         SetCaption(gvErrores, "IdNavConfigDet", "Id Det Config")
         SetCaption(gvErrores, "Proceso", "Proceso")
+        SetCaption(gvErrores, "Origen", "Origen")
+        SetCaption(gvErrores, "Sentido", "Sentido")
         SetCaption(gvErrores, "Fecha", "Fecha")
         SetCaption(gvErrores, "Referencia", "Documento / Referencia")
         SetCaption(gvErrores, "Error", "Error")
@@ -185,7 +202,7 @@ Public Class frmLogEjecucionesInterface
     End Sub
 
     Private Sub cmdLimpiar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdLimpiar.ItemClick
-        InicializarFiltros()
+        InicializarFiltros(False)
         gvEjecuciones.ActiveFilter.Clear()
         gvResultados.ActiveFilter.Clear()
         gvErrores.ActiveFilter.Clear()
