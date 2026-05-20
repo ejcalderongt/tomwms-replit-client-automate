@@ -4079,6 +4079,23 @@ Partial Public Class clsLnTrans_picking_ubic
                 End If
             End Using
 
+            Dim vSqlStockConPickingActivo As String = "SELECT COUNT(1)
+                                                       FROM trans_picking_ubic
+                                                       WHERE IdStock = @IdStock
+                                                         AND ISNULL(activo, 1) = 1
+                                                         AND (ISNULL(cantidad_recibida, 0) > 0
+                                                              OR ISNULL(cantidad_verificada, 0) > 0
+                                                              OR ISNULL(cantidad_despachada, 0) > 0)"
+
+            Using cmd As New SqlCommand(vSqlStockConPickingActivo, vConnection, vTransaction)
+                cmd.Parameters.Add(New SqlParameter("@IdStock", pBePickingUbic.IdStock))
+
+                If CInt(cmd.ExecuteScalar()) > 0 Then
+                    If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                    Return 0
+                End If
+            End Using
+
             Dim BeStockActual As clsBeStock = clsLnStock.Get_Single_Stock_By_IdStock(pBePickingUbic.IdStock,
                                                                                      vConnection,
                                                                                      vTransaction)
