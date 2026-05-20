@@ -2,6 +2,7 @@
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.Utils
+Imports DevExpress.XtraCharts
 Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
 Imports DevExpress.Xpf.Ribbon
 Imports DevExpress.XtraBars
@@ -489,7 +490,7 @@ Public Class frmPedido_List
         Dim vPorcentajeVerificada As Decimal = Calcular_Porcentaje(vVerificada, vSolicitada)
         Dim vPorcentajeDespachada As Decimal = Calcular_Porcentaje(vDespachada, vSolicitada)
         Dim vReprocesos As Integer = Contar_Reprocesos(pDetalle, pKpiPortal)
-        Dim vOperadores As DataTable = Crear_DataTable_Operadores(pDetalle, pKpiPortal)
+        Dim vOperadores As DataTable = Crear_DataTable_Operadores(pDetalle, pKpiPortal, vSolicitada)
         Dim vDetalleReprocesos As DataTable = Crear_DataTable_Reprocesos(pDetalle, pKpiPortal)
 
         Dim frmIndicadores As New XtraForm With {
@@ -509,7 +510,7 @@ Public Class frmPedido_List
             .BackColor = Color.FromArgb(246, 248, 251)
         }
         vRoot.RowStyles.Add(New RowStyle(SizeType.Absolute, 58))
-        vRoot.RowStyles.Add(New RowStyle(SizeType.Absolute, 166))
+        vRoot.RowStyles.Add(New RowStyle(SizeType.Absolute, 138))
         vRoot.RowStyles.Add(New RowStyle(SizeType.Percent, 100))
 
         Dim vHeader As New PanelControl With {
@@ -520,8 +521,10 @@ Public Class frmPedido_List
         vHeader.Appearance.BackColor = Color.FromArgb(246, 248, 251)
         vHeader.Appearance.Options.UseBackColor = True
 
+        Dim vFormatoCantidad As String = Get_Formato_Cantidad_Indicador()
+
         Dim vTitulo As New LabelControl With {
-            .Text = String.Format("Pedido {0} | Ref. {1} | Lineas {2:n0}",
+            .Text = String.Format("Pedido {0} | Ref. {1} | Líneas {2:n0}",
                                   pIdPedidoEnc,
                                   pReferencia,
                                   If(pDetalle Is Nothing, 0, pDetalle.Rows.Count)),
@@ -532,8 +535,8 @@ Public Class frmPedido_List
         vTitulo.Appearance.Options.UseForeColor = True
 
         Dim vSubTitulo As New LabelControl With {
-            .Text = String.Format("Solicitado {0:n2} | Picking {1:n2}% | Verificacion {2:n2}% | Despacho {3:n2}% | Pick-Verif prom. {4:n1} min | Reprocesos {5:n0}",
-                                  vSolicitada,
+            .Text = String.Format("Solicitado {0} | Picking {1:n2}% | Verificación {2:n2}% | Despacho {3:n2}% | Pick-Verif prom. {4:n1} min | Reprocesos {5:n0}",
+                                  vSolicitada.ToString(vFormatoCantidad),
                                   vPorcentajePicking,
                                   vPorcentajeVerificada,
                                   vPorcentajeDespachada,
@@ -558,14 +561,22 @@ Public Class frmPedido_List
             vPanelProgreso.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 16.66!))
         Next
 
-        vPanelProgreso.Controls.Add(Crear_Panel_Progreso("Picking", vPorcentajePicking, String.Format("{0:n2} / {1:n2}", vPicking, vSolicitada), Color.FromArgb(42, 111, 196)), 0, 0)
-        vPanelProgreso.Controls.Add(Crear_Panel_Progreso("Verificacion", vPorcentajeVerificada, String.Format("{0:n2} / {1:n2}", vVerificada, vSolicitada), Color.FromArgb(38, 150, 120)), 1, 0)
-        vPanelProgreso.Controls.Add(Crear_Panel_Progreso("Despacho", vPorcentajeDespachada, String.Format("{0:n2} / {1:n2}", vDespachada, vSolicitada), Color.FromArgb(88, 128, 76)), 2, 0)
-        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Pick-Verif", String.Format("{0:n1} min", vPromedioMinutos), "Tiempo promedio por linea", Color.FromArgb(116, 83, 168)), 3, 0)
-        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Operadores", String.Format("{0:n0}", If(vOperadores Is Nothing, 0, vOperadores.Rows.Count)), "Con actividad en el pedido", Color.FromArgb(198, 124, 38)), 4, 0)
+        Dim vAvanceGlobal As Decimal = Math.Min(vPorcentajePicking, Math.Min(vPorcentajeVerificada, vPorcentajeDespachada))
+        Dim vEstadoGlobal As String = Get_Estado_Progreso_Pedido(vPorcentajePicking, vPorcentajeVerificada, vPorcentajeDespachada)
+        Dim vPendientePicking As Decimal = Math.Max(0D, vSolicitada - vPicking)
+        Dim vPendienteVerificacion As Decimal = Math.Max(0D, vSolicitada - vVerificada)
+        Dim vPendienteDespacho As Decimal = Math.Max(0D, vSolicitada - vDespachada)
+        Dim vTopOperador As String = Get_Top_Operador(vOperadores)
+
+        vPanelProgreso.Controls.Add(Crear_Panel_Progreso("Estado pedido", vAvanceGlobal, vEstadoGlobal, Get_Color_Estado_Progreso(vAvanceGlobal)), 0, 0)
+        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Pend. picking", vPendientePicking.ToString(vFormatoCantidad), String.Format("Pickeado {0}", vPicking.ToString(vFormatoCantidad)), Color.FromArgb(42, 111, 196)), 1, 0)
+        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Pend. verif.", vPendienteVerificacion.ToString(vFormatoCantidad), String.Format("Verificado {0}", vVerificada.ToString(vFormatoCantidad)), Color.FromArgb(38, 150, 120)), 2, 0)
+        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Pend. despacho", vPendienteDespacho.ToString(vFormatoCantidad), String.Format("Despachado {0}", vDespachada.ToString(vFormatoCantidad)), Color.FromArgb(88, 128, 76)), 3, 0)
+        vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Top operador", vTopOperador, "Mayor cantidad procesada", Color.FromArgb(198, 124, 38)), 4, 0)
         vPanelProgreso.Controls.Add(Crear_Panel_Kpi("Reprocesos", String.Format("{0:n0}", vReprocesos), "Reemplazos detectados", If(vReprocesos > 0, Color.FromArgb(190, 72, 68), Color.FromArgb(96, 128, 96))), 5, 0)
 
         Dim vTabs As New DevExpress.XtraTab.XtraTabControl With {.Dock = DockStyle.Fill}
+        vTabs.TabPages.Add(Crear_Tab_Resumen_Visual(pDetalle, vOperadores, vSolicitada, vPicking, vVerificada, vDespachada))
         vTabs.TabPages.Add(Crear_Tab_Grid_Indicadores("Progreso pedido", pDetalle))
 
         If vOperadores IsNot Nothing AndAlso vOperadores.Rows.Count > 0 Then
@@ -577,7 +588,7 @@ Public Class frmPedido_List
         End If
 
         If pKpiPortal IsNot Nothing AndAlso pKpiPortal.Rows.Count > 0 Then
-            vTabs.TabPages.Add(Crear_Tab_Grid_Indicadores("KPI portal", pKpiPortal))
+            vTabs.TabPages.Add(Crear_Tab_Grid_Indicadores("Detalle picking", pKpiPortal))
         End If
 
         If pTiempos IsNot Nothing AndAlso pTiempos.Rows.Count > 0 Then
@@ -616,18 +627,532 @@ Public Class frmPedido_List
     Private Function Crear_Tab_Grid_Indicadores(ByVal pTitulo As String, ByVal pDataSource As DataTable) As DevExpress.XtraTab.XtraTabPage
 
         Dim vPage As New DevExpress.XtraTab.XtraTabPage With {.Text = pTitulo}
+        Dim vRoot As New TableLayoutPanel With {
+            .Dock = DockStyle.Fill,
+            .ColumnCount = 1,
+            .RowCount = 2
+        }
+        vRoot.RowStyles.Add(New RowStyle(SizeType.Percent, 100))
+        vRoot.RowStyles.Add(New RowStyle(SizeType.Absolute, 48))
+
         Dim vGrid As New GridControl With {.Dock = DockStyle.Fill, .DataSource = pDataSource}
         Dim vView As New GridView(vGrid)
 
         vGrid.MainView = vView
         vGrid.ViewCollection.Add(vView)
+        vGrid.ForceInitialize()
         Configurar_Grid_Indicadores_Pedido(vView)
+        Configurar_Grid_Indicadores_Por_Tab(vView, pTitulo)
         AddHandler vView.RowCellStyle, AddressOf Indicadores_RowCellStyle
-        vPage.Controls.Add(vGrid)
+        AddHandler vView.CustomColumnDisplayText, AddressOf Indicadores_CustomColumnDisplayText
+        vRoot.Controls.Add(vGrid, 0, 0)
+        vRoot.Controls.Add(Crear_Panel_Totales_Grid(pDataSource), 0, 1)
+        vPage.Controls.Add(vRoot)
 
         Return vPage
 
     End Function
+
+    Private Sub Configurar_Grid_Indicadores_Por_Tab(ByVal pView As GridView, ByVal pTitulo As String)
+
+        If pView Is Nothing Then
+            Return
+        End If
+
+        If String.Equals(pTitulo, "Operadores", StringComparison.OrdinalIgnoreCase) Then
+            Configurar_Grid_Ranking_Operadores(pView)
+        End If
+
+    End Sub
+
+    Private Sub Configurar_Grid_Ranking_Operadores(ByVal pView As GridView)
+
+        Try
+            pView.OptionsView.ShowGroupPanel = False
+
+            For Each vColumn As DevExpress.XtraGrid.Columns.GridColumn In pView.Columns
+                vColumn.GroupIndex = -1
+            Next
+
+            Configurar_Orden_Columna(pView, "Ranking", 0, 58)
+            Configurar_Orden_Columna(pView, "Operador", 1, 180)
+            Configurar_Orden_Columna(pView, "Rol", 2, 110)
+            Configurar_Orden_Columna(pView, "Lineas", 3, 70)
+            Configurar_Orden_Columna(pView, "Cantidad_Procesada", 4, 110)
+            Configurar_Orden_Columna(pView, "Participacion_Orden", 5, 90)
+            Configurar_Orden_Columna(pView, "Tiempo", 6, 90)
+            Configurar_Orden_Columna(pView, "Lineas_Por_Hora", 7, 100)
+            Configurar_Orden_Columna(pView, "Porcentaje", 8, 85)
+            Configurar_Orden_Columna(pView, "Reprocesos", 9, 85)
+
+            Ocultar_Columna_Grid(pView, "Cantidad_Solicitada")
+            Ocultar_Columna_Grid(pView, "Minutos_Promedio")
+            Ocultar_Columna_Grid(pView, "Minutos_Total")
+            Ocultar_Columna_Grid(pView, "Minutos_Conteo")
+
+            If Not pView.Columns("Ranking") Is Nothing Then
+                pView.Columns("Ranking").SortOrder = DevExpress.Data.ColumnSortOrder.Ascending
+            End If
+
+            pView.BestFitColumns()
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
+    Private Sub Configurar_Orden_Columna(ByVal pView As GridView,
+                                          ByVal pFieldName As String,
+                                          ByVal pVisibleIndex As Integer,
+                                          ByVal pWidth As Integer)
+
+        If pView Is Nothing OrElse pView.Columns(pFieldName) Is Nothing Then
+            Return
+        End If
+
+        With pView.Columns(pFieldName)
+            .Visible = True
+            .VisibleIndex = pVisibleIndex
+            .Width = pWidth
+        End With
+
+    End Sub
+
+    Private Function Crear_Panel_Totales_Grid(ByVal pDataSource As DataTable) As PanelControl
+
+        Dim vPanel As New PanelControl With {.Dock = DockStyle.Fill, .Padding = New Padding(8, 4, 8, 4)}
+        vPanel.Appearance.BackColor = Color.FromArgb(241, 245, 250)
+        vPanel.Appearance.BorderColor = Color.FromArgb(210, 216, 224)
+        vPanel.Appearance.Options.UseBackColor = True
+        vPanel.Appearance.Options.UseBorderColor = True
+
+        Dim vTexto As New LabelControl With {.Dock = DockStyle.Fill, .AutoSizeMode = LabelAutoSizeMode.None}
+        vTexto.Appearance.Font = New Font("Segoe UI", 9.0!, FontStyle.Bold)
+        vTexto.Appearance.ForeColor = Color.FromArgb(38, 45, 58)
+        vTexto.Appearance.Options.UseForeColor = True
+        vTexto.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center
+        vTexto.Appearance.TextOptions.Trimming = DevExpress.Utils.Trimming.EllipsisCharacter
+        vTexto.Text = Crear_Texto_Totales_Grid(pDataSource)
+
+        vPanel.Controls.Add(vTexto)
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_Texto_Totales_Grid(ByVal pDataSource As DataTable) As String
+
+        If pDataSource Is Nothing OrElse pDataSource.Rows.Count = 0 Then
+            Return "Totales: sin datos"
+        End If
+
+        Dim vPartes As New List(Of String)
+        Dim vFormatoCantidad As String = Get_Formato_Cantidad_Indicador()
+
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Solicitada", "Solicitado", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Picking", "Picking", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Verificada", "Verificado", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Despachada", "Despachado", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Procesada", "Procesado", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Cantidad_Reservada", "Reservado", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Diferencia_Picking", "Dif. picking", vFormatoCantidad)
+        Agregar_Total_Texto(vPartes, pDataSource, "Participacion_Orden", "% orden", "n2")
+        Agregar_Total_Texto(vPartes, pDataSource, "Reprocesos", "Reprocesos", "n0")
+        Agregar_Totales_Genericos_Texto(vPartes, pDataSource, vFormatoCantidad)
+
+        If vPartes.Count = 0 Then
+            vPartes.Add(String.Format("Registros: {0:n0}", pDataSource.Rows.Count))
+        End If
+
+        Return "Totales | " & String.Join("   |   ", vPartes)
+
+    End Function
+
+    Private Sub Agregar_Total_Texto(ByVal pPartes As List(Of String),
+                                    ByVal pDt As DataTable,
+                                    ByVal pFieldName As String,
+                                    ByVal pEtiqueta As String,
+                                    ByVal pFormato As String)
+
+        If pDt Is Nothing OrElse Not pDt.Columns.Contains(pFieldName) Then
+            Return
+        End If
+
+        Dim vTotal As Decimal = 0D
+
+        For Each vRow As DataRow In pDt.Rows
+            vTotal += Get_Decimal_Row(vRow, pFieldName)
+        Next
+
+        pPartes.Add(String.Format("{0}: {1}", pEtiqueta, vTotal.ToString(pFormato)))
+
+    End Sub
+
+    Private Sub Agregar_Totales_Genericos_Texto(ByVal pPartes As List(Of String),
+                                                ByVal pDt As DataTable,
+                                                ByVal pFormatoCantidad As String)
+
+        If pDt Is Nothing Then
+            Return
+        End If
+
+        For Each vColumn As DataColumn In pDt.Columns
+            Dim vNombre As String = vColumn.ColumnName
+            Dim vNombreLower As String = vNombre.ToLowerInvariant()
+
+            Select Case vNombreLower
+                Case "cantidad_solicitada",
+                     "cantidad_picking",
+                     "cantidad_verificada",
+                     "cantidad_despachada",
+                     "cantidad_procesada",
+                     "cantidad_reservada",
+                     "diferencia_picking",
+                     "reprocesos"
+                    Continue For
+            End Select
+
+            If Not Es_Columna_Numerica(vColumn.DataType) Then
+                Continue For
+            End If
+
+            If Not (vNombreLower.Contains("cantidad") OrElse
+                    vNombreLower.Contains("diferencia") OrElse
+                    vNombreLower.Contains("reproceso")) Then
+                Continue For
+            End If
+
+            Dim vEtiqueta As String = vNombre.Replace("_", " ")
+
+            If pPartes.Exists(Function(x) x.StartsWith(vEtiqueta & ":", StringComparison.OrdinalIgnoreCase)) Then
+                Continue For
+            End If
+
+            Dim vTotal As Decimal = 0D
+            For Each vRow As DataRow In pDt.Rows
+                vTotal += Get_Decimal_Row(vRow, vNombre)
+            Next
+
+            pPartes.Add(String.Format("{0}: {1}", vEtiqueta, vTotal.ToString(If(vNombreLower.Contains("reproceso"), "n0", pFormatoCantidad))))
+
+            If pPartes.Count >= 8 Then
+                Exit For
+            End If
+        Next
+
+    End Sub
+
+    Private Function Es_Columna_Numerica(ByVal pType As Type) As Boolean
+
+        Dim vType As Type = Nullable.GetUnderlyingType(pType)
+        If vType Is Nothing Then
+            vType = pType
+        End If
+
+        Return vType Is GetType(Decimal) OrElse
+               vType Is GetType(Double) OrElse
+               vType Is GetType(Single) OrElse
+               vType Is GetType(Integer) OrElse
+               vType Is GetType(Long) OrElse
+               vType Is GetType(Short)
+
+    End Function
+
+    Private Function Crear_Tab_Resumen_Visual(ByVal pDetalle As DataTable,
+                                              ByVal pOperadores As DataTable,
+                                              ByVal pSolicitada As Decimal,
+                                              ByVal pPicking As Decimal,
+                                              ByVal pVerificada As Decimal,
+                                              ByVal pDespachada As Decimal) As DevExpress.XtraTab.XtraTabPage
+
+        Dim vPage As New DevExpress.XtraTab.XtraTabPage With {.Text = "Resumen visual"}
+        Dim vRoot As New TableLayoutPanel With {
+            .Dock = DockStyle.Fill,
+            .ColumnCount = 2,
+            .RowCount = 2,
+            .Padding = New Padding(10),
+            .BackColor = Color.FromArgb(246, 248, 251)
+        }
+        vRoot.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 58.0!))
+        vRoot.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 42.0!))
+        vRoot.RowStyles.Add(New RowStyle(SizeType.Percent, 56.0!))
+        vRoot.RowStyles.Add(New RowStyle(SizeType.Percent, 44.0!))
+
+        vRoot.Controls.Add(Crear_Chart_Productividad_Operadores(pOperadores), 0, 0)
+        vRoot.Controls.Add(Crear_Panel_Operadores_Visual(pOperadores), 1, 0)
+        vRoot.Controls.Add(Crear_Chart_Estatus_Pedido(pSolicitada, pPicking, pVerificada, pDespachada), 0, 1)
+        vRoot.Controls.Add(Crear_Chart_Funnel_Operacion(pSolicitada, pPicking, pVerificada, pDespachada), 1, 1)
+
+        vPage.Controls.Add(vRoot)
+        Return vPage
+
+    End Function
+
+    Private Function Crear_Chart_Productividad_Operadores(ByVal pOperadores As DataTable) As PanelControl
+
+        Dim vFormatoCantidad As String = Get_Formato_Cantidad_Indicador()
+        Dim vPanel As PanelControl = Crear_Panel_Visual("Productividad por operador / rol")
+        Dim vChart As New DevExpress.XtraCharts.ChartControl With {.Dock = DockStyle.Fill, .DataSource = Crear_DataTable_Productividad_Operadores(pOperadores)}
+        Dim vSeries As New DevExpress.XtraCharts.Series("Procesado", DevExpress.XtraCharts.ViewType.Bar)
+
+        vSeries.ArgumentDataMember = "OperadorRol"
+        vSeries.ValueDataMembers.AddRange("Cantidad_Procesada")
+        vSeries.LabelsVisibility = DefaultBoolean.True
+        vSeries.Label.TextPattern = "{V:" & vFormatoCantidad & "}"
+        vChart.Series.Add(vSeries)
+        vChart.Legend.Visibility = DefaultBoolean.False
+        vChart.PaletteName = "Office 2013"
+
+        Dim vDiagram As DevExpress.XtraCharts.XYDiagram = TryCast(vChart.Diagram, DevExpress.XtraCharts.XYDiagram)
+        If vDiagram IsNot Nothing Then
+            vDiagram.AxisX.Label.Angle = -35
+            vDiagram.AxisX.Label.ResolveOverlappingOptions.AllowRotate = True
+            vDiagram.AxisY.Title.Text = "Unidades procesadas"
+            vDiagram.AxisY.Title.Visibility = DefaultBoolean.True
+            vDiagram.AxisY.Label.TextPattern = "{V:" & vFormatoCantidad & "}"
+        End If
+
+        vPanel.Controls.Add(vChart)
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_Chart_Estatus_Pedido(ByVal pSolicitada As Decimal,
+                                                ByVal pPicking As Decimal,
+                                                ByVal pVerificada As Decimal,
+                                                ByVal pDespachada As Decimal) As PanelControl
+
+        Dim vPanel As PanelControl = Crear_Panel_Visual("Estado global del pedido")
+        Dim vDt As New DataTable("EstadoPedido")
+        vDt.Columns.Add("Etapa", GetType(String))
+        vDt.Columns.Add("Avance", GetType(Decimal))
+        vDt.Rows.Add("Solicitado", 100D)
+        vDt.Rows.Add("Picking", Calcular_Porcentaje(pPicking, pSolicitada))
+        vDt.Rows.Add("Verificación", Calcular_Porcentaje(pVerificada, pSolicitada))
+        vDt.Rows.Add("Despacho", Calcular_Porcentaje(pDespachada, pSolicitada))
+
+        Dim vChart As New DevExpress.XtraCharts.ChartControl With {.Dock = DockStyle.Fill, .DataSource = vDt}
+        Dim vSeries As New DevExpress.XtraCharts.Series("Avance", DevExpress.XtraCharts.ViewType.Line)
+
+        vSeries.ArgumentDataMember = "Etapa"
+        vSeries.ValueDataMembers.AddRange("Avance")
+        vSeries.LabelsVisibility = DefaultBoolean.True
+        vSeries.Label.TextPattern = "{V:n1}%"
+
+        Dim vView As DevExpress.XtraCharts.LineSeriesView = TryCast(vSeries.View, DevExpress.XtraCharts.LineSeriesView)
+        If vView IsNot Nothing Then
+            vView.MarkerVisibility = DefaultBoolean.True
+            vView.LineMarkerOptions.Size = 10
+        End If
+
+        vChart.Series.Add(vSeries)
+        vChart.Legend.Visibility = DefaultBoolean.False
+
+        Dim vDiagram As DevExpress.XtraCharts.XYDiagram = TryCast(vChart.Diagram, DevExpress.XtraCharts.XYDiagram)
+        If vDiagram IsNot Nothing Then
+            vDiagram.AxisY.WholeRange.SetMinMaxValues(0, 105)
+            vDiagram.AxisY.Label.TextPattern = "{V:n0}%"
+            vDiagram.AxisY.Title.Text = "Avance operativo"
+            vDiagram.AxisY.Title.Visibility = DefaultBoolean.True
+        End If
+
+        vPanel.Controls.Add(vChart)
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_Chart_Funnel_Operacion(ByVal pSolicitada As Decimal,
+                                                  ByVal pPicking As Decimal,
+                                                  ByVal pVerificada As Decimal,
+                                                  ByVal pDespachada As Decimal) As PanelControl
+
+        Dim vFormatoCantidad As String = Get_Formato_Cantidad_Indicador()
+        Dim vPanel As PanelControl = Crear_Panel_Visual("Solicitado vs avance operativo")
+        Dim vDt As New DataTable("Operacion")
+        vDt.Columns.Add("Etapa", GetType(String))
+        vDt.Columns.Add("Cantidad", GetType(Decimal))
+        vDt.Rows.Add("Solicitado", pSolicitada)
+        vDt.Rows.Add("Picking", pPicking)
+        vDt.Rows.Add("Verificación", pVerificada)
+        vDt.Rows.Add("Despacho", pDespachada)
+
+        Dim vChart As New DevExpress.XtraCharts.ChartControl With {.Dock = DockStyle.Fill, .DataSource = vDt}
+        Dim vSeries As New DevExpress.XtraCharts.Series("Cantidad", DevExpress.XtraCharts.ViewType.Bar)
+        vSeries.ArgumentDataMember = "Etapa"
+        vSeries.ValueDataMembers.AddRange("Cantidad")
+        vSeries.LabelsVisibility = DefaultBoolean.True
+        vSeries.Label.TextPattern = "{V:" & vFormatoCantidad & "}"
+        vChart.Series.Add(vSeries)
+        vChart.Legend.Visibility = DefaultBoolean.False
+        vChart.PaletteName = "Metro"
+
+        Dim vDiagram As DevExpress.XtraCharts.XYDiagram = TryCast(vChart.Diagram, DevExpress.XtraCharts.XYDiagram)
+        If vDiagram IsNot Nothing Then
+            vDiagram.AxisY.Label.TextPattern = "{V:" & vFormatoCantidad & "}"
+        End If
+
+        vPanel.Controls.Add(vChart)
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_Panel_Operadores_Visual(ByVal pOperadores As DataTable) As PanelControl
+
+        Dim vPanel As PanelControl = Crear_Panel_Visual("Operadores y roles")
+        Dim vGrid As New GridControl With {.Dock = DockStyle.Fill, .DataSource = pOperadores}
+        Dim vView As New GridView(vGrid)
+        vGrid.MainView = vView
+        vGrid.ViewCollection.Add(vView)
+        vPanel.Controls.Add(vGrid)
+        vGrid.ForceInitialize()
+
+        Configurar_Grid_Indicadores_Pedido(vView)
+        Configurar_Grid_Ranking_Operadores(vView)
+        AddHandler vView.RowCellStyle, AddressOf Indicadores_RowCellStyle
+        AddHandler vView.CustomColumnDisplayText, AddressOf Indicadores_CustomColumnDisplayText
+
+        If Not vView.Columns("Ranking") Is Nothing Then
+            vView.Columns("Ranking").VisibleIndex = 0
+            vView.Columns("Ranking").Width = 70
+            vView.Columns("Ranking").SortOrder = DevExpress.Data.ColumnSortOrder.Ascending
+        End If
+
+        If Not vView.Columns("Operador") Is Nothing Then
+            vView.Columns("Operador").GroupIndex = -1
+            vView.Columns("Operador").VisibleIndex = 1
+            vView.Columns("Operador").Width = 170
+        End If
+
+        If Not vView.Columns("Rol") Is Nothing Then
+            vView.Columns("Rol").GroupIndex = -1
+            vView.Columns("Rol").VisibleIndex = 2
+            vView.Columns("Rol").Width = 110
+        End If
+
+        If vView.Columns("Ranking") Is Nothing AndAlso Not vView.Columns("Cantidad_Procesada") Is Nothing Then
+            vView.Columns("Cantidad_Procesada").SortOrder = DevExpress.Data.ColumnSortOrder.Descending
+        End If
+
+        Ocultar_Columna_Grid(vView, "Minutos_Total")
+        Ocultar_Columna_Grid(vView, "Minutos_Conteo")
+        vView.OptionsView.ShowGroupPanel = False
+        vView.BestFitColumns()
+
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_Panel_Visual(ByVal pTitulo As String) As PanelControl
+
+        Dim vPanel As New PanelControl With {.Dock = DockStyle.Fill, .Padding = New Padding(10)}
+        vPanel.Margin = New Padding(5)
+        vPanel.Appearance.BackColor = Color.White
+        vPanel.Appearance.BorderColor = Color.FromArgb(214, 220, 228)
+        vPanel.Appearance.Options.UseBackColor = True
+        vPanel.Appearance.Options.UseBorderColor = True
+
+        Dim vTitulo As New LabelControl With {.Text = pTitulo, .Dock = DockStyle.Top, .Height = 24}
+        vTitulo.Appearance.Font = New Font("Segoe UI", 10.5!, FontStyle.Bold)
+        vTitulo.Appearance.ForeColor = Color.FromArgb(38, 45, 58)
+        vTitulo.Appearance.Options.UseForeColor = True
+        vPanel.Controls.Add(vTitulo)
+
+        Return vPanel
+
+    End Function
+
+    Private Function Crear_DataTable_Productividad_Operadores(ByVal pOperadores As DataTable) As DataTable
+
+        Dim vDt As New DataTable("ProductividadOperadores")
+        vDt.Columns.Add("OperadorRol", GetType(String))
+        vDt.Columns.Add("Ranking", GetType(Integer))
+        vDt.Columns.Add("Operador", GetType(String))
+        vDt.Columns.Add("Rol", GetType(String))
+        vDt.Columns.Add("Cantidad_Procesada", GetType(Decimal))
+        vDt.Columns.Add("Lineas", GetType(Integer))
+        vDt.Columns.Add("Minutos_Promedio", GetType(Decimal))
+
+        If pOperadores Is Nothing Then
+            Return vDt
+        End If
+
+        Dim vRows = pOperadores.Select("", "Cantidad_Procesada DESC, Lineas DESC, Operador ASC")
+        Dim vRanking As Integer = 1
+
+        For Each vRow As DataRow In vRows
+            Dim vOperador As String = Get_String_Row(vRow, "Operador")
+            Dim vRol As String = Get_String_Row(vRow, "Rol")
+            vDt.Rows.Add(String.Format("#{0} {1} - {2}", vRanking, vOperador, vRol),
+                         vRanking,
+                         vOperador,
+                         vRol,
+                         Get_Decimal_Row(vRow, "Cantidad_Procesada"),
+                         CInt(Get_Decimal_Row(vRow, "Lineas")),
+                         Get_Decimal_Row(vRow, "Minutos_Promedio"))
+            vRanking += 1
+        Next
+
+        Return vDt
+
+    End Function
+
+    Private Function Crear_DataTable_Linea_Tiempo(ByVal pDetalle As DataTable) As DataTable
+
+        Dim vDt As New DataTable("LineaTiempoPedido")
+        vDt.Columns.Add("Evento", GetType(String))
+        vDt.Columns.Add("Fecha", GetType(Date))
+        vDt.Columns.Add("Orden", GetType(Integer))
+
+        Agregar_Evento_Timeline(vDt, "Picking", Obtener_Primera_Fecha(pDetalle, "Fecha_Picking", "Fecha_Hora_Inicio"), 1)
+        Agregar_Evento_Timeline(vDt, "Verificación", Obtener_Primera_Fecha(pDetalle, "Fecha_Verificacion"), 2)
+        Agregar_Evento_Timeline(vDt, "Despacho", Obtener_Primera_Fecha(pDetalle, "Fecha_Despacho", "Fecha_Hora_Fin"), 3)
+
+        Return vDt
+
+    End Function
+
+    Private Sub Agregar_Evento_Timeline(ByVal pDt As DataTable,
+                                        ByVal pEvento As String,
+                                        ByVal pFecha As Date,
+                                        ByVal pOrden As Integer)
+
+        If pFecha <= DateSerial(1900, 1, 1) Then
+            Return
+        End If
+
+        pDt.Rows.Add(pEvento, pFecha, pOrden)
+
+    End Sub
+
+    Private Function Obtener_Primera_Fecha(ByVal pDt As DataTable, ParamArray pFieldNames As String()) As Date
+
+        If pDt Is Nothing OrElse pFieldNames Is Nothing Then
+            Return Date.MinValue
+        End If
+
+        Dim vFechaMin As Date = Date.MinValue
+
+        For Each vRow As DataRow In pDt.Rows
+            Dim vFecha As Date = Get_Date_Row(vRow, pFieldNames)
+
+            If vFecha <= DateSerial(1900, 1, 1) Then
+                Continue For
+            End If
+
+            If vFechaMin = Date.MinValue OrElse vFecha < vFechaMin Then
+                vFechaMin = vFecha
+            End If
+        Next
+
+        Return vFechaMin
+
+    End Function
+
+    Private Sub Ocultar_Columna_Grid(ByVal pView As GridView, ByVal pFieldName As String)
+
+        If Not pView.Columns(pFieldName) Is Nothing Then
+            pView.Columns(pFieldName).Visible = False
+        End If
+
+    End Sub
 
     Private Function Crear_Panel_Progreso(ByVal pTitulo As String,
                                           ByVal pPorcentaje As Decimal,
@@ -723,6 +1248,7 @@ Public Class frmPedido_List
             pView.OptionsView.ShowAutoFilterRow = True
             pView.OptionsView.ShowFooter = True
             pView.OptionsView.ShowGroupPanel = True
+            pView.OptionsView.GroupFooterShowMode = DevExpress.XtraGrid.Views.Grid.GroupFooterShowMode.VisibleAlways
             pView.OptionsView.EnableAppearanceEvenRow = True
             pView.OptionsView.EnableAppearanceOddRow = True
             pView.OptionsView.ColumnAutoWidth = False
@@ -735,22 +1261,39 @@ Public Class frmPedido_List
             pView.Appearance.OddRow.Options.UseBackColor = True
             pView.Appearance.FocusedRow.Options.UseBackColor = True
 
+            Configurar_Summary_Indicador(pView, "Lineas", SummaryItemType.Sum, "n0")
+            Configurar_Summary_Indicador(pView, "Ranking", SummaryItemType.Count, "n0")
             Configurar_Summary_Indicador(pView, "Cantidad_Solicitada")
+            Configurar_Summary_Indicador(pView, "Cantidad_Solicita_Ver")
             Configurar_Summary_Indicador(pView, "Cantidad_Picking")
             Configurar_Summary_Indicador(pView, "Cantidad_Verificada")
             Configurar_Summary_Indicador(pView, "Cantidad_Despachada")
             Configurar_Summary_Indicador(pView, "Cantidad_Procesada")
+            Configurar_Summary_Indicador(pView, "Cantidad_Reservada")
+            Configurar_Summary_Indicador(pView, "Cantidad_Recibida")
             Configurar_Summary_Indicador(pView, "Cantidad_Pickeada_Cajas")
+            Configurar_Summary_Indicador(pView, "Cantidad_Pickeadas_Cajas")
+            Configurar_Summary_Indicador(pView, "Cantidad_Verificada_Cajas")
+            Configurar_Summary_Indicador(pView, "Cantidad_Despacho_Cajas")
+            Configurar_Summary_Indicador(pView, "Cantidad_Devolucion_OC")
+            Configurar_Summary_Indicador(pView, "Cantidad_Devolución_Picking")
+            Configurar_Summary_Indicador(pView, "Cantidad_Dañada_Picking")
+            Configurar_Summary_Indicador(pView, "Cantidad_Dañada_Verificacion")
+            Configurar_Summary_Indicador(pView, "Cantidad_Merma_Ver")
+            Configurar_Summary_Indicador(pView, "Cantidad_Merma_Despacho")
+            Configurar_Summary_Indicador(pView, "Cantidad_No_Encontrada")
             Configurar_Summary_Indicador(pView, "Diferencia_Picking")
-            Configurar_Summary_Indicador(pView, "Reprocesos")
-            Configurar_Summary_Indicador(pView, "Minutos_Promedio", SummaryItemType.Average)
+            Configurar_Summary_Indicador(pView, "Reprocesos", SummaryItemType.Sum, "n0")
+            Configurar_Summary_Indicador(pView, "Minutos_Promedio", SummaryItemType.Average, "n1")
+            Configurar_Summary_Indicador(pView, "Lineas_Por_Hora", SummaryItemType.Average, "n1")
+            Configurar_Summary_Indicador(pView, "Participacion_Orden", SummaryItemType.Sum, "n2")
 
             If Not pView.Columns("Operador_Picking") Is Nothing Then
                 pView.Columns("Operador_Picking").Caption = "Operador picking"
             End If
 
             If Not pView.Columns("Operador_Verifico") Is Nothing Then
-                pView.Columns("Operador_Verifico").Caption = "Operador verificacion"
+                pView.Columns("Operador_Verifico").Caption = "Operador verificación"
             End If
 
             If Not pView.Columns("Fecha_Picking") Is Nothing Then
@@ -770,18 +1313,32 @@ Public Class frmPedido_List
             Configurar_Columna_Fecha_Indicador(pView, "Ultima_Actividad")
             Configurar_Columna_Fecha_Indicador(pView, "Fecha_Vence")
 
-            Configurar_Caption_Indicador(pView, "Codigo_Producto", "Codigo prod.")
+            Configurar_Caption_Indicador(pView, "Codigo_Producto", "Código prod.")
+            Configurar_Caption_Indicador(pView, "Ranking", "Rank")
             Configurar_Caption_Indicador(pView, "Nombre_Producto", "Producto")
-            Configurar_Caption_Indicador(pView, "CodigoProducto", "Codigo prod.")
+            Configurar_Caption_Indicador(pView, "CodigoProducto", "Código prod.")
             Configurar_Caption_Indicador(pView, "NombreProducto", "Producto")
             Configurar_Caption_Indicador(pView, "Cantidad_Solicitada", "Solicitado")
+            Configurar_Caption_Indicador(pView, "Cantidad_Solicita_Ver", "Solicitado verif.")
             Configurar_Caption_Indicador(pView, "Cantidad_Picking", "Picking")
             Configurar_Caption_Indicador(pView, "Cantidad_Verificada", "Verificado")
             Configurar_Caption_Indicador(pView, "Cantidad_Despachada", "Despachado")
             Configurar_Caption_Indicador(pView, "Cantidad_Procesada", "Procesado")
+            Configurar_Caption_Indicador(pView, "Cantidad_Reservada", "Reservado")
+            Configurar_Caption_Indicador(pView, "Cantidad_Recibida", "Recibido")
+            Configurar_Caption_Indicador(pView, "Cantidad_Devolucion_OC", "Dev. OC")
+            Configurar_Caption_Indicador(pView, "Cantidad_Devolución_Picking", "Dev. picking")
+            Configurar_Caption_Indicador(pView, "Cantidad_Dañada_Picking", "Dañado picking")
+            Configurar_Caption_Indicador(pView, "Cantidad_Dañada_Verificacion", "Dañado verif.")
+            Configurar_Caption_Indicador(pView, "Cantidad_Merma_Ver", "Merma verif.")
+            Configurar_Caption_Indicador(pView, "Cantidad_Merma_Despacho", "Merma despacho")
+            Configurar_Caption_Indicador(pView, "Cantidad_No_Encontrada", "No encontrada")
             Configurar_Caption_Indicador(pView, "Diferencia_Picking", "Dif. picking")
             Configurar_Caption_Indicador(pView, "Minutos_Promedio", "Min. prom.")
+            Configurar_Caption_Indicador(pView, "Tiempo", "Tiempo")
+            Configurar_Caption_Indicador(pView, "Lineas_Por_Hora", "Líneas/hora")
             Configurar_Caption_Indicador(pView, "Porcentaje", "% avance")
+            Configurar_Caption_Indicador(pView, "Participacion_Orden", "% orden")
             Configurar_Caption_Indicador(pView, "Lic_Plate_Reemplazo", "LP reemplazo")
             Configurar_Caption_Indicador(pView, "IdStock_Reemplazo", "Stock reemplazo")
             Configurar_Caption_Indicador(pView, "IdUbicacion_Reemplazo", "Ubic. reemplazo")
@@ -789,7 +1346,25 @@ Public Class frmPedido_List
             If Not pView.Columns("Porcentaje") Is Nothing Then
                 pView.Columns("Porcentaje").DisplayFormat.FormatType = FormatType.Numeric
                 pView.Columns("Porcentaje").DisplayFormat.FormatString = "{0:n2}%"
+                pView.Columns("Porcentaje").SummaryItem.SummaryType = SummaryItemType.Average
+                pView.Columns("Porcentaje").SummaryItem.DisplayFormat = "Prom. {0:n2}%"
             End If
+
+            If Not pView.Columns("Participacion_Orden") Is Nothing Then
+                pView.Columns("Participacion_Orden").DisplayFormat.FormatType = FormatType.Numeric
+                pView.Columns("Participacion_Orden").DisplayFormat.FormatString = "{0:n2}%"
+                pView.Columns("Participacion_Orden").SummaryItem.SummaryType = SummaryItemType.Sum
+                pView.Columns("Participacion_Orden").SummaryItem.DisplayFormat = "Total {0:n2}%"
+            End If
+
+            If Not pView.Columns("Lineas_Por_Hora") Is Nothing Then
+                pView.Columns("Lineas_Por_Hora").DisplayFormat.FormatType = FormatType.Numeric
+                pView.Columns("Lineas_Por_Hora").DisplayFormat.FormatString = "{0:n1}"
+                pView.Columns("Lineas_Por_Hora").SummaryItem.SummaryType = SummaryItemType.Average
+                pView.Columns("Lineas_Por_Hora").SummaryItem.DisplayFormat = "Prom. {0:n1}"
+            End If
+
+            Configurar_Formato_Numerico_Columnas(pView)
 
             If Not pView.Columns("Minutos_Total") Is Nothing Then
                 pView.Columns("Minutos_Total").Visible = False
@@ -803,6 +1378,13 @@ Public Class frmPedido_List
                 pView.Columns("Operador").GroupIndex = 0
             ElseIf Not pView.Columns("Operador_Picking") Is Nothing Then
                 pView.Columns("Operador_Picking").GroupIndex = 0
+            End If
+
+            If Not pView.Columns("Ranking") Is Nothing Then
+                pView.Columns("Ranking").VisibleIndex = 0
+                pView.Columns("Ranking").SortOrder = DevExpress.Data.ColumnSortOrder.Ascending
+            ElseIf Not pView.Columns("Cantidad_Procesada") Is Nothing Then
+                pView.Columns("Cantidad_Procesada").SortOrder = DevExpress.Data.ColumnSortOrder.Descending
             End If
 
             pView.BestFitColumns()
@@ -838,6 +1420,28 @@ Public Class frmPedido_List
 
     End Sub
 
+    Private Sub Indicadores_CustomColumnDisplayText(ByVal sender As Object, ByVal e As CustomColumnDisplayTextEventArgs)
+
+        Try
+            If e.Column Is Nothing OrElse e.Value Is Nothing Then
+                Return
+            End If
+
+            Dim vField As String = e.Column.FieldName.ToLowerInvariant()
+
+            If vField = "ranking" Then
+                Dim vRanking As Integer = 0
+                Integer.TryParse(Convert.ToString(e.Value), vRanking)
+
+                If vRanking > 0 Then
+                    e.DisplayText = "#" & vRanking.ToString("n0")
+                End If
+            End If
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
     Private Sub Indicadores_RowCellStyle(ByVal sender As Object, ByVal e As RowCellStyleEventArgs)
 
         Try
@@ -848,6 +1452,41 @@ Public Class frmPedido_List
             Dim vField As String = e.Column.FieldName.ToLowerInvariant()
             Dim vValorDecimal As Decimal = 0D
             Decimal.TryParse(Convert.ToString(e.CellValue), vValorDecimal)
+
+            If vField = "ranking" Then
+                Select Case CInt(vValorDecimal)
+                    Case 1
+                        e.Appearance.BackColor = Color.FromArgb(255, 245, 213)
+                        e.Appearance.ForeColor = Color.FromArgb(148, 89, 17)
+                    Case 2
+                        e.Appearance.BackColor = Color.FromArgb(235, 239, 245)
+                        e.Appearance.ForeColor = Color.FromArgb(76, 85, 99)
+                    Case 3
+                        e.Appearance.BackColor = Color.FromArgb(249, 229, 215)
+                        e.Appearance.ForeColor = Color.FromArgb(138, 76, 43)
+                End Select
+
+                If CInt(vValorDecimal) >= 1 AndAlso CInt(vValorDecimal) <= 3 Then
+                    e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
+                    e.Appearance.Options.UseBackColor = True
+                    e.Appearance.Options.UseForeColor = True
+                    e.Appearance.Options.UseFont = True
+                    Return
+                End If
+            End If
+
+            If vField = "lineas_por_hora" Then
+                If vValorDecimal >= 80D Then
+                    e.Appearance.ForeColor = Color.FromArgb(0, 150, 55)
+                ElseIf vValorDecimal >= 40D Then
+                    e.Appearance.ForeColor = Color.FromArgb(198, 124, 38)
+                ElseIf vValorDecimal > 0D Then
+                    e.Appearance.ForeColor = Color.FromArgb(210, 70, 25)
+                End If
+
+                e.Appearance.Options.UseForeColor = True
+                Return
+            End If
 
             If vField.Contains("diferencia") AndAlso vValorDecimal > 0D Then
                 e.Appearance.BackColor = Color.FromArgb(255, 232, 232)
@@ -920,7 +1559,7 @@ Public Class frmPedido_List
         vDt.Columns.Add("Fecha", GetType(Date))
 
         Agregar_Reprocesos_Desde_DataTable(vDt, pDetalle, "Progreso pedido")
-        Agregar_Reprocesos_Desde_DataTable(vDt, pKpiPortal, "KPI portal")
+        Agregar_Reprocesos_Desde_DataTable(vDt, pKpiPortal, "Detalle picking")
 
         Return vDt
 
@@ -961,15 +1600,21 @@ Public Class frmPedido_List
 
     End Sub
 
-    Private Function Crear_DataTable_Operadores(ByVal pDetalle As DataTable, ByVal pKpiPortal As DataTable) As DataTable
+    Private Function Crear_DataTable_Operadores(ByVal pDetalle As DataTable,
+                                                ByVal pKpiPortal As DataTable,
+                                                ByVal pTotalOrden As Decimal) As DataTable
 
         Dim vDt As New DataTable("Operadores")
+        vDt.Columns.Add("Ranking", GetType(Integer))
         vDt.Columns.Add("Operador", GetType(String))
         vDt.Columns.Add("Rol", GetType(String))
         vDt.Columns.Add("Lineas", GetType(Integer))
         vDt.Columns.Add("Cantidad_Solicitada", GetType(Decimal))
         vDt.Columns.Add("Cantidad_Procesada", GetType(Decimal))
         vDt.Columns.Add("Porcentaje", GetType(Decimal))
+        vDt.Columns.Add("Participacion_Orden", GetType(Decimal))
+        vDt.Columns.Add("Tiempo", GetType(String))
+        vDt.Columns.Add("Lineas_Por_Hora", GetType(Decimal))
         vDt.Columns.Add("Minutos_Promedio", GetType(Decimal))
         vDt.Columns.Add("Minutos_Total", GetType(Decimal))
         vDt.Columns.Add("Minutos_Conteo", GetType(Integer))
@@ -991,7 +1636,7 @@ Public Class frmPedido_List
                                   vReproceso)
                 Acumular_Operador(vDt,
                                   Get_String_Row(vRow, "Operador_Verifico"),
-                                  "Verificacion",
+                                  "Verificación",
                                   vSolicitada,
                                   Get_Decimal_Row(vRow, "Cantidad_Verificada"),
                                   Get_Date_Row(vRow, "Fecha_Verificacion"),
@@ -1000,11 +1645,11 @@ Public Class frmPedido_List
             Next
         End If
 
-        If pKpiPortal IsNot Nothing Then
+        If pKpiPortal IsNot Nothing AndAlso (pDetalle Is Nothing OrElse pDetalle.Rows.Count = 0) Then
             For Each vRow As DataRow In pKpiPortal.Rows
                 Acumular_Operador(vDt,
                                   Get_String_Row(vRow, "Operador"),
-                                  "Picking portal",
+                                  "Picking detalle",
                                   Get_Decimal_Row(vRow, "Cantidad_Solicitada"),
                                   Get_Decimal_Row(vRow, "Cantidad_Picking", "Cantidad_Procesada", "cantidad_recibida"),
                                   Get_Date_Row(vRow, "Fecha_Hora_Inicio", "Fecha_Por_Linea"),
@@ -1015,6 +1660,14 @@ Public Class frmPedido_List
 
         For Each vRow As DataRow In vDt.Rows
             vRow("Porcentaje") = Calcular_Porcentaje(CDec(vRow("Cantidad_Procesada")), CDec(vRow("Cantidad_Solicitada")))
+            vRow("Participacion_Orden") = Calcular_Porcentaje(CDec(vRow("Cantidad_Procesada")), pTotalOrden)
+            vRow("Tiempo") = Formatear_Minutos_Operativos(CDec(vRow("Minutos_Total")))
+
+            If CDec(vRow("Minutos_Total")) > 0D Then
+                vRow("Lineas_Por_Hora") = Math.Round(CDec(vRow("Lineas")) / (CDec(vRow("Minutos_Total")) / 60D), 1)
+            Else
+                vRow("Lineas_Por_Hora") = 0D
+            End If
 
             If CInt(vRow("Minutos_Conteo")) > 0 Then
                 vRow("Minutos_Promedio") = Math.Round(CDec(vRow("Minutos_Total")) / CInt(vRow("Minutos_Conteo")), 2)
@@ -1023,7 +1676,35 @@ Public Class frmPedido_List
             End If
         Next
 
+        Dim vRanking As Integer = 1
+        For Each vRow As DataRow In vDt.Select("", "Cantidad_Procesada DESC, Lineas DESC, Operador ASC")
+            vRow("Ranking") = vRanking
+            vRanking += 1
+        Next
+
         Return vDt
+
+    End Function
+
+    Private Function Formatear_Minutos_Operativos(ByVal pMinutos As Decimal) As String
+
+        If pMinutos <= 0D Then
+            Return "0 min"
+        End If
+
+        If pMinutos < 60D Then
+            Return pMinutos.ToString("n1") & " min"
+        End If
+
+        Dim vHoras As Integer = CInt(Math.Floor(pMinutos / 60D))
+        Dim vMinutos As Integer = CInt(Math.Round(pMinutos - (vHoras * 60D), 0))
+
+        If vMinutos >= 60 Then
+            vHoras += 1
+            vMinutos = 0
+        End If
+
+        Return String.Format("{0}h {1:n0}m", vHoras, vMinutos)
 
     End Function
 
@@ -1046,12 +1727,16 @@ Public Class frmPedido_List
 
         If vRow Is Nothing Then
             vRow = pDt.NewRow()
+            vRow("Ranking") = 0
             vRow("Operador") = pOperador
             vRow("Rol") = pRol
             vRow("Lineas") = 0
             vRow("Cantidad_Solicitada") = 0D
             vRow("Cantidad_Procesada") = 0D
             vRow("Porcentaje") = 0D
+            vRow("Participacion_Orden") = 0D
+            vRow("Tiempo") = ""
+            vRow("Lineas_Por_Hora") = 0D
             vRow("Minutos_Promedio") = 0D
             vRow("Minutos_Total") = 0D
             vRow("Minutos_Conteo") = 0
@@ -1149,20 +1834,191 @@ Public Class frmPedido_List
 
     Private Sub Configurar_Summary_Indicador(ByVal pView As GridView,
                                              ByVal pFieldName As String,
-                                             Optional ByVal pSummaryType As SummaryItemType = SummaryItemType.Sum)
+                                             Optional ByVal pSummaryType As SummaryItemType = SummaryItemType.Sum,
+                                             Optional ByVal pFormato As String = "")
 
         If pView.Columns(pFieldName) Is Nothing Then
             Return
         End If
 
+        Dim vFormato As String = If(String.IsNullOrWhiteSpace(pFormato), Get_Formato_Cantidad_Indicador(), pFormato)
+
         With pView.Columns(pFieldName)
             .DisplayFormat.FormatType = FormatType.Numeric
-            .DisplayFormat.FormatString = "{0:n2}"
+            .DisplayFormat.FormatString = "{0:" & vFormato & "}"
             .SummaryItem.SummaryType = pSummaryType
-            .SummaryItem.DisplayFormat = "{0:n2}"
+            .SummaryItem.DisplayFormat = If(pSummaryType = SummaryItemType.Average, "Prom. {0:" & vFormato & "}", "Total {0:" & vFormato & "}")
         End With
 
+        pView.GroupSummary.Add(pSummaryType, pFieldName, pView.Columns(pFieldName), If(pSummaryType = SummaryItemType.Average, "Prom. {0:" & vFormato & "}", "Total {0:" & vFormato & "}"))
+
     End Sub
+
+    Private Sub Configurar_Formato_Numerico_Columnas(ByVal pView As GridView)
+
+        Dim vFormatoCantidad As String = Get_Formato_Cantidad_Indicador()
+
+        For Each vColumn As DevExpress.XtraGrid.Columns.GridColumn In pView.Columns
+            If vColumn Is Nothing OrElse vColumn.ColumnType Is Nothing Then
+                Continue For
+            End If
+
+            Dim vType As Type = Nullable.GetUnderlyingType(vColumn.ColumnType)
+            If vType Is Nothing Then
+                vType = vColumn.ColumnType
+            End If
+
+            If Not Es_Columna_Numerica(vType) Then
+                Continue For
+            End If
+
+            Dim vNombre As String = If(vColumn.FieldName, "").ToLowerInvariant()
+            Dim vFormato As String = vFormatoCantidad
+
+            If vNombre.Contains("porcentaje") OrElse vNombre.Contains("participacion") OrElse vNombre = "% avance" Then
+                vColumn.DisplayFormat.FormatType = FormatType.Numeric
+                vColumn.DisplayFormat.FormatString = "{0:n2}%"
+                Continue For
+            End If
+
+            If vNombre.Contains("lineas_por_hora") OrElse vNombre.Contains("líneas_por_hora") OrElse vNombre.Contains("hora") Then
+                vFormato = "n1"
+            ElseIf vNombre.Contains("minuto") OrElse vNombre.Contains("tiempo") Then
+                vFormato = "n1"
+            ElseIf vNombre.Contains("id") OrElse vNombre.Contains("linea") OrElse vNombre.Contains("lineas") OrElse vNombre.Contains("ranking") OrElse vNombre.Contains("correlativo") OrElse vNombre.Contains("reproceso") Then
+                vFormato = "n0"
+            End If
+
+            vColumn.DisplayFormat.FormatType = FormatType.Numeric
+            vColumn.DisplayFormat.FormatString = "{0:" & vFormato & "}"
+        Next
+
+    End Sub
+
+    Private Function Get_Estado_Progreso_Pedido(ByVal pPicking As Decimal,
+                                                ByVal pVerificacion As Decimal,
+                                                ByVal pDespacho As Decimal) As String
+
+        If pDespacho >= 100D Then
+            Return "Despachado completo"
+        End If
+
+        If pVerificacion >= 100D Then
+            Return "Listo para despacho"
+        End If
+
+        If pPicking >= 100D Then
+            Return "En verificación"
+        End If
+
+        If pPicking > 0D Then
+            Return "En picking"
+        End If
+
+        Return "Pendiente iniciar"
+
+    End Function
+
+    Private Function Get_Color_Estado_Progreso(ByVal pAvanceGlobal As Decimal) As Color
+
+        If pAvanceGlobal >= 100D Then
+            Return Color.FromArgb(38, 150, 120)
+        End If
+
+        If pAvanceGlobal >= 80D Then
+            Return Color.FromArgb(198, 124, 38)
+        End If
+
+        Return Color.FromArgb(190, 72, 68)
+
+    End Function
+
+    Private Function Get_Top_Operador(ByVal pOperadores As DataTable) As String
+
+        If pOperadores Is Nothing OrElse pOperadores.Rows.Count = 0 Then
+            Return "Sin datos"
+        End If
+
+        Dim vRows As DataRow() = pOperadores.Select("", "Cantidad_Procesada DESC, Lineas DESC, Operador ASC")
+
+        If vRows Is Nothing OrElse vRows.Length = 0 Then
+            Return "Sin datos"
+        End If
+
+        Dim vOperador As String = Get_String_Row(vRows(0), "Operador")
+        Dim vCantidad As Decimal = Get_Decimal_Row(vRows(0), "Cantidad_Procesada")
+
+        If vOperador = "" Then
+            Return "Sin datos"
+        End If
+
+        Return String.Format("{0} ({1})", vOperador, vCantidad.ToString(Get_Formato_Cantidad_Indicador()))
+
+    End Function
+
+    Private Function Get_Formato_Cantidad_Indicador() As String
+
+        Return "n" & Get_Decimales_Cantidad_Indicador().ToString()
+
+    End Function
+
+    Private Function Get_Decimales_Cantidad_Indicador() As Integer
+
+        Dim vDecimales As Integer = Leer_Decimales_Desde_Objeto(AP.Empresa)
+
+        If vDecimales >= 0 Then
+            Return Math.Max(0, Math.Min(6, vDecimales))
+        End If
+
+        Try
+            If AP IsNot Nothing AndAlso AP.Bodega IsNot Nothing AndAlso Not AP.Bodega.Permitir_Decimales Then
+                Return 0
+            End If
+        Catch ex As Exception
+        End Try
+
+        Return 2
+
+    End Function
+
+    Private Function Leer_Decimales_Desde_Objeto(ByVal pObjeto As Object) As Integer
+
+        If pObjeto Is Nothing Then
+            Return -1
+        End If
+
+        Dim vNombres() As String = {
+            "Cantidad_Decimales",
+            "Decimales_Cantidad",
+            "DecimalesCantidad",
+            "CantidadDecimales",
+            "No_Decimales_Cantidad",
+            "Numero_Decimales_Cantidad",
+            "Decimales"
+        }
+
+        For Each vNombre As String In vNombres
+            Try
+                Dim vPropiedad = pObjeto.GetType().GetProperty(vNombre)
+
+                If vPropiedad Is Nothing Then
+                    Continue For
+                End If
+
+                Dim vValor As Object = vPropiedad.GetValue(pObjeto, Nothing)
+
+                If vValor Is Nothing OrElse IsDBNull(vValor) Then
+                    Continue For
+                End If
+
+                Return Convert.ToInt32(vValor)
+            Catch ex As Exception
+            End Try
+        Next
+
+        Return -1
+
+    End Function
 
     Private Function Calcular_Totales_Progreso(ByVal pDetalle As DataTable,
                                                ByRef pSolicitada As Decimal,
