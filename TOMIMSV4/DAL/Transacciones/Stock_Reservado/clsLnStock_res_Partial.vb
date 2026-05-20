@@ -1179,9 +1179,9 @@ Partial Public Class clsLnStock_res
                                                 BeStockDestino.Fec_agr = Now
                                                 BeStockDestino.IdPresentacion = 0
                                                 BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
                                                 clsLnStock.Insertar(BeStockDestino, lConnection, ltransaction)
+                                                BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                 '#EJC20220510: Quitar al stock en cajas, las unidades.
                                                 vStockOrigen.Cantidad -= vCantidadDecimalUMBasStock
@@ -1266,9 +1266,9 @@ Partial Public Class clsLnStock_res
                                                     BeStockDestino.Fec_agr = Now
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     clsLnStock.Insertar(BeStockDestino, lConnection, ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     '#EJC20220510: Quitar al stock en cajas, las unidades.
                                                     vStockOrigen.Cantidad -= vCantidadDecimalUMBasStock
@@ -10943,7 +10943,6 @@ Partial Public Class clsLnStock_res
                                                 BeStockDestino.IdPresentacion = 0
                                                 BeStockDestino.Presentacion.IdPresentacion = 0
                                                 BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
 
                                                 CantidadStockDestino = BeStockDestino.Cantidad
@@ -10955,6 +10954,7 @@ Partial Public Class clsLnStock_res
                                                 clsLnStock.Insertar(BeStockDestino,
                                                                     lConnection,
                                                                     ltransaction)
+                                                BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                 If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                     vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -11701,7 +11701,6 @@ Partial Public Class clsLnStock_res
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -11713,6 +11712,7 @@ Partial Public Class clsLnStock_res
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -12485,7 +12485,6 @@ Partial Public Class clsLnStock_res
                                             BeStockDestino.IdPresentacion = 0
                                             BeStockDestino.Presentacion.IdPresentacion = 0
                                             BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                            BeStockRes.IdStock = BeStockDestino.IdStock
                                             BeStockDestino.No_bulto = 1989
 
                                             CantidadStockDestino = BeStockDestino.Cantidad
@@ -12497,6 +12496,7 @@ Partial Public Class clsLnStock_res
                                             clsLnStock.Insertar(BeStockDestino,
                                                                 lConnection,
                                                                 ltransaction)
+                                            BeStockRes.IdStock = BeStockDestino.IdStock
 
                                             'Dim Log_20230301_H As String = String.Format("Log_202303011301H: Código: {0} Sol: {1} Reservado: {2}. " & vbNewLine,
                                             '                                            BeProducto.Codigo,
@@ -20325,7 +20325,6 @@ INICIAR_EN_1:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     CantidadStockDestino = BeStockDestino.Cantidad
                                                     'agregar parámetro inferir_decimal_reserva
@@ -20335,6 +20334,7 @@ INICIAR_EN_1:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -21036,7 +21036,6 @@ INICIAR_EN_2:
                                                         BeStockDestino.IdPresentacion = 0
                                                         BeStockDestino.Presentacion.IdPresentacion = 0
                                                         BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                        BeStockRes.IdStock = BeStockDestino.IdStock
                                                         BeStockDestino.No_bulto = 1989
 
                                                         CantidadStockDestino = BeStockDestino.Cantidad
@@ -21047,6 +21046,7 @@ INICIAR_EN_2:
                                                         clsLnStock.Insertar(BeStockDestino,
                                                                             lConnection,
                                                                             ltransaction)
+                                                        BeStockRes.IdStock = BeStockDestino.IdStock
 
 
 
@@ -21906,7 +21906,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -21917,6 +21916,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -23003,7 +23003,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -23014,6 +23013,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -23888,7 +23888,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -23899,6 +23898,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -24980,7 +24980,6 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -24991,6 +24990,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = BeStockDestino.Cantidad
@@ -28761,7 +28761,6 @@ INICIAR_EN_1:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
                                                     CantidadStockDestino = BeStockDestino.Cantidad
 
@@ -28771,6 +28770,7 @@ INICIAR_EN_1:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -29436,7 +29436,6 @@ INICIAR_EN_2:
                                                         BeStockDestino.IdPresentacion = 0
                                                         BeStockDestino.Presentacion.IdPresentacion = 0
                                                         BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                        BeStockRes.IdStock = BeStockDestino.IdStock
                                                         BeStockDestino.No_bulto = 1989
 
                                                         CantidadStockDestino = BeStockDestino.Cantidad
@@ -29447,6 +29446,7 @@ INICIAR_EN_2:
                                                         clsLnStock.Insertar(BeStockDestino,
                                                                             lConnection,
                                                                             ltransaction)
+                                                        BeStockRes.IdStock = BeStockDestino.IdStock
 
 
 
@@ -30191,7 +30191,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                 BeStockDestino.IdPresentacion = 0
                                                 BeStockDestino.Presentacion.IdPresentacion = 0
                                                 BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                BeStockRes.IdStock = BeStockDestino.IdStock
                                                 BeStockDestino.No_bulto = 1989
 
                                                 CantidadStockDestino = BeStockDestino.Cantidad
@@ -30202,6 +30201,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                 clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                 If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                     vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -30901,7 +30901,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -30912,6 +30911,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -31754,7 +31754,6 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -31765,6 +31764,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
@@ -32760,7 +32760,6 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                                     BeStockDestino.IdPresentacion = 0
                                                     BeStockDestino.Presentacion.IdPresentacion = 0
                                                     BeStockDestino.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-                                                    BeStockRes.IdStock = BeStockDestino.IdStock
                                                     BeStockDestino.No_bulto = 1989
 
                                                     CantidadStockDestino = BeStockDestino.Cantidad
@@ -32771,6 +32770,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                                     clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
 
                                                     If vCantidadPendiente > BeStockDestino.Cantidad Then
                                                         vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
