@@ -6,8 +6,6 @@ Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
-Imports DevExpress.Office.Utils
-Imports DevExpress.XtraEditors
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
@@ -517,11 +515,10 @@ Public Class clsSyncTransacWMS
 
                     If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
                         encabezado.Lineas_Detalle_Talla_Color =
-                        Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(
-                            dtDetTallaColor,
-                            IdUsuario,
-                            vHanaService.SessionCookie,
-                            BD.Instancia.HANA_SL).ConfigureAwait(False)
+                        Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(dtDetTallaColor,
+                                                                                            IdUsuario,
+                                                                                            vHanaService.SessionCookie,
+                                                                                            BD.Instancia.HANA_SL).ConfigureAwait(False)
                     Else
                         encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
                     End If
