@@ -1449,7 +1449,7 @@ Partial Public Class clsLnTrans_inv_enc
 
             'Crea copia de stock cuando es inventario ciclico. 
             'clsLnTrans_inv_stock.Guarda_Copia_Stock(pBeInventarioEnc, lConnection, lTransaction)
-            clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, lConnection, lTransaction)
+            clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, pBeInventarioEnc.IdBodega, lConnection, lTransaction)
 
             lTransaction.Commit()
 
@@ -1498,7 +1498,7 @@ Partial Public Class clsLnTrans_inv_enc
             lblprg.Refresh()
 
             'Crea copia de stock cuando es inventario ciclico. 
-            clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, lConnection, lTransaction)
+            clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, pBeInventarioEnc.IdBodega, lConnection, lTransaction)
 
             lTransaction.Commit()
 

@@ -379,13 +379,13 @@ Public Class clsSyncERPAcuerdosComerciales : Inherits clsInterfaceBase
 
             CnnLogWMS.Open()
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLogWMS)
+            BeNavEjecucionEnc.IdEjecucionEnc = 0 'clsLnI_nav_ejecucion_enc.MaxID(CnnLogWMS)
             BeNavEjecucionEnc.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface
             BeNavEjecucionEnc.Fecha = Now
 
             clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, CnnLogWMS)
 
-            BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLogWMS) + 1
+            BeNavEjecucionRes.IdEjecucionRes = 0 'clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLogWMS) + 1
             BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
             BeNavEjecucionRes.IdNavConfigDet = BeConfigDet.Idnavconfigdet
             BeNavEjecucionRes.Registros_ws = 0
