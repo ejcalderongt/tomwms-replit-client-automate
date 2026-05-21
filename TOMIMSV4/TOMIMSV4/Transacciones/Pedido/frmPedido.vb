@@ -10285,6 +10285,7 @@ Public Class frmPedido
                                                 lblprg.BackColor = Color.LightBlue
                                             End If
 
+
                                             '#EJC202211221049: Validar que la instancia no sea nothing para eliminar desde WS
                                             If Not wsTOMHHInstance Is Nothing Then
 
