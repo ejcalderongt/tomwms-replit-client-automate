@@ -23953,14 +23953,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                     Else
-                                                         vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
-                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                         Reserva_Stock_From_MI3 = False
-                                                     End If
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Reserva_Stock_From_MI3 = False
+                                                    End If
 
-                                                 End If
+                                                End If
 
                                             End If
 
@@ -24529,14 +24529,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                         Else
-                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                             Reserva_Stock_From_MI3 = False
-                                                         End If
+                                                        Else
+                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                            Reserva_Stock_From_MI3 = False
+                                                        End If
 
-                                                     End If
+                                                    End If
 
                                                 End If
 
