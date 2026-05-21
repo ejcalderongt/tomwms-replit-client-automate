@@ -2653,43 +2653,63 @@ Public Class frmDespacho
                         DT = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
 
                         Dim vNombreOperadorPickeo As String = ""
+                        Dim vNombreUsuarioAutoriza As String = ""
+
+                        If BeUsuario IsNot Nothing Then
+                            vNombreUsuarioAutoriza = String.Format("{0} {1}", BeUsuario.Nombres, BeUsuario.Apellidos).Trim
+                        End If
 
                         If Not DT Is Nothing Then
 
                             If DT.Rows.Count > 0 Then
 
-                                Dim vIdOperadorPicking As Integer = DT.Rows(0).Item("IdOperadorBodega_Pickeo")
-                                Dim vIdPickingEnc As Integer = DT.Rows(0).Item("IdPickingEnc")
+                                Dim vIdOperadorPicking As Integer = 0
+                                Dim vIdPickingEnc As Integer = 0
+
+                                If DT.Columns.Contains("IdOperadorBodega_Pickeo") AndAlso Not IsDBNull(DT.Rows(0).Item("IdOperadorBodega_Pickeo")) Then
+                                    vIdOperadorPicking = Val(DT.Rows(0).Item("IdOperadorBodega_Pickeo").ToString)
+                                End If
+
+                                If DT.Columns.Contains("IdPickingEnc") AndAlso Not IsDBNull(DT.Rows(0).Item("IdPickingEnc")) Then
+                                    vIdPickingEnc = Val(DT.Rows(0).Item("IdPickingEnc").ToString)
+                                End If
+
                                 Dim BeOperadorBodega As New clsBeOperador_bodega
                                 BeOperadorBodega.IdOperadorBodega = vIdOperadorPicking
 
                                 '#GT19052025: utilizar el picking para validar que fue procesado bof o no, para mostrar al usuario/operador correcto en el doc de despacho.
-                                Dim pPickingEnc = clsLnTrans_picking_enc.GetSingle(vIdPickingEnc)
-                                If pPickingEnc IsNot Nothing Then
-                                    pProcesado_Bof = pPickingEnc.procesado_bof
+                                If vIdPickingEnc > 0 Then
+                                    Dim pPickingEnc = clsLnTrans_picking_enc.GetSingle(vIdPickingEnc)
+                                    If pPickingEnc IsNot Nothing Then
+                                        pProcesado_Bof = pPickingEnc.procesado_bof
+                                    End If
                                 End If
 
-                                If pProcesado_Bof Then
+                                If vIdOperadorPicking > 0 AndAlso pProcesado_Bof Then
 
                                     Dim pIdOperador = clsLnOperador_bodega.Get_IdOperador_By_IdOperadorBodega(vIdOperadorPicking)
 
                                     If pIdOperador > 0 Then
                                         Dim BeOperador = clsLnOperador.Get_Single_By_IdOperador(pIdOperador)
-                                        vNombreOperadorPickeo = BeOperador.Nombres + "" + BeOperador.Apellidos
+                                        If BeOperador IsNot Nothing Then
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeOperador.Nombres, BeOperador.Apellidos).Trim
+                                        End If
 
                                     Else
                                         BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                        vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+                                        If BeUsuarioEntrega IsNot Nothing Then
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeUsuarioEntrega.Nombres, BeUsuarioEntrega.Apellidos).Trim
+                                        End If
                                     End If
 
                                 Else
 
-                                    If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
+                                    If vIdOperadorPicking > 0 AndAlso clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
 
                                         Dim BeOperador As New clsBeOperador
                                         BeOperador.IdOperador = BeOperadorBodega.IdOperador
                                         If clsLnOperador.GetSingle(BeOperador) Then
-                                            vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeOperador.Nombres, BeOperador.Apellidos).Trim
                                         End If
 
                                     End If
@@ -2712,14 +2732,15 @@ Public Class frmDespacho
                         RepCealsa.Parameters("Bodega").Visible = False
                         RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
                         RepCealsa.Parameters("Entregado_Por").Visible = False
-                        RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
+                        RepCealsa.Parameters("Autorizado_Por").Value = vNombreUsuarioAutoriza
                         RepCealsa.Parameters("Autorizado_Por").Visible = False
                         RepCealsa.RequestParameters = False
 
-                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                        Dim vImagenEmpresa = clsLnEmpresa.GetImagen(AP.IdEmpresa)
+                        If vImagenEmpresa Is Nothing Then
                             RepCealsa.XrLogo.Image = Nothing
                         Else
-                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(vImagenEmpresa)
                         End If
 
                         RepCealsa.ShowPreview()

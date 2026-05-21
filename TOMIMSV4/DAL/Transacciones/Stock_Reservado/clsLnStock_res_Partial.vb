@@ -4800,6 +4800,15 @@ Partial Public Class clsLnStock_res
 
             For Each BeStockRes As clsBeStock_res In lStockRes
 
+                '#EJC20260520_RESERVA_BYB_FIX: no insertar reservas vacias; stock_res tiene CHECK cantidad > 0.
+                If Math.Round(BeStockRes.Cantidad, 6) <= 0 Then
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_omitido_cantidad_no_positiva",
+                                                           BeStockRes,
+                                                           "Cantidad", clsReservaMi3DebugTrace.Valor(BeStockRes.Cantidad))
+                    Continue For
+                End If
+
                 BeStockResPreviamenteInsertado.IdStockRes = BeStockRes.IdStockRes
                 BeStockResPreviamenteInsertado.IdProductoBodega = BeStockRes.IdProductoBodega
 
@@ -24786,6 +24795,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             For Each vStockOrigen As clsBeStock In lBeStockExistente.FindAll(Function(x) Math.Round(x.Cantidad, 6) > 0)
 
+                                '#EJC20260520_RESERVA_BYB_FIX: si la solicitud ya se completo, no procesar otro stock candidato con cantidad 0.
+                                If vCantidadCompletada OrElse Math.Round(vCantidadPendiente, 6) <= 0 Then
+                                    vCantidadPendiente = 0
+                                    vCantidadCompletada = True
+                                    Exit For
+                                End If
+
+                                vCantidadAReservarPorIdStock = 0
                                 BeStockDestino = New clsBeStock()
                                 clsPublic.CopyObject(vStockOrigen, BeStockDestino)
 
