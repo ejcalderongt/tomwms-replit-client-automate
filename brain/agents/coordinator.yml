@@ -1,0 +1,42 @@
+version: 1
+updated: "2026-05-20"
+role: "WMS local coordinator"
+mission: >
+  Route work by domain, protect business rules, and force evidence-driven cycles
+  before committing changes.
+
+operating_rules:
+  - Read codex-context-mi3-di-estatus.yml before MI3/API/reservation work.
+  - Never touch generated SOAP Reference.vb files.
+  - Do not mix HH Java and VB/Core changes in the same phase.
+  - For DB production KILLIOS, run SELECT only.
+  - Do not log secrets or connection string password values.
+  - Commit only after a stable validation cycle when Erik asks for phase commits.
+
+default_cycle:
+  - Capture the baseline and the exact document/reference used for comparison.
+  - Make one small change or one explicit hypothesis test.
+  - Build before DB/API execution.
+  - Run with a hard timeout when testing WebAPI.
+  - Validate API response and DB state, not just one of them.
+  - Clean test documents created by the cycle.
+  - Keep only reusable artifacts; delete transient payload/run/log/response files.
+  - Commit the stable phase with a focused message.
+
+brain_api_usage:
+  base_url_env: BRAIN_BASE_URL
+  safe_get_endpoints:
+    - /health
+    - /search
+    - /impact
+    - /dependencies
+    - /writers
+  write_endpoints_require_env_token:
+    - /index/vb
+    - /index/java
+    - /repos/sync
+    - /import/sql-catalog
+  note: >
+    The local brain/agents YAML files are repo knowledge packages. The Brain API
+    indexing endpoints do not replace these files; update both when the repo
+    changes and Erik wants Brain synchronized.

@@ -1,0 +1,56 @@
+version: 1
+updated: "2026-05-20"
+client: BYB
+scope: "BYB QA reservation test context and known reference documents."
+
+environment:
+  database_label: IMS4MB_BYB_QAS2
+  note: "Do not store or print passwords in this file."
+  webapi_profile: http
+  local_url: "http://localhost:5196/api/sync/salidas/mi3/insertar"
+
+payload_rules:
+  transfer_from_code_for_webapi: BA0002
+  transfer_to_code_for_webapi: BA0002
+  product_owner_code: "01"
+  manufacturing_process_value: 0
+  synthetic_suffix: WEBAPI
+  presentation_pattern: >
+    BYB can send CJ as Unit_of_Measure_Code with empty Variant_Code. Core must
+    resolve presentation by Unit_of_Measure_Code and reserve stock_res in base
+    units while reporting Quantity_Reserved_WMS in document units.
+
+reference_documents:
+  EA-153304:
+    source: "Legacy accepted reservation baseline."
+    payload_file: tools/webapi-mi3-reserva/mi3-salida-ea153304-webapi.json
+    baseline_summary_file: tools/webapi-mi3-reserva/baseline-ea153304-legacy-summary.json
+    baseline_stockres_file: tools/webapi-mi3-reserva/baseline-ea153304-legacy-stockres.json
+    expected:
+      lines: 29
+      total_requested: 1370
+      total_reserved: 1370
+      trans_pe_det_lines: 29
+      trans_pe_det_sum: 1370
+      stock_res_rows: 48
+      stock_res_sum: 12703
+      interface_lines: 29
+      interface_reserved_sum: 1370
+    strict_rule: >
+      For parity work, compare per-line stock_res rows/sums and preferably
+      IdStock/lote/cantidad, not only global totals.
+  EA-153305:
+    source: "Earlier BYB WebAPI/core comparison and fix document."
+    payload_file: tools/webapi-mi3-reserva/mi3-salida-ea153305-webapi.json
+    note: >
+      Use a synthetic document such as EA-153305WEBAPI or EA-153305-WAPI01.
+
+run_contract:
+  timeout_seconds: 120
+  success_response:
+    exito: true
+    mensaje_contains: "procesado correctamente"
+  cleanup:
+    - Delete synthetic trans_pe_enc/trans_pe_det/stock_res rows scoped by reference.
+    - Delete matching i_nav_ped_traslado_enc/det rows.
+    - Verify zero rows after cleanup.
