@@ -79,6 +79,26 @@ Public Class clsLnStock_res
                 Return 0
             End If
 
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+            End If
+
+            Dim lConnectionTrabajo As SqlConnection = If(Es_Transaccion_Remota, pConection, lConnection)
+            Dim lTransactionTrabajo As SqlTransaction = If(Es_Transaccion_Remota, pTransaction, lTransaction)
+
+            Ajustar_Cantidad_Maxima_PedidoDet(oBeStock_res, lConnectionTrabajo, lTransactionTrabajo)
+
+            If Math.Round(oBeStock_res.Cantidad, 6) <= 0 Then
+                clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                       "stock_res_insertar_omitido_sin_pendiente_pedido_det",
+                                                       oBeStock_res,
+                                                       "Cantidad", clsReservaMi3DebugTrace.Valor(oBeStock_res.Cantidad))
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
             Ins.Init("stock_res")
             'Ins.Add("idstockres", "@idstockres", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
@@ -125,14 +145,7 @@ Public Class clsLnStock_res
             Dim sp As String = Ins.SQLIdentity("IdStockRes")
             Dim cmd As SqlCommand
 
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
+            cmd = New SqlCommand(sp, lConnectionTrabajo, lTransactionTrabajo) With {.CommandType = CommandType.Text}
 
             cmd.Parameters.Add(New SqlParameter("@IDSTOCKRES", oBeStock_res.IdStockRes))
             cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeStock_res.IdTransaccion))
@@ -200,6 +213,54 @@ Public Class clsLnStock_res
         End Try
 
     End Function
+
+    '#EJC20260520_RESERVA_BYB_FIX: defensa final para que una linea de pedido no quede sobre-reservada.
+    Private Shared Sub Ajustar_Cantidad_Maxima_PedidoDet(ByRef oBeStock_res As clsBeStock_res,
+                                                         ByRef pConnection As SqlConnection,
+                                                         ByRef pTransaction As SqlTransaction)
+
+        If oBeStock_res.IdPedidoDet <= 0 Then Exit Sub
+        If Math.Round(oBeStock_res.Cantidad, 6) <= 0 Then Exit Sub
+
+        Const sp As String = "SELECT " &
+                             " CAST(ISNULL((SELECT TOP 1 d.Cantidad FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadPedido, " &
+                             " CAST(ISNULL((SELECT SUM(sr.cantidad) FROM stock_res sr WHERE sr.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadReservada "
+
+        Using cmd As New SqlCommand(sp, pConnection, pTransaction)
+            cmd.CommandType = CommandType.Text
+            cmd.Parameters.Add(New SqlParameter("@IdPedidoDet", oBeStock_res.IdPedidoDet))
+
+            Using dr As SqlDataReader = cmd.ExecuteReader()
+                If dr.Read() Then
+                    Dim vCantidadPedido As Double = IIf(IsDBNull(dr.Item("CantidadPedido")), 0, dr.Item("CantidadPedido"))
+                    Dim vCantidadReservada As Double = IIf(IsDBNull(dr.Item("CantidadReservada")), 0, dr.Item("CantidadReservada"))
+
+                    If vCantidadPedido <= 0 Then Exit Sub
+
+                    Dim vCantidadPendiente As Double = Math.Round(vCantidadPedido - vCantidadReservada, 6)
+
+                    If vCantidadPendiente <= 0 Then
+                        clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                               "stock_res_cantidad_ajustada_sin_pendiente",
+                                                               oBeStock_res,
+                                                               "CantidadPedido", clsReservaMi3DebugTrace.Valor(vCantidadPedido),
+                                                               "CantidadReservada", clsReservaMi3DebugTrace.Valor(vCantidadReservada))
+                        oBeStock_res.Cantidad = 0
+                    ElseIf Math.Round(oBeStock_res.Cantidad, 6) > vCantidadPendiente Then
+                        clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                               "stock_res_cantidad_ajustada_a_pendiente",
+                                                               oBeStock_res,
+                                                               "CantidadOriginal", clsReservaMi3DebugTrace.Valor(oBeStock_res.Cantidad),
+                                                               "CantidadPedido", clsReservaMi3DebugTrace.Valor(vCantidadPedido),
+                                                               "CantidadReservada", clsReservaMi3DebugTrace.Valor(vCantidadReservada),
+                                                               "CantidadPendiente", clsReservaMi3DebugTrace.Valor(vCantidadPendiente))
+                        oBeStock_res.Cantidad = vCantidadPendiente
+                    End If
+                End If
+            End Using
+        End Using
+
+    End Sub
 
     Public Shared Function Actualizar(ByRef oBeStock_res As clsBeStock_res, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
