@@ -957,11 +957,17 @@ namespace WMS.DALCore
 
                 clsBeProducto_presentacion? BePresentacion2 = null;
 
-                // FIX: Buscar presentación por Variant_Code aunque IdPresentacion venga en 0
-                // El JSON típicamente incluye Variant_Code (ej: "C24") pero no el IdPresentacion numérico
+                // FIX: Buscar presentación por Variant_Code aunque IdPresentacion venga en 0.
+                // En algunos clientes Variant_Code corresponde al nombre de presentacion (ej: "CJ"), no al codigo.
                 if (!string.IsNullOrEmpty(pBePedidoDet.Atributo_variante_1))
                 {
                     BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(
+                        pBePedidoDet.Producto.IdProducto,
+                        pBePedidoDet.Atributo_variante_1,
+                        lConectionInterface,
+                        lTransactionInterface);
+
+                    BePresentacion2 ??= clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(
                         pBePedidoDet.Producto.IdProducto,
                         pBePedidoDet.Atributo_variante_1,
                         lConectionInterface,
