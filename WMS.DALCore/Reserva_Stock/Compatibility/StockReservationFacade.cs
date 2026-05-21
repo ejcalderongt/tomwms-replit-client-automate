@@ -1,6 +1,8 @@
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Producto;
+using WMS.StockReservation.Core.Domain;
 using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Compatibility
@@ -31,7 +33,8 @@ namespace WMS.StockReservation.Compatibility
             int No_Linea = 0,
             bool pTarea_Reabasto = false,
             clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
-            bool pEsManufactura = false
+            bool pEsManufactura = false,
+            StockReservationDocumentCache? pDocumentCache = null
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -59,7 +62,7 @@ namespace WMS.StockReservation.Compatibility
 
                 var reservations = Reserva_Stock_Internal(
                     oBeStockResRequest: pStockResSolicitud,
-                    IdProducto: 0,
+                    IdProducto: ResolveProductId(pStockResSolicitud, pBePedidoDet),
                     oBeConfigEnc: pBeConfigEnc,
                     cnnSql: lConnection,
                     trSql: ltransaction,
@@ -70,7 +73,8 @@ namespace WMS.StockReservation.Compatibility
                     LineNumber: No_Linea,
                     MachineName: machineName,
                     DiasVencimiento: DiasVencimiento,
-                    EsManufactura: pEsManufactura
+                    EsManufactura: pEsManufactura,
+                    DocumentCache: pDocumentCache
                 );
 
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -123,7 +127,8 @@ namespace WMS.StockReservation.Compatibility
             bool pTarea_Reabasto,
             clsBeI_nav_ped_traslado_det pBeTrasladoDet,
             clsBeTrans_pe_det pBePedidoDet,
-            bool pEsManufactura = false
+            bool pEsManufactura = false,
+            StockReservationDocumentCache? pDocumentCache = null
         )
         {
             pListStockResOUT ??= new List<clsBeStock_res>();
@@ -147,7 +152,7 @@ namespace WMS.StockReservation.Compatibility
 
                 var reservations = Reserva_Stock_Internal(
                     oBeStockResRequest: pStockResSolicitud,
-                    IdProducto: 0,
+                    IdProducto: ResolveProductId(pStockResSolicitud, pBePedidoDet),
                     oBeConfigEnc: pBeConfigEnc,
                     cnnSql: lConnection,
                     trSql: ltransaction,
@@ -158,7 +163,8 @@ namespace WMS.StockReservation.Compatibility
                     LineNumber: No_Linea,
                     MachineName: machineName,
                     DiasVencimiento: DiasVencimiento,
-                    EsManufactura: pEsManufactura
+                    EsManufactura: pEsManufactura,
+                    DocumentCache: pDocumentCache
                 );
 
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -200,7 +206,8 @@ namespace WMS.StockReservation.Compatibility
             int LineNumber = 0,
             string MachineName = "",
             double DiasVencimiento = 0,
-            bool EsManufactura = false
+            bool EsManufactura = false,
+            StockReservationDocumentCache? DocumentCache = null
         )
         {
             return Reserva_Stock_Internal(
@@ -216,7 +223,8 @@ namespace WMS.StockReservation.Compatibility
                 LineNumber: LineNumber,
                 MachineName: MachineName,
                 DiasVencimiento: DiasVencimiento,
-                EsManufactura: EsManufactura
+                EsManufactura: EsManufactura,
+                DocumentCache: DocumentCache
             );
         }
 
@@ -236,7 +244,8 @@ namespace WMS.StockReservation.Compatibility
             int LineNumber,
             string MachineName,
             double DiasVencimiento = 0,
-            bool EsManufactura = false
+            bool EsManufactura = false,
+            StockReservationDocumentCache? DocumentCache = null
         )
         {
             if (oBeStockResRequest == null)
@@ -277,6 +286,16 @@ namespace WMS.StockReservation.Compatibility
                     ? Environment.MachineName
                     : machineName.Trim();
 
+                var resolvedProductId = IdProducto > 0
+                    ? IdProducto
+                    : ResolveProductId(oBeStockResRequest, oBePedidoDet);
+
+                var preloadedProduct = oBePedidoDet?.Producto?.IdProducto > 0
+                    ? oBePedidoDet.Producto
+                    : null;
+
+                var preloadedPresentation = BuildPresentationFromPedidoDet(oBePedidoDet, resolvedProductId);
+
                 var factory = new ServiceFactory();
 
                 var pipeline = factory.CreateReservationPipeline()
@@ -290,7 +309,7 @@ namespace WMS.StockReservation.Compatibility
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,
-                    ProductId = IdProducto,
+                    ProductId = resolvedProductId,
                     Configuration = oBeConfigEnc,
                     Connection = cnnSql,
                     Transaction = trSql,
@@ -302,7 +321,13 @@ namespace WMS.StockReservation.Compatibility
                     MachineName = machineName,
                     DiasVencimiento = DiasVencimiento < 0 ? 0 : DiasVencimiento,
                     SpecificLotNo = oBeI_nav_ped_traslado_det?.Lote_No,
-                    EsManufactura = EsManufactura
+                    EsManufactura = EsManufactura,
+                    DocumentCache = DocumentCache,
+                    Product = preloadedProduct,
+                    DefaultPresentation = preloadedPresentation,
+                    CachedPresentations = preloadedPresentation != null
+                        ? new List<clsBeProducto_presentacion> { preloadedPresentation }
+                        : new List<clsBeProducto_presentacion>()
                 };
 
                 var result = pipeline.Execute(context)
@@ -394,6 +419,28 @@ namespace WMS.StockReservation.Compatibility
             return null;
         }
 
+        private static int ResolveProductId(clsBeStock_res? req, clsBeTrans_pe_det? pedido)
+        {
+            if (pedido?.Producto?.IdProducto > 0)
+                return pedido.Producto.IdProducto;
+
+            return 0;
+        }
+
+        private static clsBeProducto_presentacion? BuildPresentationFromPedidoDet(clsBeTrans_pe_det? pedido, int productId)
+        {
+            if (pedido == null || pedido.IdPresentacion <= 0 || pedido.Factor <= 0)
+                return null;
+
+            return new clsBeProducto_presentacion
+            {
+                IdPresentacion = pedido.IdPresentacion,
+                IdProducto = productId,
+                Nombre = pedido.Nom_presentacion ?? "",
+                Factor = pedido.Factor
+            };
+        }
+
         private static string FormatearMotivoNoReserva(ReservationFailureReason failure)
         {
             var tipo = MapearTipoNoReserva(failure.Code);
@@ -453,11 +500,8 @@ namespace WMS.StockReservation.Compatibility
                 var idEmpresa = 1;
                 var idBodega = cfg?.Idbodega ?? 0;
 
-                var nextId = clsLnLog_error_wms.MaxID(cnn, tr) + 1;
-
                 var errorLog = new clsBeLog_error_wms
                 {
-                    IdError = nextId,
                     IdEmpresa = idEmpresa,
                     IdBodega = idBodega,
                     Fecha = DateTime.Now,

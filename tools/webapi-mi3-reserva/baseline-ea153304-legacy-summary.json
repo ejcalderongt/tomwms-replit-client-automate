@@ -1,0 +1,276 @@
+{
+  "referencia": "EA-153304",
+  "fuente": "BYB QA i_nav_ped_traslado_enc/det despues de import NAV y reserva legacy",
+  "generado": "2026-05-20T20:57:28",
+  "lineas": 29,
+  "total_quantity": 1370.0,
+  "total_quantity_reserved_wms_legacy": 1370.0,
+  "lineas_legacy_reservadas_completas": 29,
+  "header_status_legacy": 3,
+  "payload_status": 0,
+  "detalle_payload_status": 0,
+  "regla_comparacion": "Despues de eliminar/liberar EA-153304, el WebAPI debe reservar las mismas 29 lineas y 1370 unidades solicitadas si el stock no varia.",
+  "lineas_detalle": [
+    {
+      "line_no": 10000,
+      "source_id": "PV2-364400",
+      "item_no": "00473201",
+      "quantity": 24.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 24.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 20000,
+      "source_id": "PV2-364400",
+      "item_no": "00474200",
+      "quantity": 25.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 25.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 30000,
+      "source_id": "PV2-364400",
+      "item_no": "00474400",
+      "quantity": 26.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 26.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 40000,
+      "source_id": "PV2-364400",
+      "item_no": "00511001",
+      "quantity": 27.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 27.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 50000,
+      "source_id": "PV2-364400",
+      "item_no": "00194482",
+      "quantity": 18.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 18.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 60000,
+      "source_id": "PV2-364400",
+      "item_no": "00200400",
+      "quantity": 15.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 15.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 70000,
+      "source_id": "PV2-364400",
+      "item_no": "00200500",
+      "quantity": 11.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 11.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 80000,
+      "source_id": "PV2-364400",
+      "item_no": "00220400",
+      "quantity": 48.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 48.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 90000,
+      "source_id": "PV2-364400",
+      "item_no": "00224100",
+      "quantity": 35.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 35.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 100000,
+      "source_id": "PV2-364400",
+      "item_no": "00230438",
+      "quantity": 5.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 5.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 110000,
+      "source_id": "PV2-364400",
+      "item_no": "00230939",
+      "quantity": 71.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 71.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 120000,
+      "source_id": "PV2-364400",
+      "item_no": "00231838",
+      "quantity": 61.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 61.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 130000,
+      "source_id": "PV2-364400",
+      "item_no": "00232538",
+      "quantity": 62.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 62.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 140000,
+      "source_id": "PV2-364400",
+      "item_no": "00234138",
+      "quantity": 63.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 63.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 150000,
+      "source_id": "PV2-364400",
+      "item_no": "00025005",
+      "quantity": 63.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 63.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 160000,
+      "source_id": "PV2-364400",
+      "item_no": "00050608",
+      "quantity": 64.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 64.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 170000,
+      "source_id": "PV2-364400",
+      "item_no": "00053325",
+      "quantity": 65.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 65.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 180000,
+      "source_id": "PV2-364400",
+      "item_no": "00080707",
+      "quantity": 5.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 5.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 190000,
+      "source_id": "PV2-364400",
+      "item_no": "00084423",
+      "quantity": 2.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 2.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 200000,
+      "source_id": "PV2-364399",
+      "item_no": "00025001",
+      "quantity": 61.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 61.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 210000,
+      "source_id": "PV2-364399",
+      "item_no": "00025004",
+      "quantity": 62.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 62.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 220000,
+      "source_id": "PV2-364399",
+      "item_no": "00025005",
+      "quantity": 63.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 63.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 230000,
+      "source_id": "PV2-364399",
+      "item_no": "00050608",
+      "quantity": 64.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 64.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 240000,
+      "source_id": "PV2-364399",
+      "item_no": "00053325",
+      "quantity": 65.0,
+      "unit_of_measure_code": "UNI",
+      "quantity_reserved_wms_legacy": 65.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 250000,
+      "source_id": "PV2-364399",
+      "item_no": "00200400",
+      "quantity": 71.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 71.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 260000,
+      "source_id": "PV2-364399",
+      "item_no": "00200500",
+      "quantity": 72.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 72.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 270000,
+      "source_id": "PV2-364399",
+      "item_no": "00200501",
+      "quantity": 73.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 73.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 280000,
+      "source_id": "PV2-364399",
+      "item_no": "00204100",
+      "quantity": 74.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 74.0,
+      "process_result_legacy": "Ok"
+    },
+    {
+      "line_no": 290000,
+      "source_id": "PV2-364399",
+      "item_no": "00220400",
+      "quantity": 75.0,
+      "unit_of_measure_code": "CJ",
+      "quantity_reserved_wms_legacy": 75.0,
+      "process_result_legacy": "Ok"
+    }
+  ]
+}

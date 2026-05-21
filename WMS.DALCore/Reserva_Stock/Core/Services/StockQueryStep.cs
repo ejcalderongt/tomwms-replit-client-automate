@@ -1,4 +1,5 @@
 using WMS.EntityCore.Stock;
+using System.Diagnostics;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -20,6 +21,7 @@ namespace WMS.StockReservation.Core.Services
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             _logger.LogCheckpoint("#MI3_STOCK_QUERY_START");
+            var totalWatch = Stopwatch.StartNew();
 
             // Null-safety / precondiciones del pipeline
             if (context.Request == null)
@@ -61,79 +63,79 @@ namespace WMS.StockReservation.Core.Services
             var tempProduct = context.Product;
 
             // =========================
-            // Consultar stock Picking
+            // Consultar stock una sola vez
             // =========================
-            context.StockListPickingZone = clsLnStock.lStock(
-                ref tempRequest,
-                ref tempProduct,
-                diasVencimiento,
-                context.Configuration,
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: false,
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion,
-                pEsManufactura: context.EsManufactura);
+            var watch = Stopwatch.StartNew();
+            List<clsBeStock>? allStock;
+            if (context.DocumentCache != null)
+            {
+                allStock = context.DocumentCache.GetStock(
+                    tempRequest,
+                    tempProduct,
+                    diasVencimiento,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    excluirUbicacionPicking: false,
+                    conmutarUmbasAPresentacion: false,
+                    tareaReabasto: context.TareaReabasto,
+                    esDevolucion: context.EsDevolucion,
+                    esManufactura: context.EsManufactura);
+                watch.Stop();
+                _logger.LogInfo(
+                    $"#MI3_PERF_SQL | Query=lStockAllDocumentCache | Ms={watch.ElapsedMilliseconds} | " +
+                    $"Rows={allStock?.Count ?? 0}");
+            }
+            else
+            {
+                allStock = clsLnStock.lStock(
+                    ref tempRequest,
+                    ref tempProduct,
+                    diasVencimiento,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    pExcluirUbicacionPicking: false,
+                    Conmutar_Umbas_A_Presentacion: false,
+                    pTarea_Reabasto: context.TareaReabasto,
+                    pEs_Devolucion: context.EsDevolucion,
+                    pEsManufactura: context.EsManufactura);
+                watch.Stop();
+                _logger.LogInfo(
+                    $"#MI3_PERF_SQL | Query=lStockAll | Ms={watch.ElapsedMilliseconds} | " +
+                    $"Rows={allStock?.Count ?? 0}");
+            }
 
             // Re-asignar (por si lStock modifica las referencias)
             context.Request = tempRequest;
             context.Product = tempProduct;
 
-            // Restar stock ya reservado de la zona Picking
-            if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
+            // Restar stock ya reservado una sola vez. lStock(false) trae TODO el stock,
+            // luego se separa en picking/no-picking en memoria para evitar doble query.
+            if (context.DocumentCache == null && allStock != null && allStock.Count > 0)
             {
+                watch.Restart();
                 clsLnStock_res.Restar_Stock_Reservado(
-                    context.StockListPickingZone,
+                    allStock,
                     context.Configuration,
                     context.Connection,
                     context.Transaction);
-
-                // IMPORTANTE: Filtrar SOLO ubicaciones de picking
-                // La consulta con pExcluirUbicacionPicking=false trae TODO el stock,
-                // debemos filtrar aquí para separar correctamente las zonas
-                context.StockListPickingZone = context.StockListPickingZone
-                    .Where(s => s != null && s.Cantidad > 0 && s.UbicacionPicking)
-                    .ToList();
+                watch.Stop();
+                _logger.LogInfo(
+                    $"#MI3_PERF_SQL | Query=RestarStockReservadoAll | Ms={watch.ElapsedMilliseconds} | " +
+                    $"Rows={allStock.Count}");
             }
 
             // =========================
-            // Consultar stock NO Picking
+            // Separar zonas desde la misma lista
             // =========================
-            tempRequest = context.Request!;
-            tempProduct = context.Product!;
+            context.StockListPickingZone = allStock?
+                .Where(s => s != null && s.Cantidad > 0 && s.UbicacionPicking)
+                .ToList() ?? new List<clsBeStock>();
 
-            context.StockListNonPickingZones = clsLnStock.lStock(
-                ref tempRequest,
-                ref tempProduct,
-                diasVencimiento,
-                context.Configuration,
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: true,
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion,
-                pEsManufactura: context.EsManufactura);
-
-            context.Request = tempRequest;
-            context.Product = tempProduct;
-
-            // Restar stock ya reservado de zonas no-Picking
-            if (context.StockListNonPickingZones != null && context.StockListNonPickingZones.Count > 0)
-            {
-                clsLnStock_res.Restar_Stock_Reservado(
-                    context.StockListNonPickingZones,
-                    context.Configuration,
-                    context.Connection,
-                    context.Transaction);
-
-                // Filtrar SOLO ubicaciones NO picking (redundante pero seguro)
-                // La consulta ya excluye picking con pExcluirUbicacionPicking=true
-                context.StockListNonPickingZones = context.StockListNonPickingZones
-                    .Where(s => s != null && s.Cantidad > 0 && !s.UbicacionPicking)
-                    .ToList();
-            }
+            context.StockListNonPickingZones = allStock?
+                .Where(s => s != null && s.Cantidad > 0 && !s.UbicacionPicking)
+                .ToList() ?? new List<clsBeStock>();
 
             // =========================
             // Filtrar stock vencido (post-query, con diagnóstico)
@@ -167,6 +169,10 @@ namespace WMS.StockReservation.Core.Services
                 $"#MI3_STOCK_QUERY_OK - Picking: {pickingCount}, " +
                 $"NonPicking: {nonPickingCount}, " +
                 $"Total: {totalCount}");
+            totalWatch.Stop();
+            _logger.LogInfo(
+                $"#MI3_PERF_STOCK_QUERY_TOTAL | Ms={totalWatch.ElapsedMilliseconds} | " +
+                $"Picking={pickingCount} | NonPicking={nonPickingCount} | Total={totalCount}");
 
             DetectStockFailures(context, pickingCount, nonPickingCount);
         }

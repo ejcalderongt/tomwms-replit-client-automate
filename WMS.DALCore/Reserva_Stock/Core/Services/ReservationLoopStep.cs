@@ -1,4 +1,5 @@
 using WMS.EntityCore.Stock;
+using System.Diagnostics;
 using WMSWebAPI.Be;
 using static clsBeI_nav_config_enc;
 
@@ -52,6 +53,8 @@ namespace WMS.StockReservation.Core.Services
 
             int iteration = 0;
             bool hasProgress = true;
+            var loopWatch = Stopwatch.StartNew();
+            var seenStates = new Dictionary<string, int>(StringComparer.Ordinal);
 
             // ===== LOOP PRINCIPAL CON RE-ENTRY =====
             while (context.PendingQuantity > 0.000001 &&
@@ -59,15 +62,33 @@ namespace WMS.StockReservation.Core.Services
                    hasProgress)
             {
                 iteration++;
+                var iterationWatch = Stopwatch.StartNew();
                 double previousPending = context.PendingQuantity;
+                NormalizeAvailableStock(context);
 
-                _logger.LogCheckpoint($"#MI3_ITERATION_{iteration} | Pendiente: {context.PendingQuantity:F6}");
+                var stateBefore = BuildLoopStateSignature(context);
+                seenStates.TryGetValue(stateBefore, out var seenCount);
+                seenStates[stateBefore] = seenCount + 1;
+
+                _logger.LogCheckpoint(
+                    $"#MI3_ITERATION_{iteration} | Pendiente: {context.PendingQuantity:F6} | " +
+                    $"StateSeen={seenCount + 1} | State={stateBefore}");
+
+                if (seenCount > 0)
+                {
+                    _logger.LogWarning(
+                        $"#MI3_LOOP_STATE_REPEATED | Iteration={iteration} | Seen={seenCount + 1} | " +
+                        $"State={stateBefore}");
+                }
 
                 // PASO 1: Determinar punto de inicio (INICIAR_EN)
+                var decisionWatch = Stopwatch.StartNew();
                 int startingPoint = DetermineStartingPoint(context);
+                decisionWatch.Stop();
                 context.StartingPoint = startingPoint;
 
-                _logger.LogCheckpoint($"#MI3_STARTING_POINT_{startingPoint}");
+                _logger.LogCheckpoint(
+                    $"#MI3_STARTING_POINT_{startingPoint} | DecisionMs={decisionWatch.ElapsedMilliseconds}");
 
                 // PASO 2: RECONSTRUIR cadena segun punto de inicio
                 IReservationHandler handlerChain = _factory.BuildHandlerChain(
@@ -76,7 +97,9 @@ namespace WMS.StockReservation.Core.Services
                     _logger);
 
                 // PASO 3: Ejecutar cadena (puede procesar parcialmente)
+                var handlerWatch = Stopwatch.StartNew();
                 var result = handlerChain.Handle(context);
+                handlerWatch.Stop();
 
                 // DEBUG: Log completo del resultado
                 _logger.LogCheckpoint(
@@ -84,6 +107,7 @@ namespace WMS.StockReservation.Core.Services
                     $"Success: {result.Success} | " +
                     $"ReservedQuantity: {result.ReservedQuantity:F6} | " +
                     $"Reservations.Count: {result.Reservations?.Count ?? 0} | " +
+                    $"HandlerMs: {handlerWatch.ElapsedMilliseconds} | " +
                     $"CaseCode: {result.CaseCode} | " +
                     $"Message: {result.Message}");
 
@@ -177,21 +201,46 @@ namespace WMS.StockReservation.Core.Services
                     if (TryEnableExplosionFallback(context))
                     {
                         _logger.LogCheckpoint("#MI3_FALLBACK_EXPLOSION");
+                        var requeryWatch = Stopwatch.StartNew();
                         ReQueryStockForExplosion(context);
+                        requeryWatch.Stop();
+                        _logger.LogInfo(
+                            $"#MI3_PERF_REQUERY | Mode=Explosion | Ms={requeryWatch.ElapsedMilliseconds} | " +
+                            $"Rows={context.WorkingStockList?.Count ?? 0}");
                         hasProgress = true;
+                        iterationWatch.Stop();
+                        _logger.LogInfo(
+                            $"#MI3_PERF_ITERATION | Iteration={iteration} | Ms={iterationWatch.ElapsedMilliseconds} | " +
+                            $"PendingBefore={previousPending:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                            $"Progress=FallbackExplosion | Reservas={context.CreatedReservations.Count}");
                         continue;
                     }
 
                     if (TryEnableUMBasFallback(context))
                     {
                         _logger.LogCheckpoint("#MI3_FALLBACK_UMBAS");
+                        var requeryWatch = Stopwatch.StartNew();
                         ReQueryStockForUMBas(context);
+                        requeryWatch.Stop();
+                        _logger.LogInfo(
+                            $"#MI3_PERF_REQUERY | Mode=UMBas | Ms={requeryWatch.ElapsedMilliseconds} | " +
+                            $"Rows={context.WorkingStockList?.Count ?? 0}");
                         hasProgress = true;
+                        iterationWatch.Stop();
+                        _logger.LogInfo(
+                            $"#MI3_PERF_ITERATION | Iteration={iteration} | Ms={iterationWatch.ElapsedMilliseconds} | " +
+                            $"PendingBefore={previousPending:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                            $"Progress=FallbackUMBas | Reservas={context.CreatedReservations.Count}");
                         continue;
                     }
 
                     // No hay mas fallbacks
                     _logger.LogCheckpoint("#MI3_NO_MORE_OPTIONS");
+                    iterationWatch.Stop();
+                    _logger.LogInfo(
+                        $"#MI3_PERF_ITERATION | Iteration={iteration} | Ms={iterationWatch.ElapsedMilliseconds} | " +
+                        $"PendingBefore={previousPending:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                        $"Progress=False | Reservas={context.CreatedReservations.Count}");
                     break;
                 }
 
@@ -205,6 +254,12 @@ namespace WMS.StockReservation.Core.Services
                 #if DEBUG
                 context.ValidateInvariants($"ITERATION_{iteration}_END");
                 #endif
+
+                iterationWatch.Stop();
+                _logger.LogInfo(
+                    $"#MI3_PERF_ITERATION | Iteration={iteration} | Ms={iterationWatch.ElapsedMilliseconds} | " +
+                    $"PendingBefore={previousPending:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                    $"Progress={hasProgress} | Reservas={context.CreatedReservations.Count}");
             }
 
             // Validaciones finales
@@ -222,9 +277,24 @@ namespace WMS.StockReservation.Core.Services
                     $"Faltante: {context.PendingQuantity:F6}");
             }
 
+            loopWatch.Stop();
             _logger.LogCheckpoint(
                 $"#MI3_LOOP_END | Iteraciones: {iteration} | " +
-                $"Total Reservado: {context.Request.Cantidad - context.PendingQuantity:F6}");
+                $"Total Reservado: {context.Request.Cantidad - context.PendingQuantity:F6} | " +
+                $"LoopMs: {loopWatch.ElapsedMilliseconds}");
+        }
+
+        private static string BuildLoopStateSignature(ReservationContext context)
+        {
+            return string.Join("|",
+                $"P={Math.Round(context.PendingQuantity, 6):F6}",
+                $"Pick={context.StockListPickingZone?.Count ?? 0}:{Math.Round(AvailableQuantity(context.StockListPickingZone), 6):F6}",
+                $"NonPick={context.StockListNonPickingZones?.Count ?? 0}:{Math.Round(AvailableQuantity(context.StockListNonPickingZones), 6):F6}",
+                $"Exp={context.IsExplosionModeEnabled}",
+                $"UMBas={context.IsUMBasModeEnabled}",
+                $"MinP={context.MinExpirationDatePickingZone:yyyyMMdd}",
+                $"MinNP={context.MinExpirationDateNonPickingZones:yyyyMMdd}",
+                $"Res={context.CreatedReservations.Count}");
         }
 
         private int DetermineStartingPoint(ReservationContext context)
@@ -234,11 +304,11 @@ namespace WMS.StockReservation.Core.Services
 
             // === LOGICA FEFO: Comparar fechas Picking vs NonPicking (Almacenamiento) ===
             bool hasPickingStock = context.StockListPickingZone != null && 
-                                   context.StockListPickingZone.Count > 0 &&
+                                   AvailableStock(context.StockListPickingZone).Count > 0 &&
                                    context.MinExpirationDatePickingZone > defaultDate;
             
             bool hasNonPickingStock = context.StockListNonPickingZones != null && 
-                                       context.StockListNonPickingZones.Count > 0 &&
+                                       AvailableStock(context.StockListNonPickingZones).Count > 0 &&
                                        context.MinExpirationDateNonPickingZones > defaultDate;
 
             // Obtener configuración de la bodega
@@ -252,6 +322,13 @@ namespace WMS.StockReservation.Core.Services
                 // FEFO: Si Almacenamiento vence ANTES que Picking → NonPicking primero
                 if (context.MinExpirationDateNonPickingZones < context.MinExpirationDatePickingZone)
                 {
+                    if (PickingCoversNonPickingThatRequiresExplosion(context))
+                    {
+                        _logger.LogInfo(
+                            "#EJC20260520_RESERVA_BYB_FIX: Picking cubre la solicitud y NonPicking requiere explosion no permitida -> INICIAR_EN_3");
+                        return 3;
+                    }
+
                     _logger.LogInfo($"#FEFO_DECISION: NonPicking ({context.MinExpirationDateNonPickingZones:yyyy-MM-dd}) vence ANTES que Picking ({context.MinExpirationDatePickingZone:yyyy-MM-dd}) → INICIAR_EN_4");
                     return 4; // INICIAR_EN_4 (NonPicking/Almacenamiento primero)
                 }
@@ -454,22 +531,38 @@ namespace WMS.StockReservation.Core.Services
             var tempProduct = context.Product;
             var tempRequest = context.Request;
 
-            var newStock = clsLnStock.lStock(
-                ref tempRequest,
-                ref tempProduct,
-                0,
-                context.Configuration,
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: false,
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion);
+            var newStock = context.DocumentCache != null
+                ? context.DocumentCache.GetStock(
+                    tempRequest,
+                    tempProduct,
+                    0,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    excluirUbicacionPicking: false,
+                    conmutarUmbasAPresentacion: false,
+                    tareaReabasto: context.TareaReabasto,
+                    esDevolucion: context.EsDevolucion,
+                    esManufactura: false)
+                : clsLnStock.lStock(
+                    ref tempRequest,
+                    ref tempProduct,
+                    0,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    pExcluirUbicacionPicking: false,
+                    Conmutar_Umbas_A_Presentacion: false,
+                    pTarea_Reabasto: context.TareaReabasto,
+                    pEs_Devolucion: context.EsDevolucion);
 
             if (newStock != null && newStock.Count > 0)
             {
-                clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
-                                                       context.Connection, context.Transaction);
+                if (context.DocumentCache == null)
+                {
+                    clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
+                                                           context.Connection, context.Transaction);
+                }
                 
                 // CRITICAL: Restar tambien las reservas ya creadas en memoria (no en BD aun)
                 // NOTA: En modo explosión, el stock ahora está en UMBas.
@@ -516,22 +609,38 @@ namespace WMS.StockReservation.Core.Services
             var tempProduct = context.Product;
             var tempRequest = context.Request;
 
-            var newStock = clsLnStock.lStock(
-                ref tempRequest,
-                ref tempProduct,
-                0,
-                context.Configuration,
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: false,
-                Conmutar_Umbas_A_Presentacion: true,
-                pTarea_Reabasto: context.TareaReabasto,
-                pEs_Devolucion: context.EsDevolucion);
+            var newStock = context.DocumentCache != null
+                ? context.DocumentCache.GetStock(
+                    tempRequest,
+                    tempProduct,
+                    0,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    excluirUbicacionPicking: false,
+                    conmutarUmbasAPresentacion: true,
+                    tareaReabasto: context.TareaReabasto,
+                    esDevolucion: context.EsDevolucion,
+                    esManufactura: false)
+                : clsLnStock.lStock(
+                    ref tempRequest,
+                    ref tempProduct,
+                    0,
+                    context.Configuration,
+                    context.Connection,
+                    context.Transaction,
+                    pExcluirUbicacionPicking: false,
+                    Conmutar_Umbas_A_Presentacion: true,
+                    pTarea_Reabasto: context.TareaReabasto,
+                    pEs_Devolucion: context.EsDevolucion);
 
             if (newStock != null && newStock.Count > 0)
             {
-                clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
-                                                       context.Connection, context.Transaction);
+                if (context.DocumentCache == null)
+                {
+                    clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
+                                                           context.Connection, context.Transaction);
+                }
                 
                 // CRITICAL: Restar tambien las reservas ya creadas en memoria (no en BD aun)
                 // NOTA: En modo UMBas, el stock ahora está en presentación.
@@ -575,6 +684,7 @@ namespace WMS.StockReservation.Core.Services
             if (context.StockListPickingZone != null)
             {
                 var validPicking = context.StockListPickingZone.Where(s => s.Cantidad > 0).ToList();
+                context.MinExpirationDatePickingZone = new DateTime(1900, 1, 1);
                 if (validPicking.Count > 0)
                 {
                     context.MinExpirationDatePickingZone = validPicking.Min(s => s.Fecha_vence);
@@ -586,6 +696,9 @@ namespace WMS.StockReservation.Core.Services
             if (context.StockListNonPickingZones != null)
             {
                 var validNonPicking = context.StockListNonPickingZones.Where(s => s.Cantidad > 0).ToList();
+                context.MinExpirationDateNonPickingZones = new DateTime(1900, 1, 1);
+                context.MinExpirationCompletePalletsClavaud = new DateTime(1900, 1, 1);
+                context.MinExpirationIncompletePalletsClavaud = new DateTime(1900, 1, 1);
                 if (validNonPicking.Count > 0)
                 {
                     context.MinExpirationDateNonPickingZones = validNonPicking.Min(s => s.Fecha_vence);
@@ -610,11 +723,52 @@ namespace WMS.StockReservation.Core.Services
             if (context.WorkingStockList != null && context.WorkingStockList.Count > 0)
             {
                 var validStock = context.WorkingStockList.Where(s => s.Cantidad > 0).ToList();
+                context.GlobalMinimumExpirationDate = new DateTime(1900, 1, 1);
                 if (validStock.Count > 0)
                 {
                     context.GlobalMinimumExpirationDate = validStock.Min(s => s.Fecha_vence);
                 }
             }
+        }
+
+        private static List<clsBeStock> AvailableStock(IEnumerable<clsBeStock>? stockList)
+        {
+            return stockList?
+                .Where(s => s != null && s.Cantidad > 0.000001)
+                .ToList() ?? new List<clsBeStock>();
+        }
+
+        private static double AvailableQuantity(IEnumerable<clsBeStock>? stockList)
+        {
+            return AvailableStock(stockList).Sum(s => s.Cantidad);
+        }
+
+        private static void NormalizeAvailableStock(ReservationContext context)
+        {
+            context.StockListPickingZone = AvailableStock(context.StockListPickingZone);
+            context.StockListNonPickingZones = AvailableStock(context.StockListNonPickingZones);
+            context.WorkingStockList = new List<clsBeStock>();
+
+            context.WorkingStockList.AddRange(context.StockListPickingZone);
+            context.WorkingStockList.AddRange(context.StockListNonPickingZones);
+        }
+
+        private bool PickingCoversNonPickingThatRequiresExplosion(ReservationContext context)
+        {
+            if (context.Request.IdPresentacion != 0)
+                return false;
+
+            if (context.DefaultPresentation == null || context.DefaultPresentation.IdPresentacion == 0)
+                return false;
+
+            if (AvailableQuantity(context.StockListPickingZone) + 0.000001 < context.PendingQuantity)
+                return false;
+
+            var minNonPicking = context.MinExpirationDateNonPickingZones.Date;
+            return AvailableStock(context.StockListNonPickingZones)
+                .Any(s => s.Fecha_vence.Date == minNonPicking &&
+                          s.IdPresentacion != 0 &&
+                          !s.UbicacionPicking);
         }
 
         // ===== LOTES ESPECÍFICOS (para transferencias) =====

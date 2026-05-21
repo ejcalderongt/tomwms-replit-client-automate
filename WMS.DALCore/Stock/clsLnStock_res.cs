@@ -69,6 +69,9 @@ public class clsLnStock_res
 
         try
         {
+            if (Math.Round(oBeStock_res.Cantidad, 6) <= 0)
+                return 0;
+
             Ins.Init("stock_res");
             Ins.Add("idtransaccion", "@idtransaccion", "F");
             Ins.Add("indicador", "@indicador", "F");
@@ -118,6 +121,18 @@ public class clsLnStock_res
                 lConnection.Open();
                 lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
                 cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            }
+
+            Ajustar_Cantidad_Maxima_PedidoDet(oBeStock_res,
+                                              Es_Transaccion_Remota ? pConection! : lConnection,
+                                              Es_Transaccion_Remota ? pTransaction : lTransaction);
+
+            if (Math.Round(oBeStock_res.Cantidad, 6) <= 0)
+            {
+                if (!Es_Transaccion_Remota && lTransaction != null)
+                    lTransaction.Rollback();
+
+                return 0;
             }
 
             cmd.Parameters.Add(new SqlParameter("@IdTransaccion", oBeStock_res.IdTransaccion));
@@ -186,6 +201,9 @@ public class clsLnStock_res
 
         try
         {
+            if (Math.Round(oBeStock_res.Cantidad, 6) <= 0)
+                return 0;
+
             Ins.Init("stock_res");            
             Ins.Add("idtransaccion", "@idtransaccion", "F");
             Ins.Add("indicador", "@indicador", "F");
@@ -228,6 +246,16 @@ public class clsLnStock_res
 
             lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
             cmd = new SqlCommand(sp, lConnection, lTransaction);
+
+            Ajustar_Cantidad_Maxima_PedidoDet(oBeStock_res, lConnection, lTransaction);
+
+            if (Math.Round(oBeStock_res.Cantidad, 6) <= 0)
+            {
+                if (lTransaction != null)
+                    lTransaction.Rollback();
+
+                return 0;
+            }
             
             cmd.Parameters.Add(new SqlParameter("@IdTransaccion", oBeStock_res.IdTransaccion));
             cmd.Parameters.Add(new SqlParameter("@Indicador", oBeStock_res.Indicador));
@@ -405,6 +433,56 @@ public class clsLnStock_res
         }
         return rowsAffected;
     }
+
+    private static void Ajustar_Cantidad_Maxima_PedidoDet(clsBeStock_res oBeStock_res,
+                                                          SqlConnection pConnection,
+                                                          SqlTransaction? pTransaction)
+    {
+        if (oBeStock_res.IdPedidoDet <= 0)
+            return;
+
+        if (Math.Round(oBeStock_res.Cantidad, 6) <= 0)
+            return;
+
+        const string sql = @"
+            SELECT
+                CAST(ISNULL((SELECT TOP 1 d.Cantidad FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadPedido,
+                CAST(ISNULL((SELECT TOP 1 ISNULL(d.IdPresentacion, 0) FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS INT) AS IdPresentacionPedido,
+                CAST(ISNULL((SELECT SUM(sr.cantidad) FROM stock_res sr WHERE sr.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadReservada";
+
+        using var cmd = new SqlCommand(sql, pConnection, pTransaction)
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", oBeStock_res.IdPedidoDet));
+
+        using var dr = cmd.ExecuteReader();
+        if (!dr.Read())
+            return;
+
+        double cantidadPedido = dr["CantidadPedido"] is DBNull ? 0 : Convert.ToDouble(dr["CantidadPedido"]);
+        int idPresentacionPedido = dr["IdPresentacionPedido"] is DBNull ? 0 : Convert.ToInt32(dr["IdPresentacionPedido"]);
+        double cantidadReservada = dr["CantidadReservada"] is DBNull ? 0 : Convert.ToDouble(dr["CantidadReservada"]);
+
+        if (cantidadPedido <= 0)
+            return;
+
+        // Las lineas con presentacion tienen semantica propia de conversion; el tope aplica solo a UM base.
+        if (idPresentacionPedido > 0)
+            return;
+
+        double cantidadPendiente = Math.Round(cantidadPedido - cantidadReservada, 6);
+
+        if (cantidadPendiente <= 0)
+        {
+            oBeStock_res.Cantidad = 0;
+        }
+        else if (Math.Round(oBeStock_res.Cantidad, 6) > cantidadPendiente)
+        {
+            oBeStock_res.Cantidad = cantidadPendiente;
+        }
+    }
+
     public int Eliminar(IConfiguration config, clsBeStock_res oBeStock_res, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -997,8 +1075,6 @@ public class clsLnStock_res
                                               SqlConnection lConnection,
                                               SqlTransaction? lTransaction)
     {
-        double vCantidadReservadaRef = 0;
-        double vPesoReservadoRef = 0;
         double vCantidadEnStockEnPresentacionClavaud = 0;
         double vCantidadProductoPorTarima = 0;
         double vCantidadTarimasCompletasAPickearClavaud = 0;
@@ -1013,84 +1089,84 @@ public class clsLnStock_res
 
             if (lStock == null) return true;
 
-            List<int> lIdStocksReservados = new List<int>();
-            lIdStocksReservados = Get_All_By_IdBodega(pBeConfigEnc.Idbodega, lConnection, lTransaction);
+            Dictionary<int, (double Cantidad, double Peso)> reservasByStock =
+                Get_Cantidades_Reservadas_By_IdStocks(lStock, pBeConfigEnc.Idbodega, lConnection, lTransaction);
+
+            var presentacionCache = new Dictionary<int, clsBeProducto_presentacion>();
 
             foreach (clsBeStock BeStock in lStock)
             {
-                if (lIdStocksReservados.Contains(BeStock.IdStock))
+                if (reservasByStock.TryGetValue(BeStock.IdStock, out var reserva))
                 {
                     BePresentacionStock = BeStock.Presentacion;
+                    double vCantidadReservadaRef = reserva.Cantidad;
+                    double vPesoReservadoRef = reserva.Peso;
 
-                    if (Get_Cantidad_Y_Peso_ReservadaUMBas_By_IdStock(BeStock.IdStock,
-                                                                    false,
-                                                                    ref vCantidadReservadaRef,
-                                                                    ref vPesoReservadoRef,
-                                                                    lConnection,
-                                                                    lTransaction))
+                    if (vCantidadReservadaRef != 0)
                     {
-                        if (vCantidadReservadaRef != 0)
+                        if ((BeStock.Cantidad_Reservada != 0 && BeStock.Cantidad_Reservada != vCantidadReservadaRef)
+                            || BeStock.Cantidad_Reservada == 0)
                         {
-                            if ((BeStock.Cantidad_Reservada != 0 && BeStock.Cantidad_Reservada != vCantidadReservadaRef)
-                                || BeStock.Cantidad_Reservada == 0)
-                            {
-                                BeStock.Cantidad_Reservada = vCantidadReservadaRef;
-                                BeStock.Pallet_Completo = false;
+                            BeStock.Cantidad_Reservada = vCantidadReservadaRef;
+                            BeStock.Pallet_Completo = false;
 
-                                if (BeStock.Cantidad > 0)
-                                {
-                                    if (vCantidadReservadaRef > BeStock.Cantidad)
-                                    {
-                                        BeStock.Cantidad = 0;
-                                    }
-                                    else
-                                    {
-                                        BeStock.Cantidad -= vCantidadReservadaRef;
-                                        BeStock.Peso -= vPesoReservadoRef;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            BeStock.Pallet_Completo = true;
-                        }
-
-                        if (pBeConfigEnc.considerar_paletizado_en_reabasto)
-                        {
-                            if (BePresentacionStock != null)
+                            if (BeStock.Cantidad > 0)
                             {
-                                if (BeStock.IdPresentacion == 0)
+                                if (vCantidadReservadaRef > BeStock.Cantidad)
                                 {
-                                    BePresentacionStock = new clsBeProducto_presentacion();
-                                    BePresentacionStock.IdPresentacion = BeStock.IdPresentacion;
-                                    clsLnProducto_presentacion.GetSingle(ref BePresentacionStock, lConnection, lTransaction);
+                                    BeStock.Cantidad = 0;
                                 }
                                 else
                                 {
+                                    BeStock.Cantidad -= vCantidadReservadaRef;
+                                    BeStock.Peso -= vPesoReservadoRef;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        BeStock.Pallet_Completo = true;
+                    }
+
+                    if (pBeConfigEnc.considerar_paletizado_en_reabasto)
+                    {
+                        if (BePresentacionStock != null)
+                        {
+                            if (BeStock.IdPresentacion == 0)
+                            {
+                                BePresentacionStock = new clsBeProducto_presentacion();
+                                BePresentacionStock.IdPresentacion = BeStock.IdPresentacion;
+                                clsLnProducto_presentacion.GetSingle(ref BePresentacionStock, lConnection, lTransaction);
+                            }
+                            else
+                            {
+                                if (!presentacionCache.TryGetValue(BeStock.IdPresentacion, out BePresentacionStock!))
+                                {
                                     BePresentacionStock = new clsBeProducto_presentacion();
                                     BePresentacionStock.IdPresentacion = BeStock.IdPresentacion;
                                     clsLnProducto_presentacion.GetSingle(ref BePresentacionStock, lConnection, lTransaction);
+                                    presentacionCache[BeStock.IdPresentacion] = BePresentacionStock;
+                                }
 
-                                    if (BePresentacionStock != null)
+                                if (BePresentacionStock != null)
+                                {
+                                    if (BePresentacionStock.Factor > 0)
                                     {
-                                        if (BePresentacionStock.Factor > 0)
+                                        if ((BePresentacionStock.CajasPorCama > 0) && (BePresentacionStock.CamasPorTarima > 0))
                                         {
-                                            if ((BePresentacionStock.CajasPorCama > 0) && (BePresentacionStock.CamasPorTarima > 0))
-                                            {
-                                                vCantidadProductoPorTarima = Math.Round(BePresentacionStock.CajasPorCama * BePresentacionStock.CamasPorTarima, 2);
-                                                vCantidadTarimasCompletasAPickearClavaud = Math.Round(BeStock.Cantidad / vCantidadProductoPorTarima, 2);
+                                            vCantidadProductoPorTarima = Math.Round(BePresentacionStock.CajasPorCama * BePresentacionStock.CamasPorTarima, 2);
+                                            vCantidadTarimasCompletasAPickearClavaud = Math.Round(BeStock.Cantidad / vCantidadProductoPorTarima, 2);
 
-                                                Split_Decimal(vCantidadTarimasCompletasAPickearClavaud,
-                                                              ref vCantidadEnteraTarimasCompletasClavaud,
-                                                              ref vCantidadDecimalTarimasCompletasClavaud);
-                                            }
+                                            Split_Decimal(vCantidadTarimasCompletasAPickearClavaud,
+                                                          ref vCantidadEnteraTarimasCompletasClavaud,
+                                                          ref vCantidadDecimalTarimasCompletasClavaud);
                                         }
                                     }
                                 }
+                            }
 
-                                if(BePresentacionStock !=null)
-
+                            if(BePresentacionStock !=null)
                                 if (BePresentacionStock.Factor > 0)
                                 {
                                     if ((BePresentacionStock.CajasPorCama > 0) && (BePresentacionStock.CamasPorTarima > 0))
@@ -1107,12 +1183,9 @@ public class clsLnStock_res
                                             vCantidadEnStockEnPresentacionClavaud = Math.Round(BeStock.Cantidad / BePresentacionStock.Factor, 6);
 
                                             BeStock.Pallet_Completo = (vCantidadEnStockEnPresentacionClavaud == vCantidadProductoPorTarima);
-
-                                            Debug.WriteLine($"El pallet está {(BeStock.Pallet_Completo ? "in" : "")}completo para el el IdStock: {BeStock.IdStock} - {BeStock.Pallet_Completo}");
                                         }
                                     }
                                 }
-                            }
                         }
                     }
                 }
@@ -1123,6 +1196,62 @@ public class clsLnStock_res
         catch (Exception)
         {
             throw;
+        }
+
+        return result;
+    }
+
+    private static Dictionary<int, (double Cantidad, double Peso)> Get_Cantidades_Reservadas_By_IdStocks(
+        List<clsBeStock> lStock,
+        int idBodega,
+        SqlConnection lConnection,
+        SqlTransaction? lTransaction)
+    {
+        var result = new Dictionary<int, (double Cantidad, double Peso)>();
+        var ids = lStock
+            .Where(s => s != null && s.IdStock > 0)
+            .Select(s => s.IdStock)
+            .Distinct()
+            .ToList();
+
+        if (ids.Count == 0)
+            return result;
+
+        const int batchSize = 1000;
+
+        for (int offset = 0; offset < ids.Count; offset += batchSize)
+        {
+            var batch = ids.Skip(offset).Take(batchSize).ToList();
+            var parameterNames = batch.Select((_, index) => $"@IdStock{index}").ToList();
+
+            string sql = $@"
+SELECT IdStock,
+       CAST(ISNULL(SUM(cantidad), 0) AS FLOAT) AS Cantidad,
+       CAST(ISNULL(SUM(peso), 0) AS FLOAT) AS Peso
+FROM stock_res
+WHERE IdBodega = @IdBodega
+  AND IdStock IN ({string.Join(",", parameterNames)})
+GROUP BY IdStock";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction);
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.Add(new SqlParameter("@IdBodega", idBodega));
+
+            for (int i = 0; i < batch.Count; i++)
+                cmd.Parameters.Add(new SqlParameter(parameterNames[i], batch[i]));
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int idStock = reader.GetInt32(0);
+                double cantidad = reader.IsDBNull(1) ? 0 : Convert.ToDouble(reader.GetValue(1));
+                double peso = reader.IsDBNull(2) ? 0 : Convert.ToDouble(reader.GetValue(2));
+
+                if (result.TryGetValue(idStock, out var current))
+                    result[idStock] = (current.Cantidad + cantidad, current.Peso + peso);
+                else
+                    result[idStock] = (cantidad, peso);
+            }
         }
 
         return result;

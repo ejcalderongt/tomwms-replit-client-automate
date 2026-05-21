@@ -1,6 +1,7 @@
 ﻿using AppGlobal;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 using WMS.DALCore.Cliente;
 using WMS.DALCore.I_nav_ped_traslado_det;
 using WMS.DALCore.Road;
@@ -13,6 +14,7 @@ using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
 using WMS.EntityCore.Road;
+using WMS.StockReservation.Core.Domain;
 using WMSWebAPI.Be;
 
 
@@ -22,6 +24,28 @@ namespace WMS.DALCore
     {
         private static clsInsert Ins = new clsInsert();
         public static IConfiguration? lconfig = null;
+        private static readonly object TraceFileLock = new object();
+
+        private static void TraceMi3Perf(string message)
+        {
+            var line = $"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - {message}";
+            Console.WriteLine(line);
+
+            try
+            {
+                var logDir = Path.Combine(AppContext.BaseDirectory, "Logs");
+                Directory.CreateDirectory(logDir);
+                var path = Path.Combine(logDir, $"reserva-mi3-trace-{DateTime.Now:yyyyMMdd}.txt");
+
+                lock (TraceFileLock)
+                {
+                    File.AppendAllText(path, line + Environment.NewLine);
+                }
+            }
+            catch
+            {
+            }
+        }
 
         private static string Limpiar_Motivo_No_Reserva(string? texto)
         {
@@ -196,9 +220,13 @@ namespace WMS.DALCore
 
             var logErrores = new List<clsBeLog_error_wms>();
             DateTime fechaInicio = DateTime.Now;
+            var totalWatch = Stopwatch.StartNew();
+            var noTrace = SafeTrim(BeINavPedTrasladoEnc.No);
 
             try
             {
+                TraceMi3Perf($"#MI3_PERF_IF_START | Documento={noTrace} | Lineas={lineasDetalle.Count}");
+
                 // =========================
                 // Reglas básicas de proceso
                 // =========================
@@ -226,6 +254,7 @@ namespace WMS.DALCore
 
                 pedidoExistenteByCompany = clsLnTrans_pe_enc.Get_Single_By_Referencia_And_Company(
                     ref pBePedidoEnc, lConectionInterface, lTransInterface);
+                TraceMi3Perf($"#MI3_PERF_IF_HEADER_EXISTS | Documento={noTrace} | Ms={totalWatch.ElapsedMilliseconds}");
 
                 // Si existe en ambas búsquedas, devolvemos el encabezado actual (no null)
                 if (pedidoExistente != null && pedidoExistenteByCompany != null)
@@ -263,6 +292,7 @@ namespace WMS.DALCore
                     if (beCliente == null)
                         throw new Exception($"No existe el cliente '{toCode}' en maestro para pedido de traslado.");
                 }
+                TraceMi3Perf($"#MI3_PERF_IF_CLIENTE | Documento={noTrace} | Ms={totalWatch.ElapsedMilliseconds}");
 
                 // =========================
                 // Ruta / vendedor (null-safe)
@@ -417,7 +447,10 @@ namespace WMS.DALCore
                 pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport;
 
                 // Inserta encabezado (no debe dejar pBePedidoEnc null)
+                var headerWatch = Stopwatch.StartNew();
                 clsLnTrans_pe_enc.Inserta_Encabezado(ref pBePedidoEnc, lConectionInterface, lTransInterface);
+                headerWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_HEADER_INSERT | Documento={noTrace} | Ms={headerWatch.ElapsedMilliseconds} | IdPedidoEnc={pBePedidoEnc?.IdPedidoEnc ?? 0}");
 
                 if (pBePedidoEnc == null || pBePedidoEnc.IdPedidoEnc <= 0)
                     throw new Exception("No se generó correctamente el encabezado del pedido (IdPedidoEnc inválido).");
@@ -429,6 +462,40 @@ namespace WMS.DALCore
                     pBePedidoEnc.IdCliente,
                     lConectionInterface,
                     lTransInterface) ?? new List<clsBeCliente_tiempos>();
+                TraceMi3Perf($"#MI3_PERF_IF_CLIENTE_TIEMPOS | Documento={noTrace} | MsTotal={totalWatch.ElapsedMilliseconds} | Count={clienteTiempos.Count}");
+
+                var cacheWatch = Stopwatch.StartNew();
+                clsBeBodega? beBodegaProceso = clsLnBodega.GetSingle_By_Idbodega(
+                    BeConfigEnc.Idbodega,
+                    lConectionInterface,
+                    lTransInterface);
+
+                int idPropietarioProceso = clsLnPropietario_bodega.Get_IdPropietario_By_IdBodega_IdPropietarioBodega(
+                    IdBodegaOrigen,
+                    IdPropietarioBodegaOrigen,
+                    lConectionInterface,
+                    lTransInterface);
+
+                int idEstadoProductoProceso = 0;
+                if (beBodegaProceso != null && beBodegaProceso.Interface_SAP && beBodegaProceso.Restringir_areas_sap)
+                {
+                    idEstadoProductoProceso = clsLnProducto_estado.Get_IdEstado_By_Codigo_Area(
+                        pBePedidoEnc.Bodega_origen,
+                        lConectionInterface,
+                        lTransInterface);
+                }
+                else
+                {
+                    var estados = clsLnProducto_estado.Existe_IdEstado_By_IdPropietario(
+                        idPropietarioProceso,
+                        BeConfigEnc.IdProductoEstado,
+                        lConectionInterface,
+                        lTransInterface);
+
+                    idEstadoProductoProceso = estados?.FirstOrDefault()?.IdEstado ?? 0;
+                }
+                cacheWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_SHARED_CACHE | Documento={noTrace} | Ms={cacheWatch.ElapsedMilliseconds} | IdPropietario={idPropietarioProceso} | IdEstado={idEstadoProductoProceso}");
 
                 // =========================
                 // Insertar detalle
@@ -441,29 +508,44 @@ namespace WMS.DALCore
                 clsBeTrans_pe_det? refBePedidoDet = new clsBeTrans_pe_det();
                 clsBeTrans_pe_det? refBePedidoDetAnt = new clsBeTrans_pe_det();
                 var pBePedidoDet = new clsBeTrans_pe_det();
+                var productoCache = new Dictionary<string, clsBeProducto>(StringComparer.OrdinalIgnoreCase);
+                var unidadCache = new Dictionary<string, clsBeUnidad_medida>(StringComparer.OrdinalIgnoreCase);
+                var presentacionCache = new Dictionary<string, clsBeProducto_presentacion>(StringComparer.OrdinalIgnoreCase);
+                var reservationDocumentCache = new StockReservationDocumentCache();
 
                 foreach (var PDet in lineasDetalle)
                 {
                     if (PDet == null) continue;
 
+                    var lineWatch = Stopwatch.StartNew();
+                    var lookupWatch = Stopwatch.StartNew();
+
                     var codigoProducto = SafeTrim(PDet.Item_No);
                     if (string.IsNullOrEmpty(codigoProducto))
                         throw new Exception($"Línea {PDet.Line_No}: Item_No viene vacío.");
 
-                    clsBeProducto? beProducto;
-                    if (BeConfigEnc.Valida_Solo_Codigo)
+                    var productoCacheKey = $"{IdBodegaOrigen}|{BeConfigEnc.Valida_Solo_Codigo}|{codigoProducto}";
+                    if (!productoCache.TryGetValue(productoCacheKey, out clsBeProducto? beProducto))
                     {
-                        beProducto = clsLnProducto.Get_BeProducto_By_Only_Codigo(
-                            codigoProducto, IdBodegaOrigen, lConectionInterface, lTransInterface);
-                    }
-                    else
-                    {
-                        beProducto = clsLnProducto.Get_BeProducto_By_Codigo(
-                            codigoProducto, IdBodegaOrigen, lConectionInterface, lTransInterface);
+                        if (BeConfigEnc.Valida_Solo_Codigo)
+                        {
+                            beProducto = clsLnProducto.Get_BeProducto_By_Only_Codigo(
+                                codigoProducto, IdBodegaOrigen, lConectionInterface, lTransInterface);
+                        }
+                        else
+                        {
+                            beProducto = clsLnProducto.Get_BeProducto_By_Codigo(
+                                codigoProducto, IdBodegaOrigen, lConectionInterface, lTransInterface);
+                        }
+
+                        if (beProducto != null)
+                            productoCache[productoCacheKey] = beProducto;
                     }
 
                     if (beProducto == null)
                         throw new Exception($"El código de producto '{codigoProducto}' no existe o no está asociado a la bodega '{IdBodegaOrigen}'.");
+                    lookupWatch.Stop();
+                    TraceMi3Perf($"#MI3_PERF_IF_LINE_LOOKUP_PRODUCT | Documento={noTrace} | Linea={PDet.Line_No} | Item={codigoProducto} | Ms={lookupWatch.ElapsedMilliseconds}");
 
                     PDet.Item_No = SafeTrim(beProducto.codigo);
 
@@ -472,25 +554,45 @@ namespace WMS.DALCore
                     if (string.IsNullOrEmpty(umCode))
                         throw new Exception($"Producto '{PDet.Item_No}': Unit_of_Measure_Code viene vacío.");
 
-                    var beUnidad = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(
-                        umCode, BeConfigEnc.IdPropietario, lConectionInterface, lTransInterface);
+                    lookupWatch.Restart();
+                    var unidadCacheKey = $"{BeConfigEnc.IdPropietario}|{umCode}";
+                    if (!unidadCache.TryGetValue(unidadCacheKey, out clsBeUnidad_medida? beUnidad))
+                    {
+                        beUnidad = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(
+                            umCode, BeConfigEnc.IdPropietario, lConectionInterface, lTransInterface);
+
+                        if (beUnidad != null)
+                            unidadCache[unidadCacheKey] = beUnidad;
+                    }
 
                     if (beUnidad == null)
                         throw new Exception($"La U.M básica de producto '{PDet.Item_No}' no existe o no está definida: '{umCode}'.");
+                    lookupWatch.Stop();
+                    TraceMi3Perf($"#MI3_PERF_IF_LINE_LOOKUP_UM | Documento={noTrace} | Linea={PDet.Line_No} | Ms={lookupWatch.ElapsedMilliseconds}");
 
                     beProducto.UnidadMedida = beUnidad;
 
                     // Presentación
                     clsBeProducto_presentacion? bePresentacion = null;
                     var variant = SafeTrim(PDet.Variant_Code);
+                    lookupWatch.Restart();
                     if (!string.IsNullOrEmpty(variant))
                     {
-                        bePresentacion = clsLnProducto_presentacion.Get_Presentacion_By_IdProductoBodega_And_CodPres(
-                            beProducto.IdProductoBodega, variant, lConectionInterface, lTransInterface);
+                        var presentacionCacheKey = $"{beProducto.IdProductoBodega}|{variant}";
+                        if (!presentacionCache.TryGetValue(presentacionCacheKey, out bePresentacion))
+                        {
+                            bePresentacion = clsLnProducto_presentacion.Get_Presentacion_By_IdProductoBodega_And_CodPres(
+                                beProducto.IdProductoBodega, variant, lConectionInterface, lTransInterface);
+
+                            if (bePresentacion != null)
+                                presentacionCache[presentacionCacheKey] = bePresentacion;
+                        }
 
                         if (bePresentacion == null)
                             throw new Exception($"La Presentación de producto '{PDet.Item_No}' no existe o no está definida: '{variant}'.");
                     }
+                    lookupWatch.Stop();
+                    TraceMi3Perf($"#MI3_PERF_IF_LINE_LOOKUP_PRESENTACION | Documento={noTrace} | Linea={PDet.Line_No} | Ms={lookupWatch.ElapsedMilliseconds} | Variant={variant}");
 
                     // Tiempos (Clasificacion/Familia pueden ser null)
                     int diasVencimientoCliente = 0;
@@ -521,6 +623,7 @@ namespace WMS.DALCore
 
                     if (debeInsertar)
                     {
+                        var insertLineWatch = Stopwatch.StartNew();
                         if (Inserta_Linea_Detalle_Pedido(
                                 pBePedidoEnc,
                                 PDet,
@@ -536,15 +639,26 @@ namespace WMS.DALCore
                                 lConectionInterface,
                                 lTransInterface,
                                 ref refBePedidoDet,
-                                pEsManufactura: clienteTiempo?.Es_Manufactura ?? false))
+                                pEsManufactura: clienteTiempo?.Es_Manufactura ?? false,
+                                pBeBodegaCache: beBodegaProceso,
+                                pIdPropietarioCache: idPropietarioProceso,
+                                pIdProductoEstadoCache: idEstadoProductoProceso,
+                                pReservationCache: reservationDocumentCache))
                         {
+                            insertLineWatch.Stop();
+                            TraceMi3Perf($"#MI3_PERF_IF_LINE_INSERT_RESERVE | Documento={noTrace} | Linea={PDet.Line_No} | Ms={insertLineWatch.ElapsedMilliseconds} | Ok=True");
                             PDet.Status = 1;
                             PDet.Process_Result = "Ok";
+                            var statusWatch = Stopwatch.StartNew();
                             clsLnI_nav_ped_traslado_det.Actualizar_Status_Det(PDet, lConectionInterface, lTransInterface);
+                            statusWatch.Stop();
+                            TraceMi3Perf($"#MI3_PERF_IF_LINE_STATUS | Documento={noTrace} | Linea={PDet.Line_No} | Ms={statusWatch.ElapsedMilliseconds}");
                             insertadas++;
                         }
                         else
                         {
+                            insertLineWatch.Stop();
+                            TraceMi3Perf($"#MI3_PERF_IF_LINE_INSERT_RESERVE | Documento={noTrace} | Linea={PDet.Line_No} | Ms={insertLineWatch.ElapsedMilliseconds} | Ok=False");
                             // Captura razón específica antes de sobreescribir con código genérico
                             if (!string.IsNullOrWhiteSpace(PDet.Process_Result) &&
                                 !PDet.Process_Result.StartsWith("ERROR_202310021910A"))
@@ -563,7 +677,6 @@ namespace WMS.DALCore
                                 var msg = lblprg?.ToString() ?? "";
                                 var beErr = new clsBeLog_error_wms
                                 {
-                                    IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1,
                                     IdEmpresa = beEmpresa.IdEmpresa,
                                     IdBodega = IdBodegaOrigen,
                                     Fecha = DateTime.Now,
@@ -612,7 +725,11 @@ namespace WMS.DALCore
                                     lTransInterface,
                                     ref refBePedidoDet,
                                     pEsManufactura: clienteTiempo?.Es_Manufactura ?? false,
-                                    pSoloReservar: true))
+                                    pSoloReservar: true,
+                                    pBeBodegaCache: beBodegaProceso,
+                                    pIdPropietarioCache: idPropietarioProceso,
+                                    pIdProductoEstadoCache: idEstadoProductoProceso,
+                                    pReservationCache: reservationDocumentCache))
                             {
                                 PDet.Status = 1;
                                 PDet.Process_Result = "Ok";
@@ -648,6 +765,8 @@ namespace WMS.DALCore
 
                     beNavDetAnt = PDet;
                     refBePedidoDetAnt = refBePedidoDet;
+                    lineWatch.Stop();
+                    TraceMi3Perf($"#MI3_PERF_IF_LINE_END | Documento={noTrace} | Linea={PDet.Line_No} | Ms={lineWatch.ElapsedMilliseconds} | Insertadas={insertadas}");
                 }
 
                 // =========================
@@ -657,6 +776,7 @@ namespace WMS.DALCore
                     pBePedidoEnc.IdPedidoEnc,
                     lConectionInterface,
                     lTransInterface);
+                TraceMi3Perf($"#MI3_PERF_IF_FINAL_COUNTS | Documento={noTrace} | MsTotal={totalWatch.ElapsedMilliseconds} | CantStockRes={cantStockRes} | Insertadas={insertadas}");
 
                 // Si no insertó nada y no hay stock reservado, elimina encabezado si quedó sin detalle
                 if (insertadas == 0)
@@ -689,6 +809,8 @@ namespace WMS.DALCore
                     throw new Exception($"Pedido incompleto: insertadas={insertadas}, total={lineasDetalle.Count}.");
                 }
 
+                totalWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_END | Documento={noTrace} | Ms={totalWatch.ElapsedMilliseconds} | Insertadas={insertadas} | Lineas={lineasDetalle.Count}");
                 return pBePedidoEnc;
             }
             catch (Exception ex)
@@ -719,9 +841,14 @@ namespace WMS.DALCore
                                                         SqlTransaction lTransactionInterface,
                                                         ref clsBeTrans_pe_det? BePedidoDet,
                                                         bool pEsManufactura = false,
-                                                        bool pSoloReservar = false)
+                                                        bool pSoloReservar = false,
+                                                        clsBeBodega? pBeBodegaCache = null,
+                                                        int pIdPropietarioCache = 0,
+                                                        int pIdProductoEstadoCache = 0,
+                                                        StockReservationDocumentCache? pReservationCache = null)
         {
             bool result = false;
+            var totalWatch = Stopwatch.StartNew();
 
             clsBeTrans_pe_det pBePedidoDet = new clsBeTrans_pe_det();
             clsBeStock_res pBeStockRes = new clsBeStock_res();
@@ -731,11 +858,16 @@ namespace WMS.DALCore
 
             try
             {
-                clsBeBodega? BeBodega = new clsBeBodega();
-                BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBeConfigEnc.Idbodega,
-                                                             lConectionInterface,
-                                                             lTransactionInterface);
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_START | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Item={pBeTrasladoDet.Item_No}");
 
+                var stageWatch = Stopwatch.StartNew();
+                clsBeBodega? BeBodega = pBeBodegaCache ?? clsLnBodega.GetSingle_By_Idbodega(pBeConfigEnc.Idbodega,
+                                                                                            lConectionInterface,
+                                                                                            lTransactionInterface);
+                stageWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_BODEGA | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
+
+                stageWatch.Restart();
                 pBePedidoDet = new clsBeTrans_pe_det();
                 // En reproceso (pSoloReservar=true) se usa el IdPedidoDet existente
                 if (pSoloReservar && BePedidoDet != null)
@@ -746,9 +878,13 @@ namespace WMS.DALCore
                 pBePedidoDet.Atributo_variante_1 = pBeTrasladoDet.Variant_Code;
                 pBePedidoDet.IdPedidoEnc = BePedidoEnc.IdPedidoEnc;
                 pBePedidoDet.Producto = new clsBeProducto();
-                pBePedidoDet.Producto.IdProducto = clsLnProducto.Get_Id_Producto_By_IdProductoBodega(pBePoducto.IdProductoBodega,
-                                                                                                     lConectionInterface,
-                                                                                                     lTransactionInterface);
+                pBePedidoDet.Producto.IdProducto = pBePoducto.IdProducto > 0
+                    ? pBePoducto.IdProducto
+                    : clsLnProducto.Get_Id_Producto_By_IdProductoBodega(pBePoducto.IdProductoBodega,
+                                                                        lConectionInterface,
+                                                                        lTransactionInterface);
+                stageWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_IDS | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
                 pBePedidoDet.Producto.IdProductoBodega = pBePoducto.IdProductoBodega;
                 pBePedidoDet.IdProductoBodega = pBePoducto.IdProductoBodega;
                 pBePedidoDet.Codigo_Producto = pBeTrasladoDet.Item_No;
@@ -831,11 +967,16 @@ namespace WMS.DALCore
                 pBeStockRes.Talla = pBeTrasladoDet.Size;
                 pBeStockRes.Color = pBeTrasladoDet.Color;
 
-                clsBeProducto_talla_color? BePtc = clsLnProducto_talla_color.Get_Single_By_IdProductoBodega(pBePoducto.IdProductoBodega,
-                                                                                                            pBeStockRes.Talla,
-                                                                                                            pBeStockRes.Color,
-                                                                                                            lConectionInterface,
-                                                                                                            lTransactionInterface);
+                stageWatch.Restart();
+                clsBeProducto_talla_color? BePtc = null;
+                if (!string.IsNullOrWhiteSpace(pBeStockRes.Talla) || !string.IsNullOrWhiteSpace(pBeStockRes.Color))
+                {
+                    BePtc = clsLnProducto_talla_color.Get_Single_By_IdProductoBodega(pBePoducto.IdProductoBodega,
+                                                                                    pBeStockRes.Talla,
+                                                                                    pBeStockRes.Color,
+                                                                                    lConectionInterface,
+                                                                                    lTransactionInterface);
+                }
                 if (BePtc != null)
                 {
                     if (BePtc.IdProductoTallaColor != pBePedidoDet.IdProductoTallaColor)
@@ -844,6 +985,8 @@ namespace WMS.DALCore
                     }
                 }
                 if (BeProductoTallaColor != null) pBeStockRes.IdProductoTallaColor = pBePedidoDet.IdProductoTallaColor;
+                stageWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_TALLA_COLOR | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
 
                 double vCantidadEnteraPres = 0;
                 double vCantidadDecimalUMBas = 0;
@@ -896,16 +1039,23 @@ namespace WMS.DALCore
                 }
                 #endregion
 
+                stageWatch.Restart();
                 List<clsBeProducto_estado> BeProductoEstadoList = new List<clsBeProducto_estado>();
-                int vIdPropietario = clsLnPropietario_bodega.Get_IdPropietario_By_IdBodega_IdPropietarioBodega(pIdBodegaOrigen,
-                                                                                                              pIdPropietarioBodega,
-                                                                                                              lConectionInterface,
-                                                                                                              lTransactionInterface);
+                int vIdPropietario = pIdPropietarioCache > 0
+                    ? pIdPropietarioCache
+                    : clsLnPropietario_bodega.Get_IdPropietario_By_IdBodega_IdPropietarioBodega(pIdBodegaOrigen,
+                                                                                                pIdPropietarioBodega,
+                                                                                                lConectionInterface,
+                                                                                                lTransactionInterface);
                 try
                 {
-                    if (BeBodega != null)
-                    {
-                        if (BeBodega.Interface_SAP && BeBodega.Restringir_areas_sap)
+                        if (pIdProductoEstadoCache > 0)
+                        {
+                            pBeStockRes.IdProductoEstado = pIdProductoEstadoCache;
+                        }
+                        else if (BeBodega != null)
+                        {
+                            if (BeBodega.Interface_SAP && BeBodega.Restringir_areas_sap)
                         {
                             pBeStockRes.IdProductoEstado = clsLnProducto_estado.Get_IdEstado_By_Codigo_Area(BePedidoEnc.Bodega_origen,
                                                                                                             lConectionInterface,
@@ -943,15 +1093,22 @@ namespace WMS.DALCore
                 {
                     throw new Exception("ERES_TU: " + ex.Message);
                 }
+                stageWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_ESTADO | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
 
                 pBeStockRes.IdPedido = BePedidoEnc.IdPedidoEnc;
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
                 pBeStockRes.IdProductoBodega = pBePoducto.IdProductoBodega;
                 pBeStockRes.IdPropietarioBodega = pIdPropietarioBodega;
                 pBeStockRes.IdBodega = pIdBodegaOrigen;
-                pBeStockRes.IdUnidadMedida = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.codigo,
-                                                                                          lConectionInterface,
-                                                                                          lTransactionInterface);
+                stageWatch.Restart();
+                pBeStockRes.IdUnidadMedida = pBeUnidadMedida.IdUnidadMedida > 0
+                    ? pBeUnidadMedida.IdUnidadMedida
+                    : clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.codigo,
+                                                                   lConectionInterface,
+                                                                   lTransactionInterface);
+                stageWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_UM_PRODUCTO | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
                 pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_variante_1;
                 pBeStockRes.Control_Ultimo_Lote = pBeCliente.Control_ultimo_lote;
 
@@ -961,17 +1118,22 @@ namespace WMS.DALCore
                 // En algunos clientes Variant_Code corresponde al nombre de presentacion (ej: "CJ"), no al codigo.
                 if (!string.IsNullOrEmpty(pBePedidoDet.Atributo_variante_1))
                 {
-                    BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(
-                        pBePedidoDet.Producto.IdProducto,
-                        pBePedidoDet.Atributo_variante_1,
-                        lConectionInterface,
-                        lTransactionInterface);
+                    stageWatch.Restart();
+                    BePresentacion2 = pBePresentacion;
+                    if (BePresentacion2 == null)
+                    {
+                        BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(
+                            pBePedidoDet.Producto.IdProducto,
+                            pBePedidoDet.Atributo_variante_1,
+                            lConectionInterface,
+                            lTransactionInterface);
 
-                    BePresentacion2 ??= clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(
-                        pBePedidoDet.Producto.IdProducto,
-                        pBePedidoDet.Atributo_variante_1,
-                        lConectionInterface,
-                        lTransactionInterface);
+                        BePresentacion2 ??= clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(
+                            pBePedidoDet.Producto.IdProducto,
+                            pBePedidoDet.Atributo_variante_1,
+                            lConectionInterface,
+                            lTransactionInterface);
+                    }
 
                     if (BePresentacion2 != null)
                     {
@@ -981,6 +1143,8 @@ namespace WMS.DALCore
                     {
                         pBeStockRes.IdPresentacion = 0;
                     }
+                    stageWatch.Stop();
+                    TraceMi3Perf($"#MI3_PERF_IF_DETAIL_PRESENTACION2 | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
                 }
                 else if (pBePedidoDet.IdPresentacion != 0)
                 {
@@ -1017,6 +1181,7 @@ namespace WMS.DALCore
 
                 try
                 {
+                    stageWatch.Restart();
                     if (clsLnTrans_pe_det.Reservar_Stock_Por_Linea_Interface(pDiasVencimientoCliente,
                                                                             ref pBeTrasladoDet,
                                                                             ref pBePedidoDet,
@@ -1026,17 +1191,25 @@ namespace WMS.DALCore
                                                                             pIdPropietarioBodega,
                                                                             lConectionInterface,
                                                                             lTransactionInterface,
-                                                                            pEsManufactura: pEsManufactura))
+                                                                            pEsManufactura: pEsManufactura,
+                                                                            pDocumentCache: pReservationCache))
                     {
+                        stageWatch.Stop();
+                        TraceMi3Perf($"#MI3_PERF_IF_DETAIL_RESERVAR | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds} | Ok=True");
                         result = true;
 
                         pBeTrasladoDet.Process_Result = "Ok";
+                        stageWatch.Restart();
                         clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
                                                                               lConectionInterface,
                                                                               lTransactionInterface);
+                        stageWatch.Stop();
+                        TraceMi3Perf($"#MI3_PERF_IF_DETAIL_PROCESS_RESULT | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
                     }
                     else
                     {
+                        stageWatch.Stop();
+                        TraceMi3Perf($"#MI3_PERF_IF_DETAIL_RESERVAR | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds} | Ok=False");
                         string vMensajeEx = "";
 
                         bool tieneTallaOColor = !string.IsNullOrWhiteSpace(pBeTrasladoDet.Size) ||
@@ -1128,6 +1301,8 @@ namespace WMS.DALCore
                 }
 
                 BePedidoDet = pBePedidoDet;
+                totalWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_DETAIL_END | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={totalWatch.ElapsedMilliseconds} | Ok={result}");
             }
             catch (Exception)
             {
@@ -1142,36 +1317,72 @@ namespace WMS.DALCore
                                                               SqlConnection lConnection,
                                                               SqlTransaction lTransaction)
         {
+            ArgumentNullException.ThrowIfNull(BePedidoCliente);
+
             int vContadorLineas = 0;
             clsBeI_nav_config_enc? BeConfingEnc = new clsBeI_nav_config_enc();
             bool result = false;
+            var totalWatch = Stopwatch.StartNew();
+            string noTrace = BePedidoCliente?.No?.Trim() ?? string.Empty;
 
             try
             {
                 clsBeProducto_bodega? BeProductoBodega = new clsBeProducto_bodega();
                 clsBeBodega? BeBodega = new clsBeBodega();
                 int vContador = 0;
+                bool encabezadoNuevo = false;
 
                 try
                 {
-                    if (!string.IsNullOrEmpty(BePedidoCliente.Company_Code))
+                    string companyCode = BePedidoCliente!.Company_Code ?? string.Empty;
+                    if (!string.IsNullOrEmpty(companyCode))
                     {
-                        if (!Exist_By_No_And_Company(BePedidoCliente.No, BePedidoCliente.Company_Code, BePedidoCliente.Document_Type, lConnection, lTransaction))
+                        if (!Exist_By_No_And_Company(BePedidoCliente.No, companyCode, BePedidoCliente.Document_Type, lConnection, lTransaction))
                         {
-                            if (BePedidoCliente.Company_Code.Length > 1)
+                            if (companyCode.Length > 1)
                             {
-                                BePedidoCliente.No = BePedidoCliente.Company_Code.Substring(0, 1) + BePedidoCliente.No;
+                                BePedidoCliente.No = companyCode.Substring(0, 1) + BePedidoCliente.No;
                             }
                             Insertar(BePedidoCliente, lConnection, lTransaction);
+                            encabezadoNuevo = true;
                         }
                     }
                     else if (!Exist(BePedidoCliente.No, BePedidoCliente.Document_Type, lConnection, lTransaction))
                     {
                         Insertar(BePedidoCliente, lConnection, lTransaction);
+                        encabezadoNuevo = true;
                     }
 
                     vContador += 1;
                     lTransaction.Save("Encabezado");
+
+                    clsBeBodega_area BeBodegaArea = clsLnBodega_area.Get_Single_By_Codigo_Bodega(BePedidoCliente.Transfer_from_Code,
+                                                                                                lConnection,
+                                                                                                lTransaction);
+
+                    BeBodega = clsLnBodega.GetSingle_By_Codigo(BePedidoCliente.Transfer_from_Code,
+                                                               lConnection,
+                                                               lTransaction);
+
+                    if (BeBodega == null)
+                    {
+                        if (BeBodegaArea != null)
+                        {
+                            BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeBodegaArea.IdBodega, lConnection, lTransaction);
+
+                            if (BeBodega == null)
+                            {
+                                throw new Exception("ERROR_20231031A: La bodega: " + BePedidoCliente.Transfer_from_Code + " no existe.");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("ERROR_20231031: La bodega: " + BePedidoCliente.Transfer_from_Code + " no existe.");
+                        }
+                    }
+
+                    BeConfingEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BeBodega.IdBodega, lConnection, lTransaction);
+                    var productoBodegaCache = new Dictionary<string, clsBeProducto_bodega>(StringComparer.OrdinalIgnoreCase);
 
                     if (BePedidoCliente.lineas_Detalle != null)
                     {
@@ -1186,55 +1397,34 @@ namespace WMS.DALCore
 
                                 if (BeI_Nav_PedidoTrasladoDet.Item_No != null)
                                 {
-                                    clsBeBodega_area BeBodegaArea = clsLnBodega_area.Get_Single_By_Codigo_Bodega(BePedidoCliente.Transfer_from_Code,
-                                                                                                                lConnection,
-                                                                                                                lTransaction);
-
-                                    BeBodega = clsLnBodega.GetSingle_By_Codigo(BePedidoCliente.Transfer_from_Code,
-                                                                               lConnection,
-                                                                               lTransaction);
-
-                                    if (BeBodega == null)
+                                    var productoCacheKey = $"{BeBodega.IdBodega}|{BeI_Nav_PedidoTrasladoDet.Item_No}";
+                                    if (!productoBodegaCache.TryGetValue(productoCacheKey, out BeProductoBodega))
                                     {
-                                        if (BeBodegaArea != null)
-                                        {
-                                            BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeBodegaArea.IdBodega, lConnection, lTransaction);
+                                        BeProductoBodega = clsLnProducto_bodega.Existe(BeI_Nav_PedidoTrasladoDet.Item_No,
+                                                                                       BeBodega.IdBodega,
+                                                                                       lConnection,
+                                                                                       lTransaction);
 
-                                            if (BeBodega == null)
+                                        if (BeProductoBodega == null && BeConfingEnc != null)
+                                        {
+                                            if (BeConfingEnc.Equiparar_Productos)
                                             {
-                                                throw new Exception("ERROR_20231031A: La bodega: " + BePedidoCliente.Transfer_from_Code + " no existe.");
+                                                BeProductoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(BeI_Nav_PedidoTrasladoDet.Item_No,
+                                                                                                                 BeBodega.IdBodega,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction);
+                                                if (BeProductoBodega == null)
+                                                {
+                                                    BeProductoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(BeI_Nav_PedidoTrasladoDet.Item_No,
+                                                                                                                       BeBodega.IdBodega,
+                                                                                                                       lConnection,
+                                                                                                                       lTransaction);
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            throw new Exception("ERROR_20231031: La bodega: " + BePedidoCliente.Transfer_from_Code + " no existe.");
-                                        }
-                                    }
 
-                                    BeConfingEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega(BeBodega.IdBodega, lConnection, lTransaction);
-
-                                    // Siempre obtener de la base de datos - eliminado el manejo en memoria
-                                    BeProductoBodega = clsLnProducto_bodega.Existe(BeI_Nav_PedidoTrasladoDet.Item_No,
-                                                                                   BeBodega.IdBodega,
-                                                                                   lConnection,
-                                                                                   lTransaction);
-
-                                    if (BeProductoBodega == null && BeConfingEnc != null)
-                                    {
-                                        if (BeConfingEnc.Equiparar_Productos)
-                                        {
-                                            BeProductoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(BeI_Nav_PedidoTrasladoDet.Item_No,
-                                                                                                             BeBodega.IdBodega,
-                                                                                                             lConnection,
-                                                                                                             lTransaction);
-                                            if (BeProductoBodega == null)
-                                            {
-                                                BeProductoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(BeI_Nav_PedidoTrasladoDet.Item_No,
-                                                                                                                   BeBodega.IdBodega,
-                                                                                                                   lConnection,
-                                                                                                                   lTransaction);
-                                            }
-                                        }
+                                        if (BeProductoBodega != null)
+                                            productoBodegaCache[productoCacheKey] = BeProductoBodega;
                                     }
 
                                     if (BeProductoBodega == null)
@@ -1244,7 +1434,7 @@ namespace WMS.DALCore
 
                                     if (BeI_Nav_PedidoTrasladoDet.Qty_to_Receive == 0)
                                     {
-                                        if (clsLnI_nav_ped_traslado_det.Exist(BeI_Nav_PedidoTrasladoDet, lConnection, lTransaction))
+                                        if (!encabezadoNuevo && clsLnI_nav_ped_traslado_det.Exist(BeI_Nav_PedidoTrasladoDet, lConnection, lTransaction))
                                         {
                                             clsLnI_nav_ped_traslado_det.ActualizarFromIn(BeI_Nav_PedidoTrasladoDet, lConnection, lTransaction);
                                         }
@@ -1278,6 +1468,8 @@ namespace WMS.DALCore
                 }
 
                 result = (vContadorLineas > 0);
+                totalWatch.Stop();
+                TraceMi3Perf($"#MI3_PERF_IF_IMPORT_INTERMEDIA | Documento={noTrace} | Ms={totalWatch.ElapsedMilliseconds} | Lineas={vContadorLineas} | Nuevo={encabezadoNuevo}");
             }
             catch (Exception)
             {

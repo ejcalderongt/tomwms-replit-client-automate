@@ -49,7 +49,6 @@ public class clsLnLog_error_wms
         try
         {
             Ins.Init("log_error_wms");
-            Ins.Add("iderror", "@iderror", "F");
             Ins.Add("idempresa", "@idempresa", "F");
             Ins.Add("idbodega", "@idbodega", "F");
             Ins.Add("fecha", "@fecha", "F");
@@ -90,7 +89,6 @@ public class clsLnLog_error_wms
 
     public static void BindLogParameters(SqlCommand cmd, clsBeLog_error_wms log)
     {
-        cmd.Parameters.Add(new SqlParameter("@IdError", log.IdError));
         cmd.Parameters.Add(new SqlParameter("@IdEmpresa", log.IdEmpresa));
         cmd.Parameters.Add(new SqlParameter("@IdBodega", log.IdBodega));
         cmd.Parameters.Add(new SqlParameter("@Fecha", log.Fecha));
@@ -118,7 +116,6 @@ public class clsLnLog_error_wms
         try
         {
             Ins.Init("log_error_wms");
-            Ins.Add("iderror", "@iderror", "F");
             Ins.Add("idempresa", "@idempresa", "F");
             Ins.Add("idbodega", "@idbodega", "F");
             Ins.Add("fecha", "@fecha", "F");

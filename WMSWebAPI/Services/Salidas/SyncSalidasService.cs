@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics;
 using WMS.DALCore;
 using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
@@ -296,18 +297,28 @@ namespace WMSWebAPI.Services.Salidas
         {
             var result = new MI3ProcessingResultDto();
             string resultado = string.Empty;
+            var totalWatch = Stopwatch.StartNew();
+            var noDocumento = BeInavPedSalida?.No ?? "";
 
             try
             {
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_START | Documento={noDocumento}");
+
+                var stageWatch = Stopwatch.StartNew();
                 if (!Datos_Validos(_configuration, BeInavPedSalida))
                 {
                     result.Exito = false;
                     result.Mensaje = "Datos no válidos";
                     return result;
                 }
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_DATOS_VALIDOS | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds}");
 
+                stageWatch.Restart();
                 clsBeTrans_pe_enc? BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(
                     BeInavPedSalida, ref resultado, _configuration);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_IMPORTAR | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | IdPedidoEnc={BePedidoEnc?.IdPedidoEnc ?? 0}");
 
                 if (BePedidoEnc == null)
                 {
@@ -318,7 +329,10 @@ namespace WMSWebAPI.Services.Salidas
                     return result;
                 }
 
+                stageWatch.Restart();
                 int cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, _configuration);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_COUNT_LINES | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | Count={cantLineas}");
                 
                 if (cantLineas == 0)
                 {
@@ -340,13 +354,20 @@ namespace WMSWebAPI.Services.Salidas
                 using var conn = new SqlConnection(connectionString);
                 conn.Open();
 
+                stageWatch.Restart();
                 result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, BeInavPedSalida?.No ?? string.Empty, conn, null);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_DETALLES | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | Count={result.LineasDetalle.Count}");
                 
                 result.TotalSolicitado = result.LineasDetalle.Sum(l => l.QuantityRequested);
                 result.TotalReservado = result.LineasDetalle.Sum(l => l.QuantityReserved);
+                totalWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_END | Documento={noDocumento} | Ms={totalWatch.ElapsedMilliseconds} | Exito={result.Exito}");
             }
             catch (Exception ex)
             {
+                totalWatch.Stop();
+                Console.WriteLine($"[ERROR] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_ERROR | Documento={noDocumento} | Ms={totalWatch.ElapsedMilliseconds} | Error={ex.Message}");
                 result.Exito = false;
                 result.Mensaje = ex.Message;
                 result.LineasFallo = BuildLineasFallo(BeInavPedSalida, ex.Message);
