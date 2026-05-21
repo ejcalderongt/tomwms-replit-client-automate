@@ -1314,6 +1314,11 @@ public class clsLnTrans_pe_det
                                             lTransaction);
 
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                if (ResultadoInsert > 0)
+                {
+                    pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                    pBeStockRes.IdPedidoDet = ResultadoInsert;
+                }
             }
             else
             {
@@ -1327,6 +1332,11 @@ public class clsLnTrans_pe_det
                                                 lConnection,
                                                 lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                    if (ResultadoInsert > 0)
+                    {
+                        pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                        pBeStockRes.IdPedidoDet = ResultadoInsert;
+                    }
                 }
                 else
                 {
@@ -1541,6 +1551,11 @@ public class clsLnTrans_pe_det
                                             lTransaction);
 
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                if (ResultadoInsert > 0)
+                {
+                    pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                    pBeStockRes.IdPedidoDet = ResultadoInsert;
+                }
             }
             else
             {
@@ -1554,6 +1569,11 @@ public class clsLnTrans_pe_det
                                                 lConnection,
                                                 lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                    if (ResultadoInsert > 0)
+                    {
+                        pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                        pBeStockRes.IdPedidoDet = ResultadoInsert;
+                    }
                 }
                 else
                 {
