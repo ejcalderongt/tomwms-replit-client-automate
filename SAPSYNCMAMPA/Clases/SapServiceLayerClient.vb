@@ -1,6 +1,9 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Configuration
+Imports System.Data.SqlClient
 Imports System.Net
 Imports System.Net.Http
+Imports System.Net.Http.Headers
+Imports System.Reflection
 Imports System.Text
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
@@ -14,6 +17,7 @@ Public Class SapServiceLayerClient
     Public Property SessionCookie As String
     Shared Property SessionId As String = ""
     Private Shared Property RouteId As String = ""
+
     Public Sub New()
     End Sub
 
@@ -929,4 +933,215 @@ Public Class SapServiceLayerClient
 
     End Function
 
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estados SAP HANA SL para el flujo operativo MAMAPA desde Pedido.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado; 3=Pickeando; 4=Pickeado; 5=Verificando; 6=Verificado.
+    ' 8=Cerrada/entregada; 11=Anulada al anular/eliminar pedido; 12=Back order. Se notifica despues del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMPA"
+
+    Public Shared Async Function Notificar_Estado_SAP_Hana_MAMPA_Pedido_Async(ByVal pPedidoEnc As clsBeTrans_pe_enc,
+                                                                              ByVal pEstadoPedido As Integer,
+                                                                              ByVal pEstadoFactura As Integer,
+                                                                              ByVal pEstadoGuia As Integer,
+                                                                              ByVal pInterface_SAP As Boolean,
+                                                                              ByVal pIdUsuario As Integer,
+                                                                              ByVal pIdEmpresa As Integer) As Task
+
+        If pPedidoEnc Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(pPedidoEnc.Referencia) Then Return
+        If Not pInterface_SAP Then Return
+        If String.IsNullOrWhiteSpace(baseUrl) Then Return
+
+        Try
+            If pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+               pPedidoEnc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                Dim vHanaService As New SapServiceLayerClient()
+                Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+                Await Cambiar_Estado_Traslado_SLAsync(pPedidoEnc.Referencia,
+                                                      vHanaService.SessionCookie,
+                                                      baseUrl,
+                                                      pEstadoPedido,
+                                                      pEstadoFactura,
+                                                      pEstadoGuia,
+                                                      Now,
+                                                      pIdUsuario,
+                                                      Now,
+                                                      Now,
+                                                      pIdUsuario,
+                                                      Now)
+
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pe.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo notificar estado SAP HANA SL desde pedido. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                pIdEmpresa:=pIdEmpresa,
+                                                pIdBodega:=pPedidoEnc.IdBodega,
+                                                pUsrAgr:=pIdUsuario,
+                                                pIdPedidoEnc:=pPedidoEnc.IdPedidoEnc)
+        End Try
+
+    End Function
+
+    Public Shared Async Function Cambiar_Estado_Traslado_SLAsync(docEntry As String,
+                                                                 sessionCookie As String,
+                                                                 baseUrl As String,
+                                                                 estado_pedido As Integer,
+                                                                 estado_factura As Integer,
+                                                                 estado_guia As Integer,
+                                                                 inicio_pick As Date,
+                                                                 usr_pick As String,
+                                                                 fin_pick As Date,
+                                                                 inicio_pack As Date,
+                                                                 usr_pack As String,
+                                                                 fin_pack As Date) As Task(Of Boolean)
+
+        Try
+
+            If String.IsNullOrWhiteSpace(docEntry) Then Return False
+
+            Dim requestUrl As String = $"Invoices({docEntry})"
+            Dim payload As String = $"{{" &
+                                    $"""U_ESTADO_GUIA"": ""{estado_guia}""," &
+                                    $"""U_ESTADO_PEDIDO"": ""{estado_pedido}""," &
+                                    $"""U_ESTADO_FACTURA"": ""{estado_factura}"""
+
+            If estado_pedido = 3 Then
+                payload &= $",""U_INICIO_PICK"": ""{inicio_pick}""," &
+               $"""U_USR_PICK"": ""{usr_pick}"""
+            End If
+
+            If estado_pedido = 4 Then
+                payload &= $",""U_FIN_PICK"": ""{fin_pick}"""
+            End If
+
+            If estado_pedido = 5 Then
+                payload &= $",""U_INICIO_PACK"": ""{inicio_pack}""," &
+               $"""U_USR_PACK"": ""{usr_pack}"""
+            End If
+
+            If estado_pedido = 6 Then
+                payload &= $",""U_FIN_PACK"": ""{fin_pack}"""
+            End If
+
+            payload &= "}"
+
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al actualizar OWTQ. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
+        End Try
+
+    End Function
+
+    Public Shared Sub Notificar_Estado_SAP_Hana_MAMPA_By_Picking(ByVal pIdPickingEnc As Integer,
+                                                                  ByVal pEstadoPedido As Integer,
+                                                                  ByVal pEstadoFactura As Integer,
+                                                                  ByVal pEstadoGuia As Integer,
+                                                                  ByVal pUsuario As String,
+                                                                  Optional ByVal pIdBodega As Integer = 0)
+
+        If pIdPickingEnc <= 0 Then Return
+        If String.IsNullOrWhiteSpace(SapServiceLayerClient.baseUrl) Then Return
+        If pIdBodega > 0 AndAlso Not Bodega_Tiene_Interface_SAP(pIdBodega) Then Return
+
+        Dim lPedidos As New List(Of clsBeTrans_pe_enc)
+
+        Try
+            Using lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    lPedidos = clsLnTrans_pe_enc.Get_All_Pedido_By_IdPickingEnc(pIdPickingEnc, lConnection, lTransaction)
+                    lTransaction.Commit()
+                End Using
+            End Using
+
+            If lPedidos Is Nothing OrElse lPedidos.Count = 0 Then Return
+
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+            For Each ped In lPedidos
+
+                If ped Is Nothing Then Continue For
+                If String.IsNullOrWhiteSpace(ped.Referencia) Then Continue For
+                If Not Bodega_Tiene_Interface_SAP(ped.IdBodega) Then Continue For
+
+                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                    Cambiar_Estado_Traslado_SLAsync(ped.Referencia,
+                                                    vHanaService.SessionCookie,
+                                                    SapServiceLayerClient.baseUrl,
+                                                    pEstadoPedido,
+                                                    pEstadoFactura,
+                                                    pEstadoGuia,
+                                                    Now,
+                                                    pUsuario,
+                                                    Now,
+                                                    Now,
+                                                    pUsuario,
+                                                    Now).GetAwaiter().GetResult()
+                End If
+            Next
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo notificar estado SAP HANA SL. EstadoPedido=" & pEstadoPedido & " IdPickingEnc=" & pIdPickingEnc & ". " & ex.Message,
+                                                  pIdBodega:=pIdBodega,
+                                                  pUserAgr:=pUsuario,
+                                                  pIdPickingEnc:=pIdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+        End Try
+
+    End Sub
+
+    Private Shared Function Bodega_Tiene_Interface_SAP(ByVal pIdBodega As Integer) As Boolean
+
+        Try
+            Const vSQL As String = "SELECT ISNULL(Interface_SAP,0) FROM bodega WHERE IdBodega=@IdBodega"
+
+            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lCommand As New SqlCommand(vSQL, lConnection)
+                    lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                    Return Convert.ToBoolean(lCommand.ExecuteScalar())
+                End Using
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo validar Interface_SAP de bodega. " & ex.Message,
+                                                  pIdBodega:=pIdBodega,
+                                                  pStackTrace:=ex.StackTrace)
+            Return False
+        End Try
+
+    End Function
 End Class
