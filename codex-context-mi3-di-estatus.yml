@@ -777,3 +777,14 @@ notas:
       Se descarto como fase estable reutilizar el producto completo precargado
       dentro del pipeline porque cambio la particion de stock_res aunque los
       totales globales seguian coincidiendo.
+  - fecha: "2026-05-21"
+    area: "Brain agents orquestacion WebAPI/performance"
+    detalle: >
+      Se agregaron brain/agents/domain-webapi.yml y
+      brain/agents/domain-performance.yml, y se actualizaron _index.yml y
+      coordinator.yml. Para reserva WebAPI MI3 el router debe cargar
+      domain-reserva + domain-database + domain-webapi + domain-performance y,
+      si aplica BYB/EA-153304/EA-153305, client-byb. Quedo definido doble
+      control: check local versionado/build/secret scan y check Brain API
+      health/repos-sync/index cuando exista BRAIN_IMPORT_TOKEN. Si no hay token,
+      se debe hacer push a origin y dejar el comando exacto para sincronizar.

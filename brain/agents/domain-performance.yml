@@ -1,0 +1,104 @@
+version: 1
+updated: "2026-05-21"
+domain: performance
+scope: >
+  Measurement-first optimization for reservation, WebAPI and SQL paths. Focus on
+  repeatable timings, business-invariant checks and rollback of risky changes.
+
+principles:
+  - Optimize only one hypothesis per phase.
+  - Never accept an optimization on global totals alone.
+  - Preserve IdStock/lote/presentation/UM selection when parity with legacy is required.
+  - Prefer removing redundant roundtrips over changing reservation rules.
+  - Revert experiments that change stock_res partition unless Erik explicitly accepts the new behavior.
+
+baseline_protocol:
+  required_inputs:
+    - document reference
+    - payload file
+    - database target/client
+    - accepted baseline source, usually legacy
+    - expected counts and sums
+  metrics:
+    api:
+      - curl total_time
+      - HTTP status
+      - exito
+      - lineasProcesadas
+      - totalSolicitado
+      - totalReservado
+    db:
+      - trans_pe_det count and SUM(Cantidad)
+      - stock_res count and SUM(Cantidad)
+      - i_nav_ped_traslado_det count and SUM(Quantity_Reserved_WMS)
+      - per-line stock_res rows and sums
+      - optional strict IdStock/lote/cantidad parity
+    logs:
+      - "#MI3_PERF_SERVICE_IMPORTAR"
+      - "#MI3_PERF_SERVICE_END"
+      - "#MI3_PERF_IF_END"
+      - "#MI3_PERF_IF_LINE_END"
+      - "#MI3_PERF_IF_DETAIL_RESERVAR"
+      - "#MI3_PERF_SQL"
+      - "#MI3_PERF_PIPELINE_TOTAL"
+
+phase_gate:
+  accept:
+    - Build passes.
+    - API finishes under target timeout.
+    - API totals match expected baseline.
+    - DB totals match expected baseline.
+    - Per-line stock_res partition matches when parity is required.
+    - Test document is cleaned.
+  reject:
+    - Any change in IdStock/lote partition without explicit acceptance.
+    - Any orphan stock_res or wrong IdPedidoDet identity linkage.
+    - Any hidden leftover test document.
+    - Any optimization that relies on disabling a business filter.
+
+known_measurements:
+  byb_ea153304:
+    baseline_legacy:
+      total_time_seconds: 12
+      lines: 29
+      total_requested: 1370
+      total_reserved: 1370
+      stock_res_rows: 48
+      stock_res_sum: 12703
+    core_after_phase_2:
+      approximate_http_seconds: 50
+      service_import_ms: 47096
+      lines: 29
+      total_requested: 1370
+      total_reserved: 1370
+      stock_res_rows: 48
+      stock_res_sum: 12703
+    note: >
+      Phase 2 removed a redundant product UM lookup for presentation lines and
+      preserved DB totals. Later product-reuse experiments changed stock_res
+      partition and were rejected.
+
+safe_candidate_backlog:
+  - id: batch-interface-status-updates
+    idea: >
+      Reduce per-line Actualizar_Status_Det roundtrips after reservation,
+      preserving Process_Result semantics.
+    risk: medium
+    acceptance: "Must preserve per-line Process_Result and retry/reprocess behavior."
+  - id: cache-static-config
+    idea: >
+      Cache bodega/config/propietario/estado values already shared at document
+      level, but do not alter product or stock filters.
+    risk: low-medium
+    acceptance: "Strict baseline comparison must pass."
+  - id: sql-stock-query-plan
+    idea: >
+      Inspect lStock query plan and indexes for stock/product/presentation
+      filters before changing code flow.
+    risk: low
+    acceptance: "Read-only analysis first; DB schema changes require separate Brain impact check."
+
+tooling:
+  compare_baseline_script: tools/webapi-mi3-reserva/compare-mi3-reserva-baseline.ps1
+  trace_location_pattern: tools/webapi-mi3-reserva/wmswebapi-*.out.log
+  cleanup_expectation: "zero rows for synthetic document after every cycle"

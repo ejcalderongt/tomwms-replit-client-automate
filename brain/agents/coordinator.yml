@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-20"
+updated: "2026-05-21"
 role: "WMS local coordinator"
 mission: >
   Route work by domain, protect business rules, and force evidence-driven cycles
@@ -22,6 +22,25 @@ default_cycle:
   - Clean test documents created by the cycle.
   - Keep only reusable artifacts; delete transient payload/run/log/response files.
   - Commit the stable phase with a focused message.
+
+double_check_control:
+  purpose: >
+    Keep local repo knowledge and remote Brain service aligned without assuming
+    that every local YAML package is automatically indexed by Brain.
+  local_check:
+    - Verify git status is clean before starting a sync/publish cycle.
+    - Verify brain/agents/_index.yml references every new domain package.
+    - Verify no secrets are present in brain/agents, tools docs or context YAML.
+    - Verify a build/test relevant to the touched code path still passes when code changed.
+  brain_check:
+    - GET $BRAIN_BASE_URL/health must return 200 before POST sync attempts.
+    - POST $BRAIN_BASE_URL/repos/sync requires X-Brain-Token and should be run after pushing to origin.
+    - POST $BRAIN_BASE_URL/index/vb requires X-Brain-Token after VB/Core changes that Brain indexes.
+    - If a specific agents endpoint does not exist, treat brain/agents as repo-indexed knowledge, not API-indexed agents.
+  fallback_when_no_token:
+    - Push commits to origin.
+    - Record that Brain API sync was not executed because BRAIN_IMPORT_TOKEN is absent.
+    - Provide the exact command Erik/Mary Jane can run with token.
 
 brain_api_usage:
   base_url_env: BRAIN_BASE_URL

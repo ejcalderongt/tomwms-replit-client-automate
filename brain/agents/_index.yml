@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-20"
+updated: "2026-05-21"
 purpose: >
   Context router for local WMS agents. Load the coordinator first, then only the
   domain packages whose triggers match the task.
@@ -26,6 +26,8 @@ domains:
       - performance reserva
     also_load:
       - brain/agents/domain-database.yml
+      - brain/agents/domain-webapi.yml
+      - brain/agents/domain-performance.yml
   database:
     file: brain/agents/domain-database.yml
     triggers:
@@ -50,6 +52,37 @@ domains:
       - TOMWMS_BOF
       - frmEjecucion
       - Reference.vb
+  webapi:
+    file: brain/agents/domain-webapi.yml
+    triggers:
+      - WebAPI
+      - API
+      - endpoint
+      - controller
+      - service
+      - SyncSalidasService
+      - /api/sync/salidas/mi3/insertar
+      - payload
+      - appsettings
+      - swagger
+      - HTTP 200
+      - curl
+  performance:
+    file: brain/agents/domain-performance.yml
+    triggers:
+      - performance
+      - rendimiento
+      - lento
+      - timeout
+      - 2 minutos
+      - roundtrip
+      - trace
+      - tracelog
+      - "#MI3_PERF"
+      - Stopwatch
+      - optimizacion
+      - benchmark
+      - baseline
 
 clients:
   byb:
@@ -67,7 +100,9 @@ rules:
   selection:
     - Load client context when a trigger matches a named client or a known reference document.
     - For reservation investigations, domain-reserva plus domain-database is mandatory.
+    - For WebAPI reservation investigations, add domain-webapi and domain-performance.
     - For legacy WinForms/UI reserve traces, add domain-bof.
+    - For publish/sync work, run orchestration double-check from coordinator.yml.
   context_budget:
     - Do not load all brain files by default.
     - Prefer the listed entry points and only expand to source files required by the current hypothesis.
