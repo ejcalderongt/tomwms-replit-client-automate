@@ -70,6 +70,15 @@ Public Class clsLnStock_res
 
         Try
 
+            '#EJC20260520_RESERVA_BYB_FIX: evitar que un candidato agotado revierta reservas validas ya calculadas.
+            If Math.Round(oBeStock_res.Cantidad, 6) <= 0 Then
+                clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                       "stock_res_insertar_omitido_cantidad_no_positiva",
+                                                       oBeStock_res,
+                                                       "Cantidad", clsReservaMi3DebugTrace.Valor(oBeStock_res.Cantidad))
+                Return 0
+            End If
+
             Ins.Init("stock_res")
             'Ins.Add("idstockres", "@idstockres", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
