@@ -79,7 +79,7 @@ Partial Class frmEjecucion
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1554, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1821, 193)
         '
         'mnuBodegas
         '
@@ -362,7 +362,7 @@ Partial Class frmEjecucion
         Me.lblprg.Location = New System.Drawing.Point(4, 4)
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(1546, 352)
+        Me.lblprg.Size = New System.Drawing.Size(1813, 352)
         Me.lblprg.TabIndex = 2
         Me.lblprg.Text = ""
         '
@@ -372,7 +372,7 @@ Partial Class frmEjecucion
         Me.prg.Location = New System.Drawing.Point(0, 197)
         Me.prg.Margin = New System.Windows.Forms.Padding(4)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1554, 3)
+        Me.prg.Size = New System.Drawing.Size(1821, 3)
         Me.prg.TabIndex = 1
         Me.prg.Visible = False
         '
@@ -386,7 +386,7 @@ Partial Class frmEjecucion
         Me.lblTLog.Location = New System.Drawing.Point(0, 193)
         Me.lblTLog.Margin = New System.Windows.Forms.Padding(4)
         Me.lblTLog.Name = "lblTLog"
-        Me.lblTLog.Size = New System.Drawing.Size(1554, 4)
+        Me.lblTLog.Size = New System.Drawing.Size(1821, 4)
         Me.lblTLog.TabIndex = 0
         Me.lblTLog.Text = "Log"
         '
@@ -413,7 +413,7 @@ Partial Class frmEjecucion
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 65.07937!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 34.92064!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1554, 554)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1821, 554)
         Me.TableLayoutPanel1.TabIndex = 4
         '
         'lblprgIngresos
@@ -423,7 +423,7 @@ Partial Class frmEjecucion
         Me.lblprgIngresos.Location = New System.Drawing.Point(4, 364)
         Me.lblprgIngresos.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprgIngresos.Name = "lblprgIngresos"
-        Me.lblprgIngresos.Size = New System.Drawing.Size(1546, 186)
+        Me.lblprgIngresos.Size = New System.Drawing.Size(1813, 186)
         Me.lblprgIngresos.TabIndex = 3
         Me.lblprgIngresos.Text = ""
         '
@@ -431,7 +431,7 @@ Partial Class frmEjecucion
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1554, 754)
+        Me.ClientSize = New System.Drawing.Size(1821, 754)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.prg)
         Me.Controls.Add(Me.lblTLog)

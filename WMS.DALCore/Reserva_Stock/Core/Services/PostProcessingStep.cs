@@ -57,6 +57,8 @@ namespace WMS.StockReservation.Core.Services
                 }
             }
 
+            context.DocumentCache?.RegisterReservations(context.CreatedReservations);
+
             // PASO 2: Actualizar TrasladoDet.Quantity_Reserved_WMS
             if (context.TrasladoDet != null && context.CreatedReservations.Count > 0)
             {

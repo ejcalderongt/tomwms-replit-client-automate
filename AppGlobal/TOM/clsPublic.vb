@@ -1,4 +1,7 @@
 ﻿Imports System.IO
+Imports System.Collections.Generic
+Imports System.Drawing
+Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Security.Cryptography
@@ -9,6 +12,13 @@ Public Class clsPublic
 
     Private Const Ek64 As String = "rpaSPvIvVLlrcmtzPU9/c67Gkj7yL1S5"
     Private Const Iv As String = "qualityi"
+    Private Shared ReadOnly mReservaProgressState As New Dictionary(Of RichTextBox, ReservaProgressVisualState)
+
+    Private Class ReservaProgressVisualState
+        Public Property CantidadSolicitada As Double
+        Public Property UnidadMedidaSolicitada As String
+        Public Property TieneSolicitudPendiente As Boolean
+    End Class
 
     Public Shared Function Encriptar(ByVal Input As String) As String
 
@@ -681,25 +691,145 @@ Public Class clsPublic
     'End Sub
     Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String, Optional limpiar As Boolean = False)
         If lblPrg IsNot Nothing Then
-            If limpiar Then lblPrg.Clear()
-
             If lblPrg.InvokeRequired Then
                 Dim control = lblPrg
                 control.Invoke(New MethodInvoker(Sub()
-                                                     control.AppendText(mensaje & vbNewLine)
-                                                     control.SelectionStart = control.TextLength
-                                                     control.ScrollToCaret()
-                                                     control.Refresh()
+                                                     Actualizar_Progreso_Interno(control, mensaje, limpiar)
                                                      'Application.DoEvents()
                                                  End Sub))
             Else
-                lblPrg.AppendText(mensaje & vbNewLine)
-                lblPrg.SelectionStart = lblPrg.TextLength
-                lblPrg.ScrollToCaret()
-                lblPrg.Refresh()
+                Actualizar_Progreso_Interno(lblPrg, mensaje, limpiar)
                 'Application.DoEvents()
             End If
         End If
     End Sub
+
+    Private Shared Sub Actualizar_Progreso_Interno(ByVal lblPrg As RichTextBox, ByVal mensaje As String, Optional limpiar As Boolean = False)
+        If limpiar Then
+            lblPrg.Clear()
+            LimpiarEstadoVisualReserva(lblPrg)
+        End If
+
+        Dim vColorLinea As Color? = ObtenerColorVisualReserva(lblPrg, mensaje)
+        Dim vInicioTexto As Integer = lblPrg.TextLength
+
+        lblPrg.AppendText(mensaje & vbNewLine)
+
+        If vColorLinea.HasValue Then
+            lblPrg.Select(vInicioTexto, lblPrg.TextLength - vInicioTexto)
+            lblPrg.SelectionColor = vColorLinea.Value
+            lblPrg.Select(lblPrg.TextLength, 0)
+        End If
+
+        lblPrg.SelectionStart = lblPrg.TextLength
+        lblPrg.ScrollToCaret()
+        lblPrg.Refresh()
+    End Sub
+
+    Private Shared Sub LimpiarEstadoVisualReserva(ByVal lblPrg As RichTextBox)
+        SyncLock mReservaProgressState
+            If mReservaProgressState.ContainsKey(lblPrg) Then
+                mReservaProgressState.Remove(lblPrg)
+            End If
+        End SyncLock
+    End Sub
+
+    Private Shared Function ObtenerColorVisualReserva(ByVal lblPrg As RichTextBox, ByVal mensaje As String) As Color?
+        Dim vMensajeNormalizado As String = If(mensaje, String.Empty)
+        Dim vSolicitado As Double = 0
+        Dim vUnidadSolicitada As String = String.Empty
+        Dim vAbastecido As Double = 0
+        Dim vUnidadAbastecida As String = String.Empty
+        Dim vTieneSolicitado As Boolean = TryLeerCantidadReserva(vMensajeNormalizado, "Solicitado", vSolicitado, vUnidadSolicitada)
+        Dim vTieneAbastecido As Boolean = TryLeerCantidadReserva(vMensajeNormalizado, "Abastecido", vAbastecido, vUnidadAbastecida)
+
+        If vTieneSolicitado Then
+            SyncLock mReservaProgressState
+                If Not mReservaProgressState.ContainsKey(lblPrg) Then
+                    mReservaProgressState(lblPrg) = New ReservaProgressVisualState()
+                End If
+
+                mReservaProgressState(lblPrg).CantidadSolicitada = vSolicitado
+                mReservaProgressState(lblPrg).UnidadMedidaSolicitada = vUnidadSolicitada
+                mReservaProgressState(lblPrg).TieneSolicitudPendiente = True
+            End SyncLock
+        End If
+
+        If vTieneAbastecido Then
+            If Not vTieneSolicitado Then
+                SyncLock mReservaProgressState
+                    If mReservaProgressState.ContainsKey(lblPrg) AndAlso mReservaProgressState(lblPrg).TieneSolicitudPendiente Then
+                        vSolicitado = mReservaProgressState(lblPrg).CantidadSolicitada
+                        vUnidadSolicitada = mReservaProgressState(lblPrg).UnidadMedidaSolicitada
+                        vTieneSolicitado = True
+                    End If
+                End SyncLock
+            End If
+
+            If vTieneSolicitado Then
+                SyncLock mReservaProgressState
+                    If mReservaProgressState.ContainsKey(lblPrg) Then
+                        mReservaProgressState(lblPrg).TieneSolicitudPendiente = False
+                    End If
+                End SyncLock
+
+                Return ObtenerColorResultadoReserva(vSolicitado, vAbastecido)
+            End If
+
+            If vAbastecido > 0 Then
+                Return Color.DarkGreen
+            End If
+
+            Return Color.Firebrick
+        End If
+
+        If vMensajeNormalizado.IndexOf("procesada parcialmente", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return Color.OrangeRed
+        End If
+
+        If vMensajeNormalizado.IndexOf("No se pudo", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+           vMensajeNormalizado.IndexOf("Error", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+           vMensajeNormalizado.IndexOf("FALSE", StringComparison.OrdinalIgnoreCase) >= 0 Then
+            Return Color.Firebrick
+        End If
+
+        Return Nothing
+    End Function
+
+    Private Shared Function ObtenerColorResultadoReserva(ByVal cantidadSolicitada As Double, ByVal cantidadAbastecida As Double) As Color
+        Const ToleranciaComparacion As Double = 0.000001
+
+        If cantidadAbastecida + ToleranciaComparacion >= cantidadSolicitada Then
+            Return Color.DarkGreen
+        End If
+
+        If cantidadAbastecida <= ToleranciaComparacion Then
+            Return Color.Firebrick
+        End If
+
+        Return Color.OrangeRed
+    End Function
+
+    Private Shared Function TryLeerCantidadReserva(ByVal mensaje As String, ByVal etiqueta As String, ByRef cantidad As Double, ByRef unidadMedida As String) As Boolean
+        Dim vMatch As Match = Regex.Match(mensaje,
+                                          etiqueta & "\s*:\s*(?<cantidad>-?\d+(?:[\.,]\d+)?)\s*-?\s*(?<um>[A-Za-z0-9]*)",
+                                          RegexOptions.IgnoreCase)
+
+        If Not vMatch.Success Then
+            Return False
+        End If
+
+        Dim vCantidadTexto As String = vMatch.Groups("cantidad").Value.Replace(","c, "."c)
+
+        If Not Double.TryParse(vCantidadTexto,
+                               NumberStyles.Any,
+                               CultureInfo.InvariantCulture,
+                               cantidad) Then
+            Return False
+        End If
+
+        unidadMedida = vMatch.Groups("um").Value.Trim()
+        Return True
+    End Function
 
 End Class
