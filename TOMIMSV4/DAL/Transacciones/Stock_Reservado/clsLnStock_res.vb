@@ -214,7 +214,7 @@ Public Class clsLnStock_res
 
     End Function
 
-    '#EJC20260520_RESERVA_BYB_FIX: defensa final para que una linea de pedido no quede sobre-reservada.
+    '#EJC20260520_RESERVA_BYB_FIX: defensa final para que una linea de pedido normalizada a UM base no quede sobre-reservada.
     Private Shared Sub Ajustar_Cantidad_Maxima_PedidoDet(ByRef oBeStock_res As clsBeStock_res,
                                                          ByRef pConnection As SqlConnection,
                                                          ByRef pTransaction As SqlTransaction)
@@ -223,7 +223,8 @@ Public Class clsLnStock_res
         If Math.Round(oBeStock_res.Cantidad, 6) <= 0 Then Exit Sub
 
         Const sp As String = "SELECT " &
-                             " CAST(ISNULL((SELECT TOP 1 d.Cantidad FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadPedido, " &
+                              " CAST(ISNULL((SELECT TOP 1 d.Cantidad FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadPedido, " &
+                             " CAST(ISNULL((SELECT TOP 1 ISNULL(d.IdPresentacion, 0) FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS INT) AS IdPresentacionPedido, " &
                              " CAST(ISNULL((SELECT SUM(sr.cantidad) FROM stock_res sr WHERE sr.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadReservada "
 
         Using cmd As New SqlCommand(sp, pConnection, pTransaction)
@@ -233,9 +234,12 @@ Public Class clsLnStock_res
             Using dr As SqlDataReader = cmd.ExecuteReader()
                 If dr.Read() Then
                     Dim vCantidadPedido As Double = IIf(IsDBNull(dr.Item("CantidadPedido")), 0, dr.Item("CantidadPedido"))
+                    Dim vIdPresentacionPedido As Integer = IIf(IsDBNull(dr.Item("IdPresentacionPedido")), 0, dr.Item("IdPresentacionPedido"))
                     Dim vCantidadReservada As Double = IIf(IsDBNull(dr.Item("CantidadReservada")), 0, dr.Item("CantidadReservada"))
 
                     If vCantidadPedido <= 0 Then Exit Sub
+                    'Las lineas con presentacion tienen semantica propia de conversion; no se deben topar contra UM base aqui.
+                    If vIdPresentacionPedido > 0 Then Exit Sub
 
                     Dim vCantidadPendiente As Double = Math.Round(vCantidadPedido - vCantidadReservada, 6)
 
