@@ -1,0 +1,82 @@
+version: 1
+updated: "2026-05-21"
+domain: webapi
+scope: >
+  ASP.NET Core WebAPI contracts, request/response validation, local execution,
+  appsettings, payload generation and endpoint troubleshooting for TOMWMS.
+
+entry_points:
+  salidas_mi3:
+    endpoint: "POST /api/sync/salidas/mi3/insertar"
+    project: WMSWebAPI/WMSWebAPI.csproj
+    service: WMSWebAPI/Services/Salidas/SyncSalidasService.cs
+    controller_hint: WMSWebAPI/Controllers
+    core_import: WMS.DALCore/I_nav_ped_traslado_enc/clsLnI_nav_ped_traslado_enc.cs
+    payload_tools:
+      - tools/webapi-mi3-reserva/README.md
+      - tools/webapi-mi3-reserva/build-mi3-salida-ea153305-payload.ps1
+      - tools/webapi-mi3-reserva/mi3-salida-ea153304-webapi.json
+      - tools/webapi-mi3-reserva/mi3-salida-ea153305-webapi.json
+      - tools/webapi-mi3-reserva/compare-mi3-reserva-baseline.ps1
+
+local_run_contract:
+  stop_existing_processes:
+    powershell: >
+      Get-CimInstance Win32_Process | Where-Object {
+        ($_.Name -eq 'WMSWebAPI.exe') -or
+        ($_.Name -eq 'dotnet.exe' -and $_.CommandLine -like '*WMSWebAPI*')
+      } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+  build:
+    command: "dotnet build .\\WMSWebAPI\\WMSWebAPI.csproj -c Debug --no-restore"
+  start_http:
+    command: "dotnet run --project WMSWebAPI\\WMSWebAPI.csproj --launch-profile http --no-build"
+    expected_url: "http://localhost:5196"
+  post_timeout:
+    seconds: 120
+    command_shape: >
+      curl.exe --max-time 120 -X POST http://localhost:5196/api/sync/salidas/mi3/insertar
+      -H "Content-Type: application/json" --data-binary "@payload.json"
+
+response_contract:
+  success_fields:
+    - exito
+    - mensaje
+    - lineasProcesadas
+    - totalSolicitado
+    - totalReservado
+    - lineasDetalle
+  validation_rules:
+    - HTTP 200 is not enough; exito must be true for accepted runs.
+    - totalReservado must be derived from persisted stock_res, not from payload intent.
+    - lineasDetalle must explain complete, partial or failed reservation cases.
+    - For regression tests, compare API result with DB state.
+
+appsettings_rules:
+  - Never print the full connection string when it contains password values.
+  - Confirm ConnectionStrings:CST points to the intended QA/client DB before executing writes.
+  - Prefer synthetic document numbers with WEBAPI suffix.
+
+failure_patterns:
+  - message: "Cannot insert explicit value for identity column"
+    likely_area: "Entity insert/identity handling"
+    check:
+      - Do not set identity PK when SQL identity insert is off.
+      - After insert returns identity, propagate it to dependent objects before stock_res insert.
+  - message: "Presentacion de producto no existe"
+    likely_area: "Variant_Code / Unit_of_Measure_Code presentation resolution"
+    check:
+      - If Variant_Code is empty and Unit_of_Measure_Code is CJ, resolve presentation by UM code.
+  - message: "timeout or no response after 120 seconds"
+    likely_area: "reservation performance or loop"
+    check:
+      - Inspect #MI3_PERF_SERVICE_IMPORTAR and #MI3_PERF_PIPELINE_TOTAL.
+      - Verify document cache is active and test reference is clean before run.
+
+brain_double_check:
+  local:
+    - Build WebAPI after any Core/WebAPI change.
+    - Store reproducible payload or script under tools/.
+    - Commit/push stable artifacts.
+  remote:
+    - Run Brain repos/sync after push when token exists.
+    - Run Brain search/impact for public method changes when relevant.

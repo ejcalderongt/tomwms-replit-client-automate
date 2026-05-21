@@ -591,8 +591,20 @@ namespace WMS.DALCore
                         if (bePresentacion == null)
                             throw new Exception($"La Presentación de producto '{PDet.Item_No}' no existe o no está definida: '{variant}'.");
                     }
+                    else
+                    {
+                        var presentacionCacheKey = $"{beProducto.IdProductoBodega}|{umCode}";
+                        if (!presentacionCache.TryGetValue(presentacionCacheKey, out bePresentacion))
+                        {
+                            bePresentacion = clsLnProducto_presentacion.Get_Presentacion_By_IdProductoBodega_And_CodPres(
+                                beProducto.IdProductoBodega, umCode, lConectionInterface, lTransInterface);
+
+                            if (bePresentacion != null)
+                                presentacionCache[presentacionCacheKey] = bePresentacion;
+                        }
+                    }
                     lookupWatch.Stop();
-                    TraceMi3Perf($"#MI3_PERF_IF_LINE_LOOKUP_PRESENTACION | Documento={noTrace} | Linea={PDet.Line_No} | Ms={lookupWatch.ElapsedMilliseconds} | Variant={variant}");
+                    TraceMi3Perf($"#MI3_PERF_IF_LINE_LOOKUP_PRESENTACION | Documento={noTrace} | Linea={PDet.Line_No} | Ms={lookupWatch.ElapsedMilliseconds} | Variant={variant} | UM={umCode} | IdPresentacion={bePresentacion?.IdPresentacion ?? 0}");
 
                     // Tiempos (Clasificacion/Familia pueden ser null)
                     int diasVencimientoCliente = 0;
@@ -891,7 +903,22 @@ namespace WMS.DALCore
                 pBePedidoDet.Producto.codigo = pBeTrasladoDet.Item_No;
                 pBePedidoDet.Producto.nombre = clsPublic.Quitar_Caracteres_No_Permitidos(pBeTrasladoDet.Description);
                 pBePedidoDet.Nombre_producto = clsPublic.Quitar_Caracteres_No_Permitidos(pBeTrasladoDet.Description);
-                pBePedidoDet.IdUnidadMedidaBasica = pBeUnidadMedida.IdUnidadMedida;
+                int idUnidadMedidaBasicaProducto = 0;
+                if (pBePresentacion != null && pBePresentacion.IdPresentacion > 0)
+                {
+                    idUnidadMedidaBasicaProducto = pBePoducto.IdUnidadMedidaBasica;
+                    if (idUnidadMedidaBasicaProducto <= 0)
+                    {
+                        idUnidadMedidaBasicaProducto = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(
+                            pBePedidoDet.Producto.codigo,
+                            lConectionInterface,
+                            lTransactionInterface);
+                    }
+                }
+
+                pBePedidoDet.IdUnidadMedidaBasica = idUnidadMedidaBasicaProducto > 0
+                    ? idUnidadMedidaBasicaProducto
+                    : pBeUnidadMedida.IdUnidadMedida;
                 pBePedidoDet.Cantidad = pBeTrasladoDet.Quantity;
                 pBePedidoDet.Peso = 0;
                 pBePedidoDet.Precio = pBeTrasladoDet.Price;
@@ -1102,11 +1129,13 @@ namespace WMS.DALCore
                 pBeStockRes.IdPropietarioBodega = pIdPropietarioBodega;
                 pBeStockRes.IdBodega = pIdBodegaOrigen;
                 stageWatch.Restart();
-                pBeStockRes.IdUnidadMedida = pBeUnidadMedida.IdUnidadMedida > 0
-                    ? pBeUnidadMedida.IdUnidadMedida
-                    : clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.codigo,
-                                                                   lConectionInterface,
-                                                                   lTransactionInterface);
+                pBeStockRes.IdUnidadMedida = idUnidadMedidaBasicaProducto > 0
+                    ? idUnidadMedidaBasicaProducto
+                    : pBeUnidadMedida.IdUnidadMedida > 0
+                        ? pBeUnidadMedida.IdUnidadMedida
+                        : clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.codigo,
+                                                                       lConectionInterface,
+                                                                       lTransactionInterface);
                 stageWatch.Stop();
                 TraceMi3Perf($"#MI3_PERF_IF_DETAIL_UM_PRODUCTO | Documento={BePedidoEnc.Referencia} | Linea={pBeTrasladoDet.Line_No} | Ms={stageWatch.ElapsedMilliseconds}");
                 pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_variante_1;

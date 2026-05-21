@@ -44,6 +44,22 @@ curl.exe -k -X POST "https://localhost:7194/api/sync/salidas/mi3/insertar" `
 - `TotalReservado` debe salir de `stock_res`, no de una suma previa del payload.
 - Las lineas en presentacion `CJ` con cantidad decimal deben quedar normalizadas a UM base cuando aplique, sin reservas fraccionarias artificiales.
 - Las reservas parciales deben quedar justificadas por stock disponible real y reflejadas en `Quantity_Reserved_WMS`.
+- Para pruebas de paridad contra legacy, los totales no bastan: comparar tambien filas/suma de `stock_res` por linea y, si el baseline lo exige, `IdStock`/lote/cantidad.
+- Para `EA-153304`, el baseline legacy aceptado es: 29 lineas, 1370 solicitado/reservado, 48 filas en `stock_res`, suma `stock_res` 12703.
+
+## Comparar contra baseline legacy
+
+Para comparar un documento WebAPI ya insertado contra el snapshot legacy:
+
+```powershell
+cd C:\Users\yejc2\source\repos\TOMWMS\tools\webapi-mi3-reserva
+.\compare-mi3-reserva-baseline.ps1 `
+  -No "EA-153304WEBAPI" `
+  -BaselinePath ".\baseline-ea153304-legacy-stockres.json"
+```
+
+Usar `-StrictReservations` cuando la prueba requiera igualdad exacta de `IdStock`,
+lote y cantidad por linea, ademas de conteos y sumas.
 
 ## Validar en SQL
 

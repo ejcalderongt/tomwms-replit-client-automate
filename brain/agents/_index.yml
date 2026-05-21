@@ -1,0 +1,108 @@
+version: 1
+updated: "2026-05-21"
+purpose: >
+  Context router for local WMS agents. Load the coordinator first, then only the
+  domain packages whose triggers match the task.
+
+always_load:
+  - brain/agents/coordinator.yml
+
+domains:
+  reserva:
+    file: brain/agents/domain-reserva.yml
+    triggers:
+      - reserva
+      - no reserva
+      - stock_res
+      - Reserva_Stock_From_MI3
+      - MI3 salida
+      - i_nav_ped_traslado
+      - EA-
+      - Qty_to_Receive
+      - Quantity_Reserved_WMS
+      - picking vs almacenaje
+      - FEFO
+      - presentacion CJ
+      - performance reserva
+    also_load:
+      - brain/agents/domain-database.yml
+      - brain/agents/domain-webapi.yml
+      - brain/agents/domain-performance.yml
+  database:
+    file: brain/agents/domain-database.yml
+    triggers:
+      - SQL
+      - tabla
+      - SP
+      - vista
+      - stock
+      - trans_pe_det
+      - trans_pe_enc
+      - i_nav
+      - log_error_wms
+      - identidad
+      - identity
+  bof:
+    file: brain/agents/domain-bof.yml
+    triggers:
+      - VB
+      - WinForms
+      - legacy
+      - DynamicsNavInterface
+      - TOMWMS_BOF
+      - frmEjecucion
+      - Reference.vb
+  webapi:
+    file: brain/agents/domain-webapi.yml
+    triggers:
+      - WebAPI
+      - API
+      - endpoint
+      - controller
+      - service
+      - SyncSalidasService
+      - /api/sync/salidas/mi3/insertar
+      - payload
+      - appsettings
+      - swagger
+      - HTTP 200
+      - curl
+  performance:
+    file: brain/agents/domain-performance.yml
+    triggers:
+      - performance
+      - rendimiento
+      - lento
+      - timeout
+      - 2 minutos
+      - roundtrip
+      - trace
+      - tracelog
+      - "#MI3_PERF"
+      - Stopwatch
+      - optimizacion
+      - benchmark
+      - baseline
+
+clients:
+  byb:
+    file: brain/agents/client-byb.yml
+    triggers:
+      - BYB
+      - IMS4MB_BYB_QAS2
+      - EA-153304
+      - EA-153305
+      - BA0002
+      - DILMAR
+      - MEGA AHORRO
+
+rules:
+  selection:
+    - Load client context when a trigger matches a named client or a known reference document.
+    - For reservation investigations, domain-reserva plus domain-database is mandatory.
+    - For WebAPI reservation investigations, add domain-webapi and domain-performance.
+    - For legacy WinForms/UI reserve traces, add domain-bof.
+    - For publish/sync work, run orchestration double-check from coordinator.yml.
+  context_budget:
+    - Do not load all brain files by default.
+    - Prefer the listed entry points and only expand to source files required by the current hypothesis.

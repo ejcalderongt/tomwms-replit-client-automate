@@ -1,0 +1,790 @@
+notas:
+  - fecha: "2026-05-21"
+    area: "WebAPI MI3 payload reserva BYB EA-153304"
+    detalle: >
+      Para comparar WebAPI contra el baseline legacy correcto de BYB, se genero
+      tools/webapi-mi3-reserva/mi3-salida-ea153304-webapi.json desde
+      i_nav_ped_traslado_enc/det de EA-153304 reimportado desde NAV. El payload
+      conserva las 29 lineas y 1370 unidades solicitadas, separadas en
+      PV2-364400=19 lineas/690 y PV2-364399=10 lineas/680, pero resetea campos
+      de proceso para entrada WebAPI: Status=0, Process_Result vacio,
+      IdPedidoDet=0 y Quantity_Reserved_WMS=0. Tambien se genero
+      tools/webapi-mi3-reserva/baseline-ea153304-legacy-summary.json con el
+      resumen de interface legacy: 29/29 lineas completas y
+      Quantity_Reserved_WMS=1370 antes de la eliminacion. Al intentar capturar
+      snapshot detallado de trans_pe_det/stock_res, el documento ya habia sido
+      eliminado/liberado en DB, por lo que no quedo evidencia exacta de lotes o
+      IdStock legacy en archivo.
+      Snapshot posterior capturado cuando Erik reimporto/reservo nuevamente:
+      tools/webapi-mi3-reserva/baseline-ea153304-legacy-stockres.json contiene
+      29 trans_pe_det, 48 filas stock_res, total interface=1370,
+      total pedido_det=1370, total stock_res=12703 y 0 lineas sin stock_res.
+      Este archivo queda como baseline fino para comparar Core despues de
+      liberar/eliminar EA-153304 antes de ejecutar el payload WebAPI.
+      Prueba Core con documento EA-153304WEBAPI: primero fallo contrato por
+      Manufacturing_Process boolean y luego por Transfer_from_Code=1060315; el
+      payload de corrida debe usar Manufacturing_Process=0 y
+      Transfer_from_Code=BA0002 para BYB QA. Core reservaba inicialmente 903/1370
+      porque las lineas CJ venian con Variant_Code vacio; se ajusto DALCore para
+      resolver presentacion desde Unit_of_Measure_Code cuando Variant_Code viene
+      vacio, y para usar la unidad basica del producto en stock_res cuando hay
+      presentacion. Tambien se corrigio el bug identity de trans_pe_det en ambos
+      overloads de Reservar_Stock_Por_Linea_Interface: despues de Insertar se
+      propaga el IdPedidoDet identity real a pBePedidoDet y pBeStockRes antes de
+      reservar, evitando stock_res huerfano en la primera linea tras deletes con
+      identity adelantado.
+  - fecha: "2026-05-21"
+    area: "WebAPI/Core reserva MI3 BYB StockQueryStep single-query"
+    detalle: >
+      Fix de performance aplicado en StockQueryStep: antes consultaba lStock
+      dos veces por cada linea (picking y no-picking) y ejecutaba
+      Restar_Stock_Reservado dos veces, aunque lStock(false) ya trae todo el
+      stock y el propio codigo lo filtraba despues. Ahora consulta lStock una
+      sola vez con pExcluirUbicacionPicking=false, resta reservado una sola vez
+      sobre la lista completa y separa picking/no-picking en memoria. Compila
+      WMSWebAPI sin errores; quedan solo advertencias previas de nullability.
+      Optimizacion posterior: en la interface se cachean producto, unidad de
+      medida y presentacion por documento; StockReservationFacade pasa al
+      pipeline el IdProducto y la presentacion ya resueltos para evitar
+      consultas repetidas en Validation/EntityLoading; e
+      Importar_Traslado_A_Tabla_Intermedia cachea bodega/config/producto-bodega
+      y omite el Exist por linea cuando el encabezado es nuevo. Validacion local
+      contra WebAPI BYB QA: documento EA153305F42028 respondio HTTP 200,
+      Exito=true, 63 lineas, sin timeout, en 100.3s de cliente / 98.1s de
+      servicio; la importacion intermedia bajo a 9.1s y el procesamiento WMS
+      quedo en 87.4s.
+      Fase 2 iniciada: se agrego StockReservationDocumentCache para reutilizar
+      lStock/Restar_Stock_Reservado por documento y descontar en memoria las
+      reservas ya insertadas del mismo documento. La premisa de validacion
+      queda fija: comparar contra el Core/legacy listo usando EA-153305 con el
+      mismo stock liberado; se agrego
+      tools/webapi-mi3-reserva/comparar-mi3-reserva-documentos.sql para revisar
+      linea por linea pedido_det, stock_res y cantidad reservada entre baseline
+      y optimizado.
+      Validacion con stock liberado indicada por Erik: documento EA153305O203916
+      respondio HTTP 200 Exito=true en 85.6s cliente, 63 lineas,
+      totalSolicitado=591.940478 y totalReservado API=804.547622. La BD quedo
+      con 63 trans_pe_det, 77 stock_res y 9833.000034 unidades reales. Se
+      detecto y corrigio un bug del DTO de respuesta: Get_Detalles_Reserva
+      unia stock_res por IdProductoBodega, duplicando reservas en productos
+      repetidos; ahora une por IdPedidoDet + IdTransaccion. Se agrego
+      tools/webapi-mi3-reserva/diagnosticar-mi3-reserva-documento.sql para
+      auditar no-reservas/parciales por documento. Casos actuales no completos:
+      lineas 10000/20000/30000 sin stock aplicable; linea 70000 parcial con
+      42 unidades = 7 CJ; linea 370000 sin stock aplicable para 00050608.
+  - fecha: "2026-05-21"
+    area: "WebAPI/Core reserva MI3 BYB performance trace"
+    detalle: >
+      Se agrego tracelog de performance para reserva MI3 en WebAPI/Core:
+      #MI3_PERF_API_*, #MI3_PERF_SERVICE_*, #MI3_PERF_IF_* y
+      #MI3_PERF_SQL/#MI3_PERF_STEP_* en el pipeline. El trace se escribe en
+      consola y en WMSWebAPI/bin/Debug/net10.0/Logs/reserva-mi3-trace-YYYYMMDD.txt.
+      La corrida EA-153305-TRACE2-200235 completo server-side en 205.7s, pero
+      el cliente corto y ASP.NET registro 499. No hubo loop infinito: las 63
+      reservas terminaron en 1 iteracion por linea. El cuello inicial era
+      clsLnStock_res.Restar_Stock_Reservado: hacia consulta por cada IdStock
+      candidato y llego a 15-61s por linea. Se optimizo para consultar
+      stock_res agrupado por batches de IdStock y cachear presentaciones; tras
+      el cambio RestarStockReservadoPicking/NonPicking bajo aprox. a 130-250ms
+      por llamada. Queda pendiente optimizar la capa interface por linea
+      (producto, UM, presentacion, estado, updates de status/process_result),
+      que aun deja la corrida completa alrededor de 3.4 min para 63 lineas.
+      Optimizacion adicional aplicada despues del trace: la interface cachea
+      bodega, propietario y estado de producto por documento; Inserta_Linea
+      reutiliza producto/UM/presentacion ya resueltos y evita la consulta de
+      talla/color cuando ambos valores vienen vacios. Compila; falta corrida
+      completa limpia posterior para medir el nuevo total.
+  - fecha: "2026-05-21"
+    area: "WebAPI/Core reserva MI3 BYB optimizaciones legacy"
+    detalle: >
+      Al probar EA-153305-WAPI01 en WebAPI/Core aparecia spam de debug
+      "El pallet esta completo..." desde clsLnStock_res.Restar_Stock_Reservado
+      y el pipeline no tenia todas las defensas legacy #EJC20260520_RESERVA_BYB_FIX.
+      Se homologo en Core: las decisiones del loop usan listas normalizadas con
+      Cantidad > 0; las fechas minimas se resetean a 1900 si una zona queda sin
+      cantidad util; si NonPicking tiene FEFO mas viejo pero requiere explosion
+      y picking cubre la solicitud, se fuerza picking como en legacy; se removio
+      el Debug.WriteLine por IdStock; y clsLnStock_res.Insertar ahora omite
+      Cantidad <= 0 y recorta contra el pendiente real de trans_pe_det solo
+      cuando la linea esta en UM base (IdPresentacion NULL/0).
+  - fecha: "2026-05-21"
+    area: "WebAPI/Core log_error_wms identity"
+    detalle: >
+      En EA-153305-WAPI01, al registrar fallo de reserva la WebAPI lanzo
+      "Cannot insert explicit value for identity column ... log_error_wms".
+      Validado en BYB QA: dbo.log_error_wms.IdError tiene IsIdentity=1. Se
+      ajusto EntityCore para marcar IdError como Key/Identity y DALCore para
+      omitir IdError en los inserts de clsLnLog_error_wms. Tambien se quitaron
+      asignaciones MaxID+1 en la interface de traslado y StockReservationFacade;
+      update/select siguen usando IdError como llave.
+  - fecha: "2026-05-21"
+    area: "WebAPI MI3 traslado BYB Variant_Code presentacion"
+    detalle: >
+      En WebAPI/Core para EA-153305-WAPI01, la linea 00020502 fallo con
+      "La Presentacion de producto no existe ... CJ". En BYB QA
+      IMS4MB_BYB_QAS2 la presentacion si existe: IdPresentacion=7,
+      producto_presentacion.codigo=00020502, nombre=CJ, factor=96. La causa
+      era que Get_Presentacion_By_IdProductoBodega_And_CodPres buscaba solo
+      pp.codigo=@Variant_Code. Se ajusto WMS.DALCore para aceptar codigo o
+      nombre, priorizando codigo, y el armado de stock_res ahora tambien hace
+      fallback por nombre cuando Variant_Code corresponde a la presentacion.
+  - fecha: "2026-05-20"
+    area: "BYB MI3 reserva baseline EA-153305 00444100"
+    detalle: >
+      En la corrida de C:\Users\yejc2\Downloads\Erores_WMS_140526_media para
+      pedido 37320 / EA-153305 se establecio una linea base reproducible:
+      63 payloads analizados, 59 OK y 4 FALSE. Las lineas ya OK deben quedar
+      como punto de retorno para futuras pruebas. Pendientes focales:
+      00020502 linea 10000, 00140702 linea 20000 y 00444100 lineas 300000 y
+      600000. Para 00444100 no hay falta de stock: la traza encontro 13 stocks
+      en picking y 2044 UMBas disponibles; el fallo real es el constraint
+      Cons_restriccion en stock_res ([cantidad] > 0), lo que indica un camino
+      que intenta insertar una reserva con cantidad 0 o negativa despues de la
+      normalizacion CJ -> UMBas (7.75 CJ = 31 UNI, 7.25 CJ = 29 UNI).
+      Se dejo script de diagnostico en
+      tools/diagnostics/byb-reserva-ea153305-baseline.sql para comparar payload,
+      trans_pe_det y stock_res sin tocar datos.
+      Correccion aplicada: en Reserva_Stock_From_MI3 se corta el loop final de
+      candidatos cuando vCantidadPendiente ya es 0, evitando que una segunda
+      iteracion intente insertar stock_res con cantidad 0; ademas
+      Inserta_Stock_Reservado omite y traza candidatos con Cantidad <= 0 como
+      defensa general antes del CHECK de SQL. DAL compilo en Debug|x86 con
+      BuildProjectReferences=false; la compilacion completa sigue bloqueada por
+      PerceptronUbicacion.csproj sin OutputPath Debug|x86.
+      La corrida posterior 18:22 siguio fallando con Cons_restriccion y no
+      genero el evento stock_res_omitido_cantidad_no_positiva, demostrando que
+      el candidato invalido entraba por llamadas directas a
+      clsLnStock_res.Insertar(BeStockRes), antes del helper de lista. Se agrego
+      defensa en clsLnStock_res.Insertar para omitir y trazar
+      stock_res_insertar_omitido_cantidad_no_positiva cuando Cantidad <= 0,
+      evitando rollback por un candidato agotado posterior a reservas validas.
+      Nueva meta posterior: 00444100 ya reserva pero la linea 300000 quedo
+      sobre-reservada por duplicidad del mismo IdStock 778392 en CASO_#6 y
+      CASO_#7. La meta correcta para EA-153305 es linea 300000 = 31 y linea
+      600000 = 29. Se agrego en clsLnStock_res.Insertar un ajuste transaccional
+      por IdPedidoDet que compara trans_pe_det.Cantidad contra SUM(stock_res)
+      ya insertado; si el candidato excede el pendiente se recorta, y si ya no
+      hay pendiente se omite. Esto evita que casos consecutivos del mismo flujo
+      de explosion sobre-reserven una linea ya satisfecha.
+      Ajuste posterior por stepback: ese tope solo debe aplicar cuando
+      trans_pe_det.IdPresentacion esta NULL/0, porque ahi la linea ya esta
+      normalizada a UM base. En lineas con presentacion (CJ, etc.) la cantidad
+      de trans_pe_det y los candidatos de stock_res pueden estar en semanticas
+      distintas durante la conversion, por lo que topar ahi puede producir
+      reservas decimales como 0.104167/10.41667. La defensa quedo acotada a UM
+      base para conservar el fix de 00444100 sin afectar presentaciones.
+      Validacion funcional posterior confirmada por Erik: tras cerrar/reabrir
+      WMS con el DAL actualizado, el payload EA-153305 se considera exitoso.
+      Al revisar los YAML disponibles en
+      C:\Users\yejc2\Downloads\Erores_WMS_140526_media, la ultima tanda escrita
+      en disco seguia siendo 18:42/18:43 y corresponde al binario previo:
+      63 lineas, 62 OK, 1 FALSE (00020502) y ajustes indebidos aun visibles en
+      lineas con presentacion. Para auditoria futura, no usar esos YAML como la
+      evidencia final del exito si no se genera una tanda mas nueva. En las 62
+      lineas OK de esa tanda, Quantity/PedidoDet_Cantidad/StockRes_Cantidad
+      coinciden, por lo que las cantidades parciales del payload que si quedaron
+      OK eran consistentes; el problema residual de esa tanda era la linea falsa
+      y los eventos de ajuste del binario viejo.
+  - fecha: "2026-05-20"
+    area: "Legacy VB MI3 reserva BYB 00050608 NULL presentacion"
+    detalle: >
+      En EA-153305 item 00050608 las lineas 70000 y 370000 entraban con
+      Variant_Code=CJ, se convertian a UMBas y quedaban con IdPresentacion=0,
+      pero Atributo_Variante_1 seguia lleno. clsLnStock.lStock armaba entonces
+      stock.idpresentacion=@idpresentacion, lo que no encontraba stock UMBas
+      base porque en BYB esos registros tienen IdPresentacion NULL, no 0. En
+      QA habia stock elegible en #5042 (ej. IdStock 778759/778758/778362/778357)
+      con ubicacion_picking=1, nivel=1 y vencimiento valido. Se ajusto lStock y
+      lStock_SAP con #EJC20260520_RESERVA_BYB_FIX para que cuando la solicitud
+      esta en UMBas (IdPresentacion=0) busque stock.idpresentacion IS NULL OR 0,
+      aunque venga Variant_Code. El stock de #10350 con 42 UNI/7 CJ existe pero
+      esta en no-picking nivel 2 y no debe usarse para explosion.
+  - fecha: "2026-05-20"
+    area: "Legacy VB reserva BYB fix #EJC20260520_RESERVA_BYB_FIX"
+    detalle: >
+      En clsLnStock_res_Partial se marco cada cambio con
+      #EJC20260520_RESERVA_BYB_FIX para cherry-pick y homologacion posterior
+      en .NET Core. Cambios: se agregaron helpers Stock_Disponible_MI3,
+      Cantidad_Stock_Disponible_MI3 y Picking_Cubre_NoPicking_NoExplosionable_MI3
+      para decidir por cantidad util y no por filas; despues de Restar_Stock_Reservado
+      el fallback picking y ALM/no-picking descartan filas con Cantidad <= 0 antes
+      de calcular FEFO; la regla de "picking cubre no-picking no explosionable"
+      se centralizo; y se agrego una segunda defensa despues del recalculo FEFO
+      para evitar retornos falsos SOLO_NO_PICKING_SIN_EXPLOSION cuando picking
+      cubre la solicitud. Se declaran variables fuera del bloque con etiqueta
+      ANALIZAR_FECHAS_DE_VENCIMIENTO por restricciones VB con GoTo y lambdas.
+  - fecha: "2026-05-20"
+    area: "CEALSA HH recepcion detalle identity"
+    detalle: >
+      En CEALSA QAP se corrigieron datos de recepcion donde stock_rec quedo
+      sin IdRecepcionDet valido: 163 stock_rec huerfanos fueron reatados a
+      trans_re_det y para la recepcion 17140 se reconstruyeron 2 detalles
+      faltantes desde stock_rec/OC. El hueco de codigo estaba en
+      clsLnTrans_re_det.Guarda_Trans_re_det: el overload por lista ponia el
+      detalle en 0 tras el cambio a identity y no reasignaba el identity real
+      a stock_rec. Blindaje aplicado: propagar el IdRecepcionDet identity a
+      stock_rec, cortar GuardarHH_S/GuardarHH_BOF si no se obtiene identity y
+      rechazar Guarda_Stock_Rec cuando una recepcion intenta guardar stock_rec
+      sin IdRecepcionDet.
+  - fecha: "2026-05-20"
+    area: "BYB MI3 reserva diagnostico corrida 162325"
+    detalle: >
+      La corrida de trazas en
+      C:\Users\yejc2\Downloads\reserva-mi3-20260520-162325 para pedido 37320
+      dejo 29 lineas: 18 OK y 11 FALSE. Patron principal: hay stock en picking,
+      pero FEFO detecta vencimiento mas viejo en ALM/no-picking y el flujo
+      termina priorizando no-picking, donde no puede explosionar, aunque picking
+      cubre la solicitud. Ejemplo 00232538 linea 130000: solicitud 62 UMBas,
+      fallback picking encontro 83 stocks / 1296 unidades, pero ALM/no-picking
+      tenia fecha minima menor y la reserva finalizo FALSE. El codigo local ya
+      contiene defensa #EJCCKFK20260520 alrededor de
+      clsLnStock_res_Partial.vb:19303, pero en los YAML no aparecio el evento
+      fallback_picking_por_no_picking_no_explosionable, por lo que esa corrida
+      probablemente no uso ese binario o la condicion aun no esta entrando.
+      Caso especial 00050608: fallback picking trae 17 stocks en presentacion,
+      Restar_Stock_Reservado los deja con cantidad 0, y luego el flujo reutiliza
+      lBeStockExistenteZonaPicking por tener registros aunque no cantidad,
+      bloqueando el fallback UMBas picking con conmutar. En QA si hay UMBas
+      disponibles en picking, por ejemplo IdStock 778078 con 1000 UNI en
+      ubicacion #5042. Blindaje pendiente: tratar listas con registros pero
+      Cantidad <= 0 como vacias antes de decidir reutilizarlas, para permitir
+      continuar al fallback correcto.
+  - fecha: "2026-05-20"
+    area: "Legacy VB picking reversa ubicacion staging"
+    detalle: >
+      En CEALSA se diagnostico que licencias como KA000329 podian quedar en la
+      ubicacion picking/staging 4149 antes de una reserva posterior, aun cuando
+      el picking actual no tuviera cantidad recibida/verificada/despachada. La
+      causa probable esta en caminos de reversa/liberacion que borran
+      picking_ubic o movimientos auxiliares sin restaurar stock.IdUbicacion a
+      stock.IdUbicacion_anterior cuando no hubo ejecucion fisica que preservar.
+      Se agrego el helper
+      clsLnTrans_picking_ubic.Restaurar_Ubicacion_Stock_Picking_No_Ejecutado,
+      invocado antes de limpiar evidencia en Marcar_Linea_No_Verificada y en
+      liberaciones de producto no pickeado; solo actua si el picking ubic no
+      tiene cantidad recibida, verificada ni despachada y el stock vivo sigue en
+      la ubicacion picking configurada. La validacion quedo endurecida para no
+      restaurar si el mismo IdStock tiene otro picking_ubic activo con cantidad
+      recibida, verificada o despachada.
+  - fecha: "2026-05-20"
+    area: "Legacy VB MI3 reserva continua por ubicacion"
+    detalle: >
+      En Reserva_Stock_From_MI3 para BYB/EA-153304 item 00050608, una ubicacion
+      no apta para explosion (ej. #5042) no debe cortar la evaluacion completa
+      cuando rechazar_pedido_incompleto=No. El flujo debe registrar el motivo
+      y continuar con el siguiente stock/ubicacion candidato; asi no obvia
+      existencias posteriores como presentacion disponible en otra ubicacion.
+  - fecha: "2026-05-20"
+    area: "WebAPI DALCore stock identity"
+    detalle: >
+      En WMS.DALCore stock.IdStock debe tratarse como identity: clsLnStock.Insertar
+      e Insertar_3pl insertan sin mandar idstock, usan Ins.SQLIdentity("IdStock"),
+      asignan el identity al objeto y retornan el IdStock real. Los updates de
+      stock no deben incluir IdStock en el SET, solo en el WHERE. En recepcion,
+      cualquier FK posterior a stock_parametro/stock_se debe usar el identity
+      retornado por Insertar, no MaxID()+1. En reserva/salidas Core la explosion
+      UMBas no crea stock destino; stock_res.IdStock se llena desde el stock
+      existente que se esta reservando.
+  - fecha: "2026-05-20"
+    area: "SAPSYNCMAMPA visor log interface"
+    detalle: >
+      Se agrego en SAPSYNCMAMPA un visor WinForms RibbonForm para el log de
+      interface basado en i_nav_ejecucion_enc, i_nav_ejecucion_res e
+      i_nav_ejecucion_det_error. La consulta estructurada vive en
+      clsLnI_nav_ejecucion_enc.GetLogEjecucionesDataSet y devuelve DataSet con
+      relaciones Encabezado -> Resultados y Encabezado -> Errores para un grid
+      expandible. El formulario frmLogEjecucionesInterface incluye filtros por
+      fecha, transaccion/idnavconfigdet/proceso y texto libre; se abre desde el
+      menu principal de SAPSYNCMAMPA como "Log Ejecuciones".
+  - fecha: "2026-05-20"
+    area: "Legacy VB bitacora enc/res/det identity"
+    detalle: >
+      Las tres tablas del log de interface quedaron alineadas al script de
+      identity: i_nav_ejecucion_enc, i_nav_ejecucion_res e
+      i_nav_ejecucion_det_error insertan sin mandar la PK, usan
+      Ins.SQLIdentity(<pk>), asignan el identity al objeto y lo retornan. Se
+      eliminaron los metodos MaxID/Max_IdEjecucionRes de las clases de bitacora
+      y se quitaron los precalculos en SAPSYNCMAMPA y en los flujos de pedido
+      compra/traslado; res y det_error toman el IdEjecucionEnc ya devuelto por
+      el insert real del encabezado.
+  - fecha: "2026-05-20"
+    area: "Legacy VB bitacora detalle error identity"
+    detalle: >
+      i_nav_ejecucion_det_error se adapto para llave identity:
+      clsLnI_nav_ejecucion_det_error.Insertar e Insertar_From_Interface ya no
+      insertan idejecuciondet manualmente ni usan MaxID()+1 desde Inserta_Log.
+      Ambos usan Ins.SQLIdentity("idejecuciondet"), ExecuteScalar, copian el
+      nuevo Idejecuciondet al objeto y retornan el identity. No se encontraron
+      usos activos donde idejecuciondet se use como FK despues del insert; las
+      relaciones de bitacora siguen por idejecucionenc/idnavconfigdet.
+  - fecha: "2026-05-20"
+    area: "SAPSYNCMAMPA TRANSAC_WMS traza operativa"
+    detalle: >
+      clsSyncTransacWMS fase 1 debe tratar cada documento de TRANSAC_WMS con
+      traza por contexto: PROCESO, TIPO_DOC, NOENC, REF, DOCENTRY, ETAPA,
+      RESULTADO, CAUSA y MSG. Los fallos por documento se registran best-effort
+      en i_nav_ejecucion_det_error/log_error_wms y se intentan devolver a SAP
+      Service Layer con U_Procesado_WMS=2 y U_Process_Result resumido; los
+      exitos siguen marcando U_Procesado_WMS=1 y ahora tambien U_Process_Result.
+      No cambiar reglas de negocio de reserva/picking/ajustes en esta fase.
+  - fecha: "2026-05-20"
+    area: "Legacy VB bitacora interface identity"
+    detalle: >
+      i_nav_ejecucion_res se adapto en DAL legacy para llave identity:
+      clsLnI_nav_ejecucion_res.Insertar/InsertarFromIn ya no insertan
+      idejecucionres manualmente; usan Ins.SQLIdentity("idejecucionres"),
+      ExecuteScalar y copian el nuevo IdEjecucionRes al objeto para que los
+      updates posteriores usen la llave real. En los flujos TOMIMSV4 de pedido
+      compra y pedido traslado se quito el pre-cálculo Max_IdEjecucionRes; en
+      traslado IdNavConfigDet queda explícito como 102 (pedido cliente) y ya no
+      se deriva accidentalmente de IdEjecucionRes.
+  - fecha: "2026-05-20"
+    area: "Brain gestion de agentes"
+    detalle: >
+      Brain ya define un modelo de gestion de agentes en
+      brain/agents/: coordinador central + paquetes YAML por dominio, no varios
+      agentes runtime independientes. Para tareas complejas, Mary Jane/Codex
+      debe leer brain/agents/_index.yml y coordinator.yml, matchear triggers y
+      cargar solo los domain-*.yml necesarios. Mapeo rapido: reserva/no-reserva
+      MI3 usa domain-reserva + domain-database + cliente; indicadores/KPI usa
+      domain-indicadores + domain-integration-services + domain-database y
+      eventualmente domain-portal; WinForms BOF usa domain-bof; HH Android usa
+      domain-hh-android + domain-integration-services. Regla clave: no cargar
+      todo wms-brain ni crear taxonomias paralelas; los domain YAML son indices
+      y entry-points hacia handoffs/patterns.
+  - fecha: "2026-05-19"
+    area: "SAP HANA SL estados picking MAMAPA"
+    detalle: >
+      Se agrego flujo cherry-pickable etiquetado con
+      #EJCCKF20260519_Notificar_SAP_Hana_MAMAPA para notificar estados SAP HANA
+      SL en MAMAPA sin romper la operacion local WMS. En frmPicking, al crear
+      picking se notifica estado 2=Asignado y al anular picking se notifica
+      estado 1=Nueva/disponible para reasignar. En WSHHRN/TOMHHWS, HH notifica
+      estado 3=Pickeando al primer pickeo real, 4=Pickeado al finalizar picking,
+      5=Verificando al primer registro de verificacion, y 6=Verificado al
+      finalizar verificacion; si el picking tiene verificacion automatica, el
+      cierre de picking avanza tambien a 6. En frmPedido_List y frmPedido, los
+      flujos exitosos de anular/eliminar pedido notifican estado 11=Anulada
+      para documentos Factura_Deudor/Factura_Reserva_Cliente compatibles con
+      Cambiar_Estado_Traslado_SLAsync. Estados documentados: 1 Nueva,
+      2 Asignado, 3 Pickeando, 4 Pickeado, 5 Verificando, 6 Verificado,
+      8 Cerrada/entregada, 11 Anulada y 12 Back order. Las llamadas a SAP
+      quedan protegidas con try/catch y log_error_wms_pick/log_error_wms_pe
+      para no abortar el flujo local si SAP falla.
+  - fecha: "2026-05-20"
+    area: "Identidad agente local"
+    detalle: >
+      En esta estacion/local repo, Codex debe asumirse como Mary Jane cuando los
+      handoffs del Brain mencionen a "Mary Jane". El usuario es Erik/EJC. Para
+      handoffs inversos del Brain, Mary Jane debe leer primero el PROPOSAL.md
+      correspondiente, respetar el modelo coordinador + paquetes YAML por
+      dominio, no inventar taxonomia paralela, y mantener la regla de no hacer
+      commits automaticos sin autorizacion explicita de Erik.
+  - fecha: "2026-05-19"
+    area: "MI3 reserva stock"
+    detalle: >
+      En Reserva_Stock_From_MI3 para pedido EA-153305 linea 50000 item 00025004,
+      la solicitud ya entra normalizada a UMBas (CantidadSolicitud=62,
+      IdPresentacionSolicitud=0). La traza mostro muchas llamadas repetidas a
+      Restar_Stock_Reservado sobre las mismas listas de stock (331, 179, 34/35).
+      Se agrego cache por trace/bodega para los IdStock reservados y las sumas
+      de Cantidad/Peso por IdStock. No usar MAX(IdStockRes) como invalidacion:
+      IdStockRes es IDENTITY y esa consulta global agrega costo innecesario.
+      La invalidacion debe ocurrir por evento real de insercion en stock_res y
+      al cerrar el trace. La logica de seleccion no cambia.
+  - fecha: "2026-05-19"
+    area: "MI3 reserva stock"
+    detalle: >
+      Nueva traza confirmo que la cache ya estaba en Hit y las consultas batch
+      duraban 0 ms, pero el proceso seguia reentrando a
+      ANALIZAR_FECHAS_DE_VENCIMIENTO. La causa probable era el bloque
+      INICIAR_EN_3 / zona picking: en el ElseIf de fecha mayor a la minima,
+      hacia GoTo aunque ListaEstadosDeProceso ya contenia 102. El fix mueve el
+      GoTo dentro de la condicion Not Contains(102), para reanalizar solo una
+      vez y luego continuar con la reserva normal.
+  - fecha: "2026-05-19"
+    area: "MI3 reserva stock"
+    detalle: >
+      Corrida EA-153305 / PA-172112 proceso sin colgarse. Las trazas
+      reserva-mi3-20260519-1756*.yml cubren 31 lineas en una ventana de ~12.5s;
+      el tiempo total de pantalla fue 48s, por lo que NAV/picking/UI y logging
+      tambien pesan. La mayor parte del costo interno restante viene de
+      perf_restar_stock_reservado_fin (~5.7s acumulados en 503 llamadas). Las
+      lineas OK quedaron idempotentes con stock_res_omitido_ya_existia y
+      pendientes en 0. En rojos, la mayoria se explica por FEFO: hay stock en
+      ALM/no-picking mas viejo y no aplica explosionar UMBas desde no-picking.
+      Revisar caso 00025001 linea 40000: ALM queda con CantidadEncontrada=0 tras
+      restar reservado, pero su fecha minima puede seguir bloqueando stock de
+      picking disponible; posible falsa negativa por no filtrar listas de zona
+      con Cantidad > 0 antes de decidir FEFO/aplicabilidad.
+  - fecha: "2026-05-19"
+    area: "MI3 log reserva"
+    detalle: >
+      Se mejoro el log operativo de no reserva para envios NAV/MI3. La capa
+      Pedido_Traslado_Enc ahora toma el motivo real que deja la reserva en
+      Process_Result y lo copia al resultado visible y a log_error_wms, en vez
+      de reemplazarlo por el generico "No se pudo completar la reserva". En
+      Reserva_Stock_From_MI3 se agrego Marcar_Motivo_No_Reserva_MI3 para subir
+      causas de negocio como sin existencia aplicable, stock viejo en
+      ALM/no-picking que no puede explosionarse, o explosion automatica no
+      aplicable por nivel de ubicacion.
+  - fecha: "2026-05-19"
+    area: "MI3 diagnostico no reserva"
+    detalle: >
+      Brain mapea la topologia de no reserva: stock_res y sus vistas/DAL,
+      trans_pe_det_log_reserva, log_error_wms, I_nav_ped_traslado_det y el
+      flujo Pedido_Traslado_Enc -> Reserva_Stock_From_MI3. El indice Brain del
+      servidor esta saludable pero desactualizado respecto a cambios locales
+      recientes porque no hay BRAIN_IMPORT_TOKEN cargado para reindexar. La
+      idea reusable de WebAPI/DAL Core esta en WMS.StockReservation3: usa
+      ReservationContext, pasos de pipeline, IReservationLogger y
+      ReservationResult.Messages. Para volver operativo el diagnostico de
+      negocio, conviene copiar ese patron como clasificador de motivos
+      tipificados en VB: SIN_STOCK_APLICABLE, RESERVADO_POR_OTROS,
+      SIN_VENCIMIENTO_VALIDO, FEFO_BLOQUEA_PICKING, SOLO_NO_PICKING_SIN_EXPLOSION,
+      EXPLOSION_NIVEL_NO_APLICA, PRESENTACION_NO_APLICA, UBICACION_CLIENTE_OBLIGATORIA
+      y TALLA_COLOR_NO_APLICA, anexando cantidades, fechas minimas y zona.
+  - fecha: "2026-05-19"
+    area: "WebAPI reserva stock homologacion"
+    detalle: >
+      Se homologo el flujo DAL Core/WebAPI con los hallazgos del payload
+      EA-153305. La interfaz ya no pisa el Process_Result detallado con el
+      generico; ahora conserva el motivo operativo visible. Inserta_Linea_Detalle
+      propaga Factor de la presentacion y normaliza cantidades fraccionarias a
+      UMBas cuando corresponde. clsLnTrans_pe_det aplica la misma regla legacy
+      UM/Variant antes de insertar detalle/stock_res. EntityLoadingStep convierte
+      usando la presentacion solicitada por IdPresentacion, no la presentacion
+      por defecto del producto. SyncSalidasService tambien propaga el motivo
+      limpio de ERROR_202310021910A en la respuesta API, en vez de devolver solo
+      "ver log WMS".
+  - fecha: "2026-05-19"
+    area: "Legacy VB tipificacion no reserva"
+    detalle: >
+      En TOMIMSV4 legacy se agrego tipificacion uniforme de motivos no reserva.
+      clsLnStock_res_Partial.Marcar_Motivo_No_Reserva_MI3 ahora antepone
+      TIPO_NO_RESERVA=<codigo> al motivo operativo. La interfaz
+      clsLnI_nav_ped_traslado_enc_Partial tambien tipifica el motivo final que
+      copia a Process_Result. Codigos cubiertos: SIN_STOCK_APLICABLE,
+      RESERVADO_POR_OTROS, SIN_VENCIMIENTO_VALIDO, FEFO_BLOQUEA_PICKING,
+      SOLO_NO_PICKING_SIN_EXPLOSION, EXPLOSION_NIVEL_NO_APLICA,
+      PRESENTACION_NO_APLICA, UBICACION_CLIENTE_OBLIGATORIA,
+      TALLA_COLOR_NO_APLICA y RESERVA_NO_COMPLETADA.
+  - fecha: "2026-05-19"
+    area: "Legacy VB log reserva estructurado"
+    detalle: >
+      trans_pe_det_log_reserva ya no depende solo del clsBeStock_res recibido
+      para llenar datos de contexto. clsLnTrans_pe_det_log_reserva_partial ahora
+      completa Line_No, codigo, UM y referencia desde trans_pe_det cuando existe
+      IdPedidoDet, y agrega Agregar_Log_No_Reserva_MI3 para fallos MI3: usa la
+      linea de interfaz para Item_No, Line_No, UM, Variant_Code y referencia,
+      marca EsError=True y guarda Caso_Reserva como <escenario>|NO_RESERVA:<tipo>.
+      Esto corrige logs de no reserva como #SR240315 que antes quedaban con
+      IdBodega/Line_No/Item_No vacios o en cero.
+  - fecha: "2026-05-19"
+    area: "NAV envio almacen cleanup"
+    detalle: >
+      En DynamicsNavInterface clsSyncNavEnvioAlm habia dos bloques que, cuando
+      vContador_Lineas_Detalle_Pedido_Insertadas quedaba en 0, intentaban
+      Eliminar_Encabezado_Pedido sin validar si el IdPedidoEnc ya tenia filas
+      en trans_pe_det. En reejecuciones o envios ya existentes esto disparaba
+      FK_trans_pedido_det_trans_pedido_enc y se envolvia como "Error al insertar
+      el lote para el envio". Se agrego guard con Tiene_Detalle usando la misma
+      conexion/transaccion: si hay detalle, no se elimina la cabecera.
+  - fecha: "2026-05-19"
+    area: "Analisis trazas reserva EA-153305 19:06"
+    detalle: >
+      La carpeta C:\Users\yejc2\Downloads\Erores_WMS_140526_media contiene 62
+      trazas reserva-mi3 de EA-153305. Todas cerraron FALSE en esa corrida; 43
+      no son falla de negocio sino abortos por el bug ya corregido
+      "Agregar_Log_Reserva Invalid column name 'referencia'". Las 19 restantes
+      no tiraron excepcion y muestran patron de no-reserva real: despues de
+      restar reservado, la zona picking queda en 0 o insuficiente y el stock
+      disponible queda en no-picking/ALM o bloqueado por FEFO/presentacion. La
+      etapa mas costosa sigue siendo perf_restar_stock_reservado_fin: 631
+      llamadas, 6.4s acumulados en las trazas, aunque la cache de ids/cantidades
+      ya trabaja mayormente en Hit.
+  - fecha: "2026-05-19"
+    area: "Legacy VB trans_pe_det_log_reserva operativo"
+    detalle: >
+      Se mejoro el contenido de MensajeLog en trans_pe_det_log_reserva sin
+      cambiar schema. Los logs nuevos quedan como pares clave=valor:
+      EVENTO, RESULTADO, TIPO_NO_RESERVA cuando aplica, CASO, PEDIDO, DETALLE,
+      LINEA, ITEM, CANTIDAD, UM, PRESENTACION, BODEGA, DOCUMENTO, IDSTOCK,
+      IDSTOCKRES, FECHA_VENCE y MOTIVO/MENSAJE_ORIGEN. Agregar_Log_Reserva y
+      Agregar_Log_No_Reserva_MI3 ahora tratan la bitacora como best-effort:
+      si el insert del log falla, se escribe log_error_wms pero no se aborta
+      el flujo de reserva. La consulta que alimenta la pestana Log Reserva
+      tambien expone columnas operativas del log, no solo Caso_Reserva y
+      MensajeLog. La referencia del documento se completa desde trans_pe_enc,
+      no desde trans_pe_det.
+  - fecha: "2026-05-19"
+    area: "Legacy VB reserva MI3 performance fase segura"
+    detalle: >
+      Se agrego cache intra-trace para Restar_Stock_Reservado en
+      clsLnStock_res_Partial. El cache solo omite reprocesar cuando vuelve a
+      entrar la misma instancia de lista con la misma firma de stock: IdStock,
+      IdPresentacion, IdUbicacion, UbicacionPicking, Cantidad, Peso,
+      Cantidad_Reservada y Pallet_Completo. Si el flujo inserta stock_res,
+      el cache se invalida con Limpiar_Cache_StockReservado_MI3 como ya hacia
+      Insertar. El trace emitira perf_restar_stock_reservado_omitido_cache_lista
+      para medir cuantos reprocesos identicos se evitaron sin tocar FEFO ni
+      reglas de seleccion/reserva.
+  - fecha: "2026-05-19"
+    area: "Legacy VB resultado no reserva UI"
+    detalle: >
+      La grilla de detalle del pedido lee i_nav_ped_traslado_det.Process_Result
+      como Resultado; no debe mezclar el log en el SELECT. Para que la tabla
+      intermedia quede con el resultado final real, el helper de
+      Reserva_Stock_From_MI3 Marcar_Motivo_No_Reserva_MI3 actualiza
+      i_nav_ped_traslado_det.Process_Result con:
+      "No se pudo completar la reserva: TIPO_NO_RESERVA=<tipo> | <motivo>".
+      El log trans_pe_det_log_reserva solo registra el evento estructurado; no
+      es responsable de maquillar la grilla ni de decidir el resultado final.
+      Ajuste posterior: el update MI3 no usa clsLnI_nav_ped_traslado_det.
+      Actualizar_Process_Result porque ese metodo exige No=@No y algunos
+      objetos MI3 llegan con Line_No/Item_No pero No vacio; ahora actualiza por
+      NoEnc+Line_No+Item_No y registra log_error_wms si no afecta filas.
+  - fecha: "2026-05-19"
+    area: "Legacy VB reserva MI3 timing trace"
+    detalle: >
+      Analisis de C:\Users\yejc2\Downloads\Erores_WMS_140526_media: 60 trazas
+      suman ~11.9s en duraciones instrumentadas; perf_restar_stock_reservado_fin
+      domina con ~8.6s en 888 llamadas. Se agrego resumen automatico al cerrar
+      cada YAML de clsReservaMi3DebugTrace: evento resumen_timing con eventos,
+      eventos_perf, suma_duraciones_ms, ventana_eventos_ms, duracion_total_trace_ms,
+      diferencia_ventana_vs_duraciones_ms, top_etapa_1..5 y gap_1..5. Esto ayuda
+      a decidir la siguiente mejora quirurgica sin leer cientos de eventos.
+  - fecha: "2026-05-19"
+    area: "Legacy VB reserva no reserva overwrite clsSyncNavEnvioAlm"
+    detalle: >
+      El proceso de envio almacen tenia un overwrite posterior en
+      DynamicsNavInterface/Clases Interface Sync/Envios_Almacen/clsSyncNavEnvioAlm.vb:
+      si Reservar_Stock_Por_Linea_Interface devolvia False, Inserta_Linea_Detalle_Pedido
+      volvia a escribir Process_Result con el generico "No se pudo completar la reserva."
+      y tapaba el motivo tipificado que pudo haber dejado Reserva_Stock_From_MI3 en
+      i_nav_ped_traslado_det. Se corrigio para leer primero el Process_Result actual
+      por NoEnc+Line_No+Item_No, conservarlo si no es generico, y solo usar un fallback
+      tipificado cuando no exista motivo previo. El update final tambien se hace por
+      NoEnc+Line_No+Item_No para no depender de No en objetos MI3.
+  - fecha: "2026-05-19"
+    area: "Legacy VB indicador visual diferencia solicitado vs reservado"
+    detalle: >
+      En la pestana Documento ERP del pedido, el grid grdPedTras/GridView8 ahora
+      recibe desde clsLnI_nav_ped_traslado_enc.Get_Detalle_Pedido_Traslado_By_Referencia
+      columnas calculadas de reserva: Diferencia_Reserva, Porcentaje_Reservado,
+      Porcentaje_Diferencia y Estado_Reserva. frmPedido configura captions compactos
+      (Dif., % Res., % Dif., Estado Res.), formato numerico, barra de progreso para
+      % Res. y colores por estado: completa, parcial, sin reserva o exceso. Esto
+      permite que bodega vea rapidamente la diferencia entre solicitado y reservado
+      sin tocar la logica de reserva.
+  - fecha: "2026-05-19"
+    area: "WebAPI/DAL Core reserva no reserva homologada"
+    detalle: >
+      Se valido el flujo Core frente al fix legacy de Process_Result. El pipeline ya
+      tenia FailureReasons y normalizacion por UM/Variant, pero el motivo final no
+      salia homologado como TIPO_NO_RESERVA ni todos los updates evitaban depender
+      de No. StockReservationFacade ahora propaga UltimoMensajeFallo como
+      TIPO_NO_RESERVA=<codigo> | <motivo>, mapeando ReservationFailureCode a los
+      codigos operativos usados por legacy. clsLnI_nav_ped_traslado_det en DAL Core
+      actualiza Status/Process_Result/Quantity_Reserved_WMS primero por
+      NoEnc+Line_No+Item_No, con fallback al contrato anterior por No para no romper
+      llamadas existentes. PostProcessingStep agrega un warning estructurado
+      EVENTO=NO_RESERVA con TIPO_NO_RESERVA, linea, item, cantidad pendiente y motivo
+      al logger del pipeline. SyncSalidasService conserva el DTO y extrae el tipo para
+      FailureCode/FailureReason sin cambiar la forma de respuesta JSON.
+  - fecha: "2026-05-19"
+    area: "Legacy VB indicadores pedido"
+    detalle: >
+      En frmPedido_List.vb se reforzo el drilldown local de indicadores del pedido:
+      los tabs de grid ahora tienen panel inferior de totales mas visible, formato
+      numerico centralizado con decimales por empresa, porcentajes con n2, y el tab
+      Operadores se muestra como ranking plano sin agrupacion automatica. El ranking
+      agrega Tiempo y Lineas_Por_Hora calculados localmente desde el detalle ya
+      cargado, colorea top 1-3 y formatea columnas/summary para evitar valores
+      crudos tipo 542.000000. Esto es fase liviana local; la replica exacta de KPI
+      portal queda pendiente de mapear contra Brain/API para no duplicar consultas
+      pesadas.
+  - fecha: "2026-05-19"
+    area: "Brain update pendiente Core reserva"
+    detalle: >
+      Pendiente actualizar Brain cuando estos cambios Core esten revisados y subidos
+      al remoto, porque el contexto local codex-context-mi3-di-estatus.yml esta
+      excluido por .git/info/exclude y no viaja en el commit. Cambios a indexar:
+      WMS.DALCore/Reserva_Stock/Compatibility/StockReservationFacade.cs,
+      WMS.DALCore/Reserva_Stock/Core/Services/PostProcessingStep.cs,
+      WMS.DALCore/I_nav_ped_traslado_det/clsLnI_nav_ped_traslado_det.cs,
+      WMSWebAPI/Services/Salidas/SyncSalidasService.cs y la validacion existente
+      WMS.DALCore/Pedido/clsLnTrans_pe_det.cs::NormalizarLineaPorUmVariant.
+      El objetivo para Brain es que busquedas futuras de no reserva indiquen:
+      Process_Result tipificado con TIPO_NO_RESERVA, updates por
+      NoEnc+Line_No+Item_No con fallback legacy por No, respuesta API sin cambio
+      de schema pero con FailureCode/FailureReason tipificados, y log del pipeline
+      EVENTO=NO_RESERVA. El endpoint configurado en AGENTS
+      /api/brain/health devolvio 404 en esta sesion; reintentar health/repos/sync
+      cuando Erik confirme la URL activa o el servicio vuelva a estar disponible.
+  - fecha: "2026-05-19"
+    area: "Legacy VB lista pedidos indicadores fase 1"
+    detalle: >
+      Fase 1 para productividad en Lista de pedidos: clsLnTrans_pe_enc.GetAll,
+      GetAll_Tmp y GetAll_By_VerificacionBOF ahora enriquecen VW_PEDIDOS_LIST
+      usando OUTER APPLY por pedido contra trans_pe_det, stock_res y
+      trans_picking_ubic. Se exponen Lineas_Pedido, Lineas_Reservadas,
+      Lineas_Pendientes_Reserva, Porcentaje_Reservado, Porcentaje_Picking,
+      Porcentaje_Verificado y Estado_Progreso. frmPedido_List muestra columnas
+      compactas Lineas, Lin. Res., Pend. Res., % Res., % Pick., % Verif. y
+      Progreso con RepositoryItemProgressBar y color por estado operativo.
+      La reserva se mide por cobertura de lineas/productos con stock_res para
+      evitar mezclar unidades/presentaciones; picking y verificacion se calculan
+      contra cantidad_solicitada de trans_picking_ubic. Build DAL/WMS paso antes
+      del ajuste OUTER APPLY; el re-build posterior quedo bloqueado por cambio
+      externo en TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb con una
+      linea suelta "2" que no pertenece a esta fase.
+  - fecha: "2026-05-19"
+    area: "Legacy VB lista pedidos indicadores opt-in y drilldown"
+    detalle: >
+      La carga costosa de indicadores de Lista de pedidos quedo detras del
+      BarToggleSwitchItem chkMostrarIndicadores. Cuando esta apagado, GetAll,
+      GetAll_Tmp y GetAll_By_VerificacionBOF vuelven a usar SELECT * directo
+      sobre las vistas legacy sin OUTER APPLY ni columnas extra. Cuando esta
+      encendido, se pasa pIncluirIndicadores=True y se agregan los indicadores
+      compactos de reserva/picking/verificacion. frmPedido_List ahora tiene
+      menu contextual por clic derecho sobre el pedido para copiar IdPedidoEnc,
+      referencia, indicador de picking calculado por pedido, y abrir una pantalla
+      modelada por codigo con barras visuales de picking/verificacion/despacho,
+      totales, tiempo promedio pick-verif y grid de detalle basado en
+      clsLnTrans_pe_det.Get_VW_Progreso_Picking_By_IdPedidoEnc_And_IdBodega.
+      Build DAL y WMS Debug pasaron; WMS mantiene warnings existentes de
+      referencias/versiones System.Text.Json y metadata de publish.
+  - fecha: "2026-05-19"
+    area: "Legacy VB lista pedidos inteligencia KPI portal"
+    detalle: >
+      Se bajo al formulario legacy parte de la inteligencia de reportes/KPI del
+      portal: Brain/local ubicaron las vistas vw_Indicador_Picking,
+      VW_Indicador_Picking_Detalle, VW_Tiempos_Picking_Operador, los tableros XML
+      Indicador_Picking, Progreso_Picking_By_Operador y
+      Productividad_Picking_Por_Operador, y el SQL de
+      WMSWebAPI.Services.KPI.KpiReportService.GetPickingAsync. Se agregaron en
+      clsLnTrans_pe_det metodos seguros para consultar KPI picking por
+      IdPedidoEnc/IdBodega y tiempos por operador; frmPedido_List ahora abre el
+      drilldown con pestanas Progreso pedido, KPI portal y Tiempos cuando hay
+      datos. La lista principal sigue opt-in por chkMostrarIndicadores para no
+      cargar consultas costosas en el flujo normal.
+  - fecha: "2026-05-19"
+    area: "Legacy VB drilldown indicadores pedido fase visual"
+    detalle: >
+      frmPedido_List.Mostrar_Indicadores_Pedido evoluciono a tablero operativo:
+      header con totales, seis tarjetas compactas para picking, verificacion,
+      despacho, tiempo promedio pick-verif, operadores y reprocesos, grids con
+      formato numerico/fechas, summaries, agrupacion por operador y coloreo por
+      diferencia, porcentaje y reemplazos. Se agregaron pestanas Operadores y
+      Reprocesos construidas en memoria a partir de Progreso pedido y KPI portal.
+      clsLnTrans_pe_det.Get_KPI_Picking_Portal_By_IdPedidoEnc_And_IdBodega ahora
+      expone Lic_Plate_Reemplazo, IdStock_Reemplazo e IdUbicacion_Reemplazo desde
+      trans_picking_ubic para detectar reprocesos/reemplazos sin cambiar la
+      logica de picking. Build DAL y WMS Debug pasaron; WMS mantiene warnings
+      existentes de referencias/versiones System.Text.Json y metadata publish.
+  - fecha: "2026-05-19"
+    area: "Analitica portal React/Replit para Forms"
+    detalle: >
+      Erik aclaro que "portal" se refiere al React publicado en
+      https://tomwmsreact-dtsolutionsgt.replit.app/ y no a los tableros XML
+      legacy. Se inspecciono el bundle React y se confirmaron endpoints
+      /kpi/Kpi/picking, /verificacion, /recepcion, /despacho,
+      /tendencias/despacho, /tendencias/operacion/heatmap-diahora y
+      /stock/res, soportados localmente por WMSWebAPI.Controllers.KpiController
+      y WMSWebAPI.Services.KPI.KpiReportService. No se debe consumir el endpoint
+      publicado de Replit directamente desde frmPrincipal02 ni agregar un tab
+      nuevo sin validar antes la estrategia: la direccion correcta es replicar
+      la inteligencia usando WebAPI/servicios propios o consultas locales
+      controladas. Hallazgo: GetPickingAsync recibe from/to pero su SQL actual
+      no aplica esos parametros, a diferencia de otros endpoints; revisar como
+      mejora quirurgica porque puede cargar muchos datos aunque el usuario
+      seleccione un rango corto.
+  - fecha: "2026-05-19"
+    area: "Legacy VB drilldown pedido resumen visual"
+    detalle: >
+      frmPedido_List.Mostrar_Indicadores_Pedido ahora abre primero una pestana
+      "Resumen visual" antes de los grids. Incluye ChartControl DevExpress para
+      productividad por operador/rol, linea de tiempo de eventos del pedido
+      (picking, verificacion, despacho cuando existan fechas validas), comparativo
+      solicitado/picking/verificacion/despacho y panel de operadores/roles. Los
+      grids de Progreso pedido, Operadores, Reprocesos, Detalle picking y
+      Tiempos se mantienen como drilldown de soporte. La pestaña ya no usa el
+      nombre KPI portal para no sugerir consumo externo; sigue usando datos
+      locales. Las cantidades del tablero, graficas y footers toman formato
+      parametrizado por empresa si existe una propiedad de decimales en AP.Empresa
+      y, si no, caen a AP.Bodega.Permitir_Decimales (2 o 0 decimales para
+      dashboard, evitando mostrar 6 decimales operativos cuando no aportan).
+      Se ampliaron captions, sumatorias operativas y group footers; el resumen
+      visual ahora muestra estado global del pedido por etapa y ranking real de
+      operadores ordenado por cantidad procesada. Ajuste posterior: los grids
+      del drilldown agregan una barra explicita de totales visibles bajo el grid,
+      Operadores incluye Rank y % orden (participacion contra el total solicitado
+      del pedido), y el detalle picking no se mezcla en el ranking si ya existe
+      Progreso pedido para evitar duplicar la productividad. Build a OutDir
+      temporal paso.
+  - fecha: "2026-05-20"
+    area: "Legacy VB reserva stock identity IdStock"
+    detalle: >
+      En clsLnStock_res_Partial se corrigio el patron de explosion de stock
+      donde BeStockDestino.IdStock se inicializaba en 0 por identity y
+      BeStockRes.IdStock se copiaba antes de clsLnStock.Insertar. La reserva
+      debe asignar BeStockRes.IdStock despues del insert de BeStockDestino,
+      porque clsLnStock.Insertar actualiza el objeto con el identity real.
+  - fecha: "2026-05-20"
+    area: "Legacy VB MI3 reserva picking vs ALM"
+    detalle: >
+      En Reserva_Stock_From_MI3, cuando el fallback encuentra stock ALM/no
+      picking mas antiguo por FEFO pero ese stock requiere explosion no
+      permitida y la zona picking cubre la solicitud, se debe mantener la lista
+      de picking. Esto evita falsos SOLO_NO_PICKING_SIN_EXPLOSION como en BYB
+      para productos con stock util en picking y lotes ALM/no picking que no
+      pueden explotarse.
+      Ajuste posterior: la misma regla debe aplicarse tambien despues del
+      recalculo de fecha minima, porque ese segundo bloque puede volver a
+      preferir ALM/no picking por FEFO y retornar falso aunque picking cubra la
+      cantidad solicitada.
+  - fecha: "2026-05-20"
+    area: "WebAPI MI3 payload reserva BYB"
+    detalle: >
+      Se dejo kit reproducible en tools/webapi-mi3-reserva para probar
+      POST /api/sync/salidas/mi3/insertar con el payload EA-153305. Para BYB QA
+      el WebAPI debe apuntar ConnectionStrings:CST a IMS4MB_BYB_QAS2, usar
+      Transfer_from_Code/Transfer_to_Code BA0002 y Product_Owner_Code 01. El
+      payload mantiene Unit_of_Measure_Code UNI + Variant_Code CJ para activar
+      la misma normalizacion Core de presentacion/UM base y comparar resultado
+      contra trans_pe_det, stock_res e i_nav_ped_traslado_det.
+  - fecha: "2026-05-20"
+    area: "WebAPI Core MI3 reserva BYB performance"
+    detalle: >
+      Fase estable 2: en Inserta_Linea_Detalle_Pedido el Core usa primero
+      clsBeProducto.IdUnidadMedidaBasica cuando la linea tiene presentacion
+      (por ejemplo UM CJ resuelta desde Unit_of_Measure_Code) y solo cae a
+      clsLnProducto.Get_Id_Unidad_Medida_By_Codigo si el producto llega sin
+      unidad basica cargada. Prueba EA-153304WEBAPI en BYB QA: HTTP 200 en
+      ~50 s, 29 lineas completas, total solicitado/reservado 1370/1370,
+      trans_pe_det 29/1370, stock_res 48/12703, i_nav_ped_traslado_det
+      29/1370; documento de prueba eliminado al cerrar la fase.
+  - fecha: "2026-05-20"
+    area: "Brain agents reserva MI3"
+    detalle: >
+      Se inicializo brain/agents con coordinator, domain-reserva,
+      domain-database, domain-bof y client-byb. Para casos complejos de reserva
+      el agente debe cargar domain-reserva + domain-database y, si el documento
+      es BYB/EA-153304/EA-153305, client-byb. Regla nueva de validacion:
+      totals iguales no prueban paridad; cuando legacy es el baseline correcto,
+      comparar tambien stock_res por linea y, si aplica, IdStock/lote/cantidad.
+      Se descarto como fase estable reutilizar el producto completo precargado
+      dentro del pipeline porque cambio la particion de stock_res aunque los
+      totales globales seguian coincidiendo.
+  - fecha: "2026-05-21"
+    area: "Brain agents orquestacion WebAPI/performance"
+    detalle: >
+      Se agregaron brain/agents/domain-webapi.yml y
+      brain/agents/domain-performance.yml, y se actualizaron _index.yml y
+      coordinator.yml. Para reserva WebAPI MI3 el router debe cargar
+      domain-reserva + domain-database + domain-webapi + domain-performance y,
+      si aplica BYB/EA-153304/EA-153305, client-byb. Quedo definido doble
+      control: check local versionado/build/secret scan y check Brain API
+      health/repos-sync/index cuando exista BRAIN_IMPORT_TOKEN. Si no hay token,
+      se debe hacer push a origin y dejar el comando exacto para sincronizar.
