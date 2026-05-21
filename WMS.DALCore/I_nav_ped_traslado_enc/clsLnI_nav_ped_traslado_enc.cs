@@ -906,10 +906,14 @@ namespace WMS.DALCore
                 int idUnidadMedidaBasicaProducto = 0;
                 if (pBePresentacion != null && pBePresentacion.IdPresentacion > 0)
                 {
-                    idUnidadMedidaBasicaProducto = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(
-                        pBePedidoDet.Producto.codigo,
-                        lConectionInterface,
-                        lTransactionInterface);
+                    idUnidadMedidaBasicaProducto = pBePoducto.IdUnidadMedidaBasica;
+                    if (idUnidadMedidaBasicaProducto <= 0)
+                    {
+                        idUnidadMedidaBasicaProducto = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(
+                            pBePedidoDet.Producto.codigo,
+                            lConectionInterface,
+                            lTransactionInterface);
+                    }
                 }
 
                 pBePedidoDet.IdUnidadMedidaBasica = idUnidadMedidaBasicaProducto > 0
