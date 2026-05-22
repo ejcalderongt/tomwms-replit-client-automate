@@ -34,6 +34,8 @@ Public Class frmPedido
     Private Const PEDIDO_STOCK_LAZY_TAG As String = "PEDIDO_STOCK_LAZY"
     Private ReadOnly mPedidoPerfProductoBodegaCache As New Dictionary(Of String, Integer)
     Private ReadOnly mPedidoPerfProductoTallaColorCache As New Dictionary(Of Integer, clsBeProducto_talla_color)
+    Private ReadOnly mPedidoPerfIdProductoPorProductoBodegaCache As New Dictionary(Of Integer, Integer)
+    Private ReadOnly mPedidoPerfIdProductoTallaColorByDimCache As New Dictionary(Of String, Integer)
     Private ReadOnly mPedidoPerfPresentacionesCache As New Dictionary(Of String, List(Of clsBeProducto_Presentacion))
     Private ReadOnly mPedidoPerfEstadosCache As New Dictionary(Of Integer, List(Of clsBeProducto_estado))
     Private ReadOnly mPedidoPerfClienteCache As New Dictionary(Of Integer, clsBeCliente)
@@ -41,6 +43,10 @@ Public Class frmPedido
     Private ReadOnly mPedidoPerfFactorPresentacionCache As New Dictionary(Of String, Double)
     Private ReadOnly mPedidoPerfCantidadReservadaCache As New Dictionary(Of Integer, Double)
     Private ReadOnly mPedidoPerfPesoReservadoCache As New Dictionary(Of Integer, Double)
+    Private ReadOnly mPedidoPerfPresentacionByIdCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
+    Private ReadOnly mPedidoPerfPresentacionDefectoCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
+    Private ReadOnly mPedidoPerfPesoReferenciaCache As New Dictionary(Of Integer, Double)
+    Private ReadOnly mPedidoPerfTieneBonoCache As New Dictionary(Of Integer, Boolean)
     '#EJC20260522_PEDIDO_TRACE: trace local de carga de pedido para diagnosticar latencia sin escribir a BD.
     Private Const TAG_PEDIDO_TRACE As String = "#EJC20260522_PEDIDO_TRACE"
     Private mPedidoTraceTotal As System.Diagnostics.Stopwatch
@@ -232,6 +238,8 @@ Public Class frmPedido
 
         mPedidoPerfProductoBodegaCache.Clear()
         mPedidoPerfProductoTallaColorCache.Clear()
+        mPedidoPerfIdProductoPorProductoBodegaCache.Clear()
+        mPedidoPerfIdProductoTallaColorByDimCache.Clear()
         mPedidoPerfPresentacionesCache.Clear()
         mPedidoPerfEstadosCache.Clear()
         mPedidoPerfClienteCache.Clear()
@@ -239,6 +247,10 @@ Public Class frmPedido
         mPedidoPerfFactorPresentacionCache.Clear()
         mPedidoPerfCantidadReservadaCache.Clear()
         mPedidoPerfPesoReservadoCache.Clear()
+        mPedidoPerfPresentacionByIdCache.Clear()
+        mPedidoPerfPresentacionDefectoCache.Clear()
+        mPedidoPerfPesoReferenciaCache.Clear()
+        mPedidoPerfTieneBonoCache.Clear()
 
     End Sub
 
@@ -405,6 +417,14 @@ Public Class frmPedido
 
     End Function
 
+    Private Function PedidoReadModel_Date(ByVal pRow As DataRow, ByVal pColumnName As String) As Date
+
+        If Not PedidoReadModel_HasColumn(pRow, pColumnName) Then Return New Date(1900, 1, 1)
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return New Date(1900, 1, 1)
+        Return Convert.ToDateTime(pRow(pColumnName))
+
+    End Function
+
     Private Function PedidoReadModel_Presentacion(ByVal pRow As DataRow) As clsBeProducto_Presentacion
 
         Dim Obj As New clsBeProducto_Presentacion
@@ -465,6 +485,12 @@ Public Class frmPedido
                             Dim vKey As String = PedidoPerf_Key(PedidoReadModel_Int(lRow, "IdProducto"),
                                                                 PedidoReadModel_Int(lRow, "IdBodega"))
                             mPedidoPerfProductoBodegaCache(vKey) = PedidoReadModel_Int(lRow, "IdProductoBodega")
+
+                            '#EJC20260522_PEDIDO_PERF: evita volver a consultar producto_bodega cuando una rutina posterior solo trae IdProductoBodega.
+                            Dim vIdProductoBodega As Integer = PedidoReadModel_Int(lRow, "IdProductoBodega")
+                            If vIdProductoBodega <> 0 Then
+                                mPedidoPerfIdProductoPorProductoBodegaCache(vIdProductoBodega) = PedidoReadModel_Int(lRow, "IdProducto")
+                            End If
                         Next
                     End If
 
@@ -481,6 +507,7 @@ Public Class frmPedido
                             mPedidoPerfPresentacionesCache(vKey).Add(vPresentacion)
 
                             If vPresentacion.IdPresentacion <> 0 Then
+                                mPedidoPerfPresentacionByIdCache(vPresentacion.IdPresentacion) = vPresentacion
                                 mPedidoPerfFactorPresentacionCache(PedidoPerf_Key(vIdProductoBodega,
                                                                                   vPresentacion.IdPresentacion)) = vPresentacion.Factor
                             End If
@@ -547,6 +574,44 @@ Public Class frmPedido
                             End If
                         Next
                     End If
+
+                    If lDS.Tables.Count > 5 Then
+                        For Each lRow As DataRow In lDS.Tables(5).Rows
+                            Dim vIdProducto As Integer = PedidoReadModel_Int(lRow, "IdProducto")
+
+                            If vIdProducto <> 0 Then
+                                mPedidoPerfPesoReferenciaCache(vIdProducto) = PedidoReadModel_Dbl(lRow, "PesoReferencia")
+                                mPedidoPerfTieneBonoCache(vIdProducto) = PedidoReadModel_Bool(lRow, "TieneBono")
+
+                                Dim vPresentacionDefecto As clsBeProducto_Presentacion = PedidoReadModel_Presentacion(lRow)
+
+                                If vPresentacionDefecto.IdPresentacion <> 0 Then
+                                    mPedidoPerfPresentacionDefectoCache(vIdProducto) = vPresentacionDefecto
+                                    mPedidoPerfPresentacionByIdCache(vPresentacionDefecto.IdPresentacion) = vPresentacionDefecto
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    If lDS.Tables.Count > 6 Then
+                        For Each lRow As DataRow In lDS.Tables(6).Rows
+                            Dim Obj As New clsBeProducto_talla_color
+                            Obj.IdProductoTallaColor = PedidoReadModel_Int(lRow, "IdProductoTallaColor")
+                            Obj.IdProducto = PedidoReadModel_Int(lRow, "IdProducto")
+                            Obj.IdTalla = PedidoReadModel_Int(lRow, "IdTalla")
+                            Obj.IdColor = PedidoReadModel_Int(lRow, "IdColor")
+                            Obj.CodigoSKU = PedidoReadModel_Str(lRow, "CodigoSKU")
+                            Obj.Fec_agr = PedidoReadModel_Date(lRow, "fec_agr")
+                            Obj.User_agr = PedidoReadModel_Str(lRow, "user_agr")
+                            Obj.Fec_mod = PedidoReadModel_Date(lRow, "fec_mod")
+                            Obj.User_mod = PedidoReadModel_Str(lRow, "user_mod")
+                            Obj.Activo = PedidoReadModel_Bool(lRow, "activo")
+
+                            If Obj.IdProductoTallaColor <> 0 Then
+                                mPedidoPerfProductoTallaColorCache(Obj.IdProductoTallaColor) = Obj
+                            End If
+                        Next
+                    End If
                 End Using
             End Using
 
@@ -557,7 +622,9 @@ Public Class frmPedido
                               ";presentaciones=" & mPedidoPerfPresentacionesCache.Count &
                               ";estados=" & mPedidoPerfEstadosCache.Count &
                               ";clientes=" & mPedidoPerfClienteCache.Count &
-                              ";reservas=" & mPedidoPerfCantidadReservadaCache.Count)
+                              ";reservas=" & mPedidoPerfCantidadReservadaCache.Count &
+                              ";productoHoja=" & mPedidoPerfTieneBonoCache.Count &
+                              ";tallaColor=" & mPedidoPerfProductoTallaColorCache.Count)
 
         Catch ex As Exception
             PedidoTrace_Marca("readmodel_fallback", "sp=" & SP_PEDIDO_READMODEL & ";error=" & ex.Message)
@@ -581,6 +648,125 @@ Public Class frmPedido
         End If
 
         Return mPedidoPerfProductoBodegaCache(vKey)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: evita resolver IdProductoBodega->IdProducto repetidamente en eventos de talla/color.
+    Private Function Get_IdProducto_Por_ProductoBodega_Cacheado(ByVal pIdProductoBodega As Integer) As Integer
+
+        If pIdProductoBodega = 0 Then Return 0
+
+        If Not mPedidoPerfIdProductoPorProductoBodegaCache.ContainsKey(pIdProductoBodega) Then
+            mPedidoPerfIdProductoPorProductoBodegaCache(pIdProductoBodega) = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pIdProductoBodega)
+        End If
+
+        Return mPedidoPerfIdProductoPorProductoBodegaCache(pIdProductoBodega)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: version transaccional para procesos batch como hoja de verificacion.
+    Private Function Get_IdProducto_Por_ProductoBodega_Cacheado(ByVal pIdProductoBodega As Integer,
+                                                                ByVal lConnection As SqlConnection,
+                                                                ByVal lTransaction As SqlTransaction) As Integer
+
+        If pIdProductoBodega = 0 Then Return 0
+
+        If Not mPedidoPerfIdProductoPorProductoBodegaCache.ContainsKey(pIdProductoBodega) Then
+            mPedidoPerfIdProductoPorProductoBodegaCache(pIdProductoBodega) = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pIdProductoBodega,
+                                                                                                                                     lConnection,
+                                                                                                                                     lTransaction)
+        End If
+
+        Return mPedidoPerfIdProductoPorProductoBodegaCache(pIdProductoBodega)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: cachea presentacion por IdPresentacion para hoja de verificacion.
+    Private Function Get_Presentacion_By_Id_Cacheada(ByVal pIdPresentacion As Integer,
+                                                     ByVal lConnection As SqlConnection,
+                                                     ByVal lTransaction As SqlTransaction) As clsBeProducto_Presentacion
+
+        If pIdPresentacion = 0 Then Return Nothing
+
+        If Not mPedidoPerfPresentacionByIdCache.ContainsKey(pIdPresentacion) Then
+            mPedidoPerfPresentacionByIdCache(pIdPresentacion) = clsLnProducto_presentacion.GetSingle(pIdPresentacion,
+                                                                                                     lConnection,
+                                                                                                     lTransaction)
+        End If
+
+        Return mPedidoPerfPresentacionByIdCache(pIdPresentacion)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: cachea presentacion defecto por producto para hoja de verificacion.
+    Private Function Get_Presentacion_Defecto_Cacheada(ByVal pIdProducto As Integer,
+                                                       ByVal lConnection As SqlConnection,
+                                                       ByVal lTransaction As SqlTransaction) As clsBeProducto_Presentacion
+
+        If pIdProducto = 0 Then Return Nothing
+
+        If Not mPedidoPerfPresentacionDefectoCache.ContainsKey(pIdProducto) Then
+            mPedidoPerfPresentacionDefectoCache(pIdProducto) = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(pIdProducto,
+                                                                                                                                 lConnection,
+                                                                                                                                 lTransaction)
+        End If
+
+        Return mPedidoPerfPresentacionDefectoCache(pIdProducto)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: cachea peso referencia por producto para hoja de verificacion.
+    Private Function Get_Peso_Referencia_Cacheado(ByVal pIdProducto As Integer,
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As Double
+
+        If pIdProducto = 0 Then Return 0
+
+        If Not mPedidoPerfPesoReferenciaCache.ContainsKey(pIdProducto) Then
+            mPedidoPerfPesoReferenciaCache(pIdProducto) = clsLnProducto.get_Peso_Referencia(pIdProducto,
+                                                                                            lConnection,
+                                                                                            lTransaction)
+        End If
+
+        Return mPedidoPerfPesoReferenciaCache(pIdProducto)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: cachea bandera bono por producto para hoja de verificacion.
+    Private Function Get_Tiene_Bono_Cacheado(ByVal pIdProducto As Integer,
+                                             ByVal lConnection As SqlConnection,
+                                             ByVal lTransaction As SqlTransaction) As Boolean
+
+        If pIdProducto = 0 Then Return False
+
+        If Not mPedidoPerfTieneBonoCache.ContainsKey(pIdProducto) Then
+            mPedidoPerfTieneBonoCache(pIdProducto) = clsLnProducto.get_Tiene_Bono(pIdProducto,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+        End If
+
+        Return mPedidoPerfTieneBonoCache(pIdProducto)
+
+    End Function
+
+    '#EJC20260522_PEDIDO_PERF: cachea talla/color/producto para no consultar producto_talla_color por cada refresco del grid.
+    Private Function Get_IdProductoTallaColor_By_TallaColor_Cacheado(ByVal pIdTalla As Integer,
+                                                                     ByVal pIdColor As Integer,
+                                                                     ByVal pIdProducto As Integer) As Integer
+
+        If pIdTalla = 0 OrElse pIdColor = 0 OrElse pIdProducto = 0 Then Return 0
+
+        Dim vKey As String = PedidoPerf_Key(pIdTalla, pIdColor, pIdProducto)
+
+        If Not mPedidoPerfIdProductoTallaColorByDimCache.ContainsKey(vKey) Then
+            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(pIdTalla,
+                                                                                                          pIdColor,
+                                                                                                          pIdProducto)
+
+            mPedidoPerfIdProductoTallaColorByDimCache(vKey) = If(pProductoTallaColor Is Nothing, 0, pProductoTallaColor.IdProductoTallaColor)
+        End If
+
+        Return mPedidoPerfIdProductoTallaColorByDimCache(vKey)
 
     End Function
 
@@ -754,16 +940,56 @@ Public Class frmPedido
 
     End Function
 
+    '#EJC20260522_PEDIDO_UI: muestra el tiempo abreviado de carga en el caption derecho de GrpProducto.
+    Private Sub PedidoTiempoCarga_ConfigurarCaption()
+
+        If GrpProducto Is Nothing Then Return
+
+        GrpProducto.AppearanceCaption.Options.UseTextOptions = True
+        GrpProducto.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far
+
+    End Sub
+
+    '#EJC20260522_PEDIDO_UI: limpia el indicador visual mientras inicia una nueva carga de pedido.
+    Private Sub PedidoTiempoCarga_Limpiar()
+
+        Try
+
+            PedidoTiempoCarga_ConfigurarCaption()
+            GrpProducto.Text = String.Empty
+
+        Catch
+        End Try
+
+    End Sub
+
+    '#EJC20260522_PEDIDO_UI: publica el tiempo total de carga sin depender del trace en archivo.
+    Private Sub PedidoTiempoCarga_Mostrar(ByVal pTotalMs As Long)
+
+        Try
+
+            PedidoTiempoCarga_ConfigurarCaption()
+
+            Dim vSegundos As Double = Math.Round(pTotalMs / 1000.0, 1)
+            GrpProducto.Text = String.Format("T.C. {0:N1} Segundos", vSegundos)
+
+        Catch
+        End Try
+
+    End Sub
+
     '#EJC20260522_PEDIDO_TRACE: inicia cronometro total y cronometro incremental por carga.
     Private Sub PedidoTrace_Iniciar(ByVal pContexto As String)
-
-        If Not PedidoTrace_Activo() Then Return
 
         mPedidoTraceSesion = Guid.NewGuid().ToString("N").Substring(0, 8)
         mPedidoTraceTotal = System.Diagnostics.Stopwatch.StartNew()
         mPedidoTracePaso = System.Diagnostics.Stopwatch.StartNew()
 
-        PedidoTrace_Escribir("START", 0, 0, pContexto)
+        PedidoTiempoCarga_Limpiar()
+
+        If PedidoTrace_Activo() Then
+            PedidoTrace_Escribir("START", 0, 0, pContexto)
+        End If
 
     End Sub
 
@@ -791,8 +1017,12 @@ Public Class frmPedido
 
         PedidoTrace_Marca(pPaso, pExtra)
 
+        Dim vTotalMs As Long = mPedidoTraceTotal.ElapsedMilliseconds
+
         If mPedidoTraceTotal IsNot Nothing Then mPedidoTraceTotal.Stop()
         If mPedidoTracePaso IsNot Nothing Then mPedidoTracePaso.Stop()
+
+        PedidoTiempoCarga_Mostrar(vTotalMs)
 
     End Sub
 
@@ -1659,7 +1889,7 @@ Public Class frmPedido
             Dim vTracePickingCalcMs As Long = 0
             Dim vTraceDoEventsMs As Long = 0
             Dim vTraceStockLazyLineas As Integer = 0
-            Dim vTraceReloj As System.Diagnostics.Stopwatch = Nothing
+            Dim vTraceReloj As Stopwatch = Nothing
 
             If Not pClienteTiemposList Is Nothing Then
                 vClienteTiempo = pClienteTiemposList.Find(Function(x) _
@@ -3169,7 +3399,10 @@ Public Class frmPedido
 
                     pBeStock.Presentacion = New clsBeProducto_Presentacion()
                     pBeStock.Presentacion.IdPresentacion = Convert.ToInt32(dgrid.Rows(IndiceFila).Cells("colPresentacion").Value)
-                    pBeStock.Presentacion = clsLnProducto_presentacion.GetSingle(pBeStock.Presentacion.IdPresentacion, lConnection, lTransaction)
+                    '#EJC20260522_PEDIDO_PERF: reutiliza presentacion precargada para el producto kit cuando existe en el readmodel.
+                    pBeStock.Presentacion = Get_Presentacion_By_Id_Cacheada(pBeStock.Presentacion.IdPresentacion,
+                                                                            lConnection,
+                                                                            lTransaction)
 
                     If Not IsNothing(pBeProducto.UnidadMedida) Then
                         pBeStock.IdUnidadMedida = pBeProducto.UnidadMedida.IdUnidadMedida
@@ -4892,12 +5125,15 @@ Public Class frmPedido
             DgComboPresentacion = TryCast(dgrid.Rows(pIndex).Cells("colPresentacion"), DataGridViewComboBoxCell)
             DgComboPresentacion.DropDownWidth = 200
 
-            Dim lPres = lPresentacionesByPedido.FindAll(Function(x) x.IdProducto = pBeProducto.IdProducto AndAlso x.Activo = True)
+            Dim lPres As List(Of clsBeProducto_Presentacion) = Nothing
 
-            If Modo = TipoTrans.Nuevo Then
-                lPres = clsLnProducto_presentacion.Get_All_Presentacion_By_IdProductoBodega(pBeProducto.IdProductoBodega, lConnection, lTransaction).ToList()
-            Else
-                lPres = clsLnProducto_presentacion.Get_All_Presentaciones_By_IdProductoBodega(pBeProducto.IdProductoBodega, True, lConnection, lTransaction).ToList()
+            If Not lPresentacionesByPedido Is Nothing Then
+                lPres = lPresentacionesByPedido.FindAll(Function(x) x.IdProducto = pBeProducto.IdProducto AndAlso x.Activo = True)
+            End If
+
+            If lPres Is Nothing OrElse lPres.Count = 0 Then
+                '#EJC20260522_PEDIDO_PERF: usa presentaciones precargadas por readmodel/cache antes de consultar por linea.
+                lPres = Get_Presentaciones_Cacheadas(pBeProducto.IdProductoBodega, lConnection, lTransaction)
             End If
 
             DgComboPresentacion.DataSource = lPres
@@ -4937,10 +5173,16 @@ Public Class frmPedido
             DgComboCliente = TryCast(dgrid.Rows(pIndex).Cells("IdCliente"), DataGridViewComboBoxCell)
             DgComboCliente.DropDownWidth = 200
 
-            '#EJC20260522_PEDIDO_PERF: reutiliza el datasource de clientes durante la carga del detalle.
-            Dim lCliente As List(Of clsBeCliente) = Get_ClienteLista_Cacheada(pIdCliente,
-                                                                              lConnection,
-                                                                              lTransaction)
+            Dim lCliente As New List(Of clsBeCliente)
+
+            lCliente = New List(Of clsBeCliente)
+
+            '#EJC20260522_PEDIDO_PERF: al cargar pedido existente usa cliente precargado por readmodel; en nuevo conserva fallback Get_All.
+            If Modo = TipoTrans.Nuevo OrElse pIdCliente <> 0 Then
+                lCliente = Get_ClienteLista_Cacheada(pIdCliente,
+                                                     lConnection,
+                                                     lTransaction)
+            End If
 
             DgComboCliente.DataSource = lCliente
             DgComboCliente.ValueMember = "IdCliente"
@@ -9319,7 +9561,7 @@ Public Class frmPedido
     End Class
 
     Private Function Carga_Hoja_Verificacion(ByVal lConnection As SqlConnection,
-                                         ByVal lTransaction As SqlTransaction) As Boolean
+                                             ByVal lTransaction As SqlTransaction) As Boolean
 
         Carga_Hoja_Verificacion = False
 
@@ -9394,14 +9636,14 @@ Public Class frmPedido
                 BeHojaVerificacion.RequiereTarimas = chkRequiereTarimas.Checked
 
                 If Det.IdProducto = 0 Then
-                    Det.IdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Det.IdProductoBodega,
-                                                                                             lConnection,
-                                                                                             lTransaction)
+                    Det.IdProducto = Get_IdProducto_Por_ProductoBodega_Cacheado(Det.IdProductoBodega,
+                                                                                lConnection,
+                                                                                lTransaction)
                 End If
 
-                BePresentacionDefecto = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(Det.IdProducto,
-                                                                                                          lConnection,
-                                                                                                          lTransaction)
+                BePresentacionDefecto = Get_Presentacion_Defecto_Cacheada(Det.IdProducto,
+                                                                          lConnection,
+                                                                          lTransaction)
 
                 If Det.IdPresentacion = 0 Then
 
@@ -9422,7 +9664,9 @@ Public Class frmPedido
                                 BeHojaVerificacion.CantidadUMBas = vCantidadSobranteUnidades
                                 BeHojaVerificacion.Peso = Math.Round(vCantidadEnteraPresentacion * BePresentacionDefecto.Peso, 6)
 
-                                Dim vPesoReferencia As Double = clsLnProducto.get_Peso_Referencia(Det.IdProducto, lConnection, lTransaction)
+                                Dim vPesoReferencia As Double = Get_Peso_Referencia_Cacheado(Det.IdProducto,
+                                                                                              lConnection,
+                                                                                              lTransaction)
                                 BeHojaVerificacion.Peso += Math.Round(vCantidadSobranteUnidades * vPesoReferencia, 6)
                             End If
 
@@ -9445,8 +9689,9 @@ Public Class frmPedido
 
                 Else
 
-                    Dim vPresentacion As clsBeProducto_Presentacion =
-                        clsLnProducto_presentacion.GetSingle(Det.IdPresentacion, lConnection, lTransaction)
+                    Dim vPresentacion As clsBeProducto_Presentacion = Get_Presentacion_By_Id_Cacheada(Det.IdPresentacion,
+                                                                                                      lConnection,
+                                                                                                      lTransaction)
 
                     BeHojaVerificacion.CantidadPresentacion = Det.Cantidad_Solicitada
                     BeHojaVerificacion.CantidadUMBas = 0
@@ -9466,7 +9711,9 @@ Public Class frmPedido
                 '#EJC20220406: Convertir a quintales
                 BeHojaVerificacion.Peso = Math.Round((BeHojaVerificacion.Peso / 1000) / vFactorQuintal, 6)
                 BeHojaVerificacion.Referencia = pBePedidoEnc.Referencia
-                BeHojaVerificacion.TieneBono = clsLnProducto.get_Tiene_Bono(Det.IdProducto, lConnection, lTransaction)
+                BeHojaVerificacion.TieneBono = Get_Tiene_Bono_Cacheado(Det.IdProducto,
+                                                                       lConnection,
+                                                                       lTransaction)
 
                 lHojaVerificacion.Add(BeHojaVerificacion)
 

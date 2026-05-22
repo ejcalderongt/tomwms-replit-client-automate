@@ -18,6 +18,8 @@ GO
       3. Estados disponibles por producto-bodega.
       4. Clientes usados en el detalle.
       5. Cantidad/Peso reservado por linea con los mismos filtros de la forma.
+      6. Datos de producto usados por hoja de verificacion.
+      7. Talla/color usados en el detalle.
 
     Compatibilidad:
       Se crea con stub y luego ALTER para no hacer DROP ni perder permisos.
@@ -45,10 +47,11 @@ BEGIN
            d.IdPedidoDet,
            d.IdProductoBodega AS IdProductoBodegaDetalle,
            pbDet.IdProducto,
-           d.IdEstado,
-           d.IdPresentacion,
-           d.IdUnidadMedidaBasica,
-           ISNULL(d.IdCliente, 0) AS IdCliente
+            d.IdEstado,
+            d.IdPresentacion,
+            d.IdUnidadMedidaBasica,
+            ISNULL(d.IdProductoTallaColor, 0) AS IdProductoTallaColor,
+            ISNULL(d.IdCliente, 0) AS IdCliente
       INTO #DetallePedido
       FROM dbo.trans_pe_det AS d
       INNER JOIN dbo.producto_bodega AS pbDet
@@ -196,5 +199,62 @@ BEGIN
             AND (sr.Lote IS NULL OR sr.Lote = '')
      GROUP BY d.IdPedidoDet
      ORDER BY d.IdPedidoDet;
+
+    SELECT DISTINCT
+           d.IdProducto,
+           p.peso_referencia AS PesoReferencia,
+           CAST(CASE WHEN ISNULL(p.IdTipoManufactura, 0) = 1 THEN 1 ELSE 0 END AS bit) AS TieneBono,
+           pp.IdPresentacion,
+           pp.IdProducto AS IdProductoPresentacion,
+           pp.codigo_barra,
+           pp.nombre AS Nombre,
+           pp.imprime_barra AS Imprime_Barra,
+           pp.peso AS Peso,
+           pp.alto AS Alto,
+           pp.largo AS Largo,
+           pp.ancho AS Ancho,
+           pp.factor AS Factor,
+           pp.MinimoExistencia,
+           pp.MaximoExistencia,
+           pp.activo,
+           pp.EsPallet,
+           pp.Precio,
+           pp.MinimoPeso,
+           pp.MaximoPeso,
+           pp.Costo,
+           pp.CamasPorTarima,
+           pp.CajasPorCama,
+           pp.genera_lp_auto,
+           pp.permitir_paletizar,
+           pp.sistema,
+           pp.IdPresentacionPallet,
+           pp.codigo AS Codigo
+      FROM (SELECT DISTINCT IdProducto FROM #DetallePedido) AS d
+      INNER JOIN dbo.producto AS p
+              ON p.IdProducto = d.IdProducto
+      OUTER APPLY (
+            SELECT TOP (1) ppDef.*
+              FROM dbo.producto_presentacion AS ppDef
+             WHERE ppDef.IdProducto = d.IdProducto
+      ) AS pp
+     ORDER BY d.IdProducto;
+
+    SELECT DISTINCT
+           ptc.IdProductoTallaColor,
+           ptc.IdProducto,
+           ptc.IdTalla,
+           ptc.IdColor,
+           ptc.CodigoSKU,
+           ptc.fec_agr,
+           ptc.user_agr,
+           ptc.fec_mod,
+           ptc.user_mod,
+           CAST(1 AS bit) AS activo
+      FROM dbo.producto_talla_color AS ptc
+      INNER JOIN (SELECT DISTINCT IdProductoTallaColor
+                    FROM #DetallePedido
+                   WHERE IdProductoTallaColor <> 0) AS d
+              ON d.IdProductoTallaColor = ptc.IdProductoTallaColor
+     ORDER BY ptc.IdProductoTallaColor;
 END
 GO
