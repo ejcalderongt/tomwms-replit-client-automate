@@ -1025,6 +1025,18 @@ Partial Public Class clsLnTrans_re_det
                                                      pConection:=If(Es_Transaccion_Remota, pConnection, lConnection),
                                                      pTransaction:=If(Es_Transaccion_Remota, pTransaction, lTrans)
 )
+
+                '#EJC20260522_RECEPCION_OUT_ORFANOS: al eliminar un detalle tambien se limpia el outbound INGRESO para no dejar IdRecepcionDet huerfanos en i_nav_transacciones_out.
+                clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
+                                                                                           pIdRecepcionDet,
+                                                                                           0,
+                                                                                           0,
+                                                                                           "",
+                                                                                           "",
+                                                                                           "",
+                                                                                           Date.MinValue,
+                                                                                           IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                           IIf(Es_Transaccion_Remota, pTransaction, lTrans))
             End If
 
             Resultado += String.Format("Eliminé {0} detalles de la recepción ", FilasAfectadas)
@@ -3106,40 +3118,37 @@ Partial Public Class clsLnTrans_re_det
 
                 Resultado += String.Format(" Eliminé {0} detalles de la recepción ", FilasAfectadas)
 
-                If pRecEnc.Habilitar_Stock Then
+                '#EJC20260522_RECEPCION_OUT_ORFANOS: la limpieza de i_nav_transacciones_out no debe depender de Habilitar_Stock; puede existir outbound aunque el detalle se borre sin tocar stock.
+                Dim pFilasAfectadas = clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
+                                                                                                            pIdRecepcionDet,
+                                                                                                            pRecEnc.IdBodega,
+                                                                                                            pRecDet.IdProductoBodega,
+                                                                                                            pRecDet.Lic_plate,
+                                                                                                            pRecDet.No_Linea,
+                                                                                                            pRecDet.Lote,
+                                                                                                            pRecDet.Fecha_vence,
+                                                                                                            lConnection,
+                                                                                                            lTrans)
 
-                    Dim pFilasAfectadas = clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
-                                                                                                                pIdRecepcionDet,
-                                                                                                                pRecEnc.IdBodega,
-                                                                                                                pRecDet.IdProductoBodega,
-                                                                                                                pRecDet.Lic_plate,
-                                                                                                                pRecDet.No_Linea,
-                                                                                                                pRecDet.Lote,
-                                                                                                                pRecDet.Fecha_vence,
-                                                                                                                lConnection,
-                                                                                                                lTrans)
+                If pFilasAfectadas = 0 Then
+                    '#MECR23092025: Se agrego nueva opcion de log para recepciones.
+                    '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
+                    Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No existe registro de i_nav_transacciones_out para eliminar, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
+                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
 
-                    If pFilasAfectadas = 0 Then
-                        '#MECR23092025: Se agrego nueva opcion de log para recepciones.
-                        '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
-                        Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No existe registro de i_nav_transacciones_out para eliminar, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
-                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
-                        clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                             pNumeroLinea:=pRecDet.No_Linea,
-                                                             pUMBas:=pRecDet.UnidadMedida.Nombre,
-                                                             pVariantCode:=pRecDet.Codigo_Producto,
-                                                             pCantidad:=pRecDet.cantidad_recibida,
-                                                             pReferenciaDocumento:=pIdHost.ToString(),
-                                                             pIdRecEnc:=pIdRecepcionEnc,
-                                                             pIdRecDet:=pIdRecepcionDet,
-                                                             pConection:=lConnection,
-                                                             pTransaction:=lTrans)
-
-                        Resultado += " No existia registro de i_nav_transacciones_out para eliminar "
-                    Else
-                        Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
-                    End If
-
+                    Resultado += " No existia registro de i_nav_transacciones_out para eliminar "
+                Else
+                    Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", pFilasAfectadas)
                 End If
 
                 FilasAfectadas = clsLnI_nav_barras_pallet.Actualizar_Barra_No_Recibida(pRecDet.IdOrdenCompraEnc,
