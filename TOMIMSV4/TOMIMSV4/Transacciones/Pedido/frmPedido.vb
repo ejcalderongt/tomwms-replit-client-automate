@@ -6592,6 +6592,30 @@ Public Class frmPedido
 
     End Function
 
+    '#EJC20260522_PEDIDO_UI: refresca labels de totales cuando la carga masiva no dispara CellValueChanged por fila.
+    Private Sub Actualizar_Totales_Grid_Pedido()
+
+        Try
+
+            lblCantidad.Text = "Cant: " & Format(SetCantidad(), "N2")
+            lblPeso.Text = "Peso: " & Format(SetPeso(), "c")
+            lblTotal.Text = "Total: " & Format(SetTotal(), "c")
+            lblRegs.Caption = String.Format("Registros: {0}", dgrid.RowCount)
+
+        Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
+            Throw ex
+        End Try
+
+    End Sub
+
     Private Sub setTotal(ByVal pIndex As Integer)
 
         Try
