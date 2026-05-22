@@ -788,3 +788,13 @@ notas:
       control: check local versionado/build/secret scan y check Brain API
       health/repos-sync/index cuando exista BRAIN_IMPORT_TOKEN. Si no hay token,
       se debe hacer push a origin y dejar el comando exacto para sincronizar.
+  - fecha: "2026-05-21"
+    area: "Codex skills WMS"
+    detalle: >
+      Se crearon skills reales de Codex en C:/Users/yejc2/.codex/skills y copia
+      versionada en brain/skills: wms-reserva-diagnostics, wms-webapi-debug y
+      wms-bof-hh-guardrails. Las skills son workflows cortos que cargan
+      selectivamente brain/agents y herramientas existentes; no duplican todo
+      el conocimiento. _index.yml ahora mapea triggers/domains a estas skills
+      para acelerar diagnostico, correccion y mejoras de reserva, WebAPI y
+      BOF/HH.
