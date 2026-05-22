@@ -3,6 +3,84 @@ Imports System.Reflection
 
 Partial Public Class clsLnTrans_inv_stock_prod
 
+    Private Const TAG_INV_IMPORT_TRACE As String = "#EJC20260522_INV_IMPORT_TRACE"
+
+    Private Shared Function InvImportTrace_Activo() As Boolean
+        Try
+            Dim vValor As String = If(System.Environment.GetEnvironmentVariable("TOMWMS_INV_IMPORT_TRACE"), "").ToUpperInvariant()
+            Return Not (vValor = "0" OrElse vValor = "NO" OrElse vValor = "FALSE")
+        Catch
+            Return True
+        End Try
+    End Function
+
+    Private Shared Function InvImportTrace_Path() As String
+        Return System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TOMWMS", "inventario-import-trace.log")
+    End Function
+
+    Private Shared Function InvImportTrace_Limpiar(ByVal pTexto As String) As String
+        If pTexto Is Nothing Then Return ""
+        Return pTexto.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/")
+    End Function
+
+    Private Shared Function InvImportTrace_Iniciar(ByVal pIdInventario As Integer,
+                                                   ByVal pCantidad As Integer,
+                                                   ByVal pExtra As String) As String
+        Dim vSesion As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        InvImportTrace_Escribir(vSesion, "DAL_IMPORTAR_PRODUCTOS_START", pIdInventario, pCantidad, 0, 0, pExtra)
+        Return vSesion
+    End Function
+
+    Private Shared Sub InvImportTrace_Marca(ByVal pSesion As String,
+                                            ByVal pTotal As System.Diagnostics.Stopwatch,
+                                            ByVal pPaso As System.Diagnostics.Stopwatch,
+                                            ByVal pPasoNombre As String,
+                                            ByVal pIdInventario As Integer,
+                                            ByVal pCantidad As Integer,
+                                            Optional ByVal pExtra As String = "")
+        If Not InvImportTrace_Activo() Then Return
+        Dim vTotalMs As Long = If(pTotal Is Nothing, 0, pTotal.ElapsedMilliseconds)
+        Dim vDeltaMs As Long = If(pPaso Is Nothing, 0, pPaso.ElapsedMilliseconds)
+        If pPaso IsNot Nothing Then pPaso.Restart()
+        InvImportTrace_Escribir(pSesion, pPasoNombre, pIdInventario, pCantidad, vTotalMs, vDeltaMs, pExtra)
+    End Sub
+
+    Private Shared Sub InvImportTrace_Escribir(ByVal pSesion As String,
+                                               ByVal pPaso As String,
+                                               ByVal pIdInventario As Integer,
+                                               ByVal pCantidad As Integer,
+                                               ByVal pTotalMs As Long,
+                                               ByVal pDeltaMs As Long,
+                                               Optional ByVal pExtra As String = "")
+        If Not InvImportTrace_Activo() Then Return
+
+        Try
+            Dim vPath As String = InvImportTrace_Path()
+            Dim vDir As String = System.IO.Path.GetDirectoryName(vPath)
+            If Not System.IO.Directory.Exists(vDir) Then System.IO.Directory.CreateDirectory(vDir)
+
+            If System.IO.File.Exists(vPath) AndAlso New System.IO.FileInfo(vPath).Length > 5242880 Then
+                System.IO.File.Delete(vPath)
+            End If
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                TAG_INV_IMPORT_TRACE,
+                "clsLnTrans_inv_stock_prod",
+                InvImportTrace_Limpiar(pSesion),
+                InvImportTrace_Limpiar(pPaso),
+                "IdInventario=" & pIdInventario,
+                "Cantidad=" & pCantidad,
+                "TotalMs=" & pTotalMs,
+                "DeltaMs=" & pDeltaMs,
+                InvImportTrace_Limpiar(pExtra)
+            })
+
+            System.IO.File.AppendAllText(vPath, vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
+
     Public Shared Sub Importar_Productos(ByRef pListInvStockPrd As List(Of clsBeTrans_inv_stock_prod), ByVal InsertaInv As Boolean,
                                          ByVal IdBodega As Integer,
                                          ByVal IdEmpresa As Integer,
@@ -29,6 +107,19 @@ Partial Public Class clsLnTrans_inv_stock_prod
         Dim vCantidadUMBas As Double = 0
         Dim vFactor As Double = 0
         Dim vIdInventarioEnc As Integer = 0
+        Dim vTraceSesion As String = ""
+        Dim vTraceTotal As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
+        Dim vTracePaso As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
+        Dim vTraceReloj As System.Diagnostics.Stopwatch
+        Dim vTraceMsUbicStock As Long = 0
+        Dim vTraceMsInsertStock As Long = 0
+        Dim vTraceMsUbicDetalle As Long = 0
+        Dim vTraceMsProductoDetalle As Long = 0
+        Dim vTraceMsPropietarioBodega As Long = 0
+        Dim vTraceMsNombreProducto As Long = 0
+        Dim vTraceMsInsertDetalle As Long = 0
+        Dim vTraceMsInsertResumen As Long = 0
+        Dim vTraceMsTramos As Long = 0
 
         Try
 
@@ -48,8 +139,16 @@ Partial Public Class clsLnTrans_inv_stock_prod
         Dim BeUbicacionLista As New clsBeBodega_ubicacion
 
         Try
+            vTraceSesion = InvImportTrace_Iniciar(vIdInventarioEnc,
+                                                  If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count),
+                                                  "InsertaInv=" & InsertaInv &
+                                                  ";IdBodega=" & IdBodega &
+                                                  ";IdEmpresa=" & IdEmpresa &
+                                                  ";EliminarTeorico=" & pEliminarTeorico &
+                                                  ";ExisteTeorico=" & pExisteInventarioTeorico)
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_TX_OPEN", vIdInventarioEnc, If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count))
 
             If pExisteInventarioTeorico Then
                 If pEliminarTeorico Then
@@ -58,6 +157,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                              lConnection,
                              lTransaction)
                     pExisteInventarioTeorico = False
+                    InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_ELIMINAR_TEORICO", vIdInventarioEnc, pListInvStockPrd.Count)
                 End If
             End If
 
@@ -70,6 +170,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                                                                                  IdBodega,
                                                                                                  lConnection,
                                                                                                  lTransaction)
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_UBIC_RECEPCION", vIdInventarioEnc, pListInvStockPrd.Count, "IdUbicacionRecepcion=" & IdUbicacionRecepcion)
 
             prg.Maximum = pListInvStockPrd.Count
             prg.Visible = True
@@ -86,8 +187,10 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                            lTransaction) + 1
                 End If
             End If
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_MAX_ID_STOCK", vIdInventarioEnc, pListInvStockPrd.Count, "MaxId=" & vMaxIdInvStockProd)
 
             If Not pExisteInventarioTeorico Then
+                InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_STOCK_LOOP_START", vIdInventarioEnc, pListInvStockPrd.Count)
 
                 'EFREN16112021: Se guarda el stock_prod, y el obj IdTramo queda seteado, si es que se llegara a insertar como inv. inicial
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
@@ -107,10 +210,12 @@ Partial Public Class clsLnTrans_inv_stock_prod
                         If BeUbicacionLista Is Nothing Then
 
                             BeUbicacion = New clsBeBodega_ubicacion()
+                            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                             BeUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BeTransInvStockProd.IdUbicacion,
                                                                                                        IdBodega,
                                                                                                        lConnection,
                                                                                                        lTransaction)
+                            vTraceMsUbicStock += vTraceReloj.ElapsedMilliseconds
                             lUbicaciones.Add(BeUbicacion)
 
                             BeTramoInv.Idtramo = BeUbicacion.IdTramo
@@ -141,17 +246,44 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                     End If
 
+                    vTraceReloj = Stopwatch.StartNew()
                     Insertar(BeTransInvStockProd, lConnection, lTransaction)
+                    vTraceMsInsertStock += vTraceReloj.ElapsedMilliseconds
 
                     prg.Value = Contador
 
                     Contador += 1 : vMaxIdInvStockProd += 1
 
+                    If Contador Mod 500 = 0 Then
+                        InvImportTrace_Marca(vTraceSesion,
+                                             vTraceTotal,
+                                             vTracePaso,
+                                             "DAL_STOCK_LOOP_PROGRESS",
+                                             vIdInventarioEnc,
+                                             pListInvStockPrd.Count,
+                                             "Contador=" & Contador &
+                                             ";MsUbicStock=" & vTraceMsUbicStock &
+                                             ";MsInsertStock=" & vTraceMsInsertStock &
+                                             ";UbicCache=" & lUbicaciones.Count &
+                                             ";Tramos=" & lTramosInv.Count)
+                    End If
+
                 Next
+                InvImportTrace_Marca(vTraceSesion,
+                                     vTraceTotal,
+                                     vTracePaso,
+                                     "DAL_STOCK_LOOP_END",
+                                     vIdInventarioEnc,
+                                     pListInvStockPrd.Count,
+                                     "MsUbicStock=" & vTraceMsUbicStock &
+                                     ";MsInsertStock=" & vTraceMsInsertStock &
+                                     ";UbicCache=" & lUbicaciones.Count &
+                                     ";Tramos=" & lTramosInv.Count)
 
             End If
 
             If InsertaInv Then
+                InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_SETUP_START", vIdInventarioEnc, pListInvStockPrd.Count)
 
                 MaxIdDet = clsLnTrans_inv_resumen.MaxID(lConnection, lTransaction)
 
@@ -159,6 +291,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                                                                                         IdEmpresa,
                                                                                                         lConnection,
                                                                                                         lTransaction)
+                InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_SETUP_END", vIdInventarioEnc, pListInvStockPrd.Count, "MaxIdDet=" & MaxIdDet & ";IdProductoEstado=" & IdProductoEstado)
 
                 If IdProductoEstado = 0 Then
                     Throw New Exception("ERR_20220510_0929: No está definido el estado de producto en la configuración de la interfase.")
@@ -167,6 +300,8 @@ Partial Public Class clsLnTrans_inv_stock_prod
                 lUbicaciones = New List(Of clsBeBodega_ubicacion)
                 BeUbicacionLista = New clsBeBodega_ubicacion
 
+                Contador = 0
+                InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_LOOP_START", vIdInventarioEnc, pListInvStockPrd.Count)
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
 
                     BeTramoInv = New clsBeTrans_inv_tramo()
@@ -188,10 +323,12 @@ Partial Public Class clsLnTrans_inv_stock_prod
                         If BeUbicacionLista Is Nothing Then
 
                             BeUbicacion = New clsBeBodega_ubicacion()
+                            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                             BeUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BeTransInvStockProd.IdUbicacion,
                                                                                                        IdBodega,
                                                                                                        lConnection,
                                                                                                        lTransaction)
+                            vTraceMsUbicDetalle += vTraceReloj.ElapsedMilliseconds
                             InvDetalle.IdUbicacion = BeTransInvStockProd.IdUbicacion
                             InvDetalle.Idtramo = BeUbicacion.IdTramo
                             lUbicaciones.Add(BeUbicacion)
@@ -232,13 +369,17 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     pCampos(3) = clsBeProducto.ProdPropiedades.Propietario
 
                     'EFREN10052021 se utiliza un metodo sobrecargado, el método original no devuelve todas las propiedades de Producto
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                     pBeProducto = clsLnProducto.Get_Single_By_Codigo(BeTransInvStockProd.Codigo,
                                                                      pCampos,
                                                                      lConnection,
                                                                      lTransaction)
+                    vTraceMsProductoDetalle += vTraceReloj.ElapsedMilliseconds
 
+                    vTraceReloj.Restart()
                     Dim vIdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(pBeProducto.Propietario.IdPropietario,
                                                                                                                              BeTransInvStockProd.IdBodega)
+                    vTraceMsPropietarioBodega += vTraceReloj.ElapsedMilliseconds
 
                     InvDetalle.Idoperador = IdOperador
                     InvDetalle.Idproducto = BeTransInvStockProd.IdProducto
@@ -251,9 +392,11 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvDetalle.Cantidad = BeTransInvStockProd.Cant
                     InvDetalle.Fecha_captura = Date.Now.Date
                     InvDetalle.Host = "IMP"
+                    vTraceReloj.Restart()
                     InvDetalle.Nom_producto = clsLnProducto.Get_Nombre_By_IdProducto(BeTransInvStockProd.IdProducto,
                                                                                      lConnection,
                                                                                      lTransaction)
+                    vTraceMsNombreProducto += vTraceReloj.ElapsedMilliseconds
                     InvDetalle.Nom_operador = NomOperador
                     InvDetalle.Carga = 0
                     InvDetalle.Peso = BeTransInvStockProd.Peso
@@ -270,9 +413,11 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvDetalle.IdProductoParametroB = IIf(BeTransInvStockProd.Parametro_b = "", 0, BeTransInvStockProd.Parametro_b)
                     InvDetalle.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
+                    vTraceReloj.Restart()
                     clsLnTrans_inv_detalle.InsertarSinID(InvDetalle,
                                                          lConnection,
                                                          lTransaction)
+                    vTraceMsInsertDetalle += vTraceReloj.ElapsedMilliseconds
 
                     '#CKFK20220506 Si se inserta el inventario inicial tambien se debe insertar la verificacion
                     'If DobleVerificacion Then
@@ -299,9 +444,11 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvResumen.IdBodega = InvDetalle.IdBodega
                     InvResumen.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
+                    vTraceReloj.Restart()
                     clsLnTrans_inv_resumen.Insertar(InvResumen,
                                                     lConnection,
                                                     lTransaction)
+                    vTraceMsInsertResumen += vTraceReloj.ElapsedMilliseconds
 
                     ' End If
 
@@ -315,11 +462,45 @@ Partial Public Class clsLnTrans_inv_stock_prod
                         lTramosInv.Add(BeTramoInv)
                     End If
 
+                    Contador += 1
+                    If Contador Mod 500 = 0 Then
+                        InvImportTrace_Marca(vTraceSesion,
+                                             vTraceTotal,
+                                             vTracePaso,
+                                             "DAL_DETALLE_LOOP_PROGRESS",
+                                             vIdInventarioEnc,
+                                             pListInvStockPrd.Count,
+                                             "Contador=" & Contador &
+                                             ";MsUbicDetalle=" & vTraceMsUbicDetalle &
+                                             ";MsProducto=" & vTraceMsProductoDetalle &
+                                             ";MsPropietarioBodega=" & vTraceMsPropietarioBodega &
+                                             ";MsNombreProducto=" & vTraceMsNombreProducto &
+                                             ";MsInsertDetalle=" & vTraceMsInsertDetalle &
+                                             ";MsInsertResumen=" & vTraceMsInsertResumen &
+                                             ";UbicCache=" & lUbicaciones.Count &
+                                             ";Tramos=" & lTramosInv.Count)
+                    End If
+
                 Next
+                InvImportTrace_Marca(vTraceSesion,
+                                     vTraceTotal,
+                                     vTracePaso,
+                                     "DAL_DETALLE_LOOP_END",
+                                     vIdInventarioEnc,
+                                     pListInvStockPrd.Count,
+                                     "MsUbicDetalle=" & vTraceMsUbicDetalle &
+                                     ";MsProducto=" & vTraceMsProductoDetalle &
+                                     ";MsPropietarioBodega=" & vTraceMsPropietarioBodega &
+                                     ";MsNombreProducto=" & vTraceMsNombreProducto &
+                                     ";MsInsertDetalle=" & vTraceMsInsertDetalle &
+                                     ";MsInsertResumen=" & vTraceMsInsertResumen &
+                                     ";UbicCache=" & lUbicaciones.Count &
+                                     ";Tramos=" & lTramosInv.Count)
 
             End If
 
             For Each BeTramoInvInLista In lTramosInv
+                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
 
                 '#EJC20191206: Aquí solo se llamaba al actualizar, porque no al insertar ?
                 'Cuando no existía el tramo, no se insertaba y eso provocaba que no se mostrara el inv.
@@ -337,15 +518,35 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                                           lConnection,
                                                           lTransaction)
                 End If
+                vTraceMsTramos += vTraceReloj.ElapsedMilliseconds
 
             Next
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_TRAMOS_END", vIdInventarioEnc, pListInvStockPrd.Count, "Tramos=" & lTramosInv.Count & ";MsTramos=" & vTraceMsTramos)
 
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_COMMIT_START", vIdInventarioEnc, pListInvStockPrd.Count)
             lTransaction.Commit()
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_COMMIT_END", vIdInventarioEnc, pListInvStockPrd.Count)
 
         Catch ex As Exception
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_ERROR", vIdInventarioEnc, If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count), ex.Message)
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
+            InvImportTrace_Marca(vTraceSesion,
+                                 vTraceTotal,
+                                 vTracePaso,
+                                 "DAL_IMPORTAR_PRODUCTOS_FIN",
+                                 vIdInventarioEnc,
+                                 If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count),
+                                 "MsUbicStock=" & vTraceMsUbicStock &
+                                 ";MsInsertStock=" & vTraceMsInsertStock &
+                                 ";MsUbicDetalle=" & vTraceMsUbicDetalle &
+                                 ";MsProductoDetalle=" & vTraceMsProductoDetalle &
+                                 ";MsPropietarioBodega=" & vTraceMsPropietarioBodega &
+                                 ";MsNombreProducto=" & vTraceMsNombreProducto &
+                                 ";MsInsertDetalle=" & vTraceMsInsertDetalle &
+                                 ";MsInsertResumen=" & vTraceMsInsertResumen &
+                                 ";MsTramos=" & vTraceMsTramos)
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 

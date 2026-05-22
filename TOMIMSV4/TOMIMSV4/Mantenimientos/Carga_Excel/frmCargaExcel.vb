@@ -61,6 +61,74 @@ Public Class frmCargaExcel
     Public pBodegaOrigen As New clsBeBodega
     Private pBeEstadoDestino As New clsBeProducto_estado
 
+    Private Function InvImportTrace_Activo() As Boolean
+        Try
+            Dim vValor As String = If(System.Environment.GetEnvironmentVariable("TOMWMS_INV_IMPORT_TRACE"), "").ToUpperInvariant()
+            Return Not (vValor = "0" OrElse vValor = "NO" OrElse vValor = "FALSE")
+        Catch
+            Return True
+        End Try
+    End Function
+
+    Private Function InvImportTrace_Path() As String
+        Return System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TOMWMS", "inventario-import-trace.log")
+    End Function
+
+    Private Function InvImportTrace_Limpiar(ByVal pTexto As String) As String
+        If pTexto Is Nothing Then Return ""
+        Return pTexto.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/")
+    End Function
+
+    Private Sub InvImportTrace_Iniciar(ByVal pPaso As String, Optional ByVal pExtra As String = "")
+        If Not InvImportTrace_Activo() Then Return
+        mInvImportTraceSesion = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        mInvImportTraceTotal = System.Diagnostics.Stopwatch.StartNew()
+        mInvImportTracePaso = System.Diagnostics.Stopwatch.StartNew()
+        InvImportTrace_Escribir(pPaso, pExtra)
+    End Sub
+
+    Private Sub InvImportTrace_Marca(ByVal pPaso As String, Optional ByVal pExtra As String = "")
+        If Not InvImportTrace_Activo() Then Return
+        If mInvImportTraceTotal Is Nothing Then
+            InvImportTrace_Iniciar(pPaso, pExtra)
+        Else
+            InvImportTrace_Escribir(pPaso, pExtra)
+        End If
+    End Sub
+
+    Private Sub InvImportTrace_Escribir(ByVal pPaso As String, Optional ByVal pExtra As String = "")
+        Try
+            Dim vPath As String = InvImportTrace_Path()
+            Dim vDir As String = System.IO.Path.GetDirectoryName(vPath)
+            If Not System.IO.Directory.Exists(vDir) Then System.IO.Directory.CreateDirectory(vDir)
+
+            If System.IO.File.Exists(vPath) AndAlso New System.IO.FileInfo(vPath).Length > 5242880 Then
+                System.IO.File.Delete(vPath)
+            End If
+
+            Dim vTotalMs As Long = If(mInvImportTraceTotal Is Nothing, 0, mInvImportTraceTotal.ElapsedMilliseconds)
+            Dim vDeltaMs As Long = If(mInvImportTracePaso Is Nothing, 0, mInvImportTracePaso.ElapsedMilliseconds)
+            If mInvImportTracePaso IsNot Nothing Then mInvImportTracePaso.Restart()
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                TAG_INV_IMPORT_TRACE,
+                "frmCargaExcel",
+                InvImportTrace_Limpiar(mInvImportTraceSesion),
+                InvImportTrace_Limpiar(pPaso),
+                "IdInventario=" & IdInventarioEnc,
+                "Tipo=" & InvImportTrace_Limpiar(pTipoMantenimiento),
+                "Archivo=" & InvImportTrace_Limpiar(System.IO.Path.GetFileName(txtArchivo.Text)),
+                "TotalMs=" & vTotalMs,
+                "DeltaMs=" & vDeltaMs,
+                InvImportTrace_Limpiar(pExtra)
+            })
+
+            System.IO.File.AppendAllText(vPath, vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
+
     Private Sub SetDatataTable2()
 
         DT2.Columns.Add("registro", GetType(Integer))
@@ -309,16 +377,24 @@ Public Class frmCargaExcel
 
         Cargar_Archivo_Excel = False
 
+        Dim vTraceRowsExcel As Integer = 0
+        Dim vTraceCellsExcel As Integer = 0
+
         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
         SplashScreenManager.Default.SetWaitFormCaption("Procesando archivo...")
 
         Try
 
+            InvImportTrace_Iniciar("CARGAR_ARCHIVO_START")
+
             Dim Obj As clsExcel = pListObj.Find(Function(s) s.Checked = True)
             Dim fileName As String = txtArchivo.Text
             Dim Hash As String = clsPublic.Check_MD5(txtArchivo.Text)
+            InvImportTrace_Marca("HASH_OK", "Hash=" & Hash)
             Dim documento As XLWorkbook = New XLWorkbook(fileName)
+            InvImportTrace_Marca("WORKBOOK_OPEN")
             Dim documento1 As IXLWorksheet = documento.Worksheet(Obj.Index + 1)
+            InvImportTrace_Marca("WORKSHEET_OPEN", "Index=" & Obj.Index + 1)
 
             beLogImportacion = New clsBeLog_importacion_excel()
             beLogImportacion.IdBodega = AP.IdBodega
@@ -327,30 +403,38 @@ Public Class frmCargaExcel
             beLogImportacion.Hash_archivo = Hash
 
             If clsLnLog_importacion_excel.Existe(Hash) Then
+                InvImportTrace_Marca("HASH_EXISTE")
                 SplashScreenManager.CloseForm(False)
                 If XtraMessageBox.Show("¿El archivo fue importado previamente, volver a importar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.No Then
+                    InvImportTrace_Marca("HASH_EXISTE_CANCELADO")
                     Return False
                 End If
             End If
 
             If documento1.RowsUsed.Count < 2 Then
+                InvImportTrace_Marca("ARCHIVO_VACIO", "RowsUsed=" & documento1.RowsUsed.Count)
                 SplashScreenManager.CloseForm(False)
                 XtraMessageBox.Show("La hoja esta vacía. no contiene datos", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return False
             End If
 
+            InvImportTrace_Marca("ROWSUSED_OK", "RowsUsed=" & documento1.RowsUsed.Count)
+
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Procesando archivo...")
 
             DT = New DataTable("Carga")
+            InvImportTrace_Marca("DATATABLE_START")
 
             'Loop through the Worksheet rows.
             Dim firstRow As Boolean = True
             For Each row As IXLRow In documento1.RowsUsed
+                vTraceRowsExcel += 1
                 'Use the first row to add columns to DataTable.
                 If firstRow Then
                     For Each cell As IXLCell In row.Cells
                         DT.Columns.Add(cell.Value.ToString())
+                        vTraceCellsExcel += 1
                     Next
                     firstRow = False
                 Else
@@ -360,13 +444,22 @@ Public Class frmCargaExcel
                     For Each cell As IXLCell In row.Cells(False)
                         DT.Rows(DT.Rows.Count - 1)(i) = cell.Value.ToString()
                         i += 1
+                        vTraceCellsExcel += 1
                     Next
                 End If
+
+                If vTraceRowsExcel Mod 1000 = 0 Then
+                    InvImportTrace_Marca("DATATABLE_PROGRESS", "RowsExcel=" & vTraceRowsExcel & ";RowsDT=" & DT.Rows.Count & ";Cells=" & vTraceCellsExcel)
+                End If
             Next
+
+            InvImportTrace_Marca("DATATABLE_END", "RowsExcel=" & vTraceRowsExcel & ";RowsDT=" & DT.Rows.Count & ";Columns=" & DT.Columns.Count & ";Cells=" & vTraceCellsExcel)
 
             lblPrg.Text = ""
 
             If DT.Rows.Count > 0 Then
+
+                InvImportTrace_Marca("DISPATCH_START", "Tipo=" & pTipoMantenimiento & ";RowsDT=" & DT.Rows.Count)
 
                 Select Case pTipoMantenimiento
 
@@ -393,7 +486,9 @@ Public Class frmCargaExcel
                     Case "Tarima"
                         CargaTarima(DT)
                     Case "Inventario"
+                        InvImportTrace_Marca("DISPATCH_INVENTARIO_START", "RowsDT=" & DT.Rows.Count)
                         Cargar_Archivo_Excel = Carga_Inventario_Teorico(DT)
+                        InvImportTrace_Marca("DISPATCH_INVENTARIO_END", "Ok=" & Cargar_Archivo_Excel)
                     Case "Reubicación"
                         Cargar_Archivo_Excel = Carga_Cambio_Ubicacion(DT)
                     Case "CambioEstado"
@@ -408,13 +503,19 @@ Public Class frmCargaExcel
                         Exit Select
                 End Select
 
+                InvImportTrace_Marca("DISPATCH_END", "Ok=" & Cargar_Archivo_Excel)
+
             Else
                 lblPrg.Text = "No hay registros para importar."
+                InvImportTrace_Marca("DATATABLE_SIN_REGISTROS")
             End If
 
         Catch ex As Exception
+            InvImportTrace_Marca("ERROR", ex.Message)
             SplashScreenManager.CloseForm()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            InvImportTrace_Marca("CARGAR_ARCHIVO_FIN", "Ok=" & Cargar_Archivo_Excel & ";RowsDT=" & If(DT Is Nothing, 0, DT.Rows.Count))
         End Try
 
     End Function
@@ -2040,10 +2141,21 @@ Public Class frmCargaExcel
         Dim Color As String = ""
         Dim Talla As String = ""
         Dim IdProductoTallaColor As Integer
+        Dim vTraceReloj As System.Diagnostics.Stopwatch
+        Dim vTraceMsExisteProducto As Long = 0
+        Dim vTraceMsTalla As Long = 0
+        Dim vTraceMsColor As Long = 0
+        Dim vTraceMsProducto As Long = 0
+        Dim vTraceMsTallaColor As Long = 0
+        Dim vTraceMsTallaColorInsert As Long = 0
+        Dim vTraceErrores As Integer = 0
+        Dim vTraceValidos As Integer = 0
+        Dim vTraceTallaColorNuevos As Integer = 0
 
         Try
 
             Cursor = Cursors.WaitCursor
+            InvImportTrace_Marca("CARGA_INV_TEORICO_START", "Rows=" & If(pDT Is Nothing, 0, pDT.Rows.Count) & ";ControlTallaColor=" & AP.Bodega.Control_Talla_Color)
 
             Dim vContador As Integer = 1
             Dim vIndice As Integer = 0
@@ -2097,12 +2209,15 @@ Public Class frmCargaExcel
                         errorCampos = True
                         clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El Código del producto en la fila " & i + 1 & " se encuentra repetido.")
                     Else
+                        vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
+                            vTraceMsExisteProducto += vTraceReloj.ElapsedMilliseconds
                             errorCampos = True
                             errorCargaInv = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
                             Continue For
                         End If
+                        vTraceMsExisteProducto += vTraceReloj.ElapsedMilliseconds
                         vCodigoProducto = pDT(i)(0)
                     End If
                 End If
@@ -2219,18 +2334,27 @@ Public Class frmCargaExcel
                     Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
                     Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
 
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                     Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(Talla)
+                    vTraceMsTalla += vTraceReloj.ElapsedMilliseconds
+                    vTraceReloj.Restart()
                     Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(Color)
+                    vTraceMsColor += vTraceReloj.ElapsedMilliseconds
+                    vTraceReloj.Restart()
                     Dim BeProducto = clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(vCodigoProducto)
+                    vTraceMsProducto += vTraceReloj.ElapsedMilliseconds
 
                     If BeTalla IsNot Nothing AndAlso BeColor IsNot Nothing Then
+                        vTraceReloj.Restart()
                         Dim TallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
                                                                                                  BeTalla.IdTalla,
                                                                                                  BeColor.IdColor)
+                        vTraceMsTallaColor += vTraceReloj.ElapsedMilliseconds
 
                         If TallaColor IsNot Nothing Then
                             IdProductoTallaColor = TallaColor.IdProductoTallaColor
                         Else
+                            vTraceReloj.Restart()
                             Dim BeTallaColorNuevo As New clsBeProducto_talla_color
 
                             BeTallaColorNuevo.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
@@ -2246,7 +2370,9 @@ Public Class frmCargaExcel
 
                             If clsLnProducto_talla_color.Insertar(BeTallaColorNuevo) > 0 Then
                                 IdProductoTallaColor = BeTallaColorNuevo.IdProductoTallaColor
+                                vTraceTallaColorNuevos += 1
                             End If
+                            vTraceMsTallaColorInsert += vTraceReloj.ElapsedMilliseconds
 
                         End If
                     Else
@@ -2278,9 +2404,25 @@ Public Class frmCargaExcel
                                                Talla,
                                                Color,
                                                IdProductoTallaColor)
+                    vTraceValidos += 1
 
                 Else
                     errorCargaInv = True
+                    vTraceErrores += 1
+                End If
+
+                If (i + 1) Mod 500 = 0 Then
+                    InvImportTrace_Marca("CARGA_INV_TEORICO_PROGRESS",
+                                         "Fila=" & i + 1 &
+                                         ";Validos=" & vTraceValidos &
+                                         ";Errores=" & vTraceErrores &
+                                         ";MsExisteProducto=" & vTraceMsExisteProducto &
+                                         ";MsTalla=" & vTraceMsTalla &
+                                         ";MsColor=" & vTraceMsColor &
+                                         ";MsProducto=" & vTraceMsProducto &
+                                         ";MsTallaColor=" & vTraceMsTallaColor &
+                                         ";MsTallaColorInsert=" & vTraceMsTallaColorInsert &
+                                         ";TallaColorNuevos=" & vTraceTallaColorNuevos)
                 End If
 
                 Application.DoEvents()
@@ -2312,12 +2454,25 @@ Public Class frmCargaExcel
             End If
 
         Catch ex As Exception
+            InvImportTrace_Marca("CARGA_INV_TEORICO_ERROR", ex.Message)
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                                 Text,
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Exclamation)
         Finally
+            InvImportTrace_Marca("CARGA_INV_TEORICO_FIN",
+                                 "Ok=" & Carga_Inventario_Teorico &
+                                 ";Rows=" & If(pDT Is Nothing, 0, pDT.Rows.Count) &
+                                 ";Validos=" & vTraceValidos &
+                                 ";Errores=" & vTraceErrores &
+                                 ";MsExisteProducto=" & vTraceMsExisteProducto &
+                                 ";MsTalla=" & vTraceMsTalla &
+                                 ";MsColor=" & vTraceMsColor &
+                                 ";MsProducto=" & vTraceMsProducto &
+                                 ";MsTallaColor=" & vTraceMsTallaColor &
+                                 ";MsTallaColorInsert=" & vTraceMsTallaColorInsert &
+                                 ";TallaColorNuevos=" & vTraceTallaColorNuevos)
             SplashScreenManager.CloseForm(False)
             Cursor = Cursors.Default
         End Try
