@@ -215,7 +215,10 @@ Public Class frmOrdenCompra_List
 
             If (IdOrdenCompraEnc > 0) Then
 
+                '#EJC20260522_OC_TRACE: mide la carga DAL que ocurre antes de mostrar frmOrdenCompra.
+                Dim vTraceGetSingle As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
                 gBeOrdenCompra = clsLnTrans_oc_enc.GetSingle(IdOrdenCompraEnc)
+                Dim vTraceGetSingleMs As Long = vTraceGetSingle.ElapsedMilliseconds
                 gBeOrdenCompra.IdBodega = gBeOrdenCompra.IdBodega
 
                 If Modo = pModo.Lista Then
@@ -228,6 +231,7 @@ Public Class frmOrdenCompra_List
 
                         .Modo = frmOrdenCompra.ModoTrans.Editar
                         .gBeOrdenCompra = gBeOrdenCompra
+                        .TraceCargaGetSingleMs = vTraceGetSingleMs
                         .TipoTrans = IIf(gBeOrdenCompra.TipoIngreso.Es_Poliza_Consolidada,
                                          frmOrdenCompra.eTipoTrans.Consolidado,
                                          frmOrdenCompra.eTipoTrans.Simple)

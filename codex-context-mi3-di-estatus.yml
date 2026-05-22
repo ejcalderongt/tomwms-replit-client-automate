@@ -810,3 +810,47 @@ notas:
       el conocimiento. _index.yml ahora mapea triggers/domains a estas skills
       para acelerar diagnostico, correccion y mejoras de reserva, WebAPI y
       BOF/HH.
+  - fecha: "2026-05-22"
+    area: "BOF frmPedido performance read-model"
+    detalle: >
+      Fase experimental en rama codex/mejora-pedido-readmodel: se agrego el SP
+      dbo.usp_wms_pedido_readmodel_v1 en tools/pedido-readmodel para precargar
+      producto_bodega, presentaciones, estados, clientes de detalle y reservas
+      por linea de frmPedido. La forma consume ese SP solo como acelerador y
+      mantiene fallback al DAL puntual si el SP no existe, falla o no devuelve
+      alguna fila. En la DB local TOMWMS_LA_CUMBRE_PRD el SP fue creado con
+      autenticacion integrada y validado contra pedido 2360/bodega 89.
+  - fecha: "2026-05-22"
+    area: "BOF frmPedido performance stock lazy"
+    detalle: >
+      En frmPedido, al editar pedido, Cant.Disp se estaba precargando por cada
+      linea con Get_Existencia_Disp_By_IdProducto y luego se le sumaba la
+      cantidad actual de la linea; por eso visualmente podia coincidir con lo
+      pedido cuando la disponibilidad externa era cero. Se agrego carga lazy de
+      stock disponible en edicion: durante la apertura muestra la cantidad del
+      documento y marca la celda como pendiente; si el usuario edita/valida la
+      linea, recalcula la disponibilidad real antes de aplicar las validaciones.
+      Toggle de rollback: TOMWMS_PEDIDO_STOCK_LAZY_EDITAR=0.
+  - fecha: "2026-05-22"
+    area: "BOF frmOrdenCompra performance read-model"
+    detalle: >
+      Se agrego dbo.usp_wms_ordencompra_readmodel_v1 en
+      tools/ordencompra-readmodel para cargar el detalle de OC con producto,
+      clasificacion, unidad, presentacion, embarcador y talla/color en un solo
+      roundtrip. clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc usa el SP
+      como acelerador con fallback al flujo anterior, y clsLnTrans_oc_det.Cargar
+      acepta omitir la carga puntual de presentacion para evitar doble query por
+      linea. frmOrdenCompra agrega traza local en
+      %TEMP%/TOMWMS/ordencompra-load-trace.log y bloquea validaciones/repintado
+      mientras llena el grid. Toggle de traza: TOMWMS_OC_TRACE=0.
+  - fecha: "2026-05-22"
+    area: "BOF frmOrdenCompra performance producto lookup lazy"
+    detalle: >
+      En frmOrdenCompra, ProductoGridLookUpEdit estaba cargando al inicio
+      clsLnProducto.Get_Lista_For_Grid_By_IdBodega(cmbBodega.EditValue), lo que
+      en clientes con ~39k productos por bodega agrega un roundtrip/carga pesada
+      aunque el usuario solo consulte una OC existente. Se cambio a DataSource
+      vacio durante la configuracion inicial y carga lazy al abrir el editor de
+      producto o al refrescar luego de crear producto manual. La lista se cachea
+      por propietario/bodega y deja marca producto_lookup_load en la traza local
+      de OC para medir filas y milisegundos.
