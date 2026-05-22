@@ -190,22 +190,45 @@ Public Class frmConteo
 
             End If
 
+            ' Licencia y ubicación siempre habilitadas
+            txtLicencia.Enabled = True
+            txtLicencia.Properties.ReadOnly = False
+
+            txtUbicacion.Enabled = True
+            txtUbicacion.Properties.ReadOnly = False
+
+            ' Talla / Color
             If AP.Bodega.Control_Talla_Color Then
 
-                txtLicencia.Enabled = True
-                txtLicencia.Properties.ReadOnly = False
+                Label2.Visible = True
+                cmbColor.Visible = True
 
-                txtUbicacion.Enabled = True
-                txtUbicacion.Properties.ReadOnly = False
+                Label3.Visible = True
+                cmbTalla.Visible = True
 
+            Else
+
+                Label2.Visible = False
+                cmbColor.Visible = False
+
+                Label3.Visible = False
+                cmbTalla.Visible = False
+
+            End If
+
+            ' Góndola
+            If AP.Bodega.Control_Gondola Then
+
+                lblGondola.Visible = True
+                txtGondola.Visible = True
                 txtGondola.Enabled = True
                 txtGondola.Properties.ReadOnly = False
 
             Else
 
-                txtLicencia.Enabled = False
-                txtUbicacion.Enabled = False
-                txtGondola.Enabled = False
+                lblGondola.Visible = False
+                txtGondola.Visible = False
+                txtGondola.Text = ""
 
             End If
 
@@ -287,17 +310,6 @@ Public Class frmConteo
             IdProducto
         )
 
-                XtraMessageBox.Show(
-    "IdProducto: " & IdProducto.ToString() & vbCrLf &
-    "cmbTalla.EditValue: " & cmbTalla.EditValue.ToString() & vbCrLf &
-    "cmbColor.EditValue: " & cmbColor.EditValue.ToString() & vbCrLf &
-    "IdProductoTallaColorOriginal: " & IdProductoTallaColorOriginal.ToString() & vbCrLf &
-    "IdProductoTallaColorTemp: " & IdProductoTallaColorTemp.ToString(),
-    "Debug talla/color",
-    MessageBoxButtons.OK,
-    MessageBoxIcon.Information
-)
-
                 If IdProductoTallaColorTemp <> 0 Then
 
                     IdProductoTallaColorDestino = IdProductoTallaColorTemp
@@ -323,16 +335,15 @@ Public Class frmConteo
             gBeCiclico.Idoperador = cmbOperador.EditValue
             gBeCiclico.lic_plate = txtLicencia.Text.Trim()
 
-            If AP.Bodega.Control_Talla_Color Then
-
-                If txtUbicacion.Text.Trim() = "" OrElse Not IsNumeric(txtUbicacion.Text.Trim()) Then
-                    XtraMessageBox.Show("Ingrese un Id de ubicación válido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    Exit Function
-                End If
-
-                IdUbicacionSeleccionada = CInt(txtUbicacion.Text.Trim())
-
+            If AP.Bodega.Control_Gondola Then
+                gBeCiclico.Gondola = txtGondola.Text.Trim()
             End If
+
+            If txtUbicacion.Text.Trim() <> "" AndAlso IsNumeric(txtUbicacion.Text.Trim()) Then
+                IdUbicacionSeleccionada = CInt(txtUbicacion.Text.Trim())
+            End If
+
+            IdUbicacionSeleccionada = CInt(txtUbicacion.Text.Trim())
 
             If IdUbicacionSeleccionada <> 0 AndAlso IdUbicacionSeleccionada <> gBeCiclico.IdUbicacion Then
                 gBeCiclico.IdUbicacion_nuevo = IdUbicacionSeleccionada
@@ -373,17 +384,6 @@ Public Class frmConteo
                                         cambioEstado OrElse
                                         cambioUbicacion OrElse
                                         cambioTallaColor
-            XtraMessageBox.Show(
-    "cambioFecha: " & cambioFecha.ToString() & vbCrLf &
-    "cambioEstado: " & cambioEstado.ToString() & vbCrLf &
-    "cambioLote: " & cambioLote.ToString() & vbCrLf &
-    "cambioUbicacion: " & cambioUbicacion.ToString() & vbCrLf &
-    "cambioTallaColor: " & cambioTallaColor.ToString() & vbCrLf &
-    "debeCrearNuevoRegistro: " & debeCrearNuevoRegistro.ToString(),
-    "Debug cambios",
-    MessageBoxButtons.OK,
-    MessageBoxIcon.Information
-)
 
             If EsInvOriginal AndAlso debeCrearNuevoRegistro Then
 
@@ -414,10 +414,16 @@ Public Class frmConteo
             DrDetalleInv.Item("PesoConteo") = txtPesoAnterior.Value
             DrDetalleInv.Item("Dif.Cant.UMBas") = vDiferencia * -1
 
-            If DrDetalleInv.Table.Columns.Contains("Góndola") Then
-                DrDetalleInv.Item("Góndola") = txtGondola.Text.Trim()
-            ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
-                DrDetalleInv.Item("Gondola") = txtGondola.Text.Trim()
+
+
+            If AP.Bodega.Control_Gondola Then
+
+                If DrDetalleInv.Table.Columns.Contains("Góndola") Then
+                    DrDetalleInv.Item("Góndola") = txtGondola.Text.Trim()
+                ElseIf DrDetalleInv.Table.Columns.Contains("Gondola") Then
+                    DrDetalleInv.Item("Gondola") = txtGondola.Text.Trim()
+                End If
+
             End If
 
             cTrans.Commit_Transaction()
