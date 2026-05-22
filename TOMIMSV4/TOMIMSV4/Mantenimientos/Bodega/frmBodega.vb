@@ -52,6 +52,11 @@ Public Class frmBodega
     Private FiltroCentroCostoDirERP As Integer = 0
     Private FiltroCentroCostoDepERP As Integer = 0
 
+    Private scrValoresPorDefecto As XtraScrollableControl
+    Private pnlValoresPorDefecto As PanelControl
+    Private Const ValoresPorDefectoMinWidth As Integer = 1784
+    Private Const ValoresPorDefectoMinHeight As Integer = 760
+
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -72,6 +77,7 @@ Public Class frmBodega
 
     Private Sub frmBodega_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
+        ConfigurarScrollValoresPorDefecto()
         Check_Parametro_Interface()
 
         If BeINavConfigEnc IsNot Nothing Then
@@ -95,6 +101,65 @@ Public Class frmBodega
         '#MA20260225 Estado defecto rack
         CargarComboEstadosRack()
         txtCodigo.Focus()
+
+    End Sub
+
+    Private Sub ConfigurarScrollValoresPorDefecto()
+
+        Try
+
+            If tabUbicacionesDefecto Is Nothing OrElse GroupControl2 Is Nothing OrElse GroupControl3 Is Nothing Then Return
+            If scrValoresPorDefecto IsNot Nothing Then Return
+
+            tabUbicacionesDefecto.SuspendLayout()
+
+            scrValoresPorDefecto = New XtraScrollableControl() With {
+                .Name = "scrValoresPorDefecto",
+                .Dock = DockStyle.Fill,
+                .AutoScroll = True
+            }
+
+            pnlValoresPorDefecto = New PanelControl() With {
+                .Name = "pnlValoresPorDefecto",
+                .BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder,
+                .Location = New Point(0, 0),
+                .Size = New Size(ValoresPorDefectoMinWidth, ValoresPorDefectoMinHeight)
+            }
+
+            '#EJC20260522: MEJORA_SCROLL_VALORES_DEFECTO - permite navegar todos los parametros en resoluciones pequenas.
+            tabUbicacionesDefecto.Controls.Remove(GroupControl3)
+            tabUbicacionesDefecto.Controls.Remove(GroupControl2)
+
+            pnlValoresPorDefecto.Controls.Add(GroupControl3)
+            pnlValoresPorDefecto.Controls.Add(GroupControl2)
+
+            GroupControl2.Dock = DockStyle.Left
+            GroupControl2.MinimumSize = New Size(GroupControl2.Width, ValoresPorDefectoMinHeight)
+            GroupControl3.Dock = DockStyle.Fill
+            GroupControl3.MinimumSize = New Size(0, ValoresPorDefectoMinHeight)
+
+            scrValoresPorDefecto.Controls.Add(pnlValoresPorDefecto)
+            tabUbicacionesDefecto.Controls.Add(scrValoresPorDefecto)
+
+            AddHandler scrValoresPorDefecto.Resize, AddressOf AjustarScrollValoresPorDefecto
+            AjustarScrollValoresPorDefecto(scrValoresPorDefecto, EventArgs.Empty)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            tabUbicacionesDefecto.ResumeLayout(False)
+        End Try
+
+    End Sub
+
+    Private Sub AjustarScrollValoresPorDefecto(sender As Object, e As EventArgs)
+
+        If scrValoresPorDefecto Is Nothing OrElse pnlValoresPorDefecto Is Nothing Then Return
+
+        Dim anchoContenido As Integer = Math.Max(ValoresPorDefectoMinWidth, scrValoresPorDefecto.ClientSize.Width)
+        Dim altoContenido As Integer = Math.Max(ValoresPorDefectoMinHeight, scrValoresPorDefecto.ClientSize.Height)
+
+        pnlValoresPorDefecto.Size = New System.Drawing.Size(anchoContenido, altoContenido)
 
     End Sub
 
@@ -1184,7 +1249,7 @@ Public Class frmBodega
             chkPermitirReemplazoPicking.Checked = pBeBodega.Permitir_Reemplazo_Picking
             chkPermitirReemplazoVerificacion.Checked = pBeBodega.Permitir_Reemplazo_Verificacion
             '#MA20260223 MEJORAS PARA LA CUMBRE
-            chkreemplazoOpcional.Checked = pBeBodega.reemplazo_opcional
+            chkreemplazoOpcional.Checked = pBeBodega.Reemplazo_Opcional
             chkPermitirNoEncontradoPicking.Checked = pBeBodega.Permitir_No_Encontrado_Picking
 
             '#EJC20220223
@@ -1522,7 +1587,7 @@ Public Class frmBodega
             pBeBodega.Ordenar_Por_Nombre_Completo = chkOrdenarNombreCompleto.Checked
             pBeBodega.Permitir_Reemplazo_Picking = chkPermitirReemplazoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Verificacion = chkPermitirReemplazoVerificacion.Checked
-            pBeBodega.reemplazo_opcional = chkreemplazoOpcional.Checked
+            pBeBodega.Reemplazo_Opcional = chkreemplazoOpcional.Checked
             pBeBodega.Permitir_No_Encontrado_Picking = chkPermitirNoEncontradoPicking.Checked
             pBeBodega.Permitir_Reemplazo_Picking_Misma_Licencia = chkPermitirReemplazoPickingMismaLIcencia.Checked
             pBeBodega.Filtrar_Pedidos_Usuario = chkFiltrarPedidosUsuario.Checked
