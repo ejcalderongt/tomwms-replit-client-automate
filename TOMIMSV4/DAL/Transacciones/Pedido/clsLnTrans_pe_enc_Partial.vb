@@ -3004,19 +3004,6 @@ Partial Public Class clsLnTrans_pe_enc
                 clsLnTrans_pe_pol.Anular_poliza(pBePedidoEnc.ObjPoliza, lConnection, lTransaction)
             End If
 
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            '#EJC202303032014: Log mejorado
-            'Dim BeLogErrorWMS As New clsBeLog_error_wms
-            'BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
-            'BeLogErrorWMS.IdEmpresa = vIdEmpresa
-            'BeLogErrorWMS.IdBodega = pBePedidoEnc.IdBodega
-            'BeLogErrorWMS.Fecha = Now
-            'BeLogErrorWMS.MensajeError = "PED_DEL: Se eliminó el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
-            'BeLogErrorWMS.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc
-            'BeLogErrorWMS.IdPickingEnc = pBePedidoEnc.IdPickingEnc
-            'BeLogErrorWMS.IdUsuarioAgr = pIdUsuario
-            'clsLnLog_error_wms.Insertar(BeLogErrorWMS)
-
             Dim msgError As String = "PED_DEL: Se eliminó el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
             clsLnLog_error_wms_pe.Agregar_Error(msgError,
                                                 pUsrAgr:=pIdUsuario,

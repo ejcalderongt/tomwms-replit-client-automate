@@ -271,6 +271,7 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Remove(xtpRegularizacion)
                         xtraTabInv.TabPages.Add(tbne)
                         xtraTabInv.TabPages.Add(tabUbicacionesContadas)
+                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
                         xtraTabInv.TabPages.Add(tabCompativoTeoricos)
                         xtraTabInv.TabPages.Add(tabTiemposPorTramo)
 
@@ -298,7 +299,7 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Add(tabInvCongelado)
                         xtraTabInv.TabPages.Add(TabInventarioCostos)
                         xtraTabInv.TabPages.Add(tbne)
-                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
+                        xtraTabInv.TabPages.Remove(tabUbicacionesNoContadas)
                         xtraTabInv.TabPages.Add(xtpRegularizacion)
 
                         grpImprimirInicial.Visible = False
@@ -805,49 +806,70 @@ Public Class frmInventario
 
     Private Sub mnuGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuGuardar.ItemClick
 
+        If Not mnuGuardar.Enabled Then Exit Sub
+
         Dim Count_IdStocks_En_Bodega As Integer
 
-        If cmbTipoInventario.EditValue = 1 Then
+        Try
 
-            If clsLnTrans_inv_enc.Existe_Inv_Inicial(AP.IdBodega) Then
-                XtraMessageBox.Show("Existe un inventario inicial no finalizado", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Return
-            End If
+            mnuGuardar.Enabled = False
 
-            If AP.Bodega.Validar_Existencias_Inv_Ini Then
+            If cmbTipoInventario.EditValue = 1 Then
 
-                Count_IdStocks_En_Bodega = clsLnStock.Get_Count_IdStock_By_IdBodega(AP.IdBodega)
-
-                If Count_IdStocks_En_Bodega > 0 Then
-                    XtraMessageBox.Show("No se puede crear tarea inventario inicial, hay existencias en la bodega.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                If clsLnTrans_inv_enc.Existe_Inv_Inicial(AP.IdBodega) Then
+                    XtraMessageBox.Show("Existe un inventario inicial no finalizado", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    mnuGuardar.Enabled = True
                     Return
+                End If
+
+                If AP.Bodega.Validar_Existencias_Inv_Ini Then
+
+                    Count_IdStocks_En_Bodega = clsLnStock.Get_Count_IdStock_By_IdBodega(AP.IdBodega)
+
+                    If Count_IdStocks_En_Bodega > 0 Then
+                        XtraMessageBox.Show("No se puede crear tarea inventario inicial, hay existencias en la bodega.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        mnuGuardar.Enabled = True
+                        Return
+                    End If
+
                 End If
 
             End If
 
-        End If
+            chkActivo.Checked = True
 
-        chkActivo.Checked = True
+            If Guardar() Then
 
-        If Guardar() Then
+                gBeTransInvEnc.IsNew = False
 
-            gBeTransInvEnc.IsNew = False
+                SplashScreenManager.CloseForm(False)
 
+                Modo = TipoTrans.Editar
+
+                XtraMessageBox.Show("Se guardó el inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                Me.Close()
+
+                If Not InvokeListarInventario Is Nothing Then InvokeListarInventario.Invoke
+
+            Else
+
+                mnuGuardar.Enabled = True
+                XtraMessageBox.Show("No se pudo guardar el inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            End If
+
+        Catch ex As Exception
+
+            mnuGuardar.Enabled = True
             SplashScreenManager.CloseForm(False)
 
-            Modo = TipoTrans.Editar
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
 
-            XtraMessageBox.Show("Se guardó el inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
-            Me.Close()
-
-            'Cargar_Forma()
-
-            If Not InvokeListarInventario Is Nothing Then InvokeListarInventario.Invoke
-
-        Else
-            XtraMessageBox.Show("No se pudo guardar el inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
+        End Try
 
     End Sub
 
@@ -2284,6 +2306,7 @@ Public Class frmInventario
                 End If
 
             End If
+            ConfigurarColumnasParametrosComparativo(gvInvTeoricoWMS)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -7623,6 +7646,40 @@ Public Class frmInventario
 
     End Sub
 
+    Private Sub ConfigurarColumnasParametrosComparativo(ByVal pGridView As DevExpress.XtraGrid.Views.Grid.GridView)
+
+        If pGridView Is Nothing Then Exit Sub
+
+        OcultarMostrarColumna(pGridView, "Talla", AP.Bodega.Control_Talla_Color)
+        OcultarMostrarColumna(pGridView, "Color", AP.Bodega.Control_Talla_Color)
+
+        OcultarMostrarColumna(pGridView, "Góndola", AP.Bodega.Control_Gondola)
+        OcultarMostrarColumna(pGridView, "Gondola", AP.Bodega.Control_Gondola)
+        OcultarMostrarColumna(pGridView, "gondola", AP.Bodega.Control_Gondola)
+
+    End Sub
+
+    Private Sub OcultarMostrarColumna(ByVal pGridView As DevExpress.XtraGrid.Views.Grid.GridView,
+                                  ByVal pNombreColumna As String,
+                                  ByVal pVisible As Boolean)
+
+        Dim col = pGridView.Columns.ColumnByFieldName(pNombreColumna)
+
+        If col Is Nothing Then
+            col = pGridView.Columns.ColumnByName(pNombreColumna)
+        End If
+
+        If col Is Nothing AndAlso pGridView.Columns(pNombreColumna) IsNot Nothing Then
+            col = pGridView.Columns(pNombreColumna)
+        End If
+
+        If col IsNot Nothing Then
+            col.Visible = pVisible
+            col.OptionsColumn.ShowInCustomizationForm = pVisible
+        End If
+
+    End Sub
+
     Private Sub Calcular_Inventario_Teorico_ERP(lConnection As SqlConnection, lTransaction As SqlTransaction)
 
         Try
@@ -7741,6 +7798,7 @@ Public Class frmInventario
             End If
 
             Set_LayOut_Grid(vNombreArchivoLayOutGridComparaERP)
+            ConfigurarColumnasParametrosComparativo(gvInvTeoricoERP)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -8476,8 +8534,6 @@ Public Class frmInventario
                 'cTrans.Commit_Transaction()
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-                XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
-                    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -10037,6 +10093,7 @@ Public Class frmInventario
                     .OptionsBehavior.Editable = False
                     .OptionsView.ShowAutoFilterRow = True
                 End With
+
             End If
 
         Catch ex As Exception
