@@ -40,7 +40,7 @@
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS_QAS</SuiteName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>7.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -4649,6 +4649,7 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
+    <Content Include="NavSync.exe" />
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
