@@ -1,4 +1,16 @@
 notas:
+  - fecha: "2026-05-22"
+    area: "Context router local con LM Studio"
+    detalle: >
+      Se agrego tools/wms-context como mecanismo local para reducir tokens antes
+      de iniciar trabajo WMS. El wrapper wms_context.ps1 selecciona contexto
+      desde brain/agents/_index.yml, carga solo coordinator/domain/client
+      aplicables y genera tools/wms-context/out/current-brief.md. Si LM Studio
+      esta activo en http://127.0.0.1:1234/v1 usa el endpoint
+      OpenAI-compatible para comprimir el contexto; si no, cae a un brief
+      deterministico sin LLM. La herramienta no escribe en Brain ni en DB
+      productiva, no debe exponer secretos y redacta campos sensibles como
+      password/token/definition SQL.
   - fecha: "2026-05-21"
     area: "WebAPI MI3 payload reserva BYB EA-153304"
     detalle: >
