@@ -759,6 +759,53 @@ Partial Public Class clsLnTrans_oc_det
                     Return BeTransOCDet
 
                 Else
+                    If pIdOrdenCompraDet > 0 Then
+
+                        Dim vSQLById As String = "SELECT *
+                                                  FROM trans_oc_det
+                                                  WHERE IdOrdenCompraenc = @IdOrdenCompraenc
+                                                  AND IdOrdenCompraDet = @IdOrdenCompraDet"
+
+                        Using lDTAById As New SqlDataAdapter(vSQLById, pConnection)
+
+                            lDTAById.SelectCommand.CommandType = CommandType.Text
+                            lDTAById.SelectCommand.Transaction = pTransaction
+                            lDTAById.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraenc", pIdOrdenCompraEnc)
+                            lDTAById.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraDet", pIdOrdenCompraDet)
+
+                            Dim lDataTableById As New DataTable
+                            lDTAById.Fill(lDataTableById)
+
+                            If lDataTableById IsNot Nothing AndAlso lDataTableById.Rows.Count > 0 Then
+
+                                Dim lRowById As DataRow = lDataTableById.Rows(0)
+
+                                BeTransOCDet = New clsBeTrans_oc_det
+
+                                Cargar(BeTransOCDet, lRowById, pConnection, pTransaction)
+
+                                If lRowById("IdArancel") IsNot DBNull.Value AndAlso lRowById("IdArancel") IsNot Nothing Then
+                                    BeTransOCDet.Arancel.IdArancel = CType(lRowById("IdArancel"), Integer)
+                                End If
+
+                                If lRowById("IdPresentacion") IsNot DBNull.Value AndAlso lRowById("IdPresentacion") IsNot Nothing Then
+                                    BeTransOCDet.Presentacion.IdPresentacion = CType(lRowById("IdPresentacion"), Integer)
+                                End If
+
+                                If lRowById("IdUnidadMedidaBasica") IsNot DBNull.Value AndAlso lRowById("IdUnidadMedidaBasica") IsNot Nothing Then
+                                    BeTransOCDet.UnidadMedida.IdUnidadMedida = CType(lRowById("IdUnidadMedidaBasica"), Integer)
+                                End If
+
+                                BeTransOCDet.IsNew = False
+
+                                Return BeTransOCDet
+
+                            End If
+
+                        End Using
+
+                    End If
+
                     '#DILEMA: Si la O.C. se creo pej. en cajas, pero se recepcionaron pallets,
                     'Debería actualizar la cantidad recibida en la O.C. (en cajas)? o debería
                     'mostrarse la cantidad recibida en 0 porque no se recibió la presentación

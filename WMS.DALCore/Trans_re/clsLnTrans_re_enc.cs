@@ -1336,8 +1336,6 @@ public class clsLnTrans_re_enc
                 {
                     if (Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc, lConnection, lTransaction))
                     {
-                        int lMaxS = clsLnStock.MaxID(lConnection, lTransaction);
-
                         if (listaStockRec != null && listaStockRec.Count > 0)
                         {
                             if (!pHabilitarStock)
@@ -1483,7 +1481,6 @@ public class clsLnTrans_re_enc
     {
         try
         {
-            int lMaxS = clsLnStock.MaxID(lConnection, lTransaction);
             int vIdPropietarioBodega = 0;
 
             clsBeEmpresa? BeEmpresa = clsLnEmpresa.GetSingle(pIdEmpresa, lConnection, lTransaction);
@@ -1494,9 +1491,6 @@ public class clsLnTrans_re_enc
                 clsBeStock BeStock = new clsBeStock();
                 clsPublic.CopyObject(BeStockRec, ref BeStock);
 
-                lMaxS += 1;
-                BeStock.IdStock = lMaxS;
-
                 clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
                                                                       pIdBodega,
                                                                       pIdUsuario,
@@ -1504,15 +1498,15 @@ public class clsLnTrans_re_enc
                                                                       lConnection,
                                                                       lTransaction);
 
-                clsLnStock.Insertar(BeStock, lConnection, lTransaction);
+                int idStock = clsLnStock.Insertar(BeStock, lConnection, lTransaction);
 
                 clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(BeStockRec,
-                                                                        lMaxS,
+                                                                        idStock,
                                                                         lConnection,
                                                                         lTransaction);
 
                 clsLnStock_se.Insertar_Stock_Serializado_Recepcion(BeStockRec,
-                                                                   lMaxS,
+                                                                   idStock,
                                                                    lConnection,
                                                                    lTransaction);
 

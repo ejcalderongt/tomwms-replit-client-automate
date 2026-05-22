@@ -3314,7 +3314,7 @@ namespace WMSPortal.Library.Database
                 entity.ToTable("i_nav_ejecucion_det_error");
 
                 entity.Property(e => e.Idejecuciondet)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("idejecuciondet");
 
                 entity.Property(e => e.Error)
@@ -3350,7 +3350,7 @@ namespace WMSPortal.Library.Database
                 entity.ToTable("i_nav_ejecucion_enc");
 
                 entity.Property(e => e.Idejecucionenc)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("idejecucionenc");
 
                 entity.Property(e => e.Exitosa).HasColumnName("exitosa");
@@ -3369,7 +3369,7 @@ namespace WMSPortal.Library.Database
                 entity.ToTable("i_nav_ejecucion_res");
 
                 entity.Property(e => e.Idejecucionres)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("idejecucionres");
 
                 entity.Property(e => e.Exitosa).HasColumnName("exitosa");

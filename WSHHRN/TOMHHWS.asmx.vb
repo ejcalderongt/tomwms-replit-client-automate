@@ -49,7 +49,7 @@ Public Class TOMHHWS
     ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
     ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. Las llamadas se hacen después del commit WMS para no romper la operación local.
-    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMPA"
 
     Private Function Tiene_Avance_Picking(ByVal pIdPickingEnc As Integer) As Boolean
 
@@ -66,7 +66,7 @@ Public Class TOMHHWS
             End Using
 
         Catch ex As Exception
-            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo validar avance de picking. " & ex.Message,
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo validar avance de picking. " & ex.Message,
                                                   pIdPickingEnc:=pIdPickingEnc,
                                                   pStackTrace:=ex.StackTrace)
             Return True
@@ -89,7 +89,7 @@ Public Class TOMHHWS
             End Using
 
         Catch ex As Exception
-            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo validar avance de verificación. " & ex.Message,
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo validar avance de verificación. " & ex.Message,
                                                   pIdPickingEnc:=pIdPickingEnc,
                                                   pStackTrace:=ex.StackTrace)
             Return True
@@ -112,98 +112,13 @@ Public Class TOMHHWS
             End Using
 
         Catch ex As Exception
-            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo validar verificación automática. " & ex.Message,
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMPA & ": No se pudo validar verificación automática. " & ex.Message,
                                                   pIdPickingEnc:=pIdPickingEnc,
                                                   pStackTrace:=ex.StackTrace)
             Return False
         End Try
 
     End Function
-
-    Private Function Bodega_Tiene_Interface_SAP(ByVal pIdBodega As Integer) As Boolean
-
-        Try
-            Const vSQL As String = "SELECT ISNULL(Interface_SAP,0) FROM bodega WHERE IdBodega=@IdBodega"
-
-            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-
-                Using lCommand As New SqlCommand(vSQL, lConnection)
-                    lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
-                    Return Convert.ToBoolean(lCommand.ExecuteScalar())
-                End Using
-            End Using
-
-        Catch ex As Exception
-            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo validar Interface_SAP de bodega. " & ex.Message,
-                                                  pIdBodega:=pIdBodega,
-                                                  pStackTrace:=ex.StackTrace)
-            Return False
-        End Try
-
-    End Function
-
-    Private Sub Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(ByVal pIdPickingEnc As Integer,
-                                                            ByVal pEstadoPedido As Integer,
-                                                            ByVal pEstadoFactura As Integer,
-                                                            ByVal pEstadoGuia As Integer,
-                                                            ByVal pUsuario As String,
-                                                            Optional ByVal pIdBodega As Integer = 0)
-
-        If pIdPickingEnc <= 0 Then Return
-        If String.IsNullOrWhiteSpace(SapServiceLayerClient.baseUrl) Then Return
-        If pIdBodega > 0 AndAlso Not Bodega_Tiene_Interface_SAP(pIdBodega) Then Return
-
-        Dim lPedidos As New List(Of clsBeTrans_pe_enc)
-
-        Try
-            Using lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                    lPedidos = clsLnTrans_pe_enc.Get_All_Pedido_By_IdPickingEnc(pIdPickingEnc, lConnection, lTransaction)
-                    lTransaction.Commit()
-                End Using
-            End Using
-
-            If lPedidos Is Nothing OrElse lPedidos.Count = 0 Then Return
-
-            Dim vHanaService As New SapServiceLayerClient()
-            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
-
-            For Each ped In lPedidos
-
-                If ped Is Nothing Then Continue For
-                If String.IsNullOrWhiteSpace(ped.Referencia) Then Continue For
-                If Not Bodega_Tiene_Interface_SAP(ped.IdBodega) Then Continue For
-
-                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
-                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
-
-                    clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(ped.Referencia,
-                                                                             vHanaService.SessionCookie,
-                                                                             SapServiceLayerClient.baseUrl,
-                                                                             pEstadoPedido,
-                                                                             pEstadoFactura,
-                                                                             pEstadoGuia,
-                                                                             Now,
-                                                                             pUsuario,
-                                                                             Now,
-                                                                             Now,
-                                                                             pUsuario,
-                                                                             Now).GetAwaiter().GetResult()
-                End If
-            Next
-
-        Catch ex As Exception
-            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL. EstadoPedido=" & pEstadoPedido & " IdPickingEnc=" & pIdPickingEnc & ". " & ex.Message,
-                                                  pIdBodega:=pIdBodega,
-                                                  pUserAgr:=pUsuario,
-                                                  pIdPickingEnc:=pIdPickingEnc,
-                                                  pStackTrace:=ex.StackTrace)
-        End Try
-
-    End Sub
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Empresa_By_Codigo_And_Clave(ByVal Codigo As String, ByVal Clave As String) As clsBeEmpresa
@@ -9365,8 +9280,9 @@ Public Class TOMHHWS
             End If
 
             If vEsPrimerPickeo Then
-                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 3 = Pickeando al registrar el primer pickeo real desde HH.
-                Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(vIdPickingEnc, 3, 3, 1, pIdOperador.ToString(), IdBodega)
+                '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 3 = Pickeando al registrar el primer pickeo real desde HH.
+                SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(vIdPickingEnc, 3, 3, 1,
+                                                                                 pIdOperador.ToString(), IdBodega)
             End If
 
             Return String.Format("Res:{0}", vResult)
@@ -9438,8 +9354,8 @@ Public Class TOMHHWS
                                                                                pBeStockPalletReemplazo)
 
             If vEsPrimerPickeo Then
-                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 3 = Pickeando también aplica cuando el primer avance entra por reemplazo de pallet.
-                Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(oBeTrans_picking_ubic.IdPickingEnc, 3, 3, 1, oBeTrans_picking_ubic.IdOperadorBodega_Pickeo.ToString(), IdBodega)
+                '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 3 = Pickeando también aplica cuando el primer avance entra por reemplazo de pallet.
+                SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(oBeTrans_picking_ubic.IdPickingEnc, 3, 3, 1, oBeTrans_picking_ubic.IdOperadorBodega_Pickeo.ToString(), IdBodega)
             End If
 
             Return String.Format("{0} Res:{1}", vMsg1, vResult)
@@ -9505,8 +9421,8 @@ Public Class TOMHHWS
             Dim vResult As String = clsLnTrans_picking_ubic.Actualizar_PickingUbic_Por_Verificacion(oBeTrans_picking_ubic, BeStockRes)
 
             If vEsPrimeraVerificacion Then
-                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 5 = Verificando al registrar la primera verificación real desde HH.
-                Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(oBeTrans_picking_ubic.IdPickingEnc, 5, 5, 1, oBeTrans_picking_ubic.IdOperadorBodega_Verifico.ToString(), BeStockRes.IdBodega)
+                '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 5 = Verificando al registrar la primera verificación real desde HH.
+                SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(oBeTrans_picking_ubic.IdPickingEnc, 5, 5, 1, oBeTrans_picking_ubic.IdOperadorBodega_Verifico.ToString(), BeStockRes.IdBodega)
             End If
 
             Return String.Format("{0} Res:{1}", vMsg1, vResult)
@@ -9664,11 +9580,11 @@ Public Class TOMHHWS
                                                                                                   pHostCerro)
 
             If vResult > 0 Then
-                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 4 = Pickeado. Si la verificación es automática, se avanza también a estado 6 = Verificado.
-                Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(pIdPickingEnc, 4, 4, 1, pIdOperadorBodegaCerro.ToString())
+                '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 4 = Pickeado. Si la verificación es automática, se avanza también a estado 6 = Verificado.
+                SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(pIdPickingEnc, 4, 4, 1, pIdOperadorBodegaCerro.ToString())
 
                 If Get_Verificacion_Automatica(pIdPickingEnc) Then
-                    Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(pIdPickingEnc, 6, 6, 1, pIdOperadorBodegaCerro.ToString())
+                    SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(pIdPickingEnc, 6, 6, 1, pIdOperadorBodegaCerro.ToString())
                 End If
             End If
 
@@ -9720,8 +9636,8 @@ Public Class TOMHHWS
             Dim vResult As Integer = clsLnTrans_picking_enc.Actualizar_PickingEnc_Verificado(oBeTrans_picking_enc)
 
             If vResult > 0 Then
-                '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 6 = Verificado al finalizar el proceso de verificación.
-                Notificar_Estado_SAP_Hana_MAMAPA_By_Picking(oBeTrans_picking_enc.IdPickingEnc, 6, 6, 1, oBeTrans_picking_enc.User_mod, oBeTrans_picking_enc.IdBodega)
+                '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 6 = Verificado al finalizar el proceso de verificación.
+                SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_By_Picking(oBeTrans_picking_enc.IdPickingEnc, 6, 6, 1, oBeTrans_picking_enc.User_mod, oBeTrans_picking_enc.IdBodega)
             End If
 
             Return vResult

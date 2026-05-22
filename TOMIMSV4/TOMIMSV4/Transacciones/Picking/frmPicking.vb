@@ -65,11 +65,11 @@ Public Class frmPicking
     Public Property InvokeCargarPedido As Action(Of SqlConnection, SqlTransaction)
     Public Property InvokeCargarObjetoPedido As Action
 
-    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
     ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
     ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. La notificación se hace después del commit WMS.
-    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMPA"
 
     Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Async(ByVal pEstadoPedido As Integer,
                                                                   ByVal pEstadoFactura As Integer,
@@ -84,24 +84,10 @@ Public Class frmPicking
 
             For Each ped In lPedidosPicking
 
-                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
-                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
-
-                    Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
-                        ped.Referencia,
-                        vHanaService.SessionCookie,
-                        SapServiceLayerClient.baseUrl,
-                        pEstadoPedido,
-                        pEstadoFactura,
-                        pEstadoGuia,
-                        Now,
-                        AP.UsuarioAp.IdUsuario,
-                        Now,
-                        Now,
-                        AP.UsuarioAp.IdUsuario,
-                        Now)
-
-                End If
+                Await SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_Pedido_Async(ped, 2, 2, 1,
+                                                                                         AP.Bodega.Interface_SAP,
+                                                                                         AP.UsuarioAp.IdUsuario,
+                                                                                         AP.Bodega.IdEmpresa)
 
             Next
 
@@ -557,7 +543,7 @@ Public Class frmPicking
                 Return False
             End If
 
-            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 2 = Asignado al crear picking.
+            '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 2 = Asignado al crear picking.
             Await Notificar_Estado_SAP_Hana_MAMAPA_Async(2, 2, 1)
 
             '#GT27022023: se guarda log del picking
@@ -2231,7 +2217,7 @@ Public Class frmPicking
                                                          AP.IdEmpresa,
                                                          vLiberarStock) Then
 
-                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 1 = Nueva/disponible en SAP cuando se anula el picking y puede reasignarse.
+                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMPA: Estado 1 = Nueva/disponible en SAP cuando se anula el picking y puede reasignarse.
                     Await Notificar_Estado_SAP_Hana_MAMAPA_Async(1, 1, 1)
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " anuló el picking " & BePickingEnc.IdPickingEnc
@@ -3864,7 +3850,7 @@ Public Class frmPicking
 
     End Sub
 
-    Private Sub Process_Linea_Picking()
+    Private Async Sub Process_Linea_Picking()
 
         Try
 
@@ -3935,15 +3921,27 @@ Public Class frmPicking
                                                                                    BePickingEnc,
                                                                                    pListBeStockRes)
 
+                                For Each ped In lPedidosPicking
+
+                                    Dim pEstadoPedido As Integer = 0
+                                    If ped.Estado = "Pickeado" Then
+                                        pEstadoPedido = 4
+                                    ElseIf ped.Estado = "Verificado" Then
+                                        pEstadoPedido = 6
+                                    End If
+
+                                    Await SapServiceLayerClient.Notificar_Estado_SAP_Hana_MAMPA_Pedido_Async(ped, pEstadoPedido, 2, 1,
+                                                                                                             AP.Bodega.Interface_SAP,
+                                                                                                             AP.UsuarioAp.IdUsuario,
+                                                                                                             AP.Bodega.IdEmpresa)
+
+                                Next
+
                                 '#EJC20171021_0437PM: Mostrar mensaje que se procesó correctamente
                                 XtraMessageBox.Show("Se procesó la línea de picking",
                                                     Text,
                                                     MessageBoxButtons.OK,
                                                     MessageBoxIcon.Information)
-
-                                'Set_Stock_Res(pListBeStockRes(0).IdPedido)
-
-                                'Set_Formato_Grid_Picking_Ubic()
 
                                 Cargar_Datos()
 
