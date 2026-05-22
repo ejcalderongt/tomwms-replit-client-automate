@@ -10961,10 +10961,13 @@ Public Class TOMHHWS
 
             Dim productos As List(Of clsBeProducto) = clsLnStock.Get_Stock_By_LicensePlate(pLicensePlate, pIdBodega)
 
+            ConvertirListasVaciasANothing(productos)
+
             Dim stockprodu As String = JsonConvert.SerializeObject(productos)
             Dim ObjProducto As JArray = JArray.Parse(stockprodu)
 
             For Each producto As JObject In ObjProducto
+
                 SerializarJson(producto, "Presentacion.MedidasPorTarima")
                 SerializarJson(producto, "Presentacion.RellenadoPorUbicacionDePicking")
                 SerializarJson(producto, "Presentaciones")
@@ -10972,6 +10975,16 @@ Public Class TOMHHWS
                 SerializarJson(producto, "Parametros")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
+
+                Dim items = producto.SelectToken("Presentaciones.items")
+                If items IsNot Nothing AndAlso items.Type = JTokenType.Array Then
+                    For Each item As JObject In items
+                        If item("RellenadoPorUbicacionDePicking") IsNot Nothing AndAlso item("RellenadoPorUbicacionDePicking").Type = JTokenType.Array Then
+                            item("RellenadoPorUbicacionDePicking") = Nothing
+                        End If
+                    Next
+                End If
+
             Next
 
             'Dim responseObj As New With {.items = productos}
