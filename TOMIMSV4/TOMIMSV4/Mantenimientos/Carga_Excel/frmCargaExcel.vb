@@ -37,6 +37,10 @@ Public Class frmCargaExcel
 
     Private errores As Boolean = False
     Public tipo_archivo As String = ""
+    Private Const TAG_INV_IMPORT_TRACE As String = "#EJC20260522_INV_IMPORT_TRACE"
+    Private mInvImportTraceSesion As String = ""
+    Private mInvImportTraceTotal As System.Diagnostics.Stopwatch
+    Private mInvImportTracePaso As System.Diagnostics.Stopwatch
 
     '#GT15062022_1140: parametros para cambio de ubicaciones por importación Excel
     Dim pObjStock As clsBeVW_stock_res
