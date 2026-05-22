@@ -356,13 +356,13 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
             CnnLog.Open()
 
-            BeNavEjecucionEnc.IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
+            BeNavEjecucionEnc.IdEjecucionEnc =0' clsLnI_nav_ejecucion_enc.MaxID(CnnLog)
             BeNavEjecucionEnc.IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface
             BeNavEjecucionEnc.Fecha = Now
 
             clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, CnnLog)
 
-            BeNavEjecucionRes.IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLog) + 1
+            BeNavEjecucionRes.IdEjecucionRes = 0'clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(CnnLog) + 1
             BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
             BeNavEjecucionRes.IdNavConfigDet = BeConfigDet.Idnavconfigdet
             BeNavEjecucionRes.Registros_ws = 0
