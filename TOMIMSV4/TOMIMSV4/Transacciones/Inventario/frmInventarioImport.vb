@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Text
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraSplashScreen
 
@@ -105,6 +106,239 @@ Public Class frmInventarioImport
         Catch
         End Try
     End Sub
+
+    '#EJC20260522_INV_IMPORT_VALIDACION_CACHE: soporte liviano para evitar consultas por fila durante Validar_Datos.
+    Private Function InvImportValorCelda(ByVal pFila As Integer, ByVal pColumna As String) As String
+        Try
+            Dim vValor As Object = grdData.Rows(pFila).Cells(pColumna).Value
+            If vValor Is Nothing OrElse IsDBNull(vValor) Then Return ""
+            Return vValor.ToString().Trim()
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    Private Function InvImportEnteroCelda(ByVal pFila As Integer, ByVal pColumna As String) As Integer
+        Try
+            Dim vValor As Object = grdData.Rows(pFila).Cells(pColumna).Value
+            If vValor Is Nothing OrElse IsDBNull(vValor) OrElse vValor.ToString().Trim() = "" Then Return 0
+            Return CInt(vValor)
+        Catch
+            Return 0
+        End Try
+    End Function
+
+    Private Sub InvImportAgregarClave(Of T)(ByRef pDiccionario As Dictionary(Of String, T),
+                                           ByVal pClave As String,
+                                           ByVal pValor As T)
+        If pClave Is Nothing Then Return
+        pClave = pClave.Trim()
+        If pClave = "" Then Return
+        If Not pDiccionario.ContainsKey(pClave) Then pDiccionario.Add(pClave, pValor)
+    End Sub
+
+    Private Function InvImportXmlValores(ByVal pValores As IEnumerable(Of String)) As String
+        Dim vXml As New StringBuilder()
+        vXml.Append("<root>")
+        For Each vValor As String In pValores
+            If vValor IsNot Nothing AndAlso vValor.Trim() <> "" Then
+                vXml.Append("<i v=""")
+                vXml.Append(System.Security.SecurityElement.Escape(vValor.Trim()))
+                vXml.Append(""" />")
+            End If
+        Next
+        vXml.Append("</root>")
+        Return vXml.ToString()
+    End Function
+
+    Private Function InvImportInt(ByVal pRow As DataRow, ByVal pColumn As String) As Integer
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return 0
+        Return CInt(pRow.Item(pColumn))
+    End Function
+
+    Private Function InvImportDbl(ByVal pRow As DataRow, ByVal pColumn As String) As Double
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return 0.0
+        Return CDbl(pRow.Item(pColumn))
+    End Function
+
+    Private Function InvImportStr(ByVal pRow As DataRow, ByVal pColumn As String) As String
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return ""
+        Return pRow.Item(pColumn).ToString()
+    End Function
+
+    Private Function InvImportBool(ByVal pRow As DataRow, ByVal pColumn As String) As Boolean
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return False
+        Return CBool(pRow.Item(pColumn))
+    End Function
+
+    Private Function InvImportProductoDesdeRow(ByVal pRow As DataRow) As clsBeProducto
+        Dim vProducto As New clsBeProducto()
+
+        vProducto.IdProducto = InvImportInt(pRow, "IdProducto")
+        vProducto.IdPropietario = InvImportInt(pRow, "IdPropietario")
+        vProducto.Propietario = New clsBePropietarios()
+        vProducto.Propietario.IdPropietario = vProducto.IdPropietario
+        vProducto.Propietario.Nombre_comercial = InvImportStr(pRow, "PropietarioNombre")
+        vProducto.IdUnidadMedidaBasica = InvImportInt(pRow, "IdUnidadMedidaBasica")
+        vProducto.UnidadMedida = New clsBeUnidad_medida()
+        vProducto.UnidadMedida.IdUnidadMedida = vProducto.IdUnidadMedidaBasica
+        vProducto.UnidadMedida.Nombre = InvImportStr(pRow, "UnidadMedidaNombre")
+        vProducto.IdProductoParametroA = InvImportInt(pRow, "IdProductoParametroA")
+        If vProducto.IdProductoParametroA <> 0 Then
+            vProducto.ParametroA = New clsBeProducto_parametro_a()
+            vProducto.ParametroA.IdProductoParametroA = vProducto.IdProductoParametroA
+            vProducto.ParametroA.Nombre = InvImportStr(pRow, "ParametroANombre")
+        End If
+        vProducto.IdProductoParametroB = InvImportInt(pRow, "IdProductoParametroB")
+        If vProducto.IdProductoParametroB <> 0 Then
+            vProducto.ParametroB = New clsBeProducto_parametro_b()
+            vProducto.ParametroB.IdProductoParametroB = vProducto.IdProductoParametroB
+            vProducto.ParametroB.Nombre = InvImportStr(pRow, "ParametroBNombre")
+        End If
+        vProducto.Codigo = InvImportStr(pRow, "codigo")
+        vProducto.Codigo_barra = InvImportStr(pRow, "codigo_barra")
+        vProducto.Nombre = InvImportStr(pRow, "nombre")
+        vProducto.Control_lote = InvImportBool(pRow, "control_lote")
+        vProducto.Control_vencimiento = InvImportBool(pRow, "control_vencimiento")
+        vProducto.Costo = InvImportDbl(pRow, "costo")
+        vProducto.Precio = InvImportDbl(pRow, "precio")
+        vProducto.IsNew = False
+
+        Return vProducto
+    End Function
+
+    Private Sub InvImportCrearDiccionariosCatalogo(ByRef pProductoIdPorCodigo As Dictionary(Of String, Integer),
+                                                   ByRef pPresentacionPorClave As Dictionary(Of String, Integer),
+                                                   ByRef pUnidadPorNombre As Dictionary(Of String, Integer))
+        pProductoIdPorCodigo = New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        pPresentacionPorClave = New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        pUnidadPorNombre = New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+
+        Dim vTablaProductos As DataTable = If(InvTeorico_Multi_Propietario, dtall, dtc)
+        If vTablaProductos IsNot Nothing Then
+            For Each vRow As DataRow In vTablaProductos.Rows
+                Dim vCodigo As String = InvImportStr(vRow, "Codigo")
+                If vCodigo <> "" AndAlso Not pProductoIdPorCodigo.ContainsKey(vCodigo) Then
+                    pProductoIdPorCodigo.Add(vCodigo, InvImportInt(vRow, "IdProducto"))
+                End If
+            Next
+        End If
+
+        If dtp IsNot Nothing Then
+            For Each vRow As DataRow In dtp.Rows
+                Dim vClave As String = InvImportInt(vRow, "IdProducto") & "|" & InvImportStr(vRow, "Nombre")
+                If Not pPresentacionPorClave.ContainsKey(vClave) Then
+                    pPresentacionPorClave.Add(vClave, InvImportInt(vRow, "IdPresentacion"))
+                End If
+            Next
+        End If
+
+        If dtu IsNot Nothing Then
+            For Each vRow As DataRow In dtu.Rows
+                Dim vNombre As String = InvImportStr(vRow, "Nombre")
+                If vNombre <> "" AndAlso Not pUnidadPorNombre.ContainsKey(vNombre) Then
+                    pUnidadPorNombre.Add(vNombre, InvImportInt(vRow, "IdUnidadMedida"))
+                End If
+            Next
+        End If
+    End Sub
+
+    Private Function InvImportCargarValidacionReadModel(ByVal pConnection As SqlConnection,
+                                                        ByVal pTransaction As SqlTransaction,
+                                                        ByRef pProductoPorCodigo As Dictionary(Of String, clsBeProducto),
+                                                        ByRef pColorPorCodigo As Dictionary(Of String, clsBeColor),
+                                                        ByRef pTallaPorCodigo As Dictionary(Of String, clsBeTalla),
+                                                        ByRef pUbicacionesValidas As HashSet(Of Integer)) As Boolean
+        pProductoPorCodigo = New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+        pColorPorCodigo = New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
+        pTallaPorCodigo = New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
+        pUbicacionesValidas = New HashSet(Of Integer)()
+
+        Dim vCodigos As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Dim vTallas As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Dim vColores As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Dim vUbicaciones As New HashSet(Of Integer)()
+
+        For ii As Integer = 0 To grdData.Rows.Count - 1
+            Dim vCodigo As String = InvImportValorCelda(ii, "ColCodigo")
+            If vCodigo <> "" Then vCodigos.Add(vCodigo)
+            Dim vTalla As String = InvImportValorCelda(ii, "ColTalla")
+            If vTalla <> "" Then vTallas.Add(vTalla)
+            Dim vColor As String = InvImportValorCelda(ii, "ColColor")
+            If vColor <> "" Then vColores.Add(vColor)
+            Dim vUbicacion As Integer = InvImportEnteroCelda(ii, "ColUbicacion")
+            If vUbicacion > 0 Then vUbicaciones.Add(vUbicacion)
+        Next
+
+        If vCodigos.Count = 0 Then Return True
+
+        Dim vDS As New DataSet()
+        Using vCmd As New SqlCommand("dbo.usp_wms_inventario_import_preload_readmodel_v1", pConnection, pTransaction)
+            vCmd.CommandType = CommandType.StoredProcedure
+            vCmd.CommandTimeout = 0
+            vCmd.Parameters.Add("@CodigosXml", SqlDbType.Xml).Value = InvImportXmlValores(vCodigos)
+            vCmd.Parameters.Add("@TallasXml", SqlDbType.Xml).Value = If(vTallas.Count > 0, CType(InvImportXmlValores(vTallas), Object), DBNull.Value)
+            vCmd.Parameters.Add("@ColoresXml", SqlDbType.Xml).Value = If(vColores.Count > 0, CType(InvImportXmlValores(vColores), Object), DBNull.Value)
+            vCmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = AP.IdBodega
+            vCmd.Parameters.Add("@IdPropietarioBodega", SqlDbType.Int).Value = IdPropietarioBodega
+
+            Using vDTA As New SqlDataAdapter(vCmd)
+                vDTA.Fill(vDS)
+            End Using
+        End Using
+
+        If vDS.Tables.Count > 0 Then
+            For Each vRow As DataRow In vDS.Tables(0).Rows
+                Dim vProducto As clsBeProducto = InvImportProductoDesdeRow(vRow)
+                InvImportAgregarClave(pProductoPorCodigo, vProducto.Codigo, vProducto)
+                InvImportAgregarClave(pProductoPorCodigo, vProducto.Codigo_barra, vProducto)
+            Next
+        End If
+
+        If vDS.Tables.Count > 1 Then
+            For Each vRow As DataRow In vDS.Tables(1).Rows
+                Dim vTalla As New clsBeTalla()
+                vTalla.IdTalla = InvImportInt(vRow, "IdTalla")
+                vTalla.Codigo = InvImportStr(vRow, "Codigo")
+                vTalla.Nombre = InvImportStr(vRow, "Nombre")
+                vTalla.IsNew = False
+                InvImportAgregarClave(pTallaPorCodigo, vTalla.Codigo, vTalla)
+            Next
+        End If
+
+        If vDS.Tables.Count > 2 Then
+            For Each vRow As DataRow In vDS.Tables(2).Rows
+                Dim vColor As New clsBeColor()
+                vColor.IdColor = InvImportInt(vRow, "IdColor")
+                vColor.Codigo = InvImportStr(vRow, "Codigo")
+                vColor.Nombre = InvImportStr(vRow, "Nombre")
+                vColor.IsNew = False
+                InvImportAgregarClave(pColorPorCodigo, vColor.Codigo, vColor)
+            Next
+        End If
+
+        If vUbicaciones.Count > 0 Then
+            Dim vSql As String = "SELECT IdUbicacion FROM dbo.bodega_ubicacion WHERE IdBodega=@IdBodega AND IdUbicacion IN (" &
+                                 String.Join(",", vUbicaciones) & ")"
+            Using vCmd As New SqlCommand(vSql, pConnection, pTransaction)
+                vCmd.CommandType = CommandType.Text
+                vCmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = AP.IdBodega
+                Using vReader As SqlDataReader = vCmd.ExecuteReader()
+                    While vReader.Read()
+                        pUbicacionesValidas.Add(CInt(vReader.Item("IdUbicacion")))
+                    End While
+                End Using
+            End Using
+        End If
+
+        InvImportTrace_Marca("VALIDAR_DATOS_READMODEL_OK",
+                             "Codigos=" & vCodigos.Count &
+                             ";Productos=" & pProductoPorCodigo.Count &
+                             ";Tallas=" & pTallaPorCodigo.Count &
+                             ";Colores=" & pColorPorCodigo.Count &
+                             ";Ubicaciones=" & pUbicacionesValidas.Count)
+        Return True
+    End Function
 
 #Region " Metodos principales "
 
@@ -234,6 +468,16 @@ Public Class frmInventarioImport
         Dim vTraceMsProductoUpdate As Long = 0
         Dim vTraceMsColor As Long = 0
         Dim vTraceMsTalla As Long = 0
+        Dim vTraceMsReadModel As Long = 0
+        Dim vTraceMsUi As Long = 0
+        Dim vProductoPorCodigo As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+        Dim vColorPorCodigo As New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
+        Dim vTallaPorCodigo As New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
+        Dim vUbicacionesValidas As New HashSet(Of Integer)()
+        Dim vProductoIdPorCodigo As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        Dim vPresentacionPorClave As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        Dim vUnidadPorNombre As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        Dim vReadModelDisponible As Boolean = False
 
         rc = grdData.Rows.Count  'If rc > 3 Then rc = 3
 
@@ -258,6 +502,24 @@ Public Class frmInventarioImport
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
             InvImportTrace_Marca("VALIDAR_DATOS_TX_OPEN")
 
+            InvImportCrearDiccionariosCatalogo(vProductoIdPorCodigo,
+                                               vPresentacionPorClave,
+                                               vUnidadPorNombre)
+
+            Try
+                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                vReadModelDisponible = InvImportCargarValidacionReadModel(lConnection,
+                                                                          lTransaction,
+                                                                          vProductoPorCodigo,
+                                                                          vColorPorCodigo,
+                                                                          vTallaPorCodigo,
+                                                                          vUbicacionesValidas)
+                vTraceMsReadModel = vTraceReloj.ElapsedMilliseconds
+            Catch exReadModel As Exception
+                vReadModelDisponible = False
+                InvImportTrace_Marca("VALIDAR_DATOS_READMODEL_FALLBACK", exReadModel.Message)
+            End Try
+
             prg.Maximum = rc
             prg.Visible = True
 
@@ -280,9 +542,13 @@ Public Class frmInventarioImport
                 correlativo_a = 0
                 correlativo_b = 0
 
-                SplashScreenManager.Default.SetWaitFormDescription("Validando fila: " & ii + 1 & " de: " & rc - 1)
-                lblPrg.Text = "Validando fila: " & ii + 1 & " de: " & rc - 1
-                lblPrg.Refresh()
+                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                    SplashScreenManager.Default.SetWaitFormDescription("Validando fila: " & ii + 1 & " de: " & rc - 1)
+                    lblPrg.Text = "Validando fila: " & ii + 1 & " de: " & rc - 1
+                    lblPrg.Refresh()
+                    vTraceMsUi += vTraceReloj.ElapsedMilliseconds
+                End If
 
                 If ii = 118 Then
                     '
@@ -290,7 +556,13 @@ Public Class frmInventarioImport
 
                 Debug.WriteLine("procesando: " & ii)
 
-                prg.Value = ii : prg.Refresh() : Application.DoEvents()
+                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                    prg.Value = ii : prg.Refresh() : Application.DoEvents()
+                    vTraceMsUi += vTraceReloj.ElapsedMilliseconds
+                Else
+                    prg.Value = ii
+                End If
 
                 For cc = 0 To grdData.ColumnCount - 4
                     grdData.Rows(ii).Cells(cc).Style.BackColor = Color.White
@@ -307,9 +579,13 @@ Public Class frmInventarioImport
 
                 '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: evita carga completa y Obtener(...) anidados por fila.
                 vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                BeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(cod,
-                                                                                    lConnection,
-                                                                                    lTransaction)
+                If vReadModelDisponible AndAlso vProductoPorCodigo.ContainsKey(cod) Then
+                    BeProducto = vProductoPorCodigo(cod)
+                Else
+                    BeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(cod,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+                End If
                 vTraceMsProducto += vTraceReloj.ElapsedMilliseconds
 
                 If Not BeProducto Is Nothing Then
@@ -380,49 +656,31 @@ Public Class frmInventarioImport
                         If (vCantidad = "") Then vCantidad = "0" : If (vPeso = "") Then vPeso = "0"
 
                         'EFREN07052021 si es multi propietario, el producto se busca en toda la lista
-                        If cod <> "" And InvTeorico_Multi_Propietario Then
-
-                            dr = dtall.Select("Codigo='" & cod & "'")
-
-                            If (dr.Count > 0) Then
-                                vprod = dr(0).Item("IdProducto")
-                                grdData.Rows(ii).Cells("colIdProducto").Value = vprod
-                            Else
-                                MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
-                                Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
-                                'cod = ""
-                            End If
-
+                        If vProductoIdPorCodigo.ContainsKey(cod) Then
+                            vprod = vProductoIdPorCodigo(cod)
+                            grdData.Rows(ii).Cells("colIdProducto").Value = vprod
+                        ElseIf Not BeProducto Is Nothing AndAlso BeProducto.IdProducto <> 0 Then
+                            vprod = BeProducto.IdProducto
+                            grdData.Rows(ii).Cells("colIdProducto").Value = vprod
                         Else
-                            dr = dtc.Select("Codigo='" & cod & "'")
-
-                            If (dr.Count > 0) Then
-                                vprod = dr(0).Item("IdProducto")
-                                grdData.Rows(ii).Cells("colIdProducto").Value = vprod
-                            Else
-                                MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
-                                Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
-                                'cod = ""
-                            End If
+                            MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
+                            Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
+                            'cod = ""
                         End If
 
                         'EFREN 200720211214: La llave es null, pero en procesos, para el inv. se requiere idpresentación
                         ' Presentacion
                         If pres <> "" Then
 
-                            dr = dtp.Select("IdProducto=" & vprod & " AND Nombre='" & pres & "'")
-
-                            If (dr.Count > 0) Then
-                                vpres = dr(0).Item("IdPresentacion")
+                            If vPresentacionPorClave.ContainsKey(vprod & "|" & pres) Then
+                                vpres = vPresentacionPorClave(vprod & "|" & pres)
                                 grdData.Rows(ii).Cells("ColIdPresentacion").Value = vpres
                             Else
 
                                 Dim vNomPresSinCNP As String = clsPublic.Quitar_Caracteres_No_Permitidos(pres)
 
-                                dr = dtp.Select("IdProducto=" & vprod & " AND Nombre='" & vNomPresSinCNP & "'")
-
-                                If (dr.Count > 0) Then
-                                    vpres = dr(0).Item("IdPresentacion")
+                                If vPresentacionPorClave.ContainsKey(vprod & "|" & vNomPresSinCNP) Then
+                                    vpres = vPresentacionPorClave(vprod & "|" & vNomPresSinCNP)
                                     grdData.Rows(ii).Cells("ColIdPresentacion").Value = vpres
                                 Else
                                     '#EJC20180528: No se obtuvo la presentación con el nombre.
@@ -441,9 +699,8 @@ Public Class frmInventarioImport
 
                         ' Unidad medida
                         If UM <> "" Then
-                            dr = dtu.Select("Nombre='" & UM & "'")
-                            If (dr.Count > 0) Then
-                                vuni = dr(0).Item("IdUnidadMedida")
+                            If vUnidadPorNombre.ContainsKey(UM) Then
+                                vuni = vUnidadPorNombre(UM)
                                 grdData.Rows(ii).Cells("ColIdUnidadMedida").Value = vuni
                             Else
                                 If UM = "UN" OrElse UM = "UNI" OrElse UM = "UNIDAD" Then
@@ -480,14 +737,20 @@ Public Class frmInventarioImport
                         'EFREN10112021: Se valida existencia de la idubicación
                         If vUbicacion > 0 Then
 
-                            Dim BeBodegaUbicacion = New clsBeBodega_ubicacion()
-                            BeBodegaUbicacion.IdUbicacion = vUbicacion
-                            BeBodegaUbicacion.IdBodega = AP.IdBodega
                             vTraceReloj.Restart()
-                            clsLnBodega_ubicacion.GetSingle(BeBodegaUbicacion)
+                            Dim vUbicacionExiste As Boolean = False
+                            If vReadModelDisponible Then
+                                vUbicacionExiste = vUbicacionesValidas.Contains(vUbicacion)
+                            Else
+                                Dim BeBodegaUbicacion = New clsBeBodega_ubicacion()
+                                BeBodegaUbicacion.IdUbicacion = vUbicacion
+                                BeBodegaUbicacion.IdBodega = AP.IdBodega
+                                clsLnBodega_ubicacion.GetSingle(BeBodegaUbicacion)
+                                vUbicacionExiste = BeBodegaUbicacion IsNot Nothing
+                            End If
                             vTraceMsUbicacion += vTraceReloj.ElapsedMilliseconds
 
-                            If BeBodegaUbicacion IsNot Nothing Then
+                            If vUbicacionExiste Then
                                 grdData.Rows(ii).Cells("ColUbicacion").Value = vUbicacion
                             Else
                                 Marcar_Error(ii, "ColUbicacion", "Ubicación no existe en WMS")
@@ -610,7 +873,12 @@ Public Class frmInventarioImport
 
                             If vColor <> "" Then
                                 vTraceReloj.Restart()
-                                Dim BeColor As clsBeColor = clsLnColor.Get_Single_By_Codigo(vColor, lConnection, lTransaction)
+                                Dim BeColor As clsBeColor = Nothing
+                                If vReadModelDisponible AndAlso vColorPorCodigo.ContainsKey(vColor) Then
+                                    BeColor = vColorPorCodigo(vColor)
+                                Else
+                                    BeColor = clsLnColor.Get_Single_By_Codigo(vColor, lConnection, lTransaction)
+                                End If
                                 vTraceMsColor += vTraceReloj.ElapsedMilliseconds
                                 If BeColor Is Nothing Then
                                     Marcar_Error(ii, "ColColor", "El valor en la columna color no existe")
@@ -619,7 +887,12 @@ Public Class frmInventarioImport
 
                             If vTalla <> "" Then
                                 vTraceReloj.Restart()
-                                Dim BeTalla As clsBeTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, lConnection, lTransaction)
+                                Dim BeTalla As clsBeTalla = Nothing
+                                If vReadModelDisponible AndAlso vTallaPorCodigo.ContainsKey(vTalla) Then
+                                    BeTalla = vTallaPorCodigo(vTalla)
+                                Else
+                                    BeTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, lConnection, lTransaction)
+                                End If
                                 vTraceMsTalla += vTraceReloj.ElapsedMilliseconds
                                 If BeTalla Is Nothing Then
                                     Marcar_Error(ii, "ColTalla", "El valor en la columna talla no existe")
@@ -637,7 +910,11 @@ Public Class frmInventarioImport
 
                 grdData.CurrentCell = grdData.Rows(ii).Cells(0)
 
-                Application.DoEvents()
+                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                    Application.DoEvents()
+                    vTraceMsUi += vTraceReloj.ElapsedMilliseconds
+                End If
 
                 If (ii + 1) Mod 500 = 0 Then
                     InvImportTrace_Marca("VALIDAR_DATOS_PROGRESS",
@@ -650,7 +927,9 @@ Public Class frmInventarioImport
                                          ";MsParametroB=" & vTraceMsParametroB &
                                          ";MsProductoUpdate=" & vTraceMsProductoUpdate &
                                          ";MsColor=" & vTraceMsColor &
-                                         ";MsTalla=" & vTraceMsTalla)
+                                         ";MsTalla=" & vTraceMsTalla &
+                                         ";MsReadModel=" & vTraceMsReadModel &
+                                         ";MsUI=" & vTraceMsUi)
                 End If
 
             Next
@@ -679,7 +958,10 @@ Public Class frmInventarioImport
                                  ";MsParametroB=" & vTraceMsParametroB &
                                  ";MsProductoUpdate=" & vTraceMsProductoUpdate &
                                  ";MsColor=" & vTraceMsColor &
-                                 ";MsTalla=" & vTraceMsTalla)
+                                 ";MsTalla=" & vTraceMsTalla &
+                                 ";MsReadModel=" & vTraceMsReadModel &
+                                 ";MsUI=" & vTraceMsUi &
+                                 ";ReadModel=" & vReadModelDisponible)
             prg.Value = 0
             prg.Visible = False
             If lConnection.State = ConnectionState.Open Then lConnection.Close()

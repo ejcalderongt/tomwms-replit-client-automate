@@ -129,6 +129,442 @@ Public Class frmCargaExcel
         End Try
     End Sub
 
+    '#EJC20260522_INV_IMPORT_CARGAEXCEL_CACHE: helpers para evitar Get por fila en carga de inventario.
+    Private Function InvImportValorClave(ByVal pValor As Object) As String
+        If pValor Is Nothing OrElse pValor Is DBNull.Value Then Return ""
+        Return Convert.ToString(pValor).Trim()
+    End Function
+
+    Private Function InvImportValorEntero(ByVal pValor As Object) As Integer
+        If pValor Is Nothing OrElse pValor Is DBNull.Value OrElse Not IsNumeric(pValor) Then Return 0
+        Return CInt(pValor)
+    End Function
+
+    Private Function InvImportExtraerValores(ByVal pDT As DataTable, ByVal pIndiceColumna As Integer) As List(Of String)
+        Dim vValores As New Dictionary(Of String, Boolean)(StringComparer.OrdinalIgnoreCase)
+
+        If pDT Is Nothing Then Return New List(Of String)
+
+        For Each vRow As DataRow In pDT.Rows
+            If pIndiceColumna < vRow.Table.Columns.Count Then
+                Dim vValor As String = InvImportValorClave(vRow(pIndiceColumna))
+                If vValor <> "" AndAlso Not vValores.ContainsKey(vValor) Then
+                    vValores.Add(vValor, True)
+                End If
+            End If
+        Next
+
+        Return New List(Of String)(vValores.Keys)
+    End Function
+
+    Private Function InvImportAgregarParametrosTexto(ByVal pCommand As SqlCommand,
+                                                     ByVal pPrefijo As String,
+                                                     ByVal pValores As List(Of String)) As String
+        Dim vParametros As New List(Of String)
+
+        For i As Integer = 0 To pValores.Count - 1
+            Dim vParametro As String = "@" & pPrefijo & i
+            pCommand.Parameters.AddWithValue(vParametro, pValores(i))
+            vParametros.Add(vParametro)
+        Next
+
+        Return String.Join(",", vParametros.ToArray())
+    End Function
+
+    Private Function InvImportAgregarParametrosEntero(ByVal pCommand As SqlCommand,
+                                                      ByVal pPrefijo As String,
+                                                      ByVal pValores As List(Of Integer)) As String
+        Dim vParametros As New List(Of String)
+
+        For i As Integer = 0 To pValores.Count - 1
+            Dim vParametro As String = "@" & pPrefijo & i
+            pCommand.Parameters.AddWithValue(vParametro, pValores(i))
+            vParametros.Add(vParametro)
+        Next
+
+        Return String.Join(",", vParametros.ToArray())
+    End Function
+
+    Private Function InvImportCargarProductosPorCodigo(ByVal pCodigos As List(Of String)) As Dictionary(Of String, clsBeProducto)
+        Dim vProductos As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+
+        If pCodigos Is Nothing OrElse pCodigos.Count = 0 Then Return vProductos
+
+        Using vConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            vConnection.Open()
+
+            For vInicio As Integer = 0 To pCodigos.Count - 1 Step 800
+                Dim vLote As List(Of String) = pCodigos.GetRange(vInicio, Math.Min(800, pCodigos.Count - vInicio))
+
+                Using vCommand As New SqlCommand("", vConnection)
+                    Dim vIn As String = InvImportAgregarParametrosTexto(vCommand, "cod", vLote)
+                    vCommand.CommandText = "SELECT IdProducto, codigo, codigo_barra, nombre " &
+                                           "FROM producto " &
+                                           "WHERE codigo IN (" & vIn & ") OR codigo_barra IN (" & vIn & ")"
+
+                    Using vReader As SqlDataReader = vCommand.ExecuteReader()
+                        While vReader.Read()
+                            Dim vProducto As New clsBeProducto
+                            vProducto.IdProducto = InvImportValorEntero(vReader("IdProducto"))
+                            vProducto.Codigo = InvImportValorClave(vReader("codigo"))
+                            vProducto.Codigo_barra = InvImportValorClave(vReader("codigo_barra"))
+                            vProducto.Nombre = InvImportValorClave(vReader("nombre"))
+
+                            If vProducto.Codigo <> "" AndAlso Not vProductos.ContainsKey(vProducto.Codigo) Then
+                                vProductos.Add(vProducto.Codigo, vProducto)
+                            End If
+
+                            If vProducto.Codigo_barra <> "" AndAlso Not vProductos.ContainsKey(vProducto.Codigo_barra) Then
+                                vProductos.Add(vProducto.Codigo_barra, vProducto)
+                            End If
+                        End While
+                    End Using
+                End Using
+            Next
+        End Using
+
+        Return vProductos
+    End Function
+
+    Private Function InvImportCargarTallasPorCodigo(ByVal pCodigos As List(Of String)) As Dictionary(Of String, clsBeTalla)
+        Dim vTallas As New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
+
+        If pCodigos Is Nothing OrElse pCodigos.Count = 0 Then Return vTallas
+
+        Using vConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            vConnection.Open()
+
+            For vInicio As Integer = 0 To pCodigos.Count - 1 Step 800
+                Dim vLote As List(Of String) = pCodigos.GetRange(vInicio, Math.Min(800, pCodigos.Count - vInicio))
+
+                Using vCommand As New SqlCommand("", vConnection)
+                    Dim vIn As String = InvImportAgregarParametrosTexto(vCommand, "tal", vLote)
+                    vCommand.CommandText = "SELECT IdTalla, Codigo, Nombre FROM talla WHERE Codigo IN (" & vIn & ")"
+
+                    Using vReader As SqlDataReader = vCommand.ExecuteReader()
+                        While vReader.Read()
+                            Dim vTalla As New clsBeTalla
+                            vTalla.IdTalla = InvImportValorEntero(vReader("IdTalla"))
+                            vTalla.Codigo = InvImportValorClave(vReader("Codigo"))
+                            vTalla.Nombre = InvImportValorClave(vReader("Nombre"))
+
+                            If vTalla.Codigo <> "" AndAlso Not vTallas.ContainsKey(vTalla.Codigo) Then
+                                vTallas.Add(vTalla.Codigo, vTalla)
+                            End If
+                        End While
+                    End Using
+                End Using
+            Next
+        End Using
+
+        Return vTallas
+    End Function
+
+    Private Function InvImportCargarColoresPorCodigo(ByVal pCodigos As List(Of String)) As Dictionary(Of String, clsBeColor)
+        Dim vColores As New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
+
+        If pCodigos Is Nothing OrElse pCodigos.Count = 0 Then Return vColores
+
+        Using vConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            vConnection.Open()
+
+            For vInicio As Integer = 0 To pCodigos.Count - 1 Step 800
+                Dim vLote As List(Of String) = pCodigos.GetRange(vInicio, Math.Min(800, pCodigos.Count - vInicio))
+
+                Using vCommand As New SqlCommand("", vConnection)
+                    Dim vIn As String = InvImportAgregarParametrosTexto(vCommand, "col", vLote)
+                    vCommand.CommandText = "SELECT IdColor, Codigo, Nombre FROM color WHERE Codigo IN (" & vIn & ")"
+
+                    Using vReader As SqlDataReader = vCommand.ExecuteReader()
+                        While vReader.Read()
+                            Dim vColor As New clsBeColor
+                            vColor.IdColor = InvImportValorEntero(vReader("IdColor"))
+                            vColor.Codigo = InvImportValorClave(vReader("Codigo"))
+                            vColor.Nombre = InvImportValorClave(vReader("Nombre"))
+
+                            If vColor.Codigo <> "" AndAlso Not vColores.ContainsKey(vColor.Codigo) Then
+                                vColores.Add(vColor.Codigo, vColor)
+                            End If
+                        End While
+                    End Using
+                End Using
+            Next
+        End Using
+
+        Return vColores
+    End Function
+
+    Private Function InvImportClavesEnterasUnicas(ByVal pProductos As Dictionary(Of String, clsBeProducto),
+                                                  ByVal pSelector As Func(Of clsBeProducto, Integer)) As List(Of Integer)
+        Dim vValores As New Dictionary(Of Integer, Boolean)
+
+        For Each vProducto As clsBeProducto In pProductos.Values
+            Dim vValor As Integer = pSelector(vProducto)
+            If vValor > 0 AndAlso Not vValores.ContainsKey(vValor) Then
+                vValores.Add(vValor, True)
+            End If
+        Next
+
+        Return New List(Of Integer)(vValores.Keys)
+    End Function
+
+    Private Function InvImportClavesEnterasUnicasTalla(ByVal pTallas As Dictionary(Of String, clsBeTalla)) As List(Of Integer)
+        Dim vValores As New Dictionary(Of Integer, Boolean)
+
+        For Each vTalla As clsBeTalla In pTallas.Values
+            If vTalla.IdTalla > 0 AndAlso Not vValores.ContainsKey(vTalla.IdTalla) Then
+                vValores.Add(vTalla.IdTalla, True)
+            End If
+        Next
+
+        Return New List(Of Integer)(vValores.Keys)
+    End Function
+
+    Private Function InvImportClavesEnterasUnicasColor(ByVal pColores As Dictionary(Of String, clsBeColor)) As List(Of Integer)
+        Dim vValores As New Dictionary(Of Integer, Boolean)
+
+        For Each vColor As clsBeColor In pColores.Values
+            If vColor.IdColor > 0 AndAlso Not vValores.ContainsKey(vColor.IdColor) Then
+                vValores.Add(vColor.IdColor, True)
+            End If
+        Next
+
+        Return New List(Of Integer)(vValores.Keys)
+    End Function
+
+    Private Function InvImportClaveTallaColor(ByVal pIdProducto As Integer,
+                                              ByVal pIdTalla As Integer,
+                                              ByVal pIdColor As Integer) As String
+        Return pIdProducto & "|" & pIdTalla & "|" & pIdColor
+    End Function
+
+    Private Function InvImportXmlValores(ByVal pValores As List(Of String)) As String
+        Dim vXml As New System.Text.StringBuilder("<root>")
+
+        If pValores IsNot Nothing Then
+            For Each vValor As String In pValores
+                If vValor IsNot Nothing AndAlso vValor.Trim() <> "" Then
+                    vXml.Append("<i v=""")
+                    vXml.Append(System.Security.SecurityElement.Escape(vValor.Trim()))
+                    vXml.Append(""" />")
+                End If
+            Next
+        End If
+
+        vXml.Append("</root>")
+        Return vXml.ToString()
+    End Function
+
+    Private Function InvImportCargarPreloadReadModel(ByVal pCodigosProducto As List(Of String),
+                                                     ByVal pCodigosTalla As List(Of String),
+                                                     ByVal pCodigosColor As List(Of String),
+                                                     ByRef pProductos As Dictionary(Of String, clsBeProducto),
+                                                     ByRef pTallas As Dictionary(Of String, clsBeTalla),
+                                                     ByRef pColores As Dictionary(Of String, clsBeColor),
+                                                     ByRef pProductoTallaColor As Dictionary(Of String, clsBeProducto_talla_color)) As Boolean
+        InvImportCargarPreloadReadModel = False
+
+        Try
+            pProductos = New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+            pTallas = New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
+            pColores = New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
+            pProductoTallaColor = New Dictionary(Of String, clsBeProducto_talla_color)
+
+            Using vConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                vConnection.Open()
+
+                Using vCommand As New SqlCommand("dbo.usp_wms_inventario_import_preload_readmodel_v1", vConnection)
+                    vCommand.CommandType = CommandType.StoredProcedure
+                    vCommand.CommandTimeout = 0
+                    vCommand.Parameters.Add("@CodigosXml", SqlDbType.Xml).Value = InvImportXmlValores(pCodigosProducto)
+                    vCommand.Parameters.Add("@TallasXml", SqlDbType.Xml).Value = InvImportXmlValores(pCodigosTalla)
+                    vCommand.Parameters.Add("@ColoresXml", SqlDbType.Xml).Value = InvImportXmlValores(pCodigosColor)
+                    vCommand.Parameters.AddWithValue("@IdBodega", AP.IdBodega)
+                    vCommand.Parameters.AddWithValue("@IdPropietarioBodega", 0)
+
+                    Using vReader As SqlDataReader = vCommand.ExecuteReader()
+                        While vReader.Read()
+                            Dim vProducto As New clsBeProducto
+                            vProducto.IdProducto = InvImportValorEntero(vReader("IdProducto"))
+                            vProducto.IdPropietario = InvImportValorEntero(vReader("IdPropietario"))
+                            vProducto.Propietario = New clsBePropietarios()
+                            vProducto.Propietario.IdPropietario = vProducto.IdPropietario
+                            vProducto.Propietario.Nombre_comercial = InvImportValorClave(vReader("PropietarioNombre"))
+                            vProducto.IdUnidadMedidaBasica = InvImportValorEntero(vReader("IdUnidadMedidaBasica"))
+                            vProducto.UnidadMedida = New clsBeUnidad_medida()
+                            vProducto.UnidadMedida.IdUnidadMedida = vProducto.IdUnidadMedidaBasica
+                            vProducto.UnidadMedida.Nombre = InvImportValorClave(vReader("UnidadMedidaNombre"))
+                            vProducto.IdProductoParametroA = InvImportValorEntero(vReader("IdProductoParametroA"))
+                            If vProducto.IdProductoParametroA <> 0 Then
+                                vProducto.ParametroA = New clsBeProducto_parametro_a()
+                                vProducto.ParametroA.IdProductoParametroA = vProducto.IdProductoParametroA
+                                vProducto.ParametroA.Nombre = InvImportValorClave(vReader("ParametroANombre"))
+                            End If
+                            vProducto.IdProductoParametroB = InvImportValorEntero(vReader("IdProductoParametroB"))
+                            If vProducto.IdProductoParametroB <> 0 Then
+                                vProducto.ParametroB = New clsBeProducto_parametro_b()
+                                vProducto.ParametroB.IdProductoParametroB = vProducto.IdProductoParametroB
+                                vProducto.ParametroB.Nombre = InvImportValorClave(vReader("ParametroBNombre"))
+                            End If
+                            vProducto.Codigo = InvImportValorClave(vReader("codigo"))
+                            vProducto.Codigo_barra = InvImportValorClave(vReader("codigo_barra"))
+                            vProducto.Nombre = InvImportValorClave(vReader("nombre"))
+                            vProducto.Control_lote = If(vReader("control_lote") Is DBNull.Value, False, CBool(vReader("control_lote")))
+                            vProducto.Control_vencimiento = If(vReader("control_vencimiento") Is DBNull.Value, False, CBool(vReader("control_vencimiento")))
+                            vProducto.Costo = If(vReader("costo") Is DBNull.Value, 0.0, CDbl(vReader("costo")))
+                            vProducto.Precio = If(vReader("precio") Is DBNull.Value, 0.0, CDbl(vReader("precio")))
+                            vProducto.IsNew = False
+
+                            If vProducto.Codigo <> "" AndAlso Not pProductos.ContainsKey(vProducto.Codigo) Then
+                                pProductos.Add(vProducto.Codigo, vProducto)
+                            End If
+
+                            If vProducto.Codigo_barra <> "" AndAlso Not pProductos.ContainsKey(vProducto.Codigo_barra) Then
+                                pProductos.Add(vProducto.Codigo_barra, vProducto)
+                            End If
+                        End While
+
+                        If vReader.NextResult() Then
+                            While vReader.Read()
+                                Dim vTalla As New clsBeTalla
+                                vTalla.IdTalla = InvImportValorEntero(vReader("IdTalla"))
+                                vTalla.Codigo = InvImportValorClave(vReader("Codigo"))
+                                vTalla.Nombre = InvImportValorClave(vReader("Nombre"))
+
+                                If vTalla.Codigo <> "" AndAlso Not pTallas.ContainsKey(vTalla.Codigo) Then
+                                    pTallas.Add(vTalla.Codigo, vTalla)
+                                End If
+                            End While
+                        End If
+
+                        If vReader.NextResult() Then
+                            While vReader.Read()
+                                Dim vColor As New clsBeColor
+                                vColor.IdColor = InvImportValorEntero(vReader("IdColor"))
+                                vColor.Codigo = InvImportValorClave(vReader("Codigo"))
+                                vColor.Nombre = InvImportValorClave(vReader("Nombre"))
+
+                                If vColor.Codigo <> "" AndAlso Not pColores.ContainsKey(vColor.Codigo) Then
+                                    pColores.Add(vColor.Codigo, vColor)
+                                End If
+                            End While
+                        End If
+
+                        If vReader.NextResult() Then
+                            While vReader.Read()
+                                Dim vItem As New clsBeProducto_talla_color
+                                vItem.IdProductoTallaColor = InvImportValorEntero(vReader("IdProductoTallaColor"))
+                                vItem.IdProducto = InvImportValorEntero(vReader("IdProducto"))
+                                vItem.IdTalla = InvImportValorEntero(vReader("IdTalla"))
+                                vItem.IdColor = InvImportValorEntero(vReader("IdColor"))
+                                vItem.CodigoSKU = InvImportValorClave(vReader("CodigoSKU"))
+                                vItem.IdCampaña = InvImportValorEntero(vReader("IdCampaña"))
+                                vItem.Activo = If(vReader("Activo") Is DBNull.Value, False, CBool(vReader("Activo")))
+
+                                Dim vClave As String = InvImportClaveTallaColor(vItem.IdProducto, vItem.IdTalla, vItem.IdColor)
+                                If Not pProductoTallaColor.ContainsKey(vClave) Then
+                                    pProductoTallaColor.Add(vClave, vItem)
+                                End If
+                            End While
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            InvImportCargarPreloadReadModel = True
+        Catch ex As Exception
+            InvImportTrace_Marca("CARGA_INV_TEORICO_READMODEL_FALLBACK", ex.Message)
+            InvImportCargarPreloadReadModel = False
+        End Try
+    End Function
+
+    Private Function InvImportCargarProductoTallaColor(ByVal pIdsProducto As List(Of Integer),
+                                                       ByVal pIdsTalla As List(Of Integer),
+                                                       ByVal pIdsColor As List(Of Integer)) As Dictionary(Of String, clsBeProducto_talla_color)
+        Dim vTallaColor As New Dictionary(Of String, clsBeProducto_talla_color)
+
+        If pIdsProducto Is Nothing OrElse pIdsProducto.Count = 0 Then Return vTallaColor
+        If pIdsTalla Is Nothing OrElse pIdsTalla.Count = 0 Then Return vTallaColor
+        If pIdsColor Is Nothing OrElse pIdsColor.Count = 0 Then Return vTallaColor
+
+        Using vConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            vConnection.Open()
+
+            For vInicioProducto As Integer = 0 To pIdsProducto.Count - 1 Step 700
+                Dim vProductos As List(Of Integer) = pIdsProducto.GetRange(vInicioProducto, Math.Min(700, pIdsProducto.Count - vInicioProducto))
+
+                Using vCommand As New SqlCommand("", vConnection)
+                    Dim vInProductos As String = InvImportAgregarParametrosEntero(vCommand, "prod", vProductos)
+                    Dim vInTallas As String = InvImportAgregarParametrosEntero(vCommand, "talid", pIdsTalla)
+                    Dim vInColores As String = InvImportAgregarParametrosEntero(vCommand, "colid", pIdsColor)
+
+                    vCommand.CommandText = "SELECT IdProductoTallaColor, IdProducto, IdTalla, IdColor, CodigoSKU, IdCampaña, Activo " &
+                                           "FROM producto_talla_color " &
+                                           "WHERE IdProducto IN (" & vInProductos & ") " &
+                                           "AND IdTalla IN (" & vInTallas & ") " &
+                                           "AND IdColor IN (" & vInColores & ")"
+
+                    Using vReader As SqlDataReader = vCommand.ExecuteReader()
+                        While vReader.Read()
+                            Dim vItem As New clsBeProducto_talla_color
+                            vItem.IdProductoTallaColor = InvImportValorEntero(vReader("IdProductoTallaColor"))
+                            vItem.IdProducto = InvImportValorEntero(vReader("IdProducto"))
+                            vItem.IdTalla = InvImportValorEntero(vReader("IdTalla"))
+                            vItem.IdColor = InvImportValorEntero(vReader("IdColor"))
+                            vItem.CodigoSKU = InvImportValorClave(vReader("CodigoSKU"))
+                            vItem.IdCampaña = InvImportValorEntero(vReader("IdCampaña"))
+                            vItem.Activo = If(vReader("Activo") Is DBNull.Value, False, CBool(vReader("Activo")))
+
+                            Dim vClave As String = InvImportClaveTallaColor(vItem.IdProducto, vItem.IdTalla, vItem.IdColor)
+                            If Not vTallaColor.ContainsKey(vClave) Then
+                                vTallaColor.Add(vClave, vItem)
+                            End If
+                        End While
+                    End Using
+                End Using
+            Next
+        End Using
+
+        Return vTallaColor
+    End Function
+
+    '#EJC20260522_INV_IMPORT_TALLACOLOR_BULK: inserta nuevas combinaciones talla/color en lote.
+    Private Function InvImportBulkInsertProductoTallaColor(ByVal pItems As List(Of clsBeProducto_talla_color)) As Integer
+        If pItems Is Nothing OrElse pItems.Count = 0 Then Return 0
+
+        Dim vBatch As New clsInsertBatch()
+        vBatch.Init("producto_talla_color")
+        vBatch.AddColumn("IdProductoTallaColor", GetType(Integer))
+        vBatch.AddColumn("IdProducto", GetType(Integer))
+        vBatch.AddColumn("IdTalla", GetType(Integer))
+        vBatch.AddColumn("IdColor", GetType(Integer))
+        vBatch.AddColumn("CodigoSKU", GetType(String))
+        vBatch.AddColumn("IdCampaña", GetType(Integer))
+        vBatch.AddColumn("fec_agr", GetType(DateTime))
+        vBatch.AddColumn("user_agr", GetType(String))
+        vBatch.AddColumn("fec_mod", GetType(DateTime))
+        vBatch.AddColumn("user_mod", GetType(String))
+        vBatch.AddColumn("activo", GetType(Boolean))
+
+        For Each vItem As clsBeProducto_talla_color In pItems
+            vBatch.BeginRow()
+            vBatch.Add("IdProductoTallaColor", vItem.IdProductoTallaColor)
+            vBatch.Add("IdProducto", vItem.IdProducto)
+            vBatch.Add("IdTalla", vItem.IdTalla)
+            vBatch.Add("IdColor", vItem.IdColor)
+            vBatch.Add("CodigoSKU", vItem.CodigoSKU)
+            vBatch.Add("IdCampaña", If(vItem.IdCampaña > 0, CType(vItem.IdCampaña, Object), Nothing))
+            vBatch.Add("fec_agr", vItem.Fec_agr)
+            vBatch.Add("user_agr", vItem.User_agr)
+            vBatch.Add("fec_mod", vItem.Fec_mod)
+            vBatch.Add("user_mod", vItem.User_mod)
+            vBatch.Add("activo", vItem.Activo)
+            vBatch.EndRow()
+        Next
+
+        Return vBatch.Execute(Nothing, Nothing, 1000, 0)
+    End Function
+
     Private Sub SetDatataTable2()
 
         DT2.Columns.Add("registro", GetType(Integer))
@@ -2148,6 +2584,10 @@ Public Class frmCargaExcel
         Dim vTraceMsProducto As Long = 0
         Dim vTraceMsTallaColor As Long = 0
         Dim vTraceMsTallaColorInsert As Long = 0
+        Dim vTraceMsCacheProducto As Long = 0
+        Dim vTraceMsCacheTallaColor As Long = 0
+        Dim vTraceMsTallaColorBulk As Long = 0
+        Dim vTraceTallaColorBulkRows As Integer = 0
         Dim vTraceErrores As Integer = 0
         Dim vTraceValidos As Integer = 0
         Dim vTraceTallaColorNuevos As Integer = 0
@@ -2174,6 +2614,59 @@ Public Class frmCargaExcel
             SplashScreenManager.Default.SetWaitFormCaption("Procesando Archivo")
 
             Dim vCantRegistros As Integer = pDT.Rows.Count
+            Dim vCodigosProductoExcel As List(Of String) = InvImportExtraerValores(pDT, 0)
+            Dim vCodigosTallaExcel As List(Of String) = InvImportExtraerValores(pDT, 15)
+            Dim vCodigosColorExcel As List(Of String) = InvImportExtraerValores(pDT, 16)
+            Dim vProductosPorCodigo As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+            Dim vTallasPorCodigo As New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
+            Dim vColoresPorCodigo As New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
+            Dim vProductoTallaColorPorClave As New Dictionary(Of String, clsBeProducto_talla_color)
+            Dim vSiguienteIdProductoTallaColor As Integer = 0
+            Dim vTallaColorNuevos As New List(Of clsBeProducto_talla_color)
+
+            '#EJC20260522_INV_IMPORT_CARGAEXCEL_CACHE: precargar catálogos usados por el loop.
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+            Dim vUsoReadModel As Boolean = InvImportCargarPreloadReadModel(vCodigosProductoExcel,
+                                                                           If(AP.Bodega.Control_Talla_Color, vCodigosTallaExcel, New List(Of String)),
+                                                                           If(AP.Bodega.Control_Talla_Color, vCodigosColorExcel, New List(Of String)),
+                                                                           vProductosPorCodigo,
+                                                                           vTallasPorCodigo,
+                                                                           vColoresPorCodigo,
+                                                                           vProductoTallaColorPorClave)
+
+            If Not vUsoReadModel Then
+                vProductosPorCodigo = InvImportCargarProductosPorCodigo(vCodigosProductoExcel)
+            End If
+
+            vTraceMsCacheProducto = vTraceReloj.ElapsedMilliseconds
+            InvImportTrace_Marca("CARGA_INV_TEORICO_CACHE_PRODUCTOS",
+                                 "ReadModel=" & vUsoReadModel &
+                                 ";CodigosExcel=" & vCodigosProductoExcel.Count &
+                                 ";KeysCache=" & vProductosPorCodigo.Count &
+                                 ";Ms=" & vTraceMsCacheProducto)
+
+            If AP.Bodega.Control_Talla_Color Then
+                vTraceReloj.Restart()
+
+                If Not vUsoReadModel Then
+                    vTallasPorCodigo = InvImportCargarTallasPorCodigo(vCodigosTallaExcel)
+                    vColoresPorCodigo = InvImportCargarColoresPorCodigo(vCodigosColorExcel)
+                    vProductoTallaColorPorClave = InvImportCargarProductoTallaColor(InvImportClavesEnterasUnicas(vProductosPorCodigo, Function(p) p.IdProducto),
+                                                                                    InvImportClavesEnterasUnicasTalla(vTallasPorCodigo),
+                                                                                    InvImportClavesEnterasUnicasColor(vColoresPorCodigo))
+                End If
+
+                vSiguienteIdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+                vTraceMsCacheTallaColor = vTraceReloj.ElapsedMilliseconds
+
+                InvImportTrace_Marca("CARGA_INV_TEORICO_CACHE_TALLA_COLOR",
+                                     "ReadModel=" & vUsoReadModel &
+                                     ";TallasCache=" & vTallasPorCodigo.Count &
+                                     ";ColoresCache=" & vColoresPorCodigo.Count &
+                                     ";ProductoTallaColorCache=" & vProductoTallaColorPorClave.Count &
+                                     ";SiguienteId=" & vSiguienteIdProductoTallaColor &
+                                     ";Ms=" & vTraceMsCacheTallaColor)
+            End If
 
             For i As Integer = 0 To pDT.Rows.Count - 1
 
@@ -2195,6 +2688,7 @@ Public Class frmCargaExcel
                 Debug.Write(" Código: " & vCodigoProducto)
 
                 errorCampos = False
+                IdProductoTallaColor = 0
 
                 'EFREN_17052021 valida codigo del producto
                 If pDT(i)(0) Is DBNull.Value Then
@@ -2202,7 +2696,7 @@ Public Class frmCargaExcel
                     clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El Código: ( " & vCodigoProductoDebug & " ) producto en la fila " & i + 1 & " no es válido")
                 Else
 
-                    Dim Codigo_Producto As String = pDT(Indice)(0)
+                    Dim Codigo_Producto As String = InvImportValorClave(pDT(Indice)(0))
 
                     Dim lIdExiste As Boolean = pListObjP.Exists(Function(d) d.Codigo = Codigo_Producto)
                     If lIdExiste Then
@@ -2210,7 +2704,7 @@ Public Class frmCargaExcel
                         clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El Código del producto en la fila " & i + 1 & " se encuentra repetido.")
                     Else
                         vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                        If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
+                        If Not vProductosPorCodigo.ContainsKey(Codigo_Producto) Then
                             vTraceMsExisteProducto += vTraceReloj.ElapsedMilliseconds
                             errorCampos = True
                             errorCargaInv = True
@@ -2331,24 +2825,29 @@ Public Class frmCargaExcel
                 Codigo_Area_SAP = IIf(pDT(i)(14) Is DBNull.Value, "", Convert.ToString(pDT(i)(14)))
 
                 If AP.Bodega.Control_Talla_Color Then
-                    Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
-                    Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
+                    Talla = InvImportValorClave(pDT(i)(15))
+                    Color = InvImportValorClave(pDT(i)(16))
 
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                    Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(Talla)
+                    Dim BeTalla As clsBeTalla = Nothing
+                    If vTallasPorCodigo.ContainsKey(Talla) Then BeTalla = vTallasPorCodigo(Talla)
                     vTraceMsTalla += vTraceReloj.ElapsedMilliseconds
                     vTraceReloj.Restart()
-                    Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(Color)
+                    Dim BeColor As clsBeColor = Nothing
+                    If vColoresPorCodigo.ContainsKey(Color) Then BeColor = vColoresPorCodigo(Color)
                     vTraceMsColor += vTraceReloj.ElapsedMilliseconds
                     vTraceReloj.Restart()
-                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(vCodigoProducto)
+                    Dim BeProducto As clsBeProducto = Nothing
+                    If vProductosPorCodigo.ContainsKey(vCodigoProducto) Then BeProducto = vProductosPorCodigo(vCodigoProducto)
                     vTraceMsProducto += vTraceReloj.ElapsedMilliseconds
 
-                    If BeTalla IsNot Nothing AndAlso BeColor IsNot Nothing Then
+                    If BeTalla IsNot Nothing AndAlso BeColor IsNot Nothing AndAlso BeProducto IsNot Nothing Then
                         vTraceReloj.Restart()
-                        Dim TallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
-                                                                                                 BeTalla.IdTalla,
-                                                                                                 BeColor.IdColor)
+                        Dim vClaveTallaColor As String = InvImportClaveTallaColor(BeProducto.IdProducto, BeTalla.IdTalla, BeColor.IdColor)
+                        Dim TallaColor As clsBeProducto_talla_color = Nothing
+                        If vProductoTallaColorPorClave.ContainsKey(vClaveTallaColor) Then
+                            TallaColor = vProductoTallaColorPorClave(vClaveTallaColor)
+                        End If
                         vTraceMsTallaColor += vTraceReloj.ElapsedMilliseconds
 
                         If TallaColor IsNot Nothing Then
@@ -2357,21 +2856,23 @@ Public Class frmCargaExcel
                             vTraceReloj.Restart()
                             Dim BeTallaColorNuevo As New clsBeProducto_talla_color
 
-                            BeTallaColorNuevo.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+                            '#EJC20260522_INV_IMPORT_TALLACOLOR_BULK: diferir escritura y mantener cache/ids en memoria.
+                            BeTallaColorNuevo.IdProductoTallaColor = vSiguienteIdProductoTallaColor
                             BeTallaColorNuevo.IdProducto = BeProducto.IdProducto
                             BeTallaColorNuevo.IdTalla = BeTalla.IdTalla
                             BeTallaColorNuevo.IdColor = BeColor.IdColor
-                            BeTallaColorNuevo.IdCampaña = 63
+                            BeTallaColorNuevo.IdCampaña = 0
                             BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + BeColor.Codigo + BeTalla.Codigo
                             BeTallaColorNuevo.User_agr = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.User_mod = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.Fec_agr = Date.Today
                             BeTallaColorNuevo.Fec_mod = Date.Today
 
-                            If clsLnProducto_talla_color.Insertar(BeTallaColorNuevo) > 0 Then
-                                IdProductoTallaColor = BeTallaColorNuevo.IdProductoTallaColor
-                                vTraceTallaColorNuevos += 1
-                            End If
+                            IdProductoTallaColor = BeTallaColorNuevo.IdProductoTallaColor
+                            vProductoTallaColorPorClave.Add(vClaveTallaColor, BeTallaColorNuevo)
+                            vTallaColorNuevos.Add(BeTallaColorNuevo)
+                            vSiguienteIdProductoTallaColor += 1
+                            vTraceTallaColorNuevos += 1
                             vTraceMsTallaColorInsert += vTraceReloj.ElapsedMilliseconds
 
                         End If
@@ -2411,18 +2912,22 @@ Public Class frmCargaExcel
                     vTraceErrores += 1
                 End If
 
-                If (i + 1) Mod 500 = 0 Then
+                If (i + 1) Mod 50 = 0 OrElse i = 0 Then
                     InvImportTrace_Marca("CARGA_INV_TEORICO_PROGRESS",
                                          "Fila=" & i + 1 &
                                          ";Validos=" & vTraceValidos &
                                          ";Errores=" & vTraceErrores &
+                                         ";MsCacheProducto=" & vTraceMsCacheProducto &
+                                         ";MsCacheTallaColor=" & vTraceMsCacheTallaColor &
                                          ";MsExisteProducto=" & vTraceMsExisteProducto &
                                          ";MsTalla=" & vTraceMsTalla &
                                          ";MsColor=" & vTraceMsColor &
                                          ";MsProducto=" & vTraceMsProducto &
                                          ";MsTallaColor=" & vTraceMsTallaColor &
                                          ";MsTallaColorInsert=" & vTraceMsTallaColorInsert &
-                                         ";TallaColorNuevos=" & vTraceTallaColorNuevos)
+                                         ";MsTallaColorBulk=" & vTraceMsTallaColorBulk &
+                                         ";TallaColorNuevos=" & vTraceTallaColorNuevos &
+                                         ";TallaColorBulkRows=" & vTraceTallaColorBulkRows)
                 End If
 
                 Application.DoEvents()
@@ -2430,6 +2935,15 @@ Public Class frmCargaExcel
             Next
 
             If lInvenarioTeorico.Rows.Count > 0 And Not errorCargaInv Then
+
+                If vTallaColorNuevos.Count > 0 Then
+                    vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                    vTraceTallaColorBulkRows = InvImportBulkInsertProductoTallaColor(vTallaColorNuevos)
+                    vTraceMsTallaColorBulk = vTraceReloj.ElapsedMilliseconds
+                    InvImportTrace_Marca("CARGA_INV_TEORICO_TALLACOLOR_BULK",
+                                         "Rows=" & vTraceTallaColorBulkRows &
+                                         ";Ms=" & vTraceMsTallaColorBulk)
+                End If
 
                 Carga_Inventario_Teorico = True
 
@@ -2466,13 +2980,17 @@ Public Class frmCargaExcel
                                  ";Rows=" & If(pDT Is Nothing, 0, pDT.Rows.Count) &
                                  ";Validos=" & vTraceValidos &
                                  ";Errores=" & vTraceErrores &
+                                 ";MsCacheProducto=" & vTraceMsCacheProducto &
+                                 ";MsCacheTallaColor=" & vTraceMsCacheTallaColor &
                                  ";MsExisteProducto=" & vTraceMsExisteProducto &
                                  ";MsTalla=" & vTraceMsTalla &
                                  ";MsColor=" & vTraceMsColor &
                                  ";MsProducto=" & vTraceMsProducto &
                                  ";MsTallaColor=" & vTraceMsTallaColor &
                                  ";MsTallaColorInsert=" & vTraceMsTallaColorInsert &
-                                 ";TallaColorNuevos=" & vTraceTallaColorNuevos)
+                                 ";MsTallaColorBulk=" & vTraceMsTallaColorBulk &
+                                 ";TallaColorNuevos=" & vTraceTallaColorNuevos &
+                                 ";TallaColorBulkRows=" & vTraceTallaColorBulkRows)
             SplashScreenManager.CloseForm(False)
             Cursor = Cursors.Default
         End Try
