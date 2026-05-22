@@ -35,12 +35,12 @@ Public Class frmInventarioImport
 
     Private Const TAG_INV_IMPORT_TRACE As String = "#EJC20260522_INV_IMPORT_TRACE"
     Private mInvImportTraceSesion As String = ""
-    Private mInvImportTraceTotal As System.Diagnostics.Stopwatch
-    Private mInvImportTracePaso As System.Diagnostics.Stopwatch
+    Private mInvImportTraceTotal As Stopwatch
+    Private mInvImportTracePaso As Stopwatch
 
     Private Function InvImportTrace_Activo() As Boolean
         Try
-            Dim vValor As String = If(System.Environment.GetEnvironmentVariable("TOMWMS_INV_IMPORT_TRACE"), "").ToUpperInvariant()
+            Dim vValor As String = If(Environment.GetEnvironmentVariable("TOMWMS_INV_IMPORT_TRACE"), "").ToUpperInvariant()
             Return Not (vValor = "0" OrElse vValor = "NO" OrElse vValor = "FALSE")
         Catch
             Return True
@@ -59,8 +59,8 @@ Public Class frmInventarioImport
     Private Sub InvImportTrace_Iniciar(ByVal pPaso As String, Optional ByVal pExtra As String = "")
         If Not InvImportTrace_Activo() Then Return
         mInvImportTraceSesion = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
-        mInvImportTraceTotal = System.Diagnostics.Stopwatch.StartNew()
-        mInvImportTracePaso = System.Diagnostics.Stopwatch.StartNew()
+        mInvImportTraceTotal = Stopwatch.StartNew()
+        mInvImportTracePaso = Stopwatch.StartNew()
         InvImportTrace_Escribir(pPaso, pExtra)
     End Sub
 
@@ -305,22 +305,11 @@ Public Class frmInventarioImport
                 vLicensePlate = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLp").Value), "", grdData.Rows(ii).Cells("ColLp").Value)
                 vCodVariante = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodVariante").Value), "", grdData.Rows(ii).Cells("ColCodVariante").Value)
 
-                Dim pCampos(8) As clsBeProducto.ProdPropiedades
-                pCampos(0) = clsBeProducto.ProdPropiedades.Control_lote
-                pCampos(1) = clsBeProducto.ProdPropiedades.Control_vencimiento
-                pCampos(2) = clsBeProducto.ProdPropiedades.Codigo
-                pCampos(3) = clsBeProducto.ProdPropiedades.Propietario
-                pCampos(4) = clsBeProducto.ProdPropiedades.UnidadMedida
-                pCampos(5) = clsBeProducto.ProdPropiedades.Costo
-                pCampos(6) = clsBeProducto.ProdPropiedades.Precio
-                pCampos(7) = clsBeProducto.ProdPropiedades.ParametroA
-                pCampos(8) = clsBeProducto.ProdPropiedades.ParametroB
-
-                'EFREN 10052021 se utiliza un metodo sobrecargado, el método original no devuelve todas las propiedades de Producto
+                '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: evita carga completa y Obtener(...) anidados por fila.
                 vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                BeProducto = clsLnProducto.Get_Single_By_Codigo(cod, pCampos,
-                                                                lConnection,
-                                                                lTransaction)
+                BeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(cod,
+                                                                                    lConnection,
+                                                                                    lTransaction)
                 vTraceMsProducto += vTraceReloj.ElapsedMilliseconds
 
                 If Not BeProducto Is Nothing Then
@@ -473,7 +462,8 @@ Public Class frmInventarioImport
                         Else
                             '#EJC20180528: Si la UM es vacía se busca por defecto la UMBas del producto ;)
                             vTraceReloj.Restart()
-                            vIdUnidadMedida = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(cod)
+                            '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: la UMBas ya viene en BeProducto.
+                            vIdUnidadMedida = BeProducto.IdUnidadMedidaBasica
                             vTraceMsUnidadDefault += vTraceReloj.ElapsedMilliseconds
                             If vIdUnidadMedida = 0 Then
                                 '#EJC20180528: La unidad de medida básica no puede ser vacía coño!!
@@ -481,7 +471,9 @@ Public Class frmInventarioImport
                             Else
                                 vuni = vIdUnidadMedida
                                 grdData.Rows(ii).Cells("ColIdUnidadMedida").Value = vuni
-                                grdData.Rows(ii).Cells("ColUnidadMedida").Value = clsLnUnidad_medida.Get_Nombre_By_IdUnidadMedida(vuni)
+                                If Not BeProducto.UnidadMedida Is Nothing Then
+                                    grdData.Rows(ii).Cells("ColUnidadMedida").Value = BeProducto.UnidadMedida.Nombre
+                                End If
                             End If
                         End If
 

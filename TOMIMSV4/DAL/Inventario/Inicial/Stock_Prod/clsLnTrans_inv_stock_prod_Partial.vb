@@ -81,6 +81,168 @@ Partial Public Class clsLnTrans_inv_stock_prod
         End Try
     End Sub
 
+    Private Shared Function CrearBatchStockProd() As clsInsertBatch
+        Dim vBatch As New clsInsertBatch()
+        vBatch.Init("trans_inv_stock_prod")
+        vBatch.AddColumn("idinventario", GetType(Integer))
+        vBatch.AddColumn("idinvstockprod", GetType(Integer))
+        vBatch.AddColumn("idproducto", GetType(Integer))
+        vBatch.AddColumn("idpresentacion", GetType(Integer))
+        vBatch.AddColumn("idunidadmedida", GetType(Integer))
+        vBatch.AddColumn("cant", GetType(Double))
+        vBatch.AddColumn("peso", GetType(Double))
+        vBatch.AddColumn("lote", GetType(String))
+        vBatch.AddColumn("fecha_vence", GetType(DateTime))
+        vBatch.AddColumn("codigo", GetType(String))
+        vBatch.AddColumn("idbodega", GetType(Integer))
+        vBatch.AddColumn("idubicacion", GetType(Integer))
+        vBatch.AddColumn("Lic_plate", GetType(String))
+        vBatch.AddColumn("codigo_area", GetType(String))
+        vBatch.AddColumn("codigo_talla", GetType(String))
+        vBatch.AddColumn("codigo_color", GetType(String))
+        vBatch.AddColumn("idproductotallacolor", GetType(Integer))
+        vBatch.AddColumn("TipoTeoricoImportacion", GetType(Integer))
+        Return vBatch
+    End Function
+
+    Private Shared Sub AgregarBatchStockProd(ByVal pBatch As clsInsertBatch,
+                                             ByVal pObj As clsBeTrans_inv_stock_prod)
+        pBatch.BeginRow()
+        pBatch.Add("idinventario", pObj.Idinventario)
+        pBatch.Add("idinvstockprod", pObj.Idinvstockprod)
+        pBatch.Add("idproducto", pObj.IdProducto)
+        pBatch.Add("idpresentacion", pObj.IdPresentacion)
+        pBatch.Add("idunidadmedida", pObj.IdUnidadMedida)
+        pBatch.Add("cant", pObj.Cant)
+        pBatch.Add("peso", pObj.Peso)
+        pBatch.Add("lote", pObj.Lote)
+        pBatch.Add("fecha_vence", pObj.Fecha_vence)
+        pBatch.Add("codigo", pObj.Codigo)
+        pBatch.Add("idbodega", pObj.IdBodega)
+        pBatch.Add("idubicacion", pObj.IdUbicacion)
+        pBatch.Add("Lic_plate", pObj.License_plate)
+        pBatch.Add("codigo_area", pObj.Codigo_Area)
+        pBatch.Add("codigo_talla", pObj.Codigo_Talla)
+        pBatch.Add("codigo_color", pObj.Codigo_Color)
+        pBatch.Add("idproductotallacolor", pObj.IdProductoTallaColor)
+        pBatch.Add("TipoTeoricoImportacion", pObj.TipoTeoricoImportacion)
+        pBatch.EndRow()
+    End Sub
+
+    Private Shared Function CrearBatchDetalle() As clsInsertBatch
+        Dim vBatch As New clsInsertBatch()
+        vBatch.Init("trans_inv_detalle")
+        vBatch.AddColumn("idinventarioenc", GetType(Integer))
+        vBatch.AddColumn("idtramo", GetType(Integer))
+        vBatch.AddColumn("idubicacion", GetType(Integer))
+        vBatch.AddColumn("idoperador", GetType(Integer))
+        vBatch.AddColumn("idproducto", GetType(Integer))
+        vBatch.AddColumn("idpresentacion", GetType(Integer))
+        vBatch.AddColumn("idunidadmedida", GetType(Integer))
+        vBatch.AddColumn("lote", GetType(String))
+        vBatch.AddColumn("fecha_vence", GetType(DateTime))
+        vBatch.AddColumn("serie", GetType(String))
+        vBatch.AddColumn("idproductoestado", GetType(Integer))
+        vBatch.AddColumn("cantidad", GetType(Double))
+        vBatch.AddColumn("fecha_captura", GetType(DateTime))
+        vBatch.AddColumn("host", GetType(String))
+        vBatch.AddColumn("nom_producto", GetType(String))
+        vBatch.AddColumn("nom_operador", GetType(String))
+        vBatch.AddColumn("carga", GetType(Integer))
+        vBatch.AddColumn("peso", GetType(Double))
+        vBatch.AddColumn("IdPropietarioBodega", GetType(Integer))
+        vBatch.AddColumn("nombre_propietario", GetType(String))
+        vBatch.AddColumn("lic_plate", GetType(String))
+        vBatch.AddColumn("cod_variante", GetType(String))
+        vBatch.AddColumn("idbodega", GetType(Integer))
+        vBatch.AddColumn("costo", GetType(Double))
+        vBatch.AddColumn("precio", GetType(Double))
+        vBatch.AddColumn("IdProductoParametroA", GetType(Integer))
+        vBatch.AddColumn("IdProductoParametroB", GetType(Integer))
+        vBatch.AddColumn("IdProductoTallaColor", GetType(Integer))
+        Return vBatch
+    End Function
+
+    Private Shared Sub AgregarBatchDetalle(ByVal pBatch As clsInsertBatch,
+                                           ByVal pObj As clsBeTrans_inv_detalle)
+        pBatch.BeginRow()
+        pBatch.Add("idinventarioenc", pObj.Idinventarioenc)
+        pBatch.Add("idtramo", pObj.Idtramo)
+        pBatch.Add("idubicacion", pObj.IdUbicacion)
+        pBatch.Add("idoperador", pObj.Idoperador)
+        pBatch.Add("idproducto", pObj.Idproducto)
+        pBatch.Add("idpresentacion", pObj.IdPresentacion)
+        pBatch.Add("idunidadmedida", pObj.Idunidadmedida)
+        pBatch.Add("lote", pObj.Lote)
+        pBatch.Add("fecha_vence", pObj.Fecha_vence)
+        pBatch.Add("serie", pObj.Serie)
+        pBatch.Add("idproductoestado", pObj.Idproductoestado)
+        pBatch.Add("cantidad", pObj.Cantidad)
+        pBatch.Add("fecha_captura", pObj.Fecha_captura)
+        pBatch.Add("host", pObj.Host)
+        pBatch.Add("nom_producto", pObj.Nom_producto)
+        pBatch.Add("nom_operador", pObj.Nom_operador)
+        pBatch.Add("carga", pObj.Carga)
+        pBatch.Add("peso", pObj.Peso)
+        pBatch.Add("IdPropietarioBodega", pObj.IdPropietarioBodega)
+        pBatch.Add("nombre_propietario", pObj.nombre_propietario)
+        pBatch.Add("lic_plate", pObj.License_plate)
+        pBatch.Add("cod_variante", pObj.Codigo_variante)
+        pBatch.Add("idbodega", pObj.IdBodega)
+        pBatch.Add("costo", pObj.costo)
+        pBatch.Add("precio", pObj.precio)
+        pBatch.Add("IdProductoParametroA", pObj.IdProductoParametroA)
+        pBatch.Add("IdProductoParametroB", pObj.IdProductoParametroB)
+        pBatch.Add("IdProductoTallaColor", pObj.IdProductoTallaColor)
+        pBatch.EndRow()
+    End Sub
+
+    Private Shared Function CrearBatchResumen() As clsInsertBatch
+        Dim vBatch As New clsInsertBatch()
+        vBatch.Init("trans_inv_resumen")
+        vBatch.AddColumn("idinventariores", GetType(Integer))
+        vBatch.AddColumn("idinventarioenct", GetType(Integer))
+        vBatch.AddColumn("idtramo", GetType(Integer))
+        vBatch.AddColumn("idproducto", GetType(Integer))
+        vBatch.AddColumn("idoperador", GetType(Integer))
+        vBatch.AddColumn("idunidadmedida", GetType(Integer))
+        vBatch.AddColumn("idpresentacion", GetType(Integer))
+        vBatch.AddColumn("idproductoestado", GetType(Integer))
+        vBatch.AddColumn("cantidad", GetType(Double))
+        vBatch.AddColumn("fecha_captura", GetType(DateTime))
+        vBatch.AddColumn("host", GetType(String))
+        vBatch.AddColumn("nom_producto", GetType(String))
+        vBatch.AddColumn("nom_operador", GetType(String))
+        vBatch.AddColumn("idubicacion", GetType(Integer))
+        vBatch.AddColumn("idbodega", GetType(Integer))
+        vBatch.AddColumn("lic_plate", GetType(String))
+        vBatch.AddColumn("idproductotallacolor", GetType(Integer))
+        Return vBatch
+    End Function
+
+    Private Shared Sub AgregarBatchResumen(ByVal pBatch As clsInsertBatch,
+                                           ByVal pObj As clsBeTrans_inv_resumen)
+        pBatch.BeginRow()
+        pBatch.Add("idinventariores", pObj.Idinventariores)
+        pBatch.Add("idinventarioenct", pObj.Idinventarioenct)
+        pBatch.Add("idtramo", pObj.Idtramo)
+        pBatch.Add("idproducto", pObj.Idproducto)
+        pBatch.Add("idoperador", pObj.Idoperador)
+        pBatch.Add("idunidadmedida", pObj.IdUnidadMedida)
+        pBatch.Add("idpresentacion", pObj.Idpresentacion)
+        pBatch.Add("idproductoestado", pObj.Idproductoestado)
+        pBatch.Add("cantidad", pObj.Cantidad)
+        pBatch.Add("fecha_captura", pObj.Fecha_captura)
+        pBatch.Add("host", pObj.Host)
+        pBatch.Add("nom_producto", pObj.Nom_producto)
+        pBatch.Add("nom_operador", pObj.Nom_operador)
+        pBatch.Add("idubicacion", pObj.IdUbicacion)
+        pBatch.Add("idbodega", pObj.IdBodega)
+        pBatch.Add("lic_plate", pObj.Lic_plate)
+        pBatch.Add("idproductotallacolor", pObj.IdProductoTallaColor)
+        pBatch.EndRow()
+    End Sub
+
     Public Shared Sub Importar_Productos(ByRef pListInvStockPrd As List(Of clsBeTrans_inv_stock_prod), ByVal InsertaInv As Boolean,
                                          ByVal IdBodega As Integer,
                                          ByVal IdEmpresa As Integer,
@@ -120,6 +282,9 @@ Partial Public Class clsLnTrans_inv_stock_prod
         Dim vTraceMsInsertDetalle As Long = 0
         Dim vTraceMsInsertResumen As Long = 0
         Dim vTraceMsTramos As Long = 0
+        '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: caches de lectura para no repetir producto/propietario por cada linea importada.
+        Dim vProductosPorCodigo As New System.Collections.Generic.Dictionary(Of String, clsBeProducto)(System.StringComparer.OrdinalIgnoreCase)
+        Dim vPropietarioBodegaPorClave As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
 
         Try
 
@@ -191,6 +356,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
             If Not pExisteInventarioTeorico Then
                 InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_STOCK_LOOP_START", vIdInventarioEnc, pListInvStockPrd.Count)
+                Dim vBatchStockProd As clsInsertBatch = CrearBatchStockProd()
 
                 'EFREN16112021: Se guarda el stock_prod, y el obj IdTramo queda seteado, si es que se llegara a insertar como inv. inicial
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
@@ -247,7 +413,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     End If
 
                     vTraceReloj = Stopwatch.StartNew()
-                    Insertar(BeTransInvStockProd, lConnection, lTransaction)
+                    AgregarBatchStockProd(vBatchStockProd, BeTransInvStockProd)
                     vTraceMsInsertStock += vTraceReloj.ElapsedMilliseconds
 
                     prg.Value = Contador
@@ -269,6 +435,10 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     End If
 
                 Next
+
+                vTraceReloj = Stopwatch.StartNew()
+                vBatchStockProd.Execute(lConnection, lTransaction, 1000, 0)
+                vTraceMsInsertStock += vTraceReloj.ElapsedMilliseconds
                 InvImportTrace_Marca(vTraceSesion,
                                      vTraceTotal,
                                      vTracePaso,
@@ -285,7 +455,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
             If InsertaInv Then
                 InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_SETUP_START", vIdInventarioEnc, pListInvStockPrd.Count)
 
-                MaxIdDet = clsLnTrans_inv_resumen.MaxID(lConnection, lTransaction)
+                MaxIdDet = clsLnTrans_inv_resumen.MaxID(lConnection, lTransaction) + 1
 
                 IdProductoEstado = clsLnI_nav_config_enc.Get_IdProductoEstado_By_IdBodega_And_IdEmpresa(IdBodega,
                                                                                                         IdEmpresa,
@@ -302,6 +472,8 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                 Contador = 0
                 InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_LOOP_START", vIdInventarioEnc, pListInvStockPrd.Count)
+                Dim vBatchDetalle As clsInsertBatch = CrearBatchDetalle()
+                Dim vBatchResumen As clsInsertBatch = CrearBatchResumen()
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
 
                     BeTramoInv = New clsBeTrans_inv_tramo()
@@ -361,24 +533,28 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     End If
 
                     'EFREN17112021 valores de un inv multipropietario
-                    Dim pBeProducto As New clsBeProducto()
-                    Dim pCampos(4) As clsBeProducto.ProdPropiedades
-                    pCampos(0) = clsBeProducto.ProdPropiedades.Control_lote
-                    pCampos(1) = clsBeProducto.ProdPropiedades.Control_vencimiento
-                    pCampos(2) = clsBeProducto.ProdPropiedades.Codigo
-                    pCampos(3) = clsBeProducto.ProdPropiedades.Propietario
+                    Dim pBeProducto As clsBeProducto = Nothing
 
-                    'EFREN10052021 se utiliza un metodo sobrecargado, el método original no devuelve todas las propiedades de Producto
+                    '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: producto lite cacheado; evita Obtener(Propietario) y Get_Nombre por fila.
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                    pBeProducto = clsLnProducto.Get_Single_By_Codigo(BeTransInvStockProd.Codigo,
-                                                                     pCampos,
-                                                                     lConnection,
-                                                                     lTransaction)
+                    If Not vProductosPorCodigo.TryGetValue(BeTransInvStockProd.Codigo, pBeProducto) Then
+                        pBeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(BeTransInvStockProd.Codigo,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+                        vProductosPorCodigo(BeTransInvStockProd.Codigo) = pBeProducto
+                    End If
                     vTraceMsProductoDetalle += vTraceReloj.ElapsedMilliseconds
 
                     vTraceReloj.Restart()
-                    Dim vIdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(pBeProducto.Propietario.IdPropietario,
+                    Dim vIdPropietario As Integer = If(pBeProducto Is Nothing OrElse pBeProducto.Propietario Is Nothing, 0, pBeProducto.Propietario.IdPropietario)
+                    Dim vClavePropietarioBodega As String = vIdPropietario & "|" & BeTransInvStockProd.IdBodega
+                    Dim vIdPropietarioBodega As Integer = 0
+
+                    If Not vPropietarioBodegaPorClave.TryGetValue(vClavePropietarioBodega, vIdPropietarioBodega) Then
+                        vIdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(vIdPropietario,
                                                                                                                              BeTransInvStockProd.IdBodega)
+                        vPropietarioBodegaPorClave(vClavePropietarioBodega) = vIdPropietarioBodega
+                    End If
                     vTraceMsPropietarioBodega += vTraceReloj.ElapsedMilliseconds
 
                     InvDetalle.Idoperador = IdOperador
@@ -393,16 +569,14 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvDetalle.Fecha_captura = Date.Now.Date
                     InvDetalle.Host = "IMP"
                     vTraceReloj.Restart()
-                    InvDetalle.Nom_producto = clsLnProducto.Get_Nombre_By_IdProducto(BeTransInvStockProd.IdProducto,
-                                                                                     lConnection,
-                                                                                     lTransaction)
+                    InvDetalle.Nom_producto = If(pBeProducto Is Nothing, "", pBeProducto.Nombre)
                     vTraceMsNombreProducto += vTraceReloj.ElapsedMilliseconds
                     InvDetalle.Nom_operador = NomOperador
                     InvDetalle.Carga = 0
                     InvDetalle.Peso = BeTransInvStockProd.Peso
                     'EFREN10052021 se agregan los campos que identifican al inv multiempresa
                     InvDetalle.IdPropietarioBodega = vIdPropietarioBodega
-                    InvDetalle.nombre_propietario = pBeProducto.Propietario.Nombre_comercial
+                    InvDetalle.nombre_propietario = If(pBeProducto Is Nothing OrElse pBeProducto.Propietario Is Nothing, "", pBeProducto.Propietario.Nombre_comercial)
                     'GT02122021 Se agregan los valores de la LP y cod_variante
                     InvDetalle.License_plate = BeTransInvStockProd.License_plate
                     InvDetalle.Codigo_variante = BeTransInvStockProd.Codigo_variante
@@ -414,9 +588,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvDetalle.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
                     vTraceReloj.Restart()
-                    clsLnTrans_inv_detalle.InsertarSinID(InvDetalle,
-                                                         lConnection,
-                                                         lTransaction)
+                    AgregarBatchDetalle(vBatchDetalle, InvDetalle)
                     vTraceMsInsertDetalle += vTraceReloj.ElapsedMilliseconds
 
                     '#CKFK20220506 Si se inserta el inventario inicial tambien se debe insertar la verificacion
@@ -445,9 +617,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvResumen.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
                     vTraceReloj.Restart()
-                    clsLnTrans_inv_resumen.Insertar(InvResumen,
-                                                    lConnection,
-                                                    lTransaction)
+                    AgregarBatchResumen(vBatchResumen, InvResumen)
                     vTraceMsInsertResumen += vTraceReloj.ElapsedMilliseconds
 
                     ' End If
@@ -482,6 +652,14 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     End If
 
                 Next
+
+                vTraceReloj = Stopwatch.StartNew()
+                vBatchDetalle.Execute(lConnection, lTransaction, 1000, 0)
+                vTraceMsInsertDetalle += vTraceReloj.ElapsedMilliseconds
+
+                vTraceReloj.Restart()
+                vBatchResumen.Execute(lConnection, lTransaction, 1000, 0)
+                vTraceMsInsertResumen += vTraceReloj.ElapsedMilliseconds
                 InvImportTrace_Marca(vTraceSesion,
                                      vTraceTotal,
                                      vTracePaso,
