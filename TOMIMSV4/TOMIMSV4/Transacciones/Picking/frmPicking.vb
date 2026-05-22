@@ -70,6 +70,143 @@ Public Class frmPicking
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
     ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. La notificación se hace después del commit WMS.
     Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+    '#EJC20260522_PICKING_TRACE: trace local de carga para diagnosticar latencia sin escribir a BD.
+    Private Const TAG_PICKING_TRACE As String = "#EJC20260522_PICKING_TRACE"
+    '#EJC20260522_PICKING_UI: evita eventos/repintado por fila mientras se cargan grids programaticamente.
+    Private Const TAG_PICKING_UI As String = "#EJC20260522_PICKING_UI"
+    '#EJC20260522_PICKING_CACHE: caches por carga para lecturas repetidas y seguras.
+    Private Const TAG_PICKING_CACHE As String = "#EJC20260522_PICKING_CACHE"
+    Private mPickingCargandoDetalle As Boolean = False
+    Private mPickingTraceActivo As Boolean = False
+    Private mPickingTraceTotal As System.Diagnostics.Stopwatch
+    Private mPickingTraceMarca As System.Diagnostics.Stopwatch
+    Private ReadOnly mPickingOperadoresBodegaCache As New Dictionary(Of Integer, DataTable)
+    Private ReadOnly mPickingManufacturaCache As New Dictionary(Of String, Boolean)
+
+    '#EJC20260522_PICKING_CACHE: los caches viven solo durante una carga completa del picking.
+    Private Sub PickingCache_Limpiar()
+        mPickingOperadoresBodegaCache.Clear()
+        mPickingManufacturaCache.Clear()
+    End Sub
+
+    Private Function PickingCache_Key(ByVal ParamArray pValores() As Object) As String
+        Dim vPartes(pValores.Length - 1) As String
+        For i As Integer = 0 To pValores.Length - 1
+            vPartes(i) = If(pValores(i) Is Nothing, "", pValores(i).ToString())
+        Next
+        Return String.Join("|", vPartes)
+    End Function
+
+    '#EJC20260522_PICKING_CACHE: evita consultar operadores una vez por linea del detalle.
+    Private Function Get_Operadores_Bodega_Cacheado(ByVal pIdBodega As Integer,
+                                                    Optional ByVal pConnection As SqlConnection = Nothing,
+                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As DataTable
+
+        If pIdBodega = 0 Then Return Nothing
+
+        If Not mPickingOperadoresBodegaCache.ContainsKey(pIdBodega) Then
+
+            Dim vReloj = System.Diagnostics.Stopwatch.StartNew()
+            Dim vDT As DataTable
+
+            If pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing Then
+                vDT = clsLnOperador_bodega.Get_All_By_IdBodega_DT(pIdBodega, pConnection, pTransaction)
+            Else
+                vDT = clsLnOperador_bodega.Get_All_By_IdBodega_DT(pIdBodega)
+            End If
+
+            If vDT Is Nothing Then vDT = New DataTable()
+
+            mPickingOperadoresBodegaCache(pIdBodega) = vDT
+            vReloj.Stop()
+            PickingTrace_Marca("operadores_bodega_load",
+                               "bodega=" & pIdBodega &
+                               ";rows=" & vDT.Rows.Count &
+                               ";ms=" & vReloj.ElapsedMilliseconds)
+
+        End If
+
+        Return mPickingOperadoresBodegaCache(pIdBodega)
+
+    End Function
+
+    '#EJC20260522_PICKING_CACHE: Tiene_Manufactura_Asociada se repite por stock_res del mismo pedido/detalle.
+    Private Function Tiene_Manufactura_Cacheada(ByVal pIdPedidoEnc As Integer,
+                                                ByVal pIdPedidoDet As Integer) As Boolean
+
+        Dim vKey As String = PickingCache_Key(pIdPedidoEnc, pIdPedidoDet)
+
+        If Not mPickingManufacturaCache.ContainsKey(vKey) Then
+            Dim vReloj = System.Diagnostics.Stopwatch.StartNew()
+            mPickingManufacturaCache(vKey) = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(pIdPedidoEnc, pIdPedidoDet)
+            vReloj.Stop()
+            PickingTrace_Marca("manufactura_check",
+                               "pedido=" & pIdPedidoEnc &
+                               ";det=" & pIdPedidoDet &
+                               ";ms=" & vReloj.ElapsedMilliseconds)
+        End If
+
+        Return mPickingManufacturaCache(vKey)
+
+    End Function
+
+    '#EJC20260522_PICKING_TRACE: activo por defecto; se puede apagar con TOMWMS_PICKING_TRACE=0.
+    Private Function PickingTrace_Habilitado() As Boolean
+        Dim vConfig As String = Environment.GetEnvironmentVariable("TOMWMS_PICKING_TRACE")
+        Return Not String.Equals(vConfig, "0", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    Private Function PickingTrace_Ruta() As String
+        Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+        Directory.CreateDirectory(vDir)
+        Return Path.Combine(vDir, "picking-load-trace.log")
+    End Function
+
+    Private Sub PickingTrace_Inicio(ByVal pIdPickingEnc As Integer)
+        mPickingTraceActivo = PickingTrace_Habilitado()
+        If Not mPickingTraceActivo Then Return
+
+        mPickingTraceTotal = System.Diagnostics.Stopwatch.StartNew()
+        mPickingTraceMarca = System.Diagnostics.Stopwatch.StartNew()
+        PickingTrace_Escribir("START|idPickingEnc=" & pIdPickingEnc &
+                              "|modo=" & Modo.ToString() &
+                              "|bodega=" & Val(cmbBodegas.EditValue))
+    End Sub
+
+    Private Sub PickingTrace_Marca(ByVal pPaso As String, Optional ByVal pDetalle As String = "")
+        If Not mPickingTraceActivo Then Return
+        If mPickingTraceTotal Is Nothing OrElse mPickingTraceMarca Is Nothing Then Return
+
+        PickingTrace_Escribir("MARK|paso=" & pPaso &
+                              "|totalMs=" & mPickingTraceTotal.ElapsedMilliseconds &
+                              "|deltaMs=" & mPickingTraceMarca.ElapsedMilliseconds &
+                              If(String.IsNullOrEmpty(pDetalle), "", "|" & pDetalle))
+        mPickingTraceMarca.Restart()
+    End Sub
+
+    Private Sub PickingTrace_Fin(Optional ByVal pDetalle As String = "")
+        If Not mPickingTraceActivo Then Return
+        If mPickingTraceTotal Is Nothing Then Return
+
+        PickingTrace_Escribir("END|totalMs=" & mPickingTraceTotal.ElapsedMilliseconds &
+                              If(String.IsNullOrEmpty(pDetalle), "", "|" & pDetalle))
+        mPickingTraceActivo = False
+    End Sub
+
+    Private Sub PickingTrace_Escribir(ByVal pMensaje As String)
+        Try
+            Dim vPath As String = PickingTrace_Ruta()
+            Dim vInfo As New FileInfo(vPath)
+            If vInfo.Exists AndAlso vInfo.Length > 5 * 1024 * 1024 Then
+                File.WriteAllText(vPath, String.Empty, New System.Text.UTF8Encoding(False))
+            End If
+
+            File.AppendAllText(vPath,
+                               DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & "|" & TAG_PICKING_TRACE & "|" & pMensaje & Environment.NewLine,
+                               New System.Text.UTF8Encoding(False))
+        Catch
+        End Try
+    End Sub
 
     Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Async(ByVal pEstadoPedido As Integer,
                                                                   ByVal pEstadoFactura As Integer,
@@ -1204,9 +1341,9 @@ Public Class frmPicking
 
         Try
 
-            Dim DT As DataTable = clsLnOperador_bodega.Get_All_By_IdBodega_DT(cmbBodegas.EditValue,
-                                                                              pConnection,
-                                                                              pTransaction)
+            Dim DT As DataTable = Get_Operadores_Bodega_Cacheado(cmbBodegas.EditValue,
+                                                                 pConnection,
+                                                                 pTransaction)
 
             If Not DT Is Nothing Then
 
@@ -1242,6 +1379,8 @@ Public Class frmPicking
     Private Sub grdListaPickingD_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgridDetallePicking.CellValueChanged
 
         Try
+
+            If mPickingCargandoDetalle Then Return
 
             If dgridDetallePicking.Rows.Count > 0 AndAlso dgridDetallePicking.CurrentRow IsNot Nothing Then
 
@@ -1663,7 +1802,7 @@ Public Class frmPicking
 
                     End If
 
-                    Dim vTieneManufactura As Boolean = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(Obj.IdPedidoEnc, Obj.IdPedidoDet)
+                    Dim vTieneManufactura As Boolean = Tiene_Manufactura_Cacheada(Obj.IdPedidoEnc, Obj.IdPedidoDet)
 
                     DTStockRes.Rows.Add(Obj.IdPedidoEnc,
                                         Obj.IdPickingEnc,
@@ -1865,6 +2004,10 @@ Public Class frmPicking
     Private Sub Cargar_Datos()
 
         Dim clsTransaccion As New clsTransaccion
+        Dim vUIBatchActivo As Boolean = False
+        Dim vLineasDetalle As Integer = 0
+        Dim vPedidos As Integer = 0
+        Dim vStockRows As Integer = 0
 
         Try
 
@@ -1875,17 +2018,35 @@ Public Class frmPicking
 
             If BePickingEnc IsNot Nothing Then
 
+                PickingTrace_Inicio(BePickingEnc.IdPickingEnc)
+                PickingCache_Limpiar()
+                mPickingCargandoDetalle = True
+                vUIBatchActivo = True
+                dgridPedidos.SuspendLayout()
+                dgridDetallePicking.SuspendLayout()
+                DTStockRes.BeginLoadData()
+                grdvPickingUbic.BeginDataUpdate()
+                PickingTrace_Marca("ui_batch_inicio")
+
                 clsTransaccion.Open_Connection() : clsTransaccion.Begin_Transaction()
+                PickingTrace_Marca("conexion")
 
                 BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("picking_getsingle",
+                                   "detalle=" & If(BePickingEnc.ListaPickingDet Is Nothing, 0, BePickingEnc.ListaPickingDet.Count) &
+                                   ";ubic=" & If(BePickingEnc.ListaPickingUbic Is Nothing, 0, BePickingEnc.ListaPickingUbic.Count))
 
                 Mostrar_Datos_Encabezado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("encabezado")
 
                 Mostrar_Pedidos_Asociados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("pedidos_asociados", "pedidos=" & If(pListaPedidos Is Nothing, 0, pListaPedidos.Count))
 
                 Cargar_Pedidos_Impresion(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("pedidos_impresion")
 
                 Lista_Productos_Dañados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("productos_daniados")
 
                 If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
 
@@ -1903,6 +2064,7 @@ Public Class frmPicking
 
                     For Each IdPedidoEnc As Integer In ListaPedidosPicking
 
+                        vPedidos += 1
                         BePickingDet = BePickingEnc.ListaPickingDet.ToList.Find(Function(b) b.IdPedidoEnc = IdPedidoEnc)
 
                         ie = dgridPedidos.Rows.Add()
@@ -1950,10 +2112,17 @@ Public Class frmPicking
                             Next
 
                         Else
-                            Set_Stock_Res(BePickingDet.IdPedidoEnc)
+                            Set_Stock_Res(BePickingDet.IdPedidoEnc, False)
                         End If
 
                     Next
+
+                    If BePickingEnc.Estado <> "Despachado" Then
+                        dgridPickingUbic.DataSource = DTStockRes
+                    End If
+
+                    vStockRows = DTStockRes.Rows.Count
+                    PickingTrace_Marca("stock_res_grid", "pedidos=" & vPedidos & ";rows=" & vStockRows)
 
                     dgridPedidos.CommitEdit(DataGridViewDataErrorContexts.Commit)
                     dgridPedidos.EndEdit()
@@ -1980,6 +2149,7 @@ Public Class frmPicking
 
                     For Each det As clsBeTrans_picking_det In BePickingEnc.ListaPickingDet
 
+                        vLineasDetalle += 1
                         i = dgridDetallePicking.Rows.Add(det.Producto.Codigo)
 
                         dgridDetallePicking.Rows(i).Cells("IdPedidoEnc").Value = det.IdPedidoEnc
@@ -2032,6 +2202,11 @@ Public Class frmPicking
 
                     Next
 
+                    PickingTrace_Marca("detalle_grid",
+                                       "lineas=" & vLineasDetalle &
+                                       ";operadoresCache=" & mPickingOperadoresBodegaCache.Count &
+                                       ";manufacturaCache=" & mPickingManufacturaCache.Count)
+
                 End If
 
                 If BePickingEnc.Estado = "Anulado" Then
@@ -2055,6 +2230,7 @@ Public Class frmPicking
                 End If
 
                 clsTransaccion.Commit_Transaction()
+                PickingTrace_Marca("commit")
 
                 Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
 
@@ -2073,15 +2249,34 @@ Public Class frmPicking
             End If
 
             Actualizar_Gaugue_Progreso()
+            PickingTrace_Marca("gauge")
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
             SplashScreenManager.CloseForm(False)
+            PickingTrace_Marca("error", ex.Message)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Finally
+            If vUIBatchActivo Then
+                Try
+                    grdvPickingUbic.EndDataUpdate()
+                Catch
+                End Try
+                Try
+                    DTStockRes.EndLoadData()
+                Catch
+                End Try
+                dgridDetallePicking.ResumeLayout()
+                dgridPedidos.ResumeLayout()
+                mPickingCargandoDetalle = False
+                PickingTrace_Marca("ui_batch_fin")
+            End If
             SplashScreenManager.CloseForm(False)
             IsLoading = False
             clsTransaccion.Close_Conection()
+            PickingTrace_Fin("pedidos=" & vPedidos &
+                             ";detalle=" & vLineasDetalle &
+                             ";stockRows=" & vStockRows)
         End Try
 
     End Sub
@@ -2451,7 +2646,8 @@ Public Class frmPicking
     End Sub
 
     '#CM20172310_1231PM: Se agregaron campos al GridView de ubicación picking. 
-    Public Sub Set_Stock_Res(ByVal pIdPedidoEnc As Integer)
+    Public Sub Set_Stock_Res(ByVal pIdPedidoEnc As Integer,
+                             Optional ByVal pAsignarDataSource As Boolean = True)
 
         Try
 
@@ -2593,7 +2789,7 @@ Public Class frmPicking
 
                     End If
 
-                    Dim vTieneManufactura As Boolean = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(ObjStock.IdPedido, ObjStock.IdPedidoDet)
+                    Dim vTieneManufactura As Boolean = Tiene_Manufactura_Cacheada(ObjStock.IdPedido, ObjStock.IdPedidoDet)
 
                     DTStockRes.Rows.Add(ObjStock.IdPedido,
                                         ObjStock.IdPicking,
@@ -2633,7 +2829,7 @@ Public Class frmPicking
 
             If DTStockRes.Rows.Count > 0 Then
 
-                If BePickingEnc.Estado <> "Despachado" Then
+                If pAsignarDataSource AndAlso BePickingEnc.Estado <> "Despachado" Then
                     dgridPickingUbic.DataSource = DTStockRes
                 End If
 
@@ -2649,6 +2845,11 @@ Public Class frmPicking
     Private Sub grdListaPickingD_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgridDetallePicking.RowValidating
 
         Try
+
+            If mPickingCargandoDetalle Then
+                e.Cancel = False
+                Return
+            End If
 
             If Not String.IsNullOrEmpty(dgridDetallePicking.Rows(e.RowIndex).Cells("Producto").Value) Then
 
@@ -5292,7 +5493,7 @@ Public Class frmPicking
 
         Try
 
-            Dim DT As DataTable = clsLnOperador_bodega.Get_All_By_IdBodega_DT(cmbBodegas.EditValue)
+            Dim DT As DataTable = Get_Operadores_Bodega_Cacheado(cmbBodegas.EditValue)
 
             If Not DT Is Nothing Then
 

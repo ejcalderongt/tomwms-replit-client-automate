@@ -854,3 +854,16 @@ notas:
       producto o al refrescar luego de crear producto manual. La lista se cachea
       por propietario/bodega y deja marca producto_lookup_load en la traza local
       de OC para medir filas y milisegundos.
+  - fecha: "2026-05-22"
+    area: "BOF frmPicking performance fase 1"
+    detalle: >
+      En frmPicking se inicio fase conservadora sobre rama
+      codex/mejora-frmpicking-performance: trace local en
+      %TEMP%/TOMWMS/picking-load-trace.log, batching de grids durante
+      Cargar_Datos, bloqueo de eventos/validaciones de dgridDetallePicking
+      mientras la carga es programatica, cache por bodega para
+      clsLnOperador_bodega.Get_All_By_IdBodega_DT y cache por pedido/detalle
+      para clsLnTrans_pe_det.Tiene_Manufactura_Asociada. Set_Stock_Res mantiene
+      el comportamiento por defecto y solo difiere asignar DataSource cuando
+      Cargar_Datos procesa varios pedidos para asignarlo una vez al final.
+      Toggle de traza: TOMWMS_PICKING_TRACE=0.
