@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-20"
+updated: "2026-05-22"
 domain: bof
 scope: "Legacy VB.NET/WinForms context for WMS reservation and interface work."
 
@@ -26,3 +26,17 @@ legacy_as_oracle:
   - If Erik marks a legacy reservation as correct, snapshot it before deleting.
   - Capture interface lines, trans_pe_det and stock_res with per-line reservation detail.
   - Use that snapshot as the oracle for Core parity.
+
+verification_movements:
+  veri_duplicate_case:
+    handoff: "brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados"
+    symptom: "Exact duplicate VERI movements and VERI quantity stored in presentation instead of UMBAS."
+    guardrail: >
+      VERI insert logic must stay idempotent by business key before inserting
+      trans_movimientos. When a verification quantity is distributed across
+      multiple trans_picking_ubic rows, movement quantity must use the applied
+      line quantity (CantPendiente), not the original remaining request.
+    quantity_rule: >
+      trans_movimientos.cantidad for VERI must be stored in UMBAS. Callers that
+      already pass UMBAS must declare it explicitly; presentation quantities are
+      normalized in the common VERI insert path.

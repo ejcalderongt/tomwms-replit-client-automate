@@ -2301,7 +2301,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                         pCantidad,
                                                                         pBeTrans_picking_ubic.Peso_recibido,
                                                                         IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                        True)
 
             End If
 
@@ -2417,7 +2418,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                         pCantidad,
                                                                         BeOnTablePickingUbic.Peso_recibido,
                                                                         IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                        True)
 
             End If
 
@@ -3355,7 +3357,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                 vCantidadARestarStockUmBas,
                                                                                 BeOnTablePickingUbic.Peso_recibido,
                                                                                 IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                                IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                                True)
 
                     End If
 
@@ -3828,7 +3831,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                     IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
                                                                                     IIf(UsarPeso = 0, PesoPend, UsarPeso),
                                                                                     IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                    IIf(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                                                                    IIf(Es_Transaccion_Remota, pTransaction, ltransaction),
+                                                                                    True)
                             End If
 
                             CantidadPendiente -= IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad)
@@ -3860,10 +3864,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
                             clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                                     BeStock.IdUbicacion,
-                                                                                    Get_Cantidad_Verificacion_UMBAS(PickingUbic,
-                                                                                                                    PickingUbic.Cantidad_Recibida,
-                                                                                                                    If(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                                                    If(Es_Transaccion_Remota, pTransaction, ltransaction)),
+                                                                                    PickingUbic.Cantidad_Recibida,
                                                                                     PickingUbic.Peso_recibido,
                                                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                     If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -3958,10 +3959,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
                         clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                             BeStock.IdUbicacion,
-                                                                            Get_Cantidad_Verificacion_UMBAS(PickingUbic,
-                                                                                                            PickingUbic.Cantidad_Recibida,
-                                                                                                            If(Es_Transaccion_Remota, pConection, lConnection),
-                                                                                                            If(Es_Transaccion_Remota, pTransaction, ltransaction)),
+                                                                            PickingUbic.Cantidad_Recibida,
                                                                             PickingUbic.Peso_recibido,
                                                                             If(Es_Transaccion_Remota, pConection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -4005,22 +4003,6 @@ Partial Public Class clsLnTrans_picking_ubic
             If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
     End Sub
-
-    Private Shared Function Get_Cantidad_Verificacion_UMBAS(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
-                                                            ByVal pCantidad As Double,
-                                                            ByVal pConnection As SqlConnection,
-                                                            ByVal pTransaction As SqlTransaction) As Double
-        If pBePickingUbic Is Nothing OrElse pBePickingUbic.IdPresentacion <= 0 Then Return pCantidad
-
-        Dim vFactor As Double = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pBePickingUbic.IdProductoBodega,
-                                                                                          pBePickingUbic.IdPresentacion,
-                                                                                          pConnection,
-                                                                                          pTransaction)
-
-        If vFactor <= 0 Then Return pCantidad
-
-        Return Math.Round(pCantidad * vFactor, 6)
-    End Function
 
     '#EJCCKFK20260520: Blindaje reversa picking; si no hubo ejecución real, devolver stock de staging a origen.
     Public Shared Function Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
@@ -6037,8 +6019,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 '#GT25042023: cantidad y peso son opcionales, porque el método se llama desde otro lugar, donde no son necesarios dichos valores.
                 resultado += Actualizar_PickingUbic_Por_Verificacion(vBePickingUbic,
                                                                      BeStockRes,
-                                                                     pCantidad,
-                                                                     pPeso,
+                                                                     CantPendiente,
+                                                                     PesoPendiente,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
                 '#MA20251219
@@ -8506,8 +8488,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 '#GT25042023: cantidad y peso son opcionales, porque el método se llama desde otro lugar, donde no son necesarios dichos valores.
                 resultado += Actualizar_PickingUbic_Por_Verificacion(vBePickingUbic,
                                                                      BeStockRes,
-                                                                     pCantidad,
-                                                                     pPeso,
+                                                                     CantPendiente,
+                                                                     PesoPendiente,
                                                                      lConnection,
                                                                      lTransaction)
 
