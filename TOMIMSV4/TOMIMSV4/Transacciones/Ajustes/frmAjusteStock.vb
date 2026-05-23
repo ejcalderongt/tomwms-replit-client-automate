@@ -1284,7 +1284,7 @@ Public Class frmAjusteStock
             DgCombo.ValueMember = "Idmotivoajuste"
             DgCombo.DisplayMember = "Nombre"
 
-            If pidmotivo <> -1 Then
+            If pidmotivo > 0 Then
                 DgCombo.Value = pidmotivo
             Else
                 If dt.Rows.Count = 1 Then
