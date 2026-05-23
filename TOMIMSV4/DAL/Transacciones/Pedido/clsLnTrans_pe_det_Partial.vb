@@ -2080,7 +2080,7 @@ Partial Public Class clsLnTrans_pe_det
                                                                      lConnection,
                                                                      lTransaction) Then
 
-                                If Not pBePedidoDet.ListaPickingUbic Is Nothing Then
+                                If pBePedidoDet.ListaPickingUbic IsNot Nothing AndAlso pBePedidoDet.ListaPickingUbic.Count > 0 Then
 
                                     vIdPickingEnc = pBePedidoDet.ListaPickingUbic.FirstOrDefault.IdPickingEnc
 
