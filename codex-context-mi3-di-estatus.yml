@@ -1,5 +1,36 @@
 notas:
   - fecha: "2026-05-22"
+    area: "frmPrincipal02 read-model tareas correccion"
+    detalle: >
+      Se corrigio dbo.usp_wms_principal02_tareas_readmodel_v1 para no depender
+      de columnas que no forman parte del contrato fisico/base del monitor:
+      no debe seleccionar b.IdTransaccion desde vw_tareas_activas_hh porque la
+      forma usa Correlativo; la ubicacion de recepcion sale de
+      bodega_ubicacion.descripcion via trans_re_enc.IdUbicacionRecepcion, no de
+      trans_re_enc.UbicacionRecepcion; y el encabezado trans_ubic_hh_enc no
+      garantiza Nombre_Operador, por lo que el read-model conserva cadena vacia
+      igual que el fallback legacy. En VB el fallback del monitor tambien cubre
+      error SQL 207 para caer a la vista legacy si un SP instalado no calza con
+      el schema del cliente. Ajuste posterior: en clientes con mezcla
+      Modern_Spanish_CI_AS / SQL_Latin1_General_CP1_CI_AS, las columnas texto
+      calculadas por CASE (Origen, Destino, CalendarioAsunto,
+      CalendarioUbicacion) deben devolver COLLATE DATABASE_DEFAULT para evitar
+      conflicto de collation en el SELECT.
+  - fecha: "2026-05-22"
+    area: "frmPrincipal02 performance"
+    detalle: >
+      Se inicio optimizacion de frmPrincipal02 para enlaces con latencia.
+      Cambio principal: read-model dbo.usp_wms_principal02_tareas_readmodel_v1
+      en tools/principal-readmodel/001_create_wms_principal02_tareas_readmodel_v1.sql
+      para refrescar el monitor de tareas con una sola lectura enriquecida,
+      evitando GetSingle/detalles por cada tarea de recepcion, picking y
+      ubicacion. clsLnTarea_hh.Get_Lista_Tareas_Monitor_By_IdBodega consume el
+      SP y cae al metodo legacy si aun no esta instalado. En la forma se
+      respeta el contrato de columnas del grid y se usan Origen/Destino/
+      Progreso/Calendario del read-model cuando estan disponibles. Tambien se
+      agrego cache local de producto_presentacion en Listar_Reabastecimiento_Productos
+      para evitar consultas repetidas por IdPresentacionAbastercerCon.
+  - fecha: "2026-05-22"
     area: "Context router local con LM Studio"
     detalle: >
       Se agrego tools/wms-context como mecanismo local para reducir tokens antes

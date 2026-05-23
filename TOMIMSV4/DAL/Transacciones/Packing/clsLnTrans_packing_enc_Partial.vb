@@ -11,7 +11,6 @@ Partial Public Class clsLnTrans_packing_enc
         Dim cnt As Integer = 0
         Dim IdPicking As Integer = 0
         Dim vMaxIdPackingEnc As Integer = 0
-        Dim ListaPikcing As List(Of clsBeTrans_picking_ubic) = Nothing
         Dim ListaPacking As List(Of clsBeTrans_packing_enc) = Nothing
 
         Try
@@ -22,16 +21,20 @@ Partial Public Class clsLnTrans_packing_enc
 
                     lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    'Lista de picking ubics
-                    ListaPikcing = clsLnTrans_picking_ubic.Get_All_PickingUbic_For_Packing(pTrans_packing_enc.Item(0),
-                                                                                           lConnection,
-                                                                                           lTransaction)
-
-                    Dim CantVerificada As Double = ListaPikcing.Sum(Function(item) item.Cantidad_Verificada)
-
                     vMaxIdPackingEnc = MaxID(lConnection, lTransaction) + 1
 
                     For Each BeTransPackingEnc As clsBeTrans_packing_enc In pTrans_packing_enc
+
+                        '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: La verificacion asociada se calcula por linea de packing.
+                        Dim ListaPikcing As List(Of clsBeTrans_picking_ubic) = clsLnTrans_picking_ubic.Get_All_PickingUbic_For_Packing(BeTransPackingEnc,
+                                                                                                                                       lConnection,
+                                                                                                                                       lTransaction)
+
+                        If ListaPikcing Is Nothing OrElse ListaPikcing.Count = 0 Then
+                            Throw New Exception(String.Format("No existen ubicaciones verificadas para empacar el producto {0}, licencia {1}.",
+                                                              BeTransPackingEnc.Idproductobodega,
+                                                              BeTransPackingEnc.Lic_plate))
+                        End If
 
                         If BeTransPackingEnc.Idpackingenc <> 0 Then
                             cnt = Actualizar_Cantidad_Packing(BeTransPackingEnc, lConnection, lTransaction)

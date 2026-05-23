@@ -507,7 +507,7 @@ Public Class frmInventarioImport
                                                vUnidadPorNombre)
 
             Try
-                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                vTraceReloj = Stopwatch.StartNew()
                 vReadModelDisponible = InvImportCargarValidacionReadModel(lConnection,
                                                                           lTransaction,
                                                                           vProductoPorCodigo,
@@ -528,14 +528,6 @@ Public Class frmInventarioImport
 
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Procesando archivo...")
-
-            'Application.DoEvents()
-
-            'Dim vCantRegistros As Integer = Carga.lInvenarioTeorico.Rows().Count()
-
-            'For Each ProdInv As DataRow In Carga.lInvenarioTeorico.Rows()
-
-            '    SplashScreenManager.Default.SetWaitFormDescription("Código: " & ProdInv("Codigo") & " " & i & " de " & vCantRegistros)
 
             For ii = 0 To rc - 1
 
@@ -1008,6 +1000,8 @@ Public Class frmInventarioImport
         Dim vTraceMsUnidad As Long = 0
         Dim vTraceMsExist As Long = 0
         Dim vTraceMsImportar As Long = 0
+        '#EJC20260522_INV_APLICAR_TEORICO_CACHE: evita abrir conexion por cada fila para obtener la unidad basica.
+        Dim vUnidadMedidaPorCodigo As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
 
         Cursor.Current = Cursors.WaitCursor
 
@@ -1029,12 +1023,11 @@ Public Class frmInventarioImport
 
             For ii = 0 To rc - 1
 
-                lblPrg.Text = "Preparando fila: " & ii & " para insert..."
-                lblPrg.Refresh()
-
-                SplashScreenManager.Default.SetWaitFormDescription("Preparando fila: " & ii + 1 & " de: " & rc)
-                lblPrg.Text = "Preparando fila: " & ii & " para insert..."
-                lblPrg.Refresh()
+                If ii = 0 OrElse (ii + 1) Mod 100 = 0 OrElse ii = rc - 1 Then
+                    lblPrg.Text = "Preparando fila: " & ii + 1 & " de: " & rc
+                    lblPrg.Refresh()
+                    SplashScreenManager.Default.SetWaitFormDescription("Preparando fila: " & ii + 1 & " de: " & rc)
+                End If
 
                 Try
                     Cantidad = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCantidad").Value), 0, CDbl(grdData.Rows(ii).Cells("ColCantidad").Value))
@@ -1051,9 +1044,26 @@ Public Class frmInventarioImport
                 vIdProducto = grdData.Rows(ii).Cells("ColIdProducto").Value
                 vIdPresentacion = grdData.Rows(ii).Cells("ColIdPresentacion").Value
                 vCodigoProducto = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodigo").Value), "", grdData.Rows(ii).Cells("ColCodigo").Value)
-                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                vIdUnidadMedida = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(vCodigoProducto) '#CM_20190807: para idealsa se cargaba el idunidadmedida del maestros de productos, no del excel'IIf(IsDBNull(grdData.Rows(ii).Cells("ColIdUnidadMedida").Value), "", grdData.Rows(ii).Cells("ColIdUnidadMedida").Value)
-                vTraceMsUnidad += vTraceReloj.ElapsedMilliseconds
+                vIdUnidadMedida = 0
+                Try
+                    If Not IsDBNull(grdData.Rows(ii).Cells("ColIdUnidadMedida").Value) AndAlso
+                       grdData.Rows(ii).Cells("ColIdUnidadMedida").Value.ToString().Trim() <> "" Then
+                        vIdUnidadMedida = CInt(grdData.Rows(ii).Cells("ColIdUnidadMedida").Value)
+                    End If
+                Catch ex As Exception
+                    vIdUnidadMedida = 0
+                End Try
+
+                If vIdUnidadMedida <= 0 Then
+                    Dim vIdUnidadMedidaCache As Integer = 0
+                    If Not vUnidadMedidaPorCodigo.TryGetValue(vCodigoProducto, vIdUnidadMedidaCache) Then
+                        vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                        vIdUnidadMedidaCache = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(vCodigoProducto) '#CM_20190807: para idealsa se cargaba el idunidadmedida del maestros de productos, no del excel.
+                        vTraceMsUnidad += vTraceReloj.ElapsedMilliseconds
+                        vUnidadMedidaPorCodigo(vCodigoProducto) = vIdUnidadMedidaCache
+                    End If
+                    vIdUnidadMedida = vIdUnidadMedidaCache
+                End If
                 vLote = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLote").Value), "", grdData.Rows(ii).Cells("ColLote").Value)
                 sFechaVence = IIf(IsDBNull(grdData.Rows(ii).Cells("ColFechaVence").Value), "01/01/1900", grdData.Rows(ii).Cells("ColFechaVence").Value)
                 vUbicacion = grdData.Rows(ii).Cells("ColUbicacion").Value
@@ -1113,15 +1123,17 @@ Public Class frmInventarioImport
                 '#AT20251015 Campos para MAMPA
                 lInventarioTeorico.Add(BeTrans_inv_stock_prod)
 
-                prg.Value = ii
-
-                Application.DoEvents()
+                If ii = 0 OrElse (ii + 1) Mod 100 = 0 OrElse ii = rc - 1 Then
+                    prg.Value = Math.Min(ii + 1, prg.Maximum)
+                    Application.DoEvents()
+                End If
 
                 If (ii + 1) Mod 500 = 0 Then
                     InvImportTrace_Marca("IMPORTAR_DATOS_LISTA_PROGRESS",
                                          "Fila=" & ii + 1 &
                                          ";Lista=" & lInventarioTeorico.Count &
-                                         ";MsUnidad=" & vTraceMsUnidad)
+                                         ";MsUnidad=" & vTraceMsUnidad &
+                                         ";UnidadCache=" & vUnidadMedidaPorCodigo.Count)
                 End If
 
             Next
@@ -1129,7 +1141,7 @@ Public Class frmInventarioImport
             lblPrg.Text = "Insertando registros..."
             lblPrg.Refresh()
 
-            InvImportTrace_Marca("IMPORTAR_DATOS_LISTA_END", "Lista=" & lInventarioTeorico.Count & ";MsUnidad=" & vTraceMsUnidad)
+            InvImportTrace_Marca("IMPORTAR_DATOS_LISTA_END", "Lista=" & lInventarioTeorico.Count & ";MsUnidad=" & vTraceMsUnidad & ";UnidadCache=" & vUnidadMedidaPorCodigo.Count)
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             ExisteInventarioTeorico = clsLnTrans_inv_stock_prod.Exist(IdInventario,
                                                                       TipoTeoricoImportacion)
@@ -1206,6 +1218,7 @@ Public Class frmInventarioImport
                                  "Rows=" & rc &
                                  ";Lista=" & lInventarioTeorico.Count &
                                  ";MsUnidad=" & vTraceMsUnidad &
+                                 ";UnidadCache=" & vUnidadMedidaPorCodigo.Count &
                                  ";MsExist=" & vTraceMsExist &
                                  ";MsImportar=" & vTraceMsImportar)
             SplashScreenManager.CloseForm(False)

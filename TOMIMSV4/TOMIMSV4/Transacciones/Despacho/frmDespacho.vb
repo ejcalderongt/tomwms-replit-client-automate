@@ -162,15 +162,27 @@ Public Class frmDespacho
                 Return False
             End If
 
-            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking()
+            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: Las diferencias parciales bloquean; solo las verificaciones en cero mantienen correccion automatica.
+            Dim permiteCorreccionAutoPacking As Boolean = False
+            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking(permiteCorreccionAutoPacking)
 
             If msgDiferenciaDespachoPacking <> String.Empty Then
 
+                If Not permiteCorreccionAutoPacking Then
+                    XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
+                                        "Corrija la diferencia en picking/verificación o packing antes de despachar.",
+                                        Text,
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Exclamation)
+
+                    Return False
+                End If
+
                 Dim vRespuesta As DialogResult = XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
-                                                                    "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
-                                                                    Text,
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Question)
+                                                                     "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
+                                                                     Text,
+                                                                     MessageBoxButtons.YesNo,
+                                                                     MessageBoxIcon.Question)
 
                 If vRespuesta = DialogResult.Yes Then
 
@@ -4018,9 +4030,10 @@ Public Class frmDespacho
 
     End Function
 
-    Private Function ObtenerMensajeDiferenciasDespachoPacking() As String
+    Private Function ObtenerMensajeDiferenciasDespachoPacking(ByRef pPermiteCorreccionAuto As Boolean) As String
 
         Dim sb As New System.Text.StringBuilder()
+        pPermiteCorreccionAuto = True
 
         Try
             If BeDespachoEnc Is Nothing _
@@ -4055,14 +4068,23 @@ Public Class frmDespacho
                     Dim producto As String = Nz(row("producto"))
                     Dim lote As String = Nz(row("lote"))
                     Dim licencia As String = Nz(row("lic_plate"))
+                    Dim tipoDiferencia As String = If(dt.Columns.Contains("tipo_diferencia"), Nz(row("tipo_diferencia")), "")
+                    Dim permiteCorreccion As Boolean = If(dt.Columns.Contains("permite_correccion_auto"), ToInteger(row("permite_correccion_auto")) = 1, False)
 
                     Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
                     Dim verificado As Double = ToDouble(row("cantidad_verificada"))
                     Dim empacado As Double = ToDouble(row("cantidad_empacada"))
 
+                    If Not permiteCorreccion Then
+                        pPermiteCorreccionAuto = False
+                    End If
+
                     sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
                     sb.AppendLine(String.Format("Producto: {0}", producto))
                     sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
+                    If tipoDiferencia <> String.Empty Then
+                        sb.AppendLine(String.Format("Diferencia: {0}", tipoDiferencia))
+                    End If
                     sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
                                             pickeado,
                                             verificado,

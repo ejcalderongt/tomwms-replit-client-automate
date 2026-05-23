@@ -285,6 +285,8 @@ Partial Public Class clsLnTrans_inv_stock_prod
         '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: caches de lectura para no repetir producto/propietario por cada linea importada.
         Dim vProductosPorCodigo As New System.Collections.Generic.Dictionary(Of String, clsBeProducto)(System.StringComparer.OrdinalIgnoreCase)
         Dim vPropietarioBodegaPorClave As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
+        '#EJC20260522_INV_APLICAR_TEORICO_CACHE: cache unico de ubicaciones para stock y detalle; evita roundtrips duplicados.
+        Dim vUbicacionesPorId As New System.Collections.Generic.Dictionary(Of Integer, clsBeBodega_ubicacion)
 
         Try
 
@@ -300,7 +302,6 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
         Dim vIndiceTramoInvExistente As Integer = -1
 
-        Dim lUbicaciones As New List(Of clsBeBodega_ubicacion)
         Dim BeUbicacionLista As New clsBeBodega_ubicacion
 
         Try
@@ -340,7 +341,6 @@ Partial Public Class clsLnTrans_inv_stock_prod
             prg.Maximum = pListInvStockPrd.Count
             prg.Visible = True
 
-            lUbicaciones = New List(Of clsBeBodega_ubicacion)
             BeUbicacionLista = New clsBeBodega_ubicacion
 
             Dim vMaxIdInvStockProd As Integer = 1
@@ -371,29 +371,32 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                     If BeTransInvStockProd.IdUbicacion > 0 Then
 
-                        BeUbicacionLista = lUbicaciones.Find(Function(x) x.IdUbicacion = BeTransInvStockProd.IdUbicacion)
-
-                        If BeUbicacionLista Is Nothing Then
+                        If Not vUbicacionesPorId.TryGetValue(BeTransInvStockProd.IdUbicacion, BeUbicacionLista) Then
 
                             BeUbicacion = New clsBeBodega_ubicacion()
                             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                             BeUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BeTransInvStockProd.IdUbicacion,
                                                                                                        IdBodega,
-                                                                                                       lConnection,
-                                                                                                       lTransaction)
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
                             vTraceMsUbicStock += vTraceReloj.ElapsedMilliseconds
-                            lUbicaciones.Add(BeUbicacion)
+                            BeUbicacionLista = BeUbicacion
+                            vUbicacionesPorId(BeTransInvStockProd.IdUbicacion) = BeUbicacionLista
 
-                            BeTramoInv.Idtramo = BeUbicacion.IdTramo
+                        End If
 
-                            vIndiceTramoInvExistente = lTramosInv.FindIndex(Function(x) x.IdBodega = IdBodega _
-                                                                            AndAlso x.Idtramo = BeTramoInv.Idtramo _
-                                                                            AndAlso x.Idinventario = BeTramoInv.Idinventario)
+                        If BeUbicacionLista Is Nothing Then
+                            Throw New Exception("No se encontro la ubicacion " & BeTransInvStockProd.IdUbicacion & " para la bodega " & IdBodega)
+                        End If
 
-                            If vIndiceTramoInvExistente = -1 Then
-                                lTramosInv.Add(BeTramoInv)
-                            End If
+                        BeTramoInv.Idtramo = BeUbicacionLista.IdTramo
 
+                        vIndiceTramoInvExistente = lTramosInv.FindIndex(Function(x) x.IdBodega = IdBodega _
+                                                                        AndAlso x.Idtramo = BeTramoInv.Idtramo _
+                                                                        AndAlso x.Idinventario = BeTramoInv.Idinventario)
+
+                        If vIndiceTramoInvExistente = -1 Then
+                            lTramosInv.Add(BeTramoInv)
                         End If
 
                     Else
@@ -430,7 +433,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                              "Contador=" & Contador &
                                              ";MsUbicStock=" & vTraceMsUbicStock &
                                              ";MsInsertStock=" & vTraceMsInsertStock &
-                                             ";UbicCache=" & lUbicaciones.Count &
+                                             ";UbicCache=" & vUbicacionesPorId.Count &
                                              ";Tramos=" & lTramosInv.Count)
                     End If
 
@@ -447,7 +450,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                      pListInvStockPrd.Count,
                                      "MsUbicStock=" & vTraceMsUbicStock &
                                      ";MsInsertStock=" & vTraceMsInsertStock &
-                                     ";UbicCache=" & lUbicaciones.Count &
+                                     ";UbicCache=" & vUbicacionesPorId.Count &
                                      ";Tramos=" & lTramosInv.Count)
 
             End If
@@ -467,7 +470,6 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     Throw New Exception("ERR_20220510_0929: No está definido el estado de producto en la configuración de la interfase.")
                 End If
 
-                lUbicaciones = New List(Of clsBeBodega_ubicacion)
                 BeUbicacionLista = New clsBeBodega_ubicacion
 
                 Contador = 0
@@ -490,40 +492,40 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     'EFREN10112021: Si el registro tiene idubicación se sobreescribe, la ubicación por defecto no se registrará.
                     If BeTransInvStockProd.IdUbicacion > 0 Then
 
-                        BeUbicacionLista = lUbicaciones.Find(Function(x) x.IdUbicacion = BeTransInvStockProd.IdUbicacion)
-
-                        If BeUbicacionLista Is Nothing Then
+                        If Not vUbicacionesPorId.TryGetValue(BeTransInvStockProd.IdUbicacion, BeUbicacionLista) Then
 
                             BeUbicacion = New clsBeBodega_ubicacion()
                             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                             BeUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BeTransInvStockProd.IdUbicacion,
                                                                                                        IdBodega,
-                                                                                                       lConnection,
-                                                                                                       lTransaction)
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
                             vTraceMsUbicDetalle += vTraceReloj.ElapsedMilliseconds
-                            InvDetalle.IdUbicacion = BeTransInvStockProd.IdUbicacion
-                            InvDetalle.Idtramo = BeUbicacion.IdTramo
-                            lUbicaciones.Add(BeUbicacion)
+                            BeUbicacionLista = BeUbicacion
+                            vUbicacionesPorId(BeTransInvStockProd.IdUbicacion) = BeUbicacionLista
 
-                            BeTramoInv.Idtramo = BeUbicacion.IdTramo
+                        End If
 
-                            If DobleVerificacion Then
-                                BeTramoInv.Res_estado = "En Proceso"
-                                BeTramoInv.Res_idoperador = IdOperador
-                            End If
+                        If BeUbicacionLista Is Nothing Then
+                            Throw New Exception("No se encontro la ubicacion " & BeTransInvStockProd.IdUbicacion & " para la bodega " & IdBodega)
+                        End If
 
-                            vIndiceTramoInvExistente = lTramosInv.FindIndex(Function(x) x.IdBodega = IdBodega _
-                                                                            AndAlso x.Idtramo = BeTramoInv.Idtramo _
-                                                                            AndAlso x.Idinventario = BeTramoInv.Idinventario)
+                        InvDetalle.IdUbicacion = BeTransInvStockProd.IdUbicacion
+                        InvDetalle.Idtramo = BeUbicacionLista.IdTramo
 
-                            If vIndiceTramoInvExistente = -1 Then
-                                lTramosInv.Add(BeTramoInv)
-                            End If
+                        BeTramoInv.Idtramo = BeUbicacionLista.IdTramo
 
-                        Else
-                            BeTramoInv.Idtramo = BeUbicacionLista.IdTramo
-                            InvDetalle.IdUbicacion = BeTransInvStockProd.IdUbicacion
-                            InvDetalle.Idtramo = BeUbicacionLista.IdTramo
+                        If DobleVerificacion Then
+                            BeTramoInv.Res_estado = "En Proceso"
+                            BeTramoInv.Res_idoperador = IdOperador
+                        End If
+
+                        vIndiceTramoInvExistente = lTramosInv.FindIndex(Function(x) x.IdBodega = IdBodega _
+                                                                        AndAlso x.Idtramo = BeTramoInv.Idtramo _
+                                                                        AndAlso x.Idinventario = BeTramoInv.Idinventario)
+
+                        If vIndiceTramoInvExistente = -1 Then
+                            lTramosInv.Add(BeTramoInv)
                         End If
 
                     Else
@@ -647,7 +649,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                              ";MsNombreProducto=" & vTraceMsNombreProducto &
                                              ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                              ";MsInsertResumen=" & vTraceMsInsertResumen &
-                                             ";UbicCache=" & lUbicaciones.Count &
+                                             ";UbicCache=" & vUbicacionesPorId.Count &
                                              ";Tramos=" & lTramosInv.Count)
                     End If
 
@@ -672,7 +674,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                      ";MsNombreProducto=" & vTraceMsNombreProducto &
                                      ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                      ";MsInsertResumen=" & vTraceMsInsertResumen &
-                                     ";UbicCache=" & lUbicaciones.Count &
+                                     ";UbicCache=" & vUbicacionesPorId.Count &
                                      ";Tramos=" & lTramosInv.Count)
 
             End If
@@ -724,7 +726,8 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                  ";MsNombreProducto=" & vTraceMsNombreProducto &
                                  ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                  ";MsInsertResumen=" & vTraceMsInsertResumen &
-                                 ";MsTramos=" & vTraceMsTramos)
+                                 ";MsTramos=" & vTraceMsTramos &
+                                 ";UbicCache=" & vUbicacionesPorId.Count)
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
