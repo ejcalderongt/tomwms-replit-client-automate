@@ -35,12 +35,20 @@ Public Class frmInventarioImport
     End Enum
 
     Private Const TAG_INV_IMPORT_TRACE As String = "#EJC20260522_INV_IMPORT_TRACE"
+    Private Const WM_SETREDRAW As Integer = &HB
     Private mInvImportTraceSesion As String = ""
     Private mInvImportTraceTotal As Stopwatch
     Private mInvImportTracePaso As Stopwatch
     Private WithEvents bwImportarTeorico As New System.ComponentModel.BackgroundWorker()
     Private mInvImportCancelado As Boolean = False
     Private mInvImportEnProceso As Boolean = False
+
+    <System.Runtime.InteropServices.DllImport("user32.dll")>
+    Private Shared Function SendMessage(ByVal hWnd As IntPtr,
+                                        ByVal msg As Integer,
+                                        ByVal wParam As IntPtr,
+                                        ByVal lParam As IntPtr) As IntPtr
+    End Function
 
     Private Class InvImportWorkerArgs
         Public Property Lista As List(Of clsBeTrans_inv_stock_prod)
@@ -182,6 +190,19 @@ Public Class frmInventarioImport
     Private Function InvImportDebeCancelar() As Boolean
         Return mInvImportCancelado OrElse (bwImportarTeorico IsNot Nothing AndAlso bwImportarTeorico.CancellationPending)
     End Function
+
+    '#EJC20260523_INV_IMPORT_GRID_REDRAW: evita repintado por celda durante validaciones largas.
+    Private Sub InvImportSetGridRedraw(ByVal pEnabled As Boolean)
+        If grdData Is Nothing OrElse grdData.IsDisposed OrElse Not grdData.IsHandleCreated Then Return
+
+        Dim vRedraw As IntPtr = If(pEnabled, New IntPtr(1), IntPtr.Zero)
+        SendMessage(grdData.Handle, WM_SETREDRAW, vRedraw, IntPtr.Zero)
+
+        If pEnabled Then
+            grdData.Invalidate()
+            grdData.Update()
+        End If
+    End Sub
 
     '#EJC20260522_INV_IMPORT_VALIDACION_CACHE: soporte liviano para evitar consultas por fila durante Validar_Datos.
     Private Function InvImportValorCelda(ByVal pFila As Integer, ByVal pColumna As String) As String
@@ -554,11 +575,17 @@ Public Class frmInventarioImport
         Dim vPresentacionPorClave As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
         Dim vUnidadPorNombre As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
         Dim vReadModelDisponible As Boolean = False
+        Dim vGridLayoutSuspendido As Boolean = False
+        Dim vGridRedrawSuspendido As Boolean = False
 
         rc = grdData.Rows.Count  'If rc > 3 Then rc = 3
 
         lblPrg.Text = ""
         grdData.EndEdit()
+        grdData.SuspendLayout()
+        vGridLayoutSuspendido = True
+        InvImportSetGridRedraw(False)
+        vGridRedrawSuspendido = True
 
         InvImportTrace_Marca("VALIDAR_DATOS_START", "Rows=" & rc & ";ControlTallaColor=" & AP.Bodega.Control_Talla_Color)
         vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
@@ -976,7 +1003,9 @@ Public Class frmInventarioImport
                     Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
                 End If
 
-                grdData.CurrentCell = grdData.Rows(ii).Cells(0)
+                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                    grdData.CurrentCell = grdData.Rows(ii).Cells(0)
+                End If
 
                 If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
@@ -1035,6 +1064,14 @@ Public Class frmInventarioImport
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If Not lConnection Is Nothing Then lConnection.Dispose()
             If Not lTransaction Is Nothing Then lTransaction.Dispose()
+            If vGridLayoutSuspendido Then
+                grdData.ResumeLayout()
+                vGridLayoutSuspendido = False
+            End If
+            If vGridRedrawSuspendido Then
+                InvImportSetGridRedraw(True)
+                vGridRedrawSuspendido = False
+            End If
         End Try
 
         lblPrg.Text = ""

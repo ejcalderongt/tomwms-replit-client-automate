@@ -941,6 +941,8 @@ Public Class frmInventario
 
     Private Sub llena_Grid_Comparacion()
 
+        Dim vGridUpdateSuspendido As Boolean = False
+
         Try
 
             Dim vDif As Double = 0.0
@@ -951,49 +953,56 @@ Public Class frmInventario
 
             If ListaConteos.Count > 0 Then
 
-                DTC.Clear()
+                gviewComparativo.BeginDataUpdate()
+                vGridUpdateSuspendido = True
 
-                For Each BeTransInvEnc In ListaConteos
+                DTC.BeginLoadData()
+                Try
+                    DTC.Clear()
 
-                    vDif = (BeTransInvEnc.Detalle - BeTransInvEnc.Resumen)
+                    For Each BeTransInvEnc In ListaConteos
 
-                    If vDif < 0 Then
-                        vDif = vDif * -1
-                    End If
+                        vDif = (BeTransInvEnc.Detalle - BeTransInvEnc.Resumen)
 
-                    If chkComparativoConUbicacion.Checked Then
-                        DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
-                                 BeTransInvEnc.IdTramo,
-                                 BeTransInvEnc.IdProducto,
-                                 BeTransInvEnc.Tramo,
-                                 BeTransInvEnc.Codigo,
-                                 BeTransInvEnc.Producto,
-                                 BeTransInvEnc.Presentacion,
-                                 BeTransInvEnc.UMBas,
-                                 BeTransInvEnc.Detalle,
-                                 BeTransInvEnc.Resumen,
-                                 vDif,
-                                 BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen,
-                                 BeTransInvEnc.UbicacionCompleta)
-                    Else
-                        DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
-                                 BeTransInvEnc.IdTramo,
-                                 BeTransInvEnc.IdProducto,
-                                 BeTransInvEnc.Tramo,
-                                 BeTransInvEnc.Codigo,
-                                 BeTransInvEnc.Producto,
-                                 BeTransInvEnc.Presentacion,
-                                 BeTransInvEnc.UMBas,
-                                 BeTransInvEnc.Detalle,
-                                 BeTransInvEnc.Resumen,
-                                 vDif,
-                                 BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen)
-                    End If
+                        If vDif < 0 Then
+                            vDif = vDif * -1
+                        End If
 
+                        If chkComparativoConUbicacion.Checked Then
+                            DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
+                                     BeTransInvEnc.IdTramo,
+                                     BeTransInvEnc.IdProducto,
+                                     BeTransInvEnc.Tramo,
+                                     BeTransInvEnc.Codigo,
+                                     BeTransInvEnc.Producto,
+                                     BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.UMBas,
+                                     BeTransInvEnc.Detalle,
+                                     BeTransInvEnc.Resumen,
+                                     vDif,
+                                     BeTransInvEnc.EstadoDetalle,
+                                     BeTransInvEnc.EstadoResumen,
+                                     BeTransInvEnc.UbicacionCompleta)
+                        Else
+                            DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
+                                     BeTransInvEnc.IdTramo,
+                                     BeTransInvEnc.IdProducto,
+                                     BeTransInvEnc.Tramo,
+                                     BeTransInvEnc.Codigo,
+                                     BeTransInvEnc.Producto,
+                                     BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.UMBas,
+                                     BeTransInvEnc.Detalle,
+                                     BeTransInvEnc.Resumen,
+                                     vDif,
+                                     BeTransInvEnc.EstadoDetalle,
+                                     BeTransInvEnc.EstadoResumen)
+                        End If
 
-                Next
+                    Next
+                Finally
+                    DTC.EndLoadData()
+                End Try
 
                 dgridComparativoInvInicial.DataSource = DTC
 
@@ -1042,6 +1051,11 @@ Public Class frmInventario
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        Finally
+            If vGridUpdateSuspendido Then
+                gviewComparativo.EndDataUpdate()
+            End If
 
         End Try
 
@@ -9003,8 +9017,8 @@ Public Class frmInventario
                 End If
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-                XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
-                    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
+                'XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
+                '    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False

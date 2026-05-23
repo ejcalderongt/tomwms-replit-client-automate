@@ -4,6 +4,8 @@ Imports System.Net
 Imports System.Reflection
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Web
+Imports System.Web.Caching
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
@@ -45,11 +47,220 @@ End Class
 Public Class TOMHHWS
     Inherits System.Web.Services.WebService
 
+    Private Const HH_CACHE_CATALOGO_SEGUNDOS As Integer = 120
+    Private Const HH_CACHE_SEGURIDAD_SEGUNDOS As Integer = 300
+    Private Shared ReadOnly HH_CACHE_LOCK As New Object()
+
     '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
     ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
     ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. Las llamadas se hacen después del commit WMS para no romper la operación local.
     Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+
+    Private Shared Function ObtenerCacheHH(Of T As Class)(ByVal pKey As String,
+                                                          ByVal pSegundos As Integer,
+                                                          ByVal pFactory As Func(Of T)) As T
+
+        Dim cache As Cache = HttpRuntime.Cache
+        Dim value As T = TryCast(cache.Get(pKey), T)
+
+        If value IsNot Nothing Then
+            Return value
+        End If
+
+        SyncLock HH_CACHE_LOCK
+
+            value = TryCast(cache.Get(pKey), T)
+
+            If value IsNot Nothing Then
+                Return value
+            End If
+
+            value = pFactory()
+
+            If value IsNot Nothing Then
+                cache.Insert(pKey,
+                             value,
+                             Nothing,
+                             DateTime.UtcNow.AddSeconds(pSegundos),
+                             Cache.NoSlidingExpiration)
+            End If
+
+            Return value
+
+        End SyncLock
+
+    End Function
+
+    Private Shared Function ValorDataRow(Of T)(ByVal pRow As DataRow,
+                                               ByVal pColumna As String,
+                                               ByVal pDefault As T) As T
+
+        If pRow Is Nothing OrElse Not pRow.Table.Columns.Contains(pColumna) Then
+            Return pDefault
+        End If
+
+        Dim value As Object = pRow(pColumna)
+
+        If value Is Nothing OrElse value Is DBNull.Value Then
+            Return pDefault
+        End If
+
+        Return CType(Convert.ChangeType(value, GetType(T)), T)
+
+    End Function
+
+    Private Shared Sub EscribirJsonHH(ByVal pPayload As Object,
+                                      Optional ByVal pStatusCode As Integer = 200)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        Dim json As String = JsonConvert.SerializeObject(pPayload,
+                                                         New JsonSerializerSettings With {
+                                                             .NullValueHandling = NullValueHandling.Include
+                                                         })
+
+        curContext.Response.Clear()
+        curContext.Response.StatusCode = pStatusCode
+        curContext.Response.ContentType = "application/json; charset=utf-8"
+        curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        curContext.Response.Write(json)
+        curContext.Response.Flush()
+
+    End Sub
+
+    Private Shared Function ObtenerSesionOperadorHH(ByVal pIdOperador As Integer,
+                                                    ByVal pClave As String,
+                                                    ByVal pIdBodega As Integer) As DataTable
+
+        Const vSQL As String = "
+            SELECT TOP (1)
+                   opb.IdOperadorBodega,
+                   opb.IdOperador,
+                   opb.IdBodega,
+                   o.IdEmpresa,
+                   o.IdRolOperador,
+                   ISNULL(o.Nombres, '') AS Nombres,
+                   ISNULL(o.Apellidos, '') AS Apellidos,
+                   ISNULL(o.Codigo, '') AS CodigoOperador,
+                   ISNULL(o.Recibe, 0) AS Recibe,
+                   ISNULL(o.Ubica, 0) AS Ubica,
+                   ISNULL(o.Transporta, 0) AS Transporta,
+                   ISNULL(o.Pickea, 0) AS Pickea,
+                   ISNULL(o.Verifica, 0) AS Verifica,
+                   ISNULL(o.Montacarga, 0) AS Montacarga,
+                   ISNULL(b.Codigo, '') AS CodigoBodega,
+                   ISNULL(b.Nombre, '') AS NombreBodega,
+                   ISNULL(b.IdProductoEstadoNE, 0) AS IdProductoEstadoNE,
+                   ISNULL(ro.Nombre, '') AS NombreRol
+            FROM operador_bodega AS opb
+            INNER JOIN operador AS o ON o.IdOperador = opb.IdOperador
+            INNER JOIN bodega AS b ON b.IdBodega = opb.IdBodega
+            LEFT JOIN rol_operador AS ro ON ro.IdRolOperador = o.IdRolOperador
+            WHERE o.IdOperador = @IdOperador
+              AND o.Clave = @Clave
+              AND opb.IdBodega = @IdBodega
+              AND ISNULL(o.Activo, 0) = 1
+              AND ISNULL(o.Usa_hh, 0) = 1
+              AND ISNULL(opb.Activo, 0) = 1"
+
+        Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
+            Using lCommand As New SqlCommand(vSQL, lConnection)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.CommandTimeout = 30
+                lCommand.Parameters.AddWithValue("@IdOperador", pIdOperador)
+                lCommand.Parameters.AddWithValue("@Clave", pClave)
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Using lDTA As New SqlDataAdapter(lCommand)
+                    Dim dt As New DataTable()
+                    lDTA.Fill(dt)
+                    Return dt
+                End Using
+
+            End Using
+        End Using
+
+    End Function
+
+    Private Shared Function ObtenerMenuRolHHLite(ByVal pIdRolOperador As Integer) As List(Of Object)
+
+        Return ObtenerCacheHH(String.Format("HH:MenuRolLite:{0}", pIdRolOperador),
+                              HH_CACHE_SEGURIDAD_SEGUNDOS,
+                              Function()
+                                  Dim menuRol As List(Of clsBeMenu_rol_op) = clsLnMenu_rol_op.Get_List_Menu_By_IdRolOperador(pIdRolOperador)
+
+                                  If menuRol Is Nothing Then
+                                      Return New List(Of Object)()
+                                  End If
+
+                                  Return menuRol.
+                                      OrderBy(Function(x) x.MenuSistemaOp.Posicion).
+                                      Select(Function(x) CType(New With {
+                                          .IdMenuSistemaOP = x.IdMenuSistemaOP,
+                                          .Nombre = x.MenuSistemaOp.Nombre,
+                                          .Posicion = x.MenuSistemaOp.Posicion,
+                                          .IdTipoTarea = x.MenuSistemaOp.IdTipoTarea
+                                      }, Object)).
+                                      ToList()
+                              End Function)
+
+    End Function
+
+    Private Shared Function ParsearResumenTareasHH(ByVal pResumen As String) As Object
+
+        Dim conteos As New Dictionary(Of String, Integer) From {
+            {"R", 0},
+            {"P", 0},
+            {"V", 0},
+            {"U", 0},
+            {"E", 0}
+        }
+        Dim ids As New Dictionary(Of String, List(Of Integer)) From {
+            {"R", New List(Of Integer)()},
+            {"P", New List(Of Integer)()},
+            {"V", New List(Of Integer)()},
+            {"U", New List(Of Integer)()},
+            {"E", New List(Of Integer)()}
+        }
+
+        If Not String.IsNullOrWhiteSpace(pResumen) Then
+            Dim partes As String() = pResumen.Split(";"c)
+
+            If partes.Length > 0 Then
+                For Each conteo As String In partes(0).Split(","c)
+                    If conteo.Length > 1 Then
+                        Dim tipo As String = conteo.Substring(0, 1)
+                        Dim cantidad As Integer
+
+                        If conteos.ContainsKey(tipo) AndAlso Integer.TryParse(conteo.Substring(1), cantidad) Then
+                            conteos(tipo) = cantidad
+                        End If
+                    End If
+                Next
+            End If
+
+            For i As Integer = 1 To partes.Length - 1
+                Dim item As String = partes(i)
+
+                If item.Length > 1 Then
+                    Dim tipo As String = item.Substring(0, 1)
+                    Dim idTarea As Integer
+
+                    If ids.ContainsKey(tipo) AndAlso Integer.TryParse(item.Substring(1), idTarea) Then
+                        ids(tipo).Add(idTarea)
+                    End If
+                End If
+            Next
+        End If
+
+        Return New With {
+            .Raw = pResumen,
+            .Conteos = conteos,
+            .Ids = ids
+        }
+
+    End Function
 
     Private Function Tiene_Avance_Picking(ByVal pIdPickingEnc As Integer) As Boolean
 
@@ -257,7 +468,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnEmpresa.Get_List_Empresas_For_HH(IdEmpresa)
+            Return ObtenerCacheHH(String.Format("HH:Get_List_Empresas_For_HH:{0}", IdEmpresa),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnEmpresa.Get_List_Empresas_For_HH(IdEmpresa))
 
         Catch ex As Exception
 
@@ -300,7 +513,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnBodega.Get_All_By_IdEmpresa(IdEmpresa)
+            Return ObtenerCacheHH(String.Format("HH:Get_Bodegas_By_IdEmpresa_For_HH:{0}", IdEmpresa),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnBodega.Get_All_By_IdEmpresa(IdEmpresa))
 
         Catch ex As Exception
 
@@ -343,7 +558,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnBodega.Android_Get_All_By_IdEmpresa(IdEmpresa)
+            Return ObtenerCacheHH(String.Format("HH:Android_Get_Bodegas_By_IdEmpresa:{0}", IdEmpresa),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnBodega.Android_Get_All_By_IdEmpresa(IdEmpresa))
 
         Catch ex As Exception
 
@@ -429,7 +646,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnPropietario_bodega.Get_All_By_IdBodega_HH(IdBodega)
+            Return ObtenerCacheHH(String.Format("HH:Get_Propietarios_By_IdBodega_For_HH:{0}", IdBodega),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnPropietario_bodega.Get_All_By_IdBodega_HH(IdBodega))
 
         Catch ex As Exception
 
@@ -472,7 +691,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnReglas_recepcion.Get_Reglas_Recepcion()
+            Return ObtenerCacheHH("HH:Get_All_Reglas_Recepcion_For_HH",
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnReglas_recepcion.Get_Reglas_Recepcion())
 
         Catch ex As Exception
 
@@ -516,7 +737,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnCliente_bodega.Get_All_By_IdBodega_HH(IdBodega)
+            Return ObtenerCacheHH(String.Format("HH:Get_Clientes_By_IdBodega_For_HH:{0}", IdBodega),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnCliente_bodega.Get_All_By_IdBodega_HH(IdBodega))
 
         Catch ex As Exception
 
@@ -559,7 +782,9 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnProveedor_bodega.Get_All_By_IdBodega_HH(IdBodega, IdProveedorBodega)
+            Return ObtenerCacheHH(String.Format("HH:Get_Proveedores_By_Bodega_For_HH:{0}:{1}", IdBodega, IdProveedorBodega),
+                                  HH_CACHE_CATALOGO_SEGUNDOS,
+                                  Function() clsLnProveedor_bodega.Get_All_By_IdBodega_HH(IdBodega, IdProveedorBodega))
 
         Catch ex As Exception
 
@@ -1004,6 +1229,88 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
+    '#EJC20260522: Bootstrap liviano para que la HH migre login/roles/menu/conteos a una sola llamada JSON sin romper SOAP/XML.
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Get_HH_Session_Bootstrap_JSON(ByVal pIdOperador As Integer,
+                                             ByVal pClave As String,
+                                             ByVal pIdBodega As Integer)
+
+        Try
+
+            Dim dtSesion As DataTable = ObtenerSesionOperadorHH(pIdOperador, pClave, pIdBodega)
+
+            If dtSesion Is Nothing OrElse dtSesion.Rows.Count = 0 Then
+                EscribirJsonHH(New With {
+                    .Ok = False,
+                    .Mensaje = "Operador, clave o bodega inválidos para HH.",
+                    .FechaServidor = DateTime.Now
+                })
+                Return
+            End If
+
+            Dim row As DataRow = dtSesion.Rows(0)
+            Dim idRolOperador As Integer = ValorDataRow(row, "IdRolOperador", 0)
+            Dim idOperadorBodega As Integer = ValorDataRow(row, "IdOperadorBodega", 0)
+            Dim resumenTareasRaw As String = ""
+
+            If idOperadorBodega > 0 Then
+                resumenTareasRaw = clsLnTarea_hh.Get_Count_All_Services(pIdBodega, idOperadorBodega)
+            End If
+
+            Dim payload = New With {
+                .Ok = True,
+                .Mensaje = "",
+                .FechaServidor = DateTime.Now,
+                .Operador = New With {
+                    .IdOperador = ValorDataRow(row, "IdOperador", 0),
+                    .IdOperadorBodega = idOperadorBodega,
+                    .IdEmpresa = ValorDataRow(row, "IdEmpresa", 0),
+                    .IdBodega = ValorDataRow(row, "IdBodega", 0),
+                    .IdRolOperador = idRolOperador,
+                    .Codigo = ValorDataRow(row, "CodigoOperador", ""),
+                    .Nombres = ValorDataRow(row, "Nombres", ""),
+                    .Apellidos = ValorDataRow(row, "Apellidos", "")
+                },
+                .Bodega = New With {
+                    .IdBodega = ValorDataRow(row, "IdBodega", 0),
+                    .Codigo = ValorDataRow(row, "CodigoBodega", ""),
+                    .Nombre = ValorDataRow(row, "NombreBodega", ""),
+                    .IdProductoEstadoNE = ValorDataRow(row, "IdProductoEstadoNE", 0)
+                },
+                .Rol = New With {
+                    .IdRolOperador = idRolOperador,
+                    .Nombre = ValorDataRow(row, "NombreRol", "")
+                },
+                .Permisos = New With {
+                    .Recibe = ValorDataRow(row, "Recibe", False),
+                    .Ubica = ValorDataRow(row, "Ubica", False),
+                    .Transporta = ValorDataRow(row, "Transporta", False),
+                    .Pickea = ValorDataRow(row, "Pickea", False),
+                    .Verifica = ValorDataRow(row, "Verifica", False),
+                    .Montacarga = ValorDataRow(row, "Montacarga", False)
+                },
+                .Menu = ObtenerMenuRolHHLite(idRolOperador),
+                .Tareas = ParsearResumenTareasHH(resumenTareasRaw)
+            }
+
+            EscribirJsonHH(payload)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Ok = False,
+                .Mensaje = ex.Message,
+                .FechaServidor = DateTime.Now
+            }, 299)
+
+        End Try
+
+    End Sub
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function GetSis_estado_tarea_hh() As List(Of clsBeSis_estado_tarea_hh)

@@ -8386,12 +8386,43 @@ Partial Public Class clsLnStock
 
     Public Shared Function Get_All_By_IdUbicacion(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
 
+        Try
+            Return Get_All_By_IdUbicacion_ReadModel(pIdUbicacion, pIdBodega)
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 208 OrElse ex.Number = 207
+            Return Get_All_By_IdUbicacion_Text(pIdUbicacion, pIdBodega)
+        End Try
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_ReadModel(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
+
+        Return Get_All_By_IdUbicacion_Internal(pIdUbicacion,
+                                               pIdBodega,
+                                               "dbo.usp_wms_hh_stock_by_ubicacion_v1",
+                                               CommandType.StoredProcedure)
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_Text(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
+
+        Dim vSQL As String = "SELECT * FROM VW_Stock_Res
+						WHERE IdUbicacion = @IdUbicacion AND IdBodega = @IdBodega"
+
+        Return Get_All_By_IdUbicacion_Internal(pIdUbicacion,
+                                               pIdBodega,
+                                               vSQL,
+                                               CommandType.Text)
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_Internal(ByVal pIdUbicacion As Integer,
+                                                            ByVal pIdBodega As Integer,
+                                                            ByVal pCommandText As String,
+                                                            ByVal pCommandType As CommandType) As List(Of clsBeVW_stock_res)
+
         Dim lReturnList As New List(Of clsBeVW_stock_res)
 
         Try
-
-            Dim vSQL As String = "SELECT * FROM VW_Stock_Res 
-						WHERE IdUbicacion = @IdUbicacion AND IdBodega = @IdBodega"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -8399,10 +8430,10 @@ Partial Public Class clsLnStock
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                    Using lDTA As New SqlDataAdapter(pCommandText, lConnection)
 
                         lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.CommandType = pCommandType
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
