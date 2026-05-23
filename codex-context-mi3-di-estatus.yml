@@ -1,4 +1,24 @@
 notas:
+  - fecha: "2026-05-23"
+    area: "HH wrapper JSON global + recepcion scan"
+    detalle: >
+      Se movio la compatibilidad de colecciones JSON a capa base
+      (com.dts.base.WebService) con normalizacion recursiva generica. Cualquier
+      propiedad que llegue como arreglo ahora se transforma a wrapper compatible
+      para modelos *List de HH sin parches campo-por-campo, manteniendo doble
+      clave ("items" y nombre original) para clases con @SerializedName.
+      frm_lista_tareas_recepcion ya no hace normalizacion local y consume
+      ws.xmlresult directo.
+  - fecha: "2026-05-23"
+    area: "Recepcion HH/WS flujo Lite"
+    detalle: >
+      Se agrego ruta ligera para apertura de recepcion por escaneo:
+      GetSingleRec_JSON_Lite en WSHHRN, con cache corto servidor. DAL incluye
+      GetSingleHH_Lite (encabezado recepcion), GetSingleLite (trans_re_oc) y
+      Get_Encabezado_OC_HH_Lite (OC sin detalle pesado/lotes/imagenes). En HH,
+      frm_lista_tareas_recepcion intenta Lite y cae a GetSingleRec_JSON como
+      fallback. frm_list_rec_prod carga detalle OC bajo demanda via execws(15)
+      cuando el payload Lite llega sin lineas.
   - fecha: "2026-05-22"
     area: "HH recepcion scan producto - traza parseo JSON"
     detalle: >
