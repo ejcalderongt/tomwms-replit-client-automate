@@ -1410,21 +1410,28 @@ Public Class frmAjusteStock
                 Dim reservasDelStock As List(Of clsBeStock_res) =
                     clsLnStock_res.Get_All_By_IdStock(det.IdStock)
 
-                Dim tieneReservaPropia As Boolean = False
+                Dim reservaPropia As clsBeStock_res = Nothing
                 If reservasDelStock IsNot Nothing Then
                     For Each rsv In reservasDelStock
                         If rsv.IdTransaccion = pIdAjusteEnc AndAlso
                            rsv.Indicador = "ajuste_stock" Then
-                            tieneReservaPropia = True
+                            reservaPropia = rsv
                             Exit For
                         End If
                     Next
                 End If
 
-                If tieneReservaPropia Then Continue For
+                Dim cantidadEsperada As Double = Math.Round(det.cantidad_original, 6)
+                If reservaPropia IsNot Nothing Then
+                    If cantidadEsperada <= 0 OrElse Math.Round(reservaPropia.Cantidad, 6) = cantidadEsperada Then
+                        Continue For
+                    End If
+
+                    Liberar_Reserva_Ajuste_Stock(reservaPropia.IdStockRes, pIdAjusteEnc, det.IdStock)
+                End If
 
                 'Reserva faltante: intentar recrear
-                Dim ok As Boolean = Reservar_Stock_Borrador_Standalone(det.IdStock, pIdAjusteEnc)
+                Dim ok As Boolean = Reservar_Stock_Borrador_Standalone(det.IdStock, pIdAjusteEnc, det.cantidad_original)
                 If ok Then
                     cntRecreados += 1
                 Else
@@ -1458,13 +1465,14 @@ Public Class frmAjusteStock
     'devuelve True/False sin mostrar MessageBox individual (el agregado lo hace
     'Validar_Reservas_Borrador_Al_Cargar).
     Private Function Reservar_Stock_Borrador_Standalone(ByVal idstock As Integer,
-                                                         ByVal pIdAjusteEnc As Integer) As Boolean
+                                                         ByVal pIdAjusteEnc As Integer,
+                                                         Optional ByVal pCantidadReservar As Double = 0) As Boolean
         Dim ct As New clsTransaccion()
         Try
             ct.Begin_Transaction()
             Dim ok = clsLnTrans_ajuste_enc.Reservar_Stock_Para_Borrador_Standalone(
                 idstock, pIdAjusteEnc, AP.HostName, AP.UsuarioAp.IdUsuario,
-                ct.lConnection, ct.lTransaction)
+                ct.lConnection, ct.lTransaction, pCantidadReservar)
             ct.Commit_Transaction()
             Return ok
         Catch ex As Exception
@@ -2140,7 +2148,6 @@ Public Class frmAjusteStock
     Private Sub mnuDel_Click(sender As Object, e As EventArgs) Handles mnuDel.Click
 
         Dim sr, stocklink, ii As Integer
-        Dim str As New clsBeStock_res
 
         dgrid.EndEdit()
 
@@ -2171,10 +2178,9 @@ Public Class frmAjusteStock
                     'tiene un IdStockRes valido. La rama no-borrador (debajo) ya
                     'eliminaba el stock_res; faltaba replicar la limpieza aca para
                     'no dejar reservas huerfanas que bloqueen la disponibilidad.
-                    str.IdStockRes = lBeTransAjusteDetBorrador(sr).idstockres
-                    If str.IdStockRes > 0 Then
-                        clsLnStock_res.Eliminar(str)
-                    End If
+                    Liberar_Reserva_Ajuste_Stock(lBeTransAjusteDetBorrador(sr).idstockres,
+                                                 lBeTransAjusteDetBorrador(sr).idajusteenc,
+                                                 lBeTransAjusteDetBorrador(sr).IdStock)
 
                     clsLnTrans_ajuste_det_borrador.Eliminar_Por_IdAjusteEnc_And_IdAjusteDet(lBeTransAjusteDetBorrador(sr).idajusteenc, lBeTransAjusteDetBorrador(sr).IdAjusteDetBorrador)
 
@@ -2195,10 +2201,9 @@ Public Class frmAjusteStock
                             'de las filas hermanas. Aca no aplicamos el filtro
                             '"Not esnuevolink" porque en borrador todas las filas
                             'son nuevas reservas locales que deben liberarse.
-                            str.IdStockRes = lBeTransAjusteDetBorrador(ii).idstockres
-                            If str.IdStockRes > 0 Then
-                                clsLnStock_res.Eliminar(str)
-                            End If
+                            Liberar_Reserva_Ajuste_Stock(lBeTransAjusteDetBorrador(ii).idstockres,
+                                                         lBeTransAjusteDetBorrador(ii).idajusteenc,
+                                                         lBeTransAjusteDetBorrador(ii).IdStock)
 
                             lBeTransAjusteDetBorrador.RemoveAt(ii)
                             If ii < dgrid.Rows.Count Then
@@ -2210,11 +2215,12 @@ Public Class frmAjusteStock
 
             Else
 
-                str.IdStockRes = lBeTransAjusteDet(sr).idstockres
                 stocklink = lBeTransAjusteDet(sr).idstocklink
 
                 If stocklink = 0 Then
-                    clsLnStock_res.Eliminar(str)
+                    Liberar_Reserva_Ajuste_Stock(lBeTransAjusteDet(sr).idstockres,
+                                                 lBeTransAjusteDet(sr).IdAjusteEnc,
+                                                 lBeTransAjusteDet(sr).IdStock)
 
                     lBeTransAjusteDet.RemoveAt(sr)
                     dgrid.Rows.RemoveAt(sr)
@@ -2226,8 +2232,9 @@ Public Class frmAjusteStock
                         If lBeTransAjusteDet(ii).idstocklink = stocklink Then
 
                             If Not lBeTransAjusteDet(ii).esnuevolink Then
-                                str.IdStockRes = lBeTransAjusteDet(ii).idstockres
-                                clsLnStock_res.Eliminar(str)
+                                Liberar_Reserva_Ajuste_Stock(lBeTransAjusteDet(ii).idstockres,
+                                                             lBeTransAjusteDet(ii).IdAjusteEnc,
+                                                             lBeTransAjusteDet(ii).IdStock)
                             End If
 
                             lBeTransAjusteDet.RemoveAt(ii)
@@ -2259,6 +2266,44 @@ Public Class frmAjusteStock
 
         End Try
 
+    End Sub
+
+    Private Sub Liberar_Reserva_Ajuste_Stock(ByVal pIdStockRes As Integer,
+                                             ByVal pIdAjusteEnc As Integer,
+                                             ByVal pIdStock As Integer)
+        Dim filasAfectadas As Integer = 0
+
+        Try
+            If pIdStockRes > 0 Then
+                Dim str As New clsBeStock_res With {.IdStockRes = pIdStockRes}
+                filasAfectadas = clsLnStock_res.Eliminar(str)
+            End If
+
+            If filasAfectadas > 0 OrElse pIdAjusteEnc <= 0 OrElse pIdStock <= 0 Then Return
+
+            Dim ct As New clsTransaccion()
+            Try
+                ct.Begin_Transaction()
+                clsLnStock_res.Eliminar_By_IdTransaccion_And_IdStock(pIdAjusteEnc,
+                                                                     "ajuste_stock",
+                                                                     pIdStock,
+                                                                     ct.lConnection,
+                                                                     ct.lTransaction)
+                ct.Commit_Transaction()
+            Catch
+                ct.RollBack_Transaction()
+                Throw
+            Finally
+                ct.Close_Conection()
+            End Try
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(
+                "Liberar_Reserva_Ajuste_Stock IdStockRes=" & pIdStockRes &
+                " IdAjusteEnc=" & pIdAjusteEnc &
+                " IdStock=" & pIdStock & ": " & ex.Message)
+            Throw
+        End Try
     End Sub
 
     Private Sub mnuDividir_Click(sender As Object, e As EventArgs) Handles mnuDividir.Click
