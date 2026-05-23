@@ -3221,11 +3221,13 @@ Public Class frmPrincipal02
 
         Try
 
-            While Not bgWorker.CancellationPending
-                Dim systemInfo As TOMWMSSystemInfo.system_info_bof_wms = TOMWMSSystemInfo.Get_System_Info()
-                bgWorker.ReportProgress(0, systemInfo)
-                Threading.Thread.Sleep(9000)
-            End While
+            If bgWorker.CancellationPending Then Return
+
+            'Carga bajo demanda: una sola lectura por ejecución del worker.
+            'Evita el ciclo permanente con WMI + ping que degradaba el BOF.
+            Dim systemInfo As TOMWMSSystemInfo.system_info_bof_wms =
+                TOMWMSSystemInfo.Get_System_Info(False)
+            bgWorker.ReportProgress(0, systemInfo)
 
         Catch ex As Exception
             Console.WriteLine("Error al leer memoria RAM: " & ex.Message)

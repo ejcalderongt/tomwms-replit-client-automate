@@ -49,6 +49,7 @@ Public Class TOMHHWS
 
     Private Const HH_CACHE_CATALOGO_SEGUNDOS As Integer = 120
     Private Const HH_CACHE_SEGURIDAD_SEGUNDOS As Integer = 300
+    Private Const HH_CACHE_RECEPCION_SEGUNDOS As Integer = 60
     Private Shared ReadOnly HH_CACHE_LOCK As New Object()
 
     '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
@@ -118,6 +119,43 @@ Public Class TOMHHWS
                                                          New JsonSerializerSettings With {
                                                              .NullValueHandling = NullValueHandling.Include
                                                          })
+
+        curContext.Response.Clear()
+        curContext.Response.StatusCode = pStatusCode
+        curContext.Response.ContentType = "application/json; charset=utf-8"
+        curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        curContext.Response.Write(json)
+        curContext.Response.Flush()
+
+    End Sub
+
+    '#EJC_MEJORA_20260523: writer JSON robusto para HH (evita que IIS reemplace por HTML/XML en error).
+    Private Shared Sub EscribirJsonHHSeguro(ByVal pPayload As Object,
+                                            Optional ByVal pStatusCode As Integer = 200)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        Dim json As String = JsonConvert.SerializeObject(pPayload,
+                                                         New JsonSerializerSettings With {
+                                                             .NullValueHandling = NullValueHandling.Include
+                                                         })
+
+        curContext.Response.Clear()
+        curContext.Response.StatusCode = pStatusCode
+        curContext.Response.ContentType = "application/json; charset=utf-8"
+        curContext.Response.Charset = "utf-8"
+        curContext.Response.TrySkipIisCustomErrors = True
+        curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        curContext.Response.Write(json)
+        curContext.ApplicationInstance.CompleteRequest()
+
+    End Sub
+
+    '#EJC_MEJORA_20260522: Escritura JSON directa para respuestas ya serializadas (evita doble serialización).
+    Private Shared Sub EscribirJsonHHRaw(ByVal pJson As String,
+                                         Optional ByVal pStatusCode As Integer = 200)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        Dim json As String = If(String.IsNullOrWhiteSpace(pJson), "{}", pJson)
 
         curContext.Response.Clear()
         curContext.Response.StatusCode = pStatusCode
@@ -1901,12 +1939,60 @@ Public Class TOMHHWS
 
         Try
 
-            Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH(pIdRecepcionEnc)
-            EscribirJsonHH(beRecepcion)
+            '#EJC_MEJORA_20260522: Cache corto por recepción para acelerar reingreso desde HH sin romper contrato actual.
+            Dim vCacheKey As String = String.Format("HH:GetSingleRec_JSON:{0}", pIdRecepcionEnc)
+            Dim jsonRecepcion As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH(pIdRecepcionEnc)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
+
+            EscribirJsonHHRaw(jsonRecepcion)
 
         Catch ex As Exception
 
             '#MECR01102025: Se agrego bitacora de logs para recepciones.
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Ok = False,
+                .Mensaje = ex.Message,
+                .FechaServidor = DateTime.Now
+            }, 299)
+
+        End Try
+
+    End Sub
+
+    '#EJC_MEJORA_20260523: Ruta JSON Lite para apertura rápida de recepción en HH.
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub GetSingleRec_JSON_Lite(ByVal pIdRecepcionEnc As Integer)
+
+        Try
+
+            Dim vCacheKey As String = String.Format("HH:GetSingleRec_JSON_Lite:{0}", pIdRecepcionEnc)
+            Dim jsonRecepcion As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_Lite(pIdRecepcionEnc)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
+
+            EscribirJsonHHRaw(jsonRecepcion)
+
+        Catch ex As Exception
+
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
             WriteErrorToEventLog(ex.Message)
@@ -17018,6 +17104,120 @@ Public Class TOMHHWS
 
     End Sub
 
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Get_Stock_Por_Producto_Ubicacion_CI_Json_v2(ByVal pidProducto As String,
+                                                            ByVal pIdUbicacion As Integer,
+                                                            ByVal pIdBodega As Integer,
+                                                            ByVal pNombre As String,
+                                                            ByVal pDetallado As Boolean,
+                                                            Optional ByVal pTraceId As String = "")
+
+        Dim vTraceId As String = If(String.IsNullOrWhiteSpace(pTraceId), Guid.NewGuid().ToString("N"), pTraceId.Trim())
+
+        Try
+
+            Dim lStock As List(Of clsBeVW_stock_res_CI) = clsLnStock_CI.Get_All_By_IdUbicacion(pIdUbicacion,
+                                                                                                pidProducto,
+                                                                                                pIdBodega,
+                                                                                                pNombre,
+                                                                                                pDetallado)
+
+            If lStock Is Nothing Then
+                lStock = New List(Of clsBeVW_stock_res_CI)()
+            End If
+
+            EscribirJsonHHSeguro(New With {
+                .Error = False,
+                .Mensaje = "",
+                .Total = lStock.Count,
+                .Items = lStock,
+                .TraceId = vTraceId
+            })
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} TraceId={1} IdBodega={2} IdUbicacion={3} Codigo={4} Nombre={5} Detallado={6} Error={7}",
+                                                    MethodBase.GetCurrentMethod.Name(),
+                                                    vTraceId,
+                                                    pIdBodega,
+                                                    pIdUbicacion,
+                                                    pidProducto,
+                                                    pNombre,
+                                                    pDetallado,
+                                                    ex.Message)
+
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(vMsgError)
+
+            EscribirJsonHHSeguro(New With {
+                .Error = True,
+                .Mensaje = ex.Message,
+                .Total = 0,
+                .Items = New List(Of clsBeVW_stock_res_CI),
+                .TraceId = vTraceId
+            })
+
+        End Try
+
+    End Sub
+
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Stock_Consulta_CI_Json(ByVal pidProducto As String,
+                                          ByVal pLicPlate As String,
+                                          ByVal pIdUbicacion As Integer,
+                                          ByVal pIdBodega As Integer,
+                                          ByVal pNombre As String,
+                                          ByVal pDetallado As Boolean)
+
+        Try
+
+            '#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.
+            Dim lStock As List(Of clsBeVW_stock_res_CI) = Nothing
+            Dim vLicPlate As String = If(pLicPlate, String.Empty).Trim()
+            Dim vEsLicencia As Boolean = Not String.IsNullOrWhiteSpace(vLicPlate)
+
+            If vEsLicencia Then
+                lStock = clsLnStock_CI.Get_All_By_LP_And_IdUbicacion(pIdUbicacion,
+                                                                      vLicPlate,
+                                                                      pIdBodega,
+                                                                      pNombre,
+                                                                      pDetallado)
+            Else
+                lStock = clsLnStock_CI.Get_All_By_IdUbicacion(pIdUbicacion,
+                                                              pidProducto,
+                                                              pIdBodega,
+                                                              pNombre,
+                                                              pDetallado)
+            End If
+
+            If lStock Is Nothing Then
+                lStock = New List(Of clsBeVW_stock_res_CI)
+            End If
+
+            EscribirJsonHH(New With {
+                .Error = False,
+                .Fuente = If(vEsLicencia, "LP", "STD"),
+                .Total = lStock.Count,
+                .Items = lStock
+            })
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Error = True,
+                .Mensaje = ex.Message,
+                .Total = 0,
+                .Items = New List(Of clsBeVW_stock_res_CI)
+            })
+
+        End Try
+
+    End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Sub Finalizar_Recepcion_Parcial_Pallet_Proveedor_S(ByVal pIdOrdenCompraEnc As Integer,
                                                               ByVal pIdRecepcionEnc As Integer,
@@ -18579,14 +18779,20 @@ Public Class TOMHHWS
     Public Function GetSingleRecJson(ByVal pIdRecepcionEnc As Integer, ByVal CodigoProducto As String) As String
 
         Try
-            ' Obtener el objeto original
-            Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_By_Codigo(pIdRecepcionEnc, CodigoProducto)
+            '#EJC_MEJORA_20260522: Cache corto por recepción+producto para apertura dirigida por código en HH.
+            Dim vCacheKey As String = String.Format("HH:GetSingleRecJson:{0}:{1}", pIdRecepcionEnc, CodigoProducto)
+            Dim strserialize As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_By_Codigo(pIdRecepcionEnc, CodigoProducto)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
 
-            ' Serializar a JSON
-            Dim serializer As New JavaScriptSerializer()
-            serializer.MaxJsonLength = Integer.MaxValue
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
-            Dim strserialize As String = JsonConvert.SerializeObject(beRecepcion)
             GetSingleRecJson = strserialize
             Dim currrentContext As HttpContext = HttpContext.Current
             currrentContext.Response.ContentType = "application/json"

@@ -1,4 +1,58 @@
 notas:
+  - fecha: "2026-05-23"
+    area: "WSHH consulta stock ubicacion JSON estable"
+    detalle: >
+      Se agrego endpoint backend dedicado Get_Stock_Por_Producto_Ubicacion_CI_Json_v2
+      en WSHHRN/TOMHHWS.asmx.vb para ruta HH de consulta por ubicacion.
+      La salida es siempre JSON uniforme {Error,Mensaje,Total,Items,TraceId}
+      mediante EscribirJsonHHSeguro (TrySkipIisCustomErrors + CompleteRequest),
+      evitando que IIS/ASMX reemplace respuestas por XML/HTML en errores.
+      El endpoint v2 incluye TraceId opcional para trazabilidad server-side.
+  - fecha: "2026-05-23"
+    area: "HH wrapper JSON global + recepcion scan"
+    detalle: >
+      Se movio la compatibilidad de colecciones JSON a capa base
+      (com.dts.base.WebService) con normalizacion recursiva generica. Cualquier
+      propiedad que llegue como arreglo ahora se transforma a wrapper compatible
+      para modelos *List de HH sin parches campo-por-campo, manteniendo doble
+      clave ("items" y nombre original) para clases con @SerializedName.
+      frm_lista_tareas_recepcion ya no hace normalizacion local y consume
+      ws.xmlresult directo.
+  - fecha: "2026-05-23"
+    area: "Recepcion HH/WS flujo Lite"
+    detalle: >
+      Se agrego ruta ligera para apertura de recepcion por escaneo:
+      GetSingleRec_JSON_Lite en WSHHRN, con cache corto servidor. DAL incluye
+      GetSingleHH_Lite (encabezado recepcion), GetSingleLite (trans_re_oc) y
+      Get_Encabezado_OC_HH_Lite (OC sin detalle pesado/lotes/imagenes). En HH,
+      frm_lista_tareas_recepcion intenta Lite y cae a GetSingleRec_JSON como
+      fallback. frm_list_rec_prod carga detalle OC bajo demanda via execws(15)
+      cuando el payload Lite llega sin lineas.
+  - fecha: "2026-05-22"
+    area: "HH recepcion scan producto - traza parseo JSON"
+    detalle: >
+      Diagnostico reproducido sin cambios funcionales para error al escanear
+      producto en frm_lista_tareas_recepcion (processIdRecepcion). El flujo HH
+      llama GetSingleRec_JSON y hace Gson.fromJson(ws.xmlresult,
+      clsBeTrans_re_enc). En ambiente 26.2.183.105/wcftom4 se verifico que el
+      payload real devuelve OrdenCompraRec.OC.DetalleOC como arreglo JSON
+      (DetalleOC:[...]); la HH actual modela DetalleOC como
+      clsBeTrans_oc_detList (objeto wrapper), por eso Gson lanza
+      IllegalStateException Expected BEGIN_OBJECT but was BEGIN_ARRAY en la ruta
+      $.OrdenCompraRec.OC.DetalleOC. Evidencia local: request POST
+      /tomhhws.asmx/GetSingleRec_JSON con pIdRecepcionEnc=8431 confirma
+      DetalleOC=ARRAY. Cambio pendiente: alinear contrato HH con arreglo JSON o
+      agregar adaptador de deserializacion compatible objeto/arreglo.
+  - fecha: "2026-05-22"
+    area: "HH recepcion XML contrato clsBeTrans_oc_det"
+    detalle: >
+      Se confirma que el repo HH local activo para sesiones Codex es
+      C:/Users/yejc2/StudioProjects/TOMHH2025. Fix aplicado en HH para
+      compatibilidad con respuesta del WS de recepcion: la clase
+      com.dts.classes.Transacciones.OrdenCompra.Trans_oc_det.clsBeTrans_oc_det
+      ahora incluye el campo XML CodigoSKU (con getter/setter) para evitar
+      XMLObject Error 2 al parsear GetSingleRecResult cuando el servidor envia
+      <CodigoSKU>.
   - fecha: "2026-05-22"
     area: "frmPrincipal02 read-model tareas correccion"
     detalle: >

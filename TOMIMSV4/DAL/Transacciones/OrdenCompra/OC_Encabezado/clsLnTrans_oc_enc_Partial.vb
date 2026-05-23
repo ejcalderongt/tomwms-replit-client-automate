@@ -3338,6 +3338,66 @@ Partial Public Class clsLnTrans_oc_enc
 
     End Function
 
+    '#EJC_MEJORA_20260523: Encabezado OC liviano para flujo HH (sin detalle/lotes/img/poliza).
+    Public Shared Function Get_Encabezado_OC_HH_Lite(ByVal pIdOrdenCompra As Integer,
+                                                     ByVal lConnection As SqlConnection,
+                                                     ByVal lTransaction As SqlTransaction) As clsBeTrans_oc_enc
+
+        Get_Encabezado_OC_HH_Lite = Nothing
+
+        Try
+
+            Dim vSQL As String = " SELECT enc.*, ti.nombre AS TipoIngreso
+                                   FROM Trans_oc_enc AS enc
+                                   INNER JOIN trans_oc_ti AS ti ON enc.IdTipoIngresoOC = ti.IdtipoIngresoOC
+                                   WHERE enc.IdOrdenCompraEnc = @IdOrdenCompraEnc "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompra)
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+                    Dim BeTransOCEnc As New clsBeTrans_oc_enc()
+
+                    Cargar(BeTransOCEnc, lRow)
+
+                    If lRow("IdPropietarioBodega") IsNot DBNull.Value AndAlso lRow("IdPropietarioBodega") IsNot Nothing Then
+                        BeTransOCEnc.PropietarioBodega.IdPropietarioBodega = CType(lRow("IdPropietarioBodega"), Integer)
+                        clsLnPropietario_bodega.Obtener(BeTransOCEnc.PropietarioBodega, lConnection, lTransaction)
+                    End If
+
+                    If lRow("IdProveedorBodega") IsNot DBNull.Value AndAlso lRow("IdProveedorBodega") IsNot Nothing Then
+                        BeTransOCEnc.ProveedorBodega.IdAsignacion = CType(lRow("IdProveedorBodega"), Integer)
+                        clsLnProveedor_bodega.Obtener(BeTransOCEnc.ProveedorBodega, lConnection, lTransaction)
+                    End If
+
+                    If lRow("IdTipoIngresoOC") IsNot DBNull.Value AndAlso lRow("IdTipoIngresoOC") IsNot Nothing Then
+                        BeTransOCEnc.IdTipoIngresoOC = CType(lRow("IdTipoIngresoOC"), Integer)
+                        BeTransOCEnc.TipoIngreso = clsLnTrans_oc_ti.GetSingle(BeTransOCEnc.IdTipoIngresoOC, lConnection, lTransaction)
+                    End If
+
+                    BeTransOCEnc.IsNew = False
+                    BeTransOCEnc.ExisteRecepcionNoFinalizada = clsLnTrans_re_enc.Existe_Recepcion_No_Finalizada(BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+
+                    Return BeTransOCEnc
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+        End Try
+
+    End Function
+
     ''' <summary>
     ''' #CKFK+EJC20240217: Duplica un documento de ingreso, retorna el IdOrdenCompraEnc generado.
     ''' </summary>
