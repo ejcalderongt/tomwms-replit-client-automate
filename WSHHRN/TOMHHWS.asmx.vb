@@ -48,6 +48,7 @@ Public Class TOMHHWS
     Inherits System.Web.Services.WebService
 
     Private Const HH_CACHE_CATALOGO_SEGUNDOS As Integer = 120
+    '#EJC_MEJORA_20260523: bajar TTL de seguridad HH para reducir ventana de menú/roles desactualizados.
     Private Const HH_CACHE_SEGURIDAD_SEGUNDOS As Integer = 30
     Private Const HH_CACHE_RECEPCION_SEGUNDOS As Integer = 60
     Private Shared ReadOnly HH_CACHE_LOCK As New Object()
