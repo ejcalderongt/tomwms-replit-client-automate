@@ -2646,6 +2646,7 @@ Public Class frmInventario
         Dim mov As New clsBeTrans_movimientos
         Dim BePresentacion As New clsBeProducto_Presentacion
         Dim IdxPres As Integer = 0
+        Dim vIdPropietarioBodega As Integer = 0
 
         If XtraMessageBox.Show("¿Iniciar proceso de regularizacion?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
         If XtraMessageBox.Show("¡Este proceso no se puede revertir !" & vbCrLf & "¿Está seguro de continuar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
@@ -2655,6 +2656,7 @@ Public Class frmInventario
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Obteniendo inventario")
 
+            vIdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
             stock = clsLnTrans_inv_detalle.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc)
 
             For Each st As clsBeTrans_inv_detalle In stock
@@ -2669,7 +2671,7 @@ Public Class frmInventario
                     If gBeTransInvEnc.multi_propietario Then
                         .IdPropietarioBodega = st.IdPropietarioBodega
                     Else
-                        .IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
+                        .IdPropietarioBodega = vIdPropietarioBodega
                     End If
 
                     .IdStock = 0
@@ -5230,7 +5232,7 @@ Public Class frmInventario
                 'cTrans.Commit_Transaction()
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-               
+
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
