@@ -17110,7 +17110,7 @@ Public Class TOMHHWS
                                                             ByVal pIdBodega As Integer,
                                                             ByVal pNombre As String,
                                                             ByVal pDetallado As Boolean,
-                                                            Optional ByVal pTraceId As String = "")
+                                                            ByVal pTraceId As String)
 
         Dim vTraceId As String = If(String.IsNullOrWhiteSpace(pTraceId), Guid.NewGuid().ToString("N"), pTraceId.Trim())
 
