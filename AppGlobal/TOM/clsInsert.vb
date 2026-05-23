@@ -307,8 +307,14 @@ Public Class clsInsertBatch
 
             Return clData.Rows.Count
 
+        Catch ex As OperationCanceledException
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then
+                Throw New OperationCanceledException("#EJC20260523_INSERTBATCH_CANCEL: operación batch cancelada.", ex)
+            End If
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()

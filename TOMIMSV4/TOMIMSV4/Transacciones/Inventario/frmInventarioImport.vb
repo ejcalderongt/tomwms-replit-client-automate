@@ -38,6 +38,26 @@ Public Class frmInventarioImport
     Private mInvImportTraceSesion As String = ""
     Private mInvImportTraceTotal As Stopwatch
     Private mInvImportTracePaso As Stopwatch
+    Private WithEvents bwImportarTeorico As New System.ComponentModel.BackgroundWorker()
+    Private mInvImportCancelado As Boolean = False
+    Private mInvImportEnProceso As Boolean = False
+
+    Private Class InvImportWorkerArgs
+        Public Property Lista As List(Of clsBeTrans_inv_stock_prod)
+        Public Property EliminarTeorico As Boolean
+        Public Property ExisteInventarioTeorico As Boolean
+    End Class
+
+    Private Class InvImportWorkerResult
+        Public Property TotalRegistros As Integer
+        Public Property MsImportar As Long
+    End Class
+
+    Private Class InvImportProgressInfo
+        Public Property Actual As Integer
+        Public Property Total As Integer
+        Public Property Mensaje As String
+    End Class
 
     Private Function InvImportTrace_Activo() As Boolean
         Try
@@ -106,6 +126,62 @@ Public Class frmInventarioImport
         Catch
         End Try
     End Sub
+
+    '#EJC20260523_INV_IMPORT_PROGRESS: estado visual compacto y seguro para procesos largos.
+    Private Sub InvImportSetProceso(ByVal pEnProceso As Boolean, Optional ByVal pMensaje As String = "")
+        mInvImportEnProceso = pEnProceso
+        If pEnProceso Then
+            mnuAplicar.Caption = "Cancelar"
+            mnuValidar.Enabled = False
+            cmdPegar.Enabled = False
+            mnuImportarExcel.Enabled = False
+            cmdAdd.Enabled = False
+            cmdDel.Enabled = False
+            BarButtonItem1.Enabled = False
+            prg.Visible = True
+            If pMensaje <> "" Then lblPrg.Text = pMensaje
+        Else
+            mnuAplicar.Caption = "Aplicar      "
+            mnuValidar.Enabled = True
+            cmdPegar.Enabled = True
+            mnuImportarExcel.Enabled = True
+            cmdAdd.Enabled = True
+            cmdDel.Enabled = True
+            BarButtonItem1.Enabled = True
+            prg.Value = 0
+            prg.Visible = False
+            If pMensaje <> "" Then lblPrg.Text = pMensaje
+        End If
+        lblPrg.Refresh()
+    End Sub
+
+    Private Sub InvImportReportarProgreso(ByVal pActual As Integer,
+                                          ByVal pTotal As Integer,
+                                          ByVal pMensaje As String)
+        If pTotal > 0 Then
+            prg.Maximum = pTotal
+            prg.Value = Math.Min(Math.Max(pActual, 0), prg.Maximum)
+        End If
+
+        lblPrg.Text = pMensaje & " " & pActual & " de " & pTotal
+        lblPrg.Refresh()
+    End Sub
+
+    '#EJC20260523_INV_IMPORT_BG_CANCEL: el botón Aplicar funciona como Cancelar durante importaciones largas.
+    Private Sub InvImportSolicitarCancelacion()
+        mInvImportCancelado = True
+        If bwImportarTeorico IsNot Nothing AndAlso bwImportarTeorico.IsBusy Then
+            bwImportarTeorico.CancelAsync()
+        End If
+
+        lblPrg.Text = "Cancelando importación..."
+        lblPrg.Refresh()
+        InvImportTrace_Marca("IMPORTAR_DATOS_CANCEL_REQUEST")
+    End Sub
+
+    Private Function InvImportDebeCancelar() As Boolean
+        Return mInvImportCancelado OrElse (bwImportarTeorico IsNot Nothing AndAlso bwImportarTeorico.CancellationPending)
+    End Function
 
     '#EJC20260522_INV_IMPORT_VALIDACION_CACHE: soporte liviano para evitar consultas por fila durante Validar_Datos.
     Private Function InvImportValorCelda(ByVal pFila As Integer, ByVal pColumna As String) As String
@@ -1000,10 +1076,12 @@ Public Class frmInventarioImport
         Dim vTraceMsUnidad As Long = 0
         Dim vTraceMsExist As Long = 0
         Dim vTraceMsImportar As Long = 0
+        Dim vEliminarTeorico As Boolean = False
         '#EJC20260522_INV_APLICAR_TEORICO_CACHE: evita abrir conexion por cada fila para obtener la unidad basica.
         Dim vUnidadMedidaPorCodigo As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
 
         Cursor.Current = Cursors.WaitCursor
+        mInvImportCancelado = False
 
         'EFREN190720212030: Se limpia la lista, porque al reintentar importar, mantiene la data anterior.
         lInventarioTeorico.Clear()
@@ -1015,6 +1093,7 @@ Public Class frmInventarioImport
 
             prg.Maximum = rc
 
+            InvImportSetProceso(True, "Preparando lista")
             lblPrg.Text = "Preparando lista"
             lblPrg.Refresh()
 
@@ -1022,6 +1101,7 @@ Public Class frmInventarioImport
             SplashScreenManager.Default.SetWaitFormDescription("Aplicando inventario...")
 
             For ii = 0 To rc - 1
+                If InvImportDebeCancelar() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada durante preparación de lista.")
 
                 If ii = 0 OrElse (ii + 1) Mod 100 = 0 OrElse ii = rc - 1 Then
                     lblPrg.Text = "Preparando fila: " & ii + 1 & " de: " & rc
@@ -1154,57 +1234,32 @@ Public Class frmInventarioImport
                                     MessageBoxButtons.YesNo,
                                     "Inventario") = vbYes Then
 
-                    vTraceReloj.Restart()
-                    clsLnTrans_inv_stock_prod.Importar_Productos(lInventarioTeorico,
-                                                                InsertaInv,
-                                                                AP.IdBodega,
-                                                                AP.IdEmpresa,
-                                                                IdOperador,
-                                                                NomOperador,
-                                                                DobleVerificacion,
-                                                                prg,
-                                                                True,
-                                                                ExisteInventarioTeorico)
-                    vTraceMsImportar = vTraceReloj.ElapsedMilliseconds
+                    vEliminarTeorico = True
                 Else
-                    vTraceReloj.Restart()
-                    clsLnTrans_inv_stock_prod.Importar_Productos(lInventarioTeorico,
-                                                                InsertaInv,
-                                                                AP.IdBodega,
-                                                                AP.IdEmpresa,
-                                                                IdOperador,
-                                                                NomOperador,
-                                                                DobleVerificacion,
-                                                                prg,
-                                                                False,
-                                                                ExisteInventarioTeorico)
-                    vTraceMsImportar = vTraceReloj.ElapsedMilliseconds
+                    vEliminarTeorico = False
                 End If
 
-            Else
-
-                vTraceReloj.Restart()
-                clsLnTrans_inv_stock_prod.Importar_Productos(lInventarioTeorico,
-                                                             InsertaInv,
-                                                             AP.IdBodega,
-                                                             AP.IdEmpresa,
-                                                             IdOperador,
-                                                             NomOperador,
-                                                             DobleVerificacion,
-                                                             prg,
-                                                             False,
-                                                             ExisteInventarioTeorico)
-                vTraceMsImportar = vTraceReloj.ElapsedMilliseconds
             End If
-
-            InvImportTrace_Marca("IMPORTAR_DATOS_IMPORTAR_PRODUCTOS_END", "MsImportar=" & vTraceMsImportar)
 
             SplashScreenManager.CloseForm(False)
 
-            XtraMessageBox.Show("Se aplicó el inventario inicial correctamente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            If bwImportarTeorico.IsBusy Then Throw New Exception("Ya existe una importación de inventario en proceso.")
 
-            DialogResult = DialogResult.OK
+            '#EJC20260523_INV_IMPORT_BG_CANCEL: la inserción pesada corre fuera del hilo UI y permite cancelar.
+            Dim vArgs As New InvImportWorkerArgs With {
+                .Lista = lInventarioTeorico,
+                .EliminarTeorico = vEliminarTeorico,
+                .ExisteInventarioTeorico = ExisteInventarioTeorico
+            }
 
+            InvImportSetProceso(True, "Insertando registros...")
+            InvImportTrace_Marca("IMPORTAR_DATOS_BG_START", "Lista=" & lInventarioTeorico.Count & ";EliminarTeorico=" & vEliminarTeorico)
+            bwImportarTeorico.RunWorkerAsync(vArgs)
+
+        Catch ex As OperationCanceledException
+            InvImportTrace_Marca("IMPORTAR_DATOS_CANCELADO", ex.Message)
+            SplashScreenManager.CloseForm(False)
+            InvImportSetProceso(False, "Importación cancelada")
         Catch ex As Exception
             InvImportTrace_Marca("IMPORTAR_DATOS_ERROR", ex.Message)
             SplashScreenManager.CloseForm(False)
@@ -1221,11 +1276,93 @@ Public Class frmInventarioImport
                                  ";UnidadCache=" & vUnidadMedidaPorCodigo.Count &
                                  ";MsExist=" & vTraceMsExist &
                                  ";MsImportar=" & vTraceMsImportar)
-            SplashScreenManager.CloseForm(False)
+            If Not mInvImportEnProceso Then SplashScreenManager.CloseForm(False)
         End Try
 
         Cursor.Current = Cursors.Default
 
+    End Sub
+
+    Private Sub bwImportarTeorico_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwImportarTeorico.DoWork
+        Dim vArgs As InvImportWorkerArgs = CType(e.Argument, InvImportWorkerArgs)
+        Dim vReloj As Stopwatch = Stopwatch.StartNew()
+
+        Try
+            clsLnTrans_inv_stock_prod.Importar_Productos(vArgs.Lista,
+                                                         InsertaInv,
+                                                         AP.IdBodega,
+                                                         AP.IdEmpresa,
+                                                         IdOperador,
+                                                         NomOperador,
+                                                         DobleVerificacion,
+                                                         Nothing,
+                                                         vArgs.EliminarTeorico,
+                                                         vArgs.ExisteInventarioTeorico,
+                                                         Function()
+                                                             Return InvImportDebeCancelar()
+                                                         End Function,
+                                                         Sub(pActual As Integer, pTotal As Integer, pMensaje As String)
+                                                             bwImportarTeorico.ReportProgress(0,
+                                                                                              New InvImportProgressInfo With {
+                                                                                                  .Actual = pActual,
+                                                                                                  .Total = pTotal,
+                                                                                                  .Mensaje = pMensaje
+                                                                                              })
+                                                         End Sub)
+
+            e.Result = New InvImportWorkerResult With {
+                .TotalRegistros = If(vArgs.Lista Is Nothing, 0, vArgs.Lista.Count),
+                .MsImportar = vReloj.ElapsedMilliseconds
+            }
+        Catch ex As OperationCanceledException
+            e.Cancel = True
+        End Try
+    End Sub
+
+    Private Sub bwImportarTeorico_ProgressChanged(sender As Object, e As System.ComponentModel.ProgressChangedEventArgs) Handles bwImportarTeorico.ProgressChanged
+        Dim vInfo As InvImportProgressInfo = TryCast(e.UserState, InvImportProgressInfo)
+        If vInfo Is Nothing Then Return
+
+        InvImportReportarProgreso(vInfo.Actual, vInfo.Total, vInfo.Mensaje)
+        If vInfo.Actual = 0 OrElse vInfo.Actual Mod 5000 = 0 OrElse vInfo.Actual = vInfo.Total Then
+            InvImportTrace_Marca("IMPORTAR_DATOS_BG_PROGRESS",
+                                 "Paso=" & vInfo.Mensaje &
+                                 ";Actual=" & vInfo.Actual &
+                                 ";Total=" & vInfo.Total)
+        End If
+    End Sub
+
+    Private Sub bwImportarTeorico_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles bwImportarTeorico.RunWorkerCompleted
+        Cursor.Current = Cursors.Default
+
+        If e.Cancelled OrElse mInvImportCancelado Then
+            InvImportTrace_Marca("IMPORTAR_DATOS_BG_CANCELADO")
+            InvImportSetProceso(False, "Importación cancelada")
+            XtraMessageBox.Show("La importación fue cancelada. No se aplicaron cambios parciales porque la transacción fue revertida.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+            Return
+        End If
+
+        If e.Error IsNot Nothing Then
+            InvImportTrace_Marca("IMPORTAR_DATOS_BG_ERROR", e.Error.Message)
+            InvImportSetProceso(False, "Error en importación")
+            XtraMessageBox.Show(String.Format("{0} {1}", "Importar_Datos", e.Error.Message),
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+            Return
+        End If
+
+        Dim vResultado As InvImportWorkerResult = TryCast(e.Result, InvImportWorkerResult)
+        Dim vMs As Long = If(vResultado Is Nothing, 0, vResultado.MsImportar)
+        Dim vTotal As Integer = If(vResultado Is Nothing, 0, vResultado.TotalRegistros)
+
+        InvImportTrace_Marca("IMPORTAR_DATOS_IMPORTAR_PRODUCTOS_END", "MsImportar=" & vMs & ";Lista=" & vTotal)
+        InvImportSetProceso(False, "Importación finalizada")
+        XtraMessageBox.Show("Se aplicó el inventario inicial correctamente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        DialogResult = DialogResult.OK
     End Sub
 
 #End Region
@@ -1242,6 +1379,11 @@ Public Class frmInventarioImport
     End Sub
 
     Private Sub mnuAplicar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuAplicar.ItemClick
+        If mInvImportEnProceso OrElse (bwImportarTeorico IsNot Nothing AndAlso bwImportarTeorico.IsBusy) Then
+            InvImportSolicitarCancelacion()
+            Return
+        End If
+
         Aplicar_Teorico()
     End Sub
 
@@ -1274,7 +1416,7 @@ Public Class frmInventarioImport
 
             Importar_Datos()
 
-            lblPrg.Text = ""
+            If Not mInvImportEnProceso Then lblPrg.Text = ""
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -1430,7 +1572,8 @@ Public Class frmInventarioImport
     End Sub
 
     Private Sub frmInventarioImport_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        bwImportarTeorico.WorkerReportsProgress = True
+        bwImportarTeorico.WorkerSupportsCancellation = True
     End Sub
 
     Private Sub mnuImportarExcel_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImportarExcel.ItemClick

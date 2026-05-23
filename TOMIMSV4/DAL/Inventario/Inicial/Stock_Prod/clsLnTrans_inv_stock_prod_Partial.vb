@@ -251,7 +251,9 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                          ByVal DobleVerificacion As Boolean,
                                          ByRef prg As ProgressBar,
                                          ByVal pEliminarTeorico As Boolean,
-                                         ByVal pExisteInventarioTeorico As Boolean)
+                                         ByVal pExisteInventarioTeorico As Boolean,
+                                         Optional ByVal pCancelar As Func(Of Boolean) = Nothing,
+                                         Optional ByVal pProgreso As Action(Of Integer, Integer, String) = Nothing)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -287,6 +289,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
         Dim vPropietarioBodegaPorClave As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
         '#EJC20260522_INV_APLICAR_TEORICO_CACHE: cache unico de ubicaciones para stock y detalle; evita roundtrips duplicados.
         Dim vUbicacionesPorId As New System.Collections.Generic.Dictionary(Of Integer, clsBeBodega_ubicacion)
+        Dim vTotalRegistros As Integer = If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count)
 
         Try
 
@@ -313,6 +316,9 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                                   ";EliminarTeorico=" & pEliminarTeorico &
                                                   ";ExisteTeorico=" & pExisteInventarioTeorico)
 
+            '#EJC20260523_INV_IMPORT_BG_CANCEL: cancelación cooperativa antes de abrir transacción larga.
+            If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada antes de iniciar.")
+
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
             InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_TX_OPEN", vIdInventarioEnc, If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count))
 
@@ -338,8 +344,10 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                                                                                  lTransaction)
             InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_UBIC_RECEPCION", vIdInventarioEnc, pListInvStockPrd.Count, "IdUbicacionRecepcion=" & IdUbicacionRecepcion)
 
-            prg.Maximum = pListInvStockPrd.Count
-            prg.Visible = True
+            If prg IsNot Nothing Then
+                prg.Maximum = pListInvStockPrd.Count
+                prg.Visible = True
+            End If
 
             BeUbicacionLista = New clsBeBodega_ubicacion
 
@@ -360,6 +368,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                 'EFREN16112021: Se guarda el stock_prod, y el obj IdTramo queda seteado, si es que se llegara a insertar como inv. inicial
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
+                    If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada durante stock_prod.")
 
                     BeTramoInv = New clsBeTrans_inv_tramo()
                     BeTramoInv.Idinventario = vIdInventarioEnc
@@ -419,11 +428,13 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     AgregarBatchStockProd(vBatchStockProd, BeTransInvStockProd)
                     vTraceMsInsertStock += vTraceReloj.ElapsedMilliseconds
 
-                    prg.Value = Contador
+                    If prg IsNot Nothing Then prg.Value = Math.Min(Contador, prg.Maximum)
 
                     Contador += 1 : vMaxIdInvStockProd += 1
 
                     If Contador Mod 500 = 0 Then
+                        '#EJC20260523_INV_IMPORT_PROGRESS: progreso reportado sin tocar UI cuando corre en background.
+                        If pProgreso IsNot Nothing Then pProgreso.Invoke(Contador, pListInvStockPrd.Count, "Preparando stock_prod")
                         InvImportTrace_Marca(vTraceSesion,
                                              vTraceTotal,
                                              vTracePaso,
@@ -440,7 +451,14 @@ Partial Public Class clsLnTrans_inv_stock_prod
                 Next
 
                 vTraceReloj = Stopwatch.StartNew()
-                vBatchStockProd.Execute(lConnection, lTransaction, 1000, 0)
+                vBatchStockProd.Execute(lConnection,
+                                        lTransaction,
+                                        1000,
+                                        0,
+                                        pCancelar:=pCancelar,
+                                        pProgreso:=Sub(pRowsCopied As Long)
+                                                       If pProgreso IsNot Nothing Then pProgreso.Invoke(CInt(Math.Min(pRowsCopied, vTotalRegistros)), vTotalRegistros, "Insertando stock_prod")
+                                                   End Sub)
                 vTraceMsInsertStock += vTraceReloj.ElapsedMilliseconds
                 InvImportTrace_Marca(vTraceSesion,
                                      vTraceTotal,
@@ -477,6 +495,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                 Dim vBatchDetalle As clsInsertBatch = CrearBatchDetalle()
                 Dim vBatchResumen As clsInsertBatch = CrearBatchResumen()
                 For Each BeTransInvStockProd As clsBeTrans_inv_stock_prod In pListInvStockPrd
+                    If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada durante detalle.")
 
                     BeTramoInv = New clsBeTrans_inv_tramo()
                     BeTramoInv.Idinventario = vIdInventarioEnc
@@ -636,6 +655,8 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                     Contador += 1
                     If Contador Mod 500 = 0 Then
+                        '#EJC20260523_INV_IMPORT_PROGRESS: progreso reportado desde el loop pesado del detalle.
+                        If pProgreso IsNot Nothing Then pProgreso.Invoke(Contador, pListInvStockPrd.Count, "Preparando detalle")
                         InvImportTrace_Marca(vTraceSesion,
                                              vTraceTotal,
                                              vTracePaso,
@@ -656,11 +677,25 @@ Partial Public Class clsLnTrans_inv_stock_prod
                 Next
 
                 vTraceReloj = Stopwatch.StartNew()
-                vBatchDetalle.Execute(lConnection, lTransaction, 1000, 0)
+                vBatchDetalle.Execute(lConnection,
+                                      lTransaction,
+                                      1000,
+                                      0,
+                                      pCancelar:=pCancelar,
+                                      pProgreso:=Sub(pRowsCopied As Long)
+                                                     If pProgreso IsNot Nothing Then pProgreso.Invoke(CInt(Math.Min(pRowsCopied, vTotalRegistros)), vTotalRegistros, "Insertando detalle")
+                                                 End Sub)
                 vTraceMsInsertDetalle += vTraceReloj.ElapsedMilliseconds
 
                 vTraceReloj.Restart()
-                vBatchResumen.Execute(lConnection, lTransaction, 1000, 0)
+                vBatchResumen.Execute(lConnection,
+                                      lTransaction,
+                                      1000,
+                                      0,
+                                      pCancelar:=pCancelar,
+                                      pProgreso:=Sub(pRowsCopied As Long)
+                                                     If pProgreso IsNot Nothing Then pProgreso.Invoke(CInt(Math.Min(pRowsCopied, vTotalRegistros)), vTotalRegistros, "Insertando resumen")
+                                                 End Sub)
                 vTraceMsInsertResumen += vTraceReloj.ElapsedMilliseconds
                 InvImportTrace_Marca(vTraceSesion,
                                      vTraceTotal,
@@ -680,6 +715,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
             End If
 
             For Each BeTramoInvInLista In lTramosInv
+                If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada durante tramos.")
                 vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
 
                 '#EJC20191206: Aquí solo se llamaba al actualizar, porque no al insertar ?
@@ -707,6 +743,10 @@ Partial Public Class clsLnTrans_inv_stock_prod
             lTransaction.Commit()
             InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_COMMIT_END", vIdInventarioEnc, pListInvStockPrd.Count)
 
+        Catch ex As OperationCanceledException
+            InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_CANCELADO", vIdInventarioEnc, If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count), ex.Message)
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw
         Catch ex As Exception
             InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_ERROR", vIdInventarioEnc, If(pListInvStockPrd Is Nothing, 0, pListInvStockPrd.Count), ex.Message)
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
