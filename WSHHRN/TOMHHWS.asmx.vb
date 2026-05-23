@@ -1670,6 +1670,35 @@ Public Class TOMHHWS
 
     End Function
 
+    '#EJC20260522: Ruta JSON paralela para la bandeja de recepciones HH.
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Get_All_Recepciones_For_HH_By_IdBodega_By_Operador_JSON(ByVal pIdBodega As Integer,
+                                                                       ByVal pIdOperadorBodega As Integer)
+
+        Try
+
+            Dim lRecepciones As List(Of clsBeTareasIngresoHH) =
+                clsLnTarea_hh.Get_All_Recepciones_For_HH_By_IdBodega_By_Operador(pIdBodega, pIdOperadorBodega)
+
+            EscribirJsonHH(lRecepciones)
+
+        Catch ex As Exception
+
+            '#MECR01102025: Se agrego bitacora de logs para recepciones.
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pIdBodega, pIdOperadorBodega, ex.StackTrace)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Ok = False,
+                .Mensaje = ex.Message,
+                .FechaServidor = DateTime.Now
+            }, 299)
+
+        End Try
+
+    End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_All_Rec_Ciegas_For_HH_By_IdBodega(ByVal pIdBodega As Integer) As List(Of clsBeTareasIngresoHH)
 
@@ -1865,6 +1894,32 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
+    '#EJC20260522: Ruta JSON paralela para abrir recepción desde HH sin parseo SOAP/XML.
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub GetSingleRec_JSON(ByVal pIdRecepcionEnc As Integer)
+
+        Try
+
+            Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH(pIdRecepcionEnc)
+            EscribirJsonHH(beRecepcion)
+
+        Catch ex As Exception
+
+            '#MECR01102025: Se agrego bitacora de logs para recepciones.
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Ok = False,
+                .Mensaje = ex.Message,
+                .FechaServidor = DateTime.Now
+            }, 299)
+
+        End Try
+
+    End Sub
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_BeTransOcEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As clsBeTrans_oc_enc

@@ -146,6 +146,15 @@ known_optimizations:
       counters. Keep legacy SOAP/XML methods alive; the Android client can
       migrate gradually without changing existing contracts. Do not pass the
       password on GET/querystring; use POST for this endpoint.
+  hh_recepcion_json_load:
+    files:
+      ws: WSHHRN/TOMHHWS.asmx.vb
+      hh: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java
+    rule: >
+      For reception task list and initial document open, keep legacy SOAP
+      methods but add parallel POST JSON endpoints. JSON avoids SOAP/XML
+      parsing cost in the HH while preserving the same entity/list payload
+      shape expected by existing screens.
   frmPrincipal02_tareas_readmodel:
     procedure: dbo.usp_wms_principal02_tareas_readmodel_v1
     goal: >
