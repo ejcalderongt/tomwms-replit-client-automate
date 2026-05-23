@@ -2635,6 +2635,197 @@ Public Class frmInventario
     End Sub
 
     Private lPresentaciones As New List(Of clsBeProducto_Presentacion)
+    Private ReadOnly mRegularizacionProductoBodegaCache As New Dictionary(Of Integer, Integer)
+    Private ReadOnly mRegularizacionPropietarioBodegaCache As New Dictionary(Of String, Integer)
+    Private ReadOnly mRegularizacionPresentacionCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
+    Private mRegularizacionUltimoTick As Integer = 0
+
+    Private Sub Precargar_Caches_Regularizacion(ByVal pStock As List(Of clsBeTrans_inv_detalle))
+
+        If pStock Is Nothing OrElse pStock.Count = 0 Then Return
+
+        If Not gBeTransInvEnc.multi_propietario Then
+            Get_IdPropietarioBodega_Regularizacion(gBeTransInvEnc.Idpropietario)
+        End If
+
+        Dim vProductos As List(Of Integer) = pStock.Select(Function(x) x.Idproducto).
+                                                   Where(Function(x) x > 0).
+                                                   Distinct().
+                                                   ToList()
+
+        Dim vPresentaciones As List(Of Integer) = pStock.Select(Function(x) x.IdPresentacion).
+                                                        Where(Function(x) x > 0).
+                                                        Distinct().
+                                                        ToList()
+
+        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            lConnection.Open()
+            Precargar_ProductoBodega_Regularizacion(vProductos, lConnection)
+            Precargar_Presentaciones_Regularizacion(vPresentaciones, lConnection)
+        End Using
+
+    End Sub
+
+    Private Sub Precargar_ProductoBodega_Regularizacion(ByVal pProductos As List(Of Integer),
+                                                        ByVal pConnection As SqlConnection)
+
+        If pProductos Is Nothing OrElse pProductos.Count = 0 Then Return
+
+        Const vTamanoBloque As Integer = 500
+
+        For vInicio As Integer = 0 To pProductos.Count - 1 Step vTamanoBloque
+            Dim vBloque As List(Of Integer) = pProductos.Skip(vInicio).Take(vTamanoBloque).ToList()
+            Dim vParametros As New List(Of String)
+
+            Using lCommand As New SqlCommand()
+                lCommand.Connection = pConnection
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdBodega", AP.IdBodega)
+
+                For i As Integer = 0 To vBloque.Count - 1
+                    Dim vNombreParametro As String = "@IdProducto" & i
+                    vParametros.Add(vNombreParametro)
+                    lCommand.Parameters.AddWithValue(vNombreParametro, vBloque(i))
+                Next
+
+                lCommand.CommandText = "SELECT IdProducto, IdProductoBodega " &
+                                       "FROM producto_bodega " &
+                                       "WHERE IdBodega = @IdBodega " &
+                                       "AND IdProducto IN (" & String.Join(",", vParametros) & ")"
+
+                Using lReader As SqlDataReader = lCommand.ExecuteReader()
+                    While lReader.Read()
+                        Dim vIdProducto As Integer = If(IsDBNull(lReader("IdProducto")), 0, CInt(lReader("IdProducto")))
+                        Dim vIdProductoBodega As Integer = If(IsDBNull(lReader("IdProductoBodega")), 0, CInt(lReader("IdProductoBodega")))
+
+                        If vIdProducto <> 0 AndAlso Not mRegularizacionProductoBodegaCache.ContainsKey(vIdProducto) Then
+                            mRegularizacionProductoBodegaCache(vIdProducto) = vIdProductoBodega
+                        End If
+                    End While
+                End Using
+            End Using
+        Next
+
+    End Sub
+
+    Private Sub Precargar_Presentaciones_Regularizacion(ByVal pPresentaciones As List(Of Integer),
+                                                        ByVal pConnection As SqlConnection)
+
+        If pPresentaciones Is Nothing OrElse pPresentaciones.Count = 0 Then Return
+
+        Const vTamanoBloque As Integer = 500
+
+        For vInicio As Integer = 0 To pPresentaciones.Count - 1 Step vTamanoBloque
+            Dim vBloque As List(Of Integer) = pPresentaciones.Skip(vInicio).Take(vTamanoBloque).ToList()
+            Dim vParametros As New List(Of String)
+
+            Using lCommand As New SqlCommand()
+                lCommand.Connection = pConnection
+                lCommand.CommandType = CommandType.Text
+
+                For i As Integer = 0 To vBloque.Count - 1
+                    Dim vNombreParametro As String = "@IdPresentacion" & i
+                    vParametros.Add(vNombreParametro)
+                    lCommand.Parameters.AddWithValue(vNombreParametro, vBloque(i))
+                Next
+
+                lCommand.CommandText = "SELECT * " &
+                                       "FROM producto_presentacion " &
+                                       "WHERE IdPresentacion IN (" & String.Join(",", vParametros) & ")"
+
+                Using lDataAdapter As New SqlDataAdapter(lCommand)
+                    Dim lDataTable As New DataTable()
+                    lDataAdapter.Fill(lDataTable)
+
+                    For Each dr As DataRow In lDataTable.Rows
+                        Dim BePresentacion As New clsBeProducto_Presentacion
+                        clsLnProducto_presentacion.Cargar(BePresentacion, dr)
+
+                        If BePresentacion.IdPresentacion <> 0 AndAlso Not mRegularizacionPresentacionCache.ContainsKey(BePresentacion.IdPresentacion) Then
+                            mRegularizacionPresentacionCache(BePresentacion.IdPresentacion) = BePresentacion
+                            lPresentaciones.Add(BePresentacion)
+                        End If
+                    Next
+                End Using
+            End Using
+        Next
+
+    End Sub
+
+    Private Function Get_IdProductoBodega_Regularizacion(ByVal pIdProducto As Integer) As Integer
+
+        If Not mRegularizacionProductoBodegaCache.ContainsKey(pIdProducto) Then
+            mRegularizacionProductoBodegaCache(pIdProducto) = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pIdProducto, AP.IdBodega)
+        End If
+
+        Return mRegularizacionProductoBodegaCache(pIdProducto)
+
+    End Function
+
+    Private Function Get_IdPropietarioBodega_Regularizacion(ByVal pIdPropietario As Integer) As Integer
+
+        Dim vKey As String = String.Format("{0}|{1}", AP.IdBodega, pIdPropietario)
+
+        If Not mRegularizacionPropietarioBodegaCache.ContainsKey(vKey) Then
+            mRegularizacionPropietarioBodegaCache(vKey) = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, pIdPropietario)
+        End If
+
+        Return mRegularizacionPropietarioBodegaCache(vKey)
+
+    End Function
+
+    Private Function Get_Presentacion_Regularizacion(ByVal pIdPresentacion As Integer) As clsBeProducto_Presentacion
+
+        If Not mRegularizacionPresentacionCache.ContainsKey(pIdPresentacion) Then
+            Dim BePresentacion As New clsBeProducto_Presentacion
+            BePresentacion.IdPresentacion = pIdPresentacion
+            clsLnProducto_presentacion.GetSingle(BePresentacion)
+
+            If BePresentacion IsNot Nothing Then
+                mRegularizacionPresentacionCache(pIdPresentacion) = BePresentacion
+                lPresentaciones.Add(BePresentacion)
+            End If
+        End If
+
+        Return mRegularizacionPresentacionCache(pIdPresentacion)
+
+    End Function
+
+    Private Sub Actualizar_Progreso_Regularizacion(ByVal pMensaje As String,
+                                                   ByVal pActual As Integer,
+                                                   ByVal pTotal As Integer,
+                                                   Optional ByVal pForzar As Boolean = False)
+
+        Dim vAhora As Integer = Environment.TickCount
+
+        If Not pForzar AndAlso pActual < pTotal AndAlso Math.Abs(vAhora - mRegularizacionUltimoTick) < 250 Then
+            Return
+        End If
+
+        mRegularizacionUltimoTick = vAhora
+
+        Try
+            Dim vTotal As Integer = Math.Max(pTotal, 1)
+            Dim vActual As Integer = Math.Min(Math.Max(pActual, 0), vTotal)
+            Dim vTexto As String = String.Format("{0} ({1}/{2})", pMensaje, vActual, vTotal)
+
+            If SplashScreenManager.Default IsNot Nothing Then
+                SplashScreenManager.Default.SetWaitFormDescription(vTexto)
+            End If
+
+            lblPrg.Visible = True
+            lblPrg.Text = vTexto
+            prg.Visible = True
+            prg.Minimum = 0
+            prg.Maximum = vTotal
+            prg.Value = vActual
+
+            Application.DoEvents()
+
+        Catch ex As Exception
+        End Try
+
+    End Sub
 
     Private Sub Regularizar_Inventario()
 
@@ -2653,17 +2844,31 @@ Public Class frmInventario
 
         Try
 
+            lPresentaciones.Clear()
+            mRegularizacionProductoBodegaCache.Clear()
+            mRegularizacionPropietarioBodegaCache.Clear()
+            mRegularizacionPresentacionCache.Clear()
+            mRegularizacionUltimoTick = 0
+
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Obteniendo inventario")
 
             vIdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
             stock = clsLnTrans_inv_detalle.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc)
+            If stock Is Nothing Then stock = New List(Of clsBeTrans_inv_detalle)
+
+            Dim vTotal As Integer = If(stock Is Nothing, 0, stock.Count)
+            Dim vProcesado As Integer = 0
+
+            Actualizar_Progreso_Regularizacion("Preparando inventario", 0, vTotal, True)
+            Precargar_Caches_Regularizacion(stock)
 
             For Each st As clsBeTrans_inv_detalle In stock
 
+                vProcesado += 1
                 item = New clsBeStock
 
-                SplashScreenManager.Default.SetWaitFormDescription("Procesando producto: " & st.Idproducto)
+                Actualizar_Progreso_Regularizacion("Procesando producto: " & st.Idproducto, vProcesado, vTotal)
 
                 With item
 
@@ -2675,7 +2880,7 @@ Public Class frmInventario
                     End If
 
                     .IdStock = 0
-                    .IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(st.Idproducto, AP.IdBodega)
+                    .IdProductoBodega = Get_IdProductoBodega_Regularizacion(st.Idproducto)
                     .IdProductoEstado = st.Idproductoestado
                     .ProductoEstado.IdEstado = st.Idproductoestado
                     .IdPresentacion = st.IdPresentacion
@@ -2711,16 +2916,7 @@ Public Class frmInventario
 
                 If st.IdPresentacion <> 0 Then
 
-                    IdxPres = lPresentaciones.FindIndex(Function(x) x.IdPresentacion = st.IdPresentacion)
-
-                    If IdxPres = -1 Then
-                        BePresentacion = New clsBeProducto_Presentacion
-                        BePresentacion.IdPresentacion = st.IdPresentacion
-                        clsLnProducto_presentacion.GetSingle(BePresentacion)
-                        lPresentaciones.Add(BePresentacion)
-                    Else
-                        BePresentacion = lPresentaciones(IdxPres)
-                    End If
+                    BePresentacion = Get_Presentacion_Regularizacion(st.IdPresentacion)
 
                     item.Cantidad = item.Cantidad * BePresentacion.Factor
 
@@ -2766,11 +2962,11 @@ Public Class frmInventario
 
             Next
 
-            SplashScreenManager.Default.SetWaitFormDescription("Insertando inventario...")
+            Actualizar_Progreso_Regularizacion("Insertando inventario", vTotal, vTotal, True)
 
             clsLnStock.Importar_Inventario(gBeTransInvEnc, items, movs)
 
-            SplashScreenManager.Default.SetWaitFormDescription("Finalizando...")
+            Actualizar_Progreso_Regularizacion("Finalizando", vTotal, vTotal, True)
 
             rgrpRegularizar.Visible = False
             rgprImportar.Visible = False
@@ -2785,6 +2981,10 @@ Public Class frmInventario
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            prg.Value = 0
+            prg.Visible = False
+            lblPrg.Visible = False
         End Try
 
     End Sub
@@ -9682,7 +9882,13 @@ Public Class frmInventario
     End Function
 
     Private Sub Carga_Regularizacion(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
+        Dim vGridUpdateSuspendido As Boolean = False
+
         Try
+
+            GridView1.BeginDataUpdate()
+            vGridUpdateSuspendido = True
+            GridView1.GroupSummary.Clear()
 
             grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Regularizacion_Inventario(gBeTransInvEnc.Idinventarioenc,
                                                                                                     lConnection,
@@ -9809,6 +10015,10 @@ Public Class frmInventario
 
         Catch ex As Exception
 
+        Finally
+            If vGridUpdateSuspendido Then
+                GridView1.EndDataUpdate()
+            End If
         End Try
 
     End Sub

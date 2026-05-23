@@ -380,6 +380,7 @@ Public Class frmAjusteStock
 
                     dgrid.Rows(rc).Cells("ColEnviadoAErp").Value = vBeAjustDet.Enviado
                     dgrid.Rows(rc).Cells("ColIdAjusteDEt").Value = vBeAjustDet.IdAjusteDet 'IdAjusteDet by EJC
+                    Set_IdStock_Grid(rc, vBeAjustDet.IdStock)
                     dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
                     dgrid.Rows(rc).Cells("ColObservacion").Value = vBeAjustDet.Observacion
                     dgrid.Rows(rc).Cells("ColLicPlate").Value = vBeAjustDet.lic_plate
@@ -511,6 +512,42 @@ Public Class frmAjusteStock
         Catch
         End Try
         Return ""
+    End Function
+
+    Private Sub Set_IdStock_Grid(ByVal pIndex As Integer,
+                                 ByVal pIdStock As Integer)
+        Try
+            If dgrid.Columns.Contains("ColIdStock") Then
+                dgrid.Rows(pIndex).Cells("ColIdStock").Value = pIdStock
+            End If
+        Catch
+        End Try
+    End Sub
+
+    Private Function Get_Grid_Cell_String(ByVal pRow As DataGridViewRow,
+                                          ByVal pColumnName As String) As String
+        Try
+            If pRow Is Nothing OrElse Not dgrid.Columns.Contains(pColumnName) Then Return ""
+            Dim value As Object = pRow.Cells(pColumnName).Value
+            If value Is Nothing OrElse IsDBNull(value) Then
+                value = pRow.Cells(pColumnName).FormattedValue
+            End If
+            If value Is Nothing OrElse IsDBNull(value) Then Return ""
+            Return value.ToString()
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    Private Function Get_Grid_Cell_Integer(ByVal pRow As DataGridViewRow,
+                                           ByVal pColumnName As String) As Integer
+        Try
+            Dim value As String = Get_Grid_Cell_String(pRow, pColumnName)
+            If String.IsNullOrWhiteSpace(value) Then Return 0
+            Return CInt(value)
+        Catch
+            Return 0
+        End Try
     End Function
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
@@ -660,6 +697,7 @@ Public Class frmAjusteStock
                     ' solo las 2 primeras (que sí son ColCodigoProducto/colNombreProducto)
                     ' y el resto se asigna por nombre justo abajo (UmBas, colUbicacion).
                     rc = dgrid.Rows.Add(codigo, BeAjusteDetBorrador.nombre_producto)
+                    Set_IdStock_Grid(rc, BeAjusteDetBorrador.IdStock)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDetBorrador.lote_original
@@ -803,6 +841,7 @@ Public Class frmAjusteStock
                     ' criterio que en el alta desde borrador: solo Codigo+Nombre por
                     ' posición; UmBas/colUbicacion ya se asignan por nombre abajo.
                     rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
+                    Set_IdStock_Grid(rc, BeAjusteDet.IdStock)
 
                     dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
                     dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
@@ -954,6 +993,7 @@ Public Class frmAjusteStock
             ' reasignan por nombre justo abajo, así que no hace falta pasarlos por
             ' posición. ColProveedor se llena un poco más abajo desde stockEspecificoSeleccionado.Proveedor.
             rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
+            Set_IdStock_Grid(rc, BeAjusteDet.IdStock)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
@@ -1279,18 +1319,17 @@ Public Class frmAjusteStock
             End If
 
 
+            dt = Preparar_DataSource_Motivo(dt)
+
             DgCombo = TryCast(dgrid.Rows(pIndex).Cells("motivoajuste"), DataGridViewComboBoxCell)
             DgCombo.DataSource = dt
             DgCombo.ValueMember = "Idmotivoajuste"
             DgCombo.DisplayMember = "Nombre"
 
-            If pidmotivo <> -1 Then
+            If pidmotivo > 0 AndAlso Existe_Motivo(dt, pidmotivo) Then
                 DgCombo.Value = pidmotivo
             Else
-                If dt.Rows.Count = 1 Then
-                    pidmotivo = 1
-                    DgCombo.Value = 1
-                End If
+                DgCombo.Value = 0
             End If
 
         Catch ex As Exception
@@ -1299,6 +1338,50 @@ Public Class frmAjusteStock
         End Try
 
     End Sub
+
+    Private Function Preparar_DataSource_Motivo(ByVal pDt As DataTable) As DataTable
+
+        Dim dtCombo As DataTable
+
+        If pDt Is Nothing Then
+            dtCombo = New DataTable()
+        Else
+            dtCombo = pDt.Copy()
+        End If
+
+        If Not dtCombo.Columns.Contains("Idmotivoajuste") Then
+            dtCombo.Columns.Add("Idmotivoajuste", GetType(Integer))
+        End If
+
+        If Not dtCombo.Columns.Contains("Nombre") Then
+            dtCombo.Columns.Add("Nombre", GetType(String))
+        End If
+
+        If Not Existe_Motivo(dtCombo, 0) Then
+            Dim drBlank As DataRow = dtCombo.NewRow()
+            drBlank("Idmotivoajuste") = 0
+            drBlank("Nombre") = ""
+            dtCombo.Rows.InsertAt(drBlank, 0)
+        End If
+
+        Return dtCombo
+
+    End Function
+
+    Private Function Existe_Motivo(ByVal pDt As DataTable,
+                                   ByVal pIdMotivo As Integer) As Boolean
+
+        If pDt Is Nothing OrElse Not pDt.Columns.Contains("Idmotivoajuste") Then Return False
+
+        For Each dr As DataRow In pDt.Rows
+            If Not IsDBNull(dr("Idmotivoajuste")) AndAlso CInt(dr("Idmotivoajuste")) = pIdMotivo Then
+                Return True
+            End If
+        Next
+
+        Return False
+
+    End Function
 
     '#FIX_v10_BORRADOR_RESERVA_2026-04-25 (C3):
     'Helper invocado al cargar un ajuste borrador existente. Verifica que cada
@@ -2269,6 +2352,7 @@ Public Class frmAjusteStock
             ' argumento posicional y caía en la columna UmBas. Estandarizado: solo
             ' Codigo+Nombre por posición; el resto por nombre.
             rc = dgrid.Rows.Add(codigo, Item.Nombre_producto)
+            Set_IdStock_Grid(rc, Item.IdStock)
             dgrid.Rows(rc).Cells("UmBas").Value = Item.UmBas
             dgrid.Rows(rc).Cells("colUbicacion").Value = ubic
             dgrid.Rows(rc).Cells("colUbicacion").ReadOnly = True
@@ -2465,20 +2549,17 @@ Public Class frmAjusteStock
 
                 DgCombo = TryCast(dgrid.Rows(sr).Cells("motivoajuste"), DataGridViewComboBoxCell)
 
-                vNombreMotivo = DgCombo.EditedFormattedValue
+                vNombreMotivo = If(DgCombo.EditedFormattedValue Is Nothing OrElse
+                                    IsDBNull(DgCombo.EditedFormattedValue),
+                                    "",
+                                    DgCombo.EditedFormattedValue.ToString())
 
-                If vNombreMotivo.Trim <> "" AndAlso vNombreMotivo <> "System.Data.DataRowView" Then
+                Get_IdMotivo_By_Nombre(vNombreMotivo)
 
-                    Get_IdMotivo_By_Nombre(vNombreMotivo)
-
-                    If IdMotivoAjuste > 0 Then
-                        If chkBorrador.Checked Then
-                            lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
-                        Else
-                            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
-                        End If
-                    End If
-
+                If chkBorrador.Checked Then
+                    lBeTransAjusteDetBorrador(sr).idmotivoajuste = If(IdMotivoAjuste > 0, IdMotivoAjuste, 0)
+                ElseIf IdMotivoAjuste > 0 Then
+                    lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
                 End If
 
             End If
@@ -2526,22 +2607,26 @@ Public Class frmAjusteStock
 
         Try
 
-            If NombreMotivo.Trim <> "" Then
+            IdMotivoAjuste = 0
 
-                Dim dr() As DataRow
+            If String.IsNullOrWhiteSpace(NombreMotivo) OrElse
+               NombreMotivo = "System.Data.DataRowView" OrElse
+               dtm Is Nothing OrElse
+               dtm.Rows.Count = 0 Then Return
 
-                IdMotivoAjuste = -1
+            Dim dr() As DataRow
+            Dim vNombreMotivo As String = NombreMotivo.Trim().Replace("'", "''")
 
-                dr = dtm.Select("Nombre='" & NombreMotivo & "'")
+            dr = dtm.Select("Nombre='" & vNombreMotivo & "'")
 
-                If dr(0).Item("Idmotivoajuste") > 0 Then
-                    IdMotivoAjuste = IIf(IsDBNull(dr(0).Item("Idmotivoajuste")), "-1", dr(0).Item("Idmotivoajuste"))
-                End If
-
+            If dr.Length > 0 AndAlso
+               Not IsDBNull(dr(0).Item("Idmotivoajuste")) AndAlso
+               CInt(dr(0).Item("Idmotivoajuste")) > 0 Then
+                IdMotivoAjuste = CInt(dr(0).Item("Idmotivoajuste"))
             End If
 
         Catch ex As Exception
-            MsgBox(ex.Message)
+            IdMotivoAjuste = 0
         End Try
 
     End Sub
@@ -2765,17 +2850,20 @@ Public Class frmAjusteStock
                     Return False
                 End If
 
-                vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
+                vNomMotivo = If(dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue Is Nothing OrElse
+                                 IsDBNull(dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue),
+                                 "",
+                                 dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue.ToString())
                 Get_IdMotivo_By_Nombre(vNomMotivo)
 
-                If IdMotivoAjuste < 1 Then
+                If Not esBorrador AndAlso IdMotivoAjuste < 1 Then
                     dgrid.Rows(sr).Cells(0).Selected = True
                     XtraMessageBox.Show("Línea : " & sr + 1 & " Debe definir el motivo del ajuste ", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Return False
                 End If
 
                 If esBorrador Then
-                    lBeTransAjusteDetBorrador(sr).idmotivoajuste = IdMotivoAjuste
+                    lBeTransAjusteDetBorrador(sr).idmotivoajuste = If(IdMotivoAjuste > 0, IdMotivoAjuste, 0)
                     lBeTransAjusteDetBorrador(sr).observacion = dgrid.Rows(sr).Cells("ColObservacion").Value
                 Else
                     lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
@@ -3215,6 +3303,14 @@ Public Class frmAjusteStock
                 lBeTransAjusteDet(i).IdBodegaERP = IdBodegaERP
                 lBeTransAjusteDet(i).Idtipoajuste = Val(dgrid.Rows(i).Cells("tipoajuste").Value)
 
+                Dim vNomMotivoGuardar As String =
+                    If(dgrid.Rows(i).Cells("motivoajuste").EditedFormattedValue Is Nothing OrElse
+                       IsDBNull(dgrid.Rows(i).Cells("motivoajuste").EditedFormattedValue),
+                       "",
+                       dgrid.Rows(i).Cells("motivoajuste").EditedFormattedValue.ToString())
+                Get_IdMotivo_By_Nombre(vNomMotivoGuardar)
+                lBeTransAjusteDet(i).IdMotivoAjuste = If(IdMotivoAjuste > 0, IdMotivoAjuste, 0)
+
                 ic = 0
                 If lBeTransAjusteDet(i).Lote_original <> lBeTransAjusteDet(i).Lote_nuevo Then ic += 1
                 If lBeTransAjusteDet(i).Fecha_vence_original <> lBeTransAjusteDet(i).Fecha_vence_nueva Then ic += 1
@@ -3485,6 +3581,7 @@ Public Class frmAjusteStock
         Dim lNueva As New List(Of clsBeTrans_ajuste_det)
         Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
             If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
+        Dim detallesUsados As New HashSet(Of clsBeTrans_ajuste_det)
 
         Dim filasGrid As New List(Of DataGridViewRow)
         For iRow As Integer = 0 To dgrid.Rows.Count - 1
@@ -3503,16 +3600,31 @@ Public Class frmAjusteStock
             Dim Lote As String = If(
                 IsDBNull(row.Cells("ColLote").Value),
                 "", CStr(row.Cells("ColLote").Value))
+            Dim IdStock As Integer = Get_Grid_Cell_Integer(row, "ColIdStock")
             Dim IdAjusteDet As Integer = If(
                 IsDBNull(row.Cells("ColIdAjusteDEt").Value),
                 0, CInt(row.Cells("ColIdAjusteDEt").Value))
+            Dim Talla As String = Get_Grid_Cell_String(row, "colTalla")
+            Dim Color As String = Get_Grid_Cell_String(row, "colColor")
 
             Dim found As clsBeTrans_ajuste_det = Nothing
 
             '1) Match nominal en lista principal
-            found = lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
-                                    AndAlso x.Lote_nuevo = Lote _
-                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+            If BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color Then
+                found = lOriginal.Find(Function(x) Not detallesUsados.Contains(x) _
+                                        AndAlso x.Codigo_producto = Codigo _
+                                        AndAlso x.Lote_nuevo = Lote _
+                                        AndAlso x.IdAjusteDet = IdAjusteDet _
+                                        AndAlso x.IdStock = IdStock _
+                                        AndAlso x.Talla_origen = Talla _
+                                        AndAlso x.Color_origen = Color)
+            Else
+                found = lOriginal.Find(Function(x) Not detallesUsados.Contains(x) _
+                                        AndAlso x.Codigo_producto = Codigo _
+                                        AndAlso x.Lote_nuevo = Lote _
+                                        AndAlso x.IdAjusteDet = IdAjusteDet _
+                                        AndAlso x.IdStock = IdStock)
+            End If
 
             '2) Fallback nominal en borrador
             If found Is Nothing AndAlso
@@ -3521,7 +3633,8 @@ Public Class frmAjusteStock
                     lBeTransAjusteDetBorrador.Find(
                         Function(x) x.codigo_producto = Codigo _
                           AndAlso x.lote_nuevo = Lote _
-                          AndAlso x.idajustedet = IdAjusteDet)
+                          AndAlso x.idajustedet = IdAjusteDet _
+                          AndAlso x.IdStock = IdStock)
                 If foundBorr IsNot Nothing Then
                     found = Convertir_Borrador_A_Detalle(foundBorr)
                 End If
@@ -3529,35 +3642,41 @@ Public Class frmAjusteStock
 
             '3) FIX_v16_J1: fallback posicional + backfill de campos vacíos
             If found Is Nothing AndAlso modoPosicional AndAlso i < lOriginal.Count Then
-                found = lOriginal(i)
+                If Not detallesUsados.Contains(lOriginal(i)) Then
+                    found = lOriginal(i)
+                End If
 
-                If String.IsNullOrWhiteSpace(found.Codigo_producto) Then
+                If found IsNot Nothing AndAlso String.IsNullOrWhiteSpace(found.Codigo_producto) Then
                     found.Codigo_producto = Codigo
                 End If
 
-                Try
-                    Dim nombreGrid As String = If(
-                        IsDBNull(row.Cells("ColNombreProducto").Value),
-                        "", CStr(row.Cells("ColNombreProducto").Value))
-                    If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
-                       Not String.IsNullOrWhiteSpace(nombreGrid) Then
-                        found.Nombre_producto = nombreGrid
-                    End If
-                Catch
-                End Try
+                If found IsNot Nothing Then
+                    Try
+                        Dim nombreGrid As String = If(
+                            IsDBNull(row.Cells("ColNombreProducto").Value),
+                            "", CStr(row.Cells("ColNombreProducto").Value))
+                        If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
+                           Not String.IsNullOrWhiteSpace(nombreGrid) Then
+                            found.Nombre_producto = nombreGrid
+                        End If
+                    Catch
+                    End Try
+                End If
 
-                If String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
+                If found IsNot Nothing AndAlso
+                   String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
                    Not String.IsNullOrWhiteSpace(Lote) Then
                     found.Lote_nuevo = Lote
                 End If
             End If
 
             If found IsNot Nothing Then
+                detallesUsados.Add(found)
                 lNueva.Add(found)
             Else
                 Throw New Exception(String.Format(
-                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
-                    i + 1, Codigo, Lote, IdAjusteDet))
+                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}, IdStock={4}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
+                    i + 1, Codigo, Lote, IdAjusteDet, IdStock))
             End If
         Next
 
@@ -5044,6 +5163,7 @@ Public Class frmAjusteStock
             ' "alta de producto sin existencia" donde IdStock = 0 (línea ~4434, "pendiente"):
             ' al no haber stock previo, no hay proveedor de recepción asociado.
             rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto)
+            Set_IdStock_Grid(rc, BeAjusteDet.IdStock)
             dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
             dgrid.Rows(rc).Cells("ColLote").Value = BeAjusteDet.Lote_original
 
@@ -5871,6 +5991,7 @@ Public Class frmAjusteStock
                     Dim rc As Integer = dgrid.Rows.Add(det.Codigo_producto, det.Nombre_producto, det.UmBas,
                                                        If(det.IdPresentacion <> 0, det.Presentacion?.Nombre, ""),
                                                        ubic)
+                    Set_IdStock_Grid(rc, det.IdStock)
 
                     Llenar_Motivo(rc, det.IdMotivoAjuste)
                     Llenar_Tipo(rc, det.Idtipoajuste)

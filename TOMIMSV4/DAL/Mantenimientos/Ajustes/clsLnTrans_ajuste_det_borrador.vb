@@ -57,6 +57,16 @@ Public Class clsLnTrans_ajuste_det_borrador
         End Try
     End Sub
 
+    Private Shared Function Valor_Db_Motivo_Ajuste(ByVal pIdMotivoAjuste As Integer) As Object
+
+        If pIdMotivoAjuste > 0 Then
+            Return pIdMotivoAjuste
+        End If
+
+        Return DBNull.Value
+
+    End Function
+
     Public Shared Function Insertar(ByRef oBeTrans_ajuste_det_borrador As clsBeTrans_ajuste_det_borrador,
                                     Optional ByVal pConection As SqlConnection = Nothing,
                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
@@ -142,7 +152,7 @@ Public Class clsLnTrans_ajuste_det_borrador
             cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeTrans_ajuste_det_borrador.codigo_producto))
             cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", oBeTrans_ajuste_det_borrador.nombre_producto))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOAJUSTE", oBeTrans_ajuste_det_borrador.idtipoajuste))
-            cmd.Parameters.Add(New SqlParameter("@IDMOTIVOAJUSTE", oBeTrans_ajuste_det_borrador.idmotivoajuste))
+            cmd.Parameters.Add(New SqlParameter("@IDMOTIVOAJUSTE", Valor_Db_Motivo_Ajuste(oBeTrans_ajuste_det_borrador.idmotivoajuste)))
             If oBeTrans_ajuste_det_borrador.observacion IsNot Nothing Then cmd.Parameters.Add(New SqlParameter("@OBSERVACION", oBeTrans_ajuste_det_borrador.observacion))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_AJUSTE", oBeTrans_ajuste_det_borrador.codigo_ajuste))
             cmd.Parameters.Add(New SqlParameter("@ENVIADO", oBeTrans_ajuste_det_borrador.enviado))
@@ -270,7 +280,7 @@ Public Class clsLnTrans_ajuste_det_borrador
             cmd.Parameters.Add(New SqlParameter("@CODIGO_PRODUCTO", oBeTrans_ajuste_det_borrador.codigo_producto))
             cmd.Parameters.Add(New SqlParameter("@NOMBRE_PRODUCTO", oBeTrans_ajuste_det_borrador.nombre_producto))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOAJUSTE", oBeTrans_ajuste_det_borrador.idtipoajuste))
-            cmd.Parameters.Add(New SqlParameter("@IDMOTIVOAJUSTE", oBeTrans_ajuste_det_borrador.idmotivoajuste))
+            cmd.Parameters.Add(New SqlParameter("@IDMOTIVOAJUSTE", Valor_Db_Motivo_Ajuste(oBeTrans_ajuste_det_borrador.idmotivoajuste)))
             cmd.Parameters.Add(New SqlParameter("@OBSERVACION", oBeTrans_ajuste_det_borrador.observacion))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_AJUSTE", oBeTrans_ajuste_det_borrador.codigo_ajuste))
             cmd.Parameters.Add(New SqlParameter("@ENVIADO", oBeTrans_ajuste_det_borrador.enviado))
