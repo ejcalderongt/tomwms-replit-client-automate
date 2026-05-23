@@ -1950,6 +1950,42 @@ Public Class TOMHHWS
 
     End Sub
 
+    '#EJC_MEJORA_20260523: Ruta JSON Lite para apertura rápida de recepción en HH.
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub GetSingleRec_JSON_Lite(ByVal pIdRecepcionEnc As Integer)
+
+        Try
+
+            Dim vCacheKey As String = String.Format("HH:GetSingleRec_JSON_Lite:{0}", pIdRecepcionEnc)
+            Dim jsonRecepcion As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_Lite(pIdRecepcionEnc)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
+
+            EscribirJsonHHRaw(jsonRecepcion)
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace, pIdRecepcionEnc)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Ok = False,
+                .Mensaje = ex.Message,
+                .FechaServidor = DateTime.Now
+            }, 299)
+
+        End Try
+
+    End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_BeTransOcEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As clsBeTrans_oc_enc
 
