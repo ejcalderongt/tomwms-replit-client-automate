@@ -124,6 +124,7 @@ Partial Class frmAjusteStock
         Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colProveedor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIdStock = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
@@ -928,7 +929,7 @@ Partial Class frmAjusteStock
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgrid.ColumnHeadersHeight = 40
-        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor, Me.colProveedor})
+        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor, Me.colProveedor, Me.ColIdStock})
         Me.dgrid.Dock = System.Windows.Forms.DockStyle.Top
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
@@ -1141,6 +1142,15 @@ Partial Class frmAjusteStock
         Me.colProveedor.Name = "colProveedor"
         Me.colProveedor.ReadOnly = True
         Me.colProveedor.Width = 125
+        '
+        'ColIdStock
+        '
+        Me.ColIdStock.HeaderText = "IdStock"
+        Me.ColIdStock.MinimumWidth = 6
+        Me.ColIdStock.Name = "ColIdStock"
+        Me.ColIdStock.ReadOnly = True
+        Me.ColIdStock.Visible = False
+        Me.ColIdStock.Width = 125
         '
         'DockManager1
         '
@@ -1499,5 +1509,6 @@ Partial Class frmAjusteStock
     Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
     Friend WithEvents colProveedor As DataGridViewTextBoxColumn
+    Friend WithEvents ColIdStock As DataGridViewTextBoxColumn
     Friend WithEvents mnuExportar As DevExpress.XtraBars.BarButtonItem
 End Class

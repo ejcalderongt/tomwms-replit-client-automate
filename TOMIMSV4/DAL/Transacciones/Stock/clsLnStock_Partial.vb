@@ -149,7 +149,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Stock_DataTable(ByVal pIdBodega As Integer,
                                                        ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -246,7 +245,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Valoracion_Stock_DataTable(ByVal pIdBodega As Integer,
                                                                   ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -345,7 +343,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Valoracion_By_OC_DataTable(ByVal pIdBodega As Integer,
                                                                   ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -441,9 +438,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
-
-
     Public Shared Function Get_Reporte_Stock_All_DataTable(ByVal pIdBodega As Integer,
                                                            ByVal pIdPropietarioBodega As Integer,
                                                            ByRef DTDetalleSeries As DataTable) As DataTable
@@ -15767,7 +15761,6 @@ Por favor reportar este problema a DevOps."
     '    End Try
 
     'End Function
-
     Public Shared Function Get_Existencia_Disp_Menos_Picking_By_IdProducto_By_IdUbicacion(ByRef pBeStockConsulta As clsBeStock,
                                                                                           ByRef pBeStockConsultaUbicacion As clsBeStock,
                                                                                           ByVal pIdBodega As Integer,
@@ -15943,7 +15936,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_By_Referencia(ByVal pReferencia As String) As DataTable
 
 
@@ -16327,7 +16319,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Stock_Transito(ByVal IdBodega As Integer) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -16374,7 +16365,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Single_By_Lic_Plate_Ubic(ByVal lic_plate As String,
                                                         ByVal IdUbicacion As Integer,
                                                         ByRef lConnection As SqlConnection,
@@ -16411,7 +16401,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
 
     Public Shared Function Guardar_Stock_Ajuste_Positivo(ByVal pObjStock As clsBeStock,
                                                          ByRef lConnection As SqlConnection,
@@ -16533,7 +16522,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Lotes_Disponibles_DT_By_IdCliente(ByVal pIdBodega As Integer, ByVal pIdCliente As Integer, Optional ByVal Edicion As Boolean = False) As DataTable
 
         Get_Lotes_Disponibles_DT_By_IdCliente = Nothing
@@ -16610,7 +16598,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Estados_Producto_En_Stock() As DataTable
 
         Get_Estados_Producto_En_Stock = Nothing
@@ -16649,7 +16636,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Stock_By_IdBodega_and_IdPropietario_For_Implosion(ByVal pIdBodega As Integer,
                                                                                          ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -16761,7 +16747,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_By_IdUbicacion_And_LicPlate(ByVal pIdUbicacion As Integer, pLicencia As String) As List(Of clsBeStock)
 
         Dim lReturnList As List(Of clsBeStock) = Nothing
@@ -16805,7 +16790,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of clsBeVW_stock_res)
 
         Dim lReturnList As New List(Of clsBeVW_stock_res)

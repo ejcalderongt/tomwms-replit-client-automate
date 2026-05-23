@@ -121,6 +121,17 @@ known_optimizations:
       Bodega_ubicacion.ObtenerWithTramo calls. The comparison grid only needs
       IdUbicacion for filtering and UbicacionCompleta for display, both
       provided by the read-model/fallback query.
+  frmInventario_regularizacion_progress_cache:
+    files:
+      form: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb
+      regularizacion: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.vb
+    rule: >
+      For inventory regularization, cache per-run low-volatility lookups such
+      as product-bodega, propietario-bodega, ajuste motivo, bodega ERP,
+      producto and talla/color. Keep stock and adjustment writes fresh inside
+      the transaction. Throttle progress updates and suspend GridView data
+      updates while assigning data source, summaries and formatting to avoid
+      UI refresh stalls.
   hh_ws_catalog_cache:
     file: WSHHRN/TOMHHWS.asmx.vb
     rule: >
