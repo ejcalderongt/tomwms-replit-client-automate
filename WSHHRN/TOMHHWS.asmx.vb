@@ -17089,9 +17089,7 @@ Public Class TOMHHWS
                                           ByVal pIdUbicacion As Integer,
                                           ByVal pIdBodega As Integer,
                                           ByVal pNombre As String,
-                                          ByVal pDetallado As Boolean,
-                                          Optional ByVal pPage As Integer = 1,
-                                          Optional ByVal pPageSize As Integer = 200)
+                                          ByVal pDetallado As Boolean)
 
         Try
 
@@ -17118,30 +17116,11 @@ Public Class TOMHHWS
                 lStock = New List(Of clsBeVW_stock_res_CI)
             End If
 
-            Dim vPage As Integer = If(pPage <= 0, 1, pPage)
-            Dim vPageSize As Integer = pPageSize
-            If vPageSize <= 0 Then
-                vPageSize = 200
-            ElseIf vPageSize > 500 Then
-                vPageSize = 500
-            End If
-
-            Dim vTotal As Integer = lStock.Count
-            Dim vStart As Integer = (vPage - 1) * vPageSize
-            Dim vItems As New List(Of clsBeVW_stock_res_CI)
-
-            If vStart < vTotal Then
-                Dim vTake As Integer = Math.Min(vPageSize, vTotal - vStart)
-                vItems = lStock.GetRange(vStart, vTake)
-            End If
-
             EscribirJsonHH(New With {
                 .Error = False,
                 .Fuente = If(vEsLicencia, "LP", "STD"),
-                .Page = vPage,
-                .PageSize = vPageSize,
-                .Total = vTotal,
-                .Items = vItems
+                .Total = lStock.Count,
+                .Items = lStock
             })
 
         Catch ex As Exception
@@ -17153,8 +17132,6 @@ Public Class TOMHHWS
             EscribirJsonHH(New With {
                 .Error = True,
                 .Mensaje = ex.Message,
-                .Page = 1,
-                .PageSize = 0,
                 .Total = 0,
                 .Items = New List(Of clsBeVW_stock_res_CI)
             })
