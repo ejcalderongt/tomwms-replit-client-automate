@@ -5097,13 +5097,14 @@ Partial Public Class clsLnStock
                             Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
                             Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
 
-                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
-                            BeStockAActualizar.Talla = vTalla
-                            BeStockAActualizar.Color = vColor
+                            BeStockNuevo.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockNuevo.Talla = vTalla
+                            BeStockNuevo.Color = vColor
 
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
+                            BeTransAjusteDet.IdStock = IdStock
 
                         End If
 

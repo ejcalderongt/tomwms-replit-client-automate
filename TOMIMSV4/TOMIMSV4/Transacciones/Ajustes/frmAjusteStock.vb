@@ -3581,6 +3581,7 @@ Public Class frmAjusteStock
         Dim lNueva As New List(Of clsBeTrans_ajuste_det)
         Dim lOriginal As List(Of clsBeTrans_ajuste_det) =
             If(lBeTransAjusteDet, New List(Of clsBeTrans_ajuste_det))
+        Dim detallesUsados As New HashSet(Of clsBeTrans_ajuste_det)
 
         Dim filasGrid As New List(Of DataGridViewRow)
         For iRow As Integer = 0 To dgrid.Rows.Count - 1
@@ -3599,16 +3600,31 @@ Public Class frmAjusteStock
             Dim Lote As String = If(
                 IsDBNull(row.Cells("ColLote").Value),
                 "", CStr(row.Cells("ColLote").Value))
+            Dim IdStock As Integer = Get_Grid_Cell_Integer(row, "ColIdStock")
             Dim IdAjusteDet As Integer = If(
                 IsDBNull(row.Cells("ColIdAjusteDEt").Value),
                 0, CInt(row.Cells("ColIdAjusteDEt").Value))
+            Dim Talla As String = Get_Grid_Cell_String(row, "colTalla")
+            Dim Color As String = Get_Grid_Cell_String(row, "colColor")
 
             Dim found As clsBeTrans_ajuste_det = Nothing
 
             '1) Match nominal en lista principal
-            found = lOriginal.Find(Function(x) x.Codigo_producto = Codigo _
-                                    AndAlso x.Lote_nuevo = Lote _
-                                    AndAlso x.IdAjusteDet = IdAjusteDet)
+            If BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color Then
+                found = lOriginal.Find(Function(x) Not detallesUsados.Contains(x) _
+                                        AndAlso x.Codigo_producto = Codigo _
+                                        AndAlso x.Lote_nuevo = Lote _
+                                        AndAlso x.IdAjusteDet = IdAjusteDet _
+                                        AndAlso x.IdStock = IdStock _
+                                        AndAlso x.Talla_origen = Talla _
+                                        AndAlso x.Color_origen = Color)
+            Else
+                found = lOriginal.Find(Function(x) Not detallesUsados.Contains(x) _
+                                        AndAlso x.Codigo_producto = Codigo _
+                                        AndAlso x.Lote_nuevo = Lote _
+                                        AndAlso x.IdAjusteDet = IdAjusteDet _
+                                        AndAlso x.IdStock = IdStock)
+            End If
 
             '2) Fallback nominal en borrador
             If found Is Nothing AndAlso
@@ -3617,7 +3633,8 @@ Public Class frmAjusteStock
                     lBeTransAjusteDetBorrador.Find(
                         Function(x) x.codigo_producto = Codigo _
                           AndAlso x.lote_nuevo = Lote _
-                          AndAlso x.idajustedet = IdAjusteDet)
+                          AndAlso x.idajustedet = IdAjusteDet _
+                          AndAlso x.IdStock = IdStock)
                 If foundBorr IsNot Nothing Then
                     found = Convertir_Borrador_A_Detalle(foundBorr)
                 End If
@@ -3625,35 +3642,41 @@ Public Class frmAjusteStock
 
             '3) FIX_v16_J1: fallback posicional + backfill de campos vacíos
             If found Is Nothing AndAlso modoPosicional AndAlso i < lOriginal.Count Then
-                found = lOriginal(i)
+                If Not detallesUsados.Contains(lOriginal(i)) Then
+                    found = lOriginal(i)
+                End If
 
-                If String.IsNullOrWhiteSpace(found.Codigo_producto) Then
+                If found IsNot Nothing AndAlso String.IsNullOrWhiteSpace(found.Codigo_producto) Then
                     found.Codigo_producto = Codigo
                 End If
 
-                Try
-                    Dim nombreGrid As String = If(
-                        IsDBNull(row.Cells("ColNombreProducto").Value),
-                        "", CStr(row.Cells("ColNombreProducto").Value))
-                    If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
-                       Not String.IsNullOrWhiteSpace(nombreGrid) Then
-                        found.Nombre_producto = nombreGrid
-                    End If
-                Catch
-                End Try
+                If found IsNot Nothing Then
+                    Try
+                        Dim nombreGrid As String = If(
+                            IsDBNull(row.Cells("ColNombreProducto").Value),
+                            "", CStr(row.Cells("ColNombreProducto").Value))
+                        If String.IsNullOrWhiteSpace(found.Nombre_producto) AndAlso
+                           Not String.IsNullOrWhiteSpace(nombreGrid) Then
+                            found.Nombre_producto = nombreGrid
+                        End If
+                    Catch
+                    End Try
+                End If
 
-                If String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
+                If found IsNot Nothing AndAlso
+                   String.IsNullOrWhiteSpace(found.Lote_nuevo) AndAlso
                    Not String.IsNullOrWhiteSpace(Lote) Then
                     found.Lote_nuevo = Lote
                 End If
             End If
 
             If found IsNot Nothing Then
+                detallesUsados.Add(found)
                 lNueva.Add(found)
             Else
                 Throw New Exception(String.Format(
-                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
-                    i + 1, Codigo, Lote, IdAjusteDet))
+                    "Fila {0} del grid (Código={1}, Lote={2}, IdAjusteDet={3}, IdStock={4}) no tiene detalle asociado en memoria. Cierre el ajuste y vuelva a abrirlo para refrescar.",
+                    i + 1, Codigo, Lote, IdAjusteDet, IdStock))
             End If
         Next
 
