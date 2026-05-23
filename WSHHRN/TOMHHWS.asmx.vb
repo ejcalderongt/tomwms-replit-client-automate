@@ -17083,6 +17083,86 @@ Public Class TOMHHWS
 
     End Sub
 
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Stock_Consulta_CI_Json(ByVal pidProducto As String,
+                                          ByVal pLicPlate As String,
+                                          ByVal pIdUbicacion As Integer,
+                                          ByVal pIdBodega As Integer,
+                                          ByVal pNombre As String,
+                                          ByVal pDetallado As Boolean,
+                                          Optional ByVal pPage As Integer = 1,
+                                          Optional ByVal pPageSize As Integer = 200)
+
+        Try
+
+            '#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.
+            Dim lStock As List(Of clsBeVW_stock_res_CI) = Nothing
+            Dim vLicPlate As String = If(pLicPlate, String.Empty).Trim()
+            Dim vEsLicencia As Boolean = Not String.IsNullOrWhiteSpace(vLicPlate)
+
+            If vEsLicencia Then
+                lStock = clsLnStock_CI.Get_All_By_LP_And_IdUbicacion(pIdUbicacion,
+                                                                      vLicPlate,
+                                                                      pIdBodega,
+                                                                      pNombre,
+                                                                      pDetallado)
+            Else
+                lStock = clsLnStock_CI.Get_All_By_IdUbicacion(pIdUbicacion,
+                                                              pidProducto,
+                                                              pIdBodega,
+                                                              pNombre,
+                                                              pDetallado)
+            End If
+
+            If lStock Is Nothing Then
+                lStock = New List(Of clsBeVW_stock_res_CI)
+            End If
+
+            Dim vPage As Integer = If(pPage <= 0, 1, pPage)
+            Dim vPageSize As Integer = pPageSize
+            If vPageSize <= 0 Then
+                vPageSize = 200
+            ElseIf vPageSize > 500 Then
+                vPageSize = 500
+            End If
+
+            Dim vTotal As Integer = lStock.Count
+            Dim vStart As Integer = (vPage - 1) * vPageSize
+            Dim vItems As New List(Of clsBeVW_stock_res_CI)
+
+            If vStart < vTotal Then
+                Dim vTake As Integer = Math.Min(vPageSize, vTotal - vStart)
+                vItems = lStock.GetRange(vStart, vTake)
+            End If
+
+            EscribirJsonHH(New With {
+                .Error = False,
+                .Fuente = If(vEsLicencia, "LP", "STD"),
+                .Page = vPage,
+                .PageSize = vPageSize,
+                .Total = vTotal,
+                .Items = vItems
+            })
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(ex.Message)
+
+            EscribirJsonHH(New With {
+                .Error = True,
+                .Mensaje = ex.Message,
+                .Page = 1,
+                .PageSize = 0,
+                .Total = 0,
+                .Items = New List(Of clsBeVW_stock_res_CI)
+            })
+
+        End Try
+
+    End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Sub Finalizar_Recepcion_Parcial_Pallet_Proveedor_S(ByVal pIdOrdenCompraEnc As Integer,
                                                               ByVal pIdRecepcionEnc As Integer,
