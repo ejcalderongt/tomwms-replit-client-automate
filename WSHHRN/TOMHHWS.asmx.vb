@@ -49,6 +49,7 @@ Public Class TOMHHWS
 
     Private Const HH_CACHE_CATALOGO_SEGUNDOS As Integer = 120
     Private Const HH_CACHE_SEGURIDAD_SEGUNDOS As Integer = 300
+    Private Const HH_CACHE_RECEPCION_SEGUNDOS As Integer = 60
     Private Shared ReadOnly HH_CACHE_LOCK As New Object()
 
     '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
@@ -118,6 +119,22 @@ Public Class TOMHHWS
                                                          New JsonSerializerSettings With {
                                                              .NullValueHandling = NullValueHandling.Include
                                                          })
+
+        curContext.Response.Clear()
+        curContext.Response.StatusCode = pStatusCode
+        curContext.Response.ContentType = "application/json; charset=utf-8"
+        curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        curContext.Response.Write(json)
+        curContext.Response.Flush()
+
+    End Sub
+
+    '#EJC_MEJORA_20260522: Escritura JSON directa para respuestas ya serializadas (evita doble serialización).
+    Private Shared Sub EscribirJsonHHRaw(ByVal pJson As String,
+                                         Optional ByVal pStatusCode As Integer = 200)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        Dim json As String = If(String.IsNullOrWhiteSpace(pJson), "{}", pJson)
 
         curContext.Response.Clear()
         curContext.Response.StatusCode = pStatusCode
@@ -1901,8 +1918,20 @@ Public Class TOMHHWS
 
         Try
 
-            Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH(pIdRecepcionEnc)
-            EscribirJsonHH(beRecepcion)
+            '#EJC_MEJORA_20260522: Cache corto por recepción para acelerar reingreso desde HH sin romper contrato actual.
+            Dim vCacheKey As String = String.Format("HH:GetSingleRec_JSON:{0}", pIdRecepcionEnc)
+            Dim jsonRecepcion As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH(pIdRecepcionEnc)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
+
+            EscribirJsonHHRaw(jsonRecepcion)
 
         Catch ex As Exception
 
@@ -18579,14 +18608,20 @@ Public Class TOMHHWS
     Public Function GetSingleRecJson(ByVal pIdRecepcionEnc As Integer, ByVal CodigoProducto As String) As String
 
         Try
-            ' Obtener el objeto original
-            Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_By_Codigo(pIdRecepcionEnc, CodigoProducto)
+            '#EJC_MEJORA_20260522: Cache corto por recepción+producto para apertura dirigida por código en HH.
+            Dim vCacheKey As String = String.Format("HH:GetSingleRecJson:{0}:{1}", pIdRecepcionEnc, CodigoProducto)
+            Dim strserialize As String = ObtenerCacheHH(Of String)(
+                vCacheKey,
+                HH_CACHE_RECEPCION_SEGUNDOS,
+                Function()
+                    Dim beRecepcion As clsBeTrans_re_enc = clsLnTrans_re_enc.GetSingleHH_By_Codigo(pIdRecepcionEnc, CodigoProducto)
+                    Return JsonConvert.SerializeObject(beRecepcion,
+                                                       New JsonSerializerSettings With {
+                                                           .NullValueHandling = NullValueHandling.Include
+                                                       })
+                End Function)
 
-            ' Serializar a JSON
-            Dim serializer As New JavaScriptSerializer()
-            serializer.MaxJsonLength = Integer.MaxValue
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
-            Dim strserialize As String = JsonConvert.SerializeObject(beRecepcion)
             GetSingleRecJson = strserialize
             Dim currrentContext As HttpContext = HttpContext.Current
             currrentContext.Response.ContentType = "application/json"

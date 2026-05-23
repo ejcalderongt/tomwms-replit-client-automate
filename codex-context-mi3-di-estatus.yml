@@ -1,5 +1,30 @@
 notas:
   - fecha: "2026-05-22"
+    area: "HH recepcion scan producto - traza parseo JSON"
+    detalle: >
+      Diagnostico reproducido sin cambios funcionales para error al escanear
+      producto en frm_lista_tareas_recepcion (processIdRecepcion). El flujo HH
+      llama GetSingleRec_JSON y hace Gson.fromJson(ws.xmlresult,
+      clsBeTrans_re_enc). En ambiente 26.2.183.105/wcftom4 se verifico que el
+      payload real devuelve OrdenCompraRec.OC.DetalleOC como arreglo JSON
+      (DetalleOC:[...]); la HH actual modela DetalleOC como
+      clsBeTrans_oc_detList (objeto wrapper), por eso Gson lanza
+      IllegalStateException Expected BEGIN_OBJECT but was BEGIN_ARRAY en la ruta
+      $.OrdenCompraRec.OC.DetalleOC. Evidencia local: request POST
+      /tomhhws.asmx/GetSingleRec_JSON con pIdRecepcionEnc=8431 confirma
+      DetalleOC=ARRAY. Cambio pendiente: alinear contrato HH con arreglo JSON o
+      agregar adaptador de deserializacion compatible objeto/arreglo.
+  - fecha: "2026-05-22"
+    area: "HH recepcion XML contrato clsBeTrans_oc_det"
+    detalle: >
+      Se confirma que el repo HH local activo para sesiones Codex es
+      C:/Users/yejc2/StudioProjects/TOMHH2025. Fix aplicado en HH para
+      compatibilidad con respuesta del WS de recepcion: la clase
+      com.dts.classes.Transacciones.OrdenCompra.Trans_oc_det.clsBeTrans_oc_det
+      ahora incluye el campo XML CodigoSKU (con getter/setter) para evitar
+      XMLObject Error 2 al parsear GetSingleRecResult cuando el servidor envia
+      <CodigoSKU>.
+  - fecha: "2026-05-22"
     area: "frmPrincipal02 read-model tareas correccion"
     detalle: >
       Se corrigio dbo.usp_wms_principal02_tareas_readmodel_v1 para no depender

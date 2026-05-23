@@ -19,7 +19,7 @@ Public Class TOMWMSSystemInfo
 
     End Structure
 
-    Public Shared Function Get_System_Info() As system_info_bof_wms
+    Public Shared Function Get_System_Info(Optional ByVal pIncluirValidacionInternet As Boolean = False) As system_info_bof_wms
 
         Dim info As New system_info_bof_wms
 
@@ -34,7 +34,7 @@ Public Class TOMWMSSystemInfo
             info.ProcessorSpeed = Get_Processor_Speed()
             info.UsedMemoryPercentage = Get_Used_Memory_Percentage()
             info.AvailableMemoryPercentage = Get_Available_Memory_Percentage()
-            info.InternetConnectionAvailable = Is_Online()
+            info.InternetConnectionAvailable = If(pIncluirValidacionInternet, Is_Online(), False)
 
         Catch ex As Exception
             Throw
