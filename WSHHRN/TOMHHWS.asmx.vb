@@ -17090,8 +17090,8 @@ Public Class TOMHHWS
                                           ByVal pIdBodega As Integer,
                                           ByVal pNombre As String,
                                           ByVal pDetallado As Boolean,
-                                          Optional ByVal pPage As Integer = 1,
-                                          Optional ByVal pPageSize As Integer = 200)
+                                          ByVal pPage As Integer,
+                                          ByVal pPageSize As Integer)
 
         Try
 
