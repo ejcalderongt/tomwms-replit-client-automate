@@ -82,11 +82,13 @@ Public Class frmPicking
     Private mPickingTraceMarca As System.Diagnostics.Stopwatch
     Private ReadOnly mPickingOperadoresBodegaCache As New Dictionary(Of Integer, DataTable)
     Private ReadOnly mPickingManufacturaCache As New Dictionary(Of String, Boolean)
+    Private ReadOnly mPickingStockResPorPedidoCache As New Dictionary(Of Integer, List(Of clsBeVW_stock_res))
 
     '#EJC20260522_PICKING_CACHE: los caches viven solo durante una carga completa del picking.
     Private Sub PickingCache_Limpiar()
         mPickingOperadoresBodegaCache.Clear()
         mPickingManufacturaCache.Clear()
+        mPickingStockResPorPedidoCache.Clear()
     End Sub
 
     Private Function PickingCache_Key(ByVal ParamArray pValores() As Object) As String
@@ -2062,6 +2064,27 @@ Public Class frmPicking
                     Dim ie As Integer = 0
                     Dim TiempoCliente As New clsBeCliente_tiempos()
 
+                    If BePickingEnc.Estado <> "Despachado" Then
+                        Dim vRelojStockRes As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
+                        Dim vStockResPicking = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPickingEnc_ReadModel(BePickingEnc.IdPickingEnc,
+                                                                                                             False,
+                                                                                                             (Modo = TipoTrans.Nuevo),
+                                                                                                             True,
+                                                                                                             clsTransaccion.lConnection,
+                                                                                                             clsTransaccion.lTransaction)
+
+                        mPickingStockResPorPedidoCache.Clear()
+                        For Each vGrupoPedido In vStockResPicking.GroupBy(Function(x) x.IdPedido)
+                            mPickingStockResPorPedidoCache(vGrupoPedido.Key) = vGrupoPedido.ToList()
+                        Next
+
+                        vRelojStockRes.Stop()
+                        PickingTrace_Marca("stock_res_readmodel",
+                                           "rows=" & vStockResPicking.Count &
+                                           ";pedidos=" & mPickingStockResPorPedidoCache.Count &
+                                           ";ms=" & vRelojStockRes.ElapsedMilliseconds)
+                    End If
+
                     For Each IdPedidoEnc As Integer In ListaPedidosPicking
 
                         vPedidos += 1
@@ -2651,11 +2674,19 @@ Public Class frmPicking
 
         Try
 
-            pListObjSP = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc_And_IdPickingEnc(pIdPedidoEnc,
-                                                                                             BePickingEnc.IdPickingEnc,
-                                                                                             False,
-                                                                                             (Modo = TipoTrans.Nuevo),
-                                                                                             True)
+            If Not mPickingStockResPorPedidoCache.TryGetValue(pIdPedidoEnc, pListObjSP) Then
+                pListObjSP = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc_And_IdPickingEnc(pIdPedidoEnc,
+                                                                                                 BePickingEnc.IdPickingEnc,
+                                                                                                 False,
+                                                                                                 (Modo = TipoTrans.Nuevo),
+                                                                                                 True)
+            Else
+                '#EJC20260522_PICKING_READMODEL: Set_Stock_Res transforma cantidades para UI; trabajar sobre clones evita mutar el cache base.
+                pListObjSP = pListObjSP.Select(Function(x) CType(x.Clone(), clsBeVW_stock_res)).ToList()
+                PickingTrace_Marca("stock_res_cache_hit",
+                                   "pedido=" & pIdPedidoEnc &
+                                   ";rows=" & pListObjSP.Count)
+            End If
 
             If pListObjSP.Count > 0 Then
 
