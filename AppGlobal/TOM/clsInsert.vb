@@ -191,10 +191,14 @@ Public Class clsInsertBatch
     End Property
 
     '#EJC20260523_INSERTBATCH_SCHEMA_SAFE: en clientes con schema parcial, SqlBulkCopy debe mapear solo columnas existentes.
+    '#EJC20260523_INSERTBATCH_TRACE: devolvemos Dictionary CI (key=cualquier casing, value=casing real
+    'de sys.columns) para poder normalizar el segundo argumento de SqlBulkCopy.ColumnMappings.Add.
+    'SqlBulkCopy valida ese nombre destino case-sensitive aunque la collation SQL sea CI, y rompe con
+    '"The given ColumnMapping does not match up with any column in the source or destination".
     Private Function GetDestinationColumns(ByVal pConnection As SqlConnection,
-                                           ByVal pTransaction As SqlTransaction) As HashSet(Of String)
+                                           ByVal pTransaction As SqlTransaction) As Dictionary(Of String, String)
 
-        Dim vColumnas As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Dim vColumnas As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
         Dim vSchema As String = ""
         Dim vTable As String = clTable
 
@@ -213,7 +217,8 @@ Public Class clsInsertBatch
 
             Using vReader As SqlDataReader = vCmd.ExecuteReader()
                 While vReader.Read()
-                    vColumnas.Add(vReader.Item("COLUMN_NAME").ToString())
+                    Dim vNombre As String = vReader.Item("COLUMN_NAME").ToString()
+                    If Not vColumnas.ContainsKey(vNombre) Then vColumnas.Add(vNombre, vNombre)
                 End While
             End Using
         End Using
@@ -282,12 +287,16 @@ Public Class clsInsertBatch
                         If pCancelar IsNot Nothing AndAlso pCancelar.Invoke() Then e.Abort = True
                     End Sub
 
-                Dim vColumnasDestino As HashSet(Of String) = GetDestinationColumns(vConnection, vTransaction)
+                '#EJC20260523_INSERTBATCH_TRACE: normalizar casing destino. vColumnasDestino es Dictionary CI
+                'donde el value es el casing exacto de sys.columns; se pasa ese value como segundo arg de
+                'ColumnMappings.Add para evitar el BULK_COPY_ERROR de matching case-sensitive interno de SqlBulkCopy.
+                Dim vColumnasDestino As Dictionary(Of String, String) = GetDestinationColumns(vConnection, vTransaction)
                 Dim vColumnasOmitidas As New List(Of String)
 
                 For Each col As BatchColumn In clColumnas
-                    If vColumnasDestino.Contains(col.Nombre) Then
-                        bulk.ColumnMappings.Add(col.Nombre, col.Nombre)
+                    Dim vNombreDestino As String = Nothing
+                    If vColumnasDestino.TryGetValue(col.Nombre, vNombreDestino) Then
+                        bulk.ColumnMappings.Add(col.Nombre, vNombreDestino)
                     Else
                         vColumnasOmitidas.Add(col.Nombre)
                     End If
