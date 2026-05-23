@@ -1,5 +1,14 @@
 notas:
   - fecha: "2026-05-23"
+    area: "WSHH consulta stock ubicacion JSON estable"
+    detalle: >
+      Se agrego endpoint backend dedicado Get_Stock_Por_Producto_Ubicacion_CI_Json_v2
+      en WSHHRN/TOMHHWS.asmx.vb para ruta HH de consulta por ubicacion.
+      La salida es siempre JSON uniforme {Error,Mensaje,Total,Items,TraceId}
+      mediante EscribirJsonHHSeguro (TrySkipIisCustomErrors + CompleteRequest),
+      evitando que IIS/ASMX reemplace respuestas por XML/HTML en errores.
+      El endpoint v2 incluye TraceId opcional para trazabilidad server-side.
+  - fecha: "2026-05-23"
     area: "HH wrapper JSON global + recepcion scan"
     detalle: >
       Se movio la compatibilidad de colecciones JSON a capa base

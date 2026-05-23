@@ -129,6 +129,27 @@ Public Class TOMHHWS
 
     End Sub
 
+    '#EJC_MEJORA_20260523: writer JSON robusto para HH (evita que IIS reemplace por HTML/XML en error).
+    Private Shared Sub EscribirJsonHHSeguro(ByVal pPayload As Object,
+                                            Optional ByVal pStatusCode As Integer = 200)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        Dim json As String = JsonConvert.SerializeObject(pPayload,
+                                                         New JsonSerializerSettings With {
+                                                             .NullValueHandling = NullValueHandling.Include
+                                                         })
+
+        curContext.Response.Clear()
+        curContext.Response.StatusCode = pStatusCode
+        curContext.Response.ContentType = "application/json; charset=utf-8"
+        curContext.Response.Charset = "utf-8"
+        curContext.Response.TrySkipIisCustomErrors = True
+        curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        curContext.Response.Write(json)
+        curContext.ApplicationInstance.CompleteRequest()
+
+    End Sub
+
     '#EJC_MEJORA_20260522: Escritura JSON directa para respuestas ya serializadas (evita doble serialización).
     Private Shared Sub EscribirJsonHHRaw(ByVal pJson As String,
                                          Optional ByVal pStatusCode As Integer = 200)
@@ -17078,6 +17099,63 @@ Public Class TOMHHWS
             curContext.Response.ContentType = "application/json"
             curContext.Response.Write(errorJson)
             curContext.ApplicationInstance.CompleteRequest()
+
+        End Try
+
+    End Sub
+
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Get_Stock_Por_Producto_Ubicacion_CI_Json_v2(ByVal pidProducto As String,
+                                                            ByVal pIdUbicacion As Integer,
+                                                            ByVal pIdBodega As Integer,
+                                                            ByVal pNombre As String,
+                                                            ByVal pDetallado As Boolean,
+                                                            Optional ByVal pTraceId As String = "")
+
+        Dim vTraceId As String = If(String.IsNullOrWhiteSpace(pTraceId), Guid.NewGuid().ToString("N"), pTraceId.Trim())
+
+        Try
+
+            Dim lStock As List(Of clsBeVW_stock_res_CI) = clsLnStock_CI.Get_All_By_IdUbicacion(pIdUbicacion,
+                                                                                                pidProducto,
+                                                                                                pIdBodega,
+                                                                                                pNombre,
+                                                                                                pDetallado)
+
+            If lStock Is Nothing Then
+                lStock = New List(Of clsBeVW_stock_res_CI)()
+            End If
+
+            EscribirJsonHHSeguro(New With {
+                .Error = False,
+                .Mensaje = "",
+                .Total = lStock.Count,
+                .Items = lStock,
+                .TraceId = vTraceId
+            })
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} TraceId={1} IdBodega={2} IdUbicacion={3} Codigo={4} Nombre={5} Detallado={6} Error={7}",
+                                                    MethodBase.GetCurrentMethod.Name(),
+                                                    vTraceId,
+                                                    pIdBodega,
+                                                    pIdUbicacion,
+                                                    pidProducto,
+                                                    pNombre,
+                                                    pDetallado,
+                                                    ex.Message)
+
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            WriteErrorToEventLog(vMsgError)
+
+            EscribirJsonHHSeguro(New With {
+                .Error = True,
+                .Mensaje = ex.Message,
+                .Total = 0,
+                .Items = New List(Of clsBeVW_stock_res_CI),
+                .TraceId = vTraceId
+            })
 
         End Try
 
