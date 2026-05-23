@@ -128,6 +128,7 @@ Partial Public Class clsLnTrans_oc_det
                         BeTransOcDet.Talla.Codigo = OCReadModel_String(lRow, "codigo_talla")
                         BeTransOcDet.Color.IdColor = OCReadModel_Int(lRow, "IdColor")
                         BeTransOcDet.Color.Codigo = OCReadModel_String(lRow, "codigo_color")
+                        BeTransOcDet.CodigoSKU = OCReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
                     End If
 
                     BeTransOcDet.IsNew = False

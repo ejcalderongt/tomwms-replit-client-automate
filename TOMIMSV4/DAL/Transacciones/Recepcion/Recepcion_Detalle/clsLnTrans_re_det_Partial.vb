@@ -4,6 +4,154 @@ Imports System.Reflection
 Partial Public Class clsLnTrans_re_det
 
     Public Shared Property lProductosInMemory As New List(Of clsBeProducto)
+    '#EJC20260522_RECEPCION_DET_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmRecepcion.
+    Private Const SP_RECEPCION_DET_READMODEL As String = "dbo.usp_wms_recepcion_detalle_readmodel_v1"
+
+    Private Shared Function RecepcionReadModel_HasColumn(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        Return pRow IsNot Nothing AndAlso
+               pRow.Table IsNot Nothing AndAlso
+               pRow.Table.Columns.Contains(pColumnName)
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Int(ByVal pRow As DataRow, ByVal pColumnName As String) As Integer
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToInt32(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Double(ByVal pRow As DataRow, ByVal pColumnName As String) As Double
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToDouble(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Bool(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return False
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return False
+        Return Convert.ToBoolean(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_String(ByVal pRow As DataRow, ByVal pColumnName As String) As String
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return String.Empty
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return String.Empty
+        Return Convert.ToString(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function Get_Detalle_By_IdRecepcionEnc_ReadModel(ByVal pIdRecepcionEnc As Integer,
+                                                                    ByVal pIdBodega As Integer,
+                                                                    ByRef lConnection As SqlConnection,
+                                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_re_det)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_re_det)
+
+            Using lDTA As New SqlDataAdapter(SP_RECEPCION_DET_READMODEL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.StoredProcedure
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable Is Nothing Then Return lReturnList
+
+                For Each lRow As DataRow In lDataTable.Rows
+
+                    Dim BeTransReDet As New clsBeTrans_re_det
+                    Cargar(BeTransReDet, lRow)
+
+                    BeTransReDet.IdPropietarioBodega = RecepcionReadModel_Int(lRow, "IdPropietarioBodega")
+
+                    BeTransReDet.Producto.IdProducto = RecepcionReadModel_Int(lRow, "Producto_IdProducto")
+                    If BeTransReDet.Producto.IdProducto = 0 Then BeTransReDet.Producto.IdProducto = RecepcionReadModel_Int(lRow, "IdProducto")
+                    BeTransReDet.Producto.IdProductoBodega = BeTransReDet.IdProductoBodega
+                    BeTransReDet.Producto.IdPropietario = RecepcionReadModel_Int(lRow, "Producto_IdPropietario")
+                    BeTransReDet.Producto.IdClasificacion = RecepcionReadModel_Int(lRow, "Producto_IdClasificacion")
+                    BeTransReDet.Producto.IdUnidadMedidaBasica = RecepcionReadModel_Int(lRow, "Producto_IdUnidadMedidaBasica")
+                    BeTransReDet.Producto.Codigo = RecepcionReadModel_String(lRow, "Producto_Codigo")
+                    If String.IsNullOrEmpty(BeTransReDet.Producto.Codigo) Then BeTransReDet.Producto.Codigo = BeTransReDet.Codigo_Producto
+                    BeTransReDet.Producto.Nombre = RecepcionReadModel_String(lRow, "Producto_Nombre")
+                    If String.IsNullOrEmpty(BeTransReDet.Producto.Nombre) Then BeTransReDet.Producto.Nombre = BeTransReDet.Nombre_producto
+                    BeTransReDet.Producto.Control_vencimiento = RecepcionReadModel_Bool(lRow, "Producto_ControlVencimiento")
+                    BeTransReDet.Producto.Control_peso = RecepcionReadModel_Bool(lRow, "Producto_ControlPeso")
+                    BeTransReDet.Producto.Control_lote = RecepcionReadModel_Bool(lRow, "Producto_ControlLote")
+                    BeTransReDet.Producto.Peso_referencia = RecepcionReadModel_Double(lRow, "Producto_PesoReferencia")
+                    BeTransReDet.Producto.IdTipoManufactura = RecepcionReadModel_Int(lRow, "Producto_IdTipoManufactura")
+
+                    If BeTransReDet.IdPresentacion <> 0 Then
+                        BeTransReDet.Presentacion.IdPresentacion = RecepcionReadModel_Int(lRow, "Presentacion_IdPresentacion")
+                        If BeTransReDet.Presentacion.IdPresentacion = 0 Then BeTransReDet.Presentacion.IdPresentacion = BeTransReDet.IdPresentacion
+                        BeTransReDet.Presentacion.IdProducto = RecepcionReadModel_Int(lRow, "Presentacion_IdProducto")
+                        BeTransReDet.Presentacion.Codigo_barra = RecepcionReadModel_String(lRow, "Presentacion_CodigoBarra")
+                        BeTransReDet.Presentacion.Nombre = RecepcionReadModel_String(lRow, "Presentacion_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.Presentacion.Nombre) Then BeTransReDet.Presentacion.Nombre = BeTransReDet.Nombre_presentacion
+                        BeTransReDet.Presentacion.Peso = RecepcionReadModel_Double(lRow, "Presentacion_Peso")
+                        BeTransReDet.Presentacion.Factor = RecepcionReadModel_Double(lRow, "Presentacion_Factor")
+                        BeTransReDet.Presentacion.Activo = RecepcionReadModel_Bool(lRow, "Presentacion_Activo")
+                        BeTransReDet.Presentacion.EsPallet = RecepcionReadModel_Bool(lRow, "Presentacion_EsPallet")
+                        BeTransReDet.Presentacion.Costo = RecepcionReadModel_Double(lRow, "Presentacion_Costo")
+                        BeTransReDet.Presentacion.CamasPorTarima = RecepcionReadModel_Double(lRow, "Presentacion_CamasPorTarima")
+                        BeTransReDet.Presentacion.CajasPorCama = RecepcionReadModel_Double(lRow, "Presentacion_CajasPorCama")
+                        BeTransReDet.Presentacion.IdPresentacionPallet = RecepcionReadModel_Int(lRow, "Presentacion_IdPresentacionPallet")
+                        BeTransReDet.Presentacion.Codigo = RecepcionReadModel_String(lRow, "Presentacion_Codigo")
+                    End If
+
+                    If BeTransReDet.IdUnidadMedida <> 0 Then
+                        BeTransReDet.UnidadMedida.IdUnidadMedida = RecepcionReadModel_Int(lRow, "Unidad_IdUnidadMedida")
+                        If BeTransReDet.UnidadMedida.IdUnidadMedida = 0 Then BeTransReDet.UnidadMedida.IdUnidadMedida = BeTransReDet.IdUnidadMedida
+                        BeTransReDet.UnidadMedida.Codigo = RecepcionReadModel_String(lRow, "Unidad_Codigo")
+                        BeTransReDet.UnidadMedida.Nombre = RecepcionReadModel_String(lRow, "Unidad_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.UnidadMedida.Nombre) Then BeTransReDet.UnidadMedida.Nombre = BeTransReDet.Nombre_unidad_medida
+                        BeTransReDet.UnidadMedida.factor = RecepcionReadModel_Double(lRow, "Unidad_Factor")
+                    End If
+
+                    If BeTransReDet.IdProductoEstado <> 0 Then
+                        BeTransReDet.ProductoEstado.IdEstado = RecepcionReadModel_Int(lRow, "Estado_IdEstado")
+                        If BeTransReDet.ProductoEstado.IdEstado = 0 Then BeTransReDet.ProductoEstado.IdEstado = BeTransReDet.IdProductoEstado
+                        BeTransReDet.ProductoEstado.Nombre = RecepcionReadModel_String(lRow, "Estado_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.ProductoEstado.Nombre) Then BeTransReDet.ProductoEstado.Nombre = BeTransReDet.Nombre_producto_estado
+                    End If
+
+                    If BeTransReDet.MotivoDevolucion.IdMotivoDevolucion <> 0 Then
+                        BeTransReDet.MotivoDevolucion.IdMotivoDevolucion = RecepcionReadModel_Int(lRow, "Motivo_IdMotivoDevolucion")
+                        BeTransReDet.MotivoDevolucion.Nombre = RecepcionReadModel_String(lRow, "Motivo_Nombre")
+                    End If
+
+                    If BeTransReDet.IdProductoTallaColor <> 0 Then
+                        BeTransReDet.Talla.IdTalla = RecepcionReadModel_Int(lRow, "IdTalla")
+                        BeTransReDet.Talla.Codigo = RecepcionReadModel_String(lRow, "codigo_talla")
+                        BeTransReDet.Color.IdColor = RecepcionReadModel_Int(lRow, "IdColor")
+                        BeTransReDet.Color.Codigo = RecepcionReadModel_String(lRow, "codigo_color")
+                        BeTransReDet.CodigoSKU = RecepcionReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
+                    End If
+
+                    BeTransReDet.IsNew = False
+                    lReturnList.Add(BeTransReDet)
+
+                Next
+
+            End Using
+
+            Return lReturnList
+
+        Catch
+            Return Nothing
+        End Try
+
+    End Function
 
     '#EJC20180113: Agregue transaccionalidad en GetByRecepcion en clase clsLnTrans_re_det
     Public Shared Function Get_Detalle_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer,
@@ -24,6 +172,15 @@ Partial Public Class clsLnTrans_re_det
                 lConnection.Open()
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vReadModelList As List(Of clsBeTrans_re_det) = Get_Detalle_By_IdRecepcionEnc_ReadModel(pIdRecepcionEnc,
+                                                                                                                pIdBodegaEnc,
+                                                                                                                lConnection,
+                                                                                                                lTransaction)
+                    If vReadModelList IsNot Nothing Then
+                        lTransaction.Commit()
+                        Return vReadModelList
+                    End If
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -149,6 +306,12 @@ Partial Public Class clsLnTrans_re_det
         Dim lReturnList As New List(Of clsBeTrans_re_det)
 
         Try
+
+            Dim vReadModelList As List(Of clsBeTrans_re_det) = Get_Detalle_By_IdRecepcionEnc_ReadModel(pIdRecepcionEnc,
+                                                                                                        pIdBodega,
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
+            If vReadModelList IsNot Nothing Then Return vReadModelList
 
             Dim vSQL As String = "SELECT * FROM VW_Get_Detalle_By_IdRecepcionEnc 
                                   WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdBodega = @IdBodega "

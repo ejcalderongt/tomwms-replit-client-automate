@@ -106,7 +106,8 @@ BEGIN
         ta.Codigo AS codigo_talla,
         co.Codigo AS codigo_color,
         ta.IdTalla,
-        co.IdColor
+        co.IdColor,
+        ptc.CodigoSKU AS ProductoTallaColor_CodigoSKU
     FROM dbo.trans_oc_det AS det
     INNER JOIN dbo.producto_bodega AS pb
         ON pb.IdProductoBodega = det.IdProductoBodega

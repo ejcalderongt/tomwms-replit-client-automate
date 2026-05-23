@@ -171,3 +171,14 @@ known_optimizations:
       - SP compiles on the target DB.
       - frmPrincipal02 monitor refresh succeeds with the read-model installed.
       - Removing or breaking the SP still falls back to the legacy query path.
+  frmRecepcion_detalle_readmodel:
+    files:
+      form: TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion.vb
+      dal: TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb
+      sql: tools/recepcion-readmodel/001_create_wms_recepcion_detalle_readmodel_v1.sql
+    rule: >
+      For frmRecepcion edit load, avoid per-line Producto/Presentacion/UM/Estado/
+      Talla/Color/OC detail lookups by hydrating the reception detail from a
+      read-model SP. Keep the legacy VW_Get_Detalle_By_IdRecepcionEnc path as
+      fallback when the SP is not installed, and cache only form/session lookups
+      such as presentations and product states.

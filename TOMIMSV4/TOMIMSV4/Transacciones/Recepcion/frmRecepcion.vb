@@ -115,6 +115,68 @@ Public Class frmRecepcion
     Private Cargando As Boolean = False
     Dim DT As New DataTable("Lotes")
     Private pBeTipo_Tarea_HH As New clsBeTrans_re_tr
+    Private ReadOnly mPresentacionesProductoCache As New Dictionary(Of Integer, List(Of clsBeProducto_Presentacion))
+    Private ReadOnly mEstadosProductoCache As New Dictionary(Of String, List(Of clsBeProducto_estado))
+    Private ReadOnly mEstadosProductoDtCache As New Dictionary(Of String, DataTable)
+    Private ReadOnly mPresentacionesBodegaCache As New Dictionary(Of Integer, DataTable)
+
+    Private Function CacheKey(ByVal ParamArray pValores() As Object) As String
+
+        Dim vPartes As New List(Of String)
+
+        For Each vValor As Object In pValores
+            vPartes.Add(If(vValor Is Nothing, "", vValor.ToString()))
+        Next
+
+        Return String.Join("|", vPartes)
+
+    End Function
+
+    Private Function GetPresentacionesProductoCached(ByVal pIdProducto As Integer) As List(Of clsBeProducto_Presentacion)
+
+        If pIdProducto <= 0 Then Return New List(Of clsBeProducto_Presentacion)
+
+        If Not mPresentacionesProductoCache.ContainsKey(pIdProducto) Then
+            mPresentacionesProductoCache(pIdProducto) = clsLnProducto_presentacion.Get_All_By_IdProducto(pIdProducto).ToList
+        End If
+
+        Return mPresentacionesProductoCache(pIdProducto)
+
+    End Function
+
+    Private Function GetEstadosProductoCached(ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer) As List(Of clsBeProducto_estado)
+
+        Dim vKey As String = CacheKey(pIdPropietario, pIdBodega)
+
+        If Not mEstadosProductoCache.ContainsKey(vKey) Then
+            mEstadosProductoCache(vKey) = clsLnProducto_estado.Get_Estados_By_IdPropietario_And_IdBodegaHH(pIdPropietario, pIdBodega).ToList
+        End If
+
+        Return mEstadosProductoCache(vKey)
+
+    End Function
+
+    Private Function GetEstadosProductoDTCached(ByVal pIdPropietario As Integer, ByVal pIdBodega As Integer) As DataTable
+
+        Dim vKey As String = CacheKey(pIdPropietario, pIdBodega)
+
+        If Not mEstadosProductoDtCache.ContainsKey(vKey) Then
+            mEstadosProductoDtCache(vKey) = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(pIdPropietario, pIdBodega)
+        End If
+
+        Return mEstadosProductoDtCache(vKey)
+
+    End Function
+
+    Private Function GetPresentacionesBodegaCached(ByVal pIdBodega As Integer) As DataTable
+
+        If Not mPresentacionesBodegaCache.ContainsKey(pIdBodega) Then
+            mPresentacionesBodegaCache(pIdBodega) = clsLnProducto_presentacion.Get_All_By_IdBodega(pIdBodega)
+        End If
+
+        Return mPresentacionesBodegaCache(pIdBodega)
+
+    End Function
 
     Private Sub lnk_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnk.LinkClicked
 
@@ -2375,12 +2437,15 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 DgridDetalleRec.Rows(i).Cells("IdProductoP").Value = BeTransReDet.IdProductoBodega
                 DgridDetalleRec.Rows(i).Cells("KeyP").Value = BeTransReDet.Producto.IdProducto
 
-                Dim bo As clsBeProducto = clsLnProducto.Get_Control_Vencimiento_By_IdProducto(BeTransReDet.Producto.IdProducto)
+                Dim bo As clsBeProducto = BeTransReDet.Producto
+                If bo Is Nothing OrElse bo.IdProducto = 0 Then
+                    bo = clsLnProducto.Get_Control_Vencimiento_By_IdProducto(BeTransReDet.Producto.IdProducto)
+                End If
                 DgridDetalleRec.Rows(i).Cells("ControlVencimiento").Value = bo.Control_vencimiento
                 DgridDetalleRec.Rows(i).Cells("ControlPeso").Value = bo.Control_peso
 
-                Dim lBeProductoPresentacion As List(Of clsBeProducto_Presentacion) = clsLnProducto_presentacion.Get_All_By_IdProducto(BeTransReDet.Producto.IdProducto).ToList
-                Dim lBeProductoEstado As List(Of clsBeProducto_estado) = clsLnProducto_estado.Get_Estados_By_IdPropietario_And_IdBodegaHH(gBeRecepcionEnc.PropietarioBodega.IdPropietario, gBeRecepcionEnc.IdBodega).ToList
+                Dim lBeProductoPresentacion As List(Of clsBeProducto_Presentacion) = GetPresentacionesProductoCached(BeTransReDet.Producto.IdProducto)
+                Dim lBeProductoEstado As List(Of clsBeProducto_estado) = GetEstadosProductoCached(gBeRecepcionEnc.PropietarioBodega.IdPropietario, gBeRecepcionEnc.IdBodega)
 
                 If lBeProductoPresentacion.Count > 0 Then
                     If BeTransReDet.IdPresentacion <> 0 Then
@@ -2475,15 +2540,18 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 DgridDetalleRec.Rows(i).Cells("IdProductoP").Value = BeTransReDet.IdProductoBodega
                 DgridDetalleRec.Rows(i).Cells("KeyP").Value = BeTransReDet.Producto.IdProducto
 
-                Dim bo As clsBeProducto = clsLnProducto.Get_Control_Vencimiento_By_IdProducto(BeTransReDet.Producto.IdProducto)
+                Dim bo As clsBeProducto = BeTransReDet.Producto
+                If bo Is Nothing OrElse bo.IdProducto = 0 Then
+                    bo = clsLnProducto.Get_Control_Vencimiento_By_IdProducto(BeTransReDet.Producto.IdProducto)
+                End If
                 DgridDetalleRec.Rows(i).Cells("ControlVencimiento").Value = bo.Control_vencimiento
                 DgridDetalleRec.Rows(i).Cells("ControlPeso").Value = bo.Control_peso
 
-                Dim lBeProductoPresentacion As List(Of clsBeProducto_Presentacion) = clsLnProducto_presentacion.Get_All_By_IdProducto(BeTransReDet.Producto.IdProducto).ToList
+                Dim lBeProductoPresentacion As List(Of clsBeProducto_Presentacion) = GetPresentacionesProductoCached(BeTransReDet.Producto.IdProducto)
 
                 Dim IdPropietario As Integer = clsLnPropietario_bodega.Get_IdPropietario_By_IdBodega_IdPropietarioBodega(cmbBodega.EditValue, BeTransReDet.IdPropietarioBodega)
 
-                Dim lBeProductoEstado As List(Of clsBeProducto_estado) = clsLnProducto_estado.Get_Estados_By_IdPropietario_And_IdBodegaHH(IdPropietario, cmbBodega.EditValue).ToList
+                Dim lBeProductoEstado As List(Of clsBeProducto_estado) = GetEstadosProductoCached(IdPropietario, cmbBodega.EditValue)
 
                 If lBeProductoPresentacion.Count > 0 Then
                     If BeTransReDet.IdPresentacion <> 0 Then
@@ -7213,7 +7281,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             PresentacionGridLookUpEdit.ValueMember = "IdPresentacion"
             PresentacionGridLookUpEdit.DisplayMember = "Nombre"
             PresentacionGridLookUpEdit.NullText = ""
-            PresentacionGridLookUpEdit.DataSource = clsLnProducto_presentacion.Get_All_By_IdBodega(cmbBodega.EditValue)
+            PresentacionGridLookUpEdit.DataSource = GetPresentacionesBodegaCached(cmbBodega.EditValue)
             PresentacionGridLookUpEdit.View.BestFitColumns()
             PresentacionGridLookUpEdit.PopupFormWidth = 700
 
@@ -7827,23 +7895,35 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Dim i As Integer = -1
 
-            PresentacionGridLookUpEdit.DataSource = clsLnProducto_presentacion.Get_All_By_IdBodega(cmbBodega.EditValue)
+            PresentacionGridLookUpEdit.DataSource = GetPresentacionesBodegaCached(cmbBodega.EditValue)
 
             For Each BeTransOCDet As clsBeTrans_oc_det In lOCDet
 
-                Dim BeProductoTallaColor As New clsBeProducto_talla_color
-                BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOCDet.IdProductoTallaColor)
+                vTalla = ""
+                vColor = ""
+                vSKU = ""
 
-                If Not BeProductoTallaColor Is Nothing Then
+                If BeTransOCDet.IdProductoTallaColor <> 0 Then
 
-                    '#GT13082025: se deben asignar los Ids, no los códigos en el grid
-                    Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
-                    vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
+                    If BeTransOCDet.Talla IsNot Nothing AndAlso BeTransOCDet.Talla.IdTalla > 0 Then
+                        vTalla = BeTransOCDet.Talla.IdTalla.ToString()
+                    End If
 
-                    Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
-                    vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
+                    If BeTransOCDet.Color IsNot Nothing AndAlso BeTransOCDet.Color.IdColor > 0 Then
+                        vColor = BeTransOCDet.Color.IdColor.ToString()
+                    End If
 
-                    vSKU = BeProductoTallaColor.CodigoSKU
+                    vSKU = BeTransOCDet.CodigoSKU
+
+                    If vTalla = "" AndAlso vColor = "" AndAlso vSKU = "" Then
+                        Dim BeProductoTallaColor As clsBeProducto_talla_color = clsLnProducto_talla_color.GetSingle(BeTransOCDet.IdProductoTallaColor)
+
+                        If Not BeProductoTallaColor Is Nothing Then
+                            vTalla = If(BeProductoTallaColor.IdTalla > 0, BeProductoTallaColor.IdTalla.ToString(), "")
+                            vColor = If(BeProductoTallaColor.IdColor > 0, BeProductoTallaColor.IdColor.ToString(), "")
+                            vSKU = BeProductoTallaColor.CodigoSKU
+                        End If
+                    End If
 
                 End If
 
@@ -8574,7 +8654,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             PresentacionGridLookUpEdit.ValueMember = "IdPresentacion"
             PresentacionGridLookUpEdit.DisplayMember = "Nombre"
             PresentacionGridLookUpEdit.NullText = ""
-            PresentacionGridLookUpEdit.DataSource = clsLnProducto_presentacion.Get_All_By_IdBodega(cmbBodega.EditValue)
+            PresentacionGridLookUpEdit.DataSource = GetPresentacionesBodegaCached(cmbBodega.EditValue)
             PresentacionGridLookUpEdit.View.BestFitColumns()
             PresentacionGridLookUpEdit.PopupFormWidth = 700
 
@@ -8946,7 +9026,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             If (txtIdTipoTR.Text = clsDataContractDI.tTipo_Rec.HCOC00.ToString()) OrElse (gBeRecepcionEnc.IdTipoTransaccion = clsDataContractDI.tTipo_Rec.HSOC00.ToString()) Then
                 If Not gBeOrdenCompra Is Nothing Then
-                    EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(gBeOrdenCompra.PropietarioBodega.IdPropietario, AP.IdBodega)
+                    EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(gBeOrdenCompra.PropietarioBodega.IdPropietario, AP.IdBodega)
                 End If
             Else
                 'GT 08022021 se obtiene el IdRegimen del combo
@@ -8957,7 +9037,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Else
                     IdPropietario = fila.Item("IdPropietario")
                 End If
-                EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(IdPropietario, AP.IdBodega)
+                EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(IdPropietario, AP.IdBodega)
             End If
 
 
@@ -11353,9 +11433,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     If Not gBeOrdenCompra Is Nothing Then
 
                         If gBeRecepcionEnc.OrdenCompraRec.OC.PropietarioBodega.IdPropietario > 0 Then
-                            EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(gBeRecepcionEnc.OrdenCompraRec.OC.PropietarioBodega.IdPropietario, AP.IdBodega)
+                            EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(gBeRecepcionEnc.OrdenCompraRec.OC.PropietarioBodega.IdPropietario, AP.IdBodega)
                         Else
-                            EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(gBeOrdenCompra.PropietarioBodega.IdPropietario, AP.IdBodega)
+                            EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(gBeOrdenCompra.PropietarioBodega.IdPropietario, AP.IdBodega)
                         End If
 
                         EstadoGridLookUpEdit.DisplayMember = "nombre"
@@ -11384,7 +11464,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                     '#EJC202405241530: Listar estados específicos SAP.
                                     EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodega_By_SAP(IdPropietario, AP.IdBodega, pCodigoBodegaERP)
                                 Else
-                                    EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(IdPropietario, AP.IdBodega)
+                                    EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(IdPropietario, AP.IdBodega)
                                 End If
 
                             End If
@@ -11392,7 +11472,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         End If
 
                     Else
-                        EstadoGridLookUpEdit.DataSource = clsLnProducto_estado.Listar_By_IdPropietario_And_IdBodegaHH(IdPropietario, AP.IdBodega)
+                        EstadoGridLookUpEdit.DataSource = GetEstadosProductoDTCached(IdPropietario, AP.IdBodega)
                     End If
 
                     EstadoGridLookUpEdit.DisplayMember = "nombre"
@@ -11410,6 +11490,49 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         End Try
 
     End Sub
+
+    Private Function LlaveDetalleOC(ByVal pIdOrdenCompraEnc As Integer,
+                                    ByVal pIdOrdenCompraDet As Integer,
+                                    ByVal pIdProductoBodega As Integer,
+                                    ByVal pNoLinea As Integer) As String
+        Return CacheKey(pIdOrdenCompraEnc, pIdOrdenCompraDet, pIdProductoBodega, pNoLinea)
+    End Function
+
+    Private Sub AgregarDetalleOCIndice(ByVal pIndice As Dictionary(Of String, clsBeTrans_oc_det),
+                                       ByVal pDetalle As clsBeTrans_oc_det)
+
+        If pDetalle Is Nothing Then Return
+
+        Dim vKey As String = LlaveDetalleOC(pDetalle.IdOrdenCompraEnc,
+                                            pDetalle.IdOrdenCompraDet,
+                                            pDetalle.IdProductoBodega,
+                                            pDetalle.No_Linea)
+
+        If Not pIndice.ContainsKey(vKey) Then
+            pIndice.Add(vKey, pDetalle)
+        End If
+
+        If pDetalle.lProductosHijosKit IsNot Nothing Then
+            For Each vHijo As clsBeTrans_oc_det In pDetalle.lProductosHijosKit
+                AgregarDetalleOCIndice(pIndice, vHijo)
+            Next
+        End If
+
+    End Sub
+
+    Private Function CrearIndiceDetalleOC() As Dictionary(Of String, clsBeTrans_oc_det)
+
+        Dim vIndice As New Dictionary(Of String, clsBeTrans_oc_det)
+
+        If BeTransOcEnc IsNot Nothing AndAlso BeTransOcEnc.DetalleOC IsNot Nothing Then
+            For Each vDetalle As clsBeTrans_oc_det In BeTransOcEnc.DetalleOC
+                AgregarDetalleOCIndice(vIndice, vDetalle)
+            Next
+        End If
+
+        Return vIndice
+
+    End Function
 
     Private AgregandoFilasGrid As Boolean = False
     Private Sub Cargar_Detalle_Recepcion2(Optional ByVal Actualizar_Productos_Recibidos As Boolean = False)
@@ -11437,6 +11560,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Dim vSKU As String = ""
                 Dim vIndiceLista As Integer = -1
                 Dim TieneBono As Boolean = False
+                Dim vDetalleOcIndice As Dictionary(Of String, clsBeTrans_oc_det) = CrearIndiceDetalleOC()
 
                 clsTransaccion.Begin_Transaction()
 
@@ -11455,12 +11579,21 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     If BeTransReDet.IdOrdenCompraEnc > 0 AndAlso BeTransReDet.IdOrdenCompraDet > 0 Then
 
-                        BeTransOcDetLinea = clsLnTrans_oc_det.Get_Single_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(BeTransReDet.IdOrdenCompraEnc,
-                                                                                                                  BeTransReDet.IdOrdenCompraDet,
-                                                                                                                  BeTransReDet.IdProductoBodega,
-                                                                                                                  BeTransReDet.No_Linea,
-                                                                                                                  clsTransaccion.lConnection,
-                                                                                                                  clsTransaccion.lTransaction)
+                        Dim vKeyDetalleOC As String = LlaveDetalleOC(BeTransReDet.IdOrdenCompraEnc,
+                                                                      BeTransReDet.IdOrdenCompraDet,
+                                                                      BeTransReDet.IdProductoBodega,
+                                                                      BeTransReDet.No_Linea)
+
+                        If vDetalleOcIndice.ContainsKey(vKeyDetalleOC) Then
+                            BeTransOcDetLinea = vDetalleOcIndice(vKeyDetalleOC)
+                        Else
+                            BeTransOcDetLinea = clsLnTrans_oc_det.Get_Single_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(BeTransReDet.IdOrdenCompraEnc,
+                                                                                                                      BeTransReDet.IdOrdenCompraDet,
+                                                                                                                      BeTransReDet.IdProductoBodega,
+                                                                                                                      BeTransReDet.No_Linea,
+                                                                                                                      clsTransaccion.lConnection,
+                                                                                                                      clsTransaccion.lTransaction)
+                        End If
 
                         If Not BeTransOcDetLinea Is Nothing Then
                             vCantidadSolicitada = BeTransOcDetLinea.Cantidad
@@ -11469,22 +11602,39 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     End If
 
-                    TieneBono = clsLnProducto.Get_Control_Manufactura_By_IdProductoBodega(BeTransReDet.IdProductoBodega,
-                                                                                          clsTransaccion.lConnection,
-                                                                                          clsTransaccion.lTransaction)
+                    TieneBono = (BeTransReDet.Producto IsNot Nothing AndAlso BeTransReDet.Producto.IdTipoManufactura > 0)
+                    If Not TieneBono AndAlso (BeTransReDet.Producto Is Nothing OrElse BeTransReDet.Producto.IdProducto = 0) Then
+                        TieneBono = clsLnProducto.Get_Control_Manufactura_By_IdProductoBodega(BeTransReDet.IdProductoBodega,
+                                                                                              clsTransaccion.lConnection,
+                                                                                              clsTransaccion.lTransaction)
+                    End If
 
-                    'Dim dt = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(BeTransReDet.IdProductoTallaColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    BeProductoTallaColor = New clsBeProducto_talla_color()
-                    BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransReDet.IdProductoTallaColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    vTalla = ""
+                    vColor = ""
+                    vSKU = ""
 
-                    If Not BeProductoTallaColor Is Nothing Then
-                        '#GT13082025: se deben asignar los Ids, no los códigos en el grid
-                        Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
-                        vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
+                    If BeTransReDet.IdProductoTallaColor <> 0 Then
 
-                        Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
-                        vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
-                        vSKU = BeProductoTallaColor.CodigoSKU
+                        If BeTransReDet.Talla IsNot Nothing AndAlso BeTransReDet.Talla.IdTalla > 0 Then
+                            vTalla = BeTransReDet.Talla.IdTalla.ToString()
+                        End If
+
+                        If BeTransReDet.Color IsNot Nothing AndAlso BeTransReDet.Color.IdColor > 0 Then
+                            vColor = BeTransReDet.Color.IdColor.ToString()
+                        End If
+
+                        vSKU = BeTransReDet.CodigoSKU
+
+                        If vTalla = "" AndAlso vColor = "" AndAlso vSKU = "" Then
+                            BeProductoTallaColor = New clsBeProducto_talla_color()
+                            BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransReDet.IdProductoTallaColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                            If Not BeProductoTallaColor Is Nothing Then
+                                vTalla = If(BeProductoTallaColor.IdTalla > 0, BeProductoTallaColor.IdTalla.ToString(), "")
+                                vColor = If(BeProductoTallaColor.IdColor > 0, BeProductoTallaColor.IdColor.ToString(), "")
+                                vSKU = BeProductoTallaColor.CodigoSKU
+                            End If
+                        End If
                     End If
 
                     'Dim vTalla As String = ""
