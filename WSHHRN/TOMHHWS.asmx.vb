@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Net
 Imports System.Reflection
+Imports System.Text
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Web
@@ -230,7 +231,18 @@ Public Class TOMHHWS
                                   Dim menuRol As List(Of clsBeMenu_rol_op) = clsLnMenu_rol_op.Get_List_Menu_By_IdRolOperador(pIdRolOperador)
 
                                   If menuRol Is Nothing Then
-                                      Return New List(Of Object)()
+                                      menuRol = New List(Of clsBeMenu_rol_op)()
+                                  End If
+
+                                  '#EJC_FIX_20260523: fallback defensivo cuando QA deja el rol sin filas por filtros Visible/Activo.
+                                  If menuRol.Count = 0 Then
+                                      Dim vMenuFallback = ObtenerMenuRolHHLiteDesdeSql(pIdRolOperador, False)
+                                      If vMenuFallback.Count > 0 Then
+                                          clsLnLog_error_wms.Agregar_Error(String.Format("ObtenerMenuRolHHLite fallback aplicado. IdRol={0} Filas={1}", pIdRolOperador, vMenuFallback.Count))
+                                          menuRol = vMenuFallback
+                                      Else
+                                          clsLnLog_error_wms.Agregar_Error(String.Format("ObtenerMenuRolHHLite sin datos. IdRol={0}", pIdRolOperador))
+                                      End If
                                   End If
 
                                   Return menuRol.
@@ -243,6 +255,54 @@ Public Class TOMHHWS
                                       }, Object)).
                                       ToList()
                               End Function)
+
+    End Function
+
+    Private Shared Function ObtenerMenuRolHHLiteDesdeSql(ByVal pIdRolOperador As Integer,
+                                                          ByVal pSoloVisiblesActivos As Boolean) As List(Of clsBeMenu_rol_op)
+
+        Dim lReturn As New List(Of clsBeMenu_rol_op)()
+
+        Try
+            Using lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Dim lSql As New StringBuilder()
+                lSql.AppendLine("SELECT mro.IdMenuSistemaOP, mso.Nombre, mso.Posicion, ISNULL(mso.IdTipoTarea,0) AS IdTipoTarea")
+                lSql.AppendLine("FROM menu_rol_op mro")
+                lSql.AppendLine("INNER JOIN menu_sistema_op mso ON mro.IdMenuSistemaOP = mso.IdMenuSistemaOP")
+                lSql.AppendLine("WHERE mro.IdRolOperador = @IdRolOperador")
+                lSql.AppendLine("AND ISNULL(mso.Padre,0) > 0")
+
+                If pSoloVisiblesActivos Then
+                    lSql.AppendLine("AND ISNULL(mro.Activo,0) = 1")
+                    lSql.AppendLine("AND ISNULL(mro.Visible,0) = 1")
+                    lSql.AppendLine("AND ISNULL(mso.Activo,1) = 1")
+                End If
+
+                lSql.AppendLine("ORDER BY mso.Posicion")
+
+                Using lCmd As New SqlCommand(lSql.ToString(), lConnection)
+                    lCmd.Parameters.AddWithValue("@IdRolOperador", pIdRolOperador)
+
+                    Using lRd As SqlDataReader = lCmd.ExecuteReader()
+                        While lRd.Read()
+                            Dim menuRol As New clsBeMenu_rol_op()
+                            menuRol.IdMenuSistemaOP = If(lRd("IdMenuSistemaOP"), "").ToString()
+                            menuRol.MenuSistemaOp.Nombre = If(lRd("Nombre"), "").ToString()
+                            menuRol.MenuSistemaOp.Posicion = CInt(If(IsDBNull(lRd("Posicion")), 0, lRd("Posicion")))
+                            menuRol.MenuSistemaOp.IdTipoTarea = CInt(If(IsDBNull(lRd("IdTipoTarea")), 0, lRd("IdTipoTarea")))
+                            lReturn.Add(menuRol)
+                        End While
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("ObtenerMenuRolHHLiteDesdeSql IdRol={0} Error={1}", pIdRolOperador, ex.Message))
+        End Try
+
+        Return lReturn
 
     End Function
 
