@@ -2082,18 +2082,25 @@ Partial Public Class clsLnTrans_pe_det
 
                                 If pBePedidoDet.ListaPickingUbic IsNot Nothing AndAlso pBePedidoDet.ListaPickingUbic.Count > 0 Then
 
-                                    vIdPickingEnc = pBePedidoDet.ListaPickingUbic.FirstOrDefault.IdPickingEnc
+                                    Dim vPickUbic = pBePedidoDet.ListaPickingUbic.FirstOrDefault()
+                                    If vPickUbic IsNot Nothing Then
+                                        vIdPickingEnc = vPickUbic.IdPickingEnc
 
-                                    If Actualiza_Picking_Existente(pBeStockRes,
-                                                                   pBePedidoDet,
-                                                                   vIdPickingEnc,
-                                                                   lConnection,
-                                                                   lTransaction) Then
+                                        If Actualiza_Picking_Existente(pBeStockRes,
+                                                                       pBePedidoDet,
+                                                                       vIdPickingEnc,
+                                                                       lConnection,
+                                                                       lTransaction) Then
 
+                                            Reservar_Stock_Por_Linea_Interface = True
+
+                                        End If
+                                    Else
                                         Reservar_Stock_Por_Linea_Interface = True
-
                                     End If
-
+                                Else
+                                    'No hay picking asociado aún para la línea; la reserva ya quedó aplicada.
+                                    Reservar_Stock_Por_Linea_Interface = True
                                 End If
 
                             Else
@@ -2291,20 +2298,27 @@ Partial Public Class clsLnTrans_pe_det
                                                                     False,
                                                                     pBeTrasladoDet) Then
 
-                                If Not pBePedidoDet.ListaPickingUbic Is Nothing Then
+                                If pBePedidoDet.ListaPickingUbic IsNot Nothing AndAlso pBePedidoDet.ListaPickingUbic.Count > 0 Then
 
-                                    vIdPickingEnc = pBePedidoDet.ListaPickingUbic.FirstOrDefault.IdPickingEnc
+                                    Dim vPickUbic = pBePedidoDet.ListaPickingUbic.FirstOrDefault()
+                                    If vPickUbic IsNot Nothing Then
+                                        vIdPickingEnc = vPickUbic.IdPickingEnc
 
-                                    If Actualiza_Picking_Existente(pBeStockRes,
-                                                                   pBePedidoDet,
-                                                                   vIdPickingEnc,
-                                                                   lConnection,
-                                                                   lTransaction) Then
+                                        If Actualiza_Picking_Existente(pBeStockRes,
+                                                                       pBePedidoDet,
+                                                                       vIdPickingEnc,
+                                                                       lConnection,
+                                                                       lTransaction) Then
 
+                                            Reservar_Stock_Por_Linea_Interface = True
+
+                                        End If
+                                    Else
                                         Reservar_Stock_Por_Linea_Interface = True
-
                                     End If
-
+                                Else
+                                    'No hay picking asociado aún para la línea; la reserva ya quedó aplicada.
+                                    Reservar_Stock_Por_Linea_Interface = True
                                 End If
 
                             Else
