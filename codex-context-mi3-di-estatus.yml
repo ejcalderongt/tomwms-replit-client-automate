@@ -23,6 +23,24 @@ notas:
       IdMenuSistemaOP numerico antes de IdTipoTarea. Esto evita que roles
       productivos pierdan opciones como Implosion para pickeador o Empaque
       para recepcion cuando el contrato de menu llega con nombre distinto.
+  - fecha: "2026-05-26"
+    area: "JIRA WMS - resumen correcciones del dia"
+    detalle: >
+      Se corrigieron incidencias en HH/WS/DAL de QA La Cumbre. 1) Picking
+      reemplazo/no encontrado: con el check
+      Stock_NonNegative_20250228_CKFK (cantidad_solicitada > 0), se ajustaron
+      rutas para evitar updates con cantidad <= 0 en
+      clsLnStock_res_Partial/clsLnTrans_picking_ubic_Partial. 2) Se detecto
+      ruta adicional en Reemplaza_Producto_Dannado_Menor y flujo Sin_Exist:
+      cuando CantidadPendiente=0 la cantidad dañada quedaba en 0; se corrigio
+      asignando pCantLinea en igualdad y guard clause CantSol<=0 en
+      Modificar_PickingUbic_By_Reem. 3) Existencias HH: error SQL
+      "Incorrect syntax near 'Of'" corregido en clsLnStock_CI
+      cambiando Convert(Of Date,...) por Convert(Date,...) y parametrizando
+      filtros pNombre/lote. 4) Verificacion HH fuera de lista general: escaneo
+      no navegaba a confirmacion por enviar gIdPedidoEnc en lugar de
+      pIdPedidoEnc; se corrigio request y matching por CodigoSKU en
+      frm_detalle_tareas_verificacion.
   - fecha: "2026-05-25"
     area: "WebAPI salidas anulacion bajo demanda"
     detalle: >

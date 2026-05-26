@@ -3439,6 +3439,10 @@ Partial Public Class clsLnStock_res
 
                     End If
 
+                    '#EJC20260526: Cantidad a aplicar por línea en unidad de trabajo de picking_ubic.
+                    '#EJC20260526: Evita sobre-restar CantOriginal en cada iteración y violar CK de cantidad_solicitada > 0.
+                    Dim vCantAplicar As Double = CantSol
+
                     Dim pHost As String = "1"
 
 
@@ -3448,7 +3452,7 @@ Partial Public Class clsLnStock_res
                                                                                              pu.IdStock,
                                                                                              pu.IdStockRes,
                                                                                              IdUsuarioHH,
-                                                                                             CantOriginal,
+                                                                                             vCantAplicar,
                                                                                              IdUbicDestino,
                                                                                              IdEstadoDestino,
                                                                                              pu.IdPropietarioBodega,
@@ -3494,7 +3498,7 @@ Partial Public Class clsLnStock_res
                     End If
 
 
-                    mResult = Modificar_PickingUbic_By_Reem(CantOriginal,
+                    mResult = Modificar_PickingUbic_By_Reem(vCantAplicar,
                                                             pu.IdPickingUbic,
                                                             EsPicking,
                                                             Tipo,
@@ -3504,10 +3508,10 @@ Partial Public Class clsLnStock_res
 
 
 
-                    CantTotal -= CantOriginal
+                    CantTotal -= vCantAplicar
 
                     If result = "" And mResult Then
-                        If CantTotal = 0 Then
+                        If CantTotal <= 0 Then
                             Exit For
                         Else
                             CantSol = tmpCantPend
