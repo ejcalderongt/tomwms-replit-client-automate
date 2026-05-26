@@ -3272,13 +3272,24 @@ Partial Public Class clsLnStock_res
 
             If ListTransPickingUbic.Count > 0 Then
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: En verificación el disponible real es (cantidad_recibida - cantidad_verificada).
                 For Each tmp In ListTransPickingUbic
-                    CantSolicitada += tmp.Cantidad_Solicitada
-                    CantRecibida += tmp.Cantidad_Recibida
+
+                    Dim vDisponibleLinea As Double = 0
+
+                    If EsPicking Then
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
+                    Else
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += vDisponibleLinea
+                    End If
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3287,12 +3298,22 @@ Partial Public Class clsLnStock_res
 
                 For Each pu In ListTransPickingUbic
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    Dim DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación no se debe usar cantidad_solicitada porque reabre pendientes históricos.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (pu.Cantidad_Solicitada - pu.Cantidad_Recibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
@@ -3406,29 +3427,24 @@ Partial Public Class clsLnStock_res
 
                 IdEmpresa = clsLnPropietario_bodega.GetIdEmpresa_By_IdPropietarioBodega(ListTransPickingUbic(0).IdPropietarioBodega, lConnection, lTransaction)
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
-                '#EJC20260526: Ignora líneas sin disponible real para evitar disponibles negativos en reemplazo/no-encontrado.
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: Ignora líneas sin disponible real y en verificación usa recibido-verificado.
                 For Each tmp In ListTransPickingUbic
 
                     Dim vDisponibleLinea As Double = 0
                     If EsPicking Then
                         vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
                     Else
-                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Verificada
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
                     End If
 
                     If vDisponibleLinea > 0 Then
-                        CantSolicitada += tmp.Cantidad_Solicitada
-                        If EsPicking Then
-                            CantRecibida += tmp.Cantidad_Recibida
-                        Else
-                            CantRecibida += tmp.Cantidad_Verificada
-                        End If
+                        CantSolicitada += vDisponibleLinea
                     End If
 
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3445,16 +3461,22 @@ Partial Public Class clsLnStock_res
                         CantRecibida = pu.Cantidad_Verificada
                     End If
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    '#EJC20260526: Saltar líneas ya agotadas para no forzar reemplazos inválidos.
-                    Dim DisponibleReem = CantSolicitada - CantRecibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación usar recibido-verificado para no reabrir cantidad no pickeada.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = CantSolicitada - CantRecibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
                     If DisponibleReem <= 0 Then
                         Continue For
                     End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (CantSolicitada - CantRecibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
@@ -3769,6 +3791,23 @@ Partial Public Class clsLnStock_res
                                                             x.Dañado_picking = 0 And
                                                             x.No_encontrado = 0).ToList
 
+                End If
+
+                '#EJC20260526: Acotar por línea/picking_ubic objetivo para evitar mezclar reemplazo con otras sublíneas del mismo código.
+                If ListPickingUbic IsNot Nothing AndAlso ListPickingUbic.Count > 0 Then
+                    If plistPickingUbi.IdPickingUbic <> 0 Then
+                        Dim vByPickingUbic = ListPickingUbic.Where(Function(x) x.IdPickingUbic = plistPickingUbi.IdPickingUbic).ToList()
+                        If vByPickingUbic.Count > 0 Then
+                            ListPickingUbic = vByPickingUbic
+                        End If
+                    End If
+
+                    If plistPickingUbi.IdPedidoDet <> 0 Then
+                        Dim vByPedidoDet = ListPickingUbic.Where(Function(x) x.IdPedidoDet = plistPickingUbi.IdPedidoDet).ToList()
+                        If vByPedidoDet.Count > 0 Then
+                            ListPickingUbic = vByPedidoDet
+                        End If
+                    End If
                 End If
 
                 '#EJC20260526: Evita flujo con lista vacía que deriva en acceso por índice en reemplazo.
