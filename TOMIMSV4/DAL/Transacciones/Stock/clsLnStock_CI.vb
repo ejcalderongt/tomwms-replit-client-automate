@@ -764,9 +764,8 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= "And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 vSQL += " Group by NomEstado, CONVERT(DATE, Fecha_Ingreso), Codigo,
@@ -797,7 +796,8 @@ Public Class clsLnStock_CI
                            SUM(ISNULL(Peso, 0)) Peso, 
                            Lote,
                            LicPlate = lic_plate,
-                           Ingreso = Convert(Of Date, Fecha_Ingreso),
+                           '#EJC20260526: Corregir sintaxis SQL; "Convert(Of Date,...)" provoca "Incorrect syntax near the keyword 'Of'".
+                           Ingreso = Convert(Date, Fecha_Ingreso),
                            Vence = Fecha_Vence,
                            Ubic = Nombre_Completo,
                            codigo_poliza,
@@ -818,10 +818,9 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= "And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre Like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
-            End If
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
+                End If
 
             '#CKFK20221024 Aqui vamos a quitar el Group by por las cantidades  CantidadReservada, Cantidad,  CantidadSF,
             vSQL += " Group by NomEstado, Codigo, Convert(Date, Fecha_Ingreso),
@@ -849,6 +848,7 @@ Public Class clsLnStock_CI
                         If pIdUbicacion <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         If pLicPlate <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@pLicPlate", pLicPlate)
                         If pIdBodega <> 0 Then lDTA.SelectCommand.Parameters.AddWithValue("@pIdBodega", pIdBodega)
+                        If pNombre.Trim <> "" Then lDTA.SelectCommand.Parameters.AddWithValue("@pNombre", pNombre.Trim())
 
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
@@ -1053,9 +1053,8 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= " And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 vSQL += " Group by NomEstado, Convert(DATE,Fecha_Ingreso), Codigo,
@@ -1122,8 +1121,7 @@ Public Class clsLnStock_CI
 
                 '#AT20220404 Buscar por nombre de producto
                 If pNombre.Trim <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " OR Lote like '%" + pNombre + "%')"
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 '#CKFK20221024 Vamos a quitar el Group by por cantidades CantidadSF, CantidadReservada, Cantidad
@@ -1152,6 +1150,7 @@ Public Class clsLnStock_CI
                         If pIdUbicacion <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         lDTA.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto)
                         If pIdBodega <> 0 Then lDTA.SelectCommand.Parameters.AddWithValue("@pIdBodega", pIdBodega)
+                        If pNombre.Trim <> "" Then lDTA.SelectCommand.Parameters.AddWithValue("@pNombre", pNombre.Trim())
 
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)

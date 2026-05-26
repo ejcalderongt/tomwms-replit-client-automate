@@ -2623,7 +2623,8 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            '#EJC20260526: Si la resta deja 0 o negativo, eliminar para no violar CK de cantidad_solicitada > 0.
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2675,7 +2676,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2775,7 +2776,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     oBeTrans_picking_ubic.Cantidad_Verificada = 0
                     oBeTrans_picking_ubic.Encontrado = False
 
-                    If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                    If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                         FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                     Else
                         FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2828,7 +2829,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     oBeTrans_picking_ubic.Cantidad_Verificada = 0
                     oBeTrans_picking_ubic.Encontrado = False
 
-                    If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                    If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                         FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                     Else
                         FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3141,7 +3142,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 oBeTrans_picking_ubic.Cantidad_Verificada = 0
                                 oBeTrans_picking_ubic.Encontrado = False
 
-                                If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                                If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                                 Else
                                     FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3193,7 +3194,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 oBeTrans_picking_ubic.Cantidad_Verificada = 0
                                 oBeTrans_picking_ubic.Encontrado = False
 
-                                If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                                If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                                 Else
                                     FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3283,7 +3284,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3336,7 +3337,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3813,7 +3814,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 vBePickingUbic.Peso_recibido = 0
                                 vBePickingUbic.Encontrado = False
 
-                                If vBePickingUbic.Cantidad_Solicitada = 0 Then
+                                If vBePickingUbic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas += Eliminar_By_IdPickingUbic(vBePickingUbic,
                                                                             If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
