@@ -283,7 +283,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.grdEncRec = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DsOC = New DsOC()
+        Me.DsOC = New TOMWMS.DsOC()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colCódigo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colBodega = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -1087,7 +1087,7 @@ Partial Class frmOrdenCompra
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
         '
@@ -1969,7 +1969,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -4092)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -4511)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -1991,7 +1991,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -4140)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -4559)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -2012,7 +2012,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -4140)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -4559)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2033,7 +2033,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -4141)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -4560)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
