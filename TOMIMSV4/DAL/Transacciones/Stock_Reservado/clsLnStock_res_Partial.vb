@@ -3030,7 +3030,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             lTransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3054,6 +3055,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             lTransaction.Commit()
@@ -3173,7 +3176,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             ltransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3197,6 +3201,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             Return True
@@ -4220,7 +4226,8 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 ltransaction)
 
-                    If StockResList IsNot Nothing Then
+                    '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+                    If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                         Dim resultReemp As Boolean = False
 
