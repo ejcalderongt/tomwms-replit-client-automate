@@ -4796,6 +4796,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
             End If
 
+            '#EJC20260526: Evita acceso por índice cuando no se generaron líneas de picking_ubic.
+            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generaron líneas de picking_ubic para aplicar el cambio.")
+            End If
+
             ' Picking Detalle Ubicacion
             Guarda_Trans_picking_ubic(IdPickingEnc,
                                       pListBePickingUbic,
@@ -4805,6 +4810,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
             '#CKFK 20180202 Genera la tarea de cambio de estado
             '#AT En base a lo analizado creemos que aqui vamos a colocar el metodo Marcar_No_Encontrado cuando el tipo sea 2
+            '#EJC20260526: Evita acceso por índice cuando no se generó stock reservado.
+            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generó stock reservado para el cambio de estado.")
+            End If
+
             If Tipo = 1 Then
                 clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,
                                                                    IdEmpresa,
@@ -4951,11 +4961,21 @@ Partial Public Class clsLnTrans_picking_ubic
 
             End If
 
+            '#EJC20260526: Evita acceso por índice cuando no se generaron líneas de picking_ubic.
+            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generaron líneas de picking_ubic para aplicar el cambio.")
+            End If
+
             ' Picking Detalle Ubicacion
             Guarda_Trans_picking_ubic(IdPickingEnc,
                                       pListBePickingUbic,
                                       lConnection,
                                       lTransaction)
+
+            '#EJC20260526: Evita acceso por índice cuando no se generó stock reservado.
+            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generó stock reservado para el cambio de estado.")
+            End If
 
             '#CKFK 20180202 Genera la tarea de cambio de estado
             clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,

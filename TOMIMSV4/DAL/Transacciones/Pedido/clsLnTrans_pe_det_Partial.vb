@@ -4993,16 +4993,24 @@ Partial Public Class clsLnTrans_pe_det
                 lConnection.Open()
 
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    Dim vProducto As String = If(pProducto, "").Trim()
+                    Dim vProductoSinPrefijo0 As String = vProducto
+                    If vProductoSinPrefijo0.StartsWith("0") AndAlso vProductoSinPrefijo0.Length > 1 Then
+                        vProductoSinPrefijo0 = vProductoSinPrefijo0.Substring(1)
+                    End If
+
+                    '#EJC20260526: Permite escaneo por código interno, SKU o código con prefijo 0.
                     Dim vSQL As String = "SELECT TOP(1) * FROM VW_Verificacion_Consolidada 
                                           WHERE IdPedidoEnc IN (" & parametros & ") AND 
-                                                codigo = @Producto AND 
+                                                (codigo = @Producto OR CodigoSKU = @Producto OR codigo = @ProductoAlt OR CodigoSKU = @ProductoAlt) AND 
                                                 cantidad_verificada <> cantidad_recibida AND 
                                                 cantidad_recibida <> 0"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                         lDTA.SelectCommand.CommandType = CommandType.Text
                         lDTA.SelectCommand.Transaction = ltransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@Producto", pProducto)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Producto", vProducto)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@ProductoAlt", vProductoSinPrefijo0)
 
                         For i As Integer = 0 To listaIds.Count - 1
                             lDTA.SelectCommand.Parameters.AddWithValue("@Pedidos" & i, listaIds(i))
