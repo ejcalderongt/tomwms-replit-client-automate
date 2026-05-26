@@ -393,13 +393,14 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo.nombre Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
 										 left join Bodega bd on enc.IdBodega=bd.Idbodega
-										 where ISNULL(Tipo, '') ='ING' "
+										 left join i_nav_barras_rfid_tipo_mov Tipo on enc.Tipo = Tipo.Idrfidtipomov
+										 where Tipo.IdRfidTipoMov =1"
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -444,13 +445,14 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo.nombre Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
 									     left join Bodega bd on enc.IdBodega=bd.IdBodega
-										 where ISNULL(Tipo, '') ='SAL' "
+									     left join i_nav_barras_rfid_tipo_mov Tipo on enc.Tipo = Tipo.Idrfidtipomov
+										 where Tipo.IdRfidTipoMov =2 "
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
