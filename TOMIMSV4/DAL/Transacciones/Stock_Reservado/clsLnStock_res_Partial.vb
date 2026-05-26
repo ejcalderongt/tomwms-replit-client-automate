@@ -3736,6 +3736,11 @@ Partial Public Class clsLnStock_res
 
                 End If
 
+                '#EJC20260526: Evita flujo con lista vacía que deriva en acceso por índice en reemplazo.
+                If ListPickingUbic Is Nothing OrElse ListPickingUbic.Count = 0 Then
+                    Throw New Exception("No se puede completar el proceso, no hay líneas disponibles para reemplazo en verificación.")
+                End If
+
                 For Each tmp In ListPickingUbic
                     CantidadRecibida += tmp.Cantidad_Recibida
                     CantidadVerificada += tmp.Cantidad_Verificada
@@ -3928,11 +3933,12 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 lTransaction)
 
-                    If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
-                        Dim resultReemp As Boolean = False
+                Dim resultReemp As Boolean = False
 
-                        resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
+                resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
                                                                                     IdPickingEnc,
                                                                                     BeTransPickingUbic.IdPickingDet,
                                                                                     CantSolTotal,
@@ -4234,11 +4240,13 @@ Partial Public Class clsLnStock_res
                                                                                     lConnection,
                                                                                     ltransaction,
                                                                                     Tipo)
-                        If Not resultReemp Then
-                            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
-                        End If
+                If Not resultReemp Then
+                    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
+                End If
 
-                    End If
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
+            End If
 
                 Else
                     Throw New Exception("Licencia reservada por completo")
