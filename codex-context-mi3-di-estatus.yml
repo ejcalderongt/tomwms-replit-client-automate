@@ -1,4 +1,60 @@
 notas:
+  - fecha: "2026-05-26"
+    area: "HH picking reemplazo/no encontrado cantidad_solicitada"
+    detalle: >
+      En QA La Cumbre (TOMWMS_LA_CUMBRE_QA) el constraint
+      Stock_NonNegative_20250228_CKFK de trans_picking_ubic valida
+      cantidad_solicitada > 0. Se detecto que los flujos de reemplazo/no
+      encontrado evaluaban parcial con "Cantidad_Solicitada <> 0", por lo que
+      cantidades negativas caian en UPDATE y rompian el check. Fix aplicado en
+      clsLnStock_res_Partial y clsLnTrans_picking_ubic_Partial: condiciones de
+      parcial cambiadas a > 0 y caminos de cierre/eliminacion a <= 0 para
+      evitar updates con cero/negativo en escenarios de merma/no encontrado.
+      Se identifico caso adicional en Reemplaza_Producto_Dannado_Menor donde
+      cuando CantidadPendiente = 0 la cantidad dañada quedaba en 0 por no
+      entrar a ramas >0/<0; se corrigio para asignar pCantLinea en igualdad.
+      Tambien se agrego guard clause en Modificar_PickingUbic_By_Reem para
+      omitir update cuando CantSol <= 0 y evitar violacion del check.
+  - fecha: "2026-05-26"
+    area: "HH menu roles"
+    detalle: >
+      En TOMHH2025 el mapeo del menu principal debe resolver permisos por
+      nombre normalizado y, si el nombre viene vacio o con variante, usar
+      IdMenuSistemaOP numerico antes de IdTipoTarea. Esto evita que roles
+      productivos pierdan opciones como Implosion para pickeador o Empaque
+      para recepcion cuando el contrato de menu llega con nombre distinto.
+  - fecha: "2026-05-26"
+    area: "JIRA WMS - resumen correcciones del dia"
+    detalle: >
+      Se corrigieron incidencias en HH/WS/DAL de QA La Cumbre. 1) Picking
+      reemplazo/no encontrado: con el check
+      Stock_NonNegative_20250228_CKFK (cantidad_solicitada > 0), se ajustaron
+      rutas para evitar updates con cantidad <= 0 en
+      clsLnStock_res_Partial/clsLnTrans_picking_ubic_Partial. 2) Se detecto
+      ruta adicional en Reemplaza_Producto_Dannado_Menor y flujo Sin_Exist:
+      cuando CantidadPendiente=0 la cantidad dañada quedaba en 0; se corrigio
+      asignando pCantLinea en igualdad y guard clause CantSol<=0 en
+      Modificar_PickingUbic_By_Reem. 3) Existencias HH: error SQL
+      "Incorrect syntax near 'Of'" corregido en clsLnStock_CI
+      cambiando Convert(Of Date,...) por Convert(Date,...) y parametrizando
+      filtros pNombre/lote. 4) Verificacion HH fuera de lista general: escaneo
+      no navegaba a confirmacion por enviar gIdPedidoEnc en lugar de
+      pIdPedidoEnc; se corrigio request y matching por CodigoSKU en
+      frm_detalle_tareas_verificacion.
+  - fecha: "2026-05-25"
+    area: "WebAPI salidas anulacion bajo demanda"
+    detalle: >
+      Se agrego endpoint POST /api/sync/salidas/anular-salida para anular un
+      documento de salida desde WebAPI con reglas equivalentes al flujo WMS de
+      frmPedido: requiere IdPedidoEnc o Referencia, motivo de anulacion,
+      valida que no exista picking activo asociado, permite estados Nuevo,
+      Incompleto, Pendiente, Pickeado y Verificado, libera stock_res por
+      IdPedido y marca trans_pe_enc.estado='Anulado' con
+      IdMotivoAnulacionBodega en una sola transaccion; si la bodega es fiscal,
+      tambien desactiva trans_pe_pol.activo para la poliza del pedido. La
+      respuesta usa codigos tipificados: ANULACION_OK, REQUEST_INVALID, PEDIDO_NO_ENCONTRADO,
+      PEDIDO_AMBIGUO, PEDIDO_YA_ANULADO, ESTADO_NO_ANULABLE, PICKING_ASOCIADO,
+      ANULACION_FALLIDA y ERROR_INTERNO.
   - fecha: "2026-05-23"
     area: "WSHH consulta stock ubicacion JSON estable"
     detalle: >
