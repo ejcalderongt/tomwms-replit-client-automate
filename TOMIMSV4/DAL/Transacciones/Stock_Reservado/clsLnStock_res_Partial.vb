@@ -3407,13 +3407,23 @@ Partial Public Class clsLnStock_res
                 IdEmpresa = clsLnPropietario_bodega.GetIdEmpresa_By_IdPropietarioBodega(ListTransPickingUbic(0).IdPropietarioBodega, lConnection, lTransaction)
 
                 '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#EJC20260526: Ignora líneas sin disponible real para evitar disponibles negativos en reemplazo/no-encontrado.
                 For Each tmp In ListTransPickingUbic
 
-                    CantSolicitada += tmp.Cantidad_Solicitada
+                    Dim vDisponibleLinea As Double = 0
                     If EsPicking Then
-                        CantRecibida += tmp.Cantidad_Recibida
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
                     Else
-                        CantRecibida += tmp.Cantidad_Verificada
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += tmp.Cantidad_Solicitada
+                        If EsPicking Then
+                            CantRecibida += tmp.Cantidad_Recibida
+                        Else
+                            CantRecibida += tmp.Cantidad_Verificada
+                        End If
                     End If
 
                 Next
@@ -3436,7 +3446,11 @@ Partial Public Class clsLnStock_res
                     End If
 
                     '#AT Se resta la cantidad recibida a la solicitada
+                    '#EJC20260526: Saltar líneas ya agotadas para no forzar reemplazos inválidos.
                     Dim DisponibleReem = CantSolicitada - CantRecibida
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
@@ -3762,9 +3776,13 @@ Partial Public Class clsLnStock_res
                     Throw New Exception("No se puede completar el proceso, no hay líneas disponibles para reemplazo en verificación.")
                 End If
 
+                '#EJC20260526: En verificación usar solo líneas con recibido > verificado.
                 For Each tmp In ListPickingUbic
-                    CantidadRecibida += tmp.Cantidad_Recibida
-                    CantidadVerificada += tmp.Cantidad_Verificada
+                    Dim vDisponibleLinea As Double = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    If vDisponibleLinea > 0 Then
+                        CantidadRecibida += tmp.Cantidad_Recibida
+                        CantidadVerificada += tmp.Cantidad_Verificada
+                    End If
                 Next
 
                 Dim CantDisponible = CantidadRecibida - CantidadVerificada
@@ -3785,7 +3803,11 @@ Partial Public Class clsLnStock_res
                 End If
 
                 For Each pu In ListPickingUbic
+                    '#EJC20260526: Saltar líneas sin disponible de verificación.
                     Dim DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If pCantReemplazar >= DisponibleReem Then
 
