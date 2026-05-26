@@ -3576,6 +3576,11 @@ Partial Public Class clsLnStock_res
 
             If Not EsPicking Then
                 bePickingUbicExistente.Cantidad_Recibida -= CantSol
+                '#EJC20260526: En verificación, mantener consistencia Recibida/Verificada para evitar disponibles negativos.
+                bePickingUbicExistente.Cantidad_Verificada -= CantSol
+                If bePickingUbicExistente.Cantidad_Verificada < 0 Then
+                    bePickingUbicExistente.Cantidad_Verificada = 0
+                End If
             End If
 
             If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
@@ -3595,6 +3600,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 1
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 2
@@ -3609,6 +3615,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
 
                 End If
 
@@ -3634,6 +3644,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 4
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 5
@@ -3647,6 +3658,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
                     'bePickingUbicExistente.No_packing = 6
                 End If
 
