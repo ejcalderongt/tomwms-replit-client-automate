@@ -780,7 +780,8 @@ Public Class clsLnStock_CI
             Else
                 '#AT20221221 Agregue IdUbicacion Stock_CI
                 '#AT20230320 Agregue Convert(Date, Fecha_Ingreso) al group by
-                '#AT20230322 Sum de peso 
+                '#AT20230322 Sum de peso
+                '#EJC20260526: Corregir sintaxis SQL; "Convert(Of Date,...)" provoca "Incorrect syntax near the keyword 'Of'".
                 vSQL = "SELECT Codigo,
 						   Nombre,
                            UM = UnidadMedida,
@@ -796,7 +797,6 @@ Public Class clsLnStock_CI
                            SUM(ISNULL(Peso, 0)) Peso, 
                            Lote,
                            LicPlate = lic_plate,
-                           '#EJC20260526: Corregir sintaxis SQL; "Convert(Of Date,...)" provoca "Incorrect syntax near the keyword 'Of'".
                            Ingreso = Convert(Date, Fecha_Ingreso),
                            Vence = Fecha_Vence,
                            Ubic = Nombre_Completo,
