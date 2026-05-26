@@ -1349,6 +1349,7 @@ Partial Class frmOrdenCompra
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEliminar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.SubImprimir)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuCerrarPedidoCompra)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdBackorder)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizarDetalle)
