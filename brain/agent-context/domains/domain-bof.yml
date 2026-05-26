@@ -1,0 +1,14 @@
+version: 1
+updated: "2026-05-26"
+domain: bof
+
+cambio_ubicacion_implosion:
+  la_cumbre_dirigido_2026_05_26:
+    handoff: "brain/debuged-cases/2026-05-26-la-cumbre-cambio-ubic-implosion/ANALISIS_Y_FIX.md"
+    symptom: "Cambio de ubicacion dirigido movia ubicacion pero podia conservar licencia origen."
+    guardrail: >
+      En flujo dirigido HH (Guardar_Detalle), si bodega tiene ubic_implosion_auto
+      y la ubicacion destino define licencia distinta, enrutar por pipeline
+      integrado (estado->implosion->ubicacion) para no romper consistencia de licencia.
+    tool: "tools/wms-deep-dive/diagnostics/cambio_ubicacion_implosion_trace.py"
+
