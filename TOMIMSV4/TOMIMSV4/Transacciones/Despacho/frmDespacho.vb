@@ -162,15 +162,27 @@ Public Class frmDespacho
                 Return False
             End If
 
-            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking()
+            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: Las diferencias parciales bloquean; solo las verificaciones en cero mantienen correccion automatica.
+            Dim permiteCorreccionAutoPacking As Boolean = False
+            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking(permiteCorreccionAutoPacking)
 
             If msgDiferenciaDespachoPacking <> String.Empty Then
 
+                If Not permiteCorreccionAutoPacking Then
+                    XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
+                                        "Corrija la diferencia en picking/verificación o packing antes de despachar.",
+                                        Text,
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Exclamation)
+
+                    Return False
+                End If
+
                 Dim vRespuesta As DialogResult = XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
-                                                                    "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
-                                                                    Text,
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Question)
+                                                                     "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
+                                                                     Text,
+                                                                     MessageBoxButtons.YesNo,
+                                                                     MessageBoxIcon.Question)
 
                 If vRespuesta = DialogResult.Yes Then
 
@@ -2653,43 +2665,63 @@ Public Class frmDespacho
                         DT = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
 
                         Dim vNombreOperadorPickeo As String = ""
+                        Dim vNombreUsuarioAutoriza As String = ""
+
+                        If BeUsuario IsNot Nothing Then
+                            vNombreUsuarioAutoriza = String.Format("{0} {1}", BeUsuario.Nombres, BeUsuario.Apellidos).Trim
+                        End If
 
                         If Not DT Is Nothing Then
 
                             If DT.Rows.Count > 0 Then
 
-                                Dim vIdOperadorPicking As Integer = DT.Rows(0).Item("IdOperadorBodega_Pickeo")
-                                Dim vIdPickingEnc As Integer = DT.Rows(0).Item("IdPickingEnc")
+                                Dim vIdOperadorPicking As Integer = 0
+                                Dim vIdPickingEnc As Integer = 0
+
+                                If DT.Columns.Contains("IdOperadorBodega_Pickeo") AndAlso Not IsDBNull(DT.Rows(0).Item("IdOperadorBodega_Pickeo")) Then
+                                    vIdOperadorPicking = Val(DT.Rows(0).Item("IdOperadorBodega_Pickeo").ToString)
+                                End If
+
+                                If DT.Columns.Contains("IdPickingEnc") AndAlso Not IsDBNull(DT.Rows(0).Item("IdPickingEnc")) Then
+                                    vIdPickingEnc = Val(DT.Rows(0).Item("IdPickingEnc").ToString)
+                                End If
+
                                 Dim BeOperadorBodega As New clsBeOperador_bodega
                                 BeOperadorBodega.IdOperadorBodega = vIdOperadorPicking
 
                                 '#GT19052025: utilizar el picking para validar que fue procesado bof o no, para mostrar al usuario/operador correcto en el doc de despacho.
-                                Dim pPickingEnc = clsLnTrans_picking_enc.GetSingle(vIdPickingEnc)
-                                If pPickingEnc IsNot Nothing Then
-                                    pProcesado_Bof = pPickingEnc.procesado_bof
+                                If vIdPickingEnc > 0 Then
+                                    Dim pPickingEnc = clsLnTrans_picking_enc.GetSingle(vIdPickingEnc)
+                                    If pPickingEnc IsNot Nothing Then
+                                        pProcesado_Bof = pPickingEnc.procesado_bof
+                                    End If
                                 End If
 
-                                If pProcesado_Bof Then
+                                If vIdOperadorPicking > 0 AndAlso pProcesado_Bof Then
 
                                     Dim pIdOperador = clsLnOperador_bodega.Get_IdOperador_By_IdOperadorBodega(vIdOperadorPicking)
 
                                     If pIdOperador > 0 Then
                                         Dim BeOperador = clsLnOperador.Get_Single_By_IdOperador(pIdOperador)
-                                        vNombreOperadorPickeo = BeOperador.Nombres + "" + BeOperador.Apellidos
+                                        If BeOperador IsNot Nothing Then
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeOperador.Nombres, BeOperador.Apellidos).Trim
+                                        End If
 
                                     Else
                                         BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                        vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+                                        If BeUsuarioEntrega IsNot Nothing Then
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeUsuarioEntrega.Nombres, BeUsuarioEntrega.Apellidos).Trim
+                                        End If
                                     End If
 
                                 Else
 
-                                    If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
+                                    If vIdOperadorPicking > 0 AndAlso clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
 
                                         Dim BeOperador As New clsBeOperador
                                         BeOperador.IdOperador = BeOperadorBodega.IdOperador
                                         If clsLnOperador.GetSingle(BeOperador) Then
-                                            vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
+                                            vNombreOperadorPickeo = String.Format("{0} {1}", BeOperador.Nombres, BeOperador.Apellidos).Trim
                                         End If
 
                                     End If
@@ -2712,14 +2744,15 @@ Public Class frmDespacho
                         RepCealsa.Parameters("Bodega").Visible = False
                         RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
                         RepCealsa.Parameters("Entregado_Por").Visible = False
-                        RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
+                        RepCealsa.Parameters("Autorizado_Por").Value = vNombreUsuarioAutoriza
                         RepCealsa.Parameters("Autorizado_Por").Visible = False
                         RepCealsa.RequestParameters = False
 
-                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                        Dim vImagenEmpresa = clsLnEmpresa.GetImagen(AP.IdEmpresa)
+                        If vImagenEmpresa Is Nothing Then
                             RepCealsa.XrLogo.Image = Nothing
                         Else
-                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(vImagenEmpresa)
                         End If
 
                         RepCealsa.ShowPreview()
@@ -3997,9 +4030,10 @@ Public Class frmDespacho
 
     End Function
 
-    Private Function ObtenerMensajeDiferenciasDespachoPacking() As String
+    Private Function ObtenerMensajeDiferenciasDespachoPacking(ByRef pPermiteCorreccionAuto As Boolean) As String
 
         Dim sb As New System.Text.StringBuilder()
+        pPermiteCorreccionAuto = True
 
         Try
             If BeDespachoEnc Is Nothing _
@@ -4034,14 +4068,23 @@ Public Class frmDespacho
                     Dim producto As String = Nz(row("producto"))
                     Dim lote As String = Nz(row("lote"))
                     Dim licencia As String = Nz(row("lic_plate"))
+                    Dim tipoDiferencia As String = If(dt.Columns.Contains("tipo_diferencia"), Nz(row("tipo_diferencia")), "")
+                    Dim permiteCorreccion As Boolean = If(dt.Columns.Contains("permite_correccion_auto"), ToInteger(row("permite_correccion_auto")) = 1, False)
 
                     Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
                     Dim verificado As Double = ToDouble(row("cantidad_verificada"))
                     Dim empacado As Double = ToDouble(row("cantidad_empacada"))
 
+                    If Not permiteCorreccion Then
+                        pPermiteCorreccionAuto = False
+                    End If
+
                     sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
                     sb.AppendLine(String.Format("Producto: {0}", producto))
                     sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
+                    If tipoDiferencia <> String.Empty Then
+                        sb.AppendLine(String.Format("Diferencia: {0}", tipoDiferencia))
+                    End If
                     sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
                                             pickeado,
                                             verificado,

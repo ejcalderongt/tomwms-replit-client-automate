@@ -1970,7 +1970,8 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, parcial solo aplica cuando cantidad_solicitada > 0.
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -1990,7 +1991,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -2283,7 +2284,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
                     '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -2345,7 +2346,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                     '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
@@ -2591,7 +2592,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2610,7 +2611,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2820,7 +2821,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistenteDañado.Cantidad_Solicitada = CantSol
 
@@ -2841,7 +2842,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, ltransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#EJC20190626: Si la Cantidad_Solicitada es igual a 0, quiere decir que fue reemplazada por completo por otro IdStock
                     'Por consiguiente la Cantidad_Solicitada de ese IdPickingUbic es 0, porque ya sé que no está.
@@ -3029,7 +3030,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             lTransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3053,6 +3055,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             lTransaction.Commit()
@@ -3172,7 +3176,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             ltransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3196,6 +3201,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             Return True
@@ -3265,13 +3272,24 @@ Partial Public Class clsLnStock_res
 
             If ListTransPickingUbic.Count > 0 Then
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: En verificación el disponible real es (cantidad_recibida - cantidad_verificada).
                 For Each tmp In ListTransPickingUbic
-                    CantSolicitada += tmp.Cantidad_Solicitada
-                    CantRecibida += tmp.Cantidad_Recibida
+
+                    Dim vDisponibleLinea As Double = 0
+
+                    If EsPicking Then
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
+                    Else
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += vDisponibleLinea
+                    End If
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3280,12 +3298,22 @@ Partial Public Class clsLnStock_res
 
                 For Each pu In ListTransPickingUbic
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    Dim DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación no se debe usar cantidad_solicitada porque reabre pendientes históricos.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (pu.Cantidad_Solicitada - pu.Cantidad_Recibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
@@ -3399,19 +3427,24 @@ Partial Public Class clsLnStock_res
 
                 IdEmpresa = clsLnPropietario_bodega.GetIdEmpresa_By_IdPropietarioBodega(ListTransPickingUbic(0).IdPropietarioBodega, lConnection, lTransaction)
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: Ignora líneas sin disponible real y en verificación usa recibido-verificado.
                 For Each tmp In ListTransPickingUbic
 
-                    CantSolicitada += tmp.Cantidad_Solicitada
+                    Dim vDisponibleLinea As Double = 0
                     If EsPicking Then
-                        CantRecibida += tmp.Cantidad_Recibida
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
                     Else
-                        CantRecibida += tmp.Cantidad_Verificada
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += vDisponibleLinea
                     End If
 
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3428,15 +3461,29 @@ Partial Public Class clsLnStock_res
                         CantRecibida = pu.Cantidad_Verificada
                     End If
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    Dim DisponibleReem = CantSolicitada - CantRecibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación usar recibido-verificado para no reabrir cantidad no pickeada.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = CantSolicitada - CantRecibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (CantSolicitada - CantRecibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
+
+                    '#EJC20260526: Cantidad a aplicar por línea en unidad de trabajo de picking_ubic.
+                    '#EJC20260526: Evita sobre-restar CantOriginal en cada iteración y violar CK de cantidad_solicitada > 0.
+                    Dim vCantAplicar As Double = CantSol
 
                     Dim pHost As String = "1"
 
@@ -3447,7 +3494,7 @@ Partial Public Class clsLnStock_res
                                                                                              pu.IdStock,
                                                                                              pu.IdStockRes,
                                                                                              IdUsuarioHH,
-                                                                                             CantOriginal,
+                                                                                             vCantAplicar,
                                                                                              IdUbicDestino,
                                                                                              IdEstadoDestino,
                                                                                              pu.IdPropietarioBodega,
@@ -3493,7 +3540,7 @@ Partial Public Class clsLnStock_res
                     End If
 
 
-                    mResult = Modificar_PickingUbic_By_Reem(CantOriginal,
+                    mResult = Modificar_PickingUbic_By_Reem(vCantAplicar,
                                                             pu.IdPickingUbic,
                                                             EsPicking,
                                                             Tipo,
@@ -3503,10 +3550,10 @@ Partial Public Class clsLnStock_res
 
 
 
-                    CantTotal -= CantOriginal
+                    CantTotal -= vCantAplicar
 
                     If result = "" And mResult Then
-                        If CantTotal = 0 Then
+                        If CantTotal <= 0 Then
                             Exit For
                         Else
                             CantSol = tmpCantPend
@@ -3547,6 +3594,11 @@ Partial Public Class clsLnStock_res
 
             vCantSol = CantSol
 
+            '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, no se debe intentar actualizar con cantidad <= 0.
+            If CantSol <= 0 Then
+                Return True
+            End If
+
             '#CKFK 20180208 11:47PM Actualizar la cantidad solicitada en trans_picking_ubic
             Dim bePickingUbicExistente As New clsBeTrans_picking_ubic With {
                 .IdPickingUbic = IdPickingUbic
@@ -3560,9 +3612,14 @@ Partial Public Class clsLnStock_res
 
             If Not EsPicking Then
                 bePickingUbicExistente.Cantidad_Recibida -= CantSol
+                '#EJC20260526: En verificación, mantener consistencia Recibida/Verificada para evitar disponibles negativos.
+                bePickingUbicExistente.Cantidad_Verificada -= CantSol
+                If bePickingUbicExistente.Cantidad_Verificada < 0 Then
+                    bePickingUbicExistente.Cantidad_Verificada = 0
+                End If
             End If
 
-            If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+            If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
 
                 '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -3579,6 +3636,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 1
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 2
@@ -3593,6 +3651,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
 
                 End If
 
@@ -3603,7 +3665,7 @@ Partial Public Class clsLnStock_res
                 'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente, lConnection, lTransaction)
 
-            ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+            ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                 '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
@@ -3618,6 +3680,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 4
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 5
@@ -3631,6 +3694,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
                     'bePickingUbicExistente.No_packing = 6
                 End If
 
@@ -3726,9 +3793,35 @@ Partial Public Class clsLnStock_res
 
                 End If
 
+                '#EJC20260526: Acotar por línea/picking_ubic objetivo para evitar mezclar reemplazo con otras sublíneas del mismo código.
+                If ListPickingUbic IsNot Nothing AndAlso ListPickingUbic.Count > 0 Then
+                    If plistPickingUbi.IdPickingUbic <> 0 Then
+                        Dim vByPickingUbic = ListPickingUbic.Where(Function(x) x.IdPickingUbic = plistPickingUbi.IdPickingUbic).ToList()
+                        If vByPickingUbic.Count > 0 Then
+                            ListPickingUbic = vByPickingUbic
+                        End If
+                    End If
+
+                    If plistPickingUbi.IdPedidoDet <> 0 Then
+                        Dim vByPedidoDet = ListPickingUbic.Where(Function(x) x.IdPedidoDet = plistPickingUbi.IdPedidoDet).ToList()
+                        If vByPedidoDet.Count > 0 Then
+                            ListPickingUbic = vByPedidoDet
+                        End If
+                    End If
+                End If
+
+                '#EJC20260526: Evita flujo con lista vacía que deriva en acceso por índice en reemplazo.
+                If ListPickingUbic Is Nothing OrElse ListPickingUbic.Count = 0 Then
+                    Throw New Exception("No se puede completar el proceso, no hay líneas disponibles para reemplazo en verificación.")
+                End If
+
+                '#EJC20260526: En verificación usar solo líneas con recibido > verificado.
                 For Each tmp In ListPickingUbic
-                    CantidadRecibida += tmp.Cantidad_Recibida
-                    CantidadVerificada += tmp.Cantidad_Verificada
+                    Dim vDisponibleLinea As Double = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    If vDisponibleLinea > 0 Then
+                        CantidadRecibida += tmp.Cantidad_Recibida
+                        CantidadVerificada += tmp.Cantidad_Verificada
+                    End If
                 Next
 
                 Dim CantDisponible = CantidadRecibida - CantidadVerificada
@@ -3749,7 +3842,11 @@ Partial Public Class clsLnStock_res
                 End If
 
                 For Each pu In ListPickingUbic
+                    '#EJC20260526: Saltar líneas sin disponible de verificación.
                     Dim DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If pCantReemplazar >= DisponibleReem Then
 
@@ -3918,11 +4015,12 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 lTransaction)
 
-                    If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
-                        Dim resultReemp As Boolean = False
+                Dim resultReemp As Boolean = False
 
-                        resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
+                resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
                                                                                     IdPickingEnc,
                                                                                     BeTransPickingUbic.IdPickingDet,
                                                                                     CantSolTotal,
@@ -4204,7 +4302,8 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 ltransaction)
 
-                    If StockResList IsNot Nothing Then
+                    '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+                    If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                         Dim resultReemp As Boolean = False
 
@@ -4224,11 +4323,13 @@ Partial Public Class clsLnStock_res
                                                                                     lConnection,
                                                                                     ltransaction,
                                                                                     Tipo)
-                        If Not resultReemp Then
-                            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
-                        End If
+                If Not resultReemp Then
+                    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
+                End If
 
-                    End If
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
+            End If
 
                 Else
                     Throw New Exception("Licencia reservada por completo")
@@ -4799,6 +4900,15 @@ Partial Public Class clsLnStock_res
             Dim BeStockResPreviamenteInsertado As New clsBeStock_res
 
             For Each BeStockRes As clsBeStock_res In lStockRes
+
+                '#EJC20260520_RESERVA_BYB_FIX: no insertar reservas vacias; stock_res tiene CHECK cantidad > 0.
+                If Math.Round(BeStockRes.Cantidad, 6) <= 0 Then
+                    clsReservaMi3DebugTrace.EventoStockRes(clsReservaMi3DebugTrace.ObtenerActual(),
+                                                           "stock_res_omitido_cantidad_no_positiva",
+                                                           BeStockRes,
+                                                           "Cantidad", clsReservaMi3DebugTrace.Valor(BeStockRes.Cantidad))
+                    Continue For
+                End If
 
                 BeStockResPreviamenteInsertado.IdStockRes = BeStockRes.IdStockRes
                 BeStockResPreviamenteInsertado.IdProductoBodega = BeStockRes.IdProductoBodega
@@ -18433,6 +18543,45 @@ Partial Public Class clsLnStock_res
 
     End Function
 
+    '#EJC20260520_RESERVA_BYB_FIX: helpers para que las decisiones de reserva usen cantidad útil,
+    'no solo existencia de filas; esto evita falsos SOLO_NO_PICKING_SIN_EXPLOSION.
+    Private Shared Function Stock_Disponible_MI3(ByVal pListaStock As List(Of clsBeStock)) As List(Of clsBeStock)
+
+        If pListaStock Is Nothing Then
+            Return New List(Of clsBeStock)
+        End If
+
+        Return pListaStock.Where(Function(x) x.Cantidad > 0).ToList()
+
+    End Function
+
+    Private Shared Function Cantidad_Stock_Disponible_MI3(ByVal pListaStock As List(Of clsBeStock)) As Double
+
+        Return Stock_Disponible_MI3(pListaStock).Sum(Function(x) x.Cantidad)
+
+    End Function
+
+    Private Shared Function Picking_Cubre_NoPicking_NoExplosionable_MI3(ByVal pRestoInventarioEnUmBas As Boolean,
+                                                                        ByVal pStockResBusquedaParaExplosion As clsBeStock_res,
+                                                                        ByVal pStockResSolicitud As clsBeStock_res,
+                                                                        ByVal pListaStockPicking As List(Of clsBeStock),
+                                                                        ByVal pCantidadSolicitud As Double) As Boolean
+
+        Dim vCantidadSolicitud As Double = pCantidadSolicitud
+
+        If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitud = 0 Then
+            vCantidadSolicitud = pStockResSolicitud.Cantidad
+        End If
+
+        Return pRestoInventarioEnUmBas _
+               AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+               AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0 _
+               AndAlso pStockResSolicitud.IdPresentacion = 0 _
+               AndAlso vCantidadSolicitud > 0 _
+               AndAlso Cantidad_Stock_Disponible_MI3(pListaStockPicking) >= vCantidadSolicitud
+
+    End Function
+
     Public Shared Function Obtener_Listas_De_Stock(ByRef pStockResSolicitud As clsBeStock_res,
                                                    ByRef BeProducto As clsBeProducto,
                                                    ByVal DiasVencimiento As Integer,
@@ -18916,6 +19065,9 @@ Partial Public Class clsLnStock_res
             Dim pEs_Devolucion As Boolean = False
             Dim vPresReserva As Integer = 0
             Dim vBeCliente As New clsBeCliente
+            '#EJC20260520_RESERVA_BYB_FIX: declaradas fuera de etiquetas GoTo para evitar BC36597 por lambdas en el bloque.
+            Dim vCantidadSolicitudNoPickingFix As Double = 0
+            Dim vPickingCubreNoPickingNoExplosionableRecalculo As Boolean = False
 
 #End Region
 
@@ -18960,11 +19112,22 @@ Partial Public Class clsLnStock_res
             lBeStockExistenteZonasNoPicking = ListasStock.lBeStockExistenteZonasNoPicking
             lBeStockExistenteZonaPicking = ListasStock.lBeStockExistenteZonaPicking
 
+            '#CKFK20260523 Agregué estas variables porque no se estaba validando que la presentacion fuera 0
+            Dim vIdPresentacion As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vIdPresentacion = BePresentacionDefecto.IdPresentacion
+            End If
+
+            Dim vFactor As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vFactor = BePresentacionDefecto.Factor
+            End If
+
             clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
                                            "listas_stock_iniciales",
                                            "Producto_Codigo", BeProducto.Codigo,
-                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.IdPresentacion),
-                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.Factor),
+                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(vIdPresentacion),
+                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(vFactor),
                                            "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(BePedidoDet.Cantidad),
                                            "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(BePedidoDet.IdPresentacion),
                                            "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
@@ -19181,16 +19344,16 @@ EXPLOSIONAR_PRODUCTO:
                                                                            0))
                             Else
                                 If Not vCantidadCompletada Then
-                                     Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                    Dim vMensajeError20230306 As String = String.Format("Error202303051226: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
                                                                                      BeProducto.Codigo,
                                                                                      vCantidadSolicitadaPedido,
                                                                                      vCantidadStock)
-                                     clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                     'Exit Function
-                                 End If
-                             End If
-                         End If
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                    Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                    'Exit Function
+                                End If
+                            End If
+                        End If
 
                         '#EJC202312191315: Para BYB, con amor.
                         If Not vBusquedaEnUmBas AndAlso pStockResBusquedaParaExplosion Is Nothing Then
@@ -19246,9 +19409,11 @@ EXPLOSIONAR_PRODUCTO:
                                                                  vCronometroFallbackPickingRestar,
                                                                  lBeStockExistenteZonaPicking)
 
-                        If lBeStockExistenteZonaPicking Is Nothing Then lBeStockExistenteZonaPicking = New List(Of clsBeStock)
+                        '#EJC20260520_RESERVA_BYB_FIX: una lista con filas pero sin cantidad disponible debe
+                        'tratarse como vacia antes de tomar FEFO o bloquear el fallback UMBas.
+                        lBeStockExistenteZonaPicking = Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
 
-                        If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
+                        If lBeStockExistenteZonaPicking.Any() Then
                             vFechaMinimaVenceZonaPicking = lBeStockExistenteZonaPicking.Min(Function(x) x.Fecha_vence)
                             vProcessResult.Add("#MI3_2312201855: Se encontraron " & lBeStockExistenteZonaPicking.Count & " registros. La fecha mínima de picking es: " & vFechaMinimaVenceZonaPicking)
                         End If
@@ -19290,9 +19455,10 @@ EXPLOSIONAR_PRODUCTO:
                                                                  vCronometroFallbackAlmRestar,
                                                                  lBeStockExistenteZonasNoPicking)
 
-                        If lBeStockExistenteZonasNoPicking Is Nothing Then lBeStockExistenteZonasNoPicking = New List(Of clsBeStock)
+                        '#EJC20260520_RESERVA_BYB_FIX: FEFO de ALM/no picking solo cuenta si queda cantidad util.
+                        lBeStockExistenteZonasNoPicking = Stock_Disponible_MI3(lBeStockExistenteZonasNoPicking)
 
-                        If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
+                        If lBeStockExistenteZonasNoPicking.Any() Then
                             vFechaMinimaVenceZonaALM = lBeStockExistenteZonasNoPicking.Min(Function(x) x.Fecha_vence)
                         End If
 
@@ -19300,9 +19466,35 @@ EXPLOSIONAR_PRODUCTO:
 
                     End If
 
-                    If vFechaMinimaVenceZonaALM > vFechaMinimaVenceZonaPicking Then
+                    '#EJC20260520_RESERVA_BYB_FIX: Si la zona ALM/no picking exige explosion y picking cubre la solicitud,
+                    'no se debe descartar el stock picking por FEFO de una ubicacion que no puede reservarse.
+                    Dim vCantidadSolicitudFallbackPicking As Double = vCantidadSolicitadaPedido
+                    If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitudFallbackPicking = 0 Then
+                        vCantidadSolicitudFallbackPicking = pStockResSolicitud.Cantidad
+                    End If
+
+                    Dim vCantidadStockZonaPickingFallback As Double = Cantidad_Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
+                    Dim vForzarPickingPorNoExplosion As Boolean = Picking_Cubre_NoPicking_NoExplosionable_MI3(vRestoInventarioEnUmBas,
+                                                                                                             pStockResBusquedaParaExplosion,
+                                                                                                             pStockResSolicitud,
+                                                                                                             lBeStockExistenteZonaPicking,
+                                                                                                             vCantidadSolicitudFallbackPicking)
+
+                    If vFechaMinimaVenceZonaALM > vFechaMinimaVenceZonaPicking _
+                        OrElse vForzarPickingPorNoExplosion Then
                         If lBeStockExistenteZonaPicking IsNot Nothing AndAlso lBeStockExistenteZonaPicking.Any() Then
                             lBeStockExistente = lBeStockExistenteZonaPicking
+                            Iniciar_En = 0
+
+                            If vForzarPickingPorNoExplosion AndAlso vFechaMinimaVenceZonaALM <= vFechaMinimaVenceZonaPicking Then
+                                vProcessResult.Add("#EJCCKFK20260520: Se omite FEFO de ALM/no picking porque requiere explosion no permitida y picking cubre la solicitud.")
+                                clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                               "fallback_picking_por_no_picking_no_explosionable",
+                                                               "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(vCantidadSolicitudFallbackPicking),
+                                                               "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(vCantidadStockZonaPickingFallback),
+                                                               "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                                               "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
+                            End If
                         End If
                     Else
                         If lBeStockExistenteZonasNoPicking IsNot Nothing AndAlso lBeStockExistenteZonasNoPicking.Any() Then
@@ -19521,27 +19713,27 @@ EXPLOSIONAR_PRODUCTO:
 
                                             ListaEstadosDeProceso.Add(105)
 
-                                             Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                            Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
                                                                                          BeProducto.Codigo,
                                                                                          vCantidadSolicitadaPedido,
                                                                                          vCantidadStock)
-                                             clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                             Exit Function
+                                            clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                            Exit Function
 
-                                         End If
+                                        End If
 
                                     Else
 
-                                         Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                        Dim vMensajeError20230306 As String = String.Format("Error202303051227: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
                                                                                          BeProducto.Codigo,
                                                                                          vCantidadSolicitadaPedido,
                                                                                          vCantidadStock)
-                                         clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
-                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                         Exit Function
+                                        clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "D se realizó exit function con Reserva_Stock_From_MI3 = false")
+                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeError20230306, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                        Exit Function
 
-                                     End If
+                                    End If
 
                                 End If
 
@@ -19889,7 +20081,30 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                         '#CKFK20250919 Agregué esto para que solo tome de la zona de picking lo no reservado
                         If Not lBeStockExistenteZonaPicking Is Nothing Then
-                            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.Cantidad > 0)
+                            lBeStockExistenteZonaPicking = Stock_Disponible_MI3(lBeStockExistenteZonaPicking)
+                        End If
+
+                        '#EJC20260520_RESERVA_BYB_FIX: segunda defensa despues del recalculo FEFO.
+                        'Este bloque evita que ALM/no picking vuelva a ganar la decision si requiere explosion no permitida,
+                        'mientras picking si cubre la cantidad pendiente.
+                        vCantidadSolicitudNoPickingFix = vCantidadPendiente
+                        If pStockResSolicitud.IdPresentacion = 0 AndAlso vCantidadSolicitudNoPickingFix = 0 Then
+                            vCantidadSolicitudNoPickingFix = pStockResSolicitud.Cantidad
+                        End If
+
+                        vPickingCubreNoPickingNoExplosionableRecalculo = Picking_Cubre_NoPicking_NoExplosionable_MI3(vRestoInventarioEnUmBas,
+                                                                                                                      pStockResBusquedaParaExplosion,
+                                                                                                                      pStockResSolicitud,
+                                                                                                                      lBeStockExistenteZonaPicking,
+                                                                                                                      vCantidadSolicitudNoPickingFix)
+
+                        If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                            clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
+                                                           "recalculo_fefo_picking_cubre_no_picking_no_explosionable",
+                                                           "CantidadSolicitud", clsReservaMi3DebugTrace.Valor(vCantidadSolicitudNoPickingFix),
+                                                           "CantidadZonaPicking", clsReservaMi3DebugTrace.Valor(Cantidad_Stock_Disponible_MI3(lBeStockExistenteZonaPicking)),
+                                                           "FechaMinimaVenceZonaPicking", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaPicking),
+                                                           "FechaMinimaVenceZonaALM", clsReservaMi3DebugTrace.Valor(vFechaMinimaVenceZonaALM))
                         End If
 
                         If (vFechaMinimaVenceZonaALM.Date > vFechaMinimaVenceZonaPicking.Date) AndAlso
@@ -19932,12 +20147,18 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                     Return False
-                                                 End If
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                        lBeStockExistente = lBeStockExistenteZonaPicking
+                                                        vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                        vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Return False
+                                                    End If
+                                                End If
 
                                             End If
                                         Else
@@ -19964,12 +20185,18 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                                     Else
 
-                                                         If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                             Return False
-                                                         End If
+                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                            If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                                lBeStockExistente = lBeStockExistenteZonaPicking
+                                                                vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                                vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                            Else
+                                                                vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                                Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                                Return False
+                                                            End If
+                                                        End If
 
                                                     End If
                                                 Else
@@ -19995,12 +20222,18 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                                                                0))
                                             Else
 
-                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
-                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                     Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                     clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                     Return False
-                                                 End If
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    If vPickingCubreNoPickingNoExplosionableRecalculo Then
+                                                        lBeStockExistente = lBeStockExistenteZonaPicking
+                                                        vFechaMinima = lBeStockExistente.Min(Function(x) x.Fecha_vence)
+                                                        vProcessResult.Add("#EJC20260520_RESERVA_BYB_FIX: Se continua con picking porque no-picking requiere explosion no permitida y picking cubre la solicitud.")
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Return False
+                                                    End If
+                                                End If
 
                                             End If
                                         Else
@@ -23832,14 +24065,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                     Else
-                                                         vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
-                                                         Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                         clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                         Reserva_Stock_From_MI3 = False
-                                                     End If
+                                                    Else
+                                                        vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159F: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp: " & vStockDispZonaPicking
+                                                        Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                        clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                        Reserva_Stock_From_MI3 = False
+                                                    End If
 
-                                                 End If
+                                                End If
 
                                             End If
 
@@ -24408,14 +24641,14 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
-                                                         Else
-                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
-                                                             Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
-                                                             clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
-                                                             Reserva_Stock_From_MI3 = False
-                                                         End If
+                                                        Else
+                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202309120159C: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona picking: " & vStockDispZonaPicking
+                                                            Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMensajeNoExplosionEnZonasNoPicking, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                            Reserva_Stock_From_MI3 = False
+                                                        End If
 
-                                                     End If
+                                                    End If
 
                                                 End If
 
@@ -24674,6 +24907,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                             For Each vStockOrigen As clsBeStock In lBeStockExistente.FindAll(Function(x) Math.Round(x.Cantidad, 6) > 0)
 
+                                '#EJC20260520_RESERVA_BYB_FIX: si la solicitud ya se completo, no procesar otro stock candidato con cantidad 0.
+                                If vCantidadCompletada OrElse Math.Round(vCantidadPendiente, 6) <= 0 Then
+                                    vCantidadPendiente = 0
+                                    vCantidadCompletada = True
+                                    Exit For
+                                End If
+
+                                vCantidadAReservarPorIdStock = 0
                                 BeStockDestino = New clsBeStock()
                                 clsPublic.CopyObject(vStockOrigen, BeStockDestino)
 
@@ -24820,7 +25061,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                             Continue For
                                                         End If
 
-                                                     End If
+                                                    End If
                                                  Else
                                                      Dim vMotivoNoAplicaExplosionNivel As String = "#MI3_240115: La explosión automática está activa, la ubicación encontrada no es de picking y la condición de nivel para la explosión no aplica para la ubicación: " & BeUbicacionStock.IdUbicacion & " Explosion_Automatica_Nivel_Max = " & pBeConfigEnc.Explosion_Automatica_Nivel_Max & " y el nivel de la ubicación es: " & BeUbicacionStock.Nivel
                                                      Marcar_Motivo_No_Reserva_MI3(pBeTrasladoDet, vMotivoNoAplicaExplosionNivel, pStockResSolicitud, vNombreCasoReservaInternoWMS, lConnection, ltransaction)

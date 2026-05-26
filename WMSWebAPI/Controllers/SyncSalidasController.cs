@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics;
 using System.Transactions;
 using WMS.EntityCore.Dtos;
 using WMS.EntityCore.Dtos.Pedido;
@@ -124,6 +125,49 @@ namespace WMSWebAPI.Controllers
             }
         }
 
+        [HttpPost("anular-salida")]
+        public IActionResult AnularSalida([FromBody] AnularSalidaRequestDto request,
+                                          [FromServices] IConfiguration configuration,
+                                          [FromServices] ILogger<SyncSalidasController> _logger)
+        {
+            try
+            {
+                var resultado = _salidaService.Anular_salida(request);
+
+                if (resultado.Exito)
+                {
+                    _logger.LogInformation("Salida anulada. IdPedidoEnc={IdPedidoEnc}, Referencia={Referencia}, StockLiberado={StockLiberado}",
+                                           resultado.IdPedidoEnc,
+                                           resultado.Referencia,
+                                           resultado.StockReservadoLiberado);
+                    return Ok(resultado);
+                }
+
+                return resultado.Codigo switch
+                {
+                    "REQUEST_INVALID" => BadRequest(resultado),
+                    "PEDIDO_NO_ENCONTRADO" => NotFound(resultado),
+                    "PEDIDO_AMBIGUO" => Conflict(resultado),
+                    "PEDIDO_YA_ANULADO" => Conflict(resultado),
+                    "PICKING_ASOCIADO" => UnprocessableEntity(resultado),
+                    "ESTADO_NO_ANULABLE" => UnprocessableEntity(resultado),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, resultado)
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al anular documento de salida.");
+                var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Exito = false,
+                    Codigo = "ERROR_INTERNO",
+                    Mensaje = ex.Message,
+                    Detalles = showStackTrace ? ex.ToString() : null
+                });
+            }
+        }
+
         /// <summary>
         /// Inserta un documento de traslado/pedido desde MI3.
         /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente
@@ -134,6 +178,8 @@ namespace WMSWebAPI.Controllers
                                               [FromServices] IConfiguration configuration,
                                               [FromServices] ILogger<SyncSalidasController> _logger)
         {
+            var requestWatch = Stopwatch.StartNew();
+
             // Validar que el request y el documento interno no sean nulos
             if (request == null || request.beINavPedCompraEnc == null)
             {
@@ -145,6 +191,13 @@ namespace WMSWebAPI.Controllers
             // Esto asegura que documento.Lineas_Detalle ya esté poblado desde el JSON
             // ANTES de llamar a Datos_Validos() (replica patrón SAP HANA)
             var documento = request.beINavPedCompraEnc;
+            var noDocumento = documento.No ?? "";
+            var lineCount = documento.lineas_Detalle?.Count ?? 0;
+
+            _logger.LogInformation(
+                "#MI3_PERF_API_START | Documento={Documento} | Lineas={Lineas}",
+                noDocumento,
+                lineCount);
 
             string? connectionString = configuration.GetConnectionString("CST");
             if (string.IsNullOrWhiteSpace(connectionString))
@@ -156,6 +209,16 @@ namespace WMSWebAPI.Controllers
             try
             {
                 var resultado = _salidaService.Insert_salida_mi3(documento);
+                requestWatch.Stop();
+
+                _logger.LogInformation(
+                    "#MI3_PERF_API_END | Documento={Documento} | Ms={ElapsedMs} | Exito={Exito} | LineasProcesadas={LineasProcesadas} | TotalSolicitado={TotalSolicitado} | TotalReservado={TotalReservado}",
+                    noDocumento,
+                    requestWatch.ElapsedMilliseconds,
+                    resultado.Exito,
+                    resultado.LineasProcesadas,
+                    resultado.TotalSolicitado,
+                    resultado.TotalReservado);
 
                 if (!resultado.Exito)
                 {
@@ -176,7 +239,13 @@ namespace WMSWebAPI.Controllers
             }
             catch (Exception ex)
             {
+                requestWatch.Stop();
                 _logger.LogError(ex, "Error al procesar documento MI3.");
+                _logger.LogError(
+                    "#MI3_PERF_API_ERROR | Documento={Documento} | Ms={ElapsedMs} | Error={Error}",
+                    noDocumento,
+                    requestWatch.ElapsedMilliseconds,
+                    ex.Message);
 
                 var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
                 return StatusCode(500, new

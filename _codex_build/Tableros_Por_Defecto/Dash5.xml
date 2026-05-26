@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_IDEALSA_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Movimientos_N">
+        <Tables>
+          <Table Name="VW_Movimientos_N" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Movimientos_N" Name="Propietario" />
+          <Column Table="VW_Movimientos_N" Name="Producto" />
+          <Column Table="VW_Movimientos_N" Name="Presentación" />
+          <Column Table="VW_Movimientos_N" Name="EstadoOrigen" />
+          <Column Table="VW_Movimientos_N" Name="EstadoDestino" />
+          <Column Table="VW_Movimientos_N" Name="UMBas" />
+          <Column Table="VW_Movimientos_N" Name="cantidad" />
+          <Column Table="VW_Movimientos_N" Name="peso" />
+          <Column Table="VW_Movimientos_N" Name="lote" />
+          <Column Table="VW_Movimientos_N" Name="UbicOrigen" />
+          <Column Table="VW_Movimientos_N" Name="UbicDestino" />
+          <Column Table="VW_Movimientos_N" Name="TipoTarea" />
+          <Column Table="VW_Movimientos_N" Name="IdBodegaOrigen" />
+          <Column Table="VW_Movimientos_N" Name="fecha" />
+          <Column Table="VW_Movimientos_N" Name="IdProducto" />
+          <Column Table="VW_Movimientos_N" Name="codigo" />
+          <Column Table="VW_Movimientos_N" Name="CodigoBarra" />
+          <Column Table="VW_Movimientos_N" Name="IdTipoTarea" />
+          <Column Table="VW_Movimientos_N" Name="Contabilizar" />
+          <Column Table="VW_Movimientos_N" Name="fecha_vence" />
+          <Column Table="VW_Movimientos_N" Name="IdTipoActualizacionCosto" />
+          <Column Table="VW_Movimientos_N" Name="IdPresentacion" />
+          <Column Table="VW_Movimientos_N" Name="IdUnidadMedida" />
+          <Column Table="VW_Movimientos_N" Name="IdEstadoOrigen" />
+          <Column Table="VW_Movimientos_N" Name="IdProductoBodega" />
+          <Column Table="VW_Movimientos_N" Name="IdPropietarioBodega" />
+          <Column Table="VW_Movimientos_N" Name="IdBodega" />
+          <Column Table="VW_Movimientos_N" Name="barra_pallet" />
+          <Column Table="VW_Movimientos_N" Name="Clasificacion" />
+          <Column Table="VW_Movimientos_N" Name="Familia" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Movimientos_N">
+            <Field Name="Propietario" Type="String" />
+            <Field Name="Producto" Type="String" />
+            <Field Name="Presentación" Type="String" />
+            <Field Name="EstadoOrigen" Type="String" />
+            <Field Name="EstadoDestino" Type="String" />
+            <Field Name="UMBas" Type="String" />
+            <Field Name="cantidad" Type="Double" />
+            <Field Name="peso" Type="Double" />
+            <Field Name="lote" Type="String" />
+            <Field Name="UbicOrigen" Type="String" />
+            <Field Name="UbicDestino" Type="String" />
+            <Field Name="TipoTarea" Type="String" />
+            <Field Name="IdBodegaOrigen" Type="Int32" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="IdProducto" Type="Int32" />
+            <Field Name="codigo" Type="String" />
+            <Field Name="CodigoBarra" Type="String" />
+            <Field Name="IdTipoTarea" Type="Int32" />
+            <Field Name="Contabilizar" Type="Boolean" />
+            <Field Name="fecha_vence" Type="DateTime" />
+            <Field Name="IdTipoActualizacionCosto" Type="Int32" />
+            <Field Name="IdPresentacion" Type="Int32" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="IdEstadoOrigen" Type="Int32" />
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdPropietarioBodega" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="barra_pallet" Type="String" />
+            <Field Name="Clasificacion" Type="String" />
+            <Field Name="Familia" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Grid ComponentName="gridDashboardItem1" Name="Rejilla 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <DataItems>
+        <Dimension DataMember="Producto" TopNEnabled="true" TopNCount="50" TopNMeasure="DataItem1" DefaultId="DataItem0" />
+        <Measure DataMember="cantidad" DefaultId="DataItem1" />
+        <Dimension DataMember="TipoTarea" DefaultId="DataItem2" />
+        <Dimension DataMember="codigo" DefaultId="DataItem3" />
+        <Dimension DataMember="fecha" SortOrder="Descending" DateTimeGroupInterval="QuarterYear" DefaultId="DataItem4" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem1" />
+        </GridMeasureColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <SparklineArgument DefaultId="DataItem4" />
+      <GridOptions />
+    </Grid>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="gridDashboardItem1" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

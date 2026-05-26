@@ -839,11 +839,16 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
 
-            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
-                                  WHERE tipo_transaccion = 'INGRESO'
-                                  AND enviado = 0 AND idrecepcionenc in (SELECT IdRecepcionEnc 
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
+            Dim sp As String = "SELECT o.* FROM I_nav_transacciones_out o
+                                  WHERE o.tipo_transaccion = 'INGRESO'
+                                  AND o.enviado = 0 AND o.idrecepcionenc in (SELECT IdRecepcionEnc 
                                                   FROM trans_re_enc  
-                                                  WHERE estado = 'Cerrado') "
+                                                  WHERE estado = 'Cerrado')
+                                  AND EXISTS (SELECT 1
+                                              FROM trans_re_det d
+                                              WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                                AND d.IdRecepcionDet = o.IdRecepcionDet) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -885,9 +890,14 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
 
-            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
-                                WHERE tipo_transaccion = 'INGRESO'
-                                AND enviado = 0 and IdBodega = @IdBodega"
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
+            Dim sp As String = "SELECT o.* FROM I_nav_transacciones_out o
+                                WHERE o.tipo_transaccion = 'INGRESO'
+                                AND o.enviado = 0 and o.IdBodega = @IdBodega
+                                AND EXISTS (SELECT 1
+                                            FROM trans_re_det d
+                                            WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                              AND d.IdRecepcionDet = o.IdRecepcionDet) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
@@ -3469,11 +3479,16 @@ Partial Public Class clsLnI_nav_transacciones_out
 
         Try
 
-            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
-                                WHERE tipo_transaccion = 'INGRESO' 
-                                AND enviado = 0 AND idrecepcionenc in (SELECT IdRecepcionEnc 
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
+            Dim sp As String = "SELECT o.* FROM I_nav_transacciones_out o
+                                WHERE o.tipo_transaccion = 'INGRESO' 
+                                AND o.enviado = 0 AND o.idrecepcionenc in (SELECT IdRecepcionEnc 
                                                   FROM trans_re_enc  
-                                                  WHERE estado = 'Cerrado') AND IdBodega = @IdBodega "
+                                                  WHERE estado = 'Cerrado') AND o.IdBodega = @IdBodega
+                                AND EXISTS (SELECT 1
+                                            FROM trans_re_det d
+                                            WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                              AND d.IdRecepcionDet = o.IdRecepcionDet) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", pIdBodega)
@@ -3508,6 +3523,7 @@ Partial Public Class clsLnI_nav_transacciones_out
         Try
 
             '#CKFK20251011 Modifiqué el query para que tome la talla y el color de las tablas maestras
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
             Dim sp As String = "SELECT idtransaccion, idempresa, idbodega, o.idpropietario, idpropietariobodega, idordencompra, idrecepcionenc, idpedidoenc, iddespachoenc, 
                                        idproductobodega, idproducto, idunidadmedida, idpresentacion, idproductoestado, cantidad, peso, lote, fecha_vence, fecha_recepcion, 
 	                                   no_pedido, no_linea, codigo_producto, nombre_producto, codigo_variante, unidad_medida, tipo_transaccion, enviado, 
@@ -3518,13 +3534,17 @@ Partial Public Class clsLnI_nav_transacciones_out
                                  FROM I_nav_transacciones_out o INNER JOIN
                                       talla t ON o.Talla = t.Nombre INNER JOIN
 	                                  color c ON o.Color = c.Nombre 
-                                 WHERE tipo_transaccion = 'INGRESO' 
-                                       AND enviado = 0 
-                                       AND IdTipoDocumento = @IdTipoDocumento 
-                                       AND IdBodega = @IdBodega 
-                                       AND idrecepcionenc in (SELECT IdRecepcionEnc 
+                                 WHERE o.tipo_transaccion = 'INGRESO' 
+                                       AND o.enviado = 0 
+                                       AND o.IdTipoDocumento = @IdTipoDocumento 
+                                       AND o.IdBodega = @IdBodega 
+                                       AND o.idrecepcionenc in (SELECT IdRecepcionEnc 
                                                               FROM trans_re_enc  
-                                                              WHERE estado = 'Cerrado')"
+                                                              WHERE estado = 'Cerrado')
+                                       AND EXISTS (SELECT 1
+                                                   FROM trans_re_det d
+                                                   WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                                     AND d.IdRecepcionDet = o.IdRecepcionDet)"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", IdBodegaOrigen)
@@ -3982,11 +4002,16 @@ Partial Public Class clsLnI_nav_transacciones_out
             Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
 
             '#CKFK20241017 Por favor no quitar lo que está en el Where, solo se deben de enviar las recepciones cerradas
-            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
-                                  WHERE tipo_transaccion = 'INGRESO'
-                                  AND enviado = 0 AND idrecepcionenc in (SELECT IdRecepcionEnc 
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
+            Dim sp As String = "SELECT o.* FROM I_nav_transacciones_out o
+                                  WHERE o.tipo_transaccion = 'INGRESO'
+                                  AND o.enviado = 0 AND o.idrecepcionenc in (SELECT IdRecepcionEnc 
                                                   FROM trans_re_enc  
-                                                  WHERE estado = 'Cerrado') "
+                                                  WHERE estado = 'Cerrado')
+                                  AND EXISTS (SELECT 1
+                                              FROM trans_re_det d
+                                              WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                                AND d.IdRecepcionDet = o.IdRecepcionDet) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -4023,6 +4048,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
 
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
             Dim sp As String = "SELECT o.idtransaccion, o.idempresa, o.idbodega, o.idpropietario, o.idpropietariobodega, o.idordencompra, 
                                        o.idrecepcionenc, o.idpedidoenc, o.iddespachoenc, o.idproductobodega, o.idproducto, o.idunidadmedida, 
 	                                   o.idpresentacion, o.idproductoestado, o.cantidad, o.peso, o.lote, o.fecha_vence, o.fecha_recepcion, 
@@ -4039,10 +4065,14 @@ Partial Public Class clsLnI_nav_transacciones_out
                                 FROM   i_nav_transacciones_out o inner join
                                        trans_oc_enc e ON e.IdOrdenCompraEnc = o.idordencompra inner join 
                                        producto p ON o.idproducto = p.IdProducto
-                                WHERE  tipo_transaccion = 'INGRESO' AND
-                                       enviado = 0 AND idrecepcionenc in (SELECT IdRecepcionEnc 
+                                WHERE  o.tipo_transaccion = 'INGRESO' AND
+                                       o.enviado = 0 AND o.idrecepcionenc in (SELECT IdRecepcionEnc 
                                                                          FROM trans_re_enc  
-                                                                         WHERE estado = 'Cerrado') "
+                                                                         WHERE estado = 'Cerrado')
+                                       AND EXISTS (SELECT 1
+                                                   FROM trans_re_det d
+                                                   WHERE d.IdRecepcionEnc = o.IdRecepcionEnc
+                                                     AND d.IdRecepcionDet = o.IdRecepcionDet) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -4419,6 +4449,7 @@ Partial Public Class clsLnI_nav_transacciones_out
 
         Try
 
+            '#EJC20260522_RECEPCION_OUT_ORFANOS: evitar enviar ingresos pendientes cuyo IdRecepcionDet ya no exista en trans_re_det.
             Dim sql As String = "SELECT 
                                     oc.IdTipoIngresoOC, 
                                     ino.*
@@ -4435,7 +4466,13 @@ Partial Public Class clsLnI_nav_transacciones_out
                                       FROM trans_re_enc
                                       WHERE estado = 'Cerrado'
                                         AND IdBodega = @IdBodega
-                                );"
+                                  )
+                                  AND EXISTS (
+                                      SELECT 1
+                                      FROM trans_re_det d
+                                      WHERE d.IdRecepcionEnc = ino.IdRecepcionEnc
+                                        AND d.IdRecepcionDet = ino.IdRecepcionDet
+                                  );"
 
             Dim cmd As New SqlCommand(sql, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", pIdBodega)

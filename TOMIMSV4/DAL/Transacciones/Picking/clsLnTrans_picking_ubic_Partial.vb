@@ -2301,7 +2301,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                         pCantidad,
                                                                         pBeTrans_picking_ubic.Peso_recibido,
                                                                         IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                        True)
 
             End If
 
@@ -2417,7 +2418,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                         pCantidad,
                                                                         BeOnTablePickingUbic.Peso_recibido,
                                                                         IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                        True)
 
             End If
 
@@ -2621,7 +2623,8 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            '#EJC20260526: Si la resta deja 0 o negativo, eliminar para no violar CK de cantidad_solicitada > 0.
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2673,7 +2676,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2773,7 +2776,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     oBeTrans_picking_ubic.Cantidad_Verificada = 0
                     oBeTrans_picking_ubic.Encontrado = False
 
-                    If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                    If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                         FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                     Else
                         FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -2826,7 +2829,7 @@ Partial Public Class clsLnTrans_picking_ubic
                     oBeTrans_picking_ubic.Cantidad_Verificada = 0
                     oBeTrans_picking_ubic.Encontrado = False
 
-                    If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                    If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                         FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                     Else
                         FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3139,7 +3142,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 oBeTrans_picking_ubic.Cantidad_Verificada = 0
                                 oBeTrans_picking_ubic.Encontrado = False
 
-                                If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                                If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                                 Else
                                     FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3191,7 +3194,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 oBeTrans_picking_ubic.Cantidad_Verificada = 0
                                 oBeTrans_picking_ubic.Encontrado = False
 
-                                If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                                If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                                 Else
                                     FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3281,7 +3284,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3334,7 +3337,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             oBeTrans_picking_ubic.Cantidad_Verificada = 0
                             oBeTrans_picking_ubic.Encontrado = False
 
-                            If oBeTrans_picking_ubic.Cantidad_Solicitada = 0 Then
+                            If oBeTrans_picking_ubic.Cantidad_Solicitada <= 0 Then
                                 FilasAfectadas = Eliminar_By_IdPickingUbic(oBeTrans_picking_ubic, pConnection, pTransaction)
                             Else
                                 FilasAfectadas = Actualizar_Cantidad_Recibida(oBeTrans_picking_ubic, pConnection, pTransaction)
@@ -3355,7 +3358,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                 vCantidadARestarStockUmBas,
                                                                                 BeOnTablePickingUbic.Peso_recibido,
                                                                                 IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                                IIf(Es_Transaccion_Remota, pTransaction, lTransaction),
+                                                                                True)
 
                     End If
 
@@ -3810,7 +3814,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 vBePickingUbic.Peso_recibido = 0
                                 vBePickingUbic.Encontrado = False
 
-                                If vBePickingUbic.Cantidad_Solicitada = 0 Then
+                                If vBePickingUbic.Cantidad_Solicitada <= 0 Then
                                     FilasAfectadas += Eliminar_By_IdPickingUbic(vBePickingUbic,
                                                                             If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -3828,7 +3832,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                     IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
                                                                                     IIf(UsarPeso = 0, PesoPend, UsarPeso),
                                                                                     IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                    IIf(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                                                                    IIf(Es_Transaccion_Remota, pTransaction, ltransaction),
+                                                                                    True)
                             End If
 
                             CantidadPendiente -= IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad)
@@ -3860,10 +3865,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
                             clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                                     BeStock.IdUbicacion,
-                                                                                    Get_Cantidad_Verificacion_UMBAS(PickingUbic,
-                                                                                                                    PickingUbic.Cantidad_Recibida,
-                                                                                                                    If(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                                                    If(Es_Transaccion_Remota, pTransaction, ltransaction)),
+                                                                                    PickingUbic.Cantidad_Recibida,
                                                                                     PickingUbic.Peso_recibido,
                                                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                     If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -3958,10 +3960,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
                         clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
                                                                             BeStock.IdUbicacion,
-                                                                            Get_Cantidad_Verificacion_UMBAS(PickingUbic,
-                                                                                                            PickingUbic.Cantidad_Recibida,
-                                                                                                            If(Es_Transaccion_Remota, pConection, lConnection),
-                                                                                                            If(Es_Transaccion_Remota, pTransaction, ltransaction)),
+                                                                            PickingUbic.Cantidad_Recibida,
                                                                             PickingUbic.Peso_recibido,
                                                                             If(Es_Transaccion_Remota, pConection, lConnection),
                                                                             If(Es_Transaccion_Remota, pTransaction, ltransaction))
@@ -4006,20 +4005,122 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
     End Sub
 
-    Private Shared Function Get_Cantidad_Verificacion_UMBAS(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
-                                                            ByVal pCantidad As Double,
-                                                            ByVal pConnection As SqlConnection,
-                                                            ByVal pTransaction As SqlTransaction) As Double
-        If pBePickingUbic Is Nothing OrElse pBePickingUbic.IdPresentacion <= 0 Then Return pCantidad
+    '#EJCCKFK20260520: Blindaje reversa picking; si no hubo ejecución real, devolver stock de staging a origen.
+    Public Shared Function Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
+                                                                          ByVal pIdUbicacionPicking As Integer,
+                                                                          Optional ByVal pConnection As SqlConnection = Nothing,
+                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
-        Dim vFactor As Double = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pBePickingUbic.IdProductoBodega,
-                                                                                          pBePickingUbic.IdPresentacion,
-                                                                                          pConnection,
-                                                                                          pTransaction)
+        Restaurar_Ubicacion_Stock_Picking_No_Ejecutado = 0
 
-        If vFactor <= 0 Then Return pCantidad
+        If pBePickingUbic Is Nothing Then Return 0
+        If pBePickingUbic.IdStock <= 0 OrElse pBePickingUbic.IdBodega <= 0 Then Return 0
 
-        Return Math.Round(pCantidad * vFactor, 6)
+        If pBePickingUbic.Cantidad_Recibida > 0 OrElse
+           pBePickingUbic.Cantidad_Verificada > 0 OrElse
+           pBePickingUbic.Cantidad_despachada > 0 Then Return 0
+
+        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            If Not Es_Transaccion_Remota Then lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim vConnection As SqlConnection = If(Es_Transaccion_Remota, pConnection, lConnection)
+            Dim vTransaction As SqlTransaction = If(Es_Transaccion_Remota, pTransaction, lTransaction)
+
+            If pIdUbicacionPicking <= 0 Then
+                pIdUbicacionPicking = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(pBePickingUbic.IdBodega,
+                                                                                      vConnection,
+                                                                                      vTransaction)
+            End If
+
+            If pIdUbicacionPicking <= 0 Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            Dim vSqlPickingEjecutado As String = "SELECT COUNT(1)
+                                                  FROM trans_picking_ubic
+                                                  WHERE IdPickingUbic = @IdPickingUbic
+                                                    AND IdPickingEnc = @IdPickingEnc
+                                                    AND IdStock = @IdStock
+                                                    AND (ISNULL(cantidad_recibida, 0) > 0
+                                                         OR ISNULL(cantidad_verificada, 0) > 0
+                                                         OR ISNULL(cantidad_despachada, 0) > 0)"
+
+            Using cmd As New SqlCommand(vSqlPickingEjecutado, vConnection, vTransaction)
+                cmd.Parameters.Add(New SqlParameter("@IdPickingUbic", pBePickingUbic.IdPickingUbic))
+                cmd.Parameters.Add(New SqlParameter("@IdPickingEnc", pBePickingUbic.IdPickingEnc))
+                cmd.Parameters.Add(New SqlParameter("@IdStock", pBePickingUbic.IdStock))
+
+                If CInt(cmd.ExecuteScalar()) > 0 Then
+                    If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                    Return 0
+                End If
+            End Using
+
+            Dim vSqlStockConPickingActivo As String = "SELECT COUNT(1)
+                                                       FROM trans_picking_ubic
+                                                       WHERE IdStock = @IdStock
+                                                         AND ISNULL(activo, 1) = 1
+                                                         AND (ISNULL(cantidad_recibida, 0) > 0
+                                                              OR ISNULL(cantidad_verificada, 0) > 0
+                                                              OR ISNULL(cantidad_despachada, 0) > 0)"
+
+            Using cmd As New SqlCommand(vSqlStockConPickingActivo, vConnection, vTransaction)
+                cmd.Parameters.Add(New SqlParameter("@IdStock", pBePickingUbic.IdStock))
+
+                If CInt(cmd.ExecuteScalar()) > 0 Then
+                    If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                    Return 0
+                End If
+            End Using
+
+            Dim BeStockActual As clsBeStock = clsLnStock.Get_Single_Stock_By_IdStock(pBePickingUbic.IdStock,
+                                                                                     vConnection,
+                                                                                     vTransaction)
+
+            If BeStockActual Is Nothing Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion <> pIdUbicacionPicking Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion_anterior <= 0 Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            If BeStockActual.IdUbicacion_anterior = BeStockActual.IdUbicacion Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return 0
+            End If
+
+            Restaurar_Ubicacion_Stock_Picking_No_Ejecutado = clsLnStock.Actualizar_IdUbicacion_By_IdStock(BeStockActual.IdUbicacion_anterior,
+                                                                                                          BeStockActual.IdUbicacion,
+                                                                                                          BeStockActual.IdBodega,
+                                                                                                          BeStockActual.IdStock,
+                                                                                                          vConnection,
+                                                                                                          vTransaction)
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
     End Function
 
     Public Shared Sub Marcar_Linea_No_Pickeada(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
@@ -4253,6 +4354,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
 
             If Not BeTransPickingUbicStockExistente Is Nothing Then
+
+                Restaurar_Ubicacion_Stock_Picking_No_Ejecutado(pBePickingUbic,
+                                                               0,
+                                                               IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
+                                                               IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
 
                 Dim BeMovimientoPicking As New clsBeTrans_movimientos
                 BeMovimientoPicking = clsLnTrans_movimientos.Get_Single_By_IdMovimiento(BeTransPickingUbicStockExistente.IdMovimiento,
@@ -4690,6 +4796,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
             End If
 
+            '#EJC20260526: Evita acceso por índice cuando no se generaron líneas de picking_ubic.
+            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generaron líneas de picking_ubic para aplicar el cambio.")
+            End If
+
             ' Picking Detalle Ubicacion
             Guarda_Trans_picking_ubic(IdPickingEnc,
                                       pListBePickingUbic,
@@ -4699,6 +4810,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
             '#CKFK 20180202 Genera la tarea de cambio de estado
             '#AT En base a lo analizado creemos que aqui vamos a colocar el metodo Marcar_No_Encontrado cuando el tipo sea 2
+            '#EJC20260526: Evita acceso por índice cuando no se generó stock reservado.
+            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generó stock reservado para el cambio de estado.")
+            End If
+
             If Tipo = 1 Then
                 clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,
                                                                    IdEmpresa,
@@ -4845,11 +4961,21 @@ Partial Public Class clsLnTrans_picking_ubic
 
             End If
 
+            '#EJC20260526: Evita acceso por índice cuando no se generaron líneas de picking_ubic.
+            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generaron líneas de picking_ubic para aplicar el cambio.")
+            End If
+
             ' Picking Detalle Ubicacion
             Guarda_Trans_picking_ubic(IdPickingEnc,
                                       pListBePickingUbic,
                                       lConnection,
                                       lTransaction)
+
+            '#EJC20260526: Evita acceso por índice cuando no se generó stock reservado.
+            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+                Throw New Exception("No se puede completar el reemplazo, no se generó stock reservado para el cambio de estado.")
+            End If
 
             '#CKFK 20180202 Genera la tarea de cambio de estado
             clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,
@@ -5914,8 +6040,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 '#GT25042023: cantidad y peso son opcionales, porque el método se llama desde otro lugar, donde no son necesarios dichos valores.
                 resultado += Actualizar_PickingUbic_Por_Verificacion(vBePickingUbic,
                                                                      BeStockRes,
-                                                                     pCantidad,
-                                                                     pPeso,
+                                                                     CantPendiente,
+                                                                     PesoPendiente,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
                 '#MA20251219
@@ -6151,6 +6277,9 @@ Partial Public Class clsLnTrans_picking_ubic
                     BePickingUbic.CantidadDañada = pCantLinea
                 ElseIf CantidadPendiente < 0 Then
                     BePickingUbic.CantidadDañada = pCantReemplazar
+                Else
+                    '#EJC20260526: Cuando la cantidad a reemplazar coincide exacto con la línea, no debe quedar en 0.
+                    BePickingUbic.CantidadDañada = pCantLinea
                 End If
 
                 pCantReemplazar -= BePickingUbic.CantidadDañada
@@ -6526,14 +6655,15 @@ Partial Public Class clsLnTrans_picking_ubic
 
         Try
             '#CKFK20250626 Agregué esto pu.cantidad_verificada<>pu.cantidad_despachada
+            '#EJC20260526: En packing/verificación mostrar y filtrar por licencia de empaque (MM...) en lugar de licencia de stock.
             Dim vSQL As String = "SELECT  pu.IdPickingEnc, 0 IdPickingUbic, max(pu.IdPickingDet) IdPickingDet, max(pu.IdUbicacion) IdUbicacion, 
                                             max(pu.IdStock) IdStock, pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
 		                                    max(pu.IdUbicacionAnterior) IdUbicacionAnterior, MAX(pu.IdRecepcion) IdRecepcion, pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-		                                    pu.lic_plate, 0 acepto, SUM(pu.peso_solicitado) peso_solicitado, SUM(pu.peso_recibido) peso_recibido, 
+		                                    ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), pu.lic_plate)) AS lic_plate, 0 acepto, SUM(pu.peso_solicitado) peso_solicitado, SUM(pu.peso_recibido) peso_recibido, 
 		                                    SUM(pu.peso_verificado) peso_verificado, SUM(pu.peso_despachado) peso_despachado, 
                                             SUM(pu.cantidad_solicitada) cantidad_solicitada, SUM(pu.cantidad_recibida) cantidad_recibida, 
                                             SUM(pu.cantidad_verificada) cantidad_verificada, 0 encontrado, 0 dañado_verificacion,
-                                            pu.fecha_real_vence, isnull(pu.no_packing,0) no_packing, max(CONVERT(DATE,pu.fecha_picking)) fecha_picking, 
+                                            pu.fecha_real_vence, ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), '')) no_packing, max(CONVERT(DATE,pu.fecha_picking)) fecha_picking, 
 		                                    max(CONVERT(DATE,pu.fecha_verificado))fecha_verificado, max(CONVERT(DATE,pu.fecha_packing)) fecha_packing,
 		                                    max(CONVERT(DATE,pu.fecha_despachado))fecha_despachado, SUM(pu.cantidad_despachada) cantidad_despachada, 
 		                                    '' user_agr, max(CONVERT(DATE,pu.fec_agr)) fec_agr, '' user_mod, max(CONVERT(DATE,pu.fec_mod)) fec_mod, 
@@ -6559,14 +6689,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                             dbo.producto_estado ON pu.IdProductoEstado = dbo.producto_estado.IdEstado INNER JOIN
 		                                    dbo.trans_pe_enc pe ON pe.IdPickingEnc = dbo.trans_picking_enc.IdPickingEnc and
 		                                    pdet.IdPedidoEnc = pe.IdPedidoEnc
+                                            LEFT JOIN (
+                                                SELECT idpickingenc, idpedidoenc, idproductobodega, lic_plate, MAX(no_linea) AS no_linea
+                                                FROM dbo.trans_packing_enc
+                                                GROUP BY idpickingenc, idpedidoenc, idproductobodega, lic_plate
+                                            ) pk ON pk.idpickingenc = pu.IdPickingEnc
+                                                 AND pk.idpedidoenc = pu.IdPedidoEnc
+                                                 AND pk.idproductobodega = pdet.IdProductoBodega
+                                                 AND pk.lic_plate = pu.lic_plate
                                     WHERE  (pu.IdPickingEnc=@IdPickingEnc AND pu.IdPedidoEnc = @IdPedidoEnc AND 
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
                                             pu.cantidad_verificada<>pu.cantidad_despachada)
 									GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-                                            pu.lic_plate, 
-                                            pu.fecha_real_vence, isnull(pu.no_packing,0),
+                                            ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), pu.lic_plate)), 
+                                            pu.fecha_real_vence, ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), '')),
                                             pu.activo, pu.dañado_picking, 
                                             pu.lic_plate_reemplazo, pu.IdUbicacion_reemplazo, pu.IdStock_reemplazo, pdet.IdPedidoEnc, 
                                             pdet.IdPresentacion, pdet.IdUnidadMedidaBasica, pdet.IdProductoBodega, 
@@ -8383,8 +8521,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 '#GT25042023: cantidad y peso son opcionales, porque el método se llama desde otro lugar, donde no son necesarios dichos valores.
                 resultado += Actualizar_PickingUbic_Por_Verificacion(vBePickingUbic,
                                                                      BeStockRes,
-                                                                     pCantidad,
-                                                                     pPeso,
+                                                                     CantPendiente,
+                                                                     PesoPendiente,
                                                                      lConnection,
                                                                      lTransaction)
 

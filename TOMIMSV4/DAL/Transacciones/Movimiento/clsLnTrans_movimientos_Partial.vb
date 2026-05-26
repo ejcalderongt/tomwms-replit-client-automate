@@ -126,6 +126,25 @@ Partial Public Class clsLnTrans_movimientos
         End Try
     End Function
 
+    Private Shared Function Normalizar_Cantidad_Verificacion_UMBAS(ByVal pPickingUbic As clsBeTrans_picking_ubic,
+                                                                   ByVal pCantidad As Double,
+                                                                   ByVal pCantidadEnUmbas As Boolean,
+                                                                   ByVal pConnection As SqlConnection,
+                                                                   ByVal pTransaction As SqlTransaction) As Double
+        If pCantidadEnUmbas OrElse pPickingUbic Is Nothing OrElse pPickingUbic.IdPresentacion <= 0 Then
+            Return Math.Round(pCantidad, 6)
+        End If
+
+        Dim vFactor As Double = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                         pPickingUbic.IdPresentacion,
+                                                                                         pConnection,
+                                                                                         pTransaction)
+
+        If vFactor <= 0 Then Return Math.Round(pCantidad, 6)
+
+        Return Math.Round(pCantidad * vFactor, 6)
+    End Function
+
     Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer, ByVal pFechaDel As Date, ByVal pFechaAl As Date, Optional ByVal pLote As String = Nothing) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -3828,7 +3847,8 @@ Partial Public Class clsLnTrans_movimientos
                                                             ByVal pCantidad As Double,
                                                             ByVal pPeso As Double,
                                                             ByRef lConnection As SqlConnection,
-                                                            ByRef lTransaction As SqlTransaction) As Integer
+                                                            ByRef lTransaction As SqlTransaction,
+                                                            Optional ByVal pCantidadEnUmbas As Boolean = False) As Integer
 
         Insertar_Movimiento_Verificacion = 0
 
@@ -3846,6 +3866,12 @@ Partial Public Class clsLnTrans_movimientos
                                                           lTransaction)
 
             If pStock IsNot Nothing Then
+                Dim vCantidadMovimiento As Double = Normalizar_Cantidad_Verificacion_UMBAS(oBeTrans_picking_ubic,
+                                                                                          pCantidad,
+                                                                                          pCantidadEnUmbas,
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
                 Dim BeTransMovimiento As New clsBeTrans_movimientos()
                 BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
@@ -3868,7 +3894,7 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.IdPedidoDet = oBeTrans_picking_ubic.IdPedidoDet
                 BeTransMovimiento.IdDespachoEnc = 0
                 BeTransMovimiento.IdDespachoDet = 0
-                BeTransMovimiento.Cantidad = pCantidad
+                BeTransMovimiento.Cantidad = vCantidadMovimiento
                 BeTransMovimiento.Serie = oBeTrans_picking_ubic.Serial
                 BeTransMovimiento.Peso = pPeso
                 BeTransMovimiento.Lote = oBeTrans_picking_ubic.Lote

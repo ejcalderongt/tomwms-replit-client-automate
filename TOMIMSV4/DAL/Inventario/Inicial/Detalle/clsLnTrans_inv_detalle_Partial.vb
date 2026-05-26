@@ -70,11 +70,9 @@ Partial Public Class clsLnTrans_inv_detalle
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection)
                 cmd.Transaction = pTransaction
-                oBeTrans_inv_detalle.Idinventariodet = MaxID(pConection, pTransaction)
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
-                oBeTrans_inv_detalle.Idinventariodet = MaxID(lConnection, lTransaction)
             End If
 
             'cmd.Parameters.Add(New SqlParameter("@IDINVENTARIODET", oBeTrans_inv_detalle.Idinventariodet))

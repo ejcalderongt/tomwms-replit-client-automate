@@ -397,6 +397,37 @@ Partial Public Class clsLnTarea_hh
 
 
     End Function
+
+    Public Shared Function Get_Lista_Tareas_Monitor_By_IdBodega(ByVal IdBodega As Integer,
+                                                                ByVal pFechaDel As Date,
+                                                                ByVal pFechaAl As Date,
+                                                                ByVal lConnection As SqlConnection,
+                                                                ByVal lTransaction As SqlTransaction) As DataTable
+
+        Dim lTable As New DataTable("Result")
+
+        Try
+
+            '#EJC20260522_PRINCIPAL02_TAREAS_READMODEL: Read-model para evitar GetSingle/detalles por tarea en frmPrincipal02.
+            Using lDataAdapter As New SqlDataAdapter("dbo.usp_wms_principal02_tareas_readmodel_v1", lConnection)
+                lDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", IdBodega))
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@FechaDel", pFechaDel.Date))
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@FechaAl", pFechaAl.Date))
+                lDataAdapter.Fill(lTable)
+            End Using
+
+            Return lTable
+
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 208 OrElse ex.Number = 207
+            '#EJC20260522_PRINCIPAL02_TAREAS_READMODEL: Fallback si el SP aun no esta instalado o no calza con la BD del cliente.
+            Return Get_Lista_Tareas_By_IdBodega(IdBodega, pFechaDel, pFechaAl, lConnection, lTransaction)
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
     Public Shared Function Get_Recepciones_By_IdBodega(ByVal IdBodega As Integer) As List(Of clsBeTrans_re_enc)
 
         Try

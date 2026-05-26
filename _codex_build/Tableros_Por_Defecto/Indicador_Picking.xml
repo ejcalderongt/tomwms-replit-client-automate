@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-ES">
+  <Title Text="Picking en HH (cantidad de tareas)" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_CEALSA_QAP_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="LAPTOP-5GDJFUCN\PROGRAX" />
+          <Parameter Name="database" Value="IMS4MB_CEALSA_QAS" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="SqlServerTrustServerCertificate" Value="true" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="vw_Indicador_Picking">
+        <Parameter Name="Fecha_Inicial" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Inicial)</Parameter>
+        <Parameter Name="Fecha_Final" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Final)</Parameter>
+        <Parameter Name="IdBodega" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Tables>
+          <Table Name="vw_Indicador_Picking" X="30" Y="30" Width="220" Height="464" />
+        </Tables>
+        <Columns>
+          <Column Table="vw_Indicador_Picking" Name="IdProductoBodega" />
+          <Column Table="vw_Indicador_Picking" Name="IdPropietarioBodega" />
+          <Column Table="vw_Indicador_Picking" Name="IdBodega" />
+          <Column Table="vw_Indicador_Picking" Name="bodega" />
+          <Column Table="vw_Indicador_Picking" Name="lic_plate" />
+          <Column Table="vw_Indicador_Picking" Name="idpresentacion" />
+          <Column Table="vw_Indicador_Picking" Name="presentacion" />
+          <Column Table="vw_Indicador_Picking" Name="factor" />
+          <Column Table="vw_Indicador_Picking" Name="IdUnidadMedida" />
+          <Column Table="vw_Indicador_Picking" Name="unidad" />
+          <Column Table="vw_Indicador_Picking" Name="cajas/bultos" />
+          <Column Table="vw_Indicador_Picking" Name="unidades" />
+          <Column Table="vw_Indicador_Picking" Name="fecha" />
+          <Column Table="vw_Indicador_Picking" Name="IdPedidoEnc" />
+          <Column Table="vw_Indicador_Picking" Name="IdPickingEnc" />
+          <Column Table="vw_Indicador_Picking" Name="IdTipoPedido" />
+          <Column Table="vw_Indicador_Picking" Name="pedido" />
+          <Column Table="vw_Indicador_Picking" Name="IdOperadorBodega_Pickeo" />
+          <Column Table="vw_Indicador_Picking" Name="IdOperadorBodega_Verifico" />
+          <Column Table="vw_Indicador_Picking" Name="operador_pickeo" />
+        </Columns>
+        <Filter>[vw_Indicador_Picking.fecha] Between(?Fecha_Inicial, ?Fecha_Final) And [vw_Indicador_Picking.IdBodega] = ?IdBodega</Filter>
+        <GroupFilter></GroupFilter>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="vw_Indicador_Picking">
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdPropietarioBodega" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="bodega" Type="String" />
+            <Field Name="lic_plate" Type="String" />
+            <Field Name="idpresentacion" Type="Int32" />
+            <Field Name="presentacion" Type="String" />
+            <Field Name="factor" Type="Double" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="unidad" Type="String" />
+            <Field Name="cajas/bultos" Type="Double" />
+            <Field Name="unidades" Type="Double" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="IdPedidoEnc" Type="Int32" />
+            <Field Name="IdPickingEnc" Type="Int32" />
+            <Field Name="IdTipoPedido" Type="Int32" />
+            <Field Name="pedido" Type="String" />
+            <Field Name="IdOperadorBodega_Pickeo" Type="Int32" />
+            <Field Name="IdOperadorBodega_Verifico" Type="Int32" />
+            <Field Name="operador_pickeo" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="Fecha_Inicial" Type="System.DateTime" Value="2023-01-01T00:00:00" Description="Fecha Inicial" />
+    <Parameter Name="Fecha_Final" Type="System.DateTime" Value="2024-09-16T00:00:00-06:00" Description="Fecha Final" />
+    <Parameter Name="IdBodega" Type="System.Int16" Value="1" />
+  </Parameters>
+  <Items>
+    <Card ComponentName="cardDashboardItem1" Name="Tareas de picking" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Picking">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Dimension DataMember="fecha" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Month" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Day" DefaultId="DataItem2" />
+        <Measure DataMember="IdPickingEnc" Name="Cantidad de Pickeos" SummaryType="CountDistinct" DefaultId="DataItem3">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+        <SeriesDimension DefaultId="DataItem1" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem3" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="Subtitle" DimensionIndex="0" />
+          <BottomValue1 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <BottomValue2 Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="true" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <TreeView ComponentName="treeViewDashboardItem2" Name="Filtro por Bodega" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Picking">
+      <DataItems>
+        <Dimension DataMember="bodega" DefaultId="DataItem0" />
+        <Dimension DataMember="operador_pickeo" DefaultId="DataItem1" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+        <Dimension DefaultId="DataItem1" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem1" Name="Picking por Operador" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Picking">
+      <DataItems>
+        <Dimension DataMember="operador_pickeo" DefaultId="DataItem1" />
+        <Dimension DataMember="bodega" DefaultId="DataItem0" />
+        <Measure DataMember="cajas/bultos" DefaultId="DataItem2" />
+        <Measure DataMember="unidades" DefaultId="DataItem3" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="Group 1" ShowCaption="false">
+      <InteractivityOptions IgnoreMasterFilters="false" IsMasterFilter="true" />
+    </Group>
+  </Groups>
+  <ColorScheme>
+    <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Picking" PaletteIndex="10">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="bodega" />
+          <Value Type="System.String" Value="BODEGA FISCAL" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+    <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Picking" PaletteIndex="19">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="bodega" />
+          <Value Type="System.String" Value="BODEGA GENERAL" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+  </ColorScheme>
+  <LayoutTree>
+    <LayoutGroup Weight="100">
+      <LayoutGroup DashboardItem="dashboardItemGroup1" Weight="28.433098591549296">
+        <LayoutItem DashboardItem="treeViewDashboardItem2" Weight="47.8328173374613" />
+        <LayoutItem DashboardItem="cardDashboardItem1" Weight="52.1671826625387" />
+      </LayoutGroup>
+      <LayoutItem DashboardItem="chartDashboardItem1" Weight="28.433098591549296" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

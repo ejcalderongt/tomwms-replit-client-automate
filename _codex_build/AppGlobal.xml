@@ -1,0 +1,89 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+AppGlobal
+</name>
+</assembly>
+<members>
+<member name="T:TOMWMS.My.Resources.Resources">
+<summary>
+  Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.ResourceManager">
+<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.Culture">
+<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+</summary>
+</member>
+<member name="P:TOMWMS.clsCadenaConexion.WSTOMHH">
+ <summary>
+ #EJC202211221047
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsCadenaConexion.Formato_Despacho">
+ <summary>
+ #EJC20210104: Define el formato de documento de despacho.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsCadenaConexion.Formato_Recepcion">
+ <summary>
+ #CKFK20240312: Define el tab de recepción que va a estar habilitado.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsPublic.Quitar_Caracteres_No_Permitidos_original(System.String)">
+ <summary>
+ #EJC20210928: Expresión regular para limpiar caracteres no válidos (por problemas en XML Android)
+ </summary>
+ <param name="input"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsPublic.Quitar_Caracteres_No_Permitidos(System.String)">
+ <summary>
+ #CKFK20221029: Expresión regular para limpiar caracteres no válidos (por problemas en XML Android)
+ </summary>
+ <param name="input"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.EpcSscc96.EncodeSsccToEpc96_WithPrefix7406171(System.String,System.Int32,System.Boolean)">
+ <summary>
+ Codifica un SSCC (GS1) de 18 dígitos a EPC Tag URI binario SSCC-96 (96 bits) y lo devuelve en HEX (24 chars).
+
+ Estructura SSCC-96 (EPCglobal / GS1):
+   - Header:    8 bits  (0x31 => SSCC-96)
+   - Filter:    3 bits  (0..7)
+   - Partition: 3 bits  (depende de la longitud del GS1 Company Prefix)
+   - Company Prefix: variable (aquí fijo: 7 dígitos => 24 bits)
+   - Serial Reference: variable (aquí 10 dígitos => 58 bits)
+
+ Para Company Prefix de 7 dígitos:
+   Partition = 5, CompanyPrefixBits = 24, SerialRefBits = 58  (24 + 58 = 82 bits de payload)
+
+ Nota importante:
+   El campo "Serial Reference" en SSCC-96 incluye el Extension Digit (primer dígito del SSCC)
+   concatenado con el serial reference GS1 (sin el check digit).
+ </summary>
+</member>
+<member name="M:TOMWMS.EpcSscc96.ComputeGs1Mod10CheckDigit(System.String)">
+ <summary>
+ Calcula el dígito verificador GS1 (Mod-10) para una cadena numérica SIN el check digit.
+ Regla: desde la derecha, pesos alternos 3 y 1 (empezando con 3 en el dígito más a la derecha).
+ </summary>
+</member>
+<member name="M:TOMWMS.EpcSscc96.BigIntegerToBinary(System.Numerics.BigInteger)">
+ <summary>
+ Convierte un BigInteger no-negativo a binario sin prefijos ("1010...").
+ Implementación manual para evitar dependencias de overloads de Convert con tipos grandes.
+ </summary>
+</member>
+</members>
+</doc>

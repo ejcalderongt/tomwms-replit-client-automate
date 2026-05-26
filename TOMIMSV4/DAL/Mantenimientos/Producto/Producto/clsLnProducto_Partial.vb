@@ -2096,6 +2096,96 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_Single_By_Codigo_For_InventarioImport(ByVal pCodigo As String,
+                                                                     ByRef lConnection As SqlConnection,
+                                                                     ByRef lTransaction As SqlTransaction) As clsBeProducto
+
+        Get_Single_By_Codigo_For_InventarioImport = Nothing
+
+        Try
+
+            '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: carga minima para importacion de inventario sin Obtener(...) anidados por producto.
+            Dim vSQL As String = "SELECT TOP 1 p.IdProducto,
+                                         p.IdPropietario,
+                                         prop.nombre_comercial AS PropietarioNombre,
+                                         p.IdUnidadMedidaBasica,
+                                         um.Nombre AS UnidadMedidaNombre,
+                                         p.IdProductoParametroA,
+                                         pa.Nombre AS ParametroANombre,
+                                         p.IdProductoParametroB,
+                                         pb.Nombre AS ParametroBNombre,
+                                         p.codigo,
+                                         p.nombre,
+                                         p.control_lote,
+                                         p.control_vencimiento,
+                                         p.costo,
+                                         p.precio
+                                  FROM producto p
+                                  LEFT JOIN propietarios prop ON prop.IdPropietario = p.IdPropietario
+                                  LEFT JOIN unidad_medida um ON um.IdUnidadMedida = p.IdUnidadMedidaBasica
+                                  LEFT JOIN producto_parametro_a pa ON pa.IdProductoParametroA = p.IdProductoParametroA
+                                  LEFT JOIN producto_parametro_b pb ON pb.IdProductoParametroB = p.IdProductoParametroB
+                                  WHERE p.codigo=@codigo"
+
+            Using lCommand As New SqlCommand(vSQL, lConnection)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.Transaction = lTransaction
+                lCommand.Parameters.AddWithValue("@codigo", pCodigo)
+
+                Using lReader As SqlDataReader = lCommand.ExecuteReader()
+
+                    If lReader.Read() Then
+
+                        Dim ObjProducto As New clsBeProducto()
+
+                        ObjProducto.IdProducto = IIf(IsDBNull(lReader.Item("IdProducto")), 0, lReader.Item("IdProducto"))
+                        ObjProducto.IdPropietario = IIf(IsDBNull(lReader.Item("IdPropietario")), 0, lReader.Item("IdPropietario"))
+                        ObjProducto.Propietario = New clsBePropietarios()
+                        ObjProducto.Propietario.IdPropietario = ObjProducto.IdPropietario
+                        ObjProducto.Propietario.Nombre_comercial = IIf(IsDBNull(lReader.Item("PropietarioNombre")), "", lReader.Item("PropietarioNombre"))
+
+                        ObjProducto.IdUnidadMedidaBasica = IIf(IsDBNull(lReader.Item("IdUnidadMedidaBasica")), 0, lReader.Item("IdUnidadMedidaBasica"))
+                        ObjProducto.UnidadMedida = New clsBeUnidad_medida()
+                        ObjProducto.UnidadMedida.IdUnidadMedida = ObjProducto.IdUnidadMedidaBasica
+                        ObjProducto.UnidadMedida.Nombre = IIf(IsDBNull(lReader.Item("UnidadMedidaNombre")), "", lReader.Item("UnidadMedidaNombre"))
+
+                        ObjProducto.IdProductoParametroA = IIf(IsDBNull(lReader.Item("IdProductoParametroA")), 0, lReader.Item("IdProductoParametroA"))
+                        If ObjProducto.IdProductoParametroA <> 0 Then
+                            ObjProducto.ParametroA = New clsBeProducto_parametro_a()
+                            ObjProducto.ParametroA.IdProductoParametroA = ObjProducto.IdProductoParametroA
+                            ObjProducto.ParametroA.Nombre = IIf(IsDBNull(lReader.Item("ParametroANombre")), "", lReader.Item("ParametroANombre"))
+                        End If
+
+                        ObjProducto.IdProductoParametroB = IIf(IsDBNull(lReader.Item("IdProductoParametroB")), 0, lReader.Item("IdProductoParametroB"))
+                        If ObjProducto.IdProductoParametroB <> 0 Then
+                            ObjProducto.ParametroB = New clsBeProducto_parametro_b()
+                            ObjProducto.ParametroB.IdProductoParametroB = ObjProducto.IdProductoParametroB
+                            ObjProducto.ParametroB.Nombre = IIf(IsDBNull(lReader.Item("ParametroBNombre")), "", lReader.Item("ParametroBNombre"))
+                        End If
+
+                        ObjProducto.Codigo = IIf(IsDBNull(lReader.Item("codigo")), "", lReader.Item("codigo"))
+                        ObjProducto.Nombre = IIf(IsDBNull(lReader.Item("nombre")), "", lReader.Item("nombre"))
+                        ObjProducto.Control_lote = IIf(IsDBNull(lReader.Item("control_lote")), False, lReader.Item("control_lote"))
+                        ObjProducto.Control_vencimiento = IIf(IsDBNull(lReader.Item("control_vencimiento")), False, lReader.Item("control_vencimiento"))
+                        ObjProducto.Costo = IIf(IsDBNull(lReader.Item("costo")), 0.0, lReader.Item("costo"))
+                        ObjProducto.Precio = IIf(IsDBNull(lReader.Item("precio")), 0.0, lReader.Item("precio"))
+                        ObjProducto.IsNew = False
+
+                        Get_Single_By_Codigo_For_InventarioImport = ObjProducto
+
+                    End If
+
+                End Using
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("EX{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+        End Try
+
+    End Function
+
     Public Shared Function Get_Single_By_Codigo(ByVal pCodigo As String,
                                                 ByVal pCampos() As clsBeProducto.ProdPropiedades) As clsBeProducto
 
@@ -7917,9 +8007,15 @@ Partial Public Class clsLnProducto
 
         Try
 
+            '#CKFK20260526 Agregué el CodigoSKU a la consulta para validar también el código de barra del SKU de la tabla producto_talla_color
             Dim vSQL As String = "SELECT  distinct *
                                   FROM VW_ProductoSI  
-                                  WHERE (IdBodega = 1) and (codigo_barra_pcb = @CodigoBarra or codigo_barra_presentacion = @CodigoBarra or codigo_barra = @CodigoBarra or codigo = @CodigoBarra )
+                                  WHERE (IdBodega = 1) and 
+                                        (codigo_barra_pcb = @CodigoBarra or 
+                                         codigo_barra_presentacion = @CodigoBarra or 
+                                         codigo_barra = @CodigoBarra or 
+                                         codigo = @CodigoBarra or 
+                                         CodigoSKU = @CodigoBarra )
 								  AND IdProductoBodega=@IdProductoBodega "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

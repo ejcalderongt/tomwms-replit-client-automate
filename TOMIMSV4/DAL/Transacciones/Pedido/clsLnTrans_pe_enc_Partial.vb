@@ -1688,19 +1688,22 @@ Partial Public Class clsLnTrans_pe_enc
 
                                     End If
 
-                                    rowsAffected += clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
-                                                                                                     lConnection,
-                                                                                                     lTransaction)
-
-                                    rowsAffected += clsLnTrans_picking_det.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
-                                                                                                    lConnection,
-                                                                                                    lTransaction)
-
                                 Next
 
                             End If
 
                         End If
+
+                        For Each BePickingDet In lPickingDet
+                            rowsAffected += clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+
+                            rowsAffected += clsLnTrans_picking_det.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
+                                                                                            lConnection,
+                                                                                            lTransaction)
+                        Next
+
 
                     End If
 

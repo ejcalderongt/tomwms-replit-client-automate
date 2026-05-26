@@ -29,6 +29,15 @@ Public Class frmRegularizarInventario
     Private IdAjusteDet As Integer = 0
     Private IdAjusteEnc As Integer = 0
     Private lOperaciones As New List(Of KeyValuePair(Of Integer, Integer))
+    Private ReadOnly mProductoByProductoBodegaCache As New Dictionary(Of Integer, clsBeProducto)
+    Private ReadOnly mTallaColorCache As New Dictionary(Of Integer, clsBeProducto_talla_color)
+    Private ReadOnly mTallaCodigoCache As New Dictionary(Of Integer, String)
+    Private ReadOnly mColorCodigoCache As New Dictionary(Of Integer, String)
+    Private ReadOnly mBodegaERPCache As New Dictionary(Of String, Integer)
+    Private mIdMotivoAjusteCache As Integer = -1
+    Private mRegularizacionUltimoTick As Integer = 0
+    Private mRegularizacionTotalAjustes As Integer = 0
+    Private mRegularizacionProcesados As Integer = 0
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -46,9 +55,147 @@ Public Class frmRegularizarInventario
         InitializeComponent()
     End Sub
 
+    Private Sub Limpiar_Caches_Regularizacion()
+
+        mProductoByProductoBodegaCache.Clear()
+        mTallaColorCache.Clear()
+        mTallaCodigoCache.Clear()
+        mColorCodigoCache.Clear()
+        mBodegaERPCache.Clear()
+        mIdMotivoAjusteCache = -1
+        mRegularizacionUltimoTick = 0
+
+    End Sub
+
+    Private Function Get_IdMotivoAjuste_Regularizacion(ByVal lConnection As SqlConnection,
+                                                       ByVal lTransaction As SqlTransaction) As Integer
+
+        If mIdMotivoAjusteCache = -1 Then
+            Dim DT As DataTable = clsLnAjuste_motivo.Listar()
+            mIdMotivoAjusteCache = 0
+
+            If DT IsNot Nothing Then
+                If DT.Rows.Count > 0 Then
+                    mIdMotivoAjusteCache = DT.Rows(0).Item("IdMotivoAjuste")
+                End If
+                DT.Dispose()
+            End If
+        End If
+
+        Return mIdMotivoAjusteCache
+
+    End Function
+
+    Private Function Get_IdBodegaERP_Regularizacion(ByVal pCodigoBodegaERP As String,
+                                                    ByVal lConnection As SqlConnection,
+                                                    ByVal lTransaction As SqlTransaction) As Integer
+
+        Dim vKey As String = If(pCodigoBodegaERP, "")
+
+        If Not mBodegaERPCache.ContainsKey(vKey) Then
+            mBodegaERPCache(vKey) = clsLnCliente.Get_IdBodega_By_Codigo(vKey, lConnection, lTransaction)
+        End If
+
+        Return mBodegaERPCache(vKey)
+
+    End Function
+
+    Private Function Get_Producto_Regularizacion(ByVal pIdProductoBodega As Integer,
+                                                 ByVal lConnection As SqlConnection,
+                                                 ByVal lTransaction As SqlTransaction) As clsBeProducto
+
+        If Not mProductoByProductoBodegaCache.ContainsKey(pIdProductoBodega) Then
+            mProductoByProductoBodegaCache(pIdProductoBodega) = clsLnProducto.Get_Single_By_IdProductoBodega(pIdProductoBodega,
+                                                                                                            lConnection,
+                                                                                                            lTransaction)
+        End If
+
+        Return mProductoByProductoBodegaCache(pIdProductoBodega)
+
+    End Function
+
+    Private Function Get_TallaColor_Regularizacion(ByVal pIdProductoTallaColor As Integer,
+                                                   ByVal lConnection As SqlConnection,
+                                                   ByVal lTransaction As SqlTransaction) As clsBeProducto_talla_color
+
+        If Not mTallaColorCache.ContainsKey(pIdProductoTallaColor) Then
+            mTallaColorCache(pIdProductoTallaColor) = clsLnProducto_talla_color.GetSingle(pIdProductoTallaColor,
+                                                                                         lConnection,
+                                                                                         lTransaction)
+        End If
+
+        Return mTallaColorCache(pIdProductoTallaColor)
+
+    End Function
+
+    Private Function Get_TallaCodigo_Regularizacion(ByVal pIdTalla As Integer,
+                                                    ByVal lConnection As SqlConnection,
+                                                    ByVal lTransaction As SqlTransaction) As String
+
+        If Not mTallaCodigoCache.ContainsKey(pIdTalla) Then
+            Dim vTalla = clsLnTalla.GetSingle(pIdTalla, lConnection, lTransaction)
+            mTallaCodigoCache(pIdTalla) = If(vTalla Is Nothing, "", vTalla.Codigo)
+        End If
+
+        Return mTallaCodigoCache(pIdTalla)
+
+    End Function
+
+    Private Function Get_ColorCodigo_Regularizacion(ByVal pIdColor As Integer,
+                                                    ByVal lConnection As SqlConnection,
+                                                    ByVal lTransaction As SqlTransaction) As String
+
+        If Not mColorCodigoCache.ContainsKey(pIdColor) Then
+            Dim vColor = clsLnColor.GetSingle(pIdColor, lConnection, lTransaction)
+            mColorCodigoCache(pIdColor) = If(vColor Is Nothing, "", vColor.Codigo)
+        End If
+
+        Return mColorCodigoCache(pIdColor)
+
+    End Function
+
+    Private Sub Actualizar_Progreso_Regularizacion(ByVal pMensaje As String,
+                                                   ByVal pActual As Integer,
+                                                   ByVal pTotal As Integer,
+                                                   Optional ByVal pForzar As Boolean = False)
+
+        Dim vAhora As Integer = Environment.TickCount
+
+        If Not pForzar AndAlso pActual < pTotal AndAlso Math.Abs(vAhora - mRegularizacionUltimoTick) < 250 Then
+            Return
+        End If
+
+        mRegularizacionUltimoTick = vAhora
+
+        Try
+            Dim vTotal As Integer = Math.Max(pTotal, 1)
+            Dim vActual As Integer = Math.Min(Math.Max(pActual, 0), vTotal)
+            Dim vTexto As String = String.Format("{0} ({1}/{2})", pMensaje, vActual, vTotal)
+
+            If SplashScreenManager.Default IsNot Nothing Then
+                SplashScreenManager.Default.SetWaitFormDescription(vTexto)
+            End If
+
+            prg.Visible = True
+            prg.Minimum = 0
+            prg.Maximum = vTotal
+            prg.Value = vActual
+            lblPrg.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+            lblPrg.Caption = vTexto
+            lblPrg.Refresh()
+
+            Application.DoEvents()
+
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
     Private Sub Cargar_Datos()
 
         Dim clsTransaccion As New clsTransaccion
+        Dim vRegularizarUpdateSuspendido As Boolean = False
+        Dim vReservaUpdateSuspendido As Boolean = False
         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
         SplashScreenManager.Default.SetWaitFormDescription("Cargando datos...")
 
@@ -68,6 +215,10 @@ Public Class frmRegularizarInventario
             lblPrg.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
             lblPrg.Caption = "Llenando grid..."
             lblPrg.Refresh()
+
+            GridView1.BeginDataUpdate()
+            vRegularizarUpdateSuspendido = True
+            GridView1.GroupSummary.Clear()
 
             grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Comparacion_Inventario_A_Regularizar(gBeInventario.Idinventarioenc,
                                                                                                                clsTransaccion.lConnection,
@@ -235,6 +386,10 @@ Public Class frmRegularizarInventario
                                                                                                                        clsTransaccion.lConnection,
                                                                                                                        clsTransaccion.lTransaction)
 
+            grdvInventarioConReserva.BeginDataUpdate()
+            vReservaUpdateSuspendido = True
+            grdvInventarioConReserva.GroupSummary.Clear()
+
             grdInventarioConReserva.DataSource = DTNoRegularizar
 
             If (grdvInventarioConReserva.RowCount > 0) Then
@@ -374,6 +529,14 @@ Public Class frmRegularizarInventario
             clsTransaccion.RollBack_Transaction()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Finally
+            If vRegularizarUpdateSuspendido Then
+                GridView1.EndDataUpdate()
+            End If
+
+            If vReservaUpdateSuspendido Then
+                grdvInventarioConReserva.EndDataUpdate()
+            End If
+
             SplashScreenManager.CloseForm(False)
             prg.Visible = False
             lblPrg.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
@@ -823,12 +986,20 @@ Public Class frmRegularizarInventario
             clsTrans.Open_Connection()
             clsTrans.Begin_Transaction()
 
+            Limpiar_Caches_Regularizacion()
             lOperaciones.Clear()
+            lBeTransAjusteDet.Clear()
+            ListMovs.Clear()
+            ListStockNuevo.Clear()
+
+            Actualizar_Progreso_Regularizacion("Cargando inventario ciclico", 0, 1, True)
 
             ' Carga datos del inventario cíclico
             ListCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEnc(gBeInventario.Idinventarioenc,
                                                                             clsTrans.lConnection,
                                                                             clsTrans.lTransaction)
+
+            Actualizar_Progreso_Regularizacion("Clasificando ajustes", 0, Math.Max(ListCiclico.Count, 1), True)
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(gBeInventario.IdBodega,
                                                                                                                           gBeInventario.Idpropietario,
@@ -857,6 +1028,18 @@ Public Class frmRegularizarInventario
 
             Dim ajusteTallaColor = ListaExcluyente.Where(Function(x) x.IdProductoTallaColor <> x.IdProductoTallaColor_nuevo).ToList()
 
+            Dim ajustesPositivos = ajustesCantidad.Where(Function(x) x.Cantidad > x.Cant_stock OrElse x.IdUbicacion_nuevo <> 0 AndAlso x.Regularizar = True).ToList()
+            Dim ajustesNegativos = ajustesCantidad.Where(Function(x) x.Cantidad < x.Cant_stock AndAlso x.Regularizar = True).ToList().Except(ajustesPositivos).ToList()
+
+            mRegularizacionTotalAjustes = ajustesVencimiento.Count +
+                                         ajustesLote.Count +
+                                         ajustesEstado.Count +
+                                         ajusteTallaColor.Count +
+                                         ajustesPositivos.Count +
+                                         ajustesNegativos.Count
+            mRegularizacionProcesados = 0
+            Actualizar_Progreso_Regularizacion("Preparando ajustes", 0, mRegularizacionTotalAjustes, True)
+
             ' Procesar ajustes por tipo
             If ajustesVencimiento.Any() Then
                 ProcesarAjustePorTipo(ajustesVencimiento, clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento, clsTrans, vIdPropietarioBodega, "Vencimiento")
@@ -876,10 +1059,6 @@ Public Class frmRegularizarInventario
 
             If ajustesCantidad.Any() Then
 
-                ' Dividir ajustes positivos y negativos
-                Dim ajustesPositivos = ajustesCantidad.Where(Function(x) x.Cantidad > x.Cant_stock OrElse x.IdUbicacion_nuevo <> 0 AndAlso x.Regularizar = True).ToList()
-                Dim ajustesNegativos = ajustesCantidad.Where(Function(x) x.Cantidad < x.Cant_stock AndAlso x.Regularizar = True).ToList().Except(ajustesPositivos).ToList()
-
                 If ajustesPositivos.Any() Then
                     ProcesarAjustePorTipo(ajustesPositivos, clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo, clsTrans, vIdPropietarioBodega, "Positivo")
                 End If
@@ -889,6 +1068,8 @@ Public Class frmRegularizarInventario
                 End If
 
             End If
+
+            Actualizar_Progreso_Regularizacion("Aplicando inventario", mRegularizacionProcesados, Math.Max(mRegularizacionTotalAjustes, 1), True)
 
             ' Regularizar inventario
             clsLnTrans_inv_ciclico.Regularizar_Inventario(gBeInventario,
@@ -904,6 +1085,8 @@ Public Class frmRegularizarInventario
 
             ' Confirmar transacción
             clsTrans.Commit_Transaction()
+
+            Actualizar_Progreso_Regularizacion("Regularizacion finalizada", Math.Max(mRegularizacionTotalAjustes, 1), Math.Max(mRegularizacionTotalAjustes, 1), True)
 
             Aplica_Inventario = True
 
@@ -945,6 +1128,11 @@ Public Class frmRegularizarInventario
 
             ' Procesar cada ajuste
             For Each item In ajustes
+                mRegularizacionProcesados += 1
+                Actualizar_Progreso_Regularizacion("Generando ajuste " & pReferencia,
+                                                   mRegularizacionProcesados,
+                                                   Math.Max(mRegularizacionTotalAjustes, 1))
+
                 LLena_Objetos_Detalle_Ajuste(item,
                                              IdPropietarioBodega,
                                              clsTrans.lConnection,
@@ -975,17 +1163,7 @@ Public Class frmRegularizarInventario
             Dim IdAjusteDet As Integer = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1
             Dim pBeAjusteDet As New clsBeTrans_ajuste_det
             Dim pBeMovs As New clsBeTrans_movimientos
-            Dim vIdMotivoAjuste As Integer = 0
-            Dim DT As New DataTable
-
-            DT = clsLnAjuste_motivo.Listar()
-
-            If DT IsNot Nothing Then
-                If DT.Rows.Count > 0 Then
-                    vIdMotivoAjuste = DT.Rows(0).Item("IdMotivoAjuste")
-                End If
-                DT.Dispose()
-            End If
+            Dim vIdMotivoAjuste As Integer = Get_IdMotivoAjuste_Regularizacion(lConnection, lTransaction)
 
             ' Configuración de tareas según el tipo de ajuste
             Dim IdTipoTarea As Integer
@@ -1026,18 +1204,17 @@ Public Class frmRegularizarInventario
             pBeAjusteDet.Codigo_ajuste = IdTipoTarea
             pBeAjusteDet.Enviado = True
 
-            Dim BodegaERP As Integer = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.codigo_bodega_erp,
-                                                                           lConnection,
-                                                                           lTransaction)
+            Dim BodegaERP As Integer = Get_IdBodegaERP_Regularizacion(AP.Bodega.codigo_bodega_erp,
+                                                                      lConnection,
+                                                                      lTransaction)
 
             pBeAjusteDet.IdBodegaERP = Val(BodegaERP)
 
             pBeAjusteDet.lic_plate = BeTransInvCiclico.lic_plate
 
-            Dim vProducto As New clsBeProducto
-            vProducto = clsLnProducto.Get_Single_By_IdProductoBodega(BeTransInvCiclico.IdProductoBodega,
-                                                                     lConnection,
-                                                                     lTransaction)
+            Dim vProducto As clsBeProducto = Get_Producto_Regularizacion(BeTransInvCiclico.IdProductoBodega,
+                                                                         lConnection,
+                                                                         lTransaction)
 
             pBeAjusteDet.Codigo_producto = vProducto.IdProducto
             pBeAjusteDet.Codigo_producto = vProducto.Codigo
@@ -1046,28 +1223,22 @@ Public Class frmRegularizarInventario
             '#AT20260121 Primera vez viendo regularizacion de inventario ciclico, procedo a llenar talla y color
             If AP.Bodega.Control_Talla_Color Then
                 If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
-                    Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor, lConnection, lTransaction)
+                    Dim BeTallaColor = Get_TallaColor_Regularizacion(BeTransInvCiclico.IdProductoTallaColor, lConnection, lTransaction)
 
                     If BeTallaColor IsNot Nothing Then
-                        Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, lConnection, lTransaction)
-                        Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, lConnection, lTransaction)
-
                         pBeAjusteDet.IdProductoTallaColor_origen = BeTransInvCiclico.IdProductoTallaColor
-                        pBeAjusteDet.Talla_origen = Talla.Codigo
-                        pBeAjusteDet.Color_origen = Color.Codigo
+                        pBeAjusteDet.Talla_origen = Get_TallaCodigo_Regularizacion(BeTallaColor.IdTalla, lConnection, lTransaction)
+                        pBeAjusteDet.Color_origen = Get_ColorCodigo_Regularizacion(BeTallaColor.IdColor, lConnection, lTransaction)
                     End If
                 End If
 
                 If BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0 Then
-                    Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor_nuevo, lConnection, lTransaction)
+                    Dim BeTallaColor = Get_TallaColor_Regularizacion(BeTransInvCiclico.IdProductoTallaColor_nuevo, lConnection, lTransaction)
 
                     If BeTallaColor IsNot Nothing Then
-                        Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, lConnection, lTransaction)
-                        Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, lConnection, lTransaction)
-
                         pBeAjusteDet.IdProductoTallaColor_destino = BeTransInvCiclico.IdProductoTallaColor
-                        pBeAjusteDet.Talla_destino = Talla.Codigo
-                        pBeAjusteDet.Color_destino = Color.Codigo
+                        pBeAjusteDet.Talla_destino = Get_TallaCodigo_Regularizacion(BeTallaColor.IdTalla, lConnection, lTransaction)
+                        pBeAjusteDet.Color_destino = Get_ColorCodigo_Regularizacion(BeTallaColor.IdColor, lConnection, lTransaction)
                     End If
                 End If
             End If
@@ -1118,10 +1289,9 @@ Public Class frmRegularizarInventario
             pBeMovs.IdProductoTallaColor = BeTransInvCiclico.IdProductoTallaColor
 
             If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
-                Dim BEProductoTallaColor As New clsBeProducto_talla_color
-                BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor)
-                pBeMovs.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
-                pBeMovs.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Dim BEProductoTallaColor As clsBeProducto_talla_color = Get_TallaColor_Regularizacion(BeTransInvCiclico.IdProductoTallaColor, lConnection, lTransaction)
+                pBeMovs.Talla = If(BEProductoTallaColor Is Nothing, "", Get_TallaCodigo_Regularizacion(BEProductoTallaColor.IdTalla, lConnection, lTransaction))
+                pBeMovs.Color = If(BEProductoTallaColor Is Nothing, "", Get_ColorCodigo_Regularizacion(BEProductoTallaColor.IdColor, lConnection, lTransaction))
             Else
                 pBeMovs.Talla = ""
                 pBeMovs.Color = ""
@@ -1145,7 +1315,6 @@ Public Class frmRegularizarInventario
         Dim vIdStock As Integer = 0
         Dim vIdStockLista As Integer = 0
         Dim vIdMotivoAjuste As Integer = 0
-        Dim DT As New DataTable
 
         Try
 
@@ -1166,22 +1335,19 @@ Public Class frmRegularizarInventario
             pBeTransAjustEnc.Centro_Costo_Dir_Erp = AP.Bodega.Centro_Costo_Dir_Erp
             pBeTransAjustEnc.Centro_Costo_Dep_Erp = AP.Bodega.Centro_Costo_Dep_Erp
 
-            DT = clsLnAjuste_motivo.Listar()
-
             pBeAjusteDet.IdMotivoAjuste = 0
-
-            If DT IsNot Nothing Then
-                If DT.Rows.Count > 0 Then
-                    vIdMotivoAjuste = DT.Rows(0).Item("IdMotivoAjuste")
-                End If
-                DT.Dispose()
-            End If
+            vIdMotivoAjuste = Get_IdMotivoAjuste_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
 
             ' Insertar encabezado
             clsLnTrans_ajuste_enc.Insertar(pBeTransAjustEnc, clsTrans.lConnection, clsTrans.lTransaction)
 
             ' Procesar los detalles de los ajustes
             For Each BeTransInvCiclico In ajustes
+                mRegularizacionProcesados += 1
+                Actualizar_Progreso_Regularizacion("Generando ajuste " & pReferencia,
+                                                   mRegularizacionProcesados,
+                                                   Math.Max(mRegularizacionTotalAjustes, 1))
+
                 ' Crear detalle del ajuste
                 Dim pBeAjusteDet As New clsBeTrans_ajuste_det()
                 pBeAjusteDet.IdAjusteDet = clsLnTrans_ajuste_det.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
@@ -1218,43 +1384,38 @@ Public Class frmRegularizarInventario
                 pBeAjusteDet.lic_plate = BeTransInvCiclico.lic_plate
                 pBeAjusteDet.IdStock = BeTransInvCiclico.IdStock
 
-                Dim vProducto As New clsBeProducto
-                vProducto = clsLnProducto.Get_Single_By_IdProductoBodega(BeTransInvCiclico.IdProductoBodega, clsTrans.lConnection, clsTrans.lTransaction)
+                Dim vProducto As clsBeProducto = Get_Producto_Regularizacion(BeTransInvCiclico.IdProductoBodega,
+                                                                             clsTrans.lConnection,
+                                                                             clsTrans.lTransaction)
 
                 pBeAjusteDet.Codigo_producto = vProducto.IdProducto
                 pBeAjusteDet.Codigo_producto = vProducto.Codigo
                 pBeAjusteDet.Nombre_producto = vProducto.Nombre
                 pBeAjusteDet.IdMotivoAjuste = vIdMotivoAjuste
 
-                Dim BodegaERP As Integer = clsLnCliente.Get_IdBodega_By_Codigo(Val(AP.Bodega.codigo_bodega_erp),
-                                                                                   clsTrans.lConnection,
-                                                                                   clsTrans.lTransaction)
+                Dim BodegaERP As Integer = Get_IdBodegaERP_Regularizacion(AP.Bodega.codigo_bodega_erp,
+                                                                          clsTrans.lConnection,
+                                                                          clsTrans.lTransaction)
 
                 '#AT20260121 Primera vez viendo regularizacion de inventario ciclico, procedo a llenar talla y color
                 If AP.Bodega.Control_Talla_Color Then
                     If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
-                        Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor, clsTrans.lConnection, clsTrans.lTransaction)
+                        Dim BeTallaColor = Get_TallaColor_Regularizacion(BeTransInvCiclico.IdProductoTallaColor, clsTrans.lConnection, clsTrans.lTransaction)
 
                         If BeTallaColor IsNot Nothing Then
-                            Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
-                            Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
-
                             pBeAjusteDet.IdProductoTallaColor_origen = BeTransInvCiclico.IdProductoTallaColor
-                            pBeAjusteDet.Talla_origen = Talla.Codigo
-                            pBeAjusteDet.Color_origen = Color.Codigo
+                            pBeAjusteDet.Talla_origen = Get_TallaCodigo_Regularizacion(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
+                            pBeAjusteDet.Color_origen = Get_ColorCodigo_Regularizacion(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
                         End If
                     End If
 
                     If BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0 Then
-                        Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor_nuevo, clsTrans.lConnection, clsTrans.lTransaction)
+                        Dim BeTallaColor = Get_TallaColor_Regularizacion(BeTransInvCiclico.IdProductoTallaColor_nuevo, clsTrans.lConnection, clsTrans.lTransaction)
 
                         If BeTallaColor IsNot Nothing Then
-                            Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
-                            Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
-
                             pBeAjusteDet.IdProductoTallaColor_destino = BeTransInvCiclico.IdProductoTallaColor
-                            pBeAjusteDet.Talla_destino = Talla.Codigo
-                            pBeAjusteDet.Color_destino = Color.Codigo
+                            pBeAjusteDet.Talla_destino = Get_TallaCodigo_Regularizacion(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
+                            pBeAjusteDet.Color_destino = Get_ColorCodigo_Regularizacion(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
                         End If
                     End If
                 End If

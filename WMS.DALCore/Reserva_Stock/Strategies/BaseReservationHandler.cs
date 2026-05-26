@@ -26,26 +26,40 @@ namespace WMS.StockReservation.Strategies
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
+            var handlerName = GetType().Name;
+            var handlerWatch = System.Diagnostics.Stopwatch.StartNew();
+            var pendingBefore = context.PendingQuantity;
+            var reservationsBefore = context.CreatedReservations?.Count ?? 0;
+
             // Intentar procesar localmente
             var result = ProcessInternal(context);
+
+            handlerWatch.Stop();
+            _logger.LogInfo(
+                $"#MI3_PERF_HANDLER | Handler={handlerName} | Ms={handlerWatch.ElapsedMilliseconds} | " +
+                $"PendingBefore={pendingBefore:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                $"ResultReserved={result.ReservedQuantity:F6} | ResultReservas={result.Reservations?.Count ?? 0} | " +
+                $"ContextReservasBefore={reservationsBefore} | ContextReservasAfter={context.CreatedReservations?.Count ?? 0}");
 
             // Si completamos la reserva, retornar directamente
             if (context.IsQuantityFullyReserved())
             {
-                _logger.LogCheckpoint($"#{GetType().Name}_COMPLETED");
+                _logger.LogCheckpoint($"#{handlerName}_COMPLETED");
                 return result;
             }
 
             // Si aún hay cantidad pendiente, pasar al siguiente handler
             if (_nextHandler != null && context.PendingQuantity > 0.000001)
             {
-                _logger.LogCheckpoint($"#{GetType().Name}_PASS_TO_NEXT");
+                _logger.LogCheckpoint($"#{handlerName}_PASS_TO_NEXT");
                 
                 var nextResult = _nextHandler.Handle(context);
 
                 // Combinar resultados
                 result.ReservedQuantity += nextResult.ReservedQuantity;
-                result.Reservations.AddRange(nextResult.Reservations);
+                result.Reservations ??= new();
+                if (nextResult.Reservations != null)
+                    result.Reservations.AddRange(nextResult.Reservations);
                 result.CaseCode += (string.IsNullOrEmpty(result.CaseCode) ? "" : "+") + nextResult.CaseCode;
                 result.Message += (string.IsNullOrEmpty(result.Message) ? "" : " | ") + nextResult.Message;
             }

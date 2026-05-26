@@ -21,6 +21,7 @@ namespace WMS.StockReservation.Core.Domain
         public SqlTransaction? Transaction { get; set; } = null;
         public clsBeTrans_pe_det? PedidoDet { get; set; } = new clsBeTrans_pe_det();
         public clsBeI_nav_ped_traslado_det? TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
+        public StockReservationDocumentCache? DocumentCache { get; set; }
 
         /// <summary>
         /// IdPedidoEnc del Trans_pe_enc creado. Se usa para asignar IdTransaccion en stock_res.
