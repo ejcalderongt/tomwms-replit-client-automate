@@ -1924,6 +1924,12 @@ Public Class frmCargaExcel
 
                     vIdProductoTran += 1
 
+                    Debug.WriteLine(BeProducto.Codigo & " " & error_producto & " linea " & i + 1)
+
+                    If BeProducto.Codigo = "164240" Then
+                        Debug.WriteLine("aqui va bien")
+                    End If
+
                 Next
 
 

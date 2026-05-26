@@ -13,7 +13,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 				.Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
 				.Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
 				.Estado = IIf(IsDBNull(dr.Item("Estado")), "", dr.Item("Estado"))
-				.Tipo = IIf(IsDBNull(dr.Item("Tipo")), "", dr.Item("Tipo"))
+				.Tipo = IIf(IsDBNull(dr.Item("Tipo")), 0, dr.Item("Tipo"))
 				.IdProveedor = IIf(IsDBNull(dr.Item("IdProveedor")), 0, dr.Item("IdProveedor"))
 				.IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
 				.IdPedidoEnc = IIf(IsDBNull(dr.Item("IdPedidoEnc")), 0, dr.Item("IdPedidoEnc"))
@@ -571,24 +571,42 @@ Public Class clsLnI_nav_barras_rfid_enc
 			lConnection.Open()
 			lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-			'#GT10042026: a futuro se podria asociar el doc de ingreso o salida
-			'If pEncabezado.Tipo = "ING" Then
-			'	pEncabezado.IdOrdenCompraEnc = 0
-			'Else
-			'	pEncabezado.IdPedidoEnc = 0
-			'End If
-
 			pEncabezado.IdRFIDEnc = Insertar(pEncabezado, lConnection, lTransaction)
 			pEncabezado.Detalle(0).IdRFIDEnc = pEncabezado.IdRFIDEnc
 
 			For Each detalle As clsBeI_nav_barras_rfid_det In pEncabezado.Detalle
 
 				If Not clsLnI_nav_barras_rfid_det.Exist_By_EPC(detalle.Barra_epc, pEncabezado.Tipo, lConnection, lTransaction) Then
-					'clsLnI_nav_barras_rfid_det.Insertar(detalle, lConnection, lTransaction)
-
 
 					If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
 
+						'#GT26052026: insertar el movimiento
+						Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
+						pMovimientoRFID.IdRFIDEnc = pEncabezado.IdRFIDEnc
+						pMovimientoRFID.IdRfidTipoMov = 1
+						'pMovimientoRFID.IdRfidStock = 0
+						pMovimientoRFID.Barra_epc = detalle.Barra_epc
+						pMovimientoRFID.Tagid = ""
+						pMovimientoRFID.IdBodega = pEncabezado.IdBodega
+						pMovimientoRFID.IdProductoBodega = 0
+						pMovimientoRFID.Lote = ""
+						pMovimientoRFID.Cantidad = 1
+						pMovimientoRFID.User_agr = 1
+
+						clsLnI_nav_barras_rfid_mov.Insertar(pMovimientoRFID, lConnection, lTransaction)
+
+						'#GT26052026: insertar el stock
+						Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
+						pStockRFID.Barra_epc = detalle.Barra_epc
+						pStockRFID.IdBodega = pEncabezado.IdBodega
+						pStockRFID.IdProductoBodega = 0
+						pStockRFID.Cantidad = 1
+						pStockRFID.IdRFIDEncOrigen = pEncabezado.IdRFIDEnc 'es ingreso, el tipo mov es 1
+						pStockRFID.User_agr = 1
+
+						clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, lTransaction)
+
+						'#GT26052026: ultimo paso, actualizar la barra pallet como recibida.
 						Dim BeBarra_Pallet As New clsBeI_nav_barras_pallet
 						BeBarra_Pallet.Codigo_barra = detalle.Barra_epc
 						BeBarra_Pallet.Recibido = 1
@@ -642,6 +660,33 @@ Public Class clsLnI_nav_barras_rfid_enc
 					If Not clsLnI_nav_barras_rfid_det.Exist_By_EPC(detalle.Barra_epc, pEncabezado.Tipo, lConnection, lTransaction) Then
 
 						If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
+
+							'#GT26052026: insertar el movimiento
+							Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
+							pMovimientoRFID.IdRFIDEnc = pEncabezado.IdRFIDEnc
+							pMovimientoRFID.IdRfidTipoMov = pEncabezado.Tipo
+							pMovimientoRFID.IdRfidStock = 0
+							pMovimientoRFID.Barra_epc = detalle.Barra_epc
+							pMovimientoRFID.Tagid = ""
+							pMovimientoRFID.IdBodega = pEncabezado.IdBodega
+							pMovimientoRFID.IdProductoBodega = 0
+							pMovimientoRFID.Lote = ""
+							pMovimientoRFID.Cantidad = 1
+							pMovimientoRFID.User_agr = detalle.IdOperador
+
+							clsLnI_nav_barras_rfid_mov.Insertar(pMovimientoRFID, lConnection, lTransaction)
+
+							'#GT26052026: insertar el stock
+							Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
+							pStockRFID.Barra_epc = detalle.Barra_epc
+							pStockRFID.IdBodega = pEncabezado.IdBodega
+							pStockRFID.IdProductoBodega = 0
+							pStockRFID.Cantidad = 1
+							pStockRFID.IdRFIDEncOrigen = pMovimientoRFID.IdRfidTipoMov 'es ingreso, el tipo mov es 1
+							pStockRFID.User_agr = detalle.IdOperador
+
+							clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, lTransaction)
+
 
 							Dim BeBarra_Pallet As New clsBeI_nav_barras_pallet
 							BeBarra_Pallet.Codigo_barra = detalle.Barra_epc

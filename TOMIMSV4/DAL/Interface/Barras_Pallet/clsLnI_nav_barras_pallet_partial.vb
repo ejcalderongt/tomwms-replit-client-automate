@@ -203,7 +203,6 @@ Partial Public Class clsLnI_nav_barras_pallet
 
             Upd.Init("i_nav_barras_pallet")
             Upd.Add("recibido", "@recibido", DataType.Parametro)
-            'Upd.Add("idrecepcion", "@idrecepcion", DataType.Parametro)
             Upd.Where("codigo_barra = @codigo_barra ")
 
             Dim sp As String = Upd.SQL()
@@ -220,7 +219,6 @@ Partial Public Class clsLnI_nav_barras_pallet
             End If
 
             cmd.Parameters.Add(New SqlParameter("@RECIBIDO", oBeI_nav_barras_pallet.Recibido))
-            'cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeI_nav_barras_pallet.IdRecepcion))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_BARRA", oBeI_nav_barras_pallet.Codigo_barra))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
