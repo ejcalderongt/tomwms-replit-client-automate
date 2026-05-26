@@ -1,4 +1,23 @@
 notas:
+  - fecha: "2026-05-26"
+    area: "HH picking reemplazo/no encontrado cantidad_solicitada"
+    detalle: >
+      En QA La Cumbre (TOMWMS_LA_CUMBRE_QA) el constraint
+      Stock_NonNegative_20250228_CKFK de trans_picking_ubic valida
+      cantidad_solicitada > 0. Se detecto que los flujos de reemplazo/no
+      encontrado evaluaban parcial con "Cantidad_Solicitada <> 0", por lo que
+      cantidades negativas caian en UPDATE y rompian el check. Fix aplicado en
+      clsLnStock_res_Partial y clsLnTrans_picking_ubic_Partial: condiciones de
+      parcial cambiadas a > 0 y caminos de cierre/eliminacion a <= 0 para
+      evitar updates con cero/negativo en escenarios de merma/no encontrado.
+  - fecha: "2026-05-26"
+    area: "HH menu roles"
+    detalle: >
+      En TOMHH2025 el mapeo del menu principal debe resolver permisos por
+      nombre normalizado y, si el nombre viene vacio o con variante, usar
+      IdMenuSistemaOP numerico antes de IdTipoTarea. Esto evita que roles
+      productivos pierdan opciones como Implosion para pickeador o Empaque
+      para recepcion cuando el contrato de menu llega con nombre distinto.
   - fecha: "2026-05-25"
     area: "WebAPI salidas anulacion bajo demanda"
     detalle: >
