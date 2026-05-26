@@ -8009,7 +8009,12 @@ Partial Public Class clsLnProducto
 
             Dim vSQL As String = "SELECT  distinct *
                                   FROM VW_ProductoSI  
-                                  WHERE (IdBodega = 1) and (codigo_barra_pcb = @CodigoBarra or codigo_barra_presentacion = @CodigoBarra or codigo_barra = @CodigoBarra or codigo = @CodigoBarra )
+                                  WHERE (IdBodega = 1) and 
+                                        (codigo_barra_pcb = @CodigoBarra or 
+                                         codigo_barra_presentacion = @CodigoBarra or 
+                                         codigo_barra = @CodigoBarra or 
+                                         codigo = @CodigoBarra or 
+                                         CodigoSKU = @CodigoBarra )
 								  AND IdProductoBodega=@IdProductoBodega "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
