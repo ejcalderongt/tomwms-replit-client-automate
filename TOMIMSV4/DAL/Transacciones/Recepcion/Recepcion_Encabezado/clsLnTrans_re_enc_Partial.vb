@@ -6379,8 +6379,10 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                lConnection,
                                                                                                lTransaction)
 
-                                If vResultadoGuardarReDet > 0 Then
+                                If vResultadoGuardarReDet > 0 AndAlso BeTransReDet.IdRecepcionDet > 0 Then
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                Else
+                                    Throw New Exception("ERROR_202605201650_HH_GuardarRecepcion_S: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
                                 End If
 
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
@@ -7250,8 +7252,10 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                lConnection,
                                                                                                lTransaction)
 
-                                If vResultadoGuardarReDet > 0 Then
+                                If vResultadoGuardarReDet > 0 AndAlso BeTransReDet.IdRecepcionDet > 0 Then
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                Else
+                                    Throw New Exception("ERROR_202605201651_GuardarHH_BOF: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
                                 End If
 
                                 '#EJC202402121836: Retornar el MaxIdRecepcionDet (para recepción BOF)
@@ -8775,6 +8779,97 @@ Partial Public Class clsLnTrans_re_enc
                             BeTransReEnc.DetalleImagenes = clsLnTrans_re_img.Get_Detalle_Imagenes_By_IdRecepcionEnc(BeTransReEnc.IdRecepcionEnc, lConnection, lTransaction)
                             BeTransReEnc.DetalleParametros = clsLnTrans_re_det_parametros.Get_Detalle_Parametros_By_RecepcionEnc(BeTransReEnc.IdRecepcionEnc, lConnection, lTransaction)
                             BeTransReEnc.DetalleFacturas = clsLnTrans_re_fact.Get_Detalle_Facturas_By_IdRecepcionEnc(BeTransReEnc.IdRecepcionEnc, lConnection, lTransaction)
+                            BeTransReEnc.TareaHH = clsLnTarea_hh.GetSingle(1, BeTransReEnc.IdRecepcionEnc, lTransaction, lConnection)
+
+                            Return BeTransReEnc
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    '#EJC_MEJORA_20260523: Variante liviana para apertura rápida en HH.
+    Public Shared Function GetSingleHH_Lite(ByVal pIdRecepcionEnc As Integer) As clsBeTrans_re_enc
+
+        GetSingleHH_Lite = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT b.descripcion AS UbicacionRecepcion, 
+                                  tr.Descripcion, enc.IdRecepcionEnc, enc.IdPropietarioBodega, 
+                                  enc.IdMuelle, enc.IdUbicacionRecepcion, enc.IdTipoTransaccion, 
+                                  enc.fecha_recepcion, enc.hora_ini_pc, enc.hora_fin_pc, 
+                                  enc.muestra_precio, enc.estado, enc.user_agr, enc.fec_agr, enc.user_mod, 
+                                  enc.fec_mod, enc.fecha_tarea, enc.tomar_fotos, enc.escanear_rec_ubic, 
+                                  enc.para_por_codigo, enc.observacion, enc.firma_piloto, enc.activo, 
+                                  enc.NoGuia, enc.CorreoEnviado, enc.Revision_Inconsistencia, enc.bloqueada, 
+                                  enc.bloqueada_por, enc.idusuariobloqueo, enc.idmotivoanulacionbodega, 
+                                  enc.Habilitar_Stock, enc.idvehiculo, enc.idpiloto, enc.No_Marchamo, 
+                                  enc.mostrar_cantidad_esperada, enc.IdBodega, enc.carta_cupo, no_contenedor,
+                                  enc.IdEstado_Defecto_Recepcion
+                                  FROM trans_re_enc AS enc INNER JOIN
+                                  trans_re_tr AS tr ON enc.IdTipoTransaccion = tr.IdTipoTransaccion INNER JOIN
+                                  bodega_ubicacion AS b ON enc.IdUbicacionRecepcion = b.IdUbicacion INNER JOIN
+                                  propietario_bodega ON enc.IdPropietarioBodega = propietario_bodega.IdPropietarioBodega AND b.IdBodega = propietario_bodega.IdBodega
+                                  WHERE IdRecepcionEnc=@IdRecepcionEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Dim BeTransReEnc As New clsBeTrans_re_enc()
+
+                            Cargar(BeTransReEnc, lRow)
+
+                            If lRow("IdPropietarioBodega") IsNot DBNull.Value AndAlso lRow("IdPropietarioBodega") IsNot Nothing Then
+                                BeTransReEnc.PropietarioBodega.IdPropietarioBodega = CType(lRow("IdPropietarioBodega"), Integer)
+                                If clsLnPropietario_bodega.Obtener(BeTransReEnc.PropietarioBodega, lConnection, lTransaction) Then
+                                    clsLnPropietarios.Obtener(BeTransReEnc.PropietarioBodega.Propietario, lConnection, lTransaction)
+                                End If
+                            End If
+
+                            If lRow("IdUbicacionRecepcion") IsNot DBNull.Value AndAlso lRow("IdUbicacionRecepcion") IsNot Nothing Then
+                                BeTransReEnc.UbicacionRecepcion = CType(lRow("UbicacionRecepcion"), String)
+                            End If
+
+                            If lRow("IdTipoTransaccion") IsNot DBNull.Value AndAlso lRow("IdTipoTransaccion") IsNot Nothing Then
+                                BeTransReEnc.Descripcion = CType(lRow("Descripcion"), String)
+                            End If
+
+                            BeTransReEnc.Muelle = New clsBeBodega_muelles()
+                            BeTransReEnc.Muelle.IdMuelle = BeTransReEnc.IdMuelle
+                            clsLnBodega_muelles.GetSingle(BeTransReEnc.Muelle, lConnection, lTransaction)
+
+                            BeTransReEnc.IsNew = False
+
+                            BeTransReEnc.OrdenCompraRec = clsLnTrans_re_oc.GetSingleLite(BeTransReEnc.IdRecepcionEnc, lConnection, lTransaction)
                             BeTransReEnc.TareaHH = clsLnTarea_hh.GetSingle(1, BeTransReEnc.IdRecepcionEnc, lTransaction, lConnection)
 
                             Return BeTransReEnc

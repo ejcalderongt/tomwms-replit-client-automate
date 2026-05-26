@@ -611,6 +611,80 @@ public class clsLnTrans_pe_enc
         return false;
 
     }
+    public static clsBeTrans_pe_enc? GetSingle(int idPedidoEnc,
+                                               SqlConnection lConnection,
+                                               SqlTransaction? lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Trans_pe_enc WHERE IdPedidoEnc = @IdPedidoEnc";
+
+            using SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            using SqlDataAdapter dad = new(cmd);
+
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdPedidoEnc", idPedidoEnc));
+
+            DataTable dt = new();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            clsBeTrans_pe_enc pedido = new();
+            Cargar(ref pedido, dt.Rows[0]);
+            return pedido;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public static List<clsBeTrans_pe_enc> Get_By_Referencia(string referencia,
+                                                            int? idTipoPedido,
+                                                            string? codigoEmpresaERP,
+                                                            SqlConnection lConnection,
+                                                            SqlTransaction? lTransaction)
+    {
+        var result = new List<clsBeTrans_pe_enc>();
+
+        try
+        {
+            var sql = new StringBuilder("SELECT * FROM Trans_pe_enc WHERE Referencia = @Referencia");
+
+            if (idTipoPedido.HasValue && idTipoPedido.Value > 0)
+                sql.Append(" AND IdTipoPedido = @IdTipoPedido");
+
+            if (!string.IsNullOrWhiteSpace(codigoEmpresaERP))
+                sql.Append(" AND Codigo_Empresa_ERP = @Codigo_Empresa_ERP");
+
+            using SqlCommand cmd = new(sql.ToString(), lConnection, lTransaction) { CommandType = CommandType.Text };
+            using SqlDataAdapter dad = new(cmd);
+
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", referencia));
+
+            if (idTipoPedido.HasValue && idTipoPedido.Value > 0)
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", idTipoPedido.Value));
+
+            if (!string.IsNullOrWhiteSpace(codigoEmpresaERP))
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", codigoEmpresaERP));
+
+            DataTable dt = new();
+            dad.Fill(dt);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                clsBeTrans_pe_enc pedido = new();
+                Cargar(ref pedido, row);
+                result.Add(pedido);
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
     public static List<clsBeTrans_pe_enc> GetAll(IConfiguration config)
     {
 
@@ -1037,8 +1111,8 @@ public class clsLnTrans_pe_enc
     }
 
     public static int Eliminar_Encabezado_Pedido(int IdPedidoEnc,
-                                                SqlConnection lConnection,
-                                                SqlTransaction lTransaction)
+                                                 SqlConnection lConnection,
+                                                 SqlTransaction lTransaction)
     {
         try
         {
@@ -1053,6 +1127,65 @@ public class clsLnTrans_pe_enc
 
             int rowsAffected = cmd.ExecuteNonQuery();
             return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Tiene_Picking_Asociado(int idPedidoEnc,
+                                             SqlConnection lConnection,
+                                             SqlTransaction? lTransaction)
+    {
+        try
+        {
+            const string sp = @"
+                SELECT TOP (1) pd.IdPickingEnc
+                FROM trans_picking_det pd
+                WHERE pd.IdPedidoDet IN (
+                    SELECT IdPedidoDet
+                    FROM trans_pe_det
+                    WHERE IdPedidoEnc = @IdPedidoEnc
+                )
+                AND pd.IdPickingEnc NOT IN (
+                    SELECT IdPickingEnc
+                    FROM trans_picking_enc
+                    WHERE estado = 'Anulado'
+                )";
+
+            using SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", idPedidoEnc));
+
+            object? result = cmd.ExecuteScalar();
+            return result != null && result != DBNull.Value && Convert.ToInt32(result) > 0;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Anular_Pedido(int idPedidoEnc,
+                                     int idMotivoAnulacionBodega,
+                                     SqlConnection lConnection,
+                                     SqlTransaction lTransaction)
+    {
+        try
+        {
+            clsLnStock_res.Eliminar_Stock_Res_By_IdPedidoEnc(idPedidoEnc, lConnection, lTransaction);
+
+            const string sp = @"
+                UPDATE trans_pe_enc
+                SET estado = 'Anulado',
+                    IdMotivoAnulacionBodega = @IdMotivoAnulacionBodega
+                WHERE IdPedidoEnc = @IdPedidoEnc";
+
+            using SqlCommand cmd = new(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@IdMotivoAnulacionBodega", idMotivoAnulacionBodega));
+            cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", idPedidoEnc));
+
+            return cmd.ExecuteNonQuery() > 0;
         }
         catch (Exception)
         {

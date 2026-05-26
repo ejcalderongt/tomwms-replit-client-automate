@@ -1092,11 +1092,12 @@ Public Class frmPrincipal02
 
                 clsTransaccion.Begin_Transaction()
 
-                DT = clsLnTarea_hh.Get_Lista_Tareas_By_IdBodega(AP.IdBodega,
-                                                                dtpFechaInicio.Value,
-                                                                dtpFechaFin.Value,
-                                                                clsTransaccion.lConnection,
-                                                                clsTransaccion.lTransaction)
+                '#EJC20260522_PRINCIPAL02_TAREAS_READMODEL: Carga enriquecida en lote para evitar roundtrips por tarea.
+                DT = clsLnTarea_hh.Get_Lista_Tareas_Monitor_By_IdBodega(AP.IdBodega,
+                                                                        dtpFechaInicio.Value,
+                                                                        dtpFechaFin.Value,
+                                                                        clsTransaccion.lConnection,
+                                                                        clsTransaccion.lTransaction)
 
                 SyncLock DTTareas
 
@@ -1109,6 +1110,11 @@ Public Class frmPrincipal02
                     Dim vCantidadSoli = 0
                     Dim vCantidadRec = 0
 
+                    Dim vUsaReadModelTareas As Boolean = DT.Columns.Contains("Origen") AndAlso
+                                                         DT.Columns.Contains("Destino") AndAlso
+                                                         DT.Columns.Contains("Progreso") AndAlso
+                                                         DT.Columns.Contains("CalendarioAsunto")
+
                     For Each r In DT.Rows()
 
                         vIdTransaccion = r("Correlativo")
@@ -1116,7 +1122,30 @@ Public Class frmPrincipal02
                         vOrigen = ""
                         vDestino = ""
 
-                        If r.Item("Tarea") = "Recepción" Then
+                        If vUsaReadModelTareas Then
+
+                            vOrigen = IIf(IsDBNull(r("Origen")), "", r("Origen")).ToString()
+                            vDestino = IIf(IsDBNull(r("Destino")), "", r("Destino")).ToString()
+                            vProgreso = IIf(IsDBNull(r("Progreso")), 0, r("Progreso"))
+
+                            If Not IsDBNull(r("CalendarioInicio")) AndAlso Not IsDBNull(r("CalendarioFin")) Then
+                                Agregar_Tarea_Calendario(IIf(IsDBNull(r("CalendarioAsunto")), "", r("CalendarioAsunto")).ToString(),
+                                                         r("CalendarioInicio"),
+                                                         r("CalendarioFin"),
+                                                         IIf(IsDBNull(r("CalendarioIdMuelle")), 1, r("CalendarioIdMuelle")),
+                                                         IIf(IsDBNull(r("CalendarioIdTarea")), vIdTransaccion, r("CalendarioIdTarea")),
+                                                         IIf(IsDBNull(r("CalendarioUbicacion")), "", r("CalendarioUbicacion")).ToString())
+                            End If
+
+                            If r.Item("Tarea") = "Recepción" Then
+                                ContadorTareasRecepcion += 1
+                            ElseIf r.Item("Tarea") = "Picking" Then
+                                ContadorTareas += 1
+                            ElseIf r.Item("Tarea") = "Ubicación" Then
+                                ContadorTareasUbicacion += 1
+                            End If
+
+                        ElseIf r.Item("Tarea") = "Recepción" Then
 
                             BeRecepcion = clsLnTrans_re_enc.GetSingle(vIdTransaccion, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -1395,6 +1424,8 @@ Public Class frmPrincipal02
             Dim vIdTareaUbicacion As Integer = 0
             Dim BeTareaUbicacion As New clsBeTrans_ubic_hh_enc
             Dim lBeTareaUbicacionDet As New List(Of clsBeTrans_ubic_hh_det)
+            '#EJC20260522_PRINCIPAL02_REABASTO_CACHE: Evita consultar la misma presentacion por cada regla de rellenado.
+            Dim vPresentacionesAbastecerConPorId As New Dictionary(Of Integer, clsBeProducto_Presentacion)
 
             If ListReabastosPendientes Is Nothing Then Exit Sub
 
@@ -1485,13 +1516,16 @@ Public Class frmPrincipal02
                 ElseIf vReabasto.IdPresentacionAbastercerCon <> 0 Then '#EJC20210301:el reabastecimiento se quiere realizar con una presentación.
                     BeStockUbicDestino.IdUnidadMedida = vReabasto.IdUnidadMedidaBasica
                     BeStockUbicDestino.IdPresentacion = vReabasto.IdPresentacionAbastercerCon
-                    BePresentacionAbastecerCon = New clsBeProducto_Presentacion()
-                    BePresentacionAbastecerCon.IdPresentacion = vReabasto.IdPresentacionAbastercerCon
-                    BePresentacionAbastecerCon.Nombre = vReabasto.NombrePresentacionAbastecerCon
-                    BePresentacionAbastecerCon.Factor = vReabasto.FactorAbastecerCon
-                    BePresentacionAbastecerCon = clsLnProducto_presentacion.GetSingle(vReabasto.IdPresentacionAbastercerCon,
-                                                                                      clsTransaccion.lConnection,
-                                                                                      clsTransaccion.lTransaction)
+                    If Not vPresentacionesAbastecerConPorId.TryGetValue(vReabasto.IdPresentacionAbastercerCon, BePresentacionAbastecerCon) Then
+                        BePresentacionAbastecerCon = New clsBeProducto_Presentacion()
+                        BePresentacionAbastecerCon.IdPresentacion = vReabasto.IdPresentacionAbastercerCon
+                        BePresentacionAbastecerCon.Nombre = vReabasto.NombrePresentacionAbastecerCon
+                        BePresentacionAbastecerCon.Factor = vReabasto.FactorAbastecerCon
+                        BePresentacionAbastecerCon = clsLnProducto_presentacion.GetSingle(vReabasto.IdPresentacionAbastercerCon,
+                                                                                          clsTransaccion.lConnection,
+                                                                                          clsTransaccion.lTransaction)
+                        vPresentacionesAbastecerConPorId(vReabasto.IdPresentacionAbastercerCon) = BePresentacionAbastecerCon
+                    End If
 
                 Else '#EJC20210301:  esto no debería ocurrir, pero lo dejo para que me preguntes Carol jaja.
                     'quiere decir que no se definió con que se quiere reabastecer, por defecto consultaré cuanto hay en umbas.
@@ -3187,11 +3221,13 @@ Public Class frmPrincipal02
 
         Try
 
-            While Not bgWorker.CancellationPending
-                Dim systemInfo As TOMWMSSystemInfo.system_info_bof_wms = TOMWMSSystemInfo.Get_System_Info()
-                bgWorker.ReportProgress(0, systemInfo)
-                Threading.Thread.Sleep(9000)
-            End While
+            If bgWorker.CancellationPending Then Return
+
+            'Carga bajo demanda: una sola lectura por ejecución del worker.
+            'Evita el ciclo permanente con WMI + ping que degradaba el BOF.
+            Dim systemInfo As TOMWMSSystemInfo.system_info_bof_wms =
+                TOMWMSSystemInfo.Get_System_Info(False)
+            bgWorker.ReportProgress(0, systemInfo)
 
         Catch ex As Exception
             Console.WriteLine("Error al leer memoria RAM: " & ex.Message)

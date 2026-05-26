@@ -1034,12 +1034,14 @@ Partial Public Class clsLnTrans_ajuste_enc
             ByVal pHostName As String,
             ByVal pIdUsuario As Integer,
             ByVal lConnection As SqlConnection,
-            ByVal lTransaction As SqlTransaction) As Boolean
+            ByVal lTransaction As SqlTransaction,
+            Optional ByVal pCantidadReservar As Double = 0) As Boolean
 
         Try
             Dim st As clsBeStock = clsLnStock.GetSingle(idstock, lConnection, lTransaction)
             If st Is Nothing OrElse st.IdStock = 0 Then Return False
-            If st.Cantidad <= 0 Then Return False
+            Dim cantidadReserva As Double = If(pCantidadReservar > 0, pCantidadReservar, st.Cantidad)
+            If cantidadReserva <= 0 OrElse st.Cantidad <= 0 Then Return False
 
             Dim rs As New clsBeStock_res
             rs.IdStockRes = 0
@@ -1056,7 +1058,7 @@ Partial Public Class clsLnTrans_ajuste_enc
             rs.Lote = st.Lote
             rs.Lic_plate = st.Lic_plate
             rs.Serial = st.Serial
-            rs.Cantidad = st.Cantidad
+            rs.Cantidad = Math.Round(cantidadReserva, 6)
             rs.Peso = st.Peso
             rs.Estado = ""
             rs.Fecha_ingreso = st.Fecha_Ingreso

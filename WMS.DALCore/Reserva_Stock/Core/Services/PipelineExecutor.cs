@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using WMS.StockReservation.Core.Domain;
 using WMS.StockReservation.Core.Interfaces;
@@ -29,10 +30,20 @@ namespace WMS.StockReservation.Core.Services
             _logger.LogCheckpoint("=== INICIO PIPELINE RESERVA ===");
 
             bool shouldStop = false;
+            var totalWatch = Stopwatch.StartNew();
 
             foreach (var step in _steps)
             {
-                _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
+                var stepName = step.GetType().Name;
+                var stepWatch = Stopwatch.StartNew();
+                var pendingBefore = context.PendingQuantity;
+                var reservationsBefore = context.CreatedReservations?.Count ?? 0;
+
+                _logger.LogInfo(
+                    $"#MI3_PERF_STEP_START | Step={stepName} | " +
+                    $"Pending={pendingBefore:F6} | Reservas={reservationsBefore} | " +
+                    $"Picking={context.StockListPickingZone?.Count ?? 0} | " +
+                    $"NonPicking={context.StockListNonPickingZones?.Count ?? 0}");
 
                 try
                 {
@@ -42,6 +53,14 @@ namespace WMS.StockReservation.Core.Services
                 {
                     context.SetError($"Error en {step.GetType().Name}: {ex.Message}");
                     _logger.LogError($"Error en {step.GetType().Name}: {ex.Message}");
+                }
+                finally
+                {
+                    stepWatch.Stop();
+                    _logger.LogInfo(
+                        $"#MI3_PERF_STEP_END | Step={stepName} | Ms={stepWatch.ElapsedMilliseconds} | " +
+                        $"PendingBefore={pendingBefore:F6} | PendingAfter={context.PendingQuantity:F6} | " +
+                        $"ReservasBefore={reservationsBefore} | ReservasAfter={context.CreatedReservations?.Count ?? 0}");
                 }
 
                 if (context.HasError)
@@ -64,6 +83,11 @@ namespace WMS.StockReservation.Core.Services
                     shouldStop = true;
                 }
             }
+
+            totalWatch.Stop();
+            _logger.LogInfo(
+                $"#MI3_PERF_PIPELINE_TOTAL | Ms={totalWatch.ElapsedMilliseconds} | " +
+                $"Pending={context.PendingQuantity:F6} | Reservas={context.CreatedReservations?.Count ?? 0}");
 
             _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
 

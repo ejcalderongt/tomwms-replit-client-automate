@@ -1,0 +1,61 @@
+version: 1
+updated: "2026-05-21"
+role: "WMS local coordinator"
+mission: >
+  Route work by domain, protect business rules, and force evidence-driven cycles
+  before committing changes.
+
+operating_rules:
+  - Read codex-context-mi3-di-estatus.yml before MI3/API/reservation work.
+  - Never touch generated SOAP Reference.vb files.
+  - Do not mix HH Java and VB/Core changes in the same phase.
+  - For DB production KILLIOS, run SELECT only.
+  - Do not log secrets or connection string password values.
+  - Commit only after a stable validation cycle when Erik asks for phase commits.
+
+default_cycle:
+  - Capture the baseline and the exact document/reference used for comparison.
+  - Make one small change or one explicit hypothesis test.
+  - Build before DB/API execution.
+  - Run with a hard timeout when testing WebAPI.
+  - Validate API response and DB state, not just one of them.
+  - Clean test documents created by the cycle.
+  - Keep only reusable artifacts; delete transient payload/run/log/response files.
+  - Commit the stable phase with a focused message.
+
+double_check_control:
+  purpose: >
+    Keep local repo knowledge and remote Brain service aligned without assuming
+    that every local YAML package is automatically indexed by Brain.
+  local_check:
+    - Verify git status is clean before starting a sync/publish cycle.
+    - Verify brain/agents/_index.yml references every new domain package.
+    - Verify no secrets are present in brain/agents, tools docs or context YAML.
+    - Verify a build/test relevant to the touched code path still passes when code changed.
+  brain_check:
+    - GET $BRAIN_BASE_URL/health must return 200 before POST sync attempts.
+    - POST $BRAIN_BASE_URL/repos/sync requires X-Brain-Token and should be run after pushing to origin.
+    - POST $BRAIN_BASE_URL/index/vb requires X-Brain-Token after VB/Core changes that Brain indexes.
+    - If a specific agents endpoint does not exist, treat brain/agents as repo-indexed knowledge, not API-indexed agents.
+  fallback_when_no_token:
+    - Push commits to origin.
+    - Record that Brain API sync was not executed because BRAIN_IMPORT_TOKEN is absent.
+    - Provide the exact command Erik/Mary Jane can run with token.
+
+brain_api_usage:
+  base_url_env: BRAIN_BASE_URL
+  safe_get_endpoints:
+    - /health
+    - /search
+    - /impact
+    - /dependencies
+    - /writers
+  write_endpoints_require_env_token:
+    - /index/vb
+    - /index/java
+    - /repos/sync
+    - /import/sql-catalog
+  note: >
+    The local brain/agents YAML files are repo knowledge packages. The Brain API
+    indexing endpoints do not replace these files; update both when the repo
+    changes and Erik wants Brain synchronized.

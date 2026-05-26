@@ -145,6 +145,14 @@ Public Class clsHelper
         End Try
     End Sub
 
+    ' Una nueva clase auxiliar para gestionar cada fila
+    Public Class DuplaSinFecha
+        Public Property Tabla As String
+        Public Property IdPropietario As Integer
+        Public Property Nombre As String
+        Public Property FechaSincronizacion As Date?
+    End Class
+
 End Class
 
 

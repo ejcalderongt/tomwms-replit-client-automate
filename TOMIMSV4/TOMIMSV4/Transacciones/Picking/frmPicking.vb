@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
 Imports System.Threading.Tasks
@@ -65,6 +64,198 @@ Public Class frmPicking
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Property InvokeCargarPedido As Action(Of SqlConnection, SqlTransaction)
     Public Property InvokeCargarObjetoPedido As Action
+
+    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
+    ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
+    ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
+    ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. La notificación se hace después del commit WMS.
+    Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
+    '#EJC20260522_PICKING_TRACE: trace local de carga para diagnosticar latencia sin escribir a BD.
+    Private Const TAG_PICKING_TRACE As String = "#EJC20260522_PICKING_TRACE"
+    '#EJC20260522_PICKING_UI: evita eventos/repintado por fila mientras se cargan grids programaticamente.
+    Private Const TAG_PICKING_UI As String = "#EJC20260522_PICKING_UI"
+    '#EJC20260522_PICKING_CACHE: caches por carga para lecturas repetidas y seguras.
+    Private Const TAG_PICKING_CACHE As String = "#EJC20260522_PICKING_CACHE"
+    Private mPickingCargandoDetalle As Boolean = False
+    Private mPickingTraceActivo As Boolean = False
+    Private mPickingTraceTotal As System.Diagnostics.Stopwatch
+    Private mPickingTraceMarca As System.Diagnostics.Stopwatch
+    Private ReadOnly mPickingOperadoresBodegaCache As New Dictionary(Of Integer, DataTable)
+    Private ReadOnly mPickingManufacturaCache As New Dictionary(Of String, Boolean)
+    Private ReadOnly mPickingStockResPorPedidoCache As New Dictionary(Of Integer, List(Of clsBeVW_stock_res))
+
+    '#EJC20260522_PICKING_CACHE: los caches viven solo durante una carga completa del picking.
+    Private Sub PickingCache_Limpiar()
+        mPickingOperadoresBodegaCache.Clear()
+        mPickingManufacturaCache.Clear()
+        mPickingStockResPorPedidoCache.Clear()
+    End Sub
+
+    Private Function PickingCache_Key(ByVal ParamArray pValores() As Object) As String
+        Dim vPartes(pValores.Length - 1) As String
+        For i As Integer = 0 To pValores.Length - 1
+            vPartes(i) = If(pValores(i) Is Nothing, "", pValores(i).ToString())
+        Next
+        Return String.Join("|", vPartes)
+    End Function
+
+    '#EJC20260522_PICKING_CACHE: evita consultar operadores una vez por linea del detalle.
+    Private Function Get_Operadores_Bodega_Cacheado(ByVal pIdBodega As Integer,
+                                                    Optional ByVal pConnection As SqlConnection = Nothing,
+                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As DataTable
+
+        If pIdBodega = 0 Then Return Nothing
+
+        If Not mPickingOperadoresBodegaCache.ContainsKey(pIdBodega) Then
+
+            Dim vReloj = System.Diagnostics.Stopwatch.StartNew()
+            Dim vDT As DataTable
+
+            If pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing Then
+                vDT = clsLnOperador_bodega.Get_All_By_IdBodega_DT(pIdBodega, pConnection, pTransaction)
+            Else
+                vDT = clsLnOperador_bodega.Get_All_By_IdBodega_DT(pIdBodega)
+            End If
+
+            If vDT Is Nothing Then vDT = New DataTable()
+
+            mPickingOperadoresBodegaCache(pIdBodega) = vDT
+            vReloj.Stop()
+            PickingTrace_Marca("operadores_bodega_load",
+                               "bodega=" & pIdBodega &
+                               ";rows=" & vDT.Rows.Count &
+                               ";ms=" & vReloj.ElapsedMilliseconds)
+
+        End If
+
+        Return mPickingOperadoresBodegaCache(pIdBodega)
+
+    End Function
+
+    '#EJC20260522_PICKING_CACHE: Tiene_Manufactura_Asociada se repite por stock_res del mismo pedido/detalle.
+    Private Function Tiene_Manufactura_Cacheada(ByVal pIdPedidoEnc As Integer,
+                                                ByVal pIdPedidoDet As Integer) As Boolean
+
+        Dim vKey As String = PickingCache_Key(pIdPedidoEnc, pIdPedidoDet)
+
+        If Not mPickingManufacturaCache.ContainsKey(vKey) Then
+            Dim vReloj = System.Diagnostics.Stopwatch.StartNew()
+            mPickingManufacturaCache(vKey) = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(pIdPedidoEnc, pIdPedidoDet)
+            vReloj.Stop()
+            PickingTrace_Marca("manufactura_check",
+                               "pedido=" & pIdPedidoEnc &
+                               ";det=" & pIdPedidoDet &
+                               ";ms=" & vReloj.ElapsedMilliseconds)
+        End If
+
+        Return mPickingManufacturaCache(vKey)
+
+    End Function
+
+    '#EJC20260522_PICKING_TRACE: activo por defecto; se puede apagar con TOMWMS_PICKING_TRACE=0.
+    Private Function PickingTrace_Habilitado() As Boolean
+        Dim vConfig As String = Environment.GetEnvironmentVariable("TOMWMS_PICKING_TRACE")
+        Return Not String.Equals(vConfig, "0", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    Private Function PickingTrace_Ruta() As String
+        Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+        Directory.CreateDirectory(vDir)
+        Return Path.Combine(vDir, "picking-load-trace.log")
+    End Function
+
+    Private Sub PickingTrace_Inicio(ByVal pIdPickingEnc As Integer)
+        mPickingTraceActivo = PickingTrace_Habilitado()
+        If Not mPickingTraceActivo Then Return
+
+        mPickingTraceTotal = System.Diagnostics.Stopwatch.StartNew()
+        mPickingTraceMarca = System.Diagnostics.Stopwatch.StartNew()
+        PickingTrace_Escribir("START|idPickingEnc=" & pIdPickingEnc &
+                              "|modo=" & Modo.ToString() &
+                              "|bodega=" & Val(cmbBodegas.EditValue))
+    End Sub
+
+    Private Sub PickingTrace_Marca(ByVal pPaso As String, Optional ByVal pDetalle As String = "")
+        If Not mPickingTraceActivo Then Return
+        If mPickingTraceTotal Is Nothing OrElse mPickingTraceMarca Is Nothing Then Return
+
+        PickingTrace_Escribir("MARK|paso=" & pPaso &
+                              "|totalMs=" & mPickingTraceTotal.ElapsedMilliseconds &
+                              "|deltaMs=" & mPickingTraceMarca.ElapsedMilliseconds &
+                              If(String.IsNullOrEmpty(pDetalle), "", "|" & pDetalle))
+        mPickingTraceMarca.Restart()
+    End Sub
+
+    Private Sub PickingTrace_Fin(Optional ByVal pDetalle As String = "")
+        If Not mPickingTraceActivo Then Return
+        If mPickingTraceTotal Is Nothing Then Return
+
+        PickingTrace_Escribir("END|totalMs=" & mPickingTraceTotal.ElapsedMilliseconds &
+                              If(String.IsNullOrEmpty(pDetalle), "", "|" & pDetalle))
+        mPickingTraceActivo = False
+    End Sub
+
+    Private Sub PickingTrace_Escribir(ByVal pMensaje As String)
+        Try
+            Dim vPath As String = PickingTrace_Ruta()
+            Dim vInfo As New FileInfo(vPath)
+            If vInfo.Exists AndAlso vInfo.Length > 5 * 1024 * 1024 Then
+                File.WriteAllText(vPath, String.Empty, New System.Text.UTF8Encoding(False))
+            End If
+
+            File.AppendAllText(vPath,
+                               DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") & "|" & TAG_PICKING_TRACE & "|" & pMensaje & Environment.NewLine,
+                               New System.Text.UTF8Encoding(False))
+        Catch
+        End Try
+    End Sub
+
+    Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Async(ByVal pEstadoPedido As Integer,
+                                                                  ByVal pEstadoFactura As Integer,
+                                                                  ByVal pEstadoGuia As Integer) As Task
+
+        If Not AP.Bodega.Interface_SAP Then Return
+        If String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then Return
+
+        Try
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            For Each ped In lPedidosPicking
+
+                If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
+                   ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
+
+                    Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
+                        ped.Referencia,
+                        vHanaService.SessionCookie,
+                        SapServiceLayerClient.baseUrl,
+                        pEstadoPedido,
+                        pEstadoFactura,
+                        pEstadoGuia,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now,
+                        Now,
+                        AP.UsuarioAp.IdUsuario,
+                        Now)
+
+                End If
+
+            Next
+
+        Catch ex As Exception
+            clsLnLog_error_wms_pick.Agregar_Error(TAG_NOTIFICAR_SAP_HANA_MAMAPA & ": No se pudo notificar estado SAP HANA SL. EstadoPedido=" & pEstadoPedido & ". " & ex.Message,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdPedidoEnc:=BePickingEnc.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingEnc.IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace)
+        End Try
+
+    End Function
+
     Sub New(ByVal pModo As TipoTrans, pPickingAuto As Boolean)
         InitializeComponent()
         Modo = pModo
@@ -505,54 +696,8 @@ Public Class frmPicking
                 Return False
             End If
 
-            '#EJC20260306: Si la instancia tiene interface con SAP y la instancia de SAP es HANA SL, eliminar el documento desde SL.
-            If AP.Bodega.Interface_SAP AndAlso Not String.IsNullOrWhiteSpace(clsBD.Instancia.HANA_SL) Then
-
-                Dim vHanaService As New SapServiceLayerClient()
-
-                Dim loginResponse As LoginResponseDto =
-                Await vHanaService.LoginAsync()
-                For Each ped In lPedidosPicking
-
-                    If ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Deudor OrElse
-                       ped.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Factura_Reserva_Cliente Then
-
-                        '========================================
-                        ' Variables configurables
-                        '========================================
-                        Dim estadoPedido As Integer = 2
-                        Dim estadoFactura As Integer = 2
-                        Dim estadoGuia As Integer = 1
-
-                        Dim inicioPick As Date = Now
-                        Dim usuarioPick As String = AP.UsuarioAp.IdUsuario
-                        Dim finPick As Date = Now
-
-                        Dim inicioPack As Date = Now
-                        Dim usuarioPack As String = AP.UsuarioAp.IdUsuario
-                        Dim finPack As Date = Now
-
-                        '========================================
-                        ' Actualizar traslado SAP SL
-                        '========================================
-                        Await clsSyncSapTrasladosEnvio.Cambiar_Estado_Traslado_SLAsync(
-                            ped.Referencia,
-                            vHanaService.SessionCookie,
-                            SapServiceLayerClient.baseUrl,
-                            estadoPedido,
-                            estadoFactura,
-                            estadoGuia,
-                            inicioPick,
-                            usuarioPick,
-                            finPick,
-                            inicioPack,
-                            usuarioPack,
-                            finPack)
-
-                    End If
-
-                Next
-            End If
+            '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 2 = Asignado al crear picking.
+            Await Notificar_Estado_SAP_Hana_MAMAPA_Async(2, 2, 1)
 
             '#GT27022023: se guarda log del picking
             Dim mensajeLog As String =
@@ -1198,9 +1343,9 @@ Public Class frmPicking
 
         Try
 
-            Dim DT As DataTable = clsLnOperador_bodega.Get_All_By_IdBodega_DT(cmbBodegas.EditValue,
-                                                                              pConnection,
-                                                                              pTransaction)
+            Dim DT As DataTable = Get_Operadores_Bodega_Cacheado(cmbBodegas.EditValue,
+                                                                 pConnection,
+                                                                 pTransaction)
 
             If Not DT Is Nothing Then
 
@@ -1236,6 +1381,8 @@ Public Class frmPicking
     Private Sub grdListaPickingD_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgridDetallePicking.CellValueChanged
 
         Try
+
+            If mPickingCargandoDetalle Then Return
 
             If dgridDetallePicking.Rows.Count > 0 AndAlso dgridDetallePicking.CurrentRow IsNot Nothing Then
 
@@ -1657,7 +1804,7 @@ Public Class frmPicking
 
                     End If
 
-                    Dim vTieneManufactura As Boolean = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(Obj.IdPedidoEnc, Obj.IdPedidoDet)
+                    Dim vTieneManufactura As Boolean = Tiene_Manufactura_Cacheada(Obj.IdPedidoEnc, Obj.IdPedidoDet)
 
                     DTStockRes.Rows.Add(Obj.IdPedidoEnc,
                                         Obj.IdPickingEnc,
@@ -1859,6 +2006,10 @@ Public Class frmPicking
     Private Sub Cargar_Datos()
 
         Dim clsTransaccion As New clsTransaccion
+        Dim vUIBatchActivo As Boolean = False
+        Dim vLineasDetalle As Integer = 0
+        Dim vPedidos As Integer = 0
+        Dim vStockRows As Integer = 0
 
         Try
 
@@ -1869,17 +2020,35 @@ Public Class frmPicking
 
             If BePickingEnc IsNot Nothing Then
 
+                PickingTrace_Inicio(BePickingEnc.IdPickingEnc)
+                PickingCache_Limpiar()
+                mPickingCargandoDetalle = True
+                vUIBatchActivo = True
+                dgridPedidos.SuspendLayout()
+                dgridDetallePicking.SuspendLayout()
+                DTStockRes.BeginLoadData()
+                grdvPickingUbic.BeginDataUpdate()
+                PickingTrace_Marca("ui_batch_inicio")
+
                 clsTransaccion.Open_Connection() : clsTransaccion.Begin_Transaction()
+                PickingTrace_Marca("conexion")
 
                 BePickingEnc = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("picking_getsingle",
+                                   "detalle=" & If(BePickingEnc.ListaPickingDet Is Nothing, 0, BePickingEnc.ListaPickingDet.Count) &
+                                   ";ubic=" & If(BePickingEnc.ListaPickingUbic Is Nothing, 0, BePickingEnc.ListaPickingUbic.Count))
 
                 Mostrar_Datos_Encabezado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("encabezado")
 
                 Mostrar_Pedidos_Asociados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("pedidos_asociados", "pedidos=" & If(pListaPedidos Is Nothing, 0, pListaPedidos.Count))
 
                 Cargar_Pedidos_Impresion(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("pedidos_impresion")
 
                 Lista_Productos_Dañados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                PickingTrace_Marca("productos_daniados")
 
                 If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
 
@@ -1895,8 +2064,30 @@ Public Class frmPicking
                     Dim ie As Integer = 0
                     Dim TiempoCliente As New clsBeCliente_tiempos()
 
+                    If BePickingEnc.Estado <> "Despachado" Then
+                        Dim vRelojStockRes As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
+                        Dim vStockResPicking = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPickingEnc_ReadModel(BePickingEnc.IdPickingEnc,
+                                                                                                             False,
+                                                                                                             (Modo = TipoTrans.Nuevo),
+                                                                                                             True,
+                                                                                                             clsTransaccion.lConnection,
+                                                                                                             clsTransaccion.lTransaction)
+
+                        mPickingStockResPorPedidoCache.Clear()
+                        For Each vGrupoPedido In vStockResPicking.GroupBy(Function(x) x.IdPedido)
+                            mPickingStockResPorPedidoCache(vGrupoPedido.Key) = vGrupoPedido.ToList()
+                        Next
+
+                        vRelojStockRes.Stop()
+                        PickingTrace_Marca("stock_res_readmodel",
+                                           "rows=" & vStockResPicking.Count &
+                                           ";pedidos=" & mPickingStockResPorPedidoCache.Count &
+                                           ";ms=" & vRelojStockRes.ElapsedMilliseconds)
+                    End If
+
                     For Each IdPedidoEnc As Integer In ListaPedidosPicking
 
+                        vPedidos += 1
                         BePickingDet = BePickingEnc.ListaPickingDet.ToList.Find(Function(b) b.IdPedidoEnc = IdPedidoEnc)
 
                         ie = dgridPedidos.Rows.Add()
@@ -1944,10 +2135,17 @@ Public Class frmPicking
                             Next
 
                         Else
-                            Set_Stock_Res(BePickingDet.IdPedidoEnc)
+                            Set_Stock_Res(BePickingDet.IdPedidoEnc, False)
                         End If
 
                     Next
+
+                    If BePickingEnc.Estado <> "Despachado" Then
+                        dgridPickingUbic.DataSource = DTStockRes
+                    End If
+
+                    vStockRows = DTStockRes.Rows.Count
+                    PickingTrace_Marca("stock_res_grid", "pedidos=" & vPedidos & ";rows=" & vStockRows)
 
                     dgridPedidos.CommitEdit(DataGridViewDataErrorContexts.Commit)
                     dgridPedidos.EndEdit()
@@ -1974,6 +2172,7 @@ Public Class frmPicking
 
                     For Each det As clsBeTrans_picking_det In BePickingEnc.ListaPickingDet
 
+                        vLineasDetalle += 1
                         i = dgridDetallePicking.Rows.Add(det.Producto.Codigo)
 
                         dgridDetallePicking.Rows(i).Cells("IdPedidoEnc").Value = det.IdPedidoEnc
@@ -2026,6 +2225,11 @@ Public Class frmPicking
 
                     Next
 
+                    PickingTrace_Marca("detalle_grid",
+                                       "lineas=" & vLineasDetalle &
+                                       ";operadoresCache=" & mPickingOperadoresBodegaCache.Count &
+                                       ";manufacturaCache=" & mPickingManufacturaCache.Count)
+
                 End If
 
                 If BePickingEnc.Estado = "Anulado" Then
@@ -2049,6 +2253,7 @@ Public Class frmPicking
                 End If
 
                 clsTransaccion.Commit_Transaction()
+                PickingTrace_Marca("commit")
 
                 Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
 
@@ -2067,15 +2272,34 @@ Public Class frmPicking
             End If
 
             Actualizar_Gaugue_Progreso()
+            PickingTrace_Marca("gauge")
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
             SplashScreenManager.CloseForm(False)
+            PickingTrace_Marca("error", ex.Message)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Finally
+            If vUIBatchActivo Then
+                Try
+                    grdvPickingUbic.EndDataUpdate()
+                Catch
+                End Try
+                Try
+                    DTStockRes.EndLoadData()
+                Catch
+                End Try
+                dgridDetallePicking.ResumeLayout()
+                dgridPedidos.ResumeLayout()
+                mPickingCargandoDetalle = False
+                PickingTrace_Marca("ui_batch_fin")
+            End If
             SplashScreenManager.CloseForm(False)
             IsLoading = False
             clsTransaccion.Close_Conection()
+            PickingTrace_Fin("pedidos=" & vPedidos &
+                             ";detalle=" & vLineasDetalle &
+                             ";stockRows=" & vStockRows)
         End Try
 
     End Sub
@@ -2199,7 +2423,7 @@ Public Class frmPicking
         Anular_Picking()
     End Sub
 
-    Private Sub Anular_Picking()
+    Private Async Sub Anular_Picking()
 
         Dim vLiberarStock As Boolean = False
 
@@ -2224,6 +2448,9 @@ Public Class frmPicking
                                                          BeListOp,
                                                          AP.IdEmpresa,
                                                          vLiberarStock) Then
+
+                    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estado 1 = Nueva/disponible en SAP cuando se anula el picking y puede reasignarse.
+                    Await Notificar_Estado_SAP_Hana_MAMAPA_Async(1, 1, 1)
 
                     Dim vMsgError As String = "El usuario" & AP.UsuarioAp.IdUsuario & " anuló el picking " & BePickingEnc.IdPickingEnc
                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -2442,15 +2669,24 @@ Public Class frmPicking
     End Sub
 
     '#CM20172310_1231PM: Se agregaron campos al GridView de ubicación picking. 
-    Public Sub Set_Stock_Res(ByVal pIdPedidoEnc As Integer)
+    Public Sub Set_Stock_Res(ByVal pIdPedidoEnc As Integer,
+                             Optional ByVal pAsignarDataSource As Boolean = True)
 
         Try
 
-            pListObjSP = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc_And_IdPickingEnc(pIdPedidoEnc,
-                                                                                             BePickingEnc.IdPickingEnc,
-                                                                                             False,
-                                                                                             (Modo = TipoTrans.Nuevo),
-                                                                                             True)
+            If Not mPickingStockResPorPedidoCache.TryGetValue(pIdPedidoEnc, pListObjSP) Then
+                pListObjSP = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc_And_IdPickingEnc(pIdPedidoEnc,
+                                                                                                 BePickingEnc.IdPickingEnc,
+                                                                                                 False,
+                                                                                                 (Modo = TipoTrans.Nuevo),
+                                                                                                 True)
+            Else
+                '#EJC20260522_PICKING_READMODEL: Set_Stock_Res transforma cantidades para UI; trabajar sobre clones evita mutar el cache base.
+                pListObjSP = pListObjSP.Select(Function(x) CType(x.Clone(), clsBeVW_stock_res)).ToList()
+                PickingTrace_Marca("stock_res_cache_hit",
+                                   "pedido=" & pIdPedidoEnc &
+                                   ";rows=" & pListObjSP.Count)
+            End If
 
             If pListObjSP.Count > 0 Then
 
@@ -2584,7 +2820,7 @@ Public Class frmPicking
 
                     End If
 
-                    Dim vTieneManufactura As Boolean = clsLnTrans_pe_det.Tiene_Manufactura_Asociada(ObjStock.IdPedido, ObjStock.IdPedidoDet)
+                    Dim vTieneManufactura As Boolean = Tiene_Manufactura_Cacheada(ObjStock.IdPedido, ObjStock.IdPedidoDet)
 
                     DTStockRes.Rows.Add(ObjStock.IdPedido,
                                         ObjStock.IdPicking,
@@ -2624,7 +2860,7 @@ Public Class frmPicking
 
             If DTStockRes.Rows.Count > 0 Then
 
-                If BePickingEnc.Estado <> "Despachado" Then
+                If pAsignarDataSource AndAlso BePickingEnc.Estado <> "Despachado" Then
                     dgridPickingUbic.DataSource = DTStockRes
                 End If
 
@@ -2640,6 +2876,11 @@ Public Class frmPicking
     Private Sub grdListaPickingD_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgridDetallePicking.RowValidating
 
         Try
+
+            If mPickingCargandoDetalle Then
+                e.Cancel = False
+                Return
+            End If
 
             If Not String.IsNullOrEmpty(dgridDetallePicking.Rows(e.RowIndex).Cells("Producto").Value) Then
 
@@ -5283,7 +5524,7 @@ Public Class frmPicking
 
         Try
 
-            Dim DT As DataTable = clsLnOperador_bodega.Get_All_By_IdBodega_DT(cmbBodegas.EditValue)
+            Dim DT As DataTable = Get_Operadores_Bodega_Cacheado(cmbBodegas.EditValue)
 
             If Not DT Is Nothing Then
 
@@ -5771,12 +6012,13 @@ Public Class frmPicking
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
                 .WindowState = FormWindowState.Maximized
+                .InvokeCargarPedido = AddressOf Cargar_Datos
+                .Despacho_Cargado_Desde_Picking = True
                 .Activate()
                 .Show()
-                .Agregar_Pedido(BePedidoEnc)
-                .InvokeCargarPedido = AddressOf Cargar_Datos
-                .Focus()
                 .BringToFront()
+                .Agregar_Pedido(BePedidoEnc)
+                .Focus()
             End With
 
         Catch ex As Exception

@@ -20,6 +20,8 @@
 | 2026-04-25 01:59 | v21_bundle.zip | v21.G1 + v21.G2 | manual (sobre v18) | ✅ aplicado | Existencia live solo en borrador + ColCantidad = Abs(Cantidad_nueva - Cantidad_original) para tipo 3/5 |
 | 2026-04-25 02:14 | v22_bundle_2026-04-25.zip | v22 (existencia from BD) | manual | ✅ aplicado | Se elimina refresh live desde Stock; CantidadP usa Cantidad_original persistida |
 | 2026-04-25 02:46 | v23_bundle_2026-04-25.zip | v23 reglas eliminar ajuste | apply (.patch) | ✅ aplicado | Ajusta validaciones de eliminación considerando modo borrador y listas en memoria |
+| 2026-05-23 18:05 | hh_json_wrapper_global_2026-05-23 | HH base parser JSON colecciones | manual | ✅ aplicado | WebService normaliza recursivamente arreglos a wrapper compatible (items + nombre original) para evitar fix campo a campo |
+| 2026-05-23 18:22 | recepcion_lite_hh_ws_2026-05-23 | HH + WSHHRN + DAL recepción/OC | manual | ✅ aplicado | Nuevo GetSingleRec_JSON_Lite + DAL lite + fallback HH + carga diferida de detalle OC en frm_list_rec_prod |
 
 ## Cómo actualizar esta bitácora
 

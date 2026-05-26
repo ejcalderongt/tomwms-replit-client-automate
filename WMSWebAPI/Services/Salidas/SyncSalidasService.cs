@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics;
 using WMS.DALCore;
 using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
@@ -292,22 +293,117 @@ namespace WMSWebAPI.Services.Salidas
 
             return detalles;
         }
+        public AnularSalidaResultDto Anular_salida(AnularSalidaRequestDto request)
+        {
+            var validationFailures = ValidarSolicitudAnulacion(request);
+            if (validationFailures.Count > 0)
+                return FalloAnulacion("REQUEST_INVALID", "Solicitud inválida.", validationFailures);
+
+            string? connectionString = _configuration.GetConnectionString("CST");
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("La cadena de conexión CST no está configurada.");
+
+            using var conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using var tx = conn.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+
+            try
+            {
+                var pedidos = ResolverPedidosParaAnulacion(request, conn, tx);
+                if (pedidos.Count == 0)
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("PEDIDO_NO_ENCONTRADO", "No se encontró el documento de salida solicitado.");
+                }
+
+                if (pedidos.Count > 1)
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("PEDIDO_AMBIGUO", "La referencia coincide con más de un documento. Envíe IdPedidoEnc o IdTipoPedido.");
+                }
+
+                var pedido = pedidos[0];
+                if (pedido.Estado.Equals("Anulado", StringComparison.OrdinalIgnoreCase) || pedido.Anulado)
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("PEDIDO_YA_ANULADO", "El documento de salida ya está anulado.", pedido);
+                }
+
+                if (!EsEstadoAnulable(pedido.Estado))
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("ESTADO_NO_ANULABLE", $"No es posible anular el pedido en estado {pedido.Estado}.", pedido);
+                }
+
+                if (clsLnTrans_pe_enc.Tiene_Picking_Asociado(pedido.IdPedidoEnc, conn, tx))
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("PICKING_ASOCIADO", "No se puede anular el documento porque tiene picking asociado.", pedido);
+                }
+
+                int stockReservadoAntes = clsLnStock_res.Get_Count_By_IdPedidoEnc(pedido.IdPedidoEnc, conn, tx);
+                bool anulado = clsLnTrans_pe_enc.Anular_Pedido(pedido.IdPedidoEnc, request.IdMotivoAnulacionBodega, conn, tx);
+                int polizasAnuladas = 0;
+
+                if (!anulado)
+                {
+                    tx.Rollback();
+                    return FalloAnulacion("ANULACION_FALLIDA", "No se pudo anular el documento de salida.", pedido);
+                }
+
+                var bodega = clsLnBodega.GetSingle_By_Idbodega(pedido.IdBodega, conn, tx);
+                if (bodega?.Es_bodega_fiscal == true)
+                    polizasAnuladas = clsLnTrans_pe_pol.Anular_Polizas_By_IdPedidoEnc(pedido.IdPedidoEnc, conn, tx);
+
+                tx.Commit();
+
+                return new AnularSalidaResultDto
+                {
+                    Exito = true,
+                    Codigo = "ANULACION_OK",
+                    Mensaje = "Documento de salida anulado y stock reservado liberado.",
+                    IdPedidoEnc = pedido.IdPedidoEnc,
+                    Referencia = pedido.Referencia,
+                    EstadoAnterior = pedido.Estado,
+                    EstadoActual = "Anulado",
+                    IdMotivoAnulacionBodega = request.IdMotivoAnulacionBodega,
+                    StockReservadoLiberado = stockReservadoAntes,
+                    PolizasAnuladas = polizasAnuladas
+                };
+            }
+            catch
+            {
+                tx.Rollback();
+                throw;
+            }
+        }
         public MI3ProcessingResultDto Insert_salida_mi3(clsBeI_nav_ped_traslado_enc BeInavPedSalida)
         {
             var result = new MI3ProcessingResultDto();
             string resultado = string.Empty;
+            var totalWatch = Stopwatch.StartNew();
+            var noDocumento = BeInavPedSalida?.No ?? "";
 
             try
             {
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_START | Documento={noDocumento}");
+
+                var stageWatch = Stopwatch.StartNew();
                 if (!Datos_Validos(_configuration, BeInavPedSalida))
                 {
                     result.Exito = false;
                     result.Mensaje = "Datos no válidos";
                     return result;
                 }
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_DATOS_VALIDOS | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds}");
 
+                stageWatch.Restart();
                 clsBeTrans_pe_enc? BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(
                     BeInavPedSalida, ref resultado, _configuration);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_IMPORTAR | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | IdPedidoEnc={BePedidoEnc?.IdPedidoEnc ?? 0}");
 
                 if (BePedidoEnc == null)
                 {
@@ -318,7 +414,10 @@ namespace WMSWebAPI.Services.Salidas
                     return result;
                 }
 
+                stageWatch.Restart();
                 int cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, _configuration);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_COUNT_LINES | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | Count={cantLineas}");
                 
                 if (cantLineas == 0)
                 {
@@ -340,13 +439,20 @@ namespace WMSWebAPI.Services.Salidas
                 using var conn = new SqlConnection(connectionString);
                 conn.Open();
 
+                stageWatch.Restart();
                 result.LineasDetalle = ObtenerDetallesReserva(BePedidoEnc.IdPedidoEnc, BeInavPedSalida?.No ?? string.Empty, conn, null);
+                stageWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_DETALLES | Documento={noDocumento} | Ms={stageWatch.ElapsedMilliseconds} | Count={result.LineasDetalle.Count}");
                 
                 result.TotalSolicitado = result.LineasDetalle.Sum(l => l.QuantityRequested);
                 result.TotalReservado = result.LineasDetalle.Sum(l => l.QuantityReserved);
+                totalWatch.Stop();
+                Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_END | Documento={noDocumento} | Ms={totalWatch.ElapsedMilliseconds} | Exito={result.Exito}");
             }
             catch (Exception ex)
             {
+                totalWatch.Stop();
+                Console.WriteLine($"[ERROR] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_ERROR | Documento={noDocumento} | Ms={totalWatch.ElapsedMilliseconds} | Error={ex.Message}");
                 result.Exito = false;
                 result.Mensaje = ex.Message;
                 result.LineasFallo = BuildLineasFallo(BeInavPedSalida, ex.Message);
@@ -354,7 +460,99 @@ namespace WMSWebAPI.Services.Salidas
 
             return result;
         }
+        private static List<AnularSalidaFailureDto> ValidarSolicitudAnulacion(AnularSalidaRequestDto request)
+        {
+            var fallos = new List<AnularSalidaFailureDto>();
 
+            if (request == null)
+            {
+                fallos.Add(new AnularSalidaFailureDto
+                {
+                    Codigo = "REQUEST_NULL",
+                    Campo = "body",
+                    Mensaje = "Debe enviar un cuerpo JSON válido."
+                });
+                return fallos;
+            }
+
+            bool tieneId = request.IdPedidoEnc.HasValue && request.IdPedidoEnc.Value > 0;
+            bool tieneReferencia = !string.IsNullOrWhiteSpace(request.Referencia);
+
+            if (!tieneId && !tieneReferencia)
+            {
+                fallos.Add(new AnularSalidaFailureDto
+                {
+                    Codigo = "IDENTIFICADOR_REQUERIDO",
+                    Campo = "IdPedidoEnc|Referencia",
+                    Mensaje = "Debe enviar IdPedidoEnc o Referencia."
+                });
+            }
+
+            if (request.IdMotivoAnulacionBodega <= 0)
+            {
+                fallos.Add(new AnularSalidaFailureDto
+                {
+                    Codigo = "MOTIVO_ANULACION_REQUERIDO",
+                    Campo = "IdMotivoAnulacionBodega",
+                    Mensaje = "Debe enviar un motivo de anulación válido."
+                });
+            }
+
+            return fallos;
+        }
+
+        private static List<clsBeTrans_pe_enc> ResolverPedidosParaAnulacion(AnularSalidaRequestDto request,
+                                                                            SqlConnection conn,
+                                                                            SqlTransaction tx)
+        {
+            if (request.IdPedidoEnc.HasValue && request.IdPedidoEnc.Value > 0)
+            {
+                var pedido = clsLnTrans_pe_enc.GetSingle(request.IdPedidoEnc.Value, conn, tx);
+                return pedido == null ? new List<clsBeTrans_pe_enc>() : new List<clsBeTrans_pe_enc> { pedido };
+            }
+
+            return clsLnTrans_pe_enc.Get_By_Referencia(request.Referencia ?? string.Empty,
+                                                       request.IdTipoPedido,
+                                                       request.CodigoEmpresaERP,
+                                                       conn,
+                                                       tx);
+        }
+
+        private static bool EsEstadoAnulable(string estado)
+        {
+            string[] estadosAnulables = { "Nuevo", "Incompleto", "Pendiente", "Pickeado", "Verificado" };
+            return estadosAnulables.Any(x => x.Equals(estado, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static AnularSalidaResultDto FalloAnulacion(string codigo,
+                                                            string mensaje,
+                                                            clsBeTrans_pe_enc? pedido = null)
+        {
+            return new AnularSalidaResultDto
+            {
+                Exito = false,
+                Codigo = codigo,
+                Mensaje = mensaje,
+                IdPedidoEnc = pedido?.IdPedidoEnc ?? 0,
+                Referencia = pedido?.Referencia ?? string.Empty,
+                EstadoAnterior = pedido?.Estado ?? string.Empty,
+                EstadoActual = pedido?.Estado ?? string.Empty,
+                IdMotivoAnulacionBodega = pedido?.IdMotivoAnulacionBodega ?? 0
+            };
+        }
+
+        private static AnularSalidaResultDto FalloAnulacion(string codigo,
+                                                            string mensaje,
+                                                            List<AnularSalidaFailureDto> fallos)
+        {
+            return new AnularSalidaResultDto
+            {
+                Exito = false,
+                Codigo = codigo,
+                Mensaje = mensaje,
+                Fallos = fallos
+            };
+        }
         private static List<LineaFalloDto> BuildLineasFallo(
             clsBeI_nav_ped_traslado_enc documento, string exceptionMessage)
         {
@@ -379,7 +577,6 @@ namespace WMSWebAPI.Services.Salidas
 
             return lista;
         }
-
         private static string ExtractLineFailureReason(int lineNo, string exceptionMessage)
         {
             if (string.IsNullOrWhiteSpace(exceptionMessage))
@@ -400,13 +597,11 @@ namespace WMSWebAPI.Services.Salidas
             var endIdx = razonText.IndexOf(';');
             return endIdx >= 0 ? razonText.Substring(0, endIdx).Trim() : razonText.Trim();
         }
-
         private static string NormalizeProcessResultText(string value)
         {
             return string.Join(" ", value.Split(new[] { '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries))
                          .Trim();
         }
-
         private static string ExtractReservationFailureDetail(string processResult)
         {
             var text = NormalizeProcessResultText(processResult);
@@ -430,7 +625,6 @@ namespace WMSWebAPI.Services.Salidas
                 ? "No hay existencia aplicable valida para la solicitud"
                 : text;
         }
-
         private static (string? code, string? reason) ExtractTypedFailure(string processResult)
         {
             var detail = ExtractReservationFailureDetail(processResult);
@@ -454,7 +648,6 @@ namespace WMSWebAPI.Services.Salidas
             return (string.IsNullOrWhiteSpace(code) ? null : code,
                     string.IsNullOrWhiteSpace(reason) ? detail : reason);
         }
-
         private static (string code, string reason) ResolveFailureReason(string? processResult)
         {
             if (string.IsNullOrWhiteSpace(processResult))
@@ -477,7 +670,6 @@ namespace WMSWebAPI.Services.Salidas
             return (typedFreeText.code ?? "RESERVA_FALLIDA",
                     typedFreeText.reason ?? processResult);
         }
-
         private List<ReservationLineDetailDto> ObtenerDetallesReserva(int idPedidoEnc, string noEnc, SqlConnection conn, SqlTransaction? tx)
         {
             try
@@ -544,7 +736,6 @@ namespace WMSWebAPI.Services.Salidas
                 return new List<ReservationLineDetailDto>();
             }
         }
-
         private bool Datos_Validos(IConfiguration config, clsBeI_nav_ped_traslado_enc BeINavPedClienteEnc)
         {
             bool Datos_Validos = false;
@@ -583,7 +774,6 @@ namespace WMSWebAPI.Services.Salidas
 
             return Datos_Validos;
         }
-
         public void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx)
         {
 

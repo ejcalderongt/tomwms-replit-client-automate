@@ -40,9 +40,9 @@ DAL
 </member>
 <member name="M:TOMWMS.clsLnAjuste_motivo.Get_IdMotivo_By_Codigo(System.String)">
  <summary>
- Obtiene el ID del motivo de ajuste por su código o nombre
+ Obtiene el ID del motivo de ajuste por su c�digo o nombre
  </summary>
- <param name="motivoTexto">Código o nombre del motivo (ENT, SAL, INV, MER, DEV, CAM, OTR, etc.)</param>
+ <param name="motivoTexto">C�digo o nombre del motivo (ENT, SAL, INV, MER, DEV, CAM, OTR, etc.)</param>
  <returns>ID del motivo, o 0 si no se encuentra</returns>
 </member>
 <member name="M:TOMWMS.clsLnLog_error_wms.Get_All_By_Referencia_Documento(System.String)">

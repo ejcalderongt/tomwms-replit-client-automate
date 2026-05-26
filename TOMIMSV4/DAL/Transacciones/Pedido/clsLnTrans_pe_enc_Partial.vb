@@ -8,6 +8,59 @@ Imports DevExpress.Data.Linq.Helpers
 
 Partial Public Class clsLnTrans_pe_enc
 
+    Private Shared Function Get_Select_Pedidos_List_Con_Indicadores(ByVal pVista As String) As String
+
+        Return " SELECT P.*, " &
+               " ISNULL(DET.Lineas_Pedido, 0) AS Lineas_Pedido, " &
+               " ISNULL(RES.Lineas_Reservadas, 0) AS Lineas_Reservadas, " &
+               " CASE WHEN ISNULL(DET.Lineas_Pedido, 0) - ISNULL(RES.Lineas_Reservadas, 0) < 0 THEN 0 " &
+               "      ELSE ISNULL(DET.Lineas_Pedido, 0) - ISNULL(RES.Lineas_Reservadas, 0) END AS Lineas_Pendientes_Reserva, " &
+               " CAST(CASE WHEN ISNULL(DET.Lineas_Pedido, 0) = 0 THEN 0 " &
+               "           WHEN ISNULL(RES.Lineas_Reservadas, 0) >= ISNULL(DET.Lineas_Pedido, 0) THEN 100 " &
+               "           ELSE ROUND((ISNULL(RES.Lineas_Reservadas, 0) * 100.0) / NULLIF(DET.Lineas_Pedido, 0), 2) END AS DECIMAL(18, 2)) AS Porcentaje_Reservado, " &
+               " ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) AS Cantidad_Picking_Solicitada_Total, " &
+               " ISNULL(PICK.Cantidad_Picking_Total, 0) AS Cantidad_Picking_Total, " &
+               " ISNULL(PICK.Cantidad_Verificada_Total, 0) AS Cantidad_Verificada_Total, " &
+               " ISNULL(PICK.Cantidad_Despachada_Total, 0) AS Cantidad_Despachada_Total, " &
+               " CAST(CASE WHEN ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) = 0 THEN 0 " &
+               "           WHEN ISNULL(PICK.Cantidad_Picking_Total, 0) >= ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) THEN 100 " &
+               "           ELSE ROUND((ISNULL(PICK.Cantidad_Picking_Total, 0) * 100.0) / NULLIF(PICK.Cantidad_Picking_Solicitada_Total, 0), 2) END AS DECIMAL(18, 2)) AS Porcentaje_Picking, " &
+               " CAST(CASE WHEN ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) = 0 THEN 0 " &
+               "           WHEN ISNULL(PICK.Cantidad_Verificada_Total, 0) >= ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) THEN 100 " &
+               "           ELSE ROUND((ISNULL(PICK.Cantidad_Verificada_Total, 0) * 100.0) / NULLIF(PICK.Cantidad_Picking_Solicitada_Total, 0), 2) END AS DECIMAL(18, 2)) AS Porcentaje_Verificado, " &
+               " CASE WHEN P.Estado = 'Anulado' THEN 'Anulado' " &
+               "      WHEN P.Estado = 'Despachado' THEN 'Despachado' " &
+               "      WHEN ISNULL(DET.Lineas_Pedido, 0) = 0 THEN 'Sin detalle' " &
+               "      WHEN ISNULL(RES.Lineas_Reservadas, 0) < ISNULL(DET.Lineas_Pedido, 0) THEN 'Reserva pendiente' " &
+               "      WHEN ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) = 0 THEN 'Sin picking' " &
+               "      WHEN ISNULL(PICK.Cantidad_Picking_Total, 0) < ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) THEN 'Picking pendiente' " &
+               "      WHEN ISNULL(PICK.Cantidad_Verificada_Total, 0) < ISNULL(PICK.Cantidad_Picking_Solicitada_Total, 0) THEN 'Verificacion pendiente' " &
+               "      ELSE 'Listo' END AS Estado_Progreso " &
+               " FROM " & pVista & " P " &
+               " OUTER APPLY ( " &
+               "     SELECT COUNT(IdPedidoDet) AS Lineas_Pedido " &
+               "     FROM trans_pe_det " &
+               "     WHERE IdPedidoEnc = P.Correlativo " &
+               " ) DET " &
+               " OUTER APPLY ( " &
+               "     SELECT COUNT(DISTINCT IdPedidoDet) AS Lineas_Reservadas " &
+               "     FROM stock_res " &
+               "     WHERE IdPedido = P.Correlativo " &
+               " ) RES " &
+               " OUTER APPLY ( " &
+               "     SELECT " &
+               "            SUM(ISNULL(cantidad_solicitada, 0)) AS Cantidad_Picking_Solicitada_Total, " &
+               "            SUM(ISNULL(cantidad_recibida, 0)) AS Cantidad_Picking_Total, " &
+               "            SUM(ISNULL(cantidad_verificada, 0)) AS Cantidad_Verificada_Total, " &
+               "            SUM(ISNULL(cantidad_despachada, 0)) AS Cantidad_Despachada_Total " &
+               "     FROM trans_picking_ubic " &
+               "     WHERE IdPedidoEnc = P.Correlativo " &
+               "       AND ISNULL(dañado_picking, 0) = 0 " &
+               "       AND ISNULL(dañado_verificacion, 0) = 0 " &
+               " ) PICK "
+
+    End Function
+
     Public Shared Function MaxID() As Integer
 
         Try
@@ -868,50 +921,55 @@ Partial Public Class clsLnTrans_pe_enc
                                   Optional ByVal IdBodega As Integer = 0,
                                   Optional ByVal pDespachado As Boolean = False,
                                   Optional ByVal pSinExistenciasWMS As Boolean = False,
-                                  Optional ByVal pSinExistenciasERP As Boolean = False) As DataTable
+                                  Optional ByVal pSinExistenciasERP As Boolean = False,
+                                  Optional ByVal pIncluirIndicadores As Boolean = False) As DataTable
 
 
         Dim lTable As New DataTable("Result")
 
         Try
 
-            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA "
+            Dim vAlias As String = If(pIncluirIndicadores, "P.", "")
+            Dim vSQL As String = If(pIncluirIndicadores,
+                                    Get_Select_Pedidos_List_Con_Indicadores("VW_PEDIDOS_LIST") &
+                                    " WHERE P.IDBODEGA = @IDBODEGA ",
+                                    " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA ")
 
             If pActivo = True Then
-                vSQL += " AND Activo=1"
+                vSQL += " AND " & vAlias & "Activo=1"
             Else
-                vSQL += " AND Activo=0"
+                vSQL += " AND " & vAlias & "Activo=0"
             End If
 
             If pAnulado And pDespachado Then
-                vSQL += " AND (Estado = 'Anulado' Or Estado = 'Despachado') "
+                vSQL += " AND (" & vAlias & "Estado = 'Anulado' Or " & vAlias & "Estado = 'Despachado') "
             ElseIf Not pAnulado And Not pDespachado Then
-                vSQL += " AND Estado <> 'Anulado' AND Estado <> 'Despachado'"
+                vSQL += " AND " & vAlias & "Estado <> 'Anulado' AND " & vAlias & "Estado <> 'Despachado'"
             ElseIf pAnulado Then
-                vSQL += " AND Estado = 'Anulado' "
+                vSQL += " AND " & vAlias & "Estado = 'Anulado' "
             ElseIf Not pAnulado Then
-                vSQL += " AND Estado <> 'Anulado' "
+                vSQL += " AND " & vAlias & "Estado <> 'Anulado' "
             ElseIf Not pDespachado Then
-                vSQL += " AND Estado <> 'Despachado' "
+                vSQL += " AND " & vAlias & "Estado <> 'Despachado' "
             Else
-                vSQL += " AND Estado = 'Despachado' "
+                vSQL += " AND " & vAlias & "Estado = 'Despachado' "
             End If
 
             If pSinExistenciasERP Then
-                vSQL += " AND (referencia IN (SELECT distinct no_pedido 
-                                  FROM I_nav_transacciones_out
-                                  WHERE auditar =1 And cantidad_pendiente > 0)) "
+                vSQL += " AND (" & vAlias & "referencia IN (SELECT distinct no_pedido " &
+                        " FROM I_nav_transacciones_out " &
+                        " WHERE auditar =1 And cantidad_pendiente > 0)) "
             End If
 
             If pSinExistenciasWMS Then
-                vSQL += " And (referencia In (Select distinct enc.[No] 
-                                  FROM i_nav_ped_traslado_det det inner join 
-                                  i_nav_ped_traslado_enc enc on enc.No = det.NoEnc 
-                                  WHERE det.Process_Result <> 'Ok' )) "
+                vSQL += " And (" & vAlias & "referencia In (Select distinct enc.[No] " &
+                        " FROM i_nav_ped_traslado_det det inner join " &
+                        " i_nav_ped_traslado_enc enc on enc.No = det.NoEnc " &
+                        " WHERE det.Process_Result <> 'Ok' )) "
             End If
 
 
-            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+            vSQL += " AND cast(" & vAlias & "Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
                    " AND " & FormatoFechas.fFecha(pFechaAl)
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1630,19 +1688,22 @@ Partial Public Class clsLnTrans_pe_enc
 
                                     End If
 
-                                    rowsAffected += clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
-                                                                                                     lConnection,
-                                                                                                     lTransaction)
-
-                                    rowsAffected += clsLnTrans_picking_det.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
-                                                                                                    lConnection,
-                                                                                                    lTransaction)
-
                                 Next
 
                             End If
 
                         End If
+
+                        For Each BePickingDet In lPickingDet
+                            rowsAffected += clsLnTrans_picking_ubic.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+
+                            rowsAffected += clsLnTrans_picking_det.Eliminar_By_IdPickingDet(BePickingDet.IdPickingDet,
+                                                                                            lConnection,
+                                                                                            lTransaction)
+                        Next
+
 
                     End If
 
@@ -7279,15 +7340,20 @@ Partial Public Class clsLnTrans_pe_enc
 
     Public Shared Function GetAll_Tmp(ByVal pIdBodega As Integer,
                                       ByVal pFechaDel As Date,
-                                      ByVal pFechaAl As Date) As DataTable
+                                      ByVal pFechaAl As Date,
+                                      Optional ByVal pIncluirIndicadores As Boolean = False) As DataTable
 
         Dim lTable As New DataTable("Result")
 
         Try
 
-            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST_TMP WHERE IDBODEGA = @IDBODEGA AND UBICACION='TMP' "
+            Dim vAlias As String = If(pIncluirIndicadores, "P.", "")
+            Dim vSQL As String = If(pIncluirIndicadores,
+                                    Get_Select_Pedidos_List_Con_Indicadores("VW_PEDIDOS_LIST_TMP") &
+                                    " WHERE P.IDBODEGA = @IDBODEGA AND P.UBICACION='TMP' ",
+                                    " SELECT * FROM VW_PEDIDOS_LIST_TMP WHERE IDBODEGA = @IDBODEGA AND UBICACION='TMP' ")
 
-            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+            vSQL += " AND cast(" & vAlias & "Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
                    " AND " & FormatoFechas.fFecha(pFechaAl)
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -7377,7 +7443,7 @@ Partial Public Class clsLnTrans_pe_enc
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
                     Get_No_Picking_ERP_By_IdPedidoEnc = lReturnValue
-                    End If
+                End If
 
             End Using
 
@@ -7455,7 +7521,7 @@ Partial Public Class clsLnTrans_pe_enc
 
                             End If
 
-                End Using
+                        End Using
 
                     End Using
 
@@ -7504,7 +7570,8 @@ Partial Public Class clsLnTrans_pe_enc
     Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
                                                      ByVal pFechaDel As Date,
                                                      ByVal pFechaAl As Date,
-                                                     ByVal pIdUsuario As Integer) As DataTable
+                                                     ByVal pIdUsuario As Integer,
+                                                     Optional ByVal pIncluirIndicadores As Boolean = False) As DataTable
 
 
 
@@ -7514,25 +7581,27 @@ Partial Public Class clsLnTrans_pe_enc
         Try
 
             '#GT11122025: mostrar los pedidos asociados al usuario para no filtrar por cada idbodega
-            Dim vSQL As String = " SELECT * " &
-                     " FROM VW_PEDIDOS_LIST " &
-                     " WHERE IdBodega IN ( " &
+            Dim vAlias As String = If(pIncluirIndicadores, "P.", "")
+            Dim vSQL As String = If(pIncluirIndicadores,
+                     Get_Select_Pedidos_List_Con_Indicadores("VW_PEDIDOS_LIST") &
+                     " WHERE P.IdBodega IN ( ",
+                     " SELECT * FROM VW_PEDIDOS_LIST WHERE IdBodega IN ( ") &
                      "     SELECT ub.IdBodega " &
                      "     FROM Usuario_Bodega ub " &
                      "     WHERE ub.IdUsuario = @pIdUsuario " &
                      " ) " &
-                     " AND verificar_con_imagen = 1 " &
-                     " AND estado = 'Pickeado' "
+                     " AND " & vAlias & "verificar_con_imagen = 1 " &
+                     " AND " & vAlias & "estado = 'Pickeado' "
 
             If pActivo = True Then
-                vSQL += " AND Activo = 1 "
+                vSQL += " AND " & vAlias & "Activo = 1 "
             Else
-                vSQL += " AND Activo = 0 "
+                vSQL += " AND " & vAlias & "Activo = 0 "
             End If
 
-            vSQL += " AND CAST(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) & " AND " & FormatoFechas.fFecha(pFechaAl)
+            vSQL += " AND CAST(" & vAlias & "Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) & " AND " & FormatoFechas.fFecha(pFechaAl)
 
-            vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
+            vSQL += " ORDER BY CONVERT(date, " & vAlias & "Fecha_Pedido) ASC, " & vAlias & "Correlativo ASC "
 
 
             'Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "

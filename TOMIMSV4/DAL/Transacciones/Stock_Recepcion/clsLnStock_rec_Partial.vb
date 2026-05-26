@@ -583,6 +583,11 @@ Partial Public Class clsLnStock_rec
                     '#EJC202408100456AM: En la recepción ciega en el grid, se genera una línea vacía que se puede evitar con este filtro.
                     For Each BeStockRec As clsBeStock_rec In pListStockRec.Where(Function(x) x.Cantidad > 0)
 
+                        '#EJCCKFK20260520: stock_rec no debe guardarse huerfano; trans_re_det.IdRecepcionDet es identity.
+                        If IdRecepcionEnc > 0 AndAlso BeStockRec.IdRecepcionDet <= 0 Then
+                            Throw New Exception("ERROR_202605201655: No se puede guardar stock_rec sin IdRecepcionDet. IdRecepcionEnc: " & IdRecepcionEnc & " IdProductoBodega: " & BeStockRec.IdProductoBodega & " No_linea: " & BeStockRec.No_linea & " LP: " & BeStockRec.Lic_plate)
+                        End If
+
                         If BeStockRec.IdUbicacion = 0 Then
                             Throw New Exception("Error_202303231204: El IdUbicación es 0 para el objeto de stock.")
                         End If

@@ -74,7 +74,7 @@
     <DocumentationFile>DAL.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -181,6 +181,8 @@
     <Compile Include="Inventario\InvCiclico\RFID\clsLnTrans_inv_ciclico_rfid.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne_partial.vb" />
+    <Compile Include="Log\clsLnDMS_Log_sincronizacion_fallos.vb" />
+    <Compile Include="Log\clsLnDMS_Log_sincronizacion_nube.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel_partial.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel.vb" />
     <Compile Include="Log\clsLnLog_sincronizacion_fallos.vb" />

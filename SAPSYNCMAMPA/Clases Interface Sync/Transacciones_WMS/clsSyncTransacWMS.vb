@@ -6,8 +6,6 @@ Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
-Imports DevExpress.Office.Utils
-Imports DevExpress.XtraEditors
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
@@ -15,6 +13,15 @@ Imports TOMWMS.clsDataContractDI
 Public Class clsSyncTransacWMS
 
     Private Shared vHanaService As SapServiceLayerClient
+    Private Const TRANSAC_WMS_OK As Integer = 1
+    Private Const TRANSAC_WMS_ERROR As Integer = 2
+    Private Const TRANSAC_WMS_ID_EJECUCION_ENC_FALLBACK As Integer = 1900
+    Private Const TRANSAC_WMS_ID_NAV_CONFIG_DET_FALLBACK As Integer = 900
+    Private Const TRANSAC_WMS_ORIGEN As String = "TRANSAC_WMS"
+    Private Const TRANSAC_WMS_SENTIDO As String = "PULL_SAP"
+    Private Const TRANSAC_WMS_PROCESS_RESULT_MAX As Integer = 250
+    Private Shared mTransacWmsIdEjecucionEnc As Integer = 0
+    Private Shared mTransacWmsIdNavConfigDet As Integer = 0
 
     Private ReadOnly DateFormats As String() = {
        "yyyy-MM-ddTHH:mm:ssK",      ' ISO con zona
@@ -24,6 +31,223 @@ Public Class clsSyncTransacWMS
        "dd/MM/yyyy HH:mm:ss",
        "dd/MM/yyyy"
    }
+
+#Region "Traza TRANSAC_WMS"
+
+    '#EJCCKFK20260520: Traza operativa TRANSAC_WMS para errores por documento.
+    Private Class TransacWmsTraceContext
+        Public Property Proceso As String
+        Public Property TipoDocumento As String
+        Public Property Documento As String
+        Public Property Referencia As String
+        Public Property BodegaOrigen As String
+        Public Property BodegaDestino As String
+        Public Property DocEntries As List(Of Integer)
+    End Class
+
+    Private Shared Function CrearContextoTransacWms(proceso As String,
+                                                    tipoDocumento As String,
+                                                    documento As String,
+                                                    referencia As String,
+                                                    bodegaOrigen As String,
+                                                    bodegaDestino As String,
+                                                    docEntries As List(Of Integer)) As TransacWmsTraceContext
+
+        Return New TransacWmsTraceContext With {
+            .Proceso = proceso,
+            .TipoDocumento = tipoDocumento,
+            .Documento = If(documento, ""),
+            .Referencia = If(referencia, ""),
+            .BodegaOrigen = If(bodegaOrigen, ""),
+            .BodegaDestino = If(bodegaDestino, ""),
+            .DocEntries = If(docEntries, New List(Of Integer)())
+        }
+    End Function
+
+    Private Shared Function FormatearDocEntries(docEntries As List(Of Integer)) As String
+        If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return ""
+        Return String.Join(",", docEntries.Distinct())
+    End Function
+
+    Private Shared Function LimitarTexto(valor As String, maxLength As Integer) As String
+        If String.IsNullOrEmpty(valor) Then Return ""
+        If valor.Length <= maxLength Then Return valor
+        Return valor.Substring(0, maxLength)
+    End Function
+
+    Private Shared Function NormalizarMensajeError(ex As Exception) As String
+        If ex Is Nothing Then Return ""
+        Return ex.Message.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/").Trim()
+    End Function
+
+    Private Shared Function ClasificarFalloTransacWms(ex As Exception, etapa As String) As String
+        Dim mensaje As String = NormalizarMensajeError(ex).ToUpperInvariant()
+
+        If mensaje.Contains("LOGIN") OrElse mensaje.Contains("SESION") OrElse mensaje.Contains("SESIÓN") Then Return "SAP_LOGIN"
+        If mensaje.Contains("TRANSAC_WMS") AndAlso mensaje.Contains("OBTENER") Then Return "SAP_GET_TRANSAC_WMS"
+        If mensaje.Contains("JSON") OrElse mensaje.Contains("DESERIAL") OrElse mensaje.Contains("MAPEAR") Then Return "MAPEO_JSON"
+        If mensaje.Contains("BODEGA") Then Return "BODEGA_NO_EXISTE"
+        If mensaje.Contains("PROPIETARIO") Then Return "PROPIETARIO_NO_EXISTE"
+        If mensaje.Contains("CLIENTE") Then Return "CLIENTE_NO_EXISTE"
+        If mensaje.Contains("PROVEEDOR") Then Return "PROVEEDOR_NO_EXISTE"
+        If mensaje.Contains("PRODUCTO") OrElse mensaje.Contains("ITEM") Then Return "PRODUCTO_NO_EXISTE"
+        If mensaje.Contains("UNIDAD") OrElse mensaje.Contains("UM") Then Return "UM_NO_EXISTE"
+        If mensaje.Contains("TALLA") OrElse mensaje.Contains("COLOR") Then Return "TALLA_COLOR_NO_EXISTE"
+        If mensaje.Contains("RESERV") OrElse mensaje.Contains("STOCK") Then Return "SIN_STOCK_RESERVADO"
+        If mensaje.Contains("PICKING") Then Return "PICKING_FALLO"
+        If mensaje.Contains("DESPACH") Then Return "DESPACHO_FALLO"
+        If mensaje.Contains("ACTUALIZAR TRANSAC_WMS") OrElse mensaje.Contains("MARCAR") Then Return "SAP_MARK_PROCESADO_FALLO"
+        If etapa.ToUpperInvariant().Contains("AJUSTE_INTERMEDIA") Then Return "AJUSTE_INTERMEDIA_FALLO"
+        If etapa.ToUpperInvariant().Contains("AJUSTE_APLICACION") Then Return "AJUSTE_APLICACION_WMS_FALLO"
+
+        Return "EXCEPCION_NO_CLASIFICADA"
+    End Function
+
+    Private Shared Function CrearResultadoTransacWms(ctx As TransacWmsTraceContext,
+                                                     etapa As String,
+                                                     resultado As String,
+                                                     causa As String,
+                                                     mensaje As String) As String
+
+        Dim texto As String = $"ORIGEN={TRANSAC_WMS_ORIGEN};SENTIDO={TRANSAC_WMS_SENTIDO};PROCESO={ctx.Proceso};TIPO_DOC={ctx.TipoDocumento};NOENC={ctx.Documento};REF={ctx.Referencia};DOCENTRY={FormatearDocEntries(ctx.DocEntries)};ETAPA={etapa};RESULTADO={resultado};CAUSA={causa};MSG={mensaje}"
+        Return LimitarTexto(texto, TRANSAC_WMS_PROCESS_RESULT_MAX)
+    End Function
+
+    Private Shared Function ObtenerIdEjecucionEncTransacWms() As Integer
+
+        Try
+
+            If mTransacWmsIdEjecucionEnc > 0 Then Return mTransacWmsIdEjecucionEnc
+
+            Dim idConfigEnc As Integer = BD.Instancia.IdConfiguracionInterface
+
+            If BeConfigEnc IsNot Nothing AndAlso BeConfigEnc.IdNavConfigEnc > 0 Then
+                idConfigEnc = BeConfigEnc.IdNavConfigEnc
+            End If
+
+            Dim beEjecucion As New clsBeI_nav_ejecucion_enc With {
+                .IdNavConfigEnc = idConfigEnc,
+                .Fecha = Now,
+                .Exitosa = False
+            }
+
+            mTransacWmsIdEjecucionEnc = clsLnI_nav_ejecucion_enc.Insertar_From_Interface(beEjecucion)
+
+            Return mTransacWmsIdEjecucionEnc
+
+        Catch
+            Return TRANSAC_WMS_ID_EJECUCION_ENC_FALLBACK
+        End Try
+
+    End Function
+
+    Private Shared Function ObtenerIdNavConfigDetTransacWms() As Integer
+
+        If mTransacWmsIdNavConfigDet > 0 Then Return mTransacWmsIdNavConfigDet
+
+        Try
+
+            Dim idConfigEnc As Integer = BD.Instancia.IdConfiguracionInterface
+
+            If BeConfigEnc IsNot Nothing AndAlso BeConfigEnc.IdNavConfigEnc > 0 Then
+                idConfigEnc = BeConfigEnc.IdNavConfigEnc
+            End If
+
+            Const sql As String = "SELECT TOP 1 det.idnavconfigdet " &
+                                  "FROM i_nav_config_det det " &
+                                  "INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent " &
+                                  "WHERE det.idnavconfigenc = @idnavconfigenc " &
+                                  "AND (ent.nombre = @nombre OR ent.nombre LIKE @nombreLike) " &
+                                  "ORDER BY det.activo DESC, det.idnavconfigdet"
+
+            Using connection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+                Using command As New SqlCommand(sql, connection) With {.CommandType = CommandType.Text}
+                    command.Parameters.Add("@idnavconfigenc", SqlDbType.Int).Value = idConfigEnc
+                    command.Parameters.Add("@nombre", SqlDbType.NVarChar, 100).Value = TRANSAC_WMS_ORIGEN
+                    command.Parameters.Add("@nombreLike", SqlDbType.NVarChar, 110).Value = "%TRANSAC%"
+
+                    connection.Open()
+                    Dim value As Object = command.ExecuteScalar()
+
+                    If value IsNot Nothing AndAlso value IsNot DBNull.Value Then
+                        mTransacWmsIdNavConfigDet = CInt(value)
+                    End If
+                End Using
+            End Using
+
+        Catch
+            mTransacWmsIdNavConfigDet = 0
+        End Try
+
+        If mTransacWmsIdNavConfigDet <= 0 Then mTransacWmsIdNavConfigDet = TRANSAC_WMS_ID_NAV_CONFIG_DET_FALLBACK
+        Return mTransacWmsIdNavConfigDet
+
+    End Function
+
+    Private Shared Sub ReiniciarContextoLogTransacWms()
+        mTransacWmsIdEjecucionEnc = 0
+        mTransacWmsIdNavConfigDet = 0
+    End Sub
+
+    Private Shared Sub RegistrarTrazaTransacWms(ctx As TransacWmsTraceContext,
+                                                etapa As String,
+                                                resultado As String,
+                                                causa As String,
+                                                mensaje As String)
+
+        Dim detalle As String = CrearResultadoTransacWms(ctx, etapa, resultado, causa, mensaje)
+        Dim referencia As String = If(String.IsNullOrWhiteSpace(ctx.Referencia), ctx.Documento, ctx.Referencia)
+
+        If String.Equals(resultado, "OK", StringComparison.OrdinalIgnoreCase) Then Return
+
+        Try
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(detalle,
+                                                       referencia,
+                                                       ObtenerIdEjecucionEncTransacWms(),
+                                                       ObtenerIdNavConfigDetTransacWms())
+        Catch logEx As Exception
+            Try
+                clsLnLog_error_wms.Agregar_Error($"TRANSAC_WMS_LOG_FALLO|{detalle}|LOG_ERROR={NormalizarMensajeError(logEx)}")
+            Catch
+            End Try
+        End Try
+
+        Try
+            clsLnLog_error_wms.Agregar_Error($"TRANSAC_WMS|{detalle}")
+        Catch
+        End Try
+    End Sub
+
+    Private Shared Async Function RegistrarFalloTransacWmsAsync(ctx As TransacWmsTraceContext,
+                                                                etapa As String,
+                                                                ex As Exception,
+                                                                sessionCookie As String,
+                                                                baseUrl As String,
+                                                                lblprg As RichTextBox) As Task
+
+        Dim causa As String = ClasificarFalloTransacWms(ex, etapa)
+        Dim mensaje As String = NormalizarMensajeError(ex)
+        Dim resultadoSap As String = CrearResultadoTransacWms(ctx, etapa, "ERROR", causa, mensaje)
+
+        RegistrarTrazaTransacWms(ctx, etapa, "ERROR", causa, mensaje)
+        clsPublic.Actualizar_Progreso(lblprg, resultadoSap)
+
+        Try
+            Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(ctx.DocEntries,
+                                                            sessionCookie,
+                                                            baseUrl,
+                                                            TRANSAC_WMS_ERROR,
+                                                            resultadoSap).ConfigureAwait(False)
+        Catch sapEx As Exception
+            RegistrarTrazaTransacWms(ctx,
+                                     "SAP_MARK_ERROR",
+                                     "ERROR",
+                                     "SAP_MARK_PROCESADO_FALLO",
+                                     NormalizarMensajeError(sapEx))
+        End Try
+    End Function
+
+#End Region
 
 #Region "Ventas"
 
@@ -272,6 +496,8 @@ Public Class clsSyncTransacWMS
         Dim sw As New Stopwatch()
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             ' Inicia cronómetro y anuncia inicio
             sw.Start()
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de pedidos de cliente desde SAP.")
@@ -300,7 +526,14 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             ' Error: detener cronómetro y reportar tiempo + log
             If sw.IsRunning Then sw.Stop()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
+            Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("PULL_TRANSAC_WMS",
+                                                                        "",
+                                                                        pNoDocumento,
+                                                                        pNoDocumento,
+                                                                        "",
+                                                                        "",
+                                                                        New List(Of Integer)())
+            RegistrarTrazaTransacWms(ctx, "PULL_TRANSAC_WMS", "ERROR", "EXCEPCION_GENERAL", NormalizarMensajeError(ex))
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
         Finally
@@ -336,6 +569,16 @@ Public Class clsSyncTransacWMS
                 End If
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando pedido de cliente de SAP (@Transac_WMS): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
 
+                Dim listaDocEntryDistintos As List(Of Integer) = factura.Lineas_Detalle.Select(Function(x) x.DocEntry) _
+                                                                                                     .Distinct() _
+                                                                                                     .ToList()
+                Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("VENTA",
+                                                                            "2",
+                                                                            factura.No,
+                                                                            factura.Receipt_Document_Reference,
+                                                                            factura.Transfer_from_Code,
+                                                                            factura.Transfer_to_Code,
+                                                                            listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
                 clsTrans.Begin_Transaction()
 
@@ -349,16 +592,17 @@ Public Class clsSyncTransacWMS
 
                         If pedidoEnc IsNot Nothing Then
 
-                            Dim listaDocEntryDistintos As List(Of Integer) = factura.Lineas_Detalle.Select(Function(x) x.DocEntry) _
-                                                                                                                        .Distinct() _
-                                                                                                                        .ToList()
-
-                            Dim trasladoSincronizado As Boolean = Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                            Dim trasladoSincronizado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
+                                                                                                                  vHanaService.SessionCookie,
+                                                                                                                  BD.Instancia.HANA_SL)
 
                             If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "OK", "Documento procesado correctamente.")
                                 clsPublic.Actualizar_Progreso(lblprg, "Documento procesado correctamente :) !")
                             End If
 
+                        Else
+                            Throw New Exception("No se generó pedido WMS para la transacción TRANSAC_WMS. Posible reserva o validación incompleta.")
                         End If
 
                     Else
@@ -371,7 +615,12 @@ Public Class clsSyncTransacWMS
 
                 Catch ex As Exception
                     clsTrans.RollBack_Transaction()
-                    clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                    RegistrarFalloTransacWmsAsync(ctx,
+                                                  "APLICAR_WMS",
+                                                  ex,
+                                                  vHanaService.SessionCookie,
+                                                  BD.Instancia.HANA_SL,
+                                                  lblprg).GetAwaiter().GetResult()
                 Finally
                     clsTrans.Close_Conection()
                 End Try
@@ -517,11 +766,10 @@ Public Class clsSyncTransacWMS
 
                     If dtDetTallaColor IsNot Nothing AndAlso dtDetTallaColor.Rows.Count > 0 Then
                         encabezado.Lineas_Detalle_Talla_Color =
-                        Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(
-                            dtDetTallaColor,
-                            IdUsuario,
-                            vHanaService.SessionCookie,
-                            BD.Instancia.HANA_SL).ConfigureAwait(False)
+                        Await DevolucionTransacWMS_Mapper.MapearDetalleTallaColor_Devolucion(dtDetTallaColor,
+                                                                                            IdUsuario,
+                                                                                            vHanaService.SessionCookie,
+                                                                                            BD.Instancia.HANA_SL).ConfigureAwait(False)
                     Else
                         encabezado.Lineas_Detalle_Talla_Color = New List(Of clsBeProducto_talla_color)()
                     End If
@@ -580,34 +828,48 @@ Public Class clsSyncTransacWMS
 
                 For Each BeINavPedCompra In lDevolucionesCliente
 
+                    Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("DEVOLUCION_CLIENTE",
+                                                                                "17",
+                                                                                BeINavPedCompra.No,
+                                                                                BeINavPedCompra.Vendor_Invoice_No,
+                                                                                BeINavPedCompra.Location_Code,
+                                                                                BeINavPedCompra.Buy_From_Vendor_No,
+                                                                                BeINavPedCompra.DocEntriesTransacWms)
                     Dim clsTrans As New clsTransaccion
                     clsTrans.Begin_Transaction()
 
-                    If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
-
-                        BeConfigEnc = BeConfigEnc
-
-                        If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
-                            clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
-                        End If
-
-                    End If
-
-                    clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Nota de crédito(Devolución de cliente): {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
-
                     Try
 
-                        If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
-                                                                                BePedidoCompraEnc,
-                                                                                vResult,
-                                                                                Nothing,
-                                                                                clsTrans.lConnection,
-                                                                                clsTrans.lTransaction) Then
+                        If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
+
+                            BeConfigEnc = BeConfigEnc
+
+                            If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                                clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
+                            End If
+
+                        End If
+
+                        clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Nota de crédito(Devolución de cliente): {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
+
+                        Dim procesoOk As Boolean = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
+                                                                                                        BePedidoCompraEnc,
+                                                                                                        vResult,
+                                                                                                        Nothing,
+                                                                                                        clsTrans.lConnection,
+                                                                                                        clsTrans.lTransaction)
+
+                        If procesoOk Then
 
                             'Await Marcar_Devolucion_Sincronizada_SLAsync(BeINavPedCompra.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
                             Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(BeINavPedCompra.DocEntriesTransacWms,
                                                                             vHanaService.SessionCookie,
                                                                             BD.Instancia.HANA_SL)
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "OK", "Documento procesado correctamente.")
+                        Else
+                            Throw New Exception(If(String.IsNullOrWhiteSpace(vResult),
+                                                   "No se pudo procesar la devolución de cliente en WMS.",
+                                                   vResult))
                         End If
 
                         clsPublic.Actualizar_Progreso(lblprg, vResult)
@@ -616,7 +878,12 @@ Public Class clsSyncTransacWMS
 
                     Catch ex As Exception
                         clsTrans.RollBack_Transaction()
-                        clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                        RegistrarFalloTransacWmsAsync(ctx,
+                                                      "APLICAR_WMS",
+                                                      ex,
+                                                      vHanaService.SessionCookie,
+                                                      BD.Instancia.HANA_SL,
+                                                      lblprg).GetAwaiter().GetResult()
                     Finally
                         clsTrans.Close_Conection()
                     End Try
@@ -723,6 +990,8 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             Dim ejecutarImportacion As Boolean = True
 
             If ejecutarImportacion Then
@@ -753,8 +1022,10 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Marcar_Transac_Wms_Por_DocEntries_SLAsync(docEntries As List(Of Integer),
-                                                                            sessionCookie As String,
-                                                                            baseUrl As String) As Task(Of Boolean)
+                                                                             sessionCookie As String,
+                                                                             baseUrl As String,
+                                                                             Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
+                                                                             Optional processResult As String = "OK") As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 
@@ -763,7 +1034,10 @@ Public Class clsSyncTransacWMS
             End If
 
             Dim httpPatch As New HttpMethod("PATCH")
-            Dim payload As String = "{""U_Procesado_WMS"": 1}"
+            Dim payloadObj As New JObject()
+            payloadObj("U_Procesado_WMS") = estadoProcesado
+            payloadObj("U_Process_Result") = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
+            Dim payload As String = payloadObj.ToString(Formatting.None)
 
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
@@ -817,6 +1091,7 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
 
             Dim ejecutarImportacion As Boolean = True
 
@@ -1159,6 +1434,22 @@ Public Class clsSyncTransacWMS
 
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando pedido de cliente de SAP (@Transac_WMS): {ajuste.Referencia}/{ajuste.IdBodega}{vbNewLine}")
 
+                Dim listaDocEntryDistintos As New List(Of Integer)
+                For Each detalle In ajuste.Lineas_Detalle
+                    Dim docEntry As Integer = 0
+                    If Integer.TryParse(Convert.ToString(detalle.referencia_ajuste_erp), docEntry) Then
+                        listaDocEntryDistintos.Add(docEntry)
+                    End If
+                Next
+                listaDocEntryDistintos = listaDocEntryDistintos.Distinct().ToList()
+
+                Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("AJUSTE",
+                                                                            "100",
+                                                                            ajuste.Referencia,
+                                                                            ajuste.Referencia,
+                                                                            Convert.ToString(ajuste.IdBodega),
+                                                                            "",
+                                                                            listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
                 clsTrans.Begin_Transaction()
 
@@ -1172,29 +1463,33 @@ Public Class clsSyncTransacWMS
 
                     If CreoAjuste Then
 
-                        Dim listaDocEntryDistintos As List(Of Integer) = ajuste.Lineas_Detalle.Select(Function(x) CInt(x.referencia_ajuste_erp)).Distinct().ToList()
-
                         Dim trasladoSincronizado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
-                                                                                                              vHanaService.SessionCookie,
-                                                                                                              BD.Instancia.HANA_SL)
+                                                                                                               vHanaService.SessionCookie,
+                                                                                                               BD.Instancia.HANA_SL)
 
                         If trasladoSincronizado Then
                             clsTrans.Commit_Transaction()
+                            RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "OK", "OK", "Documento procesado correctamente.")
                             clsPublic.Actualizar_Progreso(lblprg, "Documento procesado correctamente :) !")
                         Else
-                            clsTrans.RollBack_Transaction()
-                            clsPublic.Actualizar_Progreso(lblprg, "No se pudo marcar en SAP (SL). Se revierte la transacción.")
+                            Throw New Exception("No se pudo marcar en SAP (SL). Se revierte la transacción.")
                         End If
 
                         ajustes_correctos += 1
 
                     Else
                         ajustes_incorrectos += 1
+                        Throw New Exception("No se pudo aplicar el ajuste en WMS.")
                     End If
 
                 Catch ex As Exception
                     clsTrans.RollBack_Transaction()
-                    clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                    RegistrarFalloTransacWmsAsync(ctx,
+                                                  "AJUSTE_APLICACION_WMS",
+                                                  ex,
+                                                  vHanaService.SessionCookie,
+                                                  BD.Instancia.HANA_SL,
+                                                  lblprg).GetAwaiter().GetResult()
                 Finally
                     clsTrans.Close_Conection()
                 End Try
@@ -1238,7 +1533,7 @@ Public Class clsSyncTransacWMS
 
             clsPublic.Actualizar_Progreso(lblprg, "Obteniendo anulacion(es) de devoluciones de tienda.")
 
-            Dim filtroEnviado As String = "(U_Procesado_WMS eq null OR U_Procesado_WMS eq 2)"
+            Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
             Dim filtroVentas As String = "(U_Document_Type eq '15')"
             Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
 
@@ -1435,6 +1730,8 @@ Public Class clsSyncTransacWMS
         Dim sw As New Stopwatch()
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             ' Inicia cronómetro y anuncia inicio
             sw.Start()
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de anulación de devoluciones de cliente desde SAP.")
@@ -1463,7 +1760,14 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             ' Error: detener cronómetro y reportar tiempo + log
             If sw.IsRunning Then sw.Stop()
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
+            Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("PULL_TRANSAC_WMS",
+                                                                        "15",
+                                                                        pNoDocumento,
+                                                                        pNoDocumento,
+                                                                        "",
+                                                                        "",
+                                                                        New List(Of Integer)())
+            RegistrarTrazaTransacWms(ctx, "PULL_TRANSAC_WMS", "ERROR", "EXCEPCION_GENERAL", NormalizarMensajeError(ex))
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
         Finally
@@ -1496,6 +1800,16 @@ Public Class clsSyncTransacWMS
 
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando anulación de devolución de cliente de SAP (@Transac_WMS): {anul_devol.Receipt_Document_Reference}/{anul_devol.No}{vbNewLine}")
 
+                Dim listaDocEntryDistintos As List(Of Integer) = anul_devol.Lineas_Detalle.Select(Function(x) x.DocEntry) _
+                                                                                                     .Distinct() _
+                                                                                                     .ToList()
+                Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("ANULACION_DEVOLUCION",
+                                                                            "15",
+                                                                            anul_devol.No,
+                                                                            anul_devol.Receipt_Document_Reference,
+                                                                            anul_devol.Transfer_from_Code,
+                                                                            anul_devol.Transfer_to_Code,
+                                                                            listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
                 clsTrans.Begin_Transaction()
 
@@ -1508,26 +1822,33 @@ Public Class clsSyncTransacWMS
 
                         If pedidoEnc IsNot Nothing Then
 
-                            Dim listaDocEntryDistintos As List(Of Integer) = anul_devol.Lineas_Detalle.Select(Function(x) x.DocEntry) _
-                                                                                                      .Distinct() _
-                                                                                                      .ToList()
-
-                            Dim trasladoSincronizado As Boolean = Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                            Dim trasladoSincronizado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
+                                                                                                                  vHanaService.SessionCookie,
+                                                                                                                  BD.Instancia.HANA_SL)
 
                             If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "OK", "Documento procesado correctamente.")
                                 clsPublic.Actualizar_Progreso(lblprg, "Documento procesado correctamente :) !")
-                                Return True
                             End If
 
+                        Else
+                            Throw New Exception("No se generó pedido WMS para la anulación de devolución TRANSAC_WMS.")
                         End If
 
+                    Else
+                        Throw New Exception("No se pudo validar el cliente para la anulación de devolución.")
                     End If
 
                     clsTrans.Commit_Transaction()
 
                 Catch ex As Exception
                     clsTrans.RollBack_Transaction()
-                    clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                    RegistrarFalloTransacWmsAsync(ctx,
+                                                  "APLICAR_WMS",
+                                                  ex,
+                                                  vHanaService.SessionCookie,
+                                                  BD.Instancia.HANA_SL,
+                                                  lblprg).GetAwaiter().GetResult()
                 Finally
                     clsTrans.Close_Conection()
                 End Try
@@ -1729,34 +2050,48 @@ Public Class clsSyncTransacWMS
 
                 For Each BeINavPedCompra In lAnulacionVenta
 
+                    Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("ANULACION_VENTA",
+                                                                                "18",
+                                                                                BeINavPedCompra.No,
+                                                                                BeINavPedCompra.Vendor_Invoice_No,
+                                                                                BeINavPedCompra.Location_Code,
+                                                                                BeINavPedCompra.Buy_From_Vendor_No,
+                                                                                BeINavPedCompra.DocEntriesTransacWms)
                     Dim clsTrans As New clsTransaccion
                     clsTrans.Begin_Transaction()
 
-                    If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
-
-                        BeConfigEnc = BeConfigEnc
-
-                        If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
-                            clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
-                        End If
-
-                    End If
-
-                    clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Anulación Venta: {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
-
                     Try
 
-                        If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
-                                                                                BePedidoCompraEnc,
-                                                                                vResult,
-                                                                                Nothing,
-                                                                                clsTrans.lConnection,
-                                                                                clsTrans.lTransaction) Then
+                        If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
+
+                            BeConfigEnc = BeConfigEnc
+
+                            If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                                clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
+                            End If
+
+                        End If
+
+                        clsPublic.Actualizar_Progreso(lblprg, vbTab & String.Format("Procesando Anulación Venta: {0} ", BeINavPedCompra.No & " - " & BeINavPedCompra.Vendor_Invoice_No, vbNewLine))
+
+                        Dim procesoOk As Boolean = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
+                                                                                                        BePedidoCompraEnc,
+                                                                                                        vResult,
+                                                                                                        Nothing,
+                                                                                                        clsTrans.lConnection,
+                                                                                                        clsTrans.lTransaction)
+
+                        If procesoOk Then
 
                             'Await Marcar_Devolucion_Sincronizada_SLAsync(BeINavPedCompra.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL)
                             Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(BeINavPedCompra.DocEntriesTransacWms,
                                                                             vHanaService.SessionCookie,
                                                                             BD.Instancia.HANA_SL)
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "OK", "Documento procesado correctamente.")
+                        Else
+                            Throw New Exception(If(String.IsNullOrWhiteSpace(vResult),
+                                                   "No se pudo procesar la anulación de venta en WMS.",
+                                                   vResult))
                         End If
 
                         clsPublic.Actualizar_Progreso(lblprg, vResult)
@@ -1765,7 +2100,12 @@ Public Class clsSyncTransacWMS
 
                     Catch ex As Exception
                         clsTrans.RollBack_Transaction()
-                        clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                        RegistrarFalloTransacWmsAsync(ctx,
+                                                      "APLICAR_WMS",
+                                                      ex,
+                                                      vHanaService.SessionCookie,
+                                                      BD.Instancia.HANA_SL,
+                                                      lblprg).GetAwaiter().GetResult()
                     Finally
                         clsTrans.Close_Conection()
                     End Try
@@ -1792,6 +2132,8 @@ Public Class clsSyncTransacWMS
         Dim ok As Boolean = False
 
         Try
+            ReiniciarContextoLogTransacWms()
+
             Dim ejecutarImportacion As Boolean = True
 
             If ejecutarImportacion Then

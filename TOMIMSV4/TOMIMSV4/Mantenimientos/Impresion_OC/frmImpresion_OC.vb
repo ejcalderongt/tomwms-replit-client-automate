@@ -1,7 +1,6 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
 Imports DevExpress.XtraEditors
-Imports DevExpress.XtraSplashScreen
 
 Public Class frmImpresionRecepcion_OC
 
@@ -345,7 +344,7 @@ Public Class frmImpresionRecepcion_OC
         Dim tmpZPLString As String = Tipo_Etiqueta.codigo_zpl
 
         ' Contar placeholders en el template
-        Dim regex As New System.Text.RegularExpressions.Regex("\{\d+\}")
+        Dim regex As New Text.RegularExpressions.Regex("\{\d+\}")
         Dim placeholdersCount As Integer = regex.Matches(tmpZPLString).Count
 
         ' Contar argumentos enviados
@@ -646,9 +645,9 @@ Public Class frmImpresionRecepcion_OC
                 End If
 
                 Dim zplString As String = ConstruirZplLicencia(pBeTransOcDet,
-                                                           licenciaActual,
-                                                           cantidadPresentacion,
-                                                           clsTransaccion)
+                                                               licenciaActual,
+                                                               cantidadPresentacion,
+                                                               clsTransaccion)
 
                 For c As Integer = 1 To copiasPorLicencia
                     RawPrinterHelper.SendStringToPrinter(PrinterName, zplString)
@@ -672,13 +671,14 @@ Public Class frmImpresionRecepcion_OC
                 End If
 
                 clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(BeInavBarraPalletTMP,
-                                                      clsTransaccion.lConnection,
-                                                      clsTransaccion.lTransaction)
+                                                                     clsTransaccion.lConnection,
+                                                                     clsTransaccion.lTransaction)
 
                 pCorrelativoTarimaActual += 1
                 pTarimasImpresasAcumuladas += 1
 
                 AvanzarALaSiguienteLicencia(clsTransaccion)
+
                 licenciaActual = CStr(txtLicencia.EditValue)
 
             Next
@@ -929,7 +929,7 @@ Public Class frmImpresionRecepcion_OC
                     .ValueMember = "IdLote"
                     .DisplayMember = "lote"
 
-                    For Each c As DevExpress.XtraEditors.Controls.LookUpColumnInfo In .Columns
+                    For Each c As Controls.LookUpColumnInfo In .Columns
                         c.Visible = False
                     Next
 

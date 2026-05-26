@@ -35,7 +35,7 @@ Public Class clsLnI_nav_barras_pallet
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
-                .Peso = IIf(IsDBNull(dr.Item("Peso")), 0D, dr.Item("Peso"))
+                .Peso = IIf(IsDBNull(dr.Item("Peso")), 0, dr.Item("Peso"))
 
             End With
 
@@ -1070,7 +1070,8 @@ Public Class clsLnI_nav_barras_pallet
             Impreso,
             fecha_procesado_erp,
             IdOrdenCompraEnc,
-            IdOrdenCompraDet
+            IdOrdenCompraDet,
+            Peso
             FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}

@@ -34,7 +34,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
@@ -42,6 +42,7 @@
     <OutputPath>..\TOMIMSV4\TOMIMSV4\</OutputPath>
     <DocumentationFile>SAPBOSyncMampa.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -76,7 +77,7 @@
     <DocumentationFile>SAPBOSyncMampa.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
@@ -103,6 +104,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
@@ -334,6 +338,12 @@
     <Compile Include="Formas\Reportes\frmEjecuciones.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.Designer.vb">
+      <DependentUpon>frmLogEjecucionesInterface.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmLogEjecucionesInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\frmStockPorLoteArea.Designer.vb">
       <DependentUpon>frmStockPorLoteArea.vb</DependentUpon>
     </Compile>
@@ -362,6 +372,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Producto\frmProducto_List.resx">
       <DependentUpon>frmProducto_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmLogEjecucionesInterface.resx">
+      <DependentUpon>frmLogEjecucionesInterface.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistroInter.resx">
       <DependentUpon>frmRegistroInter.vb</DependentUpon>
@@ -404,6 +417,7 @@
     <None Include="Formas\Reportes\DSEjecuciones.xss">
       <DependentUpon>DSEjecuciones.xsd</DependentUpon>
     </None>
+    <None Include="My Project\app.manifest" />
     <None Include="packages.config" />
     <None Include="Resources\button-power_basic_blue.png" />
     <None Include="Resources\Template.png" />

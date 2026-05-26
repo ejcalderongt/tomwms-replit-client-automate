@@ -896,7 +896,8 @@ public class clsLnProducto_presentacion
         {
             string vSQL = @"SELECT TOP 1 pp.* FROM producto_presentacion pp inner join 
                 producto_bodega pb on pp.idproducto = pb.idproducto
-                WHERE pp.codigo=@Codigo and pb.idproductobodega=@IdProductoBodega";
+                WHERE (pp.codigo=@Codigo or pp.nombre=@Codigo) and pb.idproductobodega=@IdProductoBodega
+                ORDER BY CASE WHEN pp.codigo=@Codigo THEN 0 ELSE 1 END";
 
             using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
             {

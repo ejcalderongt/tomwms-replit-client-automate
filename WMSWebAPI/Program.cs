@@ -11,6 +11,7 @@ using WMSWebAPI.Services.Cambio_Estado;
 using WMSWebAPI.Services.Centro_Costo;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
+using WMSWebAPI.Services.Inventario;
 using WMSWebAPI.Services.KPI;
 using WMSWebAPI.Services.Prefactura;
 using WMSWebAPI.Services.Producto.Clasificacion;
@@ -87,6 +88,7 @@ builder.Services.AddScoped<ICambioEstadoService, CambioEstadoService>();
 builder.Services.AddScoped<IAjustesEnvioService, AjustesEnvioService>();
 builder.Services.AddScoped<IPrefacturaService, PrefacturaService>();
 builder.Services.AddScoped<IPropietarioService, PropietarioService>();
+builder.Services.AddScoped<IInventarioService, InventarioService>();
 
 // ============================================================
 // JWT

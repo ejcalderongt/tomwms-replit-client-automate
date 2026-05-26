@@ -27,16 +27,13 @@ namespace WMS.StockReservation.Core.Services
                 {
                     try
                     {
-                        // Calcular MaxID ANTES de cada INSERT
-                        int maxId = clsLnStock_res.MaxID(context.Connection, context.Transaction);
-                        reservation.IdStockRes = maxId + 1;
-
                         _logger.LogCheckpoint(
-                            $"#MI3_STOCK_RES_MAXID - MaxID: {maxId}, NewIdStockRes: {reservation.IdStockRes}, " +
+                            $"#MI3_STOCK_RES_INSERTING - " +
+                            $"IdStock: {reservation.IdStock}, " +
                             $"IdTransaccion: {reservation.IdTransaccion}, IdPedido: {reservation.IdPedido}, " +
                             $"IdPedidoDet: {reservation.IdPedidoDet}, Indicador: {reservation.Indicador}, Estado: {reservation.Estado}");
 
-                        int rowsAffected = clsLnStock_res.Insertar(
+                        int idStockRes = clsLnStock_res.Insertar(
                             config,
                             reservation,
                             context.Connection,
@@ -50,7 +47,7 @@ namespace WMS.StockReservation.Core.Services
                             $"Cantidad: {reservation.Cantidad:F6}, " +
                             $"IdUbicacion: {reservation.IdUbicacion}, " +
                             $"IdTransaccion: {reservation.IdTransaccion}, " +
-                            $"RowsAffected: {rowsAffected}");
+                            $"Identity: {idStockRes}");
                     }
                     catch (Exception ex)
                     {
@@ -59,6 +56,8 @@ namespace WMS.StockReservation.Core.Services
                     }
                 }
             }
+
+            context.DocumentCache?.RegisterReservations(context.CreatedReservations);
 
             // PASO 2: Actualizar TrasladoDet.Quantity_Reserved_WMS
             if (context.TrasladoDet != null && context.CreatedReservations.Count > 0)

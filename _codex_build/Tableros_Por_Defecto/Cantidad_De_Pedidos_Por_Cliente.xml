@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_BYB_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="sa" />
+          <Parameter Name="password" Value="sysadm" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Cantidad_Pedidos_vrs_Despacho_Clientes">
+        <Tables>
+          <Table Name="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" X="30" Y="30" Width="125" Height="186" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Codigo_Bodega" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Fecha_Pedido" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Cliente" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Pedidos" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Despachados" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="Diferencia" />
+          <Column Table="VW_Cantidad_Pedidos_vrs_Despacho_Clientes" Name="IdBodega" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Cantidad_Pedidos_vrs_Despacho_Clientes">
+            <Field Name="Codigo_Bodega" Type="String" />
+            <Field Name="Fecha_Pedido" Type="DateTime" />
+            <Field Name="Cliente" Type="String" />
+            <Field Name="Pedidos" Type="Int32" />
+            <Field Name="Despachados" Type="Int32" />
+            <Field Name="Diferencia" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Grid ComponentName="gridDashboardItem1" Name="Rejilla 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Cantidad_Pedidos_vrs_Despacho_Clientes">
+      <DataItems>
+        <Dimension DataMember="Cliente" DefaultId="DataItem0" />
+        <Dimension DataMember="Pedidos" DefaultId="DataItem1" />
+        <Dimension DataMember="Fecha_Pedido" DateTimeGroupInterval="MonthYear" DefaultId="DataItem2" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions />
+    </Grid>
+    <Chart ComponentName="chartDashboardItem1" Name="Gráfico 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Cantidad_Pedidos_vrs_Despacho_Clientes">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="Cliente" DefaultId="DataItem0" />
+        <Dimension DataMember="Fecha_Pedido" DateTimeGroupInterval="MonthYear" DefaultId="DataItem1" />
+        <Measure DataMember="Pedidos" DefaultId="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend IsInsidePosition="true" />
+    </Chart>
+    <RangeFilter ComponentName="rangeFilterDashboardItem1" Name="Filtro de Rango 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Cantidad_Pedidos_vrs_Despacho_Clientes">
+      <DataItems>
+        <Dimension DataMember="Fecha_Pedido" DateTimeGroupInterval="MonthYear" DefaultId="DataItem0" />
+        <Measure DataMember="Fecha_Pedido" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <Argument DefaultId="DataItem0" />
+      <Series>
+        <Simple SeriesType="Line">
+          <Value DefaultId="DataItem1" />
+        </Simple>
+      </Series>
+    </RangeFilter>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutItem DashboardItem="rangeFilterDashboardItem1" Weight="22.452504317789291" />
+      <LayoutGroup Weight="77.547495682210709">
+        <LayoutItem DashboardItem="gridDashboardItem1" Weight="50" />
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="50" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>
