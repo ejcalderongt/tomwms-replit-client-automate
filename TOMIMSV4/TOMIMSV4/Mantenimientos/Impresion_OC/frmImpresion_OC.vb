@@ -346,7 +346,6 @@ Public Class frmImpresionRecepcion_OC
 
         ' Contar placeholders en el template
         Dim regex As New System.Text.RegularExpressions.Regex("\{\d+\}")
-        Dim placeholdersCount As Integer = regex.Matches(tmpZPLString).Count
 
         ' Contar argumentos enviados
         Dim args() As Object = {
