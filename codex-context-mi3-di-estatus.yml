@@ -1,5 +1,14 @@
 notas:
   - fecha: "2026-05-26"
+    area: "DB identity trans_movimientos (plan cross-layer)"
+    detalle: >
+      Se confirmó en TOMWMS_MAMPA_QA que dbo.trans_movimientos.IdMovimiento no
+      es identity y depende de MaxID()+1 en DAL VB, WSHHRN/HH y WMS.DALCore.
+      Se dejó script de migración con preservación de IDs históricos en
+      tools/diagnostics/20260526_fix_trans_movimientos_idmovimiento_identity.sql
+      y árbol de impacto faseado en
+      brain/handoffs/2026-05-26-trans-movimientos-ididentity/README.md.
+  - fecha: "2026-05-26"
     area: "HH picking reemplazo/no encontrado cantidad_solicitada"
     detalle: >
       En QA La Cumbre (TOMWMS_LA_CUMBRE_QA) el constraint

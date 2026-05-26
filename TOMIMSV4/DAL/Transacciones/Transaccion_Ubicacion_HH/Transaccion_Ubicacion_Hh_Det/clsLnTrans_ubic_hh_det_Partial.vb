@@ -524,32 +524,98 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 pMovimiento.Cantidad = pMovimiento.Cantidad * oBeTrans_ubic_hh_det.ProductoPresentacion.Factor
             End If
 
-            pMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            '#EJC20260526:
+            'Flujo dirigido: si la bodega tiene implosión automática activa y la ubicación destino
+            'define una licencia diferente a la licencia origen, usar el flujo integrado
+            '(estado -> implosión -> ubicación) para evitar mover sin cambiar licencia.
+            Dim aplicarFlujoIntegradoImplosionUbicacion As Boolean = False
+            Dim idStockNuevo As Integer = 0
+            Dim idMovNuevo As Integer = 0
 
-            If (pIdReabastecimientoLog = 0) Then
+            If pMovimiento IsNot Nothing AndAlso
+               pMovimiento.IdTipoTarea = 2 AndAlso
+               pMovimiento.IdBodegaDestino > 0 AndAlso
+               pMovimiento.IdUbicacionDestino > 0 Then
 
-                clsLnTrans_movimientos.Aplicar(pMovimiento,
-                                               oBeTrans_ubic_hh_det.Stock.IdStock,
-                                               False,
-                                               lConnection,
-                                               lTransaction,
-                                               pPosiciones)
+                Dim aplicaImplosionAuto As Boolean = Get_Parametro_Ubic_Implosion_Auto(pMovimiento.IdBodegaDestino,
+                                                                                        lConnection,
+                                                                                        lTransaction)
 
-            Else
+                If aplicaImplosionAuto Then
+                    Dim stockActual As clsBeVW_stock_res = clsLnStock.Get_Single_By_IdStock(oBeTrans_ubic_hh_det.Stock.IdStock)
 
-                clsLnTrans_movimientos.Aplicar_Con_Reabastecimiento(pMovimiento,
-                                                                     oBeTrans_ubic_hh_det.Stock.IdStock,
-                                                                     False,
-                                                                     lConnection,
-                                                                     lTransaction,
-                                                                     pIdReabastecimientoLog,
-                                                                     pPosiciones)
+                    If stockActual IsNot Nothing Then
+                        Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+                                                                                                           pMovimiento.IdBodegaDestino,
+                                                                                                           lConnection,
+                                                                                                           lTransaction)
 
+                        If infoDestinoDT IsNot Nothing AndAlso infoDestinoDT.Rows.Count > 0 Then
+                            Dim esRackDestino As Boolean = False
+                            If Not IsDBNull(infoDestinoDT.Rows(0).Item("es_rack")) Then
+                                esRackDestino = CBool(infoDestinoDT.Rows(0).Item("es_rack"))
+                            End If
+
+                            Dim licenciaDestino As String = If(IsDBNull(infoDestinoDT.Rows(0).Item("LicenciaDestino")),
+                                                               "",
+                                                               infoDestinoDT.Rows(0).Item("LicenciaDestino").ToString().Trim())
+
+                            '#EJC20260526:
+                            'Implosión automática solo aplica cuando el destino es rack.
+                            If esRackDestino AndAlso
+                               Not String.IsNullOrWhiteSpace(licenciaDestino) AndAlso
+                               Not licenciaDestino.Equals(stockActual.Lic_plate, StringComparison.OrdinalIgnoreCase) Then
+
+                                stockActual.CantidadUmBas = pMovimiento.Cantidad
+                                stockActual.Lic_plate_Anterior = stockActual.Lic_plate
+                                pMovimiento.Cantidad = stockActual.CantidadUmBas
+
+                                aplicarFlujoIntegradoImplosionUbicacion = Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack_Interno(pMovimiento,
+                                                                                                                                    stockActual,
+                                                                                                                                    idStockNuevo,
+                                                                                                                                    idMovNuevo,
+                                                                                                                                    pPosiciones,
+                                                                                                                                    lConnection,
+                                                                                                                                    lTransaction,
+                                                                                                                                    False)
+
+                                If Not aplicarFlujoIntegradoImplosionUbicacion Then
+                                    Throw New Exception("No se pudo completar el flujo integrado de implosión y cambio de ubicación.")
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
             End If
 
-            clsLnTrans_movimientos.Insertar(pMovimiento,
-                                            lConnection,
-                                            lTransaction)
+            If Not aplicarFlujoIntegradoImplosionUbicacion Then
+                pMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                If (pIdReabastecimientoLog = 0) Then
+
+                    clsLnTrans_movimientos.Aplicar(pMovimiento,
+                                                   oBeTrans_ubic_hh_det.Stock.IdStock,
+                                                   False,
+                                                   lConnection,
+                                                   lTransaction,
+                                                   pPosiciones)
+
+                Else
+
+                    clsLnTrans_movimientos.Aplicar_Con_Reabastecimiento(pMovimiento,
+                                                                         oBeTrans_ubic_hh_det.Stock.IdStock,
+                                                                         False,
+                                                                         lConnection,
+                                                                         lTransaction,
+                                                                         pIdReabastecimientoLog,
+                                                                         pPosiciones)
+
+                End If
+
+                clsLnTrans_movimientos.Insertar(pMovimiento,
+                                                lConnection,
+                                                lTransaction)
+            End If
 
             If Not oBeTrans_ubic_hh_det Is Nothing Then
                 GetSingle(det)
@@ -1272,6 +1338,29 @@ Partial Public Class clsLnTrans_ubic_hh_det
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
+    End Function
+
+    '#EJC20260526:
+    'Parametro para habilitar la implosión automática en cambio de ubicación.
+    Private Shared Function Get_Parametro_Ubic_Implosion_Auto(ByVal pIdBodega As Integer,
+                                                              ByVal lConnection As SqlConnection,
+                                                              ByVal lTransaction As SqlTransaction) As Boolean
+        Try
+            Const vSQL As String = "SELECT ISNULL(ubic_implosion_auto, 0) FROM bodega WHERE IdBodega = @IdBodega"
+
+            Using cmd As New SqlCommand(vSQL, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim value As Object = cmd.ExecuteScalar()
+                If value Is Nothing OrElse value Is DBNull.Value Then Return False
+
+                Return Convert.ToBoolean(value)
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+        End Try
     End Function
 
 
@@ -2172,7 +2261,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
             'Aplica solo si la ubicación destino tiene una licencia configurada
             'y esa licencia es distinta a la licencia actual del stock.
             If Not EsCambioEstado Then
-                If tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
+                '#EJC20260526:
+                'Implosión automática solo aplica para ubicaciones destino tipo rack.
+                If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
                     requiereImplosion = True
                 End If
             End If
@@ -2561,7 +2652,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
             End If
 
             If Not EsCambioEstado Then
-                If tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
+                '#EJC20260526:
+                'Implosión automática solo aplica para ubicaciones destino tipo rack.
+                If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
                     requiereImplosion = True
                 End If
             End If
