@@ -243,7 +243,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         producto.IdProducto,
                         trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod,
-                        trans_inv_ciclico.contado
+                        trans_inv_ciclico.contado,
+                        ISNULL(ptc.CodigoSKU, '') as CodigoSKU
                         FROM unidad_medida RIGHT OUTER JOIN
                         trans_inv_ciclico INNER JOIN
                         bodega_ubicacion ON trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -303,7 +304,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod, 
                         trans_inv_ciclico.fec_agr,
-                        trans_inv_ciclico.contado
+                        trans_inv_ciclico.contado,
+                        ptc.CodigoSKU
 
             UNION
 
@@ -356,7 +358,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         0 as IdProducto,
                         '' as gondola,
                         '19000101' fec_mod,
-                        0 as contado
+                        0 as contado,
+                        '' as CodigoSKU
                         FROM  trans_inv_enc_reconteo INNER JOIN
                         trans_inv_reconteo INNER JOIN
                         bodega_ubicacion ON trans_inv_reconteo.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -427,7 +430,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         producto.IdProducto,
                         trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod,
-                        trans_inv_ciclico.contado
+                        trans_inv_ciclico.contado,
+                        ISNULL(ptc.CodigoSKU, '') as CodigoSKU
                         FROM  trans_inv_ciclico INNER JOIN
                         producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado INNER JOIN
                         producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
@@ -471,7 +475,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod, 
                         trans_inv_ciclico.fec_agr,
-                        trans_inv_ciclico.contado
+                        trans_inv_ciclico.contado,
+                        ptc.CodigoSKU
 						) AS T  "
 
             '#CKFK20250705 Agregué comparación por fecha
@@ -717,6 +722,67 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
             Throw ex
         Finally
             If Not lconection Is Nothing AndAlso lconection.State = ConnectionState.Open Then lconection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Detalle_Gondola_Ciclico(ByVal pBeCiclico As clsBeTrans_inv_ciclico) As DataTable
+
+        Dim lconection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim ltransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim sp As String = "SELECT
+                                    p.codigo AS codigo_producto,
+                                    p.nombre AS nombre_producto,
+                                    ic.cantidad,
+                                    ISNULL(ptc.CodigoSKU, '') AS CodigoSKU,
+                                    ISNULL(c.Codigo, '') AS Codigo_Color,
+                                    ISNULL(c.Nombre, '') AS Nombre_Color,
+                                    ISNULL(t.Codigo, '') AS Codigo_Talla,
+                                    ISNULL(t.Nombre, '') AS Nombre_Talla
+                                FROM trans_inv_ciclico ic
+                                INNER JOIN producto_bodega pb ON pb.IdProductoBodega = ic.IdProductoBodega
+                                INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                                LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = ic.IdProductoTallaColor
+                                LEFT JOIN talla t ON t.IdTalla = ptc.IdTalla
+                                LEFT JOIN color c ON c.IdColor = ptc.IdColor
+                                WHERE ic.idinventarioenc = @idinventarioenc
+                                AND ic.gondola = @gondola
+                                AND ic.IdBodega = @idbodega "
+
+            lconection.Open()
+
+            ltransaction = lconection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim cmd As New SqlCommand(sp, lconection, ltransaction) With {
+                .CommandType = CommandType.Text
+            }
+
+            cmd.Parameters.AddWithValue("@idinventarioenc", pBeCiclico.Idinventarioenc)
+            cmd.Parameters.AddWithValue("@gondola", pBeCiclico.Gondola)
+            cmd.Parameters.AddWithValue("@idbodega", pBeCiclico.IdBodega)
+
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable("Inventario")
+
+            dad.Fill(dt)
+
+            ltransaction.Commit()
+
+            Return dt
+
+        Catch ex As Exception
+            If ltransaction IsNot Nothing Then
+                ltransaction.Rollback()
+            End If
+
+            Throw
+        Finally
+            If lconection IsNot Nothing AndAlso lconection.State = ConnectionState.Open Then
+                lconection.Close()
+            End If
         End Try
 
     End Function
