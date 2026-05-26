@@ -48,7 +48,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
@@ -58,6 +58,7 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -4680,7 +4681,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncCumbre.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

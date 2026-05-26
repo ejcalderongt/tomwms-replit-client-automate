@@ -1378,7 +1378,8 @@ Public Class clsLnI_nav_barras_pallet
                                     Impreso,
                                     fecha_procesado_erp,
                                     IdOrdenCompraEnc,
-                                    IdOrdenCompraDet
+                                    IdOrdenCompraDet,
+                                    Peso
                                     FROM I_nav_barras_pallet nav
                                     inner join producto pr 
 								    on nav.codigo=pr.codigo inner join producto_bodega pb
