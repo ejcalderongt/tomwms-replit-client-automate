@@ -8007,6 +8007,7 @@ Partial Public Class clsLnProducto
 
         Try
 
+            '#CKFK20260526 Agregué el CodigoSKU a la consulta para validar también el código de barra del SKU de la tabla producto_talla_color
             Dim vSQL As String = "SELECT  distinct *
                                   FROM VW_ProductoSI  
                                   WHERE (IdBodega = 1) and 
