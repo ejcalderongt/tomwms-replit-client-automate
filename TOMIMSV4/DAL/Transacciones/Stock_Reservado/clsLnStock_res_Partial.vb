@@ -19011,11 +19011,22 @@ Partial Public Class clsLnStock_res
             lBeStockExistenteZonasNoPicking = ListasStock.lBeStockExistenteZonasNoPicking
             lBeStockExistenteZonaPicking = ListasStock.lBeStockExistenteZonaPicking
 
+            '#CKFK20260523 Agregué estas variables porque no se estaba validando que la presentacion fuera 0
+            Dim vIdPresentacion As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vIdPresentacion = BePresentacionDefecto.IdPresentacion
+            End If
+
+            Dim vFactor As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vFactor = BePresentacionDefecto.Factor
+            End If
+
             clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
                                            "listas_stock_iniciales",
                                            "Producto_Codigo", BeProducto.Codigo,
-                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.IdPresentacion),
-                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.Factor),
+                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(vIdPresentacion),
+                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(vFactor),
                                            "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(BePedidoDet.Cantidad),
                                            "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(BePedidoDet.IdPresentacion),
                                            "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),
