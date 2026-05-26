@@ -565,6 +565,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
                             If esRackDestino AndAlso
                                Not String.IsNullOrWhiteSpace(licenciaDestino) AndAlso
                                Not licenciaDestino.Equals(stockActual.Lic_plate, StringComparison.OrdinalIgnoreCase) Then
+                                If Get_Cantidad_Licencias_Distintas_En_Ubicacion(pMovimiento.IdUbicacionDestino,
+                                                                                 pMovimiento.IdBodegaDestino,
+                                                                                 lConnection,
+                                                                                 lTransaction) > 1 Then
+                                    Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
+                                End If
 
                                 stockActual.CantidadUmBas = pMovimiento.Cantidad
                                 stockActual.Lic_plate_Anterior = stockActual.Lic_plate
@@ -893,7 +899,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -1540,7 +1546,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdStockNuevo As Integer = 0
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -2264,6 +2270,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 '#EJC20260526:
                 'Implosión automática solo aplica para ubicaciones destino tipo rack.
                 If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
+                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
+                                                                     pMovimiento.IdBodegaDestino,
+                                                                     lConnection,
+                                                                     lTransaction) > 1 Then
+                        Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
+                    End If
                     requiereImplosion = True
                 End If
             End If
@@ -2655,6 +2667,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 '#EJC20260526:
                 'Implosión automática solo aplica para ubicaciones destino tipo rack.
                 If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
+                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
+                                                                     pMovimiento.IdBodegaDestino,
+                                                                     lConnection,
+                                                                     lTransaction) > 1 Then
+                        Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
+                    End If
                     requiereImplosion = True
                 End If
             End If
@@ -2806,6 +2824,36 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Throw
         End Try
 
+    End Function
+
+    '#EJC20260526:
+    'Evita selección ambigua de licencia destino cuando hay más de una licencia activa en el rack.
+    Private Shared Function Get_Cantidad_Licencias_Distintas_En_Ubicacion(ByVal pIdUbicacion As Integer,
+                                                                           ByVal pIdBodega As Integer,
+                                                                           ByVal lConnection As SqlConnection,
+                                                                           ByVal lTransaction As SqlTransaction) As Integer
+        Try
+            Const vSQL As String = "SELECT COUNT(DISTINCT LTRIM(RTRIM(lic_plate))) " &
+                                   "FROM vw_stock_res " &
+                                   "WHERE IdUbicacion = @IdUbicacion " &
+                                   "  AND IdBodega = @IdBodega " &
+                                   "  AND ISNULL(LTRIM(RTRIM(lic_plate)), '') <> ''"
+
+            Using cmd As New SqlCommand(vSQL, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lReturnValue As Object = cmd.ExecuteScalar()
+                If lReturnValue IsNot Nothing AndAlso lReturnValue IsNot DBNull.Value Then
+                    Return CInt(lReturnValue)
+                End If
+            End Using
+
+            Return 0
+        Catch ex As Exception
+            Throw ex
+        End Try
     End Function
 
 End Class
