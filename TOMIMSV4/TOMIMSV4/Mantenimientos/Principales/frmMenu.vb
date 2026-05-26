@@ -97,8 +97,8 @@ Public Class frmMenu
 
             Dim time As DateTime = e.SignalTime
             Dim horario = time.ToString("HH:mm:ss")
-            Console.WriteLine("TIME_PC: " + horario)
-            Console.WriteLine("horario_programado: " + pHorario_Ejecucion_Historico.ToString())
+            'Console.WriteLine("TIME_PC: " + horario)
+            'Console.WriteLine("horario_programado: " + pHorario_Ejecucion_Historico.ToString())
 
             If horario = pHorario_Ejecucion_Historico.ToString() Then
                 Dim hora_terminal = Now.TimeOfDay.ToString()

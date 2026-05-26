@@ -43,7 +43,7 @@ Public Class clsLnTrans_inv_ciclico_rfid
 		Try
 
 			Ins.Init("trans_inv_ciclico_rfid")
-			Ins.Add("idinvciclico", "@idinvciclico", DataType.Parametro)
+			'Ins.Add("idinvciclico", "@idinvciclico", DataType.Parametro)
 			Ins.Add("idinventarioenc", "@idinventarioenc", DataType.Parametro)
 			Ins.Add("idpallet", "@idpallet", DataType.Parametro)
 			Ins.Add("codigo", "@codigo", DataType.Parametro)
@@ -75,7 +75,7 @@ Public Class clsLnTrans_inv_ciclico_rfid
 				cmd = New SqlCommand(sp, lConnection, lTransaction)
 			End If
 
-			cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico_rfid.Idinvciclico))
+			'cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico_rfid.Idinvciclico))
 			cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico_rfid.Idinventarioenc))
 			cmd.Parameters.Add(New SqlParameter("@IDPALLET", oBeTrans_inv_ciclico_rfid.IdPallet))
 			cmd.Parameters.Add(New SqlParameter("@CODIGO", oBeTrans_inv_ciclico_rfid.Codigo))
