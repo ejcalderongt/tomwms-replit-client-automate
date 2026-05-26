@@ -10,6 +10,11 @@ notas:
       clsLnStock_res_Partial y clsLnTrans_picking_ubic_Partial: condiciones de
       parcial cambiadas a > 0 y caminos de cierre/eliminacion a <= 0 para
       evitar updates con cero/negativo en escenarios de merma/no encontrado.
+      Se identifico caso adicional en Reemplaza_Producto_Dannado_Menor donde
+      cuando CantidadPendiente = 0 la cantidad dañada quedaba en 0 por no
+      entrar a ramas >0/<0; se corrigio para asignar pCantLinea en igualdad.
+      Tambien se agrego guard clause en Modificar_PickingUbic_By_Reem para
+      omitir update cuando CantSol <= 0 y evitar violacion del check.
   - fecha: "2026-05-26"
     area: "HH menu roles"
     detalle: >

@@ -6257,6 +6257,9 @@ Partial Public Class clsLnTrans_picking_ubic
                     BePickingUbic.CantidadDañada = pCantLinea
                 ElseIf CantidadPendiente < 0 Then
                     BePickingUbic.CantidadDañada = pCantReemplazar
+                Else
+                    '#EJC20260526: Cuando la cantidad a reemplazar coincide exacto con la línea, no debe quedar en 0.
+                    BePickingUbic.CantidadDañada = pCantLinea
                 End If
 
                 pCantReemplazar -= BePickingUbic.CantidadDañada

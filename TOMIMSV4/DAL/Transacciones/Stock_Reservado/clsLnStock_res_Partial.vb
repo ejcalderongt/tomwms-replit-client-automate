@@ -3548,6 +3548,11 @@ Partial Public Class clsLnStock_res
 
             vCantSol = CantSol
 
+            '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, no se debe intentar actualizar con cantidad <= 0.
+            If CantSol <= 0 Then
+                Return True
+            End If
+
             '#CKFK 20180208 11:47PM Actualizar la cantidad solicitada en trans_picking_ubic
             Dim bePickingUbicExistente As New clsBeTrans_picking_ubic With {
                 .IdPickingUbic = IdPickingUbic
