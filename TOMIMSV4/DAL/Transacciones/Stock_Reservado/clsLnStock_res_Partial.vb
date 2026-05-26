@@ -1970,7 +1970,8 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, parcial solo aplica cuando cantidad_solicitada > 0.
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -1990,7 +1991,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -2283,7 +2284,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
                     '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -2345,7 +2346,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                     '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
@@ -2591,7 +2592,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2610,7 +2611,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2820,7 +2821,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistenteDañado.Cantidad_Solicitada = CantSol
 
@@ -2841,7 +2842,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, ltransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#EJC20190626: Si la Cantidad_Solicitada es igual a 0, quiere decir que fue reemplazada por completo por otro IdStock
                     'Por consiguiente la Cantidad_Solicitada de ese IdPickingUbic es 0, porque ya sé que no está.
@@ -3562,7 +3563,7 @@ Partial Public Class clsLnStock_res
                 bePickingUbicExistente.Cantidad_Recibida -= CantSol
             End If
 
-            If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+            If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
 
                 '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -3603,7 +3604,7 @@ Partial Public Class clsLnStock_res
                 'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente, lConnection, lTransaction)
 
-            ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+            ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                 '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true

@@ -9475,9 +9475,11 @@ Public Class frmPedido
 
                 End Select
 
-                'Mantener llamada (theirs) pero usando el wrapper sin parámetros (ya usada en tu proyecto)
-                Equiparar_Cliente_Con_Propietario(clsTransaccion.lConnection,
-                                                  clsTransaccion.lTransaction)
+                If Modo = TipoTrans.Nuevo Then
+                    'Mantener llamada (theirs) pero solo en creación para no reemplazar el cliente guardado al editar.
+                    Equiparar_Cliente_Con_Propietario(clsTransaccion.lConnection,
+                                                      clsTransaccion.lTransaction)
+                End If
 
                 '#EJC20220113_0302AM: Mostrar tab de servicios según parametro.
                 xtrPedido.TabPages.Item(9).PageVisible = AP.Bodega.Control_Tarifa_Servicios
@@ -10615,6 +10617,8 @@ Public Class frmPedido
 
     Private Sub cmbTipoPedido_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoPedido.EditValueChanged
 
+        If IsLoading OrElse Modo <> TipoTrans.Nuevo Then Exit Sub
+
         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
         SplashScreenManager.Default.SetWaitFormDescription("Cargando clientes...")
 
@@ -10688,7 +10692,7 @@ Public Class frmPedido
 
         Try
 
-            If IsLoading Then Exit Sub
+            If IsLoading OrElse Modo <> TipoTrans.Nuevo Then Exit Sub
 
             'GT16082021: Se obtiene la configuración para validar si el id propietario es seteado a cliente
             BeConfigBodega = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(cmbBodega.EditValue,

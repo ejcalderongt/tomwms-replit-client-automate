@@ -807,4 +807,26 @@ public class clsLnTrans_pe_pol
 
         return count > 0;
     }
+    public static int Anular_Polizas_By_IdPedidoEnc(int idPedidoEnc,
+                                                    SqlConnection conn,
+                                                    SqlTransaction tx)
+    {
+        try
+        {
+            const string sql = @"
+                UPDATE trans_pe_pol
+                SET activo = 0
+                WHERE IdOrdenPedidoEnc = @IdPedidoEnc
+                  AND ISNULL(activo, 0) <> 0";
+
+            using SqlCommand cmd = new(sql, conn, tx) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", idPedidoEnc));
+
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
