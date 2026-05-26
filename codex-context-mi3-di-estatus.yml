@@ -1,4 +1,18 @@
 notas:
+  - fecha: "2026-05-25"
+    area: "WebAPI salidas anulacion bajo demanda"
+    detalle: >
+      Se agrego endpoint POST /api/sync/salidas/anular-salida para anular un
+      documento de salida desde WebAPI con reglas equivalentes al flujo WMS de
+      frmPedido: requiere IdPedidoEnc o Referencia, motivo de anulacion,
+      valida que no exista picking activo asociado, permite estados Nuevo,
+      Incompleto, Pendiente, Pickeado y Verificado, libera stock_res por
+      IdPedido y marca trans_pe_enc.estado='Anulado' con
+      IdMotivoAnulacionBodega en una sola transaccion; si la bodega es fiscal,
+      tambien desactiva trans_pe_pol.activo para la poliza del pedido. La
+      respuesta usa codigos tipificados: ANULACION_OK, REQUEST_INVALID, PEDIDO_NO_ENCONTRADO,
+      PEDIDO_AMBIGUO, PEDIDO_YA_ANULADO, ESTADO_NO_ANULABLE, PICKING_ASOCIADO,
+      ANULACION_FALLIDA y ERROR_INTERNO.
   - fecha: "2026-05-23"
     area: "WSHH consulta stock ubicacion JSON estable"
     detalle: >

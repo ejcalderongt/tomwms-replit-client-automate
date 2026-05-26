@@ -761,6 +761,24 @@ public class clsLnStock_res
             throw;
         }
     }
+    public static int Eliminar_Stock_Res_By_IdPedidoEnc(int idPedidoEnc,
+                                                       SqlConnection lConnection,
+                                                       SqlTransaction ltransaction)
+    {
+        try
+        {
+            const string sp = "DELETE FROM stock_res WHERE IdPedido = @IdPedidoEnc";
+
+            using SqlCommand cmd = new(sp, lConnection, ltransaction) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", idPedidoEnc));
+
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 
     public static int Get_Count_By_IdPedidoEnc(int IdPedidoEnc, SqlConnection lConnection, SqlTransaction lTransaction)
     {
