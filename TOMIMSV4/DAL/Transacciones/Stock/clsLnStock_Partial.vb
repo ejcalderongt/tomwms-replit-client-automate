@@ -10795,7 +10795,7 @@ Partial Public Class clsLnStock
 
                     '#EJC20220204: Registrar movimiento de cambio de ubicación hacia ubicación de picking.
                     BeMovimiento = New clsBeTrans_movimientos
-                    BeMovimiento.IdMovimiento = vIdMaxMovimiento
+                    '#EJC20260526: IdMovimiento es identity; no se asigna manualmente.
                     BeMovimiento.IdEmpresa = IdEmpresa
                     BeMovimiento.IdBodegaOrigen = objStockOrigen.IdBodega
                     BeMovimiento.IdTransaccion = objStockOrigen.IdPedidoEnc
