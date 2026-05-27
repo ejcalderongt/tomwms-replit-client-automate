@@ -161,3 +161,41 @@ Resultado: push OK a Azure DevOps.
   - `tools/ejc-python-agents/README.md`
 - Salida del motor:
   - `tools/ejc-python-agents/out/current-case-report.md`
+
+### 2026-05-26 (actualizacion) - Jira Task Assistant (draft_only)
+
+- Se implemento MVP `tools/jira-task-assistant` para cruce automatico:
+  - commits Git (TOMWMS + TOMHH2025),
+  - `BITACORA_JIRA.md`,
+  - `LOG_DIARIO.md`.
+- Objetivo: detectar commits no clasificados como tarea Jira y proponer backlog en modo borrador.
+- Script principal:
+  - `tools/jira-task-assistant/main.py`
+- Documentacion:
+  - `tools/jira-task-assistant/README.md`
+- Resultado de ejecucion (rango 2026-05-19 a 2026-05-26):
+  - `tools/jira-task-assistant/out/jira_candidates.md`
+  - `tools/jira-task-assistant/out/jira_payload.json`
+  - Conteo inicial detectado: 101 commits no clasificados (pendiente consolidacion por tarea funcional).
+- Control:
+  - no se ejecutaron llamadas de escritura a Jira; salida queda solo para revision/aprobacion de Erik.
+- Integracion de entorno Jira (persistente con `setx`):
+  - `JIRA_URL=https://dtsolutionsdevops.atlassian.net`
+  - `JIRA_EMAIL=dtsolutionsgt@gmail.com`
+  - `JIRA_ACCOUNT_ID=61d3d6500586a20069465469`
+
+### 2026-05-26 (actualizacion) - Trazabilidad fina inventario ciclico (grafo YAML)
+
+- Se documenta el proceso completo de inventario ciclico en un solo archivo segmentado por capas (HH, WS, BOF, DAL, BD), con aristas de flujo y reglas de negocio:
+  - `INV-CIC-GRAFO-TRAZA-FINA-2026-05-26.yml`
+- Decision de diseño documental:
+  - mantener **un solo archivo ramificado** en lugar de separar BOF/HH, para conservar trazabilidad cross-layer sin drift.
+- Incluye subflujos:
+  - conteo HH base,
+  - reconteo,
+  - caja master (gate por `Control_Talla_Color`),
+  - regularizacion BOF.
+- Incluye puntos finos sensibles para cambios futuros:
+  - resolucion por barra/unidad,
+  - overwrite de caja master,
+  - contrato funcional del gate de caja master.
