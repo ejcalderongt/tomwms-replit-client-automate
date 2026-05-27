@@ -1,126 +1,179 @@
----
-id: ATLAS
-tipo: atlas-maestro
-estado: vigente
-fecha: 2026-05-05
-autores: [agente-brain-replit]
-clientes: [becofarma, byb, cealsa, killios, killios_2026, mampa, mercopan, merhonsa]
-ramas: [dev_2023_estable, dev_2028_merge]
-tags: [atlas, indice, navegacion, F5, cliente-aware]
-relacionado_con: [INDEX, BUG-001, F4, F5]
----
+# TOM WMS Atlas — BOF/HH 2023↔2028 + Cross-Cliente
 
-# ATLAS WMS — punto de entrada cliente-aware
+> Generado: 2026-05-27 | Ramas: `dev_2028_merge` (activa) · `dev_2023_estable` (baseline)
 
-> Última actualización: **2026-05-05** · Generado por F5.
-> Complementa al `INDEX.md` (vista árbol del brain) con una vista **cliente × dimensión**.
-> Para entender un cliente: arrancá por su **ficha atlas** (col 'Atlas'), después saltá a la ficha detallada (col 'Ficha').
+## Índice
 
-## 1. Matriz maestra cliente × dimensión
-
-| Cliente | Env | DB | ERP | Rama PRD | BUG-001 | Daños hist. | Pend. ERP | Atlas | Ficha detallada |
-|---|---|---|---|---|---|---:|---:|---|---|
-| **becofarma** | PRD | `IMS4MB_BECOFARMA_PRD` | SAP B1 | dev_2023_estable | no afectado | 0 | 10/10 | [`becofarma-atlas-2026-05-05.md`](../clients/becofarma-atlas-2026-05-05.md) | [`becofarma.md`](../clients/becofarma.md) |
-| **byb** | PRD | `IMS4MB_BYB_PRD` | NAV | dev_2023_estable | MEDIA | 495 | 11/38 | [`byb-atlas-2026-05-05.md`](../clients/byb-atlas-2026-05-05.md) | [`byb.md`](../clients/byb.md) |
-| **cealsa** | QAS | `IMS4MB_CEALSA_QAS` | Propio | dev_2028_merge | no afectado | 0 | 368/460 | [`cealsa-atlas-2026-05-05.md`](../clients/cealsa-atlas-2026-05-05.md) | [`cealsa.md`](../clients/cealsa.md) |
-| **killios** | PRD | `TOMWMS_KILLIOS_PRD` | SAP B1 | dev_2023_estable | CRÍTICA | 6,500 | 722/825 | [`killios-atlas-2026-05-05.md`](../clients/killios-atlas-2026-05-05.md) | [`killios.md`](../clients/killios.md) |
-| **killios_2026** | PRD | `TOMWMS_KILLIOS_PRD_2026` | SAP B1 | dev_2023_estable | CRÍTICA | 10,565 | 709/986 | [`killios_2026-atlas-2026-05-05.md`](../clients/killios_2026-atlas-2026-05-05.md) | [`killios.md`](../clients/killios.md) |
-| **mampa** | QA | `TOMWMS_MAMPA_QA` | SAP B1 | dev_2028_merge | no afectado | 0 | 150/154 | [`mampa-atlas-2026-05-05.md`](../clients/mampa-atlas-2026-05-05.md) | _pendiente_ |
-| **mercopan** | PRD | `IMS4MB_MERCOPAN_PRD` | NAV | dev_2023_estable | CRÍTICA | 19,607 | 1706/1877 | [`mercopan-atlas-2026-05-05.md`](../clients/mercopan-atlas-2026-05-05.md) | [`mercopan.md`](../clients/mercopan.md) |
-| **merhonsa** | PRD | `IMS4MB_MERHONSA_PRD` | a confirmar | dev_2023_estable | n/a | 0 | 766/874 | [`merhonsa-atlas-2026-05-05.md`](../clients/merhonsa-atlas-2026-05-05.md) | [`merhonsa.md`](../clients/merhonsa.md) |
-
-## 2. Vista por dimensión
-
-### 2.1 Por ERP destino
-
-- **NAV**: byb, mercopan
-- **Propio**: cealsa
-- **SAP B1**: becofarma, killios, killios_2026, mampa
-- **a confirmar**: merhonsa
-
-### 2.2 Por modelo de configuración
-
-- **(pendiente análisis)**: merhonsa
-- **BODEGA-CENTRIC**: mampa
-- **MIXTO**: killios, killios_2026
-- **PRODUCT-CENTRIC**: becofarma, mercopan
-- **PRODUCT-CENTRIC NULL**: byb
-- **PRODUCT-CENTRIC heterogéneo**: cealsa
-
-### 2.3 Por rama productiva
-
-- **`dev_2023_estable`**: becofarma, byb, killios, killios_2026, mercopan, merhonsa
-- **`dev_2028_merge`**: cealsa, mampa
-
-### 2.4 Por estado del BUG-001
-
-| Severidad | Clientes | Acción |
+| Sección | Path | Estado |
 |---|---|---|
-| **CRÍTICA** | killios_2026 (cliente reportante), mercopan (mayor volumen histórico), killios (snapshot viejo) | Fix urgente; hotfix condicional según PLAYBOOK §H.3 |
-| **MEDIA** | byb (484 líneas, outlier 21% HH) | Investigar HH específico; cliente posiblemente inactivo |
-| **NO AFECTADO** | mampa, becofarma, cealsa, merhonsa | n/a |
+| F1: Inventario de código | `code-deep-flow/INVENTARIO-STATS.md` | DONE |
+| F2: Diffs 2023↔2028 BOF | `code-deep-flow/DIFF-2023-VS-2028-BOF.md` | DONE |
+| F2: Diffs 2023↔2028 HH | `code-deep-flow/DIFF-2023-VS-2028-HH.md` | DONE |
+| F4: Snapshots cross-cliente | `data-deep-dive/<cliente>/` | DONE |
+| F4: Cross-comparativa | `data-deep-dive/CROSS-COMPARATIVA.md` | DONE |
+| Bugs conocidos | `wms-known-issues/` | DONE |
+| Learnings | `learnings/` | DONE |
 
-## 3. Cross-refs maestros
+## Resumen ejecutivo BOF 2023→2028
 
-### Capa código (F1+F2+F3)
+| Métrica | Valor |
+|---|---|
+| Archivos 2023 | 2,342 |
+| Archivos 2028 | 2,447 |
+| Archivos nuevos | 107 |
+| Archivos eliminados | 2 |
+| Archivos modificados | 464 |
+| Funciones netas | +987 / -291 |
 
-- `code-deep-flow/DIFF-BOF-2023-VS-2028.md` — diff completo backend BOF VB.NET
-- `code-deep-flow/DIFF-HH-2023-VS-2028.md` — diff handheld Android
-- `code-deep-flow/FLAGS-CALLSITES.md` — 69 flags `i_nav_config_enc` × callsites código
-- `code-deep-flow/00-mapa-de-cajas.md`, `02-portal-y-dms.md`, `03-implosion-y-merge-lp.md`, `04-mi3-y-reserva-clavaud.md`
-- `code-deep-flow/traza-001-license-plate.md`, `traza-002-danado-picking.md`
+### Top 15 archivos BOF más modificados (2023→2028)
 
-### Capa datos (F4)
+| Archivo | Líneas 2023 | Líneas 2028 | Delta | +funcs/-funcs |
+|---|---|---|---|---|
+| `frmAjusteStock.vb` | 4004 | 7854 | +3850 | +8/-7 |
+| `frmPedido_List.vb` | 1472 | 3773 | +2301 | +13/-17 |
+| `clsLnStock_res_Partial.vb` | 34221 | 35958 | +1737 | +0/-0 |
+| `clsLnTrans_ubic_hh_det_Partial.vb` | 1277 | 2840 | +1563 | +0/-0 |
+| `frmPedido.vb` | 12347 | 13559 | +1212 | +5/-7 |
+| `frmCargaExcel.vb` | 5101 | 6311 | +1210 | +2/-2 |
+| `clsLnI_nav_ped_traslado_enc_Partial.vb` | 3463 | 4550 | +1087 | +3/-0 |
+| `clsLnProducto_talla_color.vb` | 540 | 1360 | +820 | +0/-0 |
+| `frmInventarioImport.vb` | 1014 | 1714 | +700 | +12/-13 |
+| `frmBodegaSelUbic.vb` | 1543 | 2239 | +696 | +2/-2 |
+| `clsLnTrans_re_enc_Partial.vb` | 8930 | 9603 | +673 | +0/-0 |
+| `clsLnProducto_Partial.vb` | 10803 | 11437 | +634 | +0/-0 |
+| `clsLnI_nav_barras_pallet.vb` | 929 | 1518 | +589 | +0/-0 |
+| `clsLnTrans_pe_det_Partial.vb` | 4937 | 5470 | +533 | +0/-0 |
+| `clsLnTrans_re_det_Partial.vb` | 3053 | 3585 | +532 | +0/-0 |
 
-- `data-deep-dive/CROSS-COMPARATIVA.md` — tabla cruzada 8 BDs
-- `data-deep-dive/<cliente>/snapshot-2026-05-05.md` — snapshot por cliente (8 archivos)
-- `data-deep-dive/<cliente>/snapshot-2026-05-05-raw.json` — datos crudos para reprocesar
+## Resumen ejecutivo HH 2023→2028
 
-### Capa heat-map de capabilities
+| Métrica | Valor |
+|---|---|
+| Archivos 2023 | 373 |
+| Archivos 2028 | 411 |
+| Archivos nuevos (activities/classes) | 38 |
+| Archivos modificados | 108 |
 
-- `heat-map-params/cross-cliente/01-i_nav_config_enc.md` — 78 cols, schema drift severo
-- `heat-map-params/cross-cliente/02-bodega.md` — 123 cols, capabilities por bodega
-- `heat-map-params/cross-cliente/03-tipos-documento.md`
-- `heat-map-params/cross-cliente/04-producto.md`
+### Top 15 archivos HH más modificados (2023→2028)
 
-### Bugs y casos
+| Archivo | Líneas 2023 | Líneas 2028 | Delta |
+|---|---|---|---|
+| `frm_recepcion_datos.java` | 10449 | 11924 | +1475 |
+| `frm_cambio_ubicacion_ciega.java` | 5090 | 5713 | +623 |
+| `frm_consulta_stock.java` | 1199 | 1680 | +481 |
+| `frm_inv_cic_add.java` | 2377 | 2740 | +363 |
+| `MainActivity.java` | 2013 | 2371 | +358 |
+| `Mainmenu.java` | 994 | 1237 | +243 |
+| `frm_list_rec_prod.java` | 2174 | 2395 | +221 |
+| `frm_detalle_tareas_picking.java` | 1606 | 1750 | +144 |
+| `frm_preparacion_packing.java` | 1468 | 1609 | +141 |
+| `XMLObject.java` | 397 | 518 | +121 |
+| `frm_list_rec_prod_detalle.java` | 1059 | 1175 | +116 |
+| `appGlobals.java` | 322 | 409 | +87 |
+| `frm_Packing.java` | 2988 | 3060 | +72 |
+| `frm_list_prod_reemplazo_picking.java` | 1024 | 1082 | +58 |
+| `frm_datos_reabastecimiento.java` | 751 | 801 | +50 |
 
-- `wms-known-issues/BUG-001-danado-picking-no-resta-inventario/INDEX.md`
-- `wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CLIENTES-AFECTADOS.md`
-- `wms-known-issues/BUG-001-danado-picking-no-resta-inventario/CASOS-RELACIONADOS.md`
-- `customer-open-cases/CP-013-killios-wms164/`
-- `debuged-cases/CP-015-bug-danado-picking-transversal/`
+## Archivos nuevos en HH-2028 (no existían en 2023)
 
-### Arquitectura y decisiones
+```
+LocalBroadcastManager.java
+ProgressDialog.java
+clsBeColor.java
+clsBeColorList.java
+clsBeProducto_talla_color.java
+clsBeProducto_talla_colorList.java
+clsBeTalla.java
+clsBeTallaList.java
+clsBeTrans_inv_ciclico_rfid.java
+clsBeI_nav_barras_rfid_det.java
+clsBeI_nav_barras_rfid_detList.java
+clsBeI_nav_barras_rfid_enc.java
+list_adapt_consulta_detalle_gondola.java
+list_adapt_detalle_ciclico_cm.java
+list_adapt_detalle_picking_cm.java
+list_adapt_detalle_recepcion_cm.java
+InventarioRfidAdapter.java
+InventarioRfidViewHolder.java
+RfidAdapter.java
+RfidProcesarAdapter.java
+InventarioRfidReaderManager.java
+InventarioRfidSearchManager.java
+InventarioRfidSelectionManager.java
+RFIDController.java
+RecepcionRfidReaderManager.java
+RecepcionRfidSessionManager.java
+RfidToneFeedback.java
+RfidSqlite.java
+frm_conteo_caja_master.java
+frm_detalle_gondola.java
+frm_lista_inventario_rfid.java
+frm_settings_rfid.java
+frm_existencias_rfid.java
+frm_guardar_rfid.java
+frm_menu_rfid.java
+frm_procesar_rfid.java
+frm_recepcion_rfid.java
+frm_recepcion_rfid_2.java
+```
 
-- ADRs por cliente: `architecture/adr/ADR-007-killios-sap-b1-integration.md`, `ADR-008-byb-replenishment-module.md`, `ADR-009-cealsa-3pl-jornada-prefactura.md`
-- ADRs transversales: `ADR-005-identity-migration.md`, `ADR-006-multi-environment-config.md`, `ADR-010..012`
-- Reglas: `entities/rules/` (12 reglas)
-- Módulos: `entities/modules/` (incluye `mod-repo-tomwms-bof.md`, `mod-repo-tomhh2025.md`)
+## Archivos nuevos en BOF-2028 (primeras 30)
 
-### Learnings cross-cliente más usados
+```
+clsLnTrans_inv_ciclico_rfid.vb
+clsLnLog_sincronizacion_fallos.vb
+clsLnLog_sincronizacion_nube.vb
+ConfigManager.vb
+clsLnBodegaNotificacionContacto.vb
+clsLnNotificacion.vb
+clsLnNotificacionCola.vb
+clsLnNotificacionContacto.vb
+clsLnNotificacionContactoBodega.vb
+clsLnNotificacionDestinatarioRegla.vb
+clsLnNotificacionEvento.vb
+clsLnNotificacionEventoVariable.vb
+clsLnNotificacionLayout.vb
+clsLnNotificacionPlantilla.vb
+clsLnI_nav_barras_rfid_mov.vb
+clsLnI_nav_barras_rfid_tipo_mov.vb
+clsLnTrans_pe_ref_mi3.vb
+clsLnI_nav_barras_rfid_det.vb
+clsLnI_nav_barras_rfid_enc.vb
+clsLnI_nav_barras_rfid_stock.vb
+clsLnLog_verificacion_bof.vb
+clsLnVerificacion_estado.vb
+clsLnVerificacion_motivo.vb
+clsBeTrans_inv_ciclico_rfid.vb
+clsBeLog_sincronizacion_fallos.vb
+clsBeLog_sincronizacion_nube.vb
+clsBeTrans_ajuste_enc_Partial.vb
+Smtp_Configuracion.vb
+clsBEBodegaNotificacionContacto.vb
+clsBENotificacionCola.vb
+```
 
-- L-014 → BECOFARMA es BD diagnóstica, no productiva real
-- L-015 → ClickOnce empaqueta TODAS las interfaces, dispatch dinámico
-- L-017 → FK sentinela cero en outbox (no usa NULL)
-- L-018 → lic_plate universal en outbox (99-100%)
-- L-019 → `i_nav_config_enc` es la fuente maestra de capability flags
-- L-022 → Patrón naming sincronizador (`SAPBOSync<Cliente>.exe`, `NavSync.exe`, `<Cliente>Sync.exe`)
-- L-023 → BYB outbox parado dic-2023 → oct-2025
+## Clientes con snapshots
 
-## 4. Cómo usar este atlas
+| Cliente | Path snapshot |
+|---|---|
+| `becofarma` | `data-deep-dive/becofarma/snapshot-2026-05-05.md` |
+| `byb` | `data-deep-dive/byb/snapshot-2026-05-05.md` |
+| `cealsa` | `data-deep-dive/cealsa/snapshot-2026-05-05.md` |
+| `killios` | `data-deep-dive/killios/snapshot-2026-05-05.md` |
+| `killios_2026` | `data-deep-dive/killios_2026/snapshot-2026-05-05.md` |
+| `mampa` | `data-deep-dive/mampa/snapshot-2026-05-05.md` |
+| `mercopan` | `data-deep-dive/mercopan/snapshot-2026-05-05.md` |
+| `merhonsa` | `data-deep-dive/merhonsa/snapshot-2026-05-05.md` |
 
-**Caso 1: "hay un ticket de Killios sobre daños"**
-→ abrir `clients/killios_2026-atlas-2026-05-05.md` → ver métricas BUG-001 → ejecutar Q1 contra EC2 → cruzar con `BUG-001/CLIENTES-AFECTADOS.md` para ver concentración por operador.
+## Bugs conocidos
 
-**Caso 2: "qué clientes están afectados por el flag X"**
-→ abrir `code-deep-flow/FLAGS-CALLSITES.md` → ver callsites del flag → mapear a clientes con `heat-map-params/cross-cliente/01-i_nav_config_enc.md`.
+| ID | Descripción | Estado |
+|---|---|---|
+| BUG-001 | VW_stock_res — stock_ajuste sin AJCANTN | Documentado, fix VW en curso |
+| BUG-002 | FK_stock_rec_trans_re_det — identity desincronizado | **FIXED** — 4 commits dev_2028_merge |
 
-**Caso 3: "un cliente nuevo se queja de que el outbox no envía"**
-→ ejecutar Q3 (outbox por tipo) → cruzar con `learnings/L-022` (naming sync) y `L-010` (NAV no procesa ingresos) → ver fingerprint del cliente en `INDEX.md`.
+## Pendiente Atlas
 
-**Caso 4: "diferencias entre BOF 2023 y 2028 en módulo Y"**
-→ abrir `code-deep-flow/DIFF-BOF-2023-VS-2028.md` → buscar el módulo → cruzar con cliente productivo en col 'Rama PRD' del cuadro 2.
-
----
-*F5 Atlas consolidado · generado 2026-05-05 por agente-brain-replit*
+- F3 flags i_nav_config_enc: patrones no encontrados en código → revisar tabla `i_nav_config_det` directamente en BD
+- Cherry-pick 4 commits BUG-002 a `dev_2026_mampa` (awaiting EJC)
+- Verificar `GuardarHH_S` y `GuardarHH_CM` para FK recepción
