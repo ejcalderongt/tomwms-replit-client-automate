@@ -2785,6 +2785,12 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
+    '#EJC20260527: Refactor discriminadores de busqueda para cubrir talla/color (MAMPA y similares).
+    'Problema: pListaStockRec puede tener stocks con IdRecepcionDet != pIdRecepcionDetOrigen ni 0,
+    'porque la HH asigna IDs locales que no coinciden con el origen capturado en el overload.
+    'Para productos con talla/color (IdProductoTallaColor > 0), el discriminador real es
+    'IdProductoTallaColor + Atributo_Variante_1. El fallback relaja IdRecepcionDet y usa esos
+    'campos, protegiendo con <> pIdRecepcionDetNuevo para no re-asignar stocks ya procesados.
     Private Shared Sub Asignar_IdRecepcionDet_StockRec(ByRef pListaStockRec As List(Of clsBeStock_rec),
                                                        ByVal pBeTransReDet As clsBeTrans_re_det,
                                                        ByVal pIdRecepcionDetOrigen As Integer,
@@ -2794,18 +2800,32 @@ Partial Public Class clsLnTrans_re_det
             Exit Sub
         End If
 
-        Dim lLicPlate As String = If(pBeTransReDet.Lic_plate, "")
+        Dim lLicPlate  As String  = If(pBeTransReDet.Lic_plate, "")
+        Dim lTallaColor As Integer = pBeTransReDet.IdProductoTallaColor
+        Dim lAtrib1    As String  = If(pBeTransReDet.Atributo_Variante_1, "")
 
-        Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = pIdRecepcionDetOrigen _
-                                                                                 AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
-                                                                                 AndAlso x.No_linea = pBeTransReDet.No_Linea _
-                                                                                 AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+        '#EJC20260527 — Intento 1: coincidencia exacta por IdRecepcionDet + discriminadores completos
+        Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(
+            Function(x) x.IdRecepcionDet = pIdRecepcionDetOrigen _
+                AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                AndAlso (lTallaColor = 0 OrElse x.IdProductoTallaColor = lTallaColor) _
+                AndAlso (String.IsNullOrEmpty(lAtrib1) OrElse If(x.Atributo_Variante_1, "") = lAtrib1) _
+                AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
 
+        '#EJC20260527 — Intento 2 (fallback): relajar IdRecepcionDet cuando la HH envio un ID
+        'que no coincide con el origen (caso MAMPA IsNew=False, talla/color, etc.).
+        'Discriminadores: producto + linea + tallaColor + atributo + licPlate.
+        'Guard: x.IdRecepcionDet <> pIdRecepcionDetNuevo evita re-asignar stocks que ya
+        'fueron correctamente ligados en una iteracion anterior del mismo loop.
         If lStockRec.Count = 0 Then
-            lStockRec = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = 0 _
-                                                      AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
-                                                      AndAlso x.No_linea = pBeTransReDet.No_Linea _
-                                                      AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+            lStockRec = pListaStockRec.FindAll(
+                Function(x) x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                    AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                    AndAlso (lTallaColor = 0 OrElse x.IdProductoTallaColor = lTallaColor) _
+                    AndAlso (String.IsNullOrEmpty(lAtrib1) OrElse If(x.Atributo_Variante_1, "") = lAtrib1) _
+                    AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate) _
+                    AndAlso x.IdRecepcionDet <> pIdRecepcionDetNuevo)
         End If
 
         For Each BeStockRec As clsBeStock_rec In lStockRec
