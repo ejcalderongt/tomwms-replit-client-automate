@@ -187,12 +187,74 @@ Deben limpiarse antes del deploy a producción para no dejar datos corruptos.
 
 ---
 
-## Paths WS pendientes de revisión
+## Bug de segundo nivel: `IsNew = False` en el overload 2728
+
+El fix `#EJCCKFK20260520` tenía un gap: dentro del overload
+`Guarda_Trans_re_det(pListRecDet, pListaStockRec, ...)` (línea 2728 de
+`clsLnTrans_re_det_Partial.vb`) existía este bloque:
+
+```vb
+If BeTransReDet.IsNew Then
+    ' snapshot + INSERT + Asignar_IdRecepcionDet_StockRec  ← fix funcionaba aquí
+Else
+    Actualizar(BeTransReDet, ...)  ← INOPERANTE tras DELETE previo → stock no sincronizado
+End If
+```
+
+Si la HH envía los detalles con `IsNew = False` (caso MAMPA confirmado en debugger),
+el código iba al `Else → Actualizar`. El `Eliminar_Detalle` ya había borrado la fila,
+así que el `Actualizar` devolvía 0 filas. **No había INSERT, no había IDENTITY nuevo,
+`pListaStockRec` quedaba con los IDs calculados por la HH → FK viola.**
+
+### Fix `#EJCCKFK20260527` — commit `f8fa402b48a3`
+
+El `Else` del overload 2728 fue reemplazado para aplicar el mismo patrón
+INSERT+SCOPE_IDENTITY+sincronización cuando `IsNew = False`:
+
+```vb
+Else
+    '#EJCCKFK20260527: Este overload se invoca siempre tras un DELETE previo.
+    'Si IsNew=False, Actualizar no inserta (fila ya borrada) → misma FK.
+    'Aplicar el mismo patron INSERT+SCOPE_IDENTITY que el branch IsNew=True.
+    Dim IdRecepcionDetOrigenNotNew As Integer = BeTransReDet.IdRecepcionDet
+    BeTransReDet.Fecha_ingreso = Now
+    BeTransReDet.Fec_agr = Now
+    If BeTransReDet.IdPresentacion = -1 Then BeTransReDet.IdPresentacion = 0
+    Insertar(BeTransReDet, lConnection, lTransaction)
+    Dim MaxIdRecepcionDetNotNew As Integer = BeTransReDet.IdRecepcionDet
+    If MaxIdRecepcionDetNotNew <= 0 Then
+        Throw New Exception("ERROR_202605271715: ...")
+    End If
+    Asignar_IdRecepcionDet_StockRec(pListaStockRec, BeTransReDet,
+                                    IdRecepcionDetOrigenNotNew, MaxIdRecepcionDetNotNew)
+    vFilas += 1
+End If
+```
+
+Este fix cubre automáticamente **todos** los call sites del overload 2728:
+`GuardarHH` overload 2790, `GuardarHHSP`, y cualquier otro que llame
+`Guarda_Trans_re_det(lista, stock, ...)`.
+
+---
+
+## Tabla de commits final — dev_2028_merge TOMWMS_BOF
+
+| Push | Commit | Qué fix | Archivo |
+|---|---|---|---|
+| — | `#EJCCKFK20260520` | Overload 2728 branch IsNew=True: snapshot+INSERT+sync | `clsLnTrans_re_det_Partial.vb` |
+| 2292 | `dea6197489d4` | `Guardar` BOF WinForms: Patrón B | `clsLnTrans_re_enc_Partial.vb` |
+| 2293 | `6adb53d92a02` | `GuardarHH` overload 2517: Patrón B | `clsLnTrans_re_enc_Partial.vb` |
+| 2294 | `f8fa402b48a3` | `#EJCCKFK20260527` overload 2728 branch IsNew=False: INSERT+sync | `clsLnTrans_re_det_Partial.vb` |
+
+---
+
+## Paths WS — estado final
 
 | WS Method | LN llamado | Estado |
 |---|---|---|
-| `Guardar_Recepcion` | `GuardarHH` overload 2768 | RESUELTO — usa overload con `pListStockRec` |
-| `Guardar_Recepcion_Sin_Presentacion` | `GuardarHHSP` | RESUELTO — `#EJCCKFK20260520` |
-| `GuardarRecepcionModif` | `GuardarHH` overload 2517 | RESUELTO — commit `6adb53d92a02` |
+| `Guardar_Recepcion` | `GuardarHH` overload 2790 | RESUELTO — overload 2728 con `#EJCCKFK20260527` |
+| `Guardar_Recepcion_Sin_Presentacion` | `GuardarHHSP` | RESUELTO — overload 2728 con `#EJCCKFK20260527` |
+| `GuardarRecepcionModif` | `GuardarHH` overload 2517 | RESUELTO — commit `6adb53d92a02` Patrón B |
+| `Guardar` BOF WinForms | overloads 1354/1510 | RESUELTO — commit `dea6197489d4` Patrón B |
 | `Guardar_Recepcion_S` | `GuardarHH_S` | PENDIENTE REVISIÓN |
 | `Guardar_Recepcion_Caja_Master` | `GuardarHH_CM` | PENDIENTE REVISIÓN |
