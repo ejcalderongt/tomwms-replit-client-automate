@@ -2718,13 +2718,7 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-    ''' <summary>
-    ''' #EJC202209211314: Concurrencia y copias de stock.
-    ''' </summary>
-    ''' <param name="pListRecDet"></param>
-    ''' <param name="pListaStockRec"></param>
-    ''' <param name="lConnection"></param>
-    ''' <param name="lTransaction"></param>
+    '#EJC202209211314: Concurrencia y copias de stock.
     '#EJC20260527: Refactor — retorna Dictionary(idOrigen->idNuevo) para exponer de forma
     'explicita los IDENTITY generados al caller. Elimina dependencia implicita de efectos
     'secundarios y permite al caller verificar sincronizacion. Ambos branches (IsNew=True/False)
@@ -2800,9 +2794,9 @@ Partial Public Class clsLnTrans_re_det
             Exit Sub
         End If
 
-        Dim lLicPlate  As String  = If(pBeTransReDet.Lic_plate, "")
+        Dim lLicPlate As String = If(pBeTransReDet.Lic_plate, "")
         Dim lTallaColor As Integer = pBeTransReDet.IdProductoTallaColor
-        Dim lAtrib1    As String  = If(pBeTransReDet.Atributo_Variante_1, "")
+        Dim lAtrib1 As String = If(pBeTransReDet.Atributo_Variante_1, "")
 
         '#EJC20260527 — Intento 1: coincidencia exacta por IdRecepcionDet + discriminadores completos
         Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(
