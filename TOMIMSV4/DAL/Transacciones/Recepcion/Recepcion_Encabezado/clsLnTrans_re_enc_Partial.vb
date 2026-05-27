@@ -1827,6 +1827,14 @@ Partial Public Class clsLnTrans_re_enc
                                 Throw New Exception("ERROR_202210051158: No se pudo insertar el detalle de la recepción.")
                             End If
 
+                            '#EJC20260527-ASSERT BUG-003B: validar que pListStockRec no tiene items sin IdRecepcionDet tras mapa
+                            If Not pListStockRec Is Nothing Then
+                                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                If huérfanos.Count > 0 Then
+                                    Throw New Exception("ERROR_202605271902: GuardarHH_Pallet dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                End If
+                            End If
+
                             If Not pLotesRec Is Nothing Then
 
                                 Dim TieneLotes As Boolean = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
@@ -1905,17 +1913,9 @@ Partial Public Class clsLnTrans_re_enc
 
                                     End If
 
-                                    '#EJC20260527: filtrar stock_recs huerfanos — solo los que tienen IdRecepcionDet IDENTITY.
-                                    Dim idsInsertadosPallet As New HashSet(Of Integer)(vResultadoGuarda_Trans_re_det.Values)
-                                    Dim pListStockRecFilPallet As List(Of clsBeStock_rec) =
-                                        pListStockRec.Where(Function(s) idsInsertadosPallet.Contains(s.IdRecepcionDet)).ToList()
-                                    If pListStockRecFilPallet.Count = 0 Then
-                                        Throw New Exception("ERROR_202605271855: No hay stock_recs sincronizados con IDENTITY de trans_re_det.")
-                                    End If
-
                                     vResultadoGuarda_Stock_Rec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                                  pIdBodega,
-                                                                                                 pListStockRecFilPallet,
+                                                                                                 pListStockRec,
                                                                                                  lConnection,
                                                                                                  lTransaction)
 
@@ -1924,7 +1924,7 @@ Partial Public Class clsLnTrans_re_enc
                                         CadenaResultado += "Guarda_Stock_Rec: " & vResultadoGuarda_Stock_Rec
 
                                         clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                              pListStockRecFilPallet,
+                                                                              pListStockRec,
                                                                               lConnection,
                                                                               lTransaction)
 
@@ -2292,6 +2292,11 @@ Partial Public Class clsLnTrans_re_enc
                 Throw New Exception("#ERR202209161211B: La lista de recepcion det es nothing.")
             End If
 
+            '#EJC20260527-ASSERT BUG-003B: validar IdRecepcionDet real antes de propagar a stock_rec
+            If vIdRecepcionDetNuevoPorConcurrencia <= 0 Then
+                Throw New Exception("ERROR_202605271900: GuardarHH_CM intento asignar IdRecepcionDet=0 a todo pListStockRec. RecEnc=" & pRecEnc.IdRecepcionEnc)
+            End If
+
             For Each S In pListStockRec
                 S.IdRecepcionDet = vIdRecepcionDetNuevoPorConcurrencia
             Next
@@ -2612,6 +2617,25 @@ Partial Public Class clsLnTrans_re_enc
                         Next
                     End If
                 Next
+            End If
+
+            '#EJC20260527-ASSERT BUG-003B: validar que pListStockRec no tiene items huerfanos tras propagar IDs
+            If Not pListStockRec Is Nothing Then
+                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                If huérfanos.Count > 0 Then
+                    ' Fallback: cruzar por No_linea + IdProductoBodega si el snapshot no pudo emparejar
+                    For Each o As clsBeStock_rec In huérfanos
+                        Dim match As clsBeTrans_re_det = pListRecDet.FirstOrDefault(Function(d) d.No_Linea = o.No_linea AndAlso d.IdProductoBodega = o.IdProductoBodega)
+                        If match IsNot Nothing AndAlso match.IdRecepcionDet > 0 Then
+                            o.IdRecepcionDet = match.IdRecepcionDet
+                            CadenaResultado += " BUG003B_FALLBACK_NoLinea "
+                        End If
+                    Next
+                End If
+                Dim aunHuerfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                If aunHuerfanos.Count > 0 Then
+                    Throw New Exception("ERROR_202605271901: GuardarHH dejo " & aunHuerfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado antes de Guarda_Stock_Rec. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                End If
             End If
 
             CadenaResultado += "Guarda_Trans_re_det "
@@ -5968,6 +5992,14 @@ Partial Public Class clsLnTrans_re_enc
                                 CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                             End If
 
+                            '#EJC20260527-ASSERT BUG-003B: verificar que el stock_rec en memoria tenga IdRecepcionDet real
+                            If Not pListStockRec Is Nothing Then
+                                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                If huérfanos.Count > 0 Then
+                                    Throw New Exception("ERROR_202605271903: HH_GuardarRecepcion_S dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                End If
+                            End If
+
                             '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
                             vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
                                                                                                     lConnection,
@@ -6021,17 +6053,10 @@ Partial Public Class clsLnTrans_re_enc
                                     Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
                                 End If
 
-                                '#EJC20260527: filtrar stock_recs huerfanos — solo el que corresponde al det insertado.
-                                Dim pListStockRecFilS As List(Of clsBeStock_rec) =
-                                    pListStockRec.Where(Function(s) s.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ToList()
-                                If pListStockRecFilS.Count = 0 Then
-                                    Throw New Exception("ERROR_202605271857: No hay stock_rec con IdRecepcionDet=" & BeTransReDet.IdRecepcionDet & " (IDENTITY).")
-                                End If
-
                                 '#GT22112024: aqui es donde se ha dado error de log, validamos que datos viene antes de intentar guardar
                                 vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                      pIdBodega,
-                                                                                     pListStockRecFilS,
+                                                                                     pListStockRec,
                                                                                      lConnection,
                                                                                      lTransaction)
 
@@ -6042,7 +6067,7 @@ Partial Public Class clsLnTrans_re_enc
                                 End If
 
                                 vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                             pListStockRecFilS,
+                                                                                             pListStockRec,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -6472,6 +6497,14 @@ Partial Public Class clsLnTrans_re_enc
                                     Throw New Exception("ERROR_202605201650_HH_GuardarRecepcion_S: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
                                 End If
 
+                                '#EJC20260527-ASSERT BUG-003B: verificar que pListStockRec tenga IdRecepcionDet real
+                                If Not pListStockRec Is Nothing Then
+                                    Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                    If huérfanos.Count > 0 Then
+                                        Throw New Exception("ERROR_202605271904: HH_GuardarRecepcion_S_v2 dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                    End If
+                                End If
+
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
 
                                 Dim Obj As clsBeTrans_oc_det_lote = pListaDetLote.
@@ -6533,22 +6566,10 @@ Partial Public Class clsLnTrans_re_enc
                                     Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
                                 End If
 
-                                '#EJC20260527: filtrar stock_recs huerfanos — solo insertar los sincronizados
-                                'con trans_re_det real de esta transaccion (IdRecepcionDet IDENTITY).
-                                'Stock_recs con ID calculado localmente por la HH causarian FK violation.
-                                Dim idsRecDetInsertadosCM As New HashSet(Of Integer)(
-                                    pListaRecDet.Where(Function(d) d.IdRecepcionDet > 0) _
-                                               .Select(Function(d) d.IdRecepcionDet))
-                                Dim pListStockRecFilCM As List(Of clsBeStock_rec) =
-                                    pListStockRec.Where(Function(s) idsRecDetInsertadosCM.Contains(s.IdRecepcionDet)).ToList()
-                                If pListStockRecFilCM.Count = 0 Then
-                                    Throw New Exception("ERROR_202605271856: No hay stock_recs con IdRecepcionDet sincronizado.")
-                                End If
-
                                 '#GT22112024: aqui es donde se ha dado error de log, validamos que datos viene antes de intentar guardar
                                 vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                      pIdBodega,
-                                                                                     pListStockRecFilCM,
+                                                                                     pListStockRec,
                                                                                      lConnection,
                                                                                      lTransaction)
 
@@ -6559,7 +6580,7 @@ Partial Public Class clsLnTrans_re_enc
                                 End If
 
                                 vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                             pListStockRecFilCM,
+                                                                                             pListStockRec,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -7355,6 +7376,14 @@ Partial Public Class clsLnTrans_re_enc
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                                 Else
                                     Throw New Exception("ERROR_202605201651_GuardarHH_BOF: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
+                                End If
+
+                                '#EJC20260527-ASSERT BUG-003B: verificar que pListStockRec tenga IdRecepcionDet real
+                                If Not pListStockRec Is Nothing Then
+                                    Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                    If huérfanos.Count > 0 Then
+                                        Throw New Exception("ERROR_202605271905: GuardarHH_BOF dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                    End If
                                 End If
 
                                 '#EJC202402121836: Retornar el MaxIdRecepcionDet (para recepción BOF)

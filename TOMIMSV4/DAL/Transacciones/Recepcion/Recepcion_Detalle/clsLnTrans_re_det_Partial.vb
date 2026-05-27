@@ -2718,7 +2718,13 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-    '#EJC202209211314: Concurrencia y copias de stock.
+    ''' <summary>
+    ''' #EJC202209211314: Concurrencia y copias de stock.
+    ''' </summary>
+    ''' <param name="pListRecDet"></param>
+    ''' <param name="pListaStockRec"></param>
+    ''' <param name="lConnection"></param>
+    ''' <param name="lTransaction"></param>
     '#EJC20260527: Refactor — retorna Dictionary(idOrigen->idNuevo) para exponer de forma
     'explicita los IDENTITY generados al caller. Elimina dependencia implicita de efectos
     'secundarios y permite al caller verificar sincronizacion. Ambos branches (IsNew=True/False)
@@ -2779,12 +2785,6 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-    '#EJC20260527: Refactor discriminadores de busqueda para cubrir talla/color (MAMPA y similares).
-    'Problema: pListaStockRec puede tener stocks con IdRecepcionDet != pIdRecepcionDetOrigen ni 0,
-    'porque la HH asigna IDs locales que no coinciden con el origen capturado en el overload.
-    'Para productos con talla/color (IdProductoTallaColor > 0), el discriminador real es
-    'IdProductoTallaColor + Atributo_Variante_1. El fallback relaja IdRecepcionDet y usa esos
-    'campos, protegiendo con <> pIdRecepcionDetNuevo para no re-asignar stocks ya procesados.
     Private Shared Sub Asignar_IdRecepcionDet_StockRec(ByRef pListaStockRec As List(Of clsBeStock_rec),
                                                        ByVal pBeTransReDet As clsBeTrans_re_det,
                                                        ByVal pIdRecepcionDetOrigen As Integer,
@@ -2795,31 +2795,26 @@ Partial Public Class clsLnTrans_re_det
         End If
 
         Dim lLicPlate As String = If(pBeTransReDet.Lic_plate, "")
-        Dim lTallaColor As Integer = pBeTransReDet.IdProductoTallaColor
-        Dim lAtrib1 As String = If(pBeTransReDet.Atributo_Variante_1, "")
 
-        '#EJC20260527 — Intento 1: coincidencia exacta por IdRecepcionDet + discriminadores completos
-        Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(
-            Function(x) x.IdRecepcionDet = pIdRecepcionDetOrigen _
-                AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
-                AndAlso x.No_linea = pBeTransReDet.No_Linea _
-                AndAlso (lTallaColor = 0 OrElse x.IdProductoTallaColor = lTallaColor) _
-                AndAlso (String.IsNullOrEmpty(lAtrib1) OrElse If(x.Atributo_Variante_1, "") = lAtrib1) _
-                AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+        Dim lStockRec As List(Of clsBeStock_rec) = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = pIdRecepcionDetOrigen _
+                                                                                 AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                                                                                 AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                                                                                 AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
 
-        '#EJC20260527 — Intento 2 (fallback): relajar IdRecepcionDet cuando la HH envio un ID
-        'que no coincide con el origen (caso MAMPA IsNew=False, talla/color, etc.).
-        'Discriminadores: producto + linea + tallaColor + atributo + licPlate.
-        'Guard: x.IdRecepcionDet <> pIdRecepcionDetNuevo evita re-asignar stocks que ya
-        'fueron correctamente ligados en una iteracion anterior del mismo loop.
         If lStockRec.Count = 0 Then
-            lStockRec = pListaStockRec.FindAll(
-                Function(x) x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
-                    AndAlso x.No_linea = pBeTransReDet.No_Linea _
-                    AndAlso (lTallaColor = 0 OrElse x.IdProductoTallaColor = lTallaColor) _
-                    AndAlso (String.IsNullOrEmpty(lAtrib1) OrElse If(x.Atributo_Variante_1, "") = lAtrib1) _
-                    AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate) _
-                    AndAlso x.IdRecepcionDet <> pIdRecepcionDetNuevo)
+            lStockRec = pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = 0 _
+                                                      AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
+                                                      AndAlso x.No_linea = pBeTransReDet.No_Linea _
+                                                      AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+            '#EJC20260527-TRACE BUG-003B: log cuando fallback IdRecepcionDet=0 NO encuentra match
+            If lStockRec.Count = 0 Then
+                Dim vMsgError As String = "TRACE_BUG003B_FALLBACK_ID0_FAIL: RecEnc=" & pBeTransReDet.IdRecepcionEnc & " IdProdBod=" & pBeTransReDet.IdProductoBodega & " NoLinea=" & pBeTransReDet.No_Linea & " LP=" & lLicPlate & " idOrigen=" & pIdRecepcionDetOrigen & " idNuevo=" & pIdRecepcionDetNuevo
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                     pIdRecEnc:=pBeTransReDet.IdRecepcionEnc,
+                                                     pNumeroLinea:=pBeTransReDet.No_Linea,
+                                                     pVariantCode:=pBeTransReDet.Codigo_Producto,
+                                                     pCantidad:=pBeTransReDet.cantidad_recibida)
+            End If
         End If
 
         For Each BeStockRec As clsBeStock_rec In lStockRec
