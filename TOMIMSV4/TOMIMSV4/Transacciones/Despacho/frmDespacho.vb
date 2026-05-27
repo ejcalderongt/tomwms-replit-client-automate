@@ -1907,6 +1907,11 @@ Public Class frmDespacho
 
                     For Each BeTransPickingUbic In pBePedidoDet.ListaPickingUbic
 
+                        Dim vFactor As Double = 0
+                        Dim vCantidadRecUMBas As Double = BeTransPickingUbic.Cantidad_Recibida
+                        Dim vCantidadVerUMBas As Double = BeTransPickingUbic.Cantidad_Verificada
+                        Dim vCantidadDespUMBas As Double = BeTransPickingUbic.Cantidad_despachada
+
                         If (BeTransPickingUbic.IdPresentacion = 0) OrElse (pBePedidoDet.IdPresentacion = 0) Then
                             vCantidadReservadaUMBas = BeTransPickingUbic.Cantidad_Solicitada
                             vCantidadReservadaPres = 0
@@ -1918,24 +1923,26 @@ Public Class frmDespacho
                             BePresentacion = listaPresentaciones.Find(Function(x) x.IdPresentacion = BeTransPickingUbic.IdPresentacion)
 
                             If Not BePresentacion Is Nothing Then
+                                '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: calcular UMBas sin mutar el objeto de picking.
+                                vFactor = BePresentacion.Factor
                                 vCantidadReservadaPres = BeTransPickingUbic.Cantidad_Solicitada
-                                vCantidadReservadaUMBas = Math.Round(BeTransPickingUbic.Cantidad_Solicitada * BePresentacion.Factor, 6)
+                                vCantidadReservadaUMBas = Math.Round(BeTransPickingUbic.Cantidad_Solicitada * vFactor, 6)
                                 vCantidadRecPres = BeTransPickingUbic.Cantidad_Recibida
-                                BeTransPickingUbic.Cantidad_Recibida = Math.Round(BeTransPickingUbic.Cantidad_Recibida * BePresentacion.Factor, 6)
+                                vCantidadRecUMBas = Math.Round(BeTransPickingUbic.Cantidad_Recibida * vFactor, 6)
                                 vCantidadVerPres = BeTransPickingUbic.Cantidad_Verificada
-                                BeTransPickingUbic.Cantidad_Verificada = Math.Round(BeTransPickingUbic.Cantidad_Verificada * BePresentacion.Factor, 6)
+                                vCantidadVerUMBas = Math.Round(BeTransPickingUbic.Cantidad_Verificada * vFactor, 6)
                                 vCantidadDespPres = BeTransPickingUbic.Cantidad_despachada
-                                BeTransPickingUbic.Cantidad_despachada = Math.Round(BeTransPickingUbic.Cantidad_despachada * BePresentacion.Factor, 6)
+                                vCantidadDespUMBas = Math.Round(BeTransPickingUbic.Cantidad_despachada * vFactor, 6)
                             Else
                                 Throw New Exception("No se pudo obtener la presentación con identificador: " & BeTransPickingUbic.IdPresentacion)
                             End If
 
                         End If
 
-                        vCantPendiente = vCantidadReservadaUMBas - BeTransPickingUbic.Cantidad_Recibida
+                        vCantPendiente = vCantidadReservadaUMBas - vCantidadRecUMBas
 
                         If vCantPendiente = 0 Then
-                            vCantPendiente = BeTransPickingUbic.Cantidad_Recibida - BeTransPickingUbic.Cantidad_Verificada
+                            vCantPendiente = vCantidadRecUMBas - vCantidadVerUMBas
                         End If
 
                         DTStockRes.Rows.Add(BeTransPickingUbic.IdPedidoEnc,
@@ -1950,15 +1957,15 @@ Public Class frmDespacho
                                             BeTransPickingUbic.Lote,
                                             BeTransPickingUbic.Lic_plate,
                                             BeTransPickingUbic.Fecha_Vence,
-                                            BePresentacion.Factor,
+                                            vFactor,
                                             vCantidadReservadaPres,
                                             vCantidadReservadaUMBas,
                                             vCantidadRecPres,
-                                            BeTransPickingUbic.Cantidad_Recibida,
+                                            vCantidadRecUMBas,
                                             vCantidadVerPres,
-                                            BeTransPickingUbic.Cantidad_Verificada,
+                                            vCantidadVerUMBas,
                                             vCantidadDespPres,
-                                            BeTransPickingUbic.Cantidad_despachada,
+                                            vCantidadDespUMBas,
                                             vCantPendiente,
                                             BeTransPickingUbic.Peso_recibido,
                                             BeTransPickingUbic.Peso_verificado,
