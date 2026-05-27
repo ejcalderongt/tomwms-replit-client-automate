@@ -8,6 +8,26 @@
 
 Jornada enfocada en incidencias HH de QA La Cumbre relacionadas con permisos de menu, consulta de existencias, flujo de verificacion por escaneo y reemplazo/no encontrado en picking con validaciones nuevas de base de datos (`cantidad_solicitada > 0`).
 
+### Jira listo para publicar (draft)
+
+- **Titulo**: `#EJC20260526 Estabilizacion inventario ciclico HH (Caja Master + escaneo por barra)`
+- **Responsable**: `Erik Calderon`
+- **Fecha inicio**: `2026-05-26`
+- **Fecha finalizacion**: `2026-05-27`
+- **Esfuerzo**: `1 hora`
+- **Story Points**: `4`
+- **Descripcion corta**:
+  - Se corrigen puntos de inestabilidad en inventario ciclico HH para evitar excepciones por listas vacias y mejorar continuidad operativa del flujo.
+  - Se agrega validacion defensiva en Caja Master y escaneo por barra, y se desacopla visibilidad de Caja Master respecto a talla/color.
+- **Cambios tecnicos (HH)**:
+  - `frm_conteo_caja_master.java`:
+    - guard clauses para `ListaCajaMasterConteo` vacia en `Load()` y `Guardar()`.
+  - `frm_inv_cic_conteo.java`:
+    - validacion `!items.isEmpty()` antes de usar `get(0)` en `processProductoPorCodigoBarra()`.
+    - checkbox Caja Master visible sin depender de `Control_Talla_Color`.
+- **Tag tecnico**: `#EJC20260526`
+- **Estado sugerido**: `Listo para QA funcional`
+
 ### Actividades tipo Jira (hoy)
 
 - Diagnostique inconsistencia de menu HH por rol (pickeador/recepcion) y valide contrato de permisos en respuesta del servicio para variantes de nombre/ID de opcion.
@@ -152,6 +172,77 @@ Horas computadas/automatizadas estimadas: **2.5 h**
 - Indexacion/documentacion/handoffs y soporte de analisis con herramientas: **1.0 h**
 
 Nota: las horas son estimadas para registro Jira; los commits cubren trabajo funcional, diagnostico, pruebas locales, documentacion y soporte de despliegue.
+
+## Contexto Jira automatizable (draft, no publicar sin aprobacion)
+
+### Reglas consolidadas para `jira_report.py`
+
+- `BOARD_ID = 3`.
+- Siempre consultar sprint activo con `obtener_sprint_activo()` antes de crear issues.
+- Asignar issues nuevos al sprint activo, salvo instruccion explicita.
+- Antes de crear epica: ejecutar `listar_epicas_activas()` y validar similitud de nombre.
+- Evitar epicas duplicadas; reutilizar epica activa relacionada.
+- Crear sprint nuevo solo si no existe uno similar (validar con `obtener_sprints("active,future")`).
+- Mantener modo **draft_only**: no ejecutar POST/PUT en Jira sin confirmacion explicita de Erik.
+
+### Epicas activas de referencia (2026-05-26)
+
+- `WMS-2026` - Implementación MHS
+- `WMS-725` - CRM_MCP
+- `WMS-104` - Cealsa - Sector1
+- `WMS-92` - Mercosal
+- `WMS-73` - Mejoras versión abasto de detalle
+- `WMS-62` - Mejoras On the Route
+- `WMS-4` - Perceptrón de ubicación sugerida
+
+### Tareas detectadas por cruce Git vs bitácora (faltantes de clasificar)
+
+Fuente de cruce: commits `TOMWMS` + `TOMHH2025` entre `2026-05-19` y `2026-05-26` contra este `BITACORA_JIRA.md` y `LOG_DIARIO.md`.
+
+1. **WMS - idmovimiento identity en trans_movimientos (cross-layer)**
+   - Commit ref: `665c2c9f`.
+   - Epica sugerida: `WMS-2026` (Implementación MHS) o crear épica técnica si el alcance crece.
+   - Tipo: Mejora técnica.
+   - Estimación: 4.0 h.
+
+2. **WMS - Cambio de ubicación con implosión automática solo en destino rack**
+   - Commit refs: `37c9621c`, `0f93a8f8`.
+   - Epica sugerida: `WMS-73` (Mejoras versión abasto de detalle).
+   - Tipo: Bug/Mejora funcional.
+   - Estimación: 2.5 h.
+
+3. **WMS - Impresión con número de licencia**
+   - Commit ref: `60f20dbd`.
+   - Epica sugerida: `WMS-73`.
+   - Tipo: Mejora funcional.
+   - Estimación: 2.0 h.
+
+4. **HH - Parse resiliente de IDs en respuesta WS**
+   - Commit ref: `42d77220`.
+   - Epica sugerida: `WMS-2026`.
+   - Tipo: Bug hardening.
+   - Estimación: 2.0 h.
+
+5. **WMS - Scale readiness kit (diagnóstico capacidad/concurrencia)**
+   - Commit ref: `ec205ad2`.
+   - Epica sugerida: `WMS-2026`.
+   - Tipo: Tarea técnica de arquitectura.
+   - Estimación: 3.0 h.
+
+### Estructura sugerida de sprints (draft)
+
+- **Sprint activo**: usar el que devuelva `obtener_sprint_activo()`.
+  - Meter correcciones de bug operativo/QA bloqueantes.
+- **Sprint sugerido futuro: `WMS_Bugs_2026_06_W1`**
+  - Flujo reemplazo/no encontrado.
+  - Implosión rack/pasillo.
+  - Parse resiliente HH.
+- **Sprint sugerido futuro: `WMS_Mejoras_2026_06_W1`**
+  - idmovimiento identity cross-layer.
+  - impresión número de licencia.
+  - scale readiness / trazabilidad de rendimiento.
+
+> Nota: nombres de sprint propuestos en modo borrador para planeación; no crear en Jira hasta confirmación.
 
 ### Texto breve semanal sugerido para Jira
 
