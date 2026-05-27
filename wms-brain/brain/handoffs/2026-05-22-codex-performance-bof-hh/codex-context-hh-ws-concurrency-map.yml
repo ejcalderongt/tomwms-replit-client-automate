@@ -1,0 +1,236 @@
+meta:
+  proyecto: TOMHH2025
+  fecha: 2026-05-26
+  objetivo: "Mapeo de riesgo de pisado de llamadas WS (request overlap) por flujo HH"
+  criterio_priorizacion: "5 = mejor candidato para iniciar (alto impacto + bajo riesgo de refactor)"
+  ultima_actualizacion:
+    caso: "Foco en ubicación destino al entrar desde Recepción -> Cambio Ubicación ciega"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java"
+    tag: "#EJC20260526"
+    resumen:
+      - "Se retiró ajuste de foco en recepción detalle (no era el punto correcto del flujo)."
+      - "El foco operativo se asegura en Cambio Ubicación ciega con enfocarUbicDestino()."
+      - "En processUbicOrigen(), cuando gl.CambioUbicRecepcion=true, se evita forzar foco en licencia antes del auto-proceso."
+
+metodologia:
+  patrones_busqueda:
+    - "execws("
+    - "ws.callback"
+    - "KEYCODE_ENTER"
+    - "setOnClickListener("
+    - "guardas de concurrencia (isLoading/isBusy/enProceso/inFlight/skipNext/bloquear)"
+  lectura_funcional:
+    - "entrada por scanner/enter"
+    - "encadenamiento de callbacks"
+    - "bloqueo/desbloqueo de UI y progress"
+  nota:
+    - "Este mapeo es para estabilización incremental (blindaje circular), no refactor masivo."
+
+flujo_hallazgo_global:
+  sintomas_recurrentes:
+    - "doble Enter o taps rápidos disparan requests solapadas"
+    - "progress queda visible por callback no esperado o fuera de orden"
+    - "respuestas tardías pisan estado de pantalla más reciente"
+  causa_tecnica_base:
+    - "modelo callback-int + ws mutable compartido por pantalla"
+    - "falta de request gate (inFlight) en múltiples formularios"
+    - "falta de token de respuesta (descartar respuestas viejas)"
+
+inventario_por_proceso:
+  recepcion:
+    archivos:
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+        execws: 12
+        enter: 1
+        click: 1
+        guardas_concurrencia: 0
+        riesgo: "medio"
+        observacion: "Pantalla de entrada por tarea/código; buen candidato para patrón inFlight simple."
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java"
+        execws: 26
+        enter: 1
+        click: 3
+        guardas_concurrencia: 0
+        riesgo: "alto"
+        observacion: "Lista intermedia con múltiples saltos; vulnerable a respuestas fuera de orden."
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+        execws: 68
+        enter: 4
+        click: 13
+        guardas_concurrencia: 5
+        riesgo: "muy alto"
+        observacion: "Mayor complejidad; requiere intervención por etapas."
+
+  picking:
+    archivos:
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java"
+        execws: 18
+        enter: 1
+        click: 3
+        guardas_concurrencia: 0
+        riesgo: "medio-alto"
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java"
+        execws: 22
+        enter: 6
+        click: 8
+        guardas_concurrencia: 0
+        riesgo: "muy alto"
+        observacion: "Mucho input rápido + alto acoplamiento de callback."
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java"
+        execws: 10
+        enter: 0
+        click: 0
+        guardas_concurrencia: 0
+        riesgo: "medio"
+        observacion: "Reemplazo: buena opción para validar patrón reusable."
+
+  verificacion:
+    archivos:
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java"
+        execws: 20
+        enter: 1
+        click: 1
+        guardas_concurrencia: 0
+        riesgo: "medio-alto"
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java"
+        execws: 10
+        enter: 1
+        click: 2
+        guardas_concurrencia: 0
+        riesgo: "medio"
+        observacion: "Buen candidato temprano para blindaje con bajo blast-radius."
+
+  packing:
+    archivos:
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java"
+        execws: 28
+        enter: 4
+        click: 1
+        guardas_concurrencia: 0
+        riesgo: "alto"
+      - path: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java"
+        execws: 11
+        enter: 1
+        click: 4
+        guardas_concurrencia: 0
+        riesgo: "medio"
+
+  referencia_reciente:
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java"
+    estado: "parcialmente estabilizado en iteraciones previas"
+    uso: "tomar como baseline de lecciones de blindaje y trazabilidad"
+
+matriz_valoracion:
+  escala:
+    impacto_operativo:
+      "1": "bajo"
+      "5": "muy alto"
+    facilidad_refactor:
+      "1": "complejo/riesgoso"
+      "5": "rápido/seguro"
+    prioridad_inicio:
+      "1": "postergar"
+      "5": "arrancar aquí"
+  candidatos:
+    - flujo: "Verificación datos"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java"
+      impacto_operativo: 4
+      facilidad_refactor: 5
+      prioridad_inicio: 5
+      razon: "Menor complejidad y permite validar patrón estándar de inFlight/token."
+    - flujo: "Recepción lista tareas"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+      impacto_operativo: 5
+      facilidad_refactor: 4
+      prioridad_inicio: 5
+      razon: "Alta visibilidad de usuario + poco acoplamiento relativo."
+    - flujo: "Picking detalle tareas"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java"
+      impacto_operativo: 4
+      facilidad_refactor: 4
+      prioridad_inicio: 4
+      razon: "Buena continuidad después de recepción/verificación."
+    - flujo: "Packing preparación"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java"
+      impacto_operativo: 3
+      facilidad_refactor: 4
+      prioridad_inicio: 4
+    - flujo: "Reemplazo picking"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java"
+      impacto_operativo: 3
+      facilidad_refactor: 4
+      prioridad_inicio: 4
+    - flujo: "Packing principal"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java"
+      impacto_operativo: 5
+      facilidad_refactor: 2
+      prioridad_inicio: 3
+    - flujo: "Picking datos"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java"
+      impacto_operativo: 5
+      facilidad_refactor: 2
+      prioridad_inicio: 3
+    - flujo: "Recepción datos"
+      archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+      impacto_operativo: 5
+      facilidad_refactor: 1
+      prioridad_inicio: 2
+      razon: "Muy crítico, pero conviene llegar con patrón ya probado en 2-3 pantallas."
+
+patron_recomendado_v1:
+  objetivo: "blindar sin romper contratos WS ni refactor transversal"
+  piezas:
+    - "requestInFlight boolean por pantalla"
+    - "requestToken incremental por operación crítica"
+    - "disable inputs trigger (enter/botón/scanner) durante request"
+    - "re-enable en success/error/timeout"
+    - "descartar respuesta si token != token actual"
+    - "progress con mensaje por fase y cierre garantizado en finally/catch"
+  no_incluir_aun:
+    - "reestructura completa de WebService base"
+    - "cambio de contrato callback int a promesas/coroutines"
+
+plan_circular_sugerido:
+  ronda_1:
+    - "frm_verificacion_datos.java"
+    - "frm_lista_tareas_recepcion.java"
+  ronda_2:
+    - "frm_detalle_tareas_picking.java"
+    - "frm_preparacion_packing.java"
+  ronda_3:
+    - "frm_picking_datos.java"
+    - "frm_list_rec_prod.java"
+  ronda_4:
+    - "frm_recepcion_datos.java (intervención mayor con patrón consolidado)"
+
+checkpoints_por_ronda:
+  - "doble Enter no duplica llamadas"
+  - "UI no queda bloqueada al fallar WS"
+  - "no hay regresión de navegación"
+  - "logcat con traza de requestToken para diagnóstico"
+
+casos_relevantes_recientes:
+  - fecha: 2026-05-26
+    modulo: "CambioUbicacion"
+    activity: "frm_cambio_ubicacion_ciega"
+    sintoma: "Desde recepción con ubicación automática, el cursor no quedaba listo para escanear ubicación destino."
+    causa: "Competencia de foco entre txtLicPlate y txtUbicDestino durante encadenamiento ws 1->18->5->..."
+    fix:
+      - "Nueva rutina enfocarUbicDestino() (post + requestFocus + selectAll)."
+      - "Ruta desde recepción prioriza setLicPlateCUR() y deja foco final en destino."
+    prueba_manual_minima:
+      - "Recepción (con cambio automático activo) -> abrir cambio ciega -> validar cursor en txtUbicDestino."
+      - "Cambio ciego normal (sin recepción) -> validar que sigue iniciando por licencia/origen según flujo legacy."
+  - fecha: 2026-05-26
+    modulo: "InventarioCiclico"
+    activity: "frm_conteo_caja_master / frm_inv_cic_conteo"
+    sintoma: "Riesgo de crash por listas vacías en flujo Caja Master y escaneo por código de barras."
+    causa: "Uso de get(0) sin validar tamaño en listas retornadas por UI/WS."
+    fix:
+      - "Guard clauses null/empty en frm_conteo_caja_master (Load/Guardar)."
+      - "Validación !items.isEmpty() en processProductoPorCodigoBarra."
+      - "Checkbox Caja Master condicionado de nuevo a Control_Talla_Color por decisión funcional."
+    nota_negocio:
+      - "Pendiente validación funcional: en contexto cliente, Caja Master puede estar conceptualmente ligado a Control_Talla_Color."
+      - "Revisar documento de estado del arte antes de consolidar regla final."
+
