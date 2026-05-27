@@ -1905,9 +1905,17 @@ Partial Public Class clsLnTrans_re_enc
 
                                     End If
 
+                                    '#EJC20260527: filtrar stock_recs huerfanos — solo los que tienen IdRecepcionDet IDENTITY.
+                                    Dim idsInsertadosPallet As New HashSet(Of Integer)(vResultadoGuarda_Trans_re_det.Values)
+                                    Dim pListStockRecFilPallet As List(Of clsBeStock_rec) =
+                                        pListStockRec.Where(Function(s) idsInsertadosPallet.Contains(s.IdRecepcionDet)).ToList()
+                                    If pListStockRecFilPallet.Count = 0 Then
+                                        Throw New Exception("ERROR_202605271855: No hay stock_recs sincronizados con IDENTITY de trans_re_det.")
+                                    End If
+
                                     vResultadoGuarda_Stock_Rec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                                  pIdBodega,
-                                                                                                 pListStockRec,
+                                                                                                 pListStockRecFilPallet,
                                                                                                  lConnection,
                                                                                                  lTransaction)
 
@@ -1916,7 +1924,7 @@ Partial Public Class clsLnTrans_re_enc
                                         CadenaResultado += "Guarda_Stock_Rec: " & vResultadoGuarda_Stock_Rec
 
                                         clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                              pListStockRec,
+                                                                              pListStockRecFilPallet,
                                                                               lConnection,
                                                                               lTransaction)
 
@@ -2581,7 +2589,7 @@ Partial Public Class clsLnTrans_re_enc
                                                lTransaction)
             CadenaResultado += "Eliminar_Detalle_Recepción "
 
-            '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+'#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
             Dim dictIdOrigenModif As New Dictionary(Of Integer, clsBeTrans_re_det)
             For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
                 If Not dictIdOrigenModif.ContainsKey(detOri.IdRecepcionDet) Then
@@ -4265,7 +4273,7 @@ Partial Public Class clsLnTrans_re_enc
 
 
 
-                                    If Not BeTransOcDet Is Nothing Then
+                                        If Not BeTransOcDet Is Nothing Then
                                         pBeStockRec.No_linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.No_Linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.IdOrdenCompraDet = BeTransOcDet.IdOrdenCompraDet
@@ -6013,10 +6021,17 @@ Partial Public Class clsLnTrans_re_enc
                                     Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
                                 End If
 
+                                '#EJC20260527: filtrar stock_recs huerfanos — solo el que corresponde al det insertado.
+                                Dim pListStockRecFilS As List(Of clsBeStock_rec) =
+                                    pListStockRec.Where(Function(s) s.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ToList()
+                                If pListStockRecFilS.Count = 0 Then
+                                    Throw New Exception("ERROR_202605271857: No hay stock_rec con IdRecepcionDet=" & BeTransReDet.IdRecepcionDet & " (IDENTITY).")
+                                End If
+
                                 '#GT22112024: aqui es donde se ha dado error de log, validamos que datos viene antes de intentar guardar
                                 vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                      pIdBodega,
-                                                                                     pListStockRec,
+                                                                                     pListStockRecFilS,
                                                                                      lConnection,
                                                                                      lTransaction)
 
@@ -6027,7 +6042,7 @@ Partial Public Class clsLnTrans_re_enc
                                 End If
 
                                 vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                             pListStockRec,
+                                                                                             pListStockRecFilS,
                                                                                              lConnection,
                                                                                              lTransaction)
 
@@ -6518,10 +6533,22 @@ Partial Public Class clsLnTrans_re_enc
                                     Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
                                 End If
 
+                                '#EJC20260527: filtrar stock_recs huerfanos — solo insertar los sincronizados
+                                'con trans_re_det real de esta transaccion (IdRecepcionDet IDENTITY).
+                                'Stock_recs con ID calculado localmente por la HH causarian FK violation.
+                                Dim idsRecDetInsertadosCM As New HashSet(Of Integer)(
+                                    pListaRecDet.Where(Function(d) d.IdRecepcionDet > 0) _
+                                               .Select(Function(d) d.IdRecepcionDet))
+                                Dim pListStockRecFilCM As List(Of clsBeStock_rec) =
+                                    pListStockRec.Where(Function(s) idsRecDetInsertadosCM.Contains(s.IdRecepcionDet)).ToList()
+                                If pListStockRecFilCM.Count = 0 Then
+                                    Throw New Exception("ERROR_202605271856: No hay stock_recs con IdRecepcionDet sincronizado.")
+                                End If
+
                                 '#GT22112024: aqui es donde se ha dado error de log, validamos que datos viene antes de intentar guardar
                                 vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
                                                                                      pIdBodega,
-                                                                                     pListStockRec,
+                                                                                     pListStockRecFilCM,
                                                                                      lConnection,
                                                                                      lTransaction)
 
@@ -6532,7 +6559,7 @@ Partial Public Class clsLnTrans_re_enc
                                 End If
 
                                 vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                             pListStockRec,
+                                                                                             pListStockRecFilCM,
                                                                                              lConnection,
                                                                                              lTransaction)
 
