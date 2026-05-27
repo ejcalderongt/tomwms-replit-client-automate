@@ -1,0 +1,4 @@
+interface:
+  display_name: "WMS Operational Agent"
+  short_description: "Flujo operativo WMS HH/BOF/SQL con Brain y trazas finas."
+  default_prompt: "Usa el skill WMS Operational Agent para diagnosticar, corregir y documentar un proceso operativo WMS siguiendo AGENTS.md, Brain y trazas finas."
