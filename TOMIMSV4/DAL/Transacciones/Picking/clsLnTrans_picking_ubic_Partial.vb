@@ -74,6 +74,24 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Sub
 
+    Private Shared Function SQL_PickingUbic_Despachado_By_PedidoDet() As String
+
+        '#EJC20260527: BOF picking debe refrescar desde trans_picking_ubic; stock_res cambia o se elimina al procesar y la vista puede ocultar líneas ya pickeadas.
+        Return "SELECT pu.*,
+                       dbo.Nombre_Completo_Ubicacion(pu.IdUbicacion, pu.IdBodega) AS Nombre_Ubicacion,
+                       pdet.codigo_producto AS codigo,
+                       pdet.nombre_producto AS nombre,
+                       pdet.nom_presentacion AS Presentacion,
+                       pdet.nom_unid_med AS UnidadMedida,
+                       pdet.nom_estado AS NomEstado
+                FROM trans_picking_ubic pu
+                INNER JOIN trans_picking_det pkdet ON pkdet.IdPickingEnc = pu.IdPickingEnc
+                                                   AND pkdet.IdPickingDet = pu.IdPickingDet
+                INNER JOIN trans_pe_det pdet ON pdet.IdPedidoEnc = pu.IdPedidoEnc
+                                             AND pdet.IdPedidoDet = pu.IdPedidoDet "
+
+    End Function
+
     Public Shared Function Get_Picking_Ubicacion(ByVal pActivo As Boolean,
                                                ByVal pFechaDel As Date,
                                                ByVal pFechaAl As Date,
@@ -296,11 +314,11 @@ Partial Public Class clsLnTrans_picking_ubic
         Try
 
             '#CKFK20220719 Creé una nueva vista antes era esta VW_PickingUbic_Despachado_By_IdPedidoDet, porque generaba duplicados
-            Dim vSQL As String = "SELECT * FROM VW_PickingUbic_Desp_By_IdPedidoDet
-                                  WHERE IdPedidoDet = @IdPedidoDet 
-                                  AND dañado_picking=0 
-                                  AND dañado_verificacion=0 
-                                  AND no_encontrado = 0 "
+            Dim vSQL As String = SQL_PickingUbic_Despachado_By_PedidoDet() & "
+                                  WHERE pu.IdPedidoDet = @IdPedidoDet
+                                  AND pu.dañado_picking=0
+                                  AND pu.dañado_verificacion=0
+                                  AND pu.no_encontrado = 0 "
 
             BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega)
 
@@ -312,7 +330,7 @@ Partial Public Class clsLnTrans_picking_ubic
                         vSQL += " desc "
                     End If
                 Else
-                    vSQL += " ORDER BY IdPedidoEnc "
+                    vSQL += " ORDER BY pu.IdPedidoEnc "
                 End If
             End If
 
@@ -403,13 +421,13 @@ Partial Public Class clsLnTrans_picking_ubic
 
         Try
 
-            Dim vSQL As String = "SELECT * FROM VW_PickingUbic_Desp_By_IdPedidoDet
-                                  WHERE IdPedidoDet = @IdPedidoDet 
-                                  AND IdPedidoEnc = @IdPedidoEnc 
-                                  AND dañado_picking=0 
-                                  AND dañado_verificacion=0 
-                                  AND no_encontrado = 0"
-            vSQL += " ORDER BY IdPedidoEnc "
+            Dim vSQL As String = SQL_PickingUbic_Despachado_By_PedidoDet() & "
+                                  WHERE pu.IdPedidoDet = @IdPedidoDet
+                                  AND pu.IdPedidoEnc = @IdPedidoEnc
+                                  AND pu.dañado_picking=0
+                                  AND pu.dañado_verificacion=0
+                                  AND pu.no_encontrado = 0"
+            vSQL += " ORDER BY pu.IdPedidoEnc "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
