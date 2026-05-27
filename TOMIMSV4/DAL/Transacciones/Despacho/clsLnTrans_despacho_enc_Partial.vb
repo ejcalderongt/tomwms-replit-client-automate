@@ -1261,8 +1261,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                 BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeDespachoEnc.IdBodega, lConnection, lTransaction)
 
-                Dim vIdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction) + 1
-
                 For Each BePedidoEnc As clsBeTrans_pe_enc In BeDespachoEnc.ListaPedidos
 
                     For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle.Where(Function(x) x.Cantidad <> x.Cant_despachada)
@@ -1287,7 +1285,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                 For Each BePickingUbic As clsBeTrans_picking_ubic In lPickingUbicVerificados
 
-                                    BeMovimiento.IdMovimiento = vIdMovimiento
+                                    BeMovimiento.IdMovimiento = 0
                                     BeMovimiento.IdEmpresa = BeDespachoEnc.IdEmpresa
                                     BeMovimiento.IdBodegaOrigen = BeDespachoEnc.IdBodega
                                     BeMovimiento.IdTransaccion = BeDespachoEnc.IdDespachoEnc
@@ -1437,7 +1435,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                     End If
 
-                                    vIdMovimiento += 1
 
                                 Next BePickingUbic
 

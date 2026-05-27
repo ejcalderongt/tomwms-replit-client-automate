@@ -595,7 +595,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
             End If
 
             If Not aplicarFlujoIntegradoImplosionUbicacion Then
-                pMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                pMovimiento.IdMovimiento = 0
 
                 If (pIdReabastecimientoLog = 0) Then
 
@@ -667,11 +667,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Dim idMaxmov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction) + 1
-
             Dim result As String = clsLnTrans_movimientos.Aplicar(pMovimiento, idstock, True, lConnection, lTransaction)
 
-            pMovimiento.IdMovimiento = idMaxmov
+            pMovimiento.IdMovimiento = 0
             clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
             lTransaction.Commit()
@@ -771,8 +769,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                         lTransaction
                     )
 
-                        IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-                        pMovimiento.IdMovimiento = IdMaxMov
+                        pMovimiento.IdMovimiento = 0
 
                         clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -796,8 +793,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                         lTransaction
                     )
 
-                        IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-                        pMovimiento.IdMovimiento = IdMaxMov
+                        pMovimiento.IdMovimiento = 0
 
                         clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -961,7 +957,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                    IdMovimiento = 0
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -993,7 +989,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                    IdMovimiento = 0
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -1137,10 +1133,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                                                lConnection,
                                                                                                                lTransaction)
 
-                        idMaxmov = clsLnTrans_movimientos.MaxID(lConnection,
-                                                                lTransaction)
-
-                        pMovimiento.IdMovimiento = idMaxmov
+                        pMovimiento.IdMovimiento = 0
 
                         clsLnTrans_movimientos.Insertar(pMovimiento,
                                                         lConnection,
@@ -1166,9 +1159,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                                                lConnection,
                                                                                                                lTransaction)
 
-                        idMaxmov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-
-                        pMovimiento.IdMovimiento = idMaxmov
+                        pMovimiento.IdMovimiento = 0
 
                         clsLnTrans_movimientos.Insertar(pMovimiento,
                                                         lConnection,
@@ -1447,9 +1438,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                        lConnection,
                                                                                        lTransaction)
 
-                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-
-                                pMovimiento.IdMovimiento = IdMaxMov
+                                pMovimiento.IdMovimiento = 0
 
                                 clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -1473,9 +1462,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                        lConnection,
                                                                                        lTransaction)
 
-                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
-
-                                pMovimiento.IdMovimiento = IdMaxMov
+                                pMovimiento.IdMovimiento = 0
 
                                 clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -1615,7 +1602,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                    IdMovimiento = 0
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -1647,7 +1634,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                    IdMovimiento = 0
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
