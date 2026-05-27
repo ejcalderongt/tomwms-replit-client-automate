@@ -200,6 +200,9 @@ Public Class frmDespacho
 
             End If
 
+            '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: Evitar diferencia falsa por summaries duplicados del grid.
+            NormalizarResumenesDespachoPacking()
+
             If Existe_Diferencia_Despacho_vrs_Packing() Then
                 Return False
             End If
@@ -841,6 +844,7 @@ Public Class frmDespacho
 
             grdvPickingUbic.Columns("Factor").Visible = False
             grdvPickingUbic.Columns("Factor").OptionsColumn.ShowInCustomizationForm = True
+            grdvPickingUbic.GroupSummary.Clear()
 
             Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "Factor",
@@ -952,6 +956,7 @@ Public Class frmDespacho
             grdvPickingUbic.OptionsView.ShowFooter = True
 
             'grdvPickingUbic.Columns("Código").Group()
+            grdvPickingUbic.GroupSummary.Clear()
 
             Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
                     With {.FieldName = "Cantidad_Disp",
@@ -1798,13 +1803,15 @@ Public Class frmDespacho
             Dim DT As New DataTable
             DT = clsLnTrans_packing_enc.Get_All_By_IdPicking_And_IdPedido_And_IdDespacho_DT(IdPickingEnc, IdPedidoEnc, IdDespachoEnc, lConnection, lTransaction)
 
+            RemoverPackingCargado(IdPickingEnc, IdPedidoEnc, IdDespachoEnc)
             DTPacking.Merge(DT)
 
             dgridPacking.DataSource = DTPacking
 
-            If grdvPickingUbic.Columns.Count > 1 Then
+            If gvPacking.Columns.Count > 1 Then
 
                 gvPacking.Columns("no_linea").Group()
+                gvPacking.GroupSummary.Clear()
 
                 Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem()
                 item1.FieldName = "cantidad_bultos_packing"
@@ -1844,13 +1851,15 @@ Public Class frmDespacho
             Dim DT As New DataTable
             DT = clsLnTrans_packing_enc.Get_All_By_IdPicking_DT(IdPickingEnc, IdPedidoEnc, lConnection, lTransaction)
 
+            RemoverPackingCargado(IdPickingEnc, IdPedidoEnc, IdDespachoEnc)
             DTPacking.Merge(DT)
 
             dgridPacking.DataSource = DTPacking
 
-            If grdvPickingUbic.Columns.Count > 1 Then
+            If gvPacking.Columns.Count > 1 Then
 
                 gvPacking.Columns("no_linea").Group()
+                gvPacking.GroupSummary.Clear()
 
                 Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem()
                 item1.FieldName = "cantidad_bultos_packing"
@@ -1990,6 +1999,7 @@ Public Class frmDespacho
                 grdvPickingUbic.OptionsView.ShowFooter = True
 
                 grdvPickingUbic.Columns("Código").Group()
+                grdvPickingUbic.GroupSummary.Clear()
 
                 Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "Cantidad_Disp",
@@ -3601,6 +3611,67 @@ Public Class frmDespacho
 
     End Function
 
+    '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: La validacion debe leer datos, no mutar ni depender del footer visual.
+    Private Sub NormalizarResumenesDespachoPacking()
+
+        Try
+            ConfigurarSummaryColumna(gvPacking, "cantidad_bultos_packing")
+            ConfigurarSummaryColumna(grdvPickingUbic, "Cant_Veri_UMBas")
+            ConfigurarSummaryColumna(grdvPickingUbic, "Cant_Desp_UMBas")
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+        End Try
+
+    End Sub
+
+    Private Sub ConfigurarSummaryColumna(ByVal pView As GridView,
+                                         ByVal pFieldName As String,
+                                         Optional ByVal pDisplayFormat As String = "{0:n6}")
+
+        If pView Is Nothing Then Return
+
+        Dim column = pView.Columns.ColumnByFieldName(pFieldName)
+        If column Is Nothing Then Return
+
+        column.Summary.Clear()
+        column.Summary.Add(SummaryItemType.Sum, pFieldName, pDisplayFormat)
+
+    End Sub
+
+    Private Function SumarColumna(ByVal pTabla As DataTable,
+                                  ByVal pColumna As String,
+                                  Optional ByVal pFiltro As String = "") As Double
+
+        If pTabla Is Nothing OrElse Not pTabla.Columns.Contains(pColumna) Then Return 0
+        If pTabla.Rows.Count = 0 Then Return 0
+
+        Dim valor As Object = pTabla.Compute(String.Format("SUM([{0}])", pColumna), pFiltro)
+        Return ToDouble(valor)
+
+    End Function
+
+    Private Sub RemoverPackingCargado(ByVal IdPickingEnc As Integer,
+                                      ByVal IdPedidoEnc As Integer,
+                                      ByVal IdDespachoEnc As Integer)
+
+        If DTPacking Is Nothing OrElse DTPacking.Columns.Count = 0 Then Return
+        If Not DTPacking.Columns.Contains("IdPickingEnc") Then Return
+        If Not DTPacking.Columns.Contains("IdPedidoEnc") Then Return
+        If Not DTPacking.Columns.Contains("IdDespachoEnc") Then Return
+
+        Dim filtro As String = String.Format("[IdPickingEnc] = {0} AND [IdPedidoEnc] = {1} AND [IdDespachoEnc] = {2}",
+                                             IdPickingEnc,
+                                             IdPedidoEnc,
+                                             IdDespachoEnc)
+
+        For Each row As DataRow In DTPacking.Select(filtro)
+            row.Delete()
+        Next
+
+        DTPacking.AcceptChanges()
+
+    End Sub
+
     '#CKFK20250324 Creé esta función para validar si existe diferencia entre packing y despacho
     Public Function Existe_Diferencia_Despacho_vrs_Packing() As Boolean
 
@@ -3615,21 +3686,23 @@ Public Class frmDespacho
 
                     If Ped.Picking.Requiere_Preparacion Then
 
-                        Dim vCantidadPacking As Double = 0
-
-                        gvPacking.Columns("cantidad_bultos_packing").Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-
-                        vCantidadPacking = Math.Round(Convert.ToDouble(gvPacking.Columns("cantidad_bultos_packing").SummaryItem.SummaryValue), 6)
-
-                        Dim vCantidadADespachar As Double = 0
-                        Dim vCantidadDespachada As Double = 0
-
-                        grdvPickingUbic.Columns(18).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-                        vCantidadADespachar = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(18).SummaryItem.SummaryValue), 6)
-                        grdvPickingUbic.Columns(20).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-                        vCantidadDespachada = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(20).SummaryItem.SummaryValue), 6)
+                        Dim filtroPedido As String = String.Format("[Pedido] = {0}", Ped.IdPedidoEnc)
+                        Dim filtroPacking As String = String.Format("[IdPedidoEnc] = {0}", Ped.IdPedidoEnc)
+                        Dim vCantidadPacking As Double = Math.Round(SumarColumna(DTPacking, "cantidad_bultos_packing", filtroPacking), 6)
+                        Dim vCantidadADespachar As Double = Math.Round(SumarColumna(DTStockRes, "Cant_Veri_UMBas", filtroPedido), 6)
+                        Dim vCantidadDespachada As Double = Math.Round(SumarColumna(DTStockRes, "Cant_Desp_UMBas", filtroPedido), 6)
 
                         If vCantidadADespachar - vCantidadDespachada <> vCantidadPacking Then
+                            XtraMessageBox.Show(String.Format("Existe diferencia entre packing y despacho para el pedido {0}.{1}{1}Verificado: {2:N6}{1}Despachado previamente: {3:N6}{1}A despachar: {4:N6}{1}Packing: {5:N6}",
+                                                              Ped.IdPedidoEnc,
+                                                              vbCrLf,
+                                                              vCantidadADespachar,
+                                                              vCantidadDespachada,
+                                                              vCantidadADespachar - vCantidadDespachada,
+                                                              vCantidadPacking),
+                                                Text,
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Exclamation)
                             Return True
                         End If
                     End If
