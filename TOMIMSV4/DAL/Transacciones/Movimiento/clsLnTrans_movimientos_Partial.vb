@@ -3765,6 +3765,11 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
+            '#EJC20260527: el movimiento PIK debe guardar la ubicación destino enviada por picking/muelle; sin esto trans_movimientos.IdUbicacionDestino queda NULL.
+            If vIdUbicacionPicking = 0 Then
+                Throw New Exception("ERROR_20260527A: No se puede insertar movimiento de picking sin ubicación destino.")
+            End If
+
             Dim pStock = clsLnStock.Get_Single_Stock_By_IdStock_And_IdProducto_Bodega(oBeTrans_picking_ubic.IdStock,
                                                                                       oBeTrans_picking_ubic.IdProductoBodega,
                                                                                       lConnection,
@@ -3789,6 +3794,7 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.IdProductoBodega = oBeTrans_picking_ubic.IdProductoBodega
                 '#CKFK20250507 Validar si se debe enviar la ubicación o la ubicación anterior
                 BeTransMovimiento.IdUbicacionOrigen = pStock.IdUbicacion
+                BeTransMovimiento.IdUbicacionDestino = vIdUbicacionPicking
                 BeTransMovimiento.IdPresentacion = oBeTrans_picking_ubic.IdPresentacion
                 BeTransMovimiento.IdEstadoOrigen = oBeTrans_picking_ubic.IdProductoEstado
                 BeTransMovimiento.IdEstadoDestino = oBeTrans_picking_ubic.IdProductoEstado
