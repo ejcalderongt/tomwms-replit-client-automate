@@ -1,0 +1,48 @@
+{
+  "id": "20260527-1700-DIRECTIVE-HANDOFF-CODEX-TRANSITION",
+  "schema_version": "1",
+  "created_at": "2026-05-27T17:00:00-03:00",
+  "type": "directive",
+  "source": "replit",
+  "host": "replit-workspace",
+  "ref": {
+    "bundle": null,
+    "commit_sha": null,
+    "rama_destino": "main",
+    "files_changed": [
+      "brain/agent-context/HANDOFF-2026-05-27-TRANSICION-CODEX.md",
+      "brain/_inbox/20260527-1700-DIRECTIVE-HANDOFF-CODEX-TRANSITION.json"
+    ],
+    "marker": "HANDOFF-2026-05-27-TRANSICION-CODEX"
+  },
+  "context": {
+    "message": "Handoff de transicion de gobernanza del brain a Codex (curador) y su agente local. Cubre: reparto de roles Codex/Mary-Jane/EJC, estado actual del brain (BRIDGE v2, estructura), las 9 reglas vinculantes de replit.md, patrones para que el agente local digiera el brain sin saturar contexto (indice + topic files, tier-list de prioridad, anti-patrones, convenciones de commit y tags inline), 3 commits operativos recientes no reflejados en Janeway (aef063e + 895d843 fix casing bulkcopy, 7511135 perf aplicar inventario), bridge protocol para responderme, 5 sugerencias de trabajo complementario para el agente local, y una pregunta de §8 sobre si yo dejo de escribir al brain directo y solo te mando handoffs via bridge. Detalle completo en el .md referenciado en ref.files_changed[0]. Pide acuse via _inbox/ tipo directive con tag ack.",
+    "modules_touched": [
+      "brain/agent-context",
+      "brain/BRIDGE",
+      "brain/replit",
+      "brain/_inbox"
+    ],
+    "tags": [
+      "handoff",
+      "gobernanza",
+      "codex",
+      "agente-local",
+      "transicion",
+      "bridge",
+      "high-priority"
+    ]
+  },
+  "analysis": null,
+  "proposal": null,
+  "status": "pending",
+  "decision": null,
+  "history": [
+    {
+      "at": "2026-05-27T17:00:00-03:00",
+      "action": "notify",
+      "by": "mary-jane (agente Replit workspace)",
+      "note": "Handoff de transicion de gobernanza. Autorizado por EJC el 2026-05-27."
+    }
+  ]
+}
