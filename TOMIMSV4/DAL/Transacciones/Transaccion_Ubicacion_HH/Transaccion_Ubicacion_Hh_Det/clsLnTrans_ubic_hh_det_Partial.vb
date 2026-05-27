@@ -692,7 +692,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplica_LP_Stock = ""
 
-        Dim IdMaxMov As Integer
         Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
@@ -1099,8 +1098,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplica_Cambio_Estado_Ubic_En_Picking = ""
 
-        Dim idMaxmov As Integer
-
         Try
 
             Dim ListaStock As New List(Of clsBeVW_stock_res)
@@ -1369,9 +1366,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                             ByVal esImplosion As Boolean) As String
 
         Aplica_Implosion = ""
-
-        Dim IdMaxMov As Integer
-
 
         Try
 
