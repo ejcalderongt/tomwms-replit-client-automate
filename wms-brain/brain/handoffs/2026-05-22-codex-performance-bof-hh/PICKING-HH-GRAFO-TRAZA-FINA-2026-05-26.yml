@@ -1,0 +1,51 @@
+meta:
+  nombre: "Picking HH - Grafo y traza fina"
+  fecha: "2026-05-26"
+  objetivo:
+    - "Mapear flujo de picking HH para diagnóstico rápido de bugs y lentitud."
+    - "Aterrizar puntos de reemplazo y no encontrado dentro del mismo circuito."
+  alcance:
+    hh: "frm_detalle_tareas_picking, frm_picking_datos, frm_list_prod_reemplazo_picking"
+    ws: "WSHHRN/TOMHHWS.asmx.vb"
+    dal: "TOMIMSV4/DAL/Transacciones/Picking/*, Stock/*"
+
+flujo:
+  - "HH.PIK.LISTA_TAREAS"
+  - "HH.PIK.DETALLE"
+  - "HH.PIK.CONFIRMAR_CANTIDAD"
+  - "HH.PIK.REEMPLAZO_NO_ENCONTRADO"
+  - "WS/DAL actualiza trans_picking_ubic + movimientos + stock"
+
+nodos:
+  - id: "HH.PIK.LISTA_TAREAS"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java"
+  - id: "HH.PIK.DATOS"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java"
+  - id: "HH.PIK.REEMPLAZO"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java"
+  - id: "WS.PIK"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+  - id: "DAL.PIK"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb"
+  - id: "DAL.STOCK"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb"
+
+riesgos_principales:
+  - "Doble trigger de scanner/enter en HH produce overlap de callbacks."
+  - "Reemplazo/no encontrado puede intentar actualizar cantidades fuera de rango (constraint non-negative)."
+  - "Secuencia de movimientos y actualización stock puede quedar incoherente si no hay guardas."
+
+mejoras_ya_existentes_detectadas:
+  - "Correcciones recientes en flujo reemplazo/no encontrado por conflicto CKFK (histórico del handoff)."
+  - "Mapa de concurrencia HH-WS ya identifica picking como zona de riesgo alto."
+
+quick_wins:
+  - "Instrumentar ms por callback en HH.PIK.DATOS."
+  - "Agregar token inFlight por operación de confirmación."
+  - "Diferenciar explícitamente rama Reemplazo vs NoEncontrado en logs WS."

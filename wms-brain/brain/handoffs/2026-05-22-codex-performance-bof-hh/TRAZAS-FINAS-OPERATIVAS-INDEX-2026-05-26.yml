@@ -1,0 +1,47 @@
+meta:
+  nombre: "Índice de trazas finas operativas"
+  fecha: "2026-05-26"
+  proposito: "Punto de entrada único para diagnóstico/corrección de procesos HH/WS/DAL/BD."
+  regla_operativa:
+    - "Antes de corregir o debuguear, revisar primero la traza fina del proceso."
+    - "Si no existe traza fina, crearla antes del fix."
+
+trazas_finas:
+  recepcion:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/RECEPCION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  picking:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/PICKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  packing:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/PACKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  verificacion:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/VERIFICACION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  reemplazo:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/REEMPLAZO-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  existencias:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/EXISTENCIAS-HH-BOF-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+  inventario_ciclico:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/INV-CIC-GRAFO-TRAZA-FINA-2026-05-26.yml"
+    estado: "vigente"
+
+estrategia_actual:
+  fase_1:
+    nombre: "Diagnóstico dirigido por traza"
+    acciones:
+      - "Ubicar nodo exacto del síntoma (HH/WS/DAL/BD)."
+      - "Validar si el problema es de data, regla o concurrencia."
+  fase_2:
+    nombre: "Corrección mínima segura"
+    acciones:
+      - "Aplicar fix solo en el punto causal."
+      - "Evitar refactor transversal sin evidencia."
+  fase_3:
+    nombre: "Instrumentación + regresión"
+    acciones:
+      - "Agregar métricas de ms y control de overlap donde aplique."
+      - "Ejecutar checklist corto del proceso afectado."

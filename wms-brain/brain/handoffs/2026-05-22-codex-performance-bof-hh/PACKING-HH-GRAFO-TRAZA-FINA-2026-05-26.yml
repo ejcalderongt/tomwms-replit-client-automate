@@ -1,0 +1,39 @@
+meta:
+  nombre: "Packing HH - Grafo y traza fina"
+  fecha: "2026-05-26"
+  objetivo:
+    - "Mapear preparación y packing con foco en filtros por licencia packing."
+    - "Aislar puntos de latencia y confusión entre licencia stock vs licencia packing."
+
+flujo:
+  - "HH.PACK.PREPARACION"
+  - "HH.PACK.FILTRAR_LICENCIA"
+  - "HH.PACK.SELECCION_PRODUCTO"
+  - "HH.PACK.CONFIRMAR/FINALIZAR"
+
+nodos:
+  - id: "HH.PACK.PREPARACION"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java"
+  - id: "HH.PACK.PRINCIPAL"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java"
+  - id: "WS.PACK"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+  - id: "DAL.PACK"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Packing"
+
+riesgos_principales:
+  - "Ambigüedad de filtro por licencia (stock LL/WE vs packing MM)."
+  - "Sobrecarga de consultas cuando se filtra y refresca lista en ciclos rápidos."
+  - "Callbacks no serializados en pantallas de packing."
+
+mejoras_ya_existentes_detectadas:
+  - "Se ajustó filtro de licencia para usar licencia packing MM en preparación."
+
+quick_wins:
+  - "Métrica de tiempo por tipo de filtro (licencia/código)."
+  - "Cache breve de lista visible por licencia packing activa."
+  - "Log funcional que indique licencia de criterio efectiva usada en query."

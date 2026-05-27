@@ -1,0 +1,40 @@
+meta:
+  nombre: "Verificación HH - Grafo y traza fina"
+  fecha: "2026-05-26"
+  objetivo:
+    - "Mapear verificación desde lista general y por escaneo directo."
+    - "Aislar interacción con picking pendiente y reemplazo durante verificación."
+
+flujo:
+  - "HH.VERI.LISTA"
+  - "HH.VERI.ESCANEO_PRODUCTO"
+  - "HH.VERI.DETALLE_CONFIRMACION"
+  - "HH.VERI.REEMPLAZO_DESDE_VERIFICACION"
+
+nodos:
+  - id: "HH.VERI.LISTA"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java"
+  - id: "HH.VERI.DATOS"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java"
+  - id: "WS.VERI"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+  - id: "DAL.VERI"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb"
+
+riesgos_principales:
+  - "Escaneo fuera de lista general puede enviar parámetros incorrectos (id pedido vs id picking)."
+  - "Si hay reemplazo en medio de verificación, el pendiente puede desfasarse temporalmente."
+  - "Duplicación de movimientos VERI en secuencias de marcar/no marcar."
+
+mejoras_ya_existentes_detectadas:
+  - "Correcciones en escaneo fuera de lista general y matching por SKU."
+  - "Diagnósticos previos de duplicación VERI documentados en handoff específico."
+
+quick_wins:
+  - "Métrica de transición verificación->reemplazo->retorno."
+  - "Validación defensiva de índice/lista antes de operar en adapters."
+  - "Consolidar códigos de error de verificación en WS."

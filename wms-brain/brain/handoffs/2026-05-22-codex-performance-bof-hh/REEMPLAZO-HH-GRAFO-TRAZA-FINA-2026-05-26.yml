@@ -1,0 +1,41 @@
+meta:
+  nombre: "Reemplazo HH (Picking/Verificación) - Grafo y traza fina"
+  fecha: "2026-05-26"
+  objetivo:
+    - "Documentar circuito completo de reemplazo opcional y no encontrado."
+    - "Alinear reglas de negocio con parámetros de bodega (reemplazo_opcional y restricciones)."
+
+flujo:
+  - "HH.REEMP.INVOCAR_DESDE_PICKING_O_VERI"
+  - "HH.REEMP.SELECCION_MOTIVO (dañado/no encontrado)"
+  - "HH.REEMP.MOVER_A_MERMA_O_MARCAR_NO_APTO"
+  - "HH.REEMP.RECALCULAR_PENDIENTE"
+  - "DAL actualiza trans_picking_ubic + stock/movimientos"
+
+nodos:
+  - id: "HH.REEMP.PICKING"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java"
+  - id: "HH.REEMP.VERIFICACION"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Verificacion"
+  - id: "WS.REEMP"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+  - id: "DAL.REEMP"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb"
+
+riesgos_principales:
+  - "Conflicto CHECK non-negative por ajuste de cantidad_solicitada."
+  - "Pendiente inconsistente tras reemplazo parcial y navegación salir/entrar."
+  - "Ramas de reemplazo opcional no homologadas en todos los entry points."
+
+mejoras_ya_existentes_detectadas:
+  - "Fixes recientes para evitar caída por constraint en reemplazo/no encontrado."
+  - "Soporte funcional para marcar no apto sin sustituto en escenario opcional."
+
+quick_wins:
+  - "Registrar estado pre/post de cantidad_solicitada/cantidad_pickeada por línea."
+  - "Regla explícita de recálculo de pendiente en WS antes de responder a HH."
+  - "Checklist de regresión en casos: dañado, no encontrado, reemplazo opcional ON/OFF."

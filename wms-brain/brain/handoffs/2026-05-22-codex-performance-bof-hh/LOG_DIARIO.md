@@ -199,3 +199,59 @@ Resultado: push OK a Azure DevOps.
   - resolucion por barra/unidad,
   - overwrite de caja master,
   - contrato funcional del gate de caja master.
+
+### 2026-05-26 (actualizacion) - Fix rapido inventario ciclico (DAL + HH)
+
+- Hallazgo 1 (DAL): mapeo incorrecto de banderas de producto en consultas de inventario ciclico.
+  - En ciertos `SELECT`, `genera_lote` y `control_vencimiento` salian desde `control_peso`.
+  - Corregido a:
+    - `genera_lote = producto.control_lote`
+    - `control_vencimiento = producto.control_vencimiento`
+  - Archivo:
+    - `C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_vw_Partial.vb`
+- Hallazgo 2 (HH): validacion redundante obligaba licencia en escenarios donde no aplica LP.
+  - Ajuste: exigir licencia solo cuando el producto tiene `Genera_lp = true`.
+  - Archivo:
+    - `C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java`
+- Tag aplicado en comentarios de cambio:
+  - `#EJC20260526`
+
+### 2026-05-26 (actualizacion) - Homologacion JSON en recepcion HH (GetSingleRec)
+
+- Problema observado:
+  - en `frm_detalle_ingresos` aun se llamaba `GetSingleRec` (XML/SOAP), lo que podia provocar mismatch de deserializacion con campos nuevos (ej. `IdProductoTallaColor`).
+- Ajuste aplicado:
+  - `ws.callback=3` migra de `callMethod("GetSingleRec",...)` a `callMethodJsonPost("GetSingleRec_JSON",...)`.
+  - `processgBeRecepcion()` deja de parsear por `XMLObject` y pasa a `Gson` con `ws.xmlresult` JSON.
+  - se agrega reuso de `gl.gBeRecepcion` cuando ya viene precargado desde `frm_lista_tareas_recepcion`, evitando roundtrip redundante.
+- Archivo:
+  - `C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java`
+- Tag aplicado:
+  - `#EJC20260526`
+
+### 2026-05-26 (actualizacion) - Mapa fino de recepcion HH (latencia + flujo)
+
+- Se crea trazabilidad dedicada del proceso de recepcion HH (lista -> detalle -> datos) con nodos por capa HH/WS/DAL/BD, aristas, puntos de costo y quick wins de optimizacion.
+- Archivo:
+  - `C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/RECEPCION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
+- Incluye:
+  - causas de lentitud observadas,
+  - propuesta de instrumentacion (TTI/callback/endpoints),
+  - checklist de validacion post-fix JSON.
+
+### 2026-05-26 (actualizacion) - Expansión de trazas finas operativas
+
+- Se crean trazas finas adicionales para procesos críticos:
+  - `PICKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
+  - `PACKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
+  - `VERIFICACION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
+  - `REEMPLAZO-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
+  - `EXISTENCIAS-HH-BOF-GRAFO-TRAZA-FINA-2026-05-26.yml`
+- Se crea índice maestro de trazas:
+  - `TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml`
+- Se documenta estrategia consolidada de uso:
+  - `ESTRATEGIA-TRAZAS-FINAS-OPERATIVAS-2026-05-26.md`
+- Se actualiza contexto principal para preflight obligatorio por traza fina:
+  - `brain/agents/coordinator.yml`
+  - `brain/agents/domain-hh-android.yml`
+  - `C:/Users/yejc2/source/repos/TOMWMS/AGENTS.md`

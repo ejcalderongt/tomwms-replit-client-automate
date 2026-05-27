@@ -28,6 +28,11 @@ reglas_vinculantes:
     - "Archivos AGENTS.md / .codex/ NO viajan con codigo WMS - branch separado prograx-local-codex-backup-recovery"
 
 orden_de_carga:
+  paso_0_preflight_traza_fina:
+    - "Si la tarea es proceso operativo (recepcion/picking/packing/verificacion/reemplazo/existencias/inventario): abrir primero"
+    - "brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml"
+    - "Si existe traza fina del proceso, usarla como entry-point obligatorio."
+    - "Si no existe, crear traza fina antes del fix."
   paso_1_siempre: [replit.md, brain/agents/_index.yml]
   paso_2_segun_trigger:
     - brain/agents/coordinator.yml  # este archivo
