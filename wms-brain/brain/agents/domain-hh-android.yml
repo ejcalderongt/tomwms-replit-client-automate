@@ -35,6 +35,8 @@ reglas_vinculantes:
   - "REGLA 6: Cantidad en UMBAS para stock/movimientos/stock_res. Si IdPresentacion > 0, interpretar Cantidad/Factor al usuario pero persistir UMBAS."
   - "REGLA 6 bis: Si NO hay presentacion, objeto presentacion es null y factor 0 -> usar UMBAS, NO abortar"
   - "REGLA 6 ter: CamasPorTarima y CajasPorCama si vienen null/0 son palletizado nuevo definido - NO defaultear a 1 ni abortar"
+  - "REGLA 7: En HH, blindar fronteras WS/estado vivo antes de usar objetos globales, .items.get(0), .items, Stock/Detalle/Presentaciones o strings de WS. Si el contexto quedo obsoleto por refresco/reintento, mostrar recarga operativa y no continuar con datos viejos."
+  - "REGLA 8: Consulta de existencias HH no debe paginar. WSHHRN Get_Stock_Consulta_CI_Json devuelve todos los registros filtrados en Items; si se optimiza, mantener JSON sin TOP/OFFSET/FETCH y ordenar estable para totales HH."
 
 patrones_brain:
   - brain/code-changes/HH/  # carpeta - listar contenido
@@ -71,6 +73,8 @@ ejemplos_tareas_pasadas:
   - { fecha: 2026-05-20, caso: "Audit HH cantidad UMBAS pattern", handoff: brain/handoffs/2026-05-20-audit-hh-cantidad-umbas-pattern/, status: "ACCEPTANCE + ADDENDUM disponibles" }
   - { fecha: 2026-05-20, caso: "HH recepcion pallet presentacion cantidad", handoff: brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ }
   - { fecha: 2026-05-26, caso: "HH cambio ubicacion: foco destino desde recepcion", nota: "Fix en frm_cambio_ubicacion_ciega con tag #EJC20260526; no tocar recepcion detalle para este sintoma." }
+  - { fecha: 2026-05-27, caso: "HH blindaje nulos/listas estrategico", nota: "Patron #EJC20260527 aplicado en cambio ubicacion, consulta existencias detalle y verificacion consolidada; extender por frontera WS, no masivo." }
+  - { fecha: 2026-05-27, caso: "HH consulta existencias sin paginacion", nota: "Get_Stock_Consulta_CI_Json debe retornar Items completos acorde filtros; Total=RegistrosDevueltos y SinPaginacion=True." }
 
 extension_points:
   - "Falta inventario de las 55 activities con su flujo y endpoint WSHHRN consumido"

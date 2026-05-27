@@ -55,6 +55,9 @@ glosario:
   AJCANTN: tipo de ajuste cantidad negativo
   IMS4MB: genealogia BD vieja (BECOFARMA/BYB/CEALSA/MAMPA)
 
+reglas_operativas:
+  - "#EJC20260527: En picking/no-pickeado, si se elimina trans_picking_ubic con cantidad no ejecutada, primero limpiar trans_picking_ubic_stock y trans_movimientos usando el IdMovimiento identity guardado en el puente. Evitar borrar movimientos por MaxID o solo por filtros semanticos."
+
 huerfanos_evitar:
   - { path: TOMIMSV4/Transacciones/Pedido/frmPedido_OBSOLETO*, motivo: "Versiones viejas" }
   - { path: "*.bak, *.orig, *.old", motivo: "Files de backup no productivos" }

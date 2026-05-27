@@ -1,0 +1,13 @@
+id: cag-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+status: WARN
+scope:
+  files: []
+checks:
+  null_safety: pending
+  business_rules: pending
+  db_correlation: pending
+  state_safety: pending
+findings: []
+recommendation: ''
+

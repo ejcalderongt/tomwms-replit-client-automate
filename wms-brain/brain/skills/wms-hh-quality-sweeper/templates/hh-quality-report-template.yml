@@ -1,0 +1,24 @@
+id: hh-qs-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+mode: report-only
+target: ''
+summary:
+  warnings_estimated: 0
+  safe_fixes_applied: 0
+  risky_findings: 0
+ide_priority_rules:
+  - "Redundant boxing, 'Integer.parseInt()' call can be used instead"
+  - "Redundant boxing, 'Double.parseDouble()' call can be used instead"
+  - "Method invocation 'getName' may produce 'NullPointerException'"
+  - "'switch' statement has too few case labels (1), and should probably be replaced with an 'if' statement"
+  - "Anonymous new View.OnKeyListener() can be replaced with lambda"
+  - "Anonymous new View.OnFocusChangeListener() can be replaced with lambda"
+  - "Field can be converted to a local variable"
+  - "X is assigned but never accessed"
+  - "Variable initializer is redundant"
+  - "'equals(\"\")' can be replaced with 'isEmpty()'"
+  - "'indexOf(...) == -1' can be replaced with '!contains(...)' when semantic equivalent"
+  - "'indexOf(...) >= 0 / != -1 / > -1' can be replaced with 'contains(...)' when semantic equivalent"
+  - "'size() > 0 / == 0 / != 0' can be replaced with '!isEmpty() / isEmpty()' when semantic equivalent"
+findings: []
+next_batch: []

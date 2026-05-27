@@ -1,0 +1,10 @@
+id: sma-YYYYMMDD-HHMMSS-process
+tag: '#EJCYYYYMMDD'
+process: picking
+canonical_states: []
+transitions: []
+ui_gates: []
+ws_gates: []
+db_observed_states: []
+residual_risk: medium
+
