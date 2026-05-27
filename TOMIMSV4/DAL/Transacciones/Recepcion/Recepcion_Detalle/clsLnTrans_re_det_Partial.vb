@@ -2725,81 +2725,53 @@ Partial Public Class clsLnTrans_re_det
     ''' <param name="pListaStockRec"></param>
     ''' <param name="lConnection"></param>
     ''' <param name="lTransaction"></param>
+    '#EJC20260527: Refactor — retorna Dictionary(idOrigen->idNuevo) para exponer de forma
+    'explicita los IDENTITY generados al caller. Elimina dependencia implicita de efectos
+    'secundarios y permite al caller verificar sincronizacion. Ambos branches (IsNew=True/False)
+    'hacen siempre INSERT porque este overload se invoca tras Eliminar_Detalle previo:
+    'un Actualizar seria inoperante (fila ya borrada) y dejaria pListaStockRec con IDs de HH.
     Public Shared Function Guarda_Trans_re_det(ByRef pListRecDet As List(Of clsBeTrans_re_det),
                                                ByRef pListaStockRec As List(Of clsBeStock_rec),
                                                ByRef lConnection As SqlConnection,
-                                               ByRef lTransaction As SqlTransaction) As Integer
+                                               ByRef lTransaction As SqlTransaction
+    ) As Dictionary(Of Integer, Integer)
 
-        Dim vFilas As Integer = 0
+        Dim mapaIds As New Dictionary(Of Integer, Integer)
 
         Try
 
-            Dim MaxIdRecepcionDet As Integer = 0
-
             For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
 
-                If BeTransReDet.IsNew Then
+                '#EJC20260527: capturar ID origen ANTES del INSERT (el valor calculado por la HH)
+                Dim idOrigen As Integer = BeTransReDet.IdRecepcionDet
 
-                    Dim IdRecepcionDetOrigen As Integer = BeTransReDet.IdRecepcionDet
+                BeTransReDet.Fecha_ingreso = Now
+                BeTransReDet.Fec_agr = Now
 
-                    BeTransReDet.Fecha_ingreso = Now
-                    BeTransReDet.Fec_agr = Now
-
-                    If BeTransReDet.IdPresentacion = -1 Then
-                        BeTransReDet.IdPresentacion = 0
-                    End If
-
-                    Insertar(BeTransReDet, lConnection, lTransaction)
-
-                    MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
-
-                    If MaxIdRecepcionDet <= 0 Then
-                        Throw New Exception("ERROR_202605201645: No se obtuvo IdRecepcionDet identity para la linea de recepcion.")
-                    End If
-
-                    '#EJCCKFK20260520: trans_re_det.IdRecepcionDet es identity; stock_rec debe quedar ligado al identity real.
-                    Asignar_IdRecepcionDet_StockRec(pListaStockRec,
-                                                    BeTransReDet,
-                                                    IdRecepcionDetOrigen,
-                                                    MaxIdRecepcionDet)
-
-                    vFilas += 1
-
-                Else
-                    '#EJCCKFK20260527: Este overload se invoca siempre tras un DELETE previo
-                    '(Eliminar_Detalle en el llamador). Si IsNew=False, Actualizar no inserta
-                    'la fila (ya fue borrada) -> pListaStockRec queda con el ID calculado
-                    'por la HH -> FK_stock_rec_trans_re_det viola en Guarda_Stock_Rec.
-                    'Aplicar el mismo patron INSERT+SCOPE_IDENTITY que el branch IsNew=True.
-                    Dim IdRecepcionDetOrigenNotNew As Integer = BeTransReDet.IdRecepcionDet
-
-                    BeTransReDet.Fecha_ingreso = Now
-                    BeTransReDet.Fec_agr = Now
-
-                    If BeTransReDet.IdPresentacion = -1 Then
-                        BeTransReDet.IdPresentacion = 0
-                    End If
-
-                    Insertar(BeTransReDet, lConnection, lTransaction)
-
-                    Dim MaxIdRecepcionDetNotNew As Integer = BeTransReDet.IdRecepcionDet
-
-                    If MaxIdRecepcionDetNotNew <= 0 Then
-                        Throw New Exception("ERROR_202605271715: No se obtuvo IdRecepcionDet identity (branch Not IsNew) para la linea de recepcion " & IdRecepcionDetOrigenNotNew)
-                    End If
-
-                    '#EJCCKFK20260527: sincronizar pListaStockRec con el nuevo IDENTITY
-                    Asignar_IdRecepcionDet_StockRec(pListaStockRec,
-                                                    BeTransReDet,
-                                                    IdRecepcionDetOrigenNotNew,
-                                                    MaxIdRecepcionDetNotNew)
-
-                    vFilas += 1
+                If BeTransReDet.IdPresentacion = -1 Then
+                    BeTransReDet.IdPresentacion = 0
                 End If
+
+                Insertar(BeTransReDet, lConnection, lTransaction)
+
+                '#EJC20260527: capturar SCOPE_IDENTITY real generado por SQL Server
+                Dim idNuevo As Integer = BeTransReDet.IdRecepcionDet
+
+                If idNuevo <= 0 Then
+                    Throw New Exception("ERROR_202605271800: No se obtuvo IdRecepcionDet identity para la linea origen " & idOrigen)
+                End If
+
+                '#EJC20260527: sincronizar pListaStockRec con el IDENTITY real
+                Asignar_IdRecepcionDet_StockRec(pListaStockRec,
+                                                BeTransReDet,
+                                                idOrigen,
+                                                idNuevo)
+
+                mapaIds(idOrigen) = idNuevo
 
             Next
 
-            Guarda_Trans_re_det = vFilas
+            Return mapaIds
 
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.

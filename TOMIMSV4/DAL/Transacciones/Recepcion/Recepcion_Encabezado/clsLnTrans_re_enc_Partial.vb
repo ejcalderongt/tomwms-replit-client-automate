@@ -450,7 +450,7 @@ Partial Public Class clsLnTrans_re_enc
                                   trans_re_enc.idmotivoanulacionbodega,trans_re_fact.NoFactura
                                   FROM trans_re_fact RIGHT OUTER JOIN
                                   trans_re_enc ON trans_re_fact.IdRecepcionEnc = trans_re_enc.IdRecepcionEnc inner join 
-						          propietario_bodega on trans_re_enc.IdPropietarioBodega = propietario_bodega.IdPropietarioBodega
+                                                          propietario_bodega on trans_re_enc.IdPropietarioBodega = propietario_bodega.IdPropietarioBodega
                                   WHERE (trans_re_enc.IdRecepcionEnc = @IdRecepcionEnc and propietario_bodega.IdBodega = @IdBodega)"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1687,7 +1687,8 @@ Partial Public Class clsLnTrans_re_enc
         Dim vResultadoInsertReEnc As Integer = 0
         Dim vResultadoGuarda_Trans_Re_OC As Integer = 0
         Dim vResultadoEliminar_Detalle As String = ""
-        Dim vResultadoGuarda_Trans_re_det As Integer = 0
+        '#EJC20260527: Dictionary idOrigen->idNuevo para verificacion explicita de sincronizacion
+        Dim vResultadoGuarda_Trans_re_det As New Dictionary(Of Integer, Integer)
         Dim vResultadoGuarda_Trans_re_det_lote As Integer = 0
         Dim vResultadoGuarda_Trans_Re_Det_Parametros As Integer = 0
         Dim vResultadoActualiza_Cantidad_Recibida_OC As Integer = 0
@@ -1815,8 +1816,13 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                   lConnection,
                                                                                                   lTransaction)
 
-                            If vResultadoGuarda_Trans_re_det > 0 Then
-                                CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det
+                            '#EJC20260527: verificacion explicita — mapa debe tener una entrada por cada detalle
+                            If vResultadoGuarda_Trans_re_det.Count <> pListRecDet.Count Then
+                                Throw New Exception("ERROR_202605271801: Mismatch IDs IDENTITY generados (" & vResultadoGuarda_Trans_re_det.Count & ") vs detalles esperados (" & pListRecDet.Count & ").")
+                            End If
+
+                            If vResultadoGuarda_Trans_re_det.Count > 0 Then
+                                CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det.Count
                             Else
                                 Throw New Exception("ERROR_202210051158: No se pudo insertar el detalle de la recepción.")
                             End If
@@ -2811,7 +2817,8 @@ Partial Public Class clsLnTrans_re_enc
         Dim pIdOrdenCompraEnc As Integer = 0
         Dim IdTipoDocumento As Integer = 0
         Dim vResultadoOc As Integer = 0
-        Dim vResultadoGuardarReDet As Integer = 0
+        '#EJC20260527: Dictionary idOrigen->idNuevo para verificacion explicita de sincronizacion
+        Dim vResultadoGuardarReDet As New Dictionary(Of Integer, Integer)
         Dim vResultadoEliminar As String = ""
         Dim vResultadoActualizarCantidadRecibidaDI As Integer = 0
         Dim vResultadoStockSeRec As Integer = 0
@@ -2993,8 +3000,13 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                    lConnection,
                                                                                                    lTransaction)
 
-                                    If vResultadoGuardarReDet > 0 Then
-                                        CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                    '#EJC20260527: verificacion explicita — mapa debe tener una entrada por cada detalle
+                                    If vResultadoGuardarReDet.Count <> pListRecDet.Count Then
+                                        Throw New Exception("ERROR_202605271802: Mismatch IDs IDENTITY generados (" & vResultadoGuardarReDet.Count & ") vs detalles esperados (" & pListRecDet.Count & ").")
+                                    End If
+
+                                    If vResultadoGuardarReDet.Count > 0 Then
+                                        CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet.Count
                                     End If
 
                                     '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
