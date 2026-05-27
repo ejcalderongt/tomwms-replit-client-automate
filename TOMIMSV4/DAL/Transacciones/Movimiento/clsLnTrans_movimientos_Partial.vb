@@ -3115,21 +3115,17 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
-            Dim lMaxMov As Integer = MaxID(lConnection, lTransaction)
-
             If pListObjMov IsNot Nothing AndAlso pListObjMov.Count > 0 Then
 
                 For Each Obj As clsBeTrans_movimientos In pListObjMov
 
                     If Obj.IdMovimiento = 0 Then
-                        Obj.IdMovimiento = lMaxMov
                         '#MA20260519 
                         If Obj.IdTransaccion = 0 Then
                             Obj.IdTransaccion = IdTareaUbicacionEnc
                         End If
                         Obj.Fecha = Now
                         Insertar(Obj, lConnection, lTransaction)
-                        lMaxMov += 1
                     End If
                 Next
 
@@ -3156,7 +3152,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockRec.IdRecepcionEnc
@@ -3784,7 +3780,7 @@ Partial Public Class clsLnTrans_movimientos
 
             If Not pStock Is Nothing Then
 
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -3873,7 +3869,7 @@ Partial Public Class clsLnTrans_movimientos
                                                                                           lTransaction)
 
                 Dim BeTransMovimiento As New clsBeTrans_movimientos()
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -4002,7 +3998,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockNew.IdRecepcionEnc

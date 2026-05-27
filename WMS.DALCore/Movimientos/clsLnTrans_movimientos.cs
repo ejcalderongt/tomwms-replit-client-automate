@@ -84,7 +84,6 @@ public class clsLnTrans_movimientos
         try
         {
             Ins.Init("trans_movimientos");
-            Ins.Add("idmovimiento", "@idmovimiento", "F");
             Ins.Add("idempresa", "@idempresa", "F");
             Ins.Add("idbodegaorigen", "@idbodegaorigen", "F");
             Ins.Add("idtransaccion", "@idtransaccion", "F");
@@ -126,7 +125,7 @@ public class clsLnTrans_movimientos
                 Ins.Add("color", "@color", "F");
             }
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQL() + "; SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
@@ -134,7 +133,12 @@ public class clsLnTrans_movimientos
 
                 BindMovimientoParameters(cmd, oBeTrans_movimientos);
 
-                rowsAffected = cmd.ExecuteNonQuery();
+                object? idGeneradoObj = cmd.ExecuteScalar();
+                if (idGeneradoObj != null && idGeneradoObj != DBNull.Value)
+                {
+                    oBeTrans_movimientos.IdMovimiento = Convert.ToInt32(idGeneradoObj);
+                    rowsAffected = oBeTrans_movimientos.IdMovimiento;
+                }
             }
 
             return rowsAffected;
@@ -156,7 +160,6 @@ public class clsLnTrans_movimientos
         try
         {
             Ins.Init("trans_movimientos");
-            Ins.Add("idmovimiento", "@idmovimiento", "F");
             Ins.Add("idempresa", "@idempresa", "F");
             Ins.Add("idbodegaorigen", "@idbodegaorigen", "F");
             Ins.Add("idtransaccion", "@idtransaccion", "F");
@@ -192,7 +195,7 @@ public class clsLnTrans_movimientos
             Ins.Add("iddespachoenc", "@iddespachoenc", "F");
             Ins.Add("iddespachodet", "@iddespachodet", "F");
 
-            string sp = Ins.SQL();
+            string sp = Ins.SQL() + "; SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
 
@@ -201,7 +204,12 @@ public class clsLnTrans_movimientos
 
             BindMovimientoParameters(cmd, oBeTrans_movimientos);
 
-            rowsAffected = cmd.ExecuteNonQuery();
+            object? idGeneradoObj = cmd.ExecuteScalar();
+            if (idGeneradoObj != null && idGeneradoObj != DBNull.Value)
+            {
+                oBeTrans_movimientos.IdMovimiento = Convert.ToInt32(idGeneradoObj);
+                rowsAffected = oBeTrans_movimientos.IdMovimiento;
+            }
 
             if (lTransaction != null)
                 lTransaction.Commit();
@@ -244,7 +252,6 @@ public class clsLnTrans_movimientos
         try
         {
             Upd.Init("trans_movimientos");
-            Upd.Add("idmovimiento", "@idmovimiento", "F");
             Upd.Add("idempresa", "@idempresa", "F");
             Upd.Add("idbodegaorigen", "@idbodegaorigen", "F");
             Upd.Add("idtransaccion", "@idtransaccion", "F");
@@ -643,7 +650,7 @@ public class clsLnTrans_movimientos
         bool isExternalTx = conn != null && tx != null;
 
         if (!isExternalTx)
-            throw new InvalidOperationException("Se requiere una conexión y transacción externa cuando no se usa IConfiguration");
+            throw new InvalidOperationException("Se requiere una conexiÃ³n y transacciÃ³n externa cuando no se usa IConfiguration");
 
         try
         {
@@ -717,8 +724,6 @@ public class clsLnTrans_movimientos
 
             BeTransMovimiento.Cantidad_hist = BeStockRec.CantidadEnStock;
             BeTransMovimiento.Peso_hist = BeStockRec.PesoEnStock;
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction) + 1;
-
             Insertar(BeTransMovimiento, lConnection, lTransaction);
 
             return BeTransMovimiento.IdMovimiento;

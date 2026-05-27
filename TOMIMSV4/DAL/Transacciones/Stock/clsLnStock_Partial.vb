@@ -10684,7 +10684,6 @@ Partial Public Class clsLnStock
             Dim vFilasAfectadas As Double = 0
             Dim IdxPresentacion As Integer = 0
             Dim BeMovimiento As New clsBeTrans_movimientos
-            Dim vIdMaxMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdEmpresa As Integer = 0
 
             If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
@@ -10796,7 +10795,7 @@ Partial Public Class clsLnStock
 
                     '#EJC20220204: Registrar movimiento de cambio de ubicación hacia ubicación de picking.
                     BeMovimiento = New clsBeTrans_movimientos
-                    BeMovimiento.IdMovimiento = vIdMaxMovimiento
+                    '#EJC20260526: IdMovimiento es identity; no se asigna manualmente.
                     BeMovimiento.IdEmpresa = IdEmpresa
                     BeMovimiento.IdBodegaOrigen = objStockOrigen.IdBodega
                     BeMovimiento.IdTransaccion = objStockOrigen.IdPedidoEnc
@@ -10851,8 +10850,6 @@ Partial Public Class clsLnStock
                     clsLnTrans_movimientos.Insertar(BeMovimiento,
                                                     lConnection,
                                                     lTransaction)
-
-                    vIdMaxMovimiento += 1
 
                 Next
 
@@ -12190,7 +12187,7 @@ Por favor reportar este problema a DevOps."
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-            IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            IdMovimiento = 0
 
             BeTransInvEnc.Regularizado = True
             BeTransInvEnc.Estado = "Finalizado"
@@ -12216,7 +12213,7 @@ Por favor reportar este problema a DevOps."
             Next
 
             For Each BeMov As clsBeTrans_movimientos In ListBeMovimientos
-                IdMovimiento += 1 : BeMov.IdMovimiento = IdMovimiento
+                BeMov.IdMovimiento = 0
                 clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
             Next
 

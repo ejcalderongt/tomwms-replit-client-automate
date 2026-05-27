@@ -107,14 +107,75 @@ El script:
 - reseedea identity,
 - deja backup: `trans_movimientos__pre_identity_20260526`.
 
-## 6) Pendientes de implementación de código (no ejecutados aún)
+## 6) Estado de implementación (actualizado 2026-05-26)
 
-1. Refactor `clsLnTrans_movimientos.vb` para insertar sin `idmovimiento` explícito y retornar nuevo ID.
-2. Refactor equivalente en `WMS.DALCore/Movimientos/clsLnTrans_movimientos.cs`.
-3. Sustituir asignaciones `MaxID()+1` en flujos de movimiento por retorno real de `Insertar`.
-4. Ajustar métodos WS que exponen `pIdMovimientoNuevo`.
-5. Pruebas HH:
-   - cambio ubicación (ciega/dirigida),
-   - reabastecimiento,
-   - packing/reemplazos con bitácora de movimientos.
+Aplicado:
 
+1. `TOMIMSV4/DAL/Transacciones/Movimiento/clsLnTrans_movimientos.vb`
+   - Insert de `trans_movimientos` ya no envía `idmovimiento`.
+   - Se usa patrón estándar del repo: `Ins.SQL() & "; SELECT CAST(SCOPE_IDENTITY() AS INT);"`.
+   - `Insertar(...)` asigna el identity devuelto a `oBeTrans_movimientos.IdMovimiento`.
+2. `WMS.DALCore/Movimientos/clsLnTrans_movimientos.cs`
+   - Ambos overloads de `Insertar(...)` migrados a `SCOPE_IDENTITY()`.
+   - Se elimina `Ins.Add("idmovimiento", ...)` en insert.
+   - `Insertar_Movimientos_Recepcion(...)` ya no preasigna `MaxID()+1`.
+3. Flujos VB que seguían preasignando `IdMovimiento` con `MaxID`:
+   - `.../Movimiento/clsLnTrans_movimientos_Partial.vb`
+   - `.../Transaccion_Ubicacion_HH/.../clsLnTrans_ubic_hh_det_Partial.vb`
+   - `.../Stock/clsLnStock_Partial.vb`
+   - `.../Stock_Reservado/clsLnStock_res_Partial.vb`
+   - `.../Despacho/clsLnTrans_despacho_enc_Partial.vb`
+   - Todos ajustados para enviar `IdMovimiento = 0` y dejar que DB genere identity.
+
+Evaluado en HH (`TOMHH2025`):
+
+- El cliente ya trabaja con `gMovimientoDet.IdMovimiento = 0` en flujos críticos.
+- Consume `pIdMovimientoNuevo` en respuestas de WS para continuidad.
+- No se requirió cambio de código Android en esta fase.
+
+Pendiente recomendado (fase 2):
+
+1. Barrido de formularios BOF (`frmRegularizarInventario`, `frmAjusteStock`) para eliminar cualquier preasignación residual de `MaxID` en movimientos legacy.
+2. Ejecutar pruebas de regresión HH/WS con DB ya migrada a identity en QA.
+
+## 7) Estado guardado (checkpoint)
+
+Fecha checkpoint: `2026-05-26`  
+Estado: **EN CURSO / ESTABLE PARA CONTINUAR**
+
+Resumen:
+
+- `IdMovimiento` migrado en DAL VB + DALCore a patrón identity (`SCOPE_IDENTITY`).
+- Corrección aplicada: `idmovimiento` removido del `SET` en `UPDATE` (solo se usa en `WHERE`).
+- HH ajustada en flujos de cambio de ubicación y reabastecimiento con parse robusto de:
+  - `pIdStockNuevo`
+  - `pIdMovimientoNuevo`
+- Validaciones agregadas en HH para cortar flujo cuando IDs retornan inválidos (`<= 0`).
+- Kit de escalamiento/diagnóstico creado en:
+  - `tools/diagnostics/scale-readiness-kit/*`
+
+## 8) Cola de trabajo (pendiente priorizado)
+
+### Cola A — Optimización
+
+1. Eliminar preasignaciones residuales de `MaxID` en formularios legacy BOF:
+   - `frmRegularizarInventario`
+   - `frmAjusteStock`
+2. Revisión de transacciones largas en flujos de alta concurrencia:
+   - picking/verificación/reabastecimiento/cambio ubicación
+3. Revisar índices en tablas calientes:
+   - `stock`, `stock_res`, `trans_picking_ubic`, `trans_movimientos`
+
+### Cola B — Trazabilidad de rendimiento (integral)
+
+1. Implementar esquema de observabilidad SQL (tablas `obs_*` en español, propuesta aprobada).
+2. Instrumentar WS/ASMX/WebAPI con `id_correlacion` end-to-end.
+3. Registrar etapas por capa (`HH -> WS -> DAL -> SQL`) y duraciones por etapa.
+4. Construir vista BOF DevExpress para:
+   - p95/p99 por proceso
+   - errores por endpoint/bodega/operador
+   - timeline por `id_correlacion`
+5. Definir alertas operativas tempranas:
+   - deadlocks
+   - bloqueos > umbral
+   - degradación de p95
