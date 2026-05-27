@@ -1,0 +1,40 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_list_packing_cerrados.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+127:            if (LicenciasPacking != null) {
+
+=== CHECK: isEmpty\(\) ===
+82:                    if (!txtFiltro.getText().toString().isEmpty()) {
+104:                    if (!txtFiltro.getText().toString().isEmpty()) {
+176:            if (!Licencia.isEmpty()){
+192:                if (!Licencia.isEmpty()) {
+299:                    if (!zpl.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+32:    private WebServiceHandler ws;
+33:    private XMLObject xobj;
+35:    private EditText txtFiltro;
+36:    private RecyclerView listaRv;
+37:    private ImageView btnBuscar;
+39:    private list_adapt_licenciaspacking adapter;
+41:    private clsBeTrans_packing_encList LicenciasPacking;
+42:    private ArrayList<clsBeTrans_packing_enc> auxPacking = new ArrayList<>();
+43:    private String Licencia = "";
+44:    private String bodDestino= "";
+45:    private Boolean procesando = false;
+47:    private ProgressDialog progress;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+71:            txtFiltro.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

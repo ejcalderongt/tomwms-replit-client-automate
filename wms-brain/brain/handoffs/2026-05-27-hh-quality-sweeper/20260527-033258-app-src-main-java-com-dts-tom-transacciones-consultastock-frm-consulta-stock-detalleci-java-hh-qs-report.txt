@@ -1,0 +1,49 @@
+target: app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock_detalleCI.java
+=== CHECK: ==\s*null ===
+130:        return value == null ? "" : value;
+340:            if (BeProducto == null) msgbox("No se logr├│ cargar el producto.");
+
+=== CHECK: !=\s*null ===
+117:        if (gl.existencia != null) {
+121:            if (progress != null) progress.cancel();
+
+=== CHECK: isEmpty\(\) ===
+135:        if (limpio.isEmpty()) {
+165:                if (!disponibleUmbas.isEmpty() && !disponibleUmbas.equals("0")) {
+179:                if (!reservado.isEmpty() && !reservado.equals("0")) {
+196:                if (!disponibleUmbas.isEmpty() && existencia.factor != 0) {
+208:                if (!reservado.isEmpty() && existencia.factor != 0) {
+502:                                (gl.existencia.Codigo_Barra.isEmpty()?gl.existencia.Codigo:gl.existencia.Codigo_Barra),
+507:                    if (!zpl.isEmpty()){
+762:                    if (!zpl.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+37:    private TableRow trPresentacion;
+38:    private TableRow trResPresentacion;
+39:    private TableRow trDispUm;
+40:    private TableRow trResUm;
+41:    private Spinner cmbCantidad;
+43:    private XMLObject xobj;
+44:    private ProgressDialog progress;
+45:    private clsBeTipo_etiqueta pBeTipo_etiqueta;
+46:    private Integer CantCopias =1;
+48:    private clsBeProducto BeProducto = new clsBeProducto();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+162:                //lblexUnidad.setText(""+0);
+174:                    lblexUnidad.setText("0.00");
+185:                        lblResUni.setText("Res. " + textoSeguro(existencia.UM) + ":");
+189:                        txtResUni.setText("0.00");
+193:                    txtResUni.setText("0.00");
+201:                    lblPresentacion.setText("Disp. " + textoSeguro(existencia.Pres) + ":");
+213:                    lblResPres.setText("Res. " + textoSeguro(existencia.Pres) + ":");
+

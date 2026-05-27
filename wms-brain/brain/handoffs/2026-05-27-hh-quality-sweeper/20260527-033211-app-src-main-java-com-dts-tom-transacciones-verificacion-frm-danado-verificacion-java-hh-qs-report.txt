@@ -1,0 +1,35 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+389:            if (LProductoEstadoDanado != null) {
+390:                if (LProductoEstadoDanado.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+154:                        if (!txtUbicDestVeri.getText().toString().isEmpty()){
+204:            if (!txtUbicDestVeri.getText().toString().isEmpty()) {
+252:            if (!idUbicacion.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+38:    private XMLObject xobj;
+39:    private ProgressDialog progress;
+41:    private boolean aplicarReemplazo = false;
+43:    private Spinner cmbEstadoDanadoVeri;
+45:    private EditText txtUbicDestVeri;
+48:    private clsBeProducto_estadoList LProductoEstadoDanado = new clsBeProducto_estadoList();
+49:    private clsBeBodega_ubicacion BeUbicDestino = new clsBeBodega_ubicacion();
+51:    private final ArrayList<String> EstadoList = new ArrayList<String>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+145:            txtUbicDestVeri.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

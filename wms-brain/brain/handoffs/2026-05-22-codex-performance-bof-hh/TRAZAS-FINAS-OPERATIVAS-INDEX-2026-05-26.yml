@@ -16,6 +16,9 @@ trazas_finas:
   packing:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/PACKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
     estado: "vigente"
+  despacho:
+    archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/DESPACHO-BOF-PACKING-GRAFO-TRAZA-FINA-2026-05-27.yml"
+    estado: "diagnostico_fix_bof"
   verificacion:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/VERIFICACION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
     estado: "vigente"
@@ -28,6 +31,9 @@ trazas_finas:
   inventario_ciclico:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/INV-CIC-GRAFO-TRAZA-FINA-2026-05-26.yml"
     estado: "vigente"
+  inventario_rfid:
+    archivo: "brain/handoffs/2026-05-27-rfid-inventario-fisico/RFID-INVENTARIO-GRAFO-TRAZA-FINA-2026-05-27.yml"
+    estado: "diagnostico_pre_mejora"
 
 estrategia_actual:
   fase_1:

@@ -1,0 +1,87 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_detalle_tareas_verificacion.java
+=== CHECK: ==\s*null ===
+162:                String bodegaDestino = gBePedido.Bodega_Destino == null ? "" : gBePedido.Bodega_Destino.trim();
+669:            String bodegaDestino = gBePedido.Bodega_Destino == null ? "" : gBePedido.Bodega_Destino.trim();
+888:        if (progressDialog == null) {
+
+=== CHECK: !=\s*null ===
+256:                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+324:                    if (vPedidoVerif != null) {
+370:                if (AuxList!=null){
+384:                        if (vPedidoVerif != null) {
+411:            if (e.getMessage() !=null){
+634:            if (pListaPedidoDet!=null){
+635:                if(pListaPedidoDet.items!=null) Lista_Detalle_Pedido();
+675:            if (pListaPedidoDet!=null){
+676:                if(pListaPedidoDet.items!=null) Lista_Detalle_Pedido();
+704:            if (lBeProducto != null){
+705:                if(lBeProducto.items != null){
+763:            if (plistPickingUbic != null){
+764:                if (plistPickingUbic.items != null){
+865:            if (gBePickingEnc != null){
+896:        if (progressText != null) {
+907:        if (progressDialog != null && progressDialog.isShowing()) {
+932:            String errorMsg = (ex.getMessage() != null) ? ex.getMessage() : "Error desconocido";
+978:                if (pListaPedidoDet!= null) {
+980:                    if (pListaPedidoDet.items!=null ){
+
+=== CHECK: isEmpty\(\) ===
+260:                    if (cod.isEmpty()) {
+304:            if (!txtCodProd.getText().toString().isEmpty()) {
+360:                            if (!TempList.isEmpty()) {
+1053:                        if (!pListaPedidoDet.items.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+55:    private XMLObject xobj;
+56:    private ProgressDialog progress;
+58:    private list_adapt_detalle_tareas_verificacion adapter;
+59:    private list_adapt_detalle_tareas_verificacion2 adapter2;
+60:    private list_adapt_detalle_tareas_verificacion3 adapter3;
+61:    private list_adapt_detalle_tareas_verificacion4 adapter4;
+63:    private ListView listDetVeri;
+64:    private EditText txtCodProd;
+65:    private TextView lblNoDocumento;
+66:    private TextView lblTituloForma;
+67:    private ImageView imgReemplazo;
+68:    private RelativeLayout relbot;
+69:    private Button btnRegs;
+70:    private CheckBox chkPendientes;
+72:    private clsBeTrans_picking_ubicList plistPickingUbic = new clsBeTrans_picking_ubicList();
+73:    private clsBeDetallePedidoAVerificarList pListaPedidoDet = new clsBeDetallePedidoAVerificarList();
+74:    private clsBeTrans_picking_enc gBePickingEnc = new clsBeTrans_picking_enc();
+75:    private clsBeProductoList lBeProducto = new clsBeProductoList();
+77:    private final ArrayList<clsBeDetallePedidoAVerificar> pListBeTareasVerificacionHH= new ArrayList<>();
+79:    private clsBeTrans_pe_enc gBePedido = new clsBeTrans_pe_enc();
+80:    private clsBeDetallePedidoAVerificar selitem;
+82:    private boolean preguntoPorDiferencia = false, mostrar_area, VerSinLoteFechaVen = false;
+83:    private boolean finalizar = true;
+84:    private int sortord;
+85:    private int idx = -1;
+883:    private Dialog progressDialog;
+884:    private TextView progressText;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+328:                        txtCodProd.setText("");
+338:                    txtCodProd.setText("");
+388:                            txtCodProd.setText("");
+398:                        txtCodProd.setText("");
+402:                    txtCodProd.setText("");
+637:                lblTituloForma.setText("Tarea de Verificaci├│n - Verificado");
+640:                btnRegs.setText("Registros: 0");
+678:                lblTituloForma.setText("Tarea de Verificaci├│n - Verificado");
+681:                btnRegs.setText("Registros: 0");
+714:                        txtCodProd.setText("");
+897:            progressText.setText("Actualizando picking verificado...");
+1067:                            lblTituloForma.setText("Tarea de Verificaci├│n - No Verificado");
+1070:                            lblTituloForma.setText("Tarea de Verificaci├│n - Verificado");
+1371:                txtCodProd.setText("");
+

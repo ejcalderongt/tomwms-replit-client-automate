@@ -1,0 +1,9 @@
+id: hh-qs-20260527-033742
+tag: '#EJC20260527'
+mode: safe-fix
+target: 'app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java'
+artifacts:
+  report: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033742-app-src-main-java-com-dts-tom-transacciones-picking-frm-editar-ubicacion-picking-java-hh-qs-report.txt'
+  deps: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033742-app-src-main-java-com-dts-tom-transacciones-picking-frm-editar-ubicacion-picking-java-hh-qs-deps.txt'
+  safe_fix: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033742-app-src-main-java-com-dts-tom-transacciones-picking-frm-editar-ubicacion-picking-java-hh-qs-safe-fix.txt'
+status: done

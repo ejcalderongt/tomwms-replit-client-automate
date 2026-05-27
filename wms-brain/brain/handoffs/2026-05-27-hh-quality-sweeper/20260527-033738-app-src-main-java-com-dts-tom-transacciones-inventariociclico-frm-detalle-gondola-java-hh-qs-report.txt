@@ -1,0 +1,29 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_detalle_gondola.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+74:            if(DT !=null){
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+29:    private ProgressDialog progress;
+30:    private WebServiceHandler ws;
+31:    private XMLObject xobj;
+32:    private EditText txtGondola;
+33:    private RecyclerView rvProductos;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

@@ -1,0 +1,25 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frmFirma.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+(sin hallazgos)
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+14:    private DrawingView txtFirma;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

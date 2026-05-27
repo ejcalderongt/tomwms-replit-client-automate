@@ -1,0 +1,69 @@
+meta:
+  nombre: "Despacho BOF - validacion packing contra despacho"
+  fecha: "2026-05-27"
+  origen: "Incidente La Cumbre: diferencia no real entre Packing y Ubicacion Picking; Guardar no genera despacho ni muestra mensaje."
+  alcance:
+    - "BOF WinForms frmDespacho"
+    - "Grid Ubicacion Picking"
+    - "Grid Packing"
+    - "DAL packing/picking solo lectura para diagnostico"
+
+flujo_operativo:
+  entrada:
+    formulario: "TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+    accion: "Guardar despacho"
+  datos_visuales:
+    ubicacion_picking:
+      fuente_memoria: "DTStockRes"
+      columnas_clave:
+        - "Pedido"
+        - "Cant_Veri_UMBas"
+        - "Cant_Desp_UMBas"
+        - "Cant_Pendiente"
+      regla: "Cantidad a despachar = SUM(Cant_Veri_UMBas) - SUM(Cant_Desp_UMBas)"
+    packing:
+      fuente_memoria: "DTPacking"
+      columna_clave: "cantidad_bultos_packing"
+      regla: "Packing del pedido = SUM(cantidad_bultos_packing)"
+  validaciones:
+    - metodo: "Pedidos_Tienen_Packing_Finalizado"
+      proposito: "Bloquear pedidos con packing requerido y no finalizado."
+    - metodo: "ObtenerMensajeDiferenciasDespachoPacking"
+      proposito: "Detectar diferencias de detalle entre verificacion y packing por clave logistica."
+    - metodo: "Existe_Diferencia_Despacho_vrs_Packing"
+      proposito: "Comparar total a despachar contra total packing para el pedido."
+
+hallazgos_2026_05_27:
+  causa_visual:
+    descripcion: "La validacion agregaba Summary.Add sobre columnas del grid cada vez que se presionaba Guardar."
+    efecto: "El footer de Ubicacion Picking mostraba filas/summaries duplicados, dando apariencia de columnas o totales acumulados."
+    ubicacion: "frmDespacho.vb::Existe_Diferencia_Despacho_vrs_Packing"
+  causa_silencio:
+    descripcion: "Cuando la comparacion total fallaba, el metodo retornaba True y Datos_Correctos retornaba False sin mensaje al usuario."
+    efecto: "Guardar parecia no hacer nada."
+  riesgo_detectado:
+    descripcion: "La validacion vieja leia columnas por indice 18 y 20 del GridView."
+    efecto: "Cambio de orden/visibilidad de columnas podia producir lectura equivocada."
+  riesgo_de_carga:
+    descripcion: "Llena_Packing mezclaba DTPacking con Merge y agregaba GroupSummary sin limpiar la carga previa del mismo pedido/despacho."
+    efecto: "Reentradas de carga podian duplicar filas o summaries del grid Packing."
+
+patch_2026_05_27:
+  archivo: "TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+  cambios:
+    - "NormalizarResumenesDespachoPacking limpia summaries de cantidad_bultos_packing, Cant_Veri_UMBas y Cant_Desp_UMBas antes de validar."
+    - "Existe_Diferencia_Despacho_vrs_Packing suma desde DTStockRes/DTPacking por nombre de columna y por pedido."
+    - "El bloqueo por diferencia ahora muestra detalle: verificado, despachado previo, a despachar y packing."
+    - "Llena_Packing/Llena_Packing_By_Despacho remueven la carga previa del mismo picking/pedido/despacho antes de Merge."
+    - "Los GroupSummary de Ubicacion Picking y Packing se limpian antes de volver a agregarse."
+  no_tocado:
+    - "HH Android"
+    - "SPs/tablas SQL"
+    - "Reference.vb"
+
+checklist_regresion:
+  - "Abrir despacho La Cumbre con packing finalizado."
+  - "Entrar a Ubicacion Picking y confirmar que el footer no crece al presionar Guardar repetidas veces."
+  - "Comparar total Cant_Veri_UMBas - Cant_Desp_UMBas contra Packing/cantidad_bultos_packing."
+  - "Si hay diferencia real, validar que aparezca mensaje con pedido y totales."
+  - "Si no hay diferencia real, Guardar debe continuar y generar despacho."

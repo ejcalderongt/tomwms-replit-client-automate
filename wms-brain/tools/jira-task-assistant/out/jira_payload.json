@@ -1,0 +1,1018 @@
+{
+  "generated_at": "2026-05-26T19:20:26",
+  "total_commits": 211,
+  "documented_hashes_found": 81,
+  "unclassified_count": 101,
+  "unclassified": [
+    {
+      "commit_hash": "be9eff74",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "fix orden compra cealsa",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "b5f57682",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "mnuEstadoEnviadoAERP",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "cd2bda00",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "quitar roundtripo por max id invetnario det",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "f35cbb1e",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: En packing/verificación mostrar y filtrar por licencia de empaque (MM...) en lugar de licencia de stock.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "ebae27e5",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: En packing/verificación mostrar y filtrar por licencia de empaque (MM...) en lugar de licencia de stock.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "aa2b9fd5",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: En verificación no se debe usar cantidad_solicitada porque reabre pendientes históricos.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "b79d00af",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: Evita acceso por índice cuando no se generaron líneas de picking_ubic.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "30423e5a",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: Ignora líneas sin disponible real para evitar disponibles negativos en reemplazo/no-encontrado.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "42e03ac2",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: En verificación, mantener consistencia Recibida/Verificada para evitar disponibles negativos.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "06c9d2ec",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "81a9bc85",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: Evita flujo con lista vacía que deriva en acceso por índice en reemplazo.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "b136211a",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "EJC20260526 Fix CK stock non-negative in reemplazo no-encontrado + log diario",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "5aa36f8c",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "'#EJC20260526: Cuando la cantidad a reemplazar coincide exacto con la línea, no debe quedar en 0.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "b09a1e44",
+      "repo": "TOMWMS",
+      "date": "2026-05-26",
+      "title": "Fix HH existencias SQL Of error and guard non-positive picking quantities",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "2fbf7f28",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "fix menu bootstrap",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "77284c69",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "'#EJC_MEJORA_20260523: bajar TTL de seguridad HH para reducir ventana de menú/roles desactualizados.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "a9016624",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "Private Const HH_CACHE_SEGURIDAD_SEGUNDOS As Integer = 300",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "0ce06870",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "Dim vPickUbic = pBePedidoDet.ListaPickingUbic.FirstOrDefault() If vPickUbic IsNot Nothing Then     vIdPickingEnc = vPickUbic.IdPickingEnc",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "7cf6c7d6",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "mejora funcion consulta stock hh la cumbre",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "abe4d3da",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "Get_Stock_Consulta_CI_Json",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "7219e4d6",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "Get_Stock_Consulta_CI_Json",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "aff30e0f",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "'#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "d267093d",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "EJC_MEJORA_20260523: actualiza arbol de trabajo y jira log",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "3b8cc073",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "//#EJC_MEJORA_20260523: Intentar ruta Lite para menor payload; fallback inmediato al método actual.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "dff3bdff",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "EJC_MEJORA_20260522",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "91086d6b",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "FIX_v10_BORRADOR_RESERVA_2026-04-25",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "416ee5cb",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "fix(ajustes): conservar IdStock correcto al guardar detalle",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "62a47efd",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "Private Shared Function Valor_Db_Motivo_Ajuste",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "7e39231f",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "#EJCINV_MEJORA_: mejoras en regularización de inventario -. optimización",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "895d8435",
+      "repo": "TOMWMS",
+      "date": "2026-05-23",
+      "title": "#EJCRP fix(insert): normalizar casing destino en clsInsertBatch (port desde dev_2026_mampa aef063e)",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "286913b2",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "frmpedido + ini",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "a75f5676",
+      "repo": "TOMWMS",
+      "date": "2026-05-22",
+      "title": "llm_studio, ejc. agents. fase II",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "6bc0bed9",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "mReservaProgressState",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "fe1104fa",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "sync byb interface testing",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "e62f92cc",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "quite campo impreso de la bestock_rec",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "bd89b083",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "EJCCKFK20260520",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "f6a128f7",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "fix stock_res",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "7f829b9f",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "sapmampa fix load",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "4363e9ae",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "corrección ocdet partial",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "0b5eeba6",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "quité exit for en reserva",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "3536dd3d",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "fix ejecucion res upd",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "2b562dfb",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "mampa, config wms",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "fa0aecf5",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "correccioens estabilizacion pedidos list",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "105c391e",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "fix cealsa",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "e9088a63",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "sync cealsa",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "bb340cf7",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "mejoras para transac",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "f70decbe",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "frmLogEjecucionesInterface",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "ea70b07c",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "'#EJCCKFK20260520: Cambio por Identity en tabla.",
+      "tipo": "Técnica",
+      "horas_sugeridas": 4.0,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "600f1c10",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "'#EJCCKFK20260520: Cambio por Identity en tabla.",
+      "tipo": "Técnica",
+      "horas_sugeridas": 4.0,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "09e04033",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "Cherry pick: EJCCKF20260519_Notificar_SAP_Hana_MAMAPA",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "154f83c1",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "729d2452",
+      "repo": "TOMWMS",
+      "date": "2026-05-20",
+      "title": "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "039f58e6",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "version 8.4.9",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "f50f95b3",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "inik mhs sync",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "59b5e541",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "ini: #MHS-QA",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "a6d394e8",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "evento_tiempo logreserva",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "ba305b33",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "mejora de traza, corrección 1 . byb, reserva.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "ff9b3f4e",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "parametro de debug en proyecto de interface de byb",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "be4fbc50",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "LOG! poara proceso de reserva.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "634d83f0",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "corrección&validacion en proceso de verificación bof/hh para que no se duplique el movimiento.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "074a721b",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "indicador ajuste",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "071bc47b",
+      "repo": "TOMWMS",
+      "date": "2026-05-19",
+      "title": "syncs  ajustes carol cambio ubic mhs",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "c4c03fc1",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "//#EJC20260526: Evita roundtrips repetidos al marcar tramo \"En proceso\" en cada registro.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "01e9d590",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "String licenciaPacking = getLicenciaPacking(item);                 if(licenciaPacking == null || !licenciaPacking.toLowerCase().contains(licencia)) {",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "290e43f3",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "//#EJC20260526: Guarda el código de producto resuelto desde escaneo para abrir verificación.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "1de1e207",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "//#EJC20260526: Permitir salir marcando dañado aunque exista inventario para reemplazo.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "31533c7a",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "EJC20260526 Guard Bodega_Destino null/trim in verificacion detalle",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "ad32e578",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "fix en vverificacion y consulta de existencias",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "9cdddf14",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "Encontré un bug en el escaneo desde lista general de verificación: en la llamada WS del scan (callback 11) se estaba enviando gl.gIdPedidoEnc en vez de gl.pIdPedidoEnc. Cuando gIdPedidoEnc viene en 0, el WS no devuelve producto y por eso no te llevaba a la pantalla de confirmación.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "9672171e",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "@Element(required=false) public String CodigoSKU = \"\";",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "1cfafcca",
+      "repo": "TOMHH2025",
+      "date": "2026-05-26",
+      "title": "corrección en carga de permisos.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "6a4cbcae",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "// #EJC_MEJORA_20260523_R7: fallback controlado de búsqueda licencia -> código producto.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "3811bade",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "//#EJC_MEJORA_20260523_R1: bloquear reentrada por Enter mientras hay flujo activo.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "fb297e78",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "corrección permisos menu",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "f039438b",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "corrección permisos menu",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "fe030872",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "corrección permisos menu",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "3f2a471d",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "corrección permisos menu",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "1d57b099",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "pendingUbicValidation",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "5460f97a",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "requestId",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "7eceada9",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "corrección mejoras, consulta stock inventario la cumbre",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "27024074",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "ProgressDialog(\"Cargando existencias\");                 //#EJC_MEJORA_20260523: ruta WS unificada para codigo/ubic/licencia.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "e15f4209",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "ProgressDialog(\"Cargando existencias\");                 //#EJC_MEJORA_20260523: ruta WS unificada para codigo/ubic/licencia.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "29b65497",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "setUiBusy",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "111f11cd",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "Get_Stock_Consulta_CI_Json",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "5d107bb8",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "Get_Stock_Consulta_CI_Json",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "a8396e0b",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "wsInFlight",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "06fa4753",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "intentoFallbackLegacy",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "c2404475",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "intentoFallbackLegacy",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "de692f57",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "// Handler XML onClick; se conserva para compatibilidad con layout.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "9e262347",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "//#EJC_MEJORA_20260523: parser tolerante para data/items en objeto, arreglo directo o string json embebido.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "52ca82d2",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "'#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "e76fb7d5",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "// Evita doble-wrapper en propiedades ya normalizadas tipo *.items.",
+      "tipo": "Bug",
+      "horas_sugeridas": 2.5,
+      "epica_sugerida": "WMS-2026",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "4c49f2f8",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "mejora HH Dialog y recepcion",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "30d8e2f9",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "mejora HH Dialog y recepcion",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "8afc8677",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "mejora HH Dialog y recepcion",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "8a8e61f3",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "mejora HH Dialog y recepcion",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "472baea9",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "mejora scanFlowInProgress",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "a5cec2f8",
+      "repo": "TOMHH2025",
+      "date": "2026-05-23",
+      "title": "//#EJC_MEJORA_20260523: Intentar ruta Lite para menor payload; fallback inmediato al método actual.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "74498895",
+      "repo": "TOMHH2025",
+      "date": "2026-05-22",
+      "title": "envolverArregloComoItems",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "8fc75f5c",
+      "repo": "TOMHH2025",
+      "date": "2026-05-22",
+      "title": "EJC_MEJORA_20260522: Centraliza inicialización de contexto para ruta WS y ruta cache.",
+      "tipo": "Mejora",
+      "horas_sugeridas": 3.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    },
+    {
+      "commit_hash": "5937ecca",
+      "repo": "TOMHH2025",
+      "date": "2026-05-22",
+      "title": "CodigoSKU",
+      "tipo": "Mejora",
+      "horas_sugeridas": 2.0,
+      "epica_sugerida": "WMS-73",
+      "motivo": "Commit no encontrado en BITACORA_JIRA/LOG_DIARIO (por hash)."
+    }
+  ]
+}

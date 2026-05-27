@@ -1,0 +1,33 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazados.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+152:            if(pListaReemplazados!=null){
+153:                if(pListaReemplazados.items!=null){
+178:            if(pListaReemplazados != null) {
+180:                if(pListaReemplazados.items!=null ){
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+25:    private XMLObject xobj;
+26:    private ProgressDialog progress;
+29:    private ListView listReemplazados;
+32:    private clsBeDetallePedidoAVerificarList pListaReemplazados = new clsBeDetallePedidoAVerificarList();
+33:    private list_adapt_detalle_tareas_verificacion adapter;
+35:    private final ArrayList<clsBeDetallePedidoAVerificar> pListBeReemplazados= new ArrayList<clsBeDetallePedidoAVerificar>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+207:                    lblCantRegs.setText("Regs: "+pListaReemplazados.items.size());
+

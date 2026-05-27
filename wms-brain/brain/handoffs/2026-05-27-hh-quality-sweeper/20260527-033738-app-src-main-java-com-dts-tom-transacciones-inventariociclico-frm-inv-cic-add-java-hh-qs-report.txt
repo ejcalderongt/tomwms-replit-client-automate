@@ -1,0 +1,169 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java
+=== CHECK: ==\s*null ===
+1998:            if (nBeResolucion == null){
+2235:            if (ubicacion == null) {
+2377:                if (NuevoConteo || invCongelado == null) {
+
+=== CHECK: !=\s*null ===
+310:                                if (imm != null) {
+320:                            if (imm != null) {
+348:                        if (spinlabel != null){
+389:                        if(spinlabel != null){
+439:                        if(spinlabel != null){
+470:                        if(spinlabel != null){
+556:            if (gl.inv_ciclico != null && gl.inv_ciclico.cantidad > 0) {
+562:            if (gl.inv_ciclico != null) {
+621:            if (gl.inv_ciclico != null) {
+645:                if (gl.lista_estados != null) {
+647:                    if (gl.lista_estados.items != null) {
+800:                if (gl.Control_Gondola && gl.inv_ciclico.Gondola != null) {
+823:            if (gl.inv_ciclico != null) {
+938:                    if (imm != null) {
+953:            if (invCongelado != null) {
+1245:            if (BeProductoUbicacion!=null){
+1274:            } else if ((gl.pprod != null && gl.pprod.Genera_lp) &&
+1533:                if (gl.Control_Talla_Color && gl.inv_ciclico != null) {
+1653:                        if (gl.Control_Talla_Color && CmbColor != null && CmbTalla != null) {
+1656:                            if (ListaBeTallColor != null) {
+1665:                            if (tmpTallaColor != null) {
+1722:                        if (nBeResolucion != null) {
+1856:            if (tallas != null && tallas.items != null && !tallas.items.isEmpty()) {
+1868:                if (BeTallColor != null) {
+1885:            if (colores != null && colores.items != null && !colores.items.isEmpty()) {
+1897:                if (BeTallColor != null) {
+1918:            if (vcolores != null) {
+1923:            if (colores != null && colores.items != null) {
+1949:            if (vtallas != null) {
+1954:            if (tallas != null && tallas.items != null) {
+1980:            if (ListaBeTallColor.items != null) {
+2000:                if (xobj!=null){
+2007:            if (nBeResolucion !=null){
+2035:            if (BeListPres!=null){
+2037:                if (BeListPres.items!=null){
+2167:                if (gl.inv_ciclico != null && gl.reconteo_list != null) {
+2178:                            item.Pres = NomPresentacion != null ? NomPresentacion : "";
+2272:            if (BeProductoUbicacion != null){
+2368:                        if (imm != null) {
+2399:            if (listaEstados != null){
+2458:                nuevo.Pres = NomPresentacion != null ? NomPresentacion : "";
+2521:            if (invCongelado != null) {
+2543:            if (gBeProducto != null) {
+2579:            if (BeProductoUbicacion != null && BeProductoUbicacion.Presentaciones != null) {
+2580:                if (BeProductoUbicacion.Presentaciones.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+207:            if (!gl.Gondola.isEmpty()) {
+250:                    if (!txtUbicNueva.getText().toString().isEmpty()) {
+294:                        if (!txtProd.getText().toString().isEmpty()) {
+497:                    if(txtLote1.getText().toString().trim().isEmpty()){
+514:                    if (!txtUbic.getText().toString().isEmpty()) {
+577:        if (valor.isEmpty()) {
+636:                if (gl.inv_ciclico.Factor.toString().isEmpty() || gl.inv_ciclico.Factor == 0) {
+801:                    if  (!gl.inv_ciclico.Gondola.isEmpty()) {
+826:                if (gl.inv_ciclico.Factor.toString().isEmpty() || gl.inv_ciclico.Factor == 0) {
+1010:            if(!codigo_producto.isEmpty()){
+1253:            if (txtUbic.getText().toString().trim().isEmpty()) {
+1257:            } else if (txtProd.getText().toString().trim().isEmpty()) {
+1261:            } else if (txtCantContada.getText().toString().trim().isEmpty()) {
+1265:            } else if (gl.pprod.Control_lote && txtLote1.getText().toString().trim().isEmpty()) {
+1269:            } else if (gl.inv_ciclico.control_peso && txtPesoContado.getText().toString().trim().isEmpty()) {
+1276:                    txtLicencia.getText().toString().trim().isEmpty()) {
+1282:            } else if(gl.Control_Gondola && txtGondola.getText().toString().isEmpty()) {
+1291:                int UbicNueva =  Ubic.isEmpty() ? 0 : Ubic.equals(Ubic2)?0:Integer.parseInt(Ubic);
+1327:                        if (dtpVence.getText().toString().isEmpty()) {
+1645:                            int UbicNueva =  Ubic.isEmpty() ? 0 : Ubic.equals(Ubic2)?0:Integer.parseInt(Ubic);
+1856:            if (tallas != null && tallas.items != null && !tallas.items.isEmpty()) {
+1885:            if (colores != null && colores.items != null && !colores.items.isEmpty()) {
+2498:                } else if (esCambioUbicacion && !txtUbicNueva.getText().toString().isEmpty() && !txtUbicNueva.getText().toString().equals("0")) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+69:    private WebServiceHandler ws;
+70:    private XMLObject xobj;
+78:    private int idPresentacion;
+79:    private int year;
+80:    private int month;
+81:    private int day;
+83:    private double vFactor;
+84:    private String Resultado;
+85:    private int Index;
+87:    private String codigo_producto;
+89:    private final ArrayList<String> bodlist= new ArrayList<String>();
+90:    private final ArrayList<String> PresList= new ArrayList<String>();
+91:    private final ArrayList<Integer> IndexPresList= new ArrayList<Integer>();
+93:    private  clsBeTrans_inv_ciclico pitem;
+94:    private clsBeTrans_inv_ciclico BeTrans_inv_ciclico;
+95:    private clsBeProducto_PresentacionList BeListPres = new clsBeProducto_PresentacionList();
+97:    private boolean nuevoRegistro;
+103:    private int IDInventarioCiclico;
+105:    private final boolean noubicflag = false;
+108:    private double Nueva_Cantidad;
+112:    private boolean existeConteo = false, esOriginal = false;
+114:    private clsBeBodega_ubicacion ubicacion = new clsBeBodega_ubicacion();
+115:    private clsBeProducto BeProductoUbicacion = new clsBeProducto();
+116:    private clsBeProducto_estadoList listaEstados = new clsBeProducto_estadoList();
+117:    private double CantidadContada = 0;
+118:    private int IdUbicacion = 0;
+119:    private boolean esCambioUbicacion = false;
+120:    private clsBeTrans_inv_ciclico invCongelado = new clsBeTrans_inv_ciclico();
+121:    private clsBeProducto gBeProducto = new clsBeProducto();
+122:    private int IdStock = 0;
+123:    private boolean esInvCongelado = false;
+124:    private String NomPresentacion = "";
+125:    private int pIdUbicacion = 0;
+126:    private clsBeResolucion_lp_operador nBeResolucion = null;
+127:    private String pNumeroLP = "";
+128:    private clsBeTalla CmbTalla = null;
+129:    private clsBeColor CmbColor = null;
+1849:    private clsBeColorList colores = null;
+1850:    private clsBeTallaList tallas = null;
+1851:    private clsBeProducto_talla_color BeTallColor = null;
+1853:    private clsBeProducto_talla_colorList ListaBeTallColor = null;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+248:            txtUbicNueva.setOnKeyListener((v, keyCode, event) -> {
+290:            txtProd.setOnKeyListener((v, keyCode, event) -> {
+332:            txtCantContada.setOnKeyListener(((v, keyCode, event) -> {
+493:            txtLote1.setOnKeyListener((v, keyCode, event) -> {
+512:            txtUbic.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+218:            txtGondola.setText("");
+225:            lblProd.setText("");
+226:            lblUbic1.setText("");
+257:                            txtUbicNueva.setText(""+evaluar);// Ok, porque "00030" se convierte a 30
+260:                            txtUbicNueva.setText("");
+268:                            txtUbic.setText(""+evaluar);// Ok, porque "00030" se convierte a 30
+271:                            txtUbic.setText("");
+283:                        lblUbicNueva.setText("");
+523:                            txtUbic.setText("");
+533:                        lblUbic1.setText("");
+534:                        lbltitulo_cic.setText("");
+544:                txtLicencia.setText("");
+760:                lbltitulo_cic.setText("Ubic # " + gl.inv_ciclico.NoUbic);
+918:                lbltitulo_cic.setText("Ubic # " + gl.inv_ciclico.NoUbic);
+1125:                    txtProd.setText("");
+1172:            txtUbic.setText("");
+1173:            txtProd.setText("");
+1174:            txtCantContada.setText("");
+1175:            txtPesoContado.setText("");
+1294:                    txtUbicNueva.setText("0");
+2240:                    lblUbic1.setText("");
+2244:                    lblUbicNueva.setText("");
+2247:                lbltitulo_cic.setText("Ubic");
+2253:                    lbltitulo_cic.setText("Ubic # " + ubicacion.IdUbicacion);
+2258:                    lbltitulo_cic.setText("Ubic # " + ubicacion.IdUbicacion);
+2350:                            lbltitulo_cic.setText("Ubic # " + gl.ubicacionInv);
+2356:                        txtLote1.setText("");
+2357:                        dtpVence.setText("");
+2358:                        txtPesoContado.setText("");
+2492:                lblCantidadContada.setText("");
+2524:                txtUbicNueva.setText(""+IdUbicacion);
+2525:                txtUbic.setText(""+invCongelado.IdUbicacion);
+2531:                txtLicencia.setText("");
+

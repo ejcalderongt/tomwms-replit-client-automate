@@ -1,0 +1,45 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_nuevo_reg.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+218:            if (pBeProductoNuevo!=null) {
+424:            if (BeListEstado!=null){
+425:                if (BeListEstado.items!=null){
+446:            if (BeUbic!=null){
+
+=== CHECK: isEmpty\(\) ===
+115:                        if (!txtUbicInvN.getText().toString().isEmpty()) {
+128:                        if (!txtCantInvIniN.getText().toString().isEmpty()) {
+307:        if (txtCantInvIniN.getText().toString().isEmpty()||txtCantInvIniN.getText().toString().equals("0")||txtCantInvIniN.getText().toString().equals("")){
+312:            if (txtLoteInvIniN.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+307:        if (txtCantInvIniN.getText().toString().isEmpty()||txtCantInvIniN.getText().toString().equals("0")||txtCantInvIniN.getText().toString().equals("")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+44:    private Button  btnBack;
+46:    private DatePicker dpResultN;
+47:    private ImageView imgDateN;
+48:    private ProgressDialog progress;
+50:    private WebServiceHandler ws;
+51:    private XMLObject xobj;
+53:    private clsBeProducto_estadoList BeListEstado = new clsBeProducto_estadoList();
+54:    private clsBeTrans_inv_detalle nitem = new clsBeTrans_inv_detalle();
+56:    private final ArrayList<String> EstadoList = new ArrayList<String>();
+60:    private int IdEstadoSelect;
+63:    private int year;
+64:    private int month;
+65:    private int day;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+111:            txtUbicInvN.setOnKeyListener(new View.OnKeyListener() {
+124:            txtCantInvIniN.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+272:            txtCantInvIniN.setText("");
+273:            txtPesoInvIniN.setText("");
+

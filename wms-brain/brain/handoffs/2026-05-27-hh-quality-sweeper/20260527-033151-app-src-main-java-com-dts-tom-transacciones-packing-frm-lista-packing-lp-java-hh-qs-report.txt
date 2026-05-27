@@ -1,0 +1,36 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lp.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+(sin hallazgos)
+
+=== CHECK: isEmpty\(\) ===
+53:        if (gl.filtroprod.isEmpty()) {
+118:                if (ft.isEmpty()) {
+129:                if (gl.filtroprod.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+28:    private ListView listView;
+29:    private EditText txtFiltro;
+31:    private Button btnRegsList;
+33:    private list_adapt_packing_lp adapter;
+36:    private clsBeTrans_packing_lotes sitem = new clsBeTrans_packing_lotes();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+89:            txtFiltro.setOnKeyListener((v, keyCode, event) -> {
+215:        txtCantidad.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+50:        lblPackingLicencia.setText("Licencia Packing: "+ gl.LicenciaPacking);
+57:            lblFiltro.setText("Filtro : "+gl.filtroprod);
+152:        btnRegsList.setText("REGISTRO(S): "+items.size());
+202:        //txtCantidad.setText("" + sitem.disp);
+203:        txtCantidad.setText("" + mu.round(Double.parseDouble(String.valueOf(sitem.disp)), gl.gCantDecCalculo));
+

@@ -1,0 +1,81 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java
+=== CHECK: ==\s*null ===
+253:            if (e == null) {
+525:        if (url == null) {
+
+=== CHECK: !=\s*null ===
+100:        if (layoutResumenRfid != null) {
+104:        if (layoutDetalleRechazados != null) {
+108:        if (cardTagsRechazados != null) {
+111:                    if (layoutDetalleRechazados != null) {
+195:            if (throwing) throw (originalException != null ? originalException : new Exception(errmsg));
+217:            final String msg = (e.getMessage() != null) ? e.getMessage() : "";
+259:            while (cause != null) {
+272:            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+300:            if (Encabezado_RFID != null
+301:                    && Encabezado_RFID.Detalle != null
+302:                    && Encabezado_RFID.Detalle.items != null
+320:                if (Encabezado_RFID != null
+321:                        && Encabezado_RFID.Detalle != null
+322:                        && Encabezado_RFID.Detalle.items != null) {
+355:            if (gl.listaBarrasPalletParaGuardar != null
+356:                    && gl.listaBarrasPalletParaGuardar.items != null
+403:            if (RFID_Encabezado_Guardado != null) {
+407:                    if (Encabezado_RFID != null
+408:                            && Encabezado_RFID.Detalle != null
+409:                            && Encabezado_RFID.Detalle.items != null) {
+474:                if (item != null && item.Activo) {
+488:            if (Encabezado_RFID.Detalle != null && !Encabezado_RFID.Detalle.items.isEmpty()) {
+496:            if (lotesFallidos != null && !lotesFallidos.isEmpty()) {
+575:        if (lblProcesoCarga != null) {
+578:        if (layoutCarga != null) {
+581:        if (progressBarLoad != null) {
+590:            if (txtTagsGuardados != null) {
+594:            if (txtTagsRechazados != null) {
+598:            if (layoutDetalleRechazados != null) {
+614:            if (layoutResumenRfid != null) {
+659:        if (progressBarLoad != null) {
+662:        if (layoutCarga != null) {
+
+=== CHECK: isEmpty\(\) ===
+303:                    && !Encabezado_RFID.Detalle.items.isEmpty()) {
+357:                    && !gl.listaBarrasPalletParaGuardar.items.isEmpty()) {
+488:            if (Encabezado_RFID.Detalle != null && !Encabezado_RFID.Detalle.items.isEmpty()) {
+496:            if (lotesFallidos != null && !lotesFallidos.isEmpty()) {
+530:        if (s.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+37:    private WebServiceHandler ws;
+38:    private XMLObject xobj;
+41:    private TextView lblProcesoCarga;
+42:    private ProgressBar progressBarLoad;
+43:    private LinearLayout layoutCarga;
+46:    private LinearLayout layoutResumenRfid;
+47:    private LinearLayout cardTagsGuardados;
+48:    private LinearLayout layoutDetalleRechazados;
+49:    private TextView txtTagsGuardados;
+50:    private TextView txtTagsRechazados;
+53:    private clsBeI_nav_barras_rfid_enc Encabezado_RFID;
+56:    private boolean guardandoRfid = false;
+59:    private clsBeI_nav_barras_rfid_enc encabezadoRfidGuardado;
+60:    private int indiceDetalleActual = 1;
+62:    private boolean Es_Ingreso = false;
+63:    private boolean Es_Salida = false;
+66:    private int totalTagsGuardados = 0;
+67:    private int totalTagsRechazados = 0;
+77:    private final ArrayList<ArrayList<clsBeI_nav_barras_rfid_det>> lotesFallidos = new ArrayList<>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+591:                txtTagsGuardados.setText("Tags guardados: " + totalTagsGuardados);
+595:                txtTagsRechazados.setText("Tags rechazados: " + totalTagsRechazados);
+605:                    txtLote.setText("Lote " + (i + 1) + ": " + lote.size() + " tags rechazados");
+

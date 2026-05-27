@@ -1,0 +1,25 @@
+check: db_correlation
+tokens:
+  - 135:stock_res
+  - 2082:stock_res_readmodel
+  - 2148:stock_res_grid
+  - 2442:stock
+  - 2686:stock_res_cache_hit
+  - 2709:stock
+  - 3079:stock_res
+  - 3081:stock_res
+  - 4187:stock
+  - 4191:stock
+  - 5338:stock_res
+db_exists:
+  - 135:stock_res: False
+  - 2082:stock_res_readmodel: False
+  - 2148:stock_res_grid: False
+  - 2442:stock: False
+  - 2686:stock_res_cache_hit: False
+  - 2709:stock: False
+  - 3079:stock_res: False
+  - 3081:stock_res: False
+  - 4187:stock: False
+  - 4191:stock: False
+  - 5338:stock_res: False

@@ -1,0 +1,33 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing_lotes.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+(sin hallazgos)
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+24:    private ListView listView;
+26:    private TextView lblNombre;
+28:    private list_adapt_packing_lotes adapter;
+30:    private String codigo;
+31:    private double cantm;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+85:            txtCant.setOnKeyListener(new View.OnKeyListener() {
+102:            txtBulto.setOnKeyListener(new View.OnKeyListener() {
+112:            txtCamas.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+43:        txtCamas = findViewById(R.id.editTextNumber3);txtCamas.setText("1");
+44:        txtLinea = findViewById(R.id.editTextNumber4);txtLinea.setText(""+gl.paLinea);
+150:        txtCant.setText("");txtBulto.setText("");txtCamas.setText("1");
+

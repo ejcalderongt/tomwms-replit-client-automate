@@ -1,0 +1,344 @@
+meta:
+  modulo: inventario_rfid
+  fecha: 2026-05-27
+  autor: Codex
+  estado: diagnostico_pre_mejora
+  cliente_referencia: ILP
+  objetivo: >
+    Fine-trace end-to-end del modulo RFID para recepcion, stock separado,
+    salida e inventario fisico. Sirve como entry-point antes de modificar el
+    modulo y como base para completar snapshot, comparacion, diferencias,
+    ajuste y regularizacion RFID sin mezclar el core stock.
+  alcance:
+    - "Interface Savona/NAV -> i_nav_barras_pallet."
+    - "Impresion/encoding RFID de SSCC/EPC."
+    - "Recepcion HH RFID -> documentos ING + stock RFID separado."
+    - "Salida HH RFID -> documentos SAL + baja logica de stock RFID."
+    - "Inventario fisico RFID -> snapshot esperado + lectura fisica + diferencias."
+  regla_dura:
+    - "No mezclar core stock/stock_res/trans_movimientos con RFID salvo en capa de regularizacion formal y auditable."
+    - "Las tablas RFID son el stock operativo separado del proyecto RFID."
+    - "Antes de implementar snapshot, confirmar si la fuente congelada sera i_nav_barras_pallet o i_nav_barras_rfid_stock activo."
+
+diagnostico_actual:
+  resumen: >
+    El flujo RFID ya tiene tablas y pantallas separadas, pero la creacion del
+    inventario aun no garantiza una fotografia completa y atomica del stock
+    RFID. Existe codigo para insertar trans_inv_ciclico_rfid desde barras pallet,
+    pero tambien existe un comentario en Guardar_RFID indicando que RFID no
+    congelaba porque no habia stock. Esa decision quedo obsoleta por el modelo
+    actual: hoy si hay stock RFID separado en i_nav_barras_rfid_stock y/o en
+    documentos ING/SAL.
+  faltante_principal:
+    nombre: snapshot_inventario_rfid
+    descripcion: >
+      Al crear el inventario RFID debe congelarse el universo esperado de tags
+      para ese IdInventarioEnc. Luego la HH debe actualizar cantidad=1 para los
+      SSCC leidos. El cierre debe comparar congelado vs fisico y producir
+      diferencias: faltante, sobrante, leido_ok, duplicado/no_asignado.
+  contradicciones_detectadas:
+    - archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/clsLnTrans_inv_enc_Partial.vb
+      metodo: Guardar_RFID
+      detalle: "Comenta que no crea congelado RFID porque no hay stock; esto choca con el stock RFID separado ya modelado."
+    - archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/Inventario_rfid/frmInventarioRFID.vb
+      metodo: Guardar
+      detalle: "La forma llama clsLnTrans_inv_enc.Guardar, no Guardar_RFID; revisar si es intencional o ruta inconclusa."
+    - archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Mantenimientos/Producto/Producto/clsLnProducto_Partial.vb
+      metodo: Get_All_By_IdPropietario_And_Bodega_Para_Inventario_RFID
+      detalle: "La exclusion usa trans_inv_ciclico, no trans_inv_ciclico_rfid; riesgo de duplicar productos RFID o filtrar por tabla equivocada."
+    - archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/RFID/clsLnTrans_inv_ciclico_rfid.vb
+      metodo: Get_All_BeTransInvCiclico_By_IdInventarioEnc_RFID
+      detalle: "Metodo parece copiado de ciclico core y consulta trans_inv_ciclico, no trans_inv_ciclico_rfid; tratar como sospechoso antes de reutilizar."
+    - archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/Entity/Transacciones/RFID/clsBeI_nav_barras_rfid_enc.vb
+      campo: Tipo
+      detalle: "Entity VB declara Tipo como Integer, pero consultas comparan e.Tipo contra 'ING'/'SAL'. Validar schema real antes de tocar persistencia."
+
+procesos:
+  savona_inserta_pallets:
+    proposito: "Savona/ILP inserta pallets/licencias a la interfaz."
+    fuente: "SP externo no ubicado en repo actual"
+    destino:
+      - tabla: i_nav_barras_pallet
+        rol: "Universo maestro de pallets/SSCC/EPC imprimibles y luego recibibles."
+    campos_clave:
+      - IdPallet
+      - Codigo
+      - Nombre
+      - Lote
+      - Codigo_Barra
+      - SSCC
+      - GTIN
+      - Fecha_Produccion
+      - Cantidad_Presentacion
+      - Cantidad_UMP
+      - Recibido
+      - Activo
+      - Bodega_Origen
+      - Bodega_Destino
+    reglas:
+      - "Codigo_Barra/SSCC es la identidad operativa que HH lee por RFID."
+      - "Recibido cambia al registrar ingreso RFID."
+
+  impresion_rfid:
+    proposito: "Imprimir barra visual y grabar tag RFID con licencia/SSCC."
+    nodos:
+      - id: BOF.IMPRESION_OC_RFID
+        capa: BOF
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Mantenimientos/Impresion_OC/frmImpresion_OC_RFID.vb
+        rol: "Impresion desde WMS/OC."
+      - id: TOOL.RFIDPRINT
+        capa: utilidad
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/RFIDPrint/Form1.vb
+        rol: "Prueba/utilitario Zebra RFID."
+      - id: LIB.EPC_SSCC96
+        capa: libreria
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/AppGlobal/TOM/EpcSscc96.vb
+        rol: "Codificacion SSCC a EPC SSCC-96."
+    tablas:
+      - i_nav_barras_pallet
+
+  recepcion_hh_rfid:
+    proposito: "Registrar tags impresos para convertirlos en stock RFID separado."
+    hh:
+      - id: HH.RFID_MENU
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_menu_rfid.java
+      - id: HH.RFID_RECEPCION_LECTURA
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid_2.java
+        rol: "Lee tags con Zebra SDK, arma lista y sigue a procesar/guardar."
+      - id: HH.RFID_PROCESAR
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java
+        ws: Obtener_Barras_Pallet_I_Nav_Lote
+        rol: "Valida que el tag exista en i_nav_barras_pallet y no tenga ING previo."
+      - id: HH.RFID_GUARDAR
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java
+        ws:
+          - Guardar_Encabezado_RFID
+          - Agregar_Detalle_A_Encabezado_RFID
+    ws:
+      - id: WS.OBTENER_BARRAS_PALLET
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        metodo: Obtener_Barras_Pallet_I_Nav_Lote
+        dal: clsLnI_nav_barras_pallet.Lista_Tags_SinIgreso_Valida
+      - id: WS.GUARDAR_ENC_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        metodo: Guardar_Encabezado_RFID
+        dal: clsLnI_nav_barras_rfid_enc.Guardar_Encabezado_Con_Primer_Detalle
+      - id: WS.AGREGAR_DET_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        metodo: Agregar_Detalle_A_Encabezado_RFID
+        dal: clsLnI_nav_barras_rfid_enc.Agregar_Detalle_A_Encabezado_RFID
+    tablas_escritura:
+      - i_nav_barras_rfid_enc
+      - i_nav_barras_rfid_det
+      - i_nav_barras_rfid_mov
+      - i_nav_barras_rfid_stock
+      - i_nav_barras_pallet
+    reglas:
+      - "Un ING valido inserta encabezado/detalle, movimiento RFID y stock RFID."
+      - "Despues de ING se marca i_nav_barras_pallet.Recibido=1."
+      - "La validacion de duplicado se hace por EPC + tipo."
+
+  salida_hh_rfid:
+    proposito: "Registrar salida de tags con existencia RFID."
+    hh:
+      - id: HH.RFID_PROCESAR_SALIDA
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java
+        ws: Obtener_EPC_Con_Existencia_Para_Salida
+      - id: HH.RFID_GUARDAR_SALIDA
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_guardar_rfid.java
+        ws:
+          - Guardar_Encabezado_RFID
+          - Agregar_Detalle_A_Encabezado_RFID
+    ws:
+      - id: WS.OBTENER_EPC_CON_EXISTENCIA
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        metodo: Obtener_EPC_Con_Existencia_Para_Salida
+        dal: clsLnI_nav_barras_pallet.Obtener_EPC_Con_Existencia_Para_Salida
+    tablas:
+      - i_nav_barras_rfid_enc
+      - i_nav_barras_rfid_det
+      - i_nav_barras_rfid_mov
+      - i_nav_barras_rfid_stock
+      - i_nav_barras_pallet
+    reglas:
+      - "Un tag puede salir si tuvo ING y no tiene SAL previo."
+      - "El stock RFID vigente debe excluir tags con SAL."
+
+  existencias_rfid:
+    proposito: "Consulta operativa de stock RFID separado."
+    bof:
+      - id: BOF.EXISTENCIAS_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/RFID/frmExistenciasRFID.vb
+    hh:
+      - id: HH.EXISTENCIAS_RFID
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_existencias_rfid.java
+    dal:
+      - id: DAL.STOCK_RFID_BOH
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/RFID/clsLnI_nav_barras_rfid_enc.vb
+        metodos:
+          - Get_Stock
+          - Get_Stock_WS
+          - Get_Stock_WS_Paginado
+    tablas_lectura:
+      - i_nav_barras_rfid_enc
+      - i_nav_barras_rfid_det
+      - i_nav_barras_pallet
+      - proveedor
+      - operador
+      - cliente
+      - bodega
+    regla_stock_actual: "ING sin SAL para el mismo barra_epc."
+
+  inventario_fisico_rfid:
+    proposito: "Crear inventario, congelar universo esperado, leer fisicamente y comparar."
+    estado: "modelado_incompleto"
+    bof:
+      - id: BOF.INV_RFID_LISTA
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/Inventario_rfid/frmInventarioRFID_Lista.vb
+      - id: BOF.INV_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/Inventario_rfid/frmInventarioRFID.vb
+        rol: "Crear/editar inventario RFID, listar detalle congelado y conteos."
+      - id: BOF.INV_RFID_PRODUCTOS
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/Inventario_rfid/frmInventarioProductosRFID.vb
+        rol: "Selecciona productos y llama Insertar_Inventario_Congelado_RFID."
+    hh:
+      - id: HH.INV_RFID_LISTA
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/Inventario/frm_lista_inventario_rfid.java
+        ws: Get_All_Inventario_RFID_By_IdBodega_And_IdOperador
+      - id: HH.INV_RFID_LECTURA
+        archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid_2.java
+        localdb: rfid_lectura_temporal
+        ws:
+          - Guardar_Lectura_InventarioCiclico_RFID
+          - GetProductosAInventariarCiclico_RFID
+    ws:
+      - metodo: Get_All_Inventario_RFID_By_IdBodega_And_IdOperador
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        dal: clsLnTrans_inv_enc.Get_All_Pendientes_RFID_By_IdBodega_And_IdOperador
+      - metodo: Guardar_Lectura_InventarioCiclico_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        dal: clsLnTrans_inv_ciclico_rfid.Actualizar_DetalleCiclico_Con_Lectura_RFID
+      - metodo: GetProductosAInventariarCiclico_RFID
+        archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+        dal: clsLnTrans_inv_ciclico_rfid.Get_Conteo_Productos
+    tablas:
+      - trans_inv_enc
+      - TipoInventario
+      - tarea_hh
+      - trans_inv_operador
+      - trans_inv_ciclico_rfid
+      - i_nav_barras_pallet
+      - i_nav_barras_rfid_stock
+      - i_nav_barras_rfid_enc
+      - i_nav_barras_rfid_det
+      - i_nav_barras_rfid_mov
+    local_hh:
+      tabla: rfid_lectura_temporal
+      columnas:
+        - idinventarioenc
+        - Codigo_Barra
+        - Iddispositivo
+        - IdOperador
+        - fec_agr
+        - estado
+      llave: "UNIQUE(idinventarioenc, Codigo_Barra)"
+    snapshot_recomendado:
+      tabla_destino: trans_inv_ciclico_rfid
+      fuente_preferida: i_nav_barras_rfid_stock
+      fuente_alternativa: i_nav_barras_pallet
+      criterio_base: "tags activos en bodega al momento de crear inventario"
+      campos_minimos:
+        - Idinventarioenc
+        - IdPallet
+        - Codigo
+        - Nombre
+        - Lote
+        - Codigo_Barra
+        - SSCC
+        - GTIN
+        - Fecha_Produccion
+        - IdProductoBodega
+        - IdOperador
+        - Cantidad
+        - IdBodega
+        - Iddispositivo
+      cantidad_congelada: "Agregar campo o convencion para distinguir esperado=1 de leido cantidad=1."
+    comparacion_pendiente:
+      ok: "Existe en snapshot y Cantidad=1."
+      faltante: "Existe en snapshot y Cantidad=0."
+      sobrante: "Lectura HH no existe en snapshot; decidir si se inserta como no_asignado o se rechaza."
+      duplicado: "Mismo SSCC leido mas de una vez; HH local lo mitiga con UNIQUE, servidor debe confirmar."
+      fuera_de_bodega: "Tag existe en stock RFID pero no pertenece a IdBodega del inventario."
+    regularizacion_pendiente:
+      objetivo: "Aplicar diferencias en tablas RFID, no en core stock."
+      movimientos_requeridos:
+        - "Registrar movimiento RFID por ajuste positivo/negativo."
+        - "Actualizar i_nav_barras_rfid_stock activo/salida/entrada segun diferencia."
+        - "Marcar trans_inv_enc regularizado/finalizado."
+        - "Mantener auditoria por IdInventarioEnc, operador y dispositivo."
+
+tablas_asociadas:
+  interfaz_origen:
+    - i_nav_barras_pallet
+  documentos_rfid:
+    - i_nav_barras_rfid_enc
+    - i_nav_barras_rfid_det
+  stock_rfid:
+    - i_nav_barras_rfid_stock
+  movimientos_rfid:
+    - i_nav_barras_rfid_mov
+    - i_nav_barras_rfid_tipo_mov
+  inventario:
+    - trans_inv_enc
+    - TipoInventario
+    - trans_inv_ciclico_rfid
+    - trans_inv_operador
+    - tarea_hh
+  catalogo:
+    - producto
+    - producto_bodega
+    - propietarios
+    - bodega
+    - proveedor
+    - cliente
+    - operador
+  hh_local:
+    - rfid_lectura_temporal
+
+propuesta_mejora:
+  fase_1_snapshot:
+    - "Definir fuente canonica del stock RFID vigente: i_nav_barras_rfid_stock activo o ING sin SAL."
+    - "Al guardar inventario RFID, generar trans_inv_ciclico_rfid dentro de la misma transaccion del encabezado/tarea."
+    - "Eliminar dependencia manual posterior de frmInventarioProductosRFID si el inventario debe congelar todo el stock RFID."
+    - "Agregar control para no recrear snapshot si el inventario ya tiene trans_inv_ciclico_rfid."
+  fase_2_conteo:
+    - "Guardar lectura por lotes, idempotente por IdInventarioEnc+SSCC."
+    - "Servidor debe validar SSCC contra snapshot antes de actualizar cantidad."
+    - "Registrar sobrantes en tabla separada o en trans_inv_ciclico_rfid con flag EsNuevo/NoAsignado si se agrega campo."
+  fase_3_diferencias:
+    - "Vista o metodo DAL que devuelva Esperado, Leido, Diferencia y Clasificacion."
+    - "BOF debe mostrar filtros: OK, Faltante, Sobrante, Sin lectura, Fuera de bodega."
+  fase_4_regularizacion:
+    - "Crear tipos de movimiento RFID para AJ_POS/AJ_NEG/REG_INV."
+    - "Regularizacion debe escribir i_nav_barras_rfid_mov y actualizar i_nav_barras_rfid_stock."
+    - "No escribir stock core salvo decision explicita de integrar RFID con WMS core."
+
+checks_antes_de_modificar:
+  - "Confirmar schema real de i_nav_barras_rfid_enc.Tipo: varchar('ING'/'SAL') o int."
+  - "Confirmar si i_nav_barras_rfid_stock.Activo y Fec_Salida se actualizan hoy en SAL."
+  - "Confirmar si SSCC y Codigo_Barra siempre son iguales para lectura RFID."
+  - "Confirmar si el inventario fisico debe ser por bodega completa, propietario, productos seleccionados o ubicacion."
+  - "Corregir exclusion de productos contra trans_inv_ciclico_rfid si se mantiene seleccion manual."
+  - "Revisar Guardar vs Guardar_RFID antes de tocar creacion de inventario."
+
+entry_points_para_siguiente_sesion:
+  primero:
+    - C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-27-rfid-inventario-fisico/RFID-INVENTARIO-GRAFO-TRAZA-FINA-2026-05-27.yml
+  codigo:
+    - C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/Inventario_rfid/frmInventarioRFID.vb
+    - C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/clsLnTrans_inv_enc_Partial.vb
+    - C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/Inicial/Stock/clsLnTrans_inv_stock_partial.vb
+    - C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/RFID/clsLnTrans_inv_ciclico_rfid.vb
+    - C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid_2.java
+  skill_local:
+    - C:/Users/yejc2/.codex/skills/wms-rfid-inventory/SKILL.md

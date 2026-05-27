@@ -1,0 +1,12 @@
+id: rg-footprint-20260527-030258
+tag: '#EJC20260527'
+process: picking
+fix_scope:
+  files:
+    - 'TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking.vb'
+  methods:
+  tables:
+  flags:
+  states:
+failure_class: ''
+notes: ''

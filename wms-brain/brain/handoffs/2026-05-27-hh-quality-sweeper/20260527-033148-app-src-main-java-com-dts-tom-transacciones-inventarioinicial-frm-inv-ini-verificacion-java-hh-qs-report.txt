@@ -1,0 +1,99 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificacion.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+203:                            if (BeListPres!=null){
+204:                                if(BeListPres.items!=null){
+330:            /*if (BeUbic!=null){
+338:                if (BeInvTramo!=null){
+344:                if (BeUbic!=null){
+489:            if (InvTeorico != null) {
+490:                if (InvTeorico.items != null) {
+681:            if(BeInvTramo!=null){
+682:                if(BeInvTramo.Nombre_Tramo!=null){
+945:            if (BeUbic != null) {
+963:            if (BeProducto != null) {
+986:            if (BeListPres!=null){
+987:                if (BeListPres.items!=null){
+1005:            if (BeListEstado!=null){
+1006:                if (BeListEstado.items!=null){
+1061:            if (listProductosSugeridos != null) {
+1063:                if (listProductosSugeridos.items != null) {
+1102:            if (InvDetalle != null) {
+1120:                if (listInvDet != null) {
+1121:                    if (listInvDet.items != null) {
+1144:            if(InvTeorico!=null){
+1148:                if (licWs != null && !licWs.trim().isEmpty()) {
+1167:            if (InvItem != null) {
+1290:            if (BeInvResumen != null) {
+1321:            if (BeInvResumen != null) {
+
+=== CHECK: isEmpty\(\) ===
+136:                        if (!txtUbicVer.getText().toString().isEmpty()) {
+147:                            if (!txtBarraVer.getText().toString().isEmpty()) {
+269:                    if (nuevaLic.isEmpty()) {
+291:                    if (!txtBarraVer.getText().toString().trim().isEmpty()) {
+302:                if (!txtLicencia.getText().toString().isEmpty()) {
+383:                if (!txtUbicVer.getText().toString().isEmpty()){
+531:                if (nuevaLic.isEmpty()) {
+611:            if (txtCantVer.getText().toString().isEmpty()||txtCantVer.getText().toString().equals("")||txtCantVer.getText().toString().equals("0")){
+1076:                if (!txtUbicVer.getText().toString().isEmpty()){
+1148:                if (licWs != null && !licWs.trim().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+611:            if (txtCantVer.getText().toString().isEmpty()||txtCantVer.getText().toString().equals("")||txtCantVer.getText().toString().equals("0")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+54:    private WebServiceHandler ws;
+55:    private XMLObject xobj;
+57:    private ProgressDialog progress;
+59:    private AutoCompleteTextView txtBarraVer;
+62:    private Button btnDetVeri ;
+65:    private boolean emptyPres;
+67:    private clsBeTrans_inv_tramo utramo = new clsBeTrans_inv_tramo();
+68:    private clsBeProducto BeProducto = new clsBeProducto();
+69:    private clsBeProducto_PresentacionList BeListPres = new clsBeProducto_PresentacionList();
+70:    private clsBeProducto_estadoList BeListEstado = new clsBeProducto_estadoList();
+71:    private clsBeTrans_inv_resumen vitem = new clsBeTrans_inv_resumen();
+72:    private clsBeTrans_inv_stock_prodList InvTeorico = new clsBeTrans_inv_stock_prodList();
+74:    private clsBeTrans_inv_detalle InvDetalle = new clsBeTrans_inv_detalle();
+75:    private clsBeTrans_inv_detalleList listInvDet = new clsBeTrans_inv_detalleList();
+77:    private ArrayList<String> EstadoList = new ArrayList<String>();
+78:    private ArrayList<String> PresList = new ArrayList<String>();
+80:    private int pIdTramo=0;
+81:    private double CantidadVer = 0;
+82:    private clsBeTrans_inv_stock_prod InvItem = new clsBeTrans_inv_stock_prod();
+83:    private clsBeTrans_inv_resumen BeInvResumen = new clsBeTrans_inv_resumen();
+1052:    private final List<String> CodigosSugeridos = new ArrayList<>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+132:            txtUbicVer.setOnKeyListener(new View.OnKeyListener() {
+145:            txtBarraVer.setOnKeyListener((v, keyCode, event) -> {
+161:            txtCantVer.setOnKeyListener((v, keyCode, event) -> {
+262:            txtLicenciaEdit.setOnKeyListener((v, keyCode, event) -> {
+300:            txtLicencia.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+322:            txtUbicVer.setText("");
+323:            lblDescVer.setText("");
+324:            lblUbicDes.setText("");
+326:            txtCantVer.setText("");
+378:                txtBarraVer.setText("");
+390:            lblUbicDes.setText("" + BeUbic.Descripcion);
+403:            //txtCantVer.setText("");
+652:            txtUbicVer.setText("");
+653:            lblDescVer.setText("");
+654:            txtBarraVer.setText("");
+655:            lblUbicDes.setText("");
+656:            txtCantVer.setText("");
+657:            txtLicencia.setText("");
+658:            //lblTituloForma.setText("");
+659:            txtUmbasVeri.setText("");
+684:                    lblTituloForma.setText("TRAMO :" + BeInvTramo.Nombre_Tramo);
+929:            lblTituloForma.setText("TRAMO :" + BeInvTramo.Nombre_Tramo);
+1169:                //txtCantVer.setText(""+InvItem.Cant);
+

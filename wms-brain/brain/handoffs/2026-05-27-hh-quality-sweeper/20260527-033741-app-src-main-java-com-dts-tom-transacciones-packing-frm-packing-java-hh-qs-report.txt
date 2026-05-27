@@ -1,0 +1,199 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java
+=== CHECK: ==\s*null ===
+823:                    if (AuxList == null) {
+914:                    if (AuxList == null) {
+1008:            if (AuxList == null) {
+1133:                        .where(c -> c.Atributo_variante_1.equals(cvAtrib == null ? "" : cvAtrib))
+1144:                        .where(c -> c.Atributo_variante_1.equals(cvAtrib == null ? "" : cvAtrib))
+1150:            if (AuxList == null) {
+1326:            if(BeStockPallet == null){
+2152:            if (Escaneo_Pallet && ListBeStockPallet == null) {
+2580:            if (Escaneo_Pallet && ListBeStockPallet == null) {
+2743:            vLote = (cvLote==null?"":cvLote);
+
+=== CHECK: !=\s*null ===
+252:                        if (spinlabel!=null){
+291:                        if (spinlabel!=null){
+297:                            if (stockResList.items!=null){
+326:                        if (spinlabel!=null){
+359:                        if (spinlabel!=null){
+365:                            if (productoEstadoOrigenList.items!=null){
+721:            if (Escaneo_Pallet && ListBeStockPallet != null) {
+768:                if (Escaneo_Pallet && ListBeStockPallet !=null ){
+815:                    //if (escaneoPallet && productoList != null) {
+886:                    if (cmbLote.getAdapter()!=null && cmbLote.getAdapter().getCount()>0){
+895:                        //if (escaneoPallet && productoList != null) {
+905:                        //if (escaneoPallet && productoList != null) {
+1063:            if (Escaneo_Pallet && ListBeStockPallet != null) {
+1064:                if(cmbVence.getAdapter() != null){
+1073:                if(cmbVence.getAdapter() != null){
+1094:                if (gl.gCEstadoAnterior != -1 && cmbEstado.getAdapter()!=null  && cmbEstado.getAdapter().getCount()>0) {
+1099:                if (gl.gCFechaAnterior.equals("01/01/1900") && cmbVence.getAdapter()!=null  && cmbVence.getAdapter().getCount()>0) {
+1104:                if (!gl.gCLoteAnterior.isEmpty() && cmbLote.getAdapter()!=null  && cmbLote.getAdapter().getCount()>0) {
+1109:                if (gl.gCPresAnterior != -1 && cmbPresentacion.getAdapter()!=null && cmbPresentacion.getAdapter().getCount()>0) {
+1186:            if( Escaneo_Pallet && ListBeStockPallet != null) {
+1371:            if( Escaneo_Pallet && ListBeStockPallet != null){
+1435:                /*if (Escaneo_Pallet && ListBeStockPallet != null) {
+1460:                /*if(cmbPresentacion.getAdapter()!=null  && cmbPresentacion.getAdapter().getCount()>0){
+1466:                /*if(cmbEstado.getAdapter()!=null && cmbEstado.getAdapter().getCount()>0){
+1497:                if(Escaneo_Pallet &&  ListBeStockPallet != null ) {
+1534:                if(Escaneo_Pallet &&  ListBeStockPallet != null ) {
+1585:            if(cmbPresentacion.getAdapter()!=null  && cmbPresentacion.getAdapter().getCount()>0){
+1590:            if(cmbEstado.getAdapter()!=null && cmbEstado.getAdapter().getCount()>0){
+1612:            if(cmbLote.getAdapter()!=null  && cmbLote.getAdapter().getCount()>0){
+1623:                if(cmbVence.getAdapter()!=null && cmbVence.getAdapter().getCount()>0){
+1633:            if(Escaneo_Pallet &&  ListBeStockPallet != null ) {
+1971:            if (gBeProducto.Presentaciones != null) {
+1975:                if (gBeProducto.Presentaciones.items != null) {
+2016:            if (gBeProducto.Presentaciones != null) {
+2020:                if (gBeProducto.Presentaciones.items != null) {
+2112:            if (cUbicOrig!=null){
+2148:            if(prodList != null){
+2159:                if (Escaneo_Pallet && ListBeStockPallet != null){
+2326:            if (productoEstadoDestinoList != null){
+2330:                if (Escaneo_Pallet && ListBeStockPallet != null) {
+2356:            if(stock1 != null){
+2360:            if (stockResList != null){
+2387:            if (BeProductoUbicacionOrigen != null){
+2428:            if (stockResList != null){
+2464:                if (cmbEstado.getAdapter()!=null  && cmbEstado.getAdapter().getCount()>0){
+2472:                if (cmbVence.getAdapter()!=null && cmbVence.getAdapter().getCount()>0){
+2478:                if (cmbLote.getAdapter()!=null  && cmbLote.getAdapter().getCount()>0){
+2484:                if (cmbPresentacion.getAdapter()!=null && cmbPresentacion.getAdapter().getCount()>0){
+2516:            if (resolucionActivaLpByBodega !=null){
+2587:                if (Escaneo_Pallet && ListBeStockPallet != null){
+2650:        if (BeProductoUbicacionOrigen!=null){
+2759:                if (BeProductoUbicacionOrigen!=null){
+2765:                    if (NuevoLp!=null && !NuevoLp.isEmpty()){
+2918:                if (NuevoLp!=null && !NuevoLp.isEmpty()){
+
+=== CHECK: isEmpty\(\) ===
+233:                    if (!txtLic_Plate.getText().toString().isEmpty()) {
+396:                    if (!txtPrd.getText().isEmpty()){
+411:                    if (!txtPrd.getText().isEmpty()) {
+475:            if (datosCargados && !txtPrd.getText().toString().isEmpty()) {
+479:                if (!txtPrd.getText().toString().isEmpty() == false) {
+513:                if (!txtLic_Plate.getText().toString().isEmpty() && !txtLic_Plate.getText().toString().isEmpty()) {
+693:            if (txtUbicOr.getText().toString().isEmpty()){
+1104:                if (!gl.gCLoteAnterior.isEmpty() && cmbLote.getAdapter()!=null  && cmbLote.getAdapter().getCount()>0) {
+1125:            if (!txtLic_Plate.getText().toString().isEmpty() && !txtLic_Plate.getText().toString().isEmpty() ){
+1664:            if (txtLic_Plate.getText().toString().isEmpty()){
+2163:                    if (inferir_origen_en_cambio_ubic && txtUbicOr.getText().toString().isEmpty()) {
+2195:                        // if (AuxList.size() >= 1 && !txtPrd.getText().toString().isEmpty()){
+2236:                                    if  (!pLicensePlate.isEmpty() && !pLicensePlate.equals("0") && !pLicensePlate.equals("1")) {
+2603:                        if (AuxList.size() == 1 && !txtPrd.getText().toString().isEmpty() ){
+2765:                    if (NuevoLp!=null && !NuevoLp.isEmpty()){
+2857:                        if (!zpl.isEmpty()){
+2918:                if (NuevoLp!=null && !NuevoLp.isEmpty()){
+2982:                    if (!zpl.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+65:    private WebServiceHandler ws;
+66:    private XMLObject xobj;
+73:    private ImageView cmdImprimir;
+74:    private RecyclerView recyclerView;
+76:    private ProgressDialog progress;
+77:    private Dialog dialog;
+78:    private ListView listProductos;
+82:    private int idUbicRecep = 0;
+83:    private int cvUbicOrigID= 0;
+84:    private int gIdProductoOrigen=0,cvPresID=0,gIdEstadoProductoOrigen=0,cvUbicDestID=0,cvEstEst=0;
+85:    private int cvStockID;
+86:    private int cvPropID=0,cvUMBID=0;
+87:    private boolean idle=false;
+88:    private final boolean BorrarUbicOrigen=false;
+89:    private String gLoteOrigen="",cvVence="";
+90:    private double cvCant=0,cvCantMax=0;
+91:    private boolean Escaneo_Pallet=false;
+93:    private String cvAtrib;
+94:    private double vFactorPres;
+95:    private String  fechaVenceU;
+96:    private String Lic_Plate_Ant="";
+97:    private String NuevoLp="";
+100:    private boolean escaneoPallet;
+101:    private String pLicensePlate;
+102:    private int cvEstOrigen = 0;
+103:    private int cvProdID = 0;
+104:    private int pUbicacionLP=0;
+105:    private String pNombreUbicacionLP="";
+106:    private boolean Existe_Lp=false, imprimirDesdeBoton = false;
+107:    private String cvNombreEstado = "";
+111:    private clsBeProductoList ListBeStockPallet = new clsBeProductoList();
+112:    private clsBeProducto_PresentacionList ListBeProductoPresentacion = new clsBeProducto_PresentacionList();
+113:    private clsBeProducto BeProductoUbicacionOrigen;
+114:    private clsBeVW_stock_res BeStockPallet;
+115:    private clsBeVW_stock_res cvStockItem;
+116:    private clsBeProducto cvProd = new clsBeProducto();
+117:    private clsBeVW_stock_resList stockResList = new clsBeVW_stock_resList();
+119:    private clsBeProducto_estadoList productoEstadoDestinoList = new clsBeProducto_estadoList();
+120:    private final clsBeVW_stock_resList presentacionList = new clsBeVW_stock_resList();
+121:    private final clsBeVW_stock_resList lotesList = new clsBeVW_stock_resList();
+122:    private final clsBeVW_stock_resList venceList = new clsBeVW_stock_resList();
+123:    private final clsBeVW_stock_resList productoEstadoOrigenList = new clsBeVW_stock_resList();
+124:    private final clsBeVW_stock_res vStockRes = new clsBeVW_stock_res();
+126:    private clsBeTrans_movimientos gMovimientoDet;
+128:    private final ArrayList<String> cmbEstadoDestinoList = new ArrayList<String>();
+129:    private final ArrayList<String> cmbPresentacionList = new ArrayList<String>();
+130:    private final ArrayList<String> cmbLoteList = new ArrayList<String>();
+131:    private final ArrayList<String> cmbVenceList = new ArrayList<String>();
+132:    private final ArrayList<String> cmbEstadoOrigenList = new ArrayList<String>();
+133:    private final ArrayList<String> ListPres = new ArrayList<String>();
+134:    private String cvLote;
+135:    private int IdPresCmb = 0;
+136:    private boolean inferir_origen_en_cambio_ubic;
+137:    private String tmpLicencia = "";
+139:    private list_adapt_lista_productos_cubic adapter;
+140:    private boolean LicenciasMixtas = false;
+141:    private boolean ProductosDiferentes = false;
+142:    private clsBeTrans_movimientosList movList = new clsBeTrans_movimientosList();
+143:    private clsBeVW_stock_resList stockList = new clsBeVW_stock_resList();
+144:    private ArrayList<clsBeProducto> ListaActualizada = new ArrayList<>();
+145:    private boolean procesando = false;
+146:    private boolean datosCargados = false;
+2011:    private final ArrayList<String> PresList = new ArrayList<String>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+225:            txtLic_Plate.setOnKeyListener((v, keyCode, event) -> {
+386:            txtUbicOr.setOnKeyListener((v, keyCode, event) -> {
+394:            txtPrd.setOnKeyListener((v, keyCode, event) -> {
+404:            txtNuevoLp.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+605:                lblUbicOrigen.setText("");
+608:            lblCCant.setText("");
+610:            txtNuevoLp.setText("");
+614:            txtLpAnt.setText("");
+619:            lblIdStock.setText("");
+621:            txtCantidad.setText("");
+623:            txtPrd.setText("");
+624:            txtUbicDestino.setText("");
+625:            lblNomDestino.setText("");
+651:                lblUbicOrigen.setText("");
+652:                txtUbicOr.setText("");
+655:            txtLic_Plate.setText("");
+657:            lblCCant.setText("");
+659:            txtNuevoLp.setText("");
+663:            txtLpAnt.setText("");
+668:            lblIdStock.setText("");
+670:            txtCantidad.setText("");
+672:            txtPrd.setText("");
+674:            txtLic_Plate.setText("");
+675:            txtUbicOr.setText("2570");
+690:            txtPrd.setText("");
+691:            lblDesProducto.setText("");
+1087:        lblCCant.setText("Max : " + mu.frmdecimal(vCantidadDisponible, 6));
+1954:                txtLic_Plate.setText("");
+2115:                    lblUbicOrigen.setText("Ubicaci├│n no v├ílida");
+2155:                lblDesProducto.setText("C├│digo de licencia no v├ílido");
+2188:                        lblDesProducto.setText("LP N.E.E.U");
+2459:                txtLic_Plate.setText("");
+2494:                lblDesProducto.setText("");
+2583:                lblDesProducto.setText("C├│digo de licencia no v├ílido");
+2597:                        lblDesProducto.setText("LP N.E.E.U");
+

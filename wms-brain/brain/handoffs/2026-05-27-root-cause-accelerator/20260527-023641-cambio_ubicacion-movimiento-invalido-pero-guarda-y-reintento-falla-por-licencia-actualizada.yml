@@ -1,0 +1,22 @@
+id: rca-20260527-023641-cambio_ubicacion
+tag: '#EJC20260527'
+created_at: '2026-05-27T02:36:41'
+process: cambio_ubicacion
+symptom: "movimiento invalido pero guarda y reintento falla por licencia actualizada"
+status: in_analysis
+candidate_path:
+  - "HH: frm_cambio_ubicacion_*"
+  - "WS: move/apply endpoints"
+  - "DAL: movement apply methods"
+  - "SQL: trans_movimientos.IdUbicacionDestino"
+branch_drift:
+  compare_against:
+    - dev_2026_mampa
+    - dev_2023_estable
+  findings: []
+null_guard_risks: []
+causal_hypothesis: ""
+fix_plan: []
+post_fix_verification:
+  checklist: []
+  result: pending

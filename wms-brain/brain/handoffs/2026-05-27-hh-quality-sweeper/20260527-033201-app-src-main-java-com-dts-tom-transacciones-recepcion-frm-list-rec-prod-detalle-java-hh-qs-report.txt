@@ -1,0 +1,56 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java
+=== CHECK: ==\s*null ===
+1043:        if (url == null) {
+
+=== CHECK: !=\s*null ===
+85:        if (gl.gselitem != null) {
+200:            if (pListTransRecDet!=null){
+202:                if (pListTransRecDet.items!=null){
+842:                if (progress != null) progress.cancel();
+845:                    (errmsg != null && !errmsg.trim().isEmpty())
+847:                            : (e.getMessage() != null ? e.getMessage() : "Error");
+851:                    if (e.getMessage() != null && e.getMessage().contains("ERROR_DE_PROCESO_20241205_HH")) {
+902:            if (pListTransRecDet!=null && pListTransRecDet.items!=null && pListTransRecDet.items.size() > 0){
+927:            if (pListStockRec != null && pListStockRec.items != null){
+981:        det.Nombre_presentacion = obj.Presentacion != null ? obj.Presentacion.Nombre : BeOcDet.Presentacion.Nombre;
+982:        det.Nombre_unidad_medida = BeOcDet.UnidadMedida != null ? BeOcDet.UnidadMedida.Nombre : "";
+983:        det.Nombre_producto_estado = obj.ProductoEstado != null ? obj.ProductoEstado.Nombre : "";
+1000:            if (Resultado!=null){
+
+=== CHECK: isEmpty\(\) ===
+556:                if (!zpl.isEmpty()){
+748:                if (!zpl.isEmpty()){
+845:                    (errmsg != null && !errmsg.trim().isEmpty())
+1004:                if (!AuxList.isEmpty()){
+1048:        if (s.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+746://                            (!pNumeroLP.equals(""))?"$"+pNumeroLP:BeProducto.Codigo);
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+45:    private WebServiceHandler ws;
+46:    private XMLObject xobj;
+49:    private ListView listView;
+51:    private clsBeTrans_oc_det BeOcDet;
+52:    private clsBeProducto BeProducto = new clsBeProducto();
+53:    private clsBeTrans_re_detList pListTransRecDet = new clsBeTrans_re_detList();
+54:    private clsBeTrans_re_det selitem;
+55:    private boolean detalleDesdeStockRec = false;
+57:    private String pNumeroLP="";
+59:    private ImageView imgImprimir;
+60:    private ImageView cmdEliminar;
+62:    private list_adapt_detalle_rec_prod adapter;
+65:    private ProgressDialog progress;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+226:                    btnRegs.setText("Regs: "+count);
+254:                    btnCompletaRec2.setText("COMPLETA");
+257:                    btnCompletaRec2.setText(" DIF - (POS)");
+261:                btnCompletaRec2.setText("DIF - (NEG)");
+

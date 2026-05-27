@@ -1,0 +1,50 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing_bulto.java
+=== CHECK: ==\s*null ===
+497:        if (pick==null | pick.items.size()==0) {
+790:            if (pick==null | pick.items.size()==0) {
+
+=== CHECK: !=\s*null ===
+298:            if (pick!=null && pick.items.size()>0) {
+333:                if (savedList!=null) {
+
+=== CHECK: isEmpty\(\) ===
+463:            if (ss.isEmpty()) return;
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+38:    private ListView listView;
+41:    private ProgressBar pbar;
+43:    private WebServiceHandler ws;
+44:    private XMLObject xobj;
+46:    private final ArrayList<clsBeTrans_packing_enc> items = new ArrayList<>();
+47:    private final ArrayList<clsBeTrans_packing_enc_bulto> item_list = new ArrayList<>();
+48:    private clsBeTrans_picking_ubicList pick = new clsBeTrans_picking_ubicList();
+49:    private clsBeTrans_packing_encList itemList;
+50:    private clsBeTrans_packing_encList savedList = new clsBeTrans_packing_encList();
+51:    private final ArrayList<String> lcode = new ArrayList<String>();
+52:    private final ArrayList<String> lname = new ArrayList<String>();
+54:    private list_adapt_lista_packing_bulto adapter;
+55:    private clsBeTrans_packing_enc_bulto selitem;
+56:    private clsBeTrans_picking_ubic selpick;
+58:    private ObjectAnimator anim;
+59:    private ProgressDialog progress;
+62:    private boolean idle=true,automode=false;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+177:            txtLP.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+73:        txtLinea = findViewById(R.id.editTextNumber);txtLinea.setText("1");
+82:        lblTituloForma.setText("Preparación - Granel - No. Picking: "+idPickingEnc);
+109:        txtLinea.setText(""+nl);
+278:        lblProc.setText("Procesado : "+proc);
+285:        lblPend.setText("Pendiente : "+pendientes);
+392:        txtLinea.setText(""+gl.paLinea);focusLP();
+471:                lin=1;txtLinea.setText("1");
+477:                    txtLP.setText("");txtLP.requestFocus();
+

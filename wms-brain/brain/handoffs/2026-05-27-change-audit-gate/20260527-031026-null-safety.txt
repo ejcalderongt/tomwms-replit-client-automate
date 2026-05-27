@@ -1,0 +1,133 @@
+check: null_safety
+file: TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking.vb
+  97:            vPartes(i) = If(pValores(i) Is Nothing, "", pValores(i).ToString())
+  104:                                                    Optional ByVal pConnection As SqlConnection = Nothing,
+  105:                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As DataTable
+  107:        If pIdBodega = 0 Then Return Nothing
+  114:            If pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing Then
+  120:            If vDT Is Nothing Then vDT = New DataTable()
+  180:        If mPickingTraceTotal Is Nothing OrElse mPickingTraceMarca Is Nothing Then Return
+  191:        If mPickingTraceTotal Is Nothing Then Return
+  402:            ElseIf BeListPickingDet Is Nothing OrElse BeListPickingDet.Count > 0 = False Then
+  511:                If dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot Nothing AndAlso dgridDetallePicking.Rows(i).Cells("OperadorBodega").Value Is Nothing Then
+  528:            If OpcionesMenu IsNot Nothing Then
+  535:            If Ubicacion.pObj IsNot Nothing AndAlso Ubicacion.pObj.IdUbicacion <> 0 Then
+  541:                    If BeBodegaArea IsNot Nothing Then
+  720:            If InvokeCargarPedido IsNot Nothing Then
+  763:            If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+  776:            If BePickingEnc IsNot Nothing AndAlso BePickingEnc.IdPickingEnc > 0 Then
+  833:                    If BePickingEnc IsNot Nothing AndAlso BePickingEnc.IdPickingEnc > 0 Then
+  913:                                If BeListOp IsNot Nothing AndAlso BeListOp.Count > 0 Then
+  945:            If Not ritem Is Nothing Then
+  982:            If Not ritem Is Nothing Then
+  986:                If Not Dr Is Nothing Then
+  1095:            If PedidoEnc Is Nothing Then Exit Sub
+  1099:            If BeListPickingDet IsNot Nothing AndAlso BeListPickingDet.Count > 0 Then
+  1115:                If ObjBePickingDet Is Nothing Then
+  1166:            If Not (pBeTransPeDet.Producto Is Nothing) Then
+  1169:                    If Not ObjProducto Is Nothing Then
+  1177:                    If Not ObjProducto Is Nothing Then
+  1181:                If pBeTransPeDet.Producto Is Nothing Then
+  1194:                If Not ObjProducto Is Nothing Then
+  1216:                    If Not TiempoCliente Is Nothing Then
+  1222:                    If pBeTransPeDet.ListaStockRes IsNot Nothing AndAlso pBeTransPeDet.ListaStockRes.Count > 0 Then
+  1279:                                        If Not BePresentacion Is Nothing Then
+  1350:            If Not DT Is Nothing Then
+  1387:            If dgridDetallePicking.Rows.Count > 0 AndAlso dgridDetallePicking.CurrentRow IsNot Nothing Then
+  1392:                If BeListPickingDet IsNot Nothing AndAlso BeListPickingDet.Count > 0 Then
+  1401:                            AndAlso dgridDetallePicking.CurrentRow.Cells("ClienteDias").Value IsNot Nothing Then
+  1403:                        ElseIf dgridDetallePicking.Columns(e.ColumnIndex).Name() = "OperadorBodega" AndAlso dgridDetallePicking.CurrentRow.Cells("OperadorBodega").Value IsNot DBNull.Value AndAlso dgridDetallePicking.CurrentRow.Cells("OperadorBodega").Value IsNot Nothing AndAlso dgridDetallePicking.CurrentRow.Cells("OperadorBodega").Value > 0 Then
+  1447:                If dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot DBNull.Value AndAlso dgridDetallePicking.Rows(i).Cells("Producto").Value IsNot Nothing Then
+  1448:                    If dgridDetallePicking.Rows(i).Cells("ClienteDias").Value Is DBNull.Value OrElse dgridDetallePicking.Rows(i).Cells("ClienteDias").Value Is Nothing Then
+  1567:            If BePickingEnc IsNot Nothing Then
+  1576:                If BeBodegaUbicacion IsNot Nothing Then
+  1578:                    If BeBodegaArea IsNot Nothing Then
+  1649:            If BePickingEnc IsNot Nothing Then
+  1767:                        If Not BePresentacion Is Nothing Then
+  2021:            If BePickingEnc IsNot Nothing Then
+  2038:                                   "detalle=" & If(BePickingEnc.ListaPickingDet Is Nothing, 0, BePickingEnc.ListaPickingDet.Count) &
+  2039:                                   ";ubic=" & If(BePickingEnc.ListaPickingUbic Is Nothing, 0, BePickingEnc.ListaPickingUbic.Count))
+  2045:                PickingTrace_Marca("pedidos_asociados", "pedidos=" & If(pListaPedidos Is Nothing, 0, pListaPedidos.Count))
+  2053:                If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
+  2105:                            If Not lPedidosPicking Is Nothing Then
+  2111:                                    If vPedido Is Nothing Then
+  2131:                                If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  2196:                        If Not TiempoCliente Is Nothing Then
+  2211:                        If ObjDP IsNot Nothing Then
+  2218:                        If ObjlU IsNot Nothing Then
+  2247:                If BePedido IsNot Nothing Then
+  2265:                If Not BeConfiguracionUsuarioDet Is Nothing Then
+  2315:            txtIdUbicacion_Validated(txtIdUbicacion, Nothing)
+  2377:            If dgridDetallePicking.Rows.Count > 0 AndAlso dgridDetallePicking.CurrentRow IsNot Nothing Then
+  2379:                If dgridDetallePicking.CurrentRow.Cells("Codigo").Value IsNot DBNull.Value AndAlso dgridDetallePicking.CurrentRow.Cells("Codigo").Value IsNot Nothing _
+  2380:                    AndAlso dgridDetallePicking.CurrentRow.Cells("IdPedidoDet").Value IsNot DBNull.Value AndAlso dgridDetallePicking.CurrentRow.Cells("IdPedidoDet").Value IsNot Nothing Then
+  2385:                    If lCodigo Is Nothing OrElse lIdPedidoDet Is Nothing Then Return
+  2387:                    If BeListPickingDet IsNot Nothing AndAlso BeListPickingDet.Count > 0 Then
+  2477:                    If Not InvokeListarPicking Is Nothing Then
+  2481:                    If Not InvokeActualizarIdPicking Is Nothing Then
+  2545:                        mnuProcesar_ItemClick(Nothing, Nothing)
+  2552:                        If InvokeListarPicking IsNot Nothing Then
+  2599:                If BeBodegaUbicacion IsNot Nothing AndAlso BeBodegaUbicacion.IdUbicacion > 0 Then
+  2602:                    If BeBodegaArea IsNot Nothing Then
+  2655:            lnkAgregarPedido_ItemClick(Nothing, Nothing)
+  2657:            lnkVerParametro_LinkClicked(Nothing, Nothing)
+  2663:                mnuProcesar_ItemClick(Nothing, Nothing)
+  2751:                        If Not BePresentacion Is Nothing Then
+  2817:                        If vRow IsNot Nothing Then
+  2887:                If Not dgridDetallePicking.Rows(e.RowIndex).Cells("ClienteDias").Value Is Nothing Then
+  2950:                        If Not TiempoCliente Is Nothing Then
+  3099:                If Not InvokeListarPicking Is Nothing Then
+  3103:                If Not InvokeCargarObjetoPedido Is Nothing Then
+  3107:                If Not InvokeCargarPedido Is Nothing Then
+  3131:                                        .Where(Function(x) x IsNot Nothing) _
+  3161:                If Not InvokeListarPicking Is Nothing Then
+  3232:                cmbPropietario.Properties.DataSource = Nothing
+  3321:                        If BeTarea IsNot Nothing Then
+  3333:                        If Not InvokeListarPicking Is Nothing Then
+  3645:            'chkDetalleOperador_CheckedChanged(Nothing, Nothing)
+  3689:                    If pListaPedidos IsNot Nothing AndAlso pListaPedidos.Count > 0 Then
+  3694:                        If pPedido IsNot Nothing AndAlso pPedido.IdMuelle > 0 Then
+  3702:                    If Not BePickingEnc Is Nothing Then
+  3711:                            If pReferencia IsNot Nothing Then
+  3730:            If Not BeConfiguracionUsuarioDet Is Nothing Then
+  3915:            If Not BePickingEnc Is Nothing Then
+  4055:                            If Not InvokeListarPicking Is Nothing Then
+  4104:            If grdvPickingUbic Is Nothing OrElse grdvPickingUbic.FocusedRowHandle < 0 Then
+  4112:            ' Validar que no sea Nothing
+  4113:            If Dr Is Nothing Then
+  4150:                    If Not pListBeStockRes Is Nothing Then
+  4159:                            If Not BePickingUbic Is Nothing Then
+  4262:            If Dr Is Nothing Then Return
+  4332:            If Dr Is Nothing Then Return
+  4570:                    If Not vNomOperador Is Nothing Then
+  4575:                        If Not DTStockRes Is Nothing Then
+  4649:            If View1.Columns Is Nothing Then Exit Sub
+  4746:            If Not bo.pBePedidoEnc Is Nothing Then
+  4756:                    If bo.pBePedidoEnc.Detalle IsNot Nothing AndAlso bo.pBePedidoEnc.Detalle.Count > 0 Then
+  4844:        'If Not BeUbicacion Is Nothing Then
+  4854:        '    If Not vSingularidadTramoUbicacionEnZP Is Nothing Then
+  4857:        '        If Not vListasOperadorTramoZonaPickingPorBodega Is Nothing Then
+  4867:        '                If Not SingleBeZonaPIckingTramoOP Is Nothing Then
+  4899:        '    If Not BeOperadorBodega Is Nothing Then
+  4962:            If Not lOperadoresPicking Is Nothing Then
+  4966:                    If Not pListBePickingUbic Is Nothing Then
+  5006:                                    If Not vDetalleUbicacionesPorRack Is Nothing Then
+  5245:                If e.HitInfo.Column Is Nothing Then
+  5384:                    If Not InvokeListarPicking Is Nothing Then
+  5402:                    If Not InvokeListarPicking Is Nothing Then
+  5455:            If View1.Columns Is Nothing Then Exit Sub
+  5483:                If Not BeBodegaMuelle Is Nothing Then
+  5529:            If Not DT Is Nothing Then
+  5605:            grdImpresionPedidos.DataSource = Nothing
+  5778:            If Not dgridPedidos.CurrentCell Is Nothing Then
+  5843:            If Dr Is Nothing Then Return
+  5934:            If Dr IsNot Nothing Then
+  5959:                    If Not pListBeStockRes Is Nothing Then
+  5968:                            If Not BePickingUbic Is Nothing Then
+  6061:        If BePickingEnc IsNot Nothing Then
+  4278:                    BePickingUbic = pListBePickingUbic.Where(Function(x) x.IdStockRes = IdStockRes).First()
+  5858:                    BePickingUbic = pListBePickingUbic.Where(Function(x) x.IdStockRes = IdStockRes).First()
+  764:                Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
+  3691:                        Dim tmpPedidoEnc = pListaPedidos.FirstOrDefault()
+  4348:                    BePickingUbic = pListBePickingUbic.Where(Function(x) x.IdStockRes = IdStockRes).FirstOrDefault()
+

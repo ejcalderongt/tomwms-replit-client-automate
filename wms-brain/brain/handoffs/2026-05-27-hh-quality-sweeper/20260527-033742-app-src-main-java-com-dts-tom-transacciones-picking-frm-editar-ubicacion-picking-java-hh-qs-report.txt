@@ -1,0 +1,31 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_editar_ubicacion_picking.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+124:           if (BeUbic != null) {
+
+=== CHECK: isEmpty\(\) ===
+62:                    if (!txtUbicDestino.getText().toString().isEmpty()) {
+202:        if (!txtUbicDestino.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+26:    private EditText txtUbicDestino;
+28:    private int IdUbicacion = 0;
+29:    private WebServiceHandler ws;
+30:    private XMLObject xobj;
+32:    private clsBeBodega_ubicacion BeUbic = new clsBeBodega_ubicacion();
+33:    private int CambioUbicRealizado = 0;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+58:        txtUbicDestino.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

@@ -1,0 +1,52 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/frm_procesar_rfid.java
+=== CHECK: ==\s*null ===
+382:            if (resultado == null) {
+437:        if (url == null) {
+569:        if (listaBarrasLoteProcesada.items == null || listaBarrasLoteProcesada.items.isEmpty()) {
+
+=== CHECK: !=\s*null ===
+192:            final String msg = (e.getMessage() != null) ? e.getMessage() : "";
+234:            if (resultado != null) {
+236:                    if (item != null) {
+307:            if (resultado != null) {
+309:                    if (item != null) {
+392:                if (item != null) {
+503:                    if (itemRfid != null && itemRfid.Barra_epc != null && !itemRfid.Barra_epc.trim().isEmpty()) {
+539:                    if (itemRfid != null && itemRfid.Barra_epc != null && !itemRfid.Barra_epc.trim().isEmpty()) {
+592:                if (item != null && item.Activo) {
+
+=== CHECK: isEmpty\(\) ===
+442:        if (s.isEmpty()) {
+492:            if ((long) gl.Lista_RFID.size() > 0 || !gl.Lista_RFID.isEmpty()) {
+503:                    if (itemRfid != null && itemRfid.Barra_epc != null && !itemRfid.Barra_epc.trim().isEmpty()) {
+530:            if ((long) gl.Lista_RFID.size() > 0 || !gl.Lista_RFID.isEmpty()) {
+539:                    if (itemRfid != null && itemRfid.Barra_epc != null && !itemRfid.Barra_epc.trim().isEmpty()) {
+569:        if (listaBarrasLoteProcesada.items == null || listaBarrasLoteProcesada.items.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+36:    private TextView lblDatosProd;
+37:    private TextView lblProcesoCarga;
+38:    private ProgressBar progressBarLoad;
+39:    private LinearLayout layoutCarga;
+40:    private RecyclerView rcListaProcesarRFID;
+46:    private WebServiceHandler ws;
+47:    private XMLObject xobj;
+50:    private clsBeI_nav_barras_palletList listaBarrasLoteProcesada;
+51:    private String[] ListaBarrasLoteSinProcesar;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+498:                TotalRegistros.setText("Pallets: " + Registros);
+514:                TotalRegistros.setText("Pallets: 0");
+515:                TotalProcesados.setText("Listos: 0");
+516:                TotalNoProcesados.setText("Invalidos: 0");
+535:                TotalRegistros.setText("Pallets: " + Registros);
+

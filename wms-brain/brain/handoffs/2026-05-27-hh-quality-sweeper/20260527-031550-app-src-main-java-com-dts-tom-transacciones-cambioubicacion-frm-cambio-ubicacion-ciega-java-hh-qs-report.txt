@@ -1,0 +1,355 @@
+target: app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java
+=== CHECK: ==\s*null ===
+865:                    if (AuxList == null) {
+954:                    if (AuxList == null) {
+1046:            if (AuxList == null) {
+1361:                        .where(c -> c.Atributo_variante_1.equals((cvAtrib == null ? "" : cvAtrib)))
+1367:            if (AuxList == null) {
+1978:            if (bodega_ubicacion_origen == null)
+2194:            if (bodega_ubicacion_destino == null){
+2461:            if (stockDestino == null) {
+2584:            if (bodega_ubicacion_destino == null){
+2770:                if (productoList == null) {
+2778:                if (productoList.items == null) {
+2782:                if (stockResList == null) {
+2786:                if (stockResList.items == null) {
+3160:            if (stockResList == null){
+3306:            String raw = (mResult == null) ? "" : mResult.trim();
+3335:                if (arr == null && obj.has("items")) {
+3343:                    if (item == null) continue;
+3503:            if (lUbicSug == null) {
+3601:                if (productoList == null) {
+3608:            if (escaneoPallet && productoList == null) {
+4530:            if (raw == null) return 0;
+4536:                return val == null ? 0 : val;
+4544:        return gl.IdBodega + "|" + (barra == null ? "" : barra.trim());
+4552:            if (ts == null || ubic == null) return null;
+4567:            if (barra == null || barra.trim().isEmpty() || ubic == null) return;
+4830:        if (!gl.Control_Talla_Color || movimiento == null) {
+4837:            movimiento.Talla = stockTallaColor.Codigo_Talla == null ? "" : stockTallaColor.Codigo_Talla;
+4838:            movimiento.Color = stockTallaColor.Codigo_Color == null ? "" : stockTallaColor.Codigo_Color;
+4842:        movimiento.IdProductoTallaColor = BeProductoUbicacion == null ? 0 : BeProductoUbicacion.IdProductoTallaColor;
+4861:            return BeStockPallet.Lic_plate == null ? "" : BeStockPallet.Lic_plate;
+4864:            return cvStockItem.Lic_plate == null ? "" : cvStockItem.Lic_plate;
+5151:            if (stockResList == null || stockResList.items == null || stockResList.items.isEmpty()) {
+5159:                if (st == null) {
+5195:            if(cvStockItem == null && cvStockID == 0) {
+5209:            if(cvStockItem == null) {
+5537:            String respuesta = ws.xmlresult == null ? "" : ws.xmlresult.trim();
+
+=== CHECK: !=\s*null ===
+384:                    if (spinlabel != null) {
+424:                    if (spinlabel != null) {
+452:                    if (spinlabel != null) {
+483:                    if (spinlabel != null) {
+511:                    if (spinlabel != null) {
+857:                    //if (escaneoPallet && productoList != null) {
+926:                    if (cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() > 0) {
+935:                        //if (escaneoPallet && productoList != null) {
+945:                        //if (escaneoPallet && productoList != null) {
+1108:            if (escaneoPallet && productoList != null) {
+1253:            if (escaneoPallet && productoList != null) {
+1254:                if (cmbVence.getAdapter() != null) {
+1263:                if (cmbVence.getAdapter() != null) {
+1276:            if (escaneoPallet & productoList != null) {
+1277:                if (cmbEstadoOrigen.getAdapter() != null) {
+1291:                if (cmbEstadoOrigen.getAdapter() != null) {
+1317:                if (gl.gCEstadoAnterior != -1 && cmbEstadoOrigen.getAdapter() != null && cmbEstadoOrigen.getAdapter().getCount() > 0) {
+1322:                if (gl.gCFechaAnterior.equals("01/01/1900") && cmbVence.getAdapter() != null && cmbVence.getAdapter().getCount() > 0) {
+1327:                if (!gl.gCLoteAnterior.isEmpty() && cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() > 0) {
+1332:                if (gl.gCPresAnterior != -1 && cmbPresentacion.getAdapter() != null && cmbPresentacion.getAdapter().getCount() > 0) {
+1418:            if (escaneoPallet && productoList != null) {
+1435:                    (cmbPresentacion.getAdapter() != null && cmbPresentacion.getAdapter().getCount() == 1) &&
+1436:                    (cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() == 1) &&
+1437:                    (cmbVence.getAdapter() != null && cmbVence.getAdapter().getCount() == 1)) {
+1946:            if (gProdEstado != null) {
+1970:                if (ubicacionObj != null) {
+2721:            if (producto != null) {
+2763:            if (jsonArray != null && !jsonArray.isEmpty()) {
+2774:                if (prodList != null) {
+2792:                if (productoList.items != null && !productoList.items.isEmpty()) {
+2794:                    if (p0.Stock != null) {
+3041:            if (jsonArray != null && !jsonArray.isEmpty()){
+3044:                if(stock1 != null) {
+3048:                if (stockResList != null){
+3079:            if (jsonArray != null && !jsonArray.isEmpty()){
+3082:                if(stock1 != null){
+3087:                if (stockResList != null){
+3118:            if (jsonArray != null && !jsonArray.isEmpty()){
+3121:                if(stock1 != null) {
+3125:                if (stockResList != null){
+3239:            if (resolucionActivaLpByBodega !=null){
+3340:            if (arr != null) {
+3357:            if (productoEstadoDestinoList != null){
+3360:                if (escaneoPallet && productoList != null) {
+3435:                    if (cmbEstadoOrigen.getAdapter() != null && cmbEstadoOrigen.getAdapter().getCount() > 0) {
+3443:                    if (cmbVence.getAdapter() != null && cmbVence.getAdapter().getCount() > 0) {
+3449:                    if (cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() > 0) {
+3455:                    if (cmbPresentacion.getAdapter() != null && cmbPresentacion.getAdapter().getCount() > 0) {
+3507:            lUbicSug.items = (lista != null) ? lista : new ArrayList<>();
+3509:            if (lUbicSug != null){
+3560:            if (jsUbic != null){
+3719:            if (xobj != null) {
+4004:            if( escaneoPallet && productoList != null){
+4298:                if (BeStockPallet!=null){
+4410:                if (ubicCache != null) {
+4440:                if (ubicCache != null) {
+4470:                if (ubicCache != null) {
+4506:                if (ubicCache != null) {
+4621:                if( escaneoPallet && productoList != null){
+4655:        if( escaneoPallet && productoList != null){
+4817:        if (BeStockPallet != null) {
+4820:        if (cvStockItem != null) {
+4823:        if (BeProductoUbicacion != null && BeProductoUbicacion.Stock != null) {
+4835:        if (stockTallaColor != null) {
+4849:        return producto != null && producto.Stock != null && producto.Stock.IdStock > 0;
+4853:        if (BeStockPallet != null && BeStockPallet.Factor > 0) {
+4860:        if (BeStockPallet != null) {
+4863:        if (cvStockItem != null) {
+4938:            if(escaneoPallet && productoList != null && BeStockPallet != null){
+5162:                if(escaneoPallet &&  productoList != null ) {
+5164:                            BeStockPallet != null &&
+5204:                if(cvStockItem != null) {
+5245:            if(cmbEstadoOrigen.getAdapter()!=null && cmbEstadoOrigen.getAdapter().getCount()>0){
+5288:            if(cmbLote.getAdapter()!=null  && cmbLote.getAdapter().getCount()>0){
+5299:                if(cmbVence.getAdapter()!=null && cmbVence.getAdapter().getCount()>0){
+5310:            if(escaneoPallet && productoList != null ) {
+5416:                if(escaneoPallet && productoList != null){
+5482:                if (escaneoPallet && productoList != null) {
+5608:                    if (cmbEstadoOrigen.getAdapter() != null && cmbEstadoOrigen.getAdapter().getCount() > 0) {
+5616:                    if (cmbVence.getAdapter() != null && cmbVence.getAdapter().getCount() > 0) {
+5622:                    if (cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() > 0) {
+5628:                    if (cmbPresentacion.getAdapter() != null && cmbPresentacion.getAdapter().getCount() > 0) {
+
+=== CHECK: isEmpty\(\) ===
+304:                    if (!gl.existencia.idUbic.isEmpty()) {
+313:                    if (!gl.existencia.getLicPlate().isEmpty() && !gl.existencia.LicPlate.equals("0")) {
+554:                    if (!txtLicPlate.getText().toString().isEmpty() && !txtCodigoPrd.getText().toString().isEmpty()) {
+595:                    if (txtLicPlate.getText().toString().isEmpty()) {
+630:                if (txtUbicOrigen.getText().toString().isEmpty() ||
+631:                        txtUbicOrigen.getText().toString().isEmpty()) {
+674:                if (ubicDestino.isEmpty()) {
+699:                if (txtUbicDestino.getText().toString().isEmpty() ||
+700:                        txtUbicDestino.getText().toString().isEmpty()) {
+791:            if (!presentacionList.items.isEmpty()) {
+885:                        if (!cmbLoteList.isEmpty()) {
+974:                        if (!cmbVenceList.isEmpty()) {
+1067:                if (!cmbEstadoOrigenList.isEmpty()) {
+1101:            if (!cmbEstadoDestinoList.isEmpty()) cmbEstadoDestino.setSelection(0);
+1121:                if (!txtUbicOrigen.getText().toString().isEmpty()) {
+1168:            if (!txtLicPlate.getText().toString().isEmpty() && !txtLicPlate.getText().toString().equals("0")) {
+1214:                    !txtLicPlate.getText().toString().isEmpty()) {
+1293:                    if (!cmbEstadoOrigen.getSelectedItem().toString().isEmpty()) {
+1327:                if (!gl.gCLoteAnterior.isEmpty() && cmbLote.getAdapter() != null && cmbLote.getAdapter().getCount() > 0) {
+1382:            if (!tmpStockResList.items.isEmpty()) {
+1478:                if (!lic.isEmpty() && !lic.equals("0")) {
+1989:                if (gl.CambioUbicRecepcion && !gl.LicenciaCUR.isEmpty()) {
+2055:                    if(txtUbicDestino.getText().toString().isEmpty()){
+2060:                        if(cvUbicDestID==0 && !txtUbicDestino.getText().toString().isEmpty()){
+2691:                if (!txtLicPlate.getText().toString().isEmpty() && !txtCodigoPrd.getText().toString().isEmpty()) {
+2763:            if (jsonArray != null && !jsonArray.isEmpty()) {
+2792:                if (productoList.items != null && !productoList.items.isEmpty()) {
+2803:                if (escaneoPallet && productoList.items.isEmpty()) {
+2812:                        if (!pLicensePlate.isEmpty() && !pLicensePlate.equals("0") && !pLicensePlate.equals("1")) {
+2834:                        if (!ListaActualizada.isEmpty()) {
+2891:                        if (escaneoPallet && !productoList.items.isEmpty()) {
+2917:                            if (AuxList.isEmpty()) {
+3041:            if (jsonArray != null && !jsonArray.isEmpty()){
+3079:            if (jsonArray != null && !jsonArray.isEmpty()){
+3118:            if (jsonArray != null && !jsonArray.isEmpty()){
+3172:            if (!AuxList.isEmpty()){
+3256:            if (!vNuevoPalletId.isEmpty()){
+3510:                if(!lUbicSug.items.isEmpty()){
+3527:                    if (!txtLicPlate.getText().toString().isEmpty() && !txtCodigoPrd.getText().toString().isEmpty()) {
+3575:                    if (!txtLicPlate.getText().toString().isEmpty() && !txtCodigoPrd.getText().toString().isEmpty()) {
+3627:                    if (AuxList.isEmpty()){
+3668:                    if (!pLicensePlate.isEmpty()) {
+4323:                                (!vNuevoPalletId.isEmpty() ? "$" + vNuevoPalletId: BeStockPallet.Codigo_Producto));
+4342:                                (!vNuevoPalletId.isEmpty() ? "$" + vNuevoPalletId: BeStockPallet.Codigo_Producto));
+4345:                    if (!zpl.isEmpty()){
+4404:            if (!txtUbicOrigen.getText().toString().isEmpty()){
+4434:            if (!txtUbicOrigen.getText().toString().isEmpty()){
+4467:            if (!txtUbicDestino.getText().toString().isEmpty()){
+4502:            if (!txtUbicSug.getText().toString().isEmpty()){
+4567:            if (barra == null || barra.trim().isEmpty() || ubic == null) return;
+4930:            if(!txtLicPlate.getText().toString().isEmpty()){
+5040:                //#CKFK20220801 Quité esto || txtUbicDestino.getText().toString().isEmpty()
+5078:            //#CKFK20220801 Modifique esto && txtUbicDestino.getText().toString().isEmpty() por ||
+5079:            if(cvUbicDestID == 0 || txtUbicDestino.getText().toString().isEmpty()){
+5080:                if(txtUbicDestino.getText().toString().isEmpty()){
+5087:                    if(cvUbicDestID==0 && !txtUbicDestino.getText().toString().isEmpty()){
+5151:            if (stockResList == null || stockResList.items == null || stockResList.items.isEmpty()) {
+5350:                if(txtUbicDestino.getText().toString().isEmpty()){
+5355:                    if(cvUbicDestID==0 && !txtUbicDestino.getText().toString().isEmpty()){
+5564:                if (!resultado && !mensaje.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+83:    private XMLObject xobj;
+84:    private ProgressDialog progress;
+86:    private EditText txtUbicOrigen;
+87:    private EditText txtCodigoPrd;
+88:    private EditText txtCantidad;
+89:    private EditText txtUbicDestino;
+90:    private EditText txtLicPlate;
+91:    private EditText txtPeso;
+92:    private EditText txtTalla;
+93:    private EditText txtColor;
+94:    private TextView lblUbicCompleta;
+95:    private TextView lblDescProducto;
+96:    private TextView lblLote;
+97:    private TextView lblVence;
+98:    private TextView txtUbicSug;
+99:    private TextView lblCant;
+100:    private TextView lblUbicCompDestino;
+101:    private TextView lblCantidad;
+102:    private TextView lblCantidadProducto;
+104:    private Button btnGuardarCiega;
+106:    private CheckBox chkExplosionar;
+107:    private RelativeLayout relbot;
+108:    private RelativeLayout reltop;
+109:    private RelativeLayout relForm;
+110:    private TableRow tblLicenciaMixta;
+111:    private RecyclerView recyclerView;
+113:    private clsBeProducto cvProd = new clsBeProducto();
+114:    private clsBeProductoList productoList = new clsBeProductoList();
+116:    private final clsBeVW_stock_res vStockRes = new clsBeVW_stock_res();
+117:    private clsBeVW_stock_resList stockResList = new clsBeVW_stock_resList();
+118:    private final clsBeVW_stock_resList lotesList = new clsBeVW_stock_resList();
+119:    private final clsBeVW_stock_resList venceList = new clsBeVW_stock_resList();
+120:    private final clsBeVW_stock_resList presentacionList = new clsBeVW_stock_resList();
+121:    private final clsBeVW_stock_resList productoEstadoOrigenList = new clsBeVW_stock_resList();
+122:    private clsBeProducto_estadoList productoEstadoDestinoList = new clsBeProducto_estadoList();
+123:    private USUbicStrucStage5List lUbicSug = new USUbicStrucStage5List();
+125:    private final ArrayList<String> cmbPresentacionList = new ArrayList<>();
+126:    private final ArrayList<String> cmbLoteList = new ArrayList<>();
+127:    private final ArrayList<String> cmbVenceList = new ArrayList<>();
+128:    private final ArrayList<String> cmbEstadoOrigenList = new ArrayList<>();
+129:    private final ArrayList<String> cmbEstadoDestinoList = new ArrayList<>();
+131:    private String fechaVenceU;
+133:    private int cvUbicOrigID;
+134:    private int cvProdID;
+135:    private int cvPresID;
+136:    private String cvLote;
+137:    private String cvVence;
+138:    private int cvEstOrigen = 0;
+139:    private int cvEstDestino;
+140:    private int cvUbicDestID = 0;
+141:    private int cvStockID;
+142:    private String cvAtrib;
+143:    private int cvPropID;
+144:    private int cvUMBID;
+145:    private double vFactorPres;
+146:    private boolean validarDatos = false;
+147:    private boolean datosCorrectos = false;
+148:    private boolean vProcesar = false;
+149:    private int tmpUbicId = 0;
+151:    private boolean Es_Explosion = false;
+152:    private boolean Es_Explosion_Manual = false;
+153:    private int vIdStockNuevo = 0;
+154:    private int vIdMovimientoNuevo = 0;
+155:    private int vPosiciones = 0;
+157:    private boolean Existe_Lp = false;
+159:    private boolean EsPalletNoEstandar = false;
+161:    private boolean escaneoPallet;
+163:    private clsBeTrans_movimientos gMovimientoDet;
+164:    private clsBeBodega_ubicacion bodega_ubicacion_destino;
+165:    private clsBeBodega_ubicacion bodega_ubicacion_origen;
+166:    private clsBeVW_stock_res cvStockItem;
+167:    private clsBeVW_stock_res BeStockPallet;
+168:    private clsBeStock pStock;
+170:    private clsBeProducto BeProductoUbicacion;
+171:    private String vNuevoPalletId;
+172:    private String pLicensePlate;
+174:    private double vCantidadAUbicar;
+175:    private double vCantidadDisponible;
+176:    private double vPesoAUbicar;
+178:    private TextToSpeech mTTS;
+179:    private String textToSpeeach = "";
+180:    private boolean ocultar_mensajes;
+181:    private boolean inferir_origen_en_cambio_ubic = false;
+182:    private boolean licencia_reservada_completamente = false;
+183:    private boolean reservada_parcialmente = false;
+184:    private boolean stock_misma_licencia = false;
+186:    private final clsBeVW_stock_resList stockList = new clsBeVW_stock_resList();
+187:    private ArrayList<clsBeProducto> ListaActualizada = new ArrayList<>();
+188:    private boolean procesando = false;
+190:    private boolean debeCambiarEstadoRack = false;
+373:    private long ultimoEnter = 0;
+
+=== CHECK: setOnFocusChangeListener ===
+628:        txtUbicOrigen.setOnFocusChangeListener((v, hasFocus) -> {
+697:        txtUbicDestino.setOnFocusChangeListener((v, hasFocus) -> {
+
+=== CHECK: setOnKeyListener ===
+549:        txtCodigoPrd.setOnKeyListener((v, keyCode, event) -> {
+577:        txtLicPlate.setOnKeyListener((v, keyCode, event) -> {
+618:        txtUbicOrigen.setOnKeyListener((v, keyCode, event) -> {
+647:        txtUbicDestino.setOnKeyListener((view, keyCode, keyEvent) -> {
+714:        txtCantidad.setOnKeyListener((v, keyCode, event) -> {
+743:        txtPeso.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+397:                            lblCantidad.setText("Cantidad (" + NombrePres + "): ");
+400:                            lblCantidad.setText("Cantidad (" + BeProductoUbicacion.UnidadMedida.Nombre + ")");
+600:                        lblDescProducto.setText("-");
+634:                        lblUbicCompleta.setText("");
+797:                        lblCantidad.setText("Cantidad (" + BeProductoUbicacion.UnidadMedida.Nombre + "): ");
+800:                        lblCantidad.setText("Cantidad (" + presentacionList.items.get(0).Nombre_Presentacion + "): ");
+1185:                txtLicPlate.setText("");
+1925:                    txtUbicOrigen.setText("");
+2300:                lblUbicCompDestino.setText("");
+2366:                lblUbicCompDestino.setText("");
+2476:                    lblUbicCompDestino.setText("");
+2516:                lblUbicCompDestino.setText("");
+2741:                lblDescProducto.setText("Código no válido");
+2806:                    lblDescProducto.setText("Código de licencia no válido");
+2836:                            lblCantidadProducto.setText("Registro(s): " + ListaActualizada.size());
+2880:                            lblDescProducto.setText("Licencia N.E.E.U");
+2921:                                lblDescProducto.setText("Licencia N.E.E.U");
+3206:                lblDescProducto.setText("-");
+3481:            lblCantidad.setText("Cantidad:");
+3519:                lblUbicCompDestino.setText("");
+3520:                txtUbicDestino.setText("");
+3567:                lblUbicCompDestino.setText("");
+3568:                txtUbicDestino.setText("");
+3767:            txtCodigoPrd.setText("");
+3768:            txtLicPlate.setText("");
+3769:            lblDescProducto.setText("");
+3775:            txtUbicSug.setText("");
+3795:            lblUbicCompleta.setText("");
+3797:            lblCant.setText("");
+3798:            txtUbicDestino.setText("");
+3799:            lblUbicCompDestino.setText("");
+3800:            txtCantidad.setText("");
+3801:            txtPeso.setText("");
+3802:            txtCodigoPrd.setText("");
+3822:            txtTalla.setText("");
+3823:            txtColor.setText("");
+3853:            txtCodigoPrd.setText("");
+3854:            txtLicPlate.setText("");
+3855:            lblDescProducto.setText("");
+3861:            txtUbicSug.setText("");
+3880:            lblCant.setText("");
+3881:            txtUbicDestino.setText("");
+3882:            txtCantidad.setText("");
+3883:            txtPeso.setText("");
+3884:            txtCodigoPrd.setText("");
+3918:            txtCodigoPrd.setText("");
+3919:            lblDescProducto.setText("");
+3925:            txtUbicSug.setText("");
+3939:            txtCantidad.setText("");
+3940:            lblCant.setText("");
+3941:            txtUbicDestino.setText("");
+3942:            txtPeso.setText("");
+3943:            txtCodigoPrd.setText("");
+4146:                lblUbicCompDestino.setText("");
+4214:                lblUbicCompDestino.setText("");
+4242:                lblUbicCompDestino.setText("");
+4420:                lblUbicCompleta.setText("");
+4450:                lblUbicCompleta.setText("");
+5654:            lblCantidad.setText("Cantidad:");
+5676:                lblDescProducto.setText("-");
+

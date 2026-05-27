@@ -1,0 +1,152 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid_2.java
+=== CHECK: ==\s*null ===
+322:            if (readers == null) {
+439:                if (eventHandler == null) {
+486:                if (reader == null || !reader.isConnected()) {
+492:                if (myTags == null || myTags.length == 0) {
+510:                    if (tag == null || tag.getTagID() == null || tag.getTagID().trim().isEmpty()) {
+613:                if (rfidStatusEvents == null || rfidStatusEvents.StatusEventData == null) {
+635:                            if (reader == null || !reader.isConnected()) {
+717:                            if (reader == null || !reader.isConnected()) {
+795:                if (reader == null || !reader.isConnected()) {
+900:                if (tbeep == null) {
+1100:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+1149:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+1179:            if (rfidSqlite == null || idinventarioenc <= 0) {
+1192:            if (listaLecturas == null || listaLecturas.isEmpty()) {
+1198:                if (item == null) continue;
+1470:            if (reader == null || !readerListo) {
+1596:                if (epcHex == null) {
+1615:                if (binary == null || binary.length() != 96) {
+1630:                if (partitionData == null) {
+1650:                if (companyPrefix == null || !COMPANY_PREFIX.equals(companyPrefix)) {
+1655:                if (serialReference == null || serialReference.length() != partitionData.serialRefDigits) {
+1777:                if (epcHex == null) {
+1796:                if (bytes == null || bytes.length != 12) {
+
+=== CHECK: !=\s*null ===
+194:            if (btnMenuGuardar != null) {
+204:            if (btnLimpiar != null) {
+214:            if (btnAgregar != null) {
+224:            if (btnCerrarProceso != null) {
+254:            if (frm_lista_inventario_rfid.BeInvEncRFID != null) {
+279:                if (Lista_Detalle_rfid != null) {
+292:            if (listaLecturasPendientesWs != null) {
+296:            if (rfidSqlite != null && idinventarioenc > 0) {
+300:            if (adapter_rfid != null) {
+339:                        if (readers != null) {
+342:                            if (availableRFIDReaderList != null && availableRFIDReaderList.size() > 0) {
+361:                        initError = e.getMessage() != null ? e.getMessage() : "InvalidUsageException";
+365:                        initError = e.getVendorMessage() != null ? e.getVendorMessage() : "OperationFailureException";
+369:                        initError = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+437:            if (reader != null && reader.isConnected()) {
+523:                    //if (tagSSCC != null && tagSSCC.length() == 18) {
+524:                    if (tagSSCC != null ) {
+544:                    item.IdDispositivo = IdDevice != null ? IdDevice : "";
+545:                    item.IdOperador = IdUsuarioHH != null ? IdUsuarioHH : 0;
+547:                    if (rfidSqlite != null) {
+560:                        if (tag.getMemoryBankData() != null && tag.getMemoryBankData().length() > 0) {
+590:                            if (adapter_rfid != null) {
+595:                            if (TotalRegistros != null) {
+838:            if (layoutCarga != null) {
+842:            if (progressBarLoad != null) {
+846:            if (lblProcesoCarga != null) {
+850:            if (btnLimpiar != null) {
+854:            if (btnMenuGuardar != null) {
+858:            if (rcListaLecturasRfid != null) {
+869:            if (progressBarLoad != null) {
+873:            if (layoutCarga != null) {
+877:            if (btnLimpiar != null) {
+881:            if (btnMenuGuardar != null) {
+885:            if (rcListaLecturasRfid != null) {
+924:            if (tbeep != null) {
+964:                        if (Lista_Detalle_rfid != null) {
+972:                        if (rfidSqlite != null && idinventarioenc > 0) {
+987:                        if (adapter_rfid != null) {
+1011:            if (layoutCarga != null) {
+1015:            if (progressBarLoad != null) {
+1019:            if (lblProcesoCarga != null) {
+1023:            if (btnLimpiar != null) {
+1027:            if (btnAgregar != null) {
+1031:            if (btnMenuGuardar != null) {
+1041:            if (progressBarLoad != null) {
+1045:            if (layoutCarga != null) {
+1049:            if (btnLimpiar != null) {
+1053:            if (btnAgregar != null) {
+1057:            if (btnMenuGuardar != null) {
+1115:                if (item != null && item.Barra_epc != null && !item.Barra_epc.trim().isEmpty()) {
+1157:                if (item != null && !"Incompatible".equalsIgnoreCase(item.Tagid)) {
+1250:            final String msg = (e.getMessage() != null) ? e.getMessage() : "";
+1287:                if (rfidSqlite != null && idinventarioenc > 0) {
+1292:                    if (Lista_Detalle_rfid != null) {
+1305:                if (listaLecturasPendientesWs != null) {
+1309:                if (adapter_rfid != null) {
+1337:            if (TotalRegistros != null) {
+1345:            if (PalletsLeidos != null) {
+1360:            if (rfidSqlite != null && idinventarioenc > 0) {
+1364:            if (Lista_Detalle_rfid != null) {
+1420:            if (reader != null && reader.isConnected()) {
+1533:            if (reader != null) {
+1547:                    if (eventHandler != null) {
+1565:            if (readers != null) {
+
+=== CHECK: isEmpty\(\) ===
+510:                    if (tag == null || tag.getTagID() == null || tag.getTagID().trim().isEmpty()) {
+566:                if (nuevos.isEmpty()) {
+1100:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+1115:                if (item != null && item.Barra_epc != null && !item.Barra_epc.trim().isEmpty()) {
+1149:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+1162:            if (listaValida.isEmpty()) {
+1192:            if (listaLecturas == null || listaLecturas.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+73:    private RecyclerView rcListaLecturasRfid;
+74:    private TextView lblDatosProd;
+75:    private TextView TotalRegistros;
+76:    private TextView PalletsLeidos;
+77:    private ImageButton btnMenuGuardar;
+78:    private ImageButton btnLimpiar;
+79:    private ImageButton btnAgregar;
+80:    private ImageButton btnCerrarProceso;
+81:    private ProgressBar progressBarLoad;
+82:    private RelativeLayout layoutCarga;
+83:    private TextView lblProcesoCarga;
+84:    private final Object lockListaRfid = new Object();
+86:    private ArrayList<clsBeI_nav_barras_rfid_det> Lista_Detalle_rfid;
+87:    private RfidAdapter adapter_rfid;
+89:    private String IdDevice;
+90:    private Integer IdUsuarioHH;
+92:    private Readers readers;
+93:    private ArrayList<ReaderDevice> availableRFIDReaderList;
+94:    private ReaderDevice readerDevice;
+95:    private RFIDReader reader;
+98:    private boolean beepON = false;
+99:    private EventHandler eventHandler;
+100:    private boolean readerListo = false;
+102:    private boolean gatilloPresionado = false;
+107:    private final Object lockInventario = new Object();
+108:    private final Object lockTagsVistos = new Object();
+109:    private final AtomicLong ultimaLecturaTagMs = new AtomicLong(0L);
+110:    private final AtomicLong ultimoPressedMs = new AtomicLong(0L);
+111:    private final AtomicLong releaseVersion = new AtomicLong(0L);
+113:    private final ArrayList<clsBeI_nav_barras_rfid_det> bufferNuevosTags = new ArrayList<>();
+116:    private int idinventarioenc;
+117:    private int totalPalletsEsperados = 0;
+118:    private WebServiceHandler ws;
+119:    private XMLObject xobj;
+120:    private ArrayList<clsBeTrans_inv_ciclico_rfid> listaLecturasPendientesWs = new ArrayList<>();
+123:    private RfidSqlite rfidSqlite;
+334:                private String initError = "";
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+847:                lblProcesoCarga.setText("Preparando RFID...");
+

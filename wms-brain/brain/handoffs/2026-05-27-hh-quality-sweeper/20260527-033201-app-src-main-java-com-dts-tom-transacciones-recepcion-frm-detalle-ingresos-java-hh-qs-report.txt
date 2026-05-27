@@ -1,0 +1,73 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java
+=== CHECK: ==\s*null ===
+390:            if (bodega_ubicacion_origen == null) {
+897:        if (url == null) {
+
+=== CHECK: !=\s*null ===
+179:           if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+187:               if (photoFile != null) {
+354:            if (beListTranReImagen != null) {
+355:                if (beListTranReImagen.items != null) {
+487:            if (gl.gBeRecepcion != null && gl.gBeRecepcion.IdRecepcionEnc == gl.gIdRecepcionEnc) {
+494:            if (gBeRecepcion!=null)
+503:                if(gBeRecepcion.OrdenCompraRec.OC.ProveedorBodega.Proveedor.TiemposProveedor !=null){
+504:                    if(gBeRecepcion.OrdenCompraRec.OC.ProveedorBodega.Proveedor.TiemposProveedor.items !=null){
+554:            if (gBeRecepcion.No_Contenedor!=null){
+560:            if (gBeRecepcion.Muelle!=null){
+586:                if (pListDetalleOC!=null){
+612:                if (gBeOrdenCompra.No_Documento!=null){
+621:                if (bePoliza != null &&
+622:                        bePoliza.numero_orden != null &&
+631:                if (bePoliza != null &&
+632:                   bePoliza.codigo_poliza != null &&
+640:                if (gBeOrdenCompra.Referencia!=null){
+646:                if (gl.gBeRecepcion.No_Marchamo!=null){
+652:                if (gBeOrdenCompra.EstadoOC.Nombre!=null){
+739:            if (gBeRecepcion.OrdenCompraRec.OC.TipoIngreso != null){
+
+=== CHECK: isEmpty\(\) ===
+126:                if (!txtUbicacion.getText().toString().isEmpty()) {
+623:                        !bePoliza.numero_orden.isEmpty()){
+633:                   !bePoliza.codigo_poliza.isEmpty()){
+683:            if (!vencelist.isEmpty()) cmbFechaRec.setSelection(0);
+706:            if (!proplist.isEmpty()) cmbPropietario.setSelection(0);
+726:            if (!provlist.isEmpty()) cmbProveedor.setSelection(0);
+747:                if (!tipooclist.isEmpty()) cmbTipoDoc.setSelection(0);
+820:        if (!txtUbicacion.getText().toString().isEmpty()) {
+902:        if (s.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+53:    private WebServiceHandler ws;
+54:    private XMLObject xobj;
+55:    private boolean Finalizada = false, Anulada = false;
+57:    private clsBeTrans_re_enc gBeRecepcion = new clsBeTrans_re_enc();
+58:    private clsBeTrans_oc_detList pListDetalleOC = new clsBeTrans_oc_detList();
+59:    private clsBeTrans_oc_enc gBeOrdenCompra = new clsBeTrans_oc_enc();
+64:    private TextView lblNombreUbicacion;
+66:    private ProgressDialog progress;
+67:    private RelativeLayout relUbicacion;
+71:    private final ArrayList<String> proplist= new ArrayList<>();
+72:    private final ArrayList<String> provlist;
+73:    private final ArrayList<String> tipooclist;
+74:    private final ArrayList<String> vencelist;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+124:        txtUbicacion.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+395:                lblNombreUbicacion.setText("Ubicación no existe o no configurada como ubicación de recepción");
+535:            txtGuia.setText("");
+536:            txtMuelleRec.setText("");
+537:            txtOc.setText("");
+538:            txtRef.setText("");
+539:            txtMarch.setText("");
+540:            txtEstadoRec.setText("");
+541:            txtNumOrden.setText("");
+542:            txtNumPoliza.setText("");
+

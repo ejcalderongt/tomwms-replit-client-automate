@@ -1,0 +1,15 @@
+id: bof-gs-20260527-041031
+tag: '#EJC20260527'
+mode: report-only
+repo_path: 'C:\Users\yejc2\source\repos\TOMWMS'
+scope_path: 'TOMIMSV4'
+summary:
+  vb_files_scanned: 2459
+  unused_private_candidates: 200
+  duplicate_query_candidates: 50
+  heavy_query_candidates: 800
+  roundtrip_hotspots: 0
+  business_rule_risk_candidates: 800
+artifacts:
+  report: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-bof-governance-sweeper\20260527-041031-tomimsv4-bof-gs-report.txt'
+status: done

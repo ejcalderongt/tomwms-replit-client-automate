@@ -40,10 +40,20 @@ riesgos_principales:
   - "Doble trigger de scanner/enter en HH produce overlap de callbacks."
   - "Reemplazo/no encontrado puede intentar actualizar cantidades fuera de rango (constraint non-negative)."
   - "Secuencia de movimientos y actualización stock puede quedar incoherente si no hay guardas."
+  - "#EJC20260527: liberar/no-pickeado con cantidad cero debe borrar trans_picking_ubic_stock y trans_movimientos antes de eliminar trans_picking_ubic; usar IdMovimiento identity persistido en el puente, no MaxID ni filtros semánticos."
+  - "#EJC20260527: BOF picking, al procesar línea desde frmPicking.Process_Linea_Picking, el reload no debe depender de VW_PickingUbic_Desp_By_IdPedidoDet/stock_res porque Procesar_Picking_Desde_BOF puede mover, dividir o eliminar la reserva original; trans_picking_ubic es la fuente estable para pintar pickeado pendiente/procesado."
+  - "#EJC20260527: trans_movimientos de picking debe persistir IdUbicacionDestino con la ubicación picking/muelle recibida en Insertar_Movimiento_Picking; si llega cero, abortar para evitar movimientos PIK silenciosamente incompletos."
+  - "#EJC20260527: HH frm_picking_datos no manda IdUbicacionDestino explícito en Actualizar_Picking/Actualiza_Picking_Consolidado; contrato confirmado contra dev_2023_estable y origin/dev_2026_mampa: destino se resuelve en DAL con muelle del picking/pedido o ubicación picking por bodega."
+  - "#EJC20260527: HH talla-color/caja master puede tener varias coincidencias por licencia/SKU; antes de abrir frm_picking_datos debe fijar selitem con una línea base e impedir proceso si IdUbicacion=0, porque gBePickingUbic se toma desde selitem."
 
 mejoras_ya_existentes_detectadas:
   - "Correcciones recientes en flujo reemplazo/no encontrado por conflicto CKFK (histórico del handoff)."
   - "Mapa de concurrencia HH-WS ya identifica picking como zona de riesgo alto."
+  - "#EJC20260527: clsLnTrans_picking_det_Partial.vb centraliza limpieza de movimientos de picking/no-pickeado por IdMovimiento para evitar movimientos huérfanos tras liberar stock."
+  - "#EJC20260527: clsLnTrans_picking_ubic_Partial.vb refresca BOF picking despachado por pedido/detalle desde trans_picking_ubic + trans_pe_det, conservando líneas ya procesadas aunque cambie stock_res."
+  - "#EJC20260527: clsLnTrans_movimientos_Partial.Insertar_Movimiento_Picking asigna IdUbicacionDestino antes de insertar trans_movimientos y valida destino distinto de cero."
+  - "#EJC20260527: comparación HH dev_2023_estable/origin_dev_2026_mampa: callMethod Actualizar_Picking mantiene mismos parámetros; no hay pérdida de ubicación destino en HH para picking normal."
+  - "#EJC20260527: frm_detalle_tareas_picking.java fija selitem/selid cuando listaPickingFiltrada tiene múltiples líneas y bloquea líneas sin IdUbicacion antes de enviar a frm_picking_datos."
 
 quick_wins:
   - "Instrumentar ms por callback en HH.PIK.DATOS."

@@ -1,0 +1,63 @@
+target: app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java
+=== CHECK: ==\s*null ===
+165:                                txtCodigoPrd.getText().toString()==null){
+279:                            vLP == null  ) {
+804:            if (bodega_ubicacion == null)
+839:            if (bodega_ubicacion == null){
+
+=== CHECK: !=\s*null ===
+274:            if (vStock!=null){
+275:                if (vStock.Lic_plate!=null){
+681:                if (gl.BeStockPallet!=null) {
+889:            if (gProdEstado != null){
+985:            if(txtPosiciones.getParent()!= null){
+
+=== CHECK: isEmpty\(\) ===
+164:                                txtCodigoPrd.getText().toString().isEmpty() ||
+463:            if (txtUbicOrigen.getText().toString().isEmpty()) {
+476:            if (txtUbicDestino.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+163:                        if (txtCodigoPrd.getText().toString().equals("") ||
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+38:    private double vCantidadAUbicar;
+39:    private boolean compl;
+41:    private clsBeTrans_movimientos gMovimientoDet;
+42:    private clsBeBodega_ubicacion bodega_ubicacion;
+43:    private clsBeProducto_estado gProdEstado;
+44:    private clsBeStock pStock;
+47:    private XMLObject xobj;
+48:    private ProgressDialog progress;
+50:    private Date fecha_ini;
+52:    private boolean EsPalletNoEstandar=false;
+53:    private boolean TienePosiciones=false;
+55:    private int vPosiciones=0;
+56:    private final int vIdReabastecimientoLog=0;
+58:    private final boolean listo=true;
+
+=== CHECK: setOnFocusChangeListener ===
+140:            txtUbicOrigen.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+158:            /*txtCodigoPrd.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+186:            txtUbicDestino.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+205:            txtCantidad.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+=== CHECK: setOnKeyListener ===
+133:            txtUbicOrigen.setOnKeyListener((v, keyCode, event) -> {
+151:            txtCodigoPrd.setOnKeyListener((v, keyCode, event) -> {
+172:            txtLicPlate.setOnKeyListener((v, keyCode, event) -> {
+179:            txtUbicDestino.setOnKeyListener((v, keyCode, event) -> {
+197:            txtCantidad.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+242:            txtPeso.setText(""+ gl.tareadet.Stock.getPeso());
+243:            txtUnidadMedida.setText(""+ gl.tareadet.Producto.UnidadMedida.getNombre());
+316:            txtUbicDestino.setText("");
+321:                txtEstadoDestino.setText("");
+379:                    txtCodigoPrd.setText("");
+401:                    txtLicPlate.setText("");
+441:                    txtLicPlate.setText("");
+457:                    txtCodigoPrd.setText("");
+813:                txtUbicOrigen.setText("");
+989:            txtPosiciones.setText("");
+

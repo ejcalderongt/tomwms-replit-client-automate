@@ -1,0 +1,136 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_datos.java
+=== CHECK: ==\s*null ===
+234:            if(BePedidoDetVerif.Fecha_Vence == null || BePedidoDetVerif.Fecha_Vence.trim().isEmpty()) {
+367:            if(Expira == null || Expira.trim().isEmpty()) {
+390:            if (gBeProducto == null){
+431:            if (BePedidoDetVerif.Fecha_Vence == null || BePedidoDetVerif.Fecha_Vence.equals("01/01/1900")) {
+1163:            if (gBeProducto == null){
+
+=== CHECK: !=\s*null ===
+278:                if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
+394:                if (BePickingUbicList !=null){
+396:                    if (BePickingUbicList.items !=null){
+435:            txtVenceVeri.setText(Expira != null ? Expira: "01/01/1900");
+456:                if (gBeProducto.Presentaciones!=null){
+457:                    if (gBeProducto.Presentaciones.items!=null){
+576:                if (gBeProducto.Presentaciones != null) {
+653:            if (pSubListPickingU !=null) {
+654:                if (pSubListPickingU.items != null) {
+718:            if (gBeProducto.Presentaciones != null) {
+722:                if (gBeProducto.Presentaciones.items != null) {
+857:            if (BePickingUbicList!=null){
+907:            if (pSubListPickingU.items != null) {
+1068:                if (dialogSupervisor != null && dialogSupervisor.isShowing()) {
+1246:            if (tmpBePresentacion != null) {
+1247:                if (tmpBePresentacion.items != null) {
+1343:                    if (pSubListPickingU != null) {
+1344:                        if (pSubListPickingU.items != null) {
+1550:            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+1558:                if (photoFile != null) {
+1624:            if (beListTransPickingImagen != null) {
+1625:                if (beListTransPickingImagen.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+207:        if (gl.gBodega_Destino.isEmpty()){
+234:            if(BePedidoDetVerif.Fecha_Vence == null || BePedidoDetVerif.Fecha_Vence.trim().isEmpty()) {
+367:            if(Expira == null || Expira.trim().isEmpty()) {
+379:            String vIndiceRotacion = (gBeProducto.Indice_Rotacion.Descripcion.isEmpty() ?"N/D":gBeProducto.Indice_Rotacion.Descripcion);
+380:            String vTipoProducto = (gBeProducto.TipoProducto.NombreTipoProducto.isEmpty() ?"N/D":gBeProducto.TipoProducto.NombreTipoProducto);
+402:                            if (Lp.isEmpty()) {
+439:            if (BePedidoDetVerif.Lote.isEmpty()) {
+444:            chkBono.setChecked(!BePedidoDetVerif.Bono.isEmpty());
+445:            if (!BePedidoDetVerif.Bono.isEmpty()){
+743:                    if (!PresList.isEmpty()) cmbPresVeri.setSelection(0);
+847:            if(!vPeso.isEmpty()){
+860:                    if (Lote.isEmpty() && Expira.equals("01/01/1900")) {
+872:                    if (Lp.isEmpty()) AuxList = stream(BePickingUbicList.items)
+908:                if (!pSubListPickingU.items.isEmpty()) {
+1345:                            if (!pSubListPickingU.items.isEmpty()) {
+1520:        if (usuario.isEmpty()) {
+1524:        if (clave.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+66:    private WebServiceHandler ws;
+67:    private XMLObject xobj;
+68:    private ProgressDialog progress;
+70:    private EditText txtVenceVeri;
+71:    private EditText txtCantVeri;
+72:    private EditText txtPesoVeri;
+73:    private EditText txtUmbasVeri;
+74:    private EditText txtLoteVeri;
+75:    private EditText txtPreSol;
+76:    private EditText txtPresRec;
+77:    private EditText txtUnidadSol;
+78:    private EditText txtUnidadRec;
+79:    private TextView lblTituloForma;
+80:    private TextView lblLicPlate2;
+81:    private TextView lblVenceVeri;
+82:    private TextView lblCantVeri;
+83:    private TextView lblLoteVeri;
+84:    private TextView lblPresentacion;
+85:    private TextView lblPresRec;
+86:    private TextView lblPresSol;
+87:    private TextView lblUnidadSol;
+88:    private TextView lblUnidadRec;
+89:    private Spinner cmbPresVeri;
+90:    private LinearLayout llFechaVence;
+91:    private LinearLayout llLote;
+92:    private LinearLayout llPresentacion;
+93:    private LinearLayout llPeso;
+95:    private RelativeLayout relReemplazo;
+98:    private FloatingActionButton btnTareas;
+99:    private CheckBox chkBono;
+100:    private clsBeTrans_picking_ubicList BePickingUbicList = new clsBeTrans_picking_ubicList();
+106:    private clsBeProducto_Presentacion auxPres = new clsBeProducto_Presentacion();
+108:    private int IdProductoBodega;
+109:    private String Lp;
+114:    private final ArrayList<String> PresList = new ArrayList<>();
+117:    private String Codigo = "";
+118:    private String Expira = "";
+119:    private String Lote = "";
+120:    private double Rec = 0;
+121:    private double Ver = 0;
+122:    private double factor = 0;
+123:    private double pPeso;
+124:    private double pCantidad;
+125:    private int pTipo = 0;
+127:    private double peso_picking = 0;
+129:    private int anno;
+130:    private int mes;
+131:    private int dia;
+133:    private DatePicker dpResult;
+136:    private String encoded="";
+138:    private RelativeLayout relOpciones;
+140:    private AlertDialog dialogSupervisor;
+142:    private String opcionPermiso;
+145:    private boolean isProcessing = false;
+146:    private boolean cerrandoPantalla = false;
+148:    private boolean criticalWsInFlight = false;
+149:    private int criticalWsTokenSeq = 0;
+150:    private int criticalWsActiveToken = 0;
+151:    private int criticalWsActiveCallback = -1;
+696:    private final boolean HicimosUnaFumada=false;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+261:            //#MA20260514 cambio de setOnKeyListener a setOnEditorActionListener para evitar doble click
+275:            //#MA20260514 cambio de setOnKeyListener a setOnEditorActionListener para evitar doble click
+317:            txtPesoVeri.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+208:            txtBodegaDestino.setText("");
+210:            txtBodegaDestino.setText("Destino:" + gl.gBodega_Destino + "\n No.Pedido: " + gl.gIdPedidoEnc);
+446:                chkBono.setText("C/"+BePedidoDetVerif.Bono);
+448:                chkBono.setText("S/MANUFACTURA");
+454:                lblCantVeri.setText("Cantidad ("+BePedidoDetVerif.getNom_Presentacion()+"): ");
+522:                            txtPresRec.setText("0.00");
+523:                            txtUnidadRec.setText("0.00");
+568:                            txtPresPick.setText(""+Rec);
+574:                lblCantVeri.setText("Cantidad ("+ UM +"): ");
+703:            txtPreSol.setText("0");
+

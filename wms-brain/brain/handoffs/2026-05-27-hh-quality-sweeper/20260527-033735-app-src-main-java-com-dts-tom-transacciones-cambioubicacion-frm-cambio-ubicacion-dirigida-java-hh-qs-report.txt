@@ -1,0 +1,64 @@
+target: app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java
+=== CHECK: ==\s*null ===
+770:            if (bodega_ubicacion == null)
+805:            if (bodega_ubicacion == null){
+
+=== CHECK: !=\s*null ===
+246:            if (vStock!=null){
+247:                if (vStock.Lic_plate!=null){
+647:                if (gl.BeStockPallet!=null) {
+855:            if (gProdEstado != null){
+947:            if(txtPosiciones.getParent()!= null){
+
+=== CHECK: isEmpty\(\) ===
+433:            if (txtUbicOrigen.getText().toString().isEmpty()) {
+446:            if (txtUbicDestino.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+33:    private TextView lblTituloForma;
+34:    private TextView lblCant;
+35:    private TextView lblDescProd;
+36:    private TextView lblNomDestino;
+37:    private TextView txtPresentacion;
+38:    private TextView txtPropietario;
+39:    private TextView txtLote;
+40:    private TextView txtVence;
+41:    private TextView txtEstado;
+42:    private TextView txtPeso;
+43:    private TextView txtEstadoDestino;
+44:    private TextView txtUnidadMedida;
+48:    private double vCantidadAUbicar;
+49:    private boolean compl;
+51:    private clsBeTrans_movimientos gMovimientoDet;
+52:    private clsBeBodega_ubicacion bodega_ubicacion;
+53:    private clsBeStock pStock;
+56:    private XMLObject xobj;
+57:    private ProgressDialog progress;
+59:    private Date fecha_ini;
+61:    private int vPosiciones;
+
+=== CHECK: setOnFocusChangeListener ===
+141:            txtUbicOrigen.setOnFocusChangeListener((v, hasFocus) -> {
+168:            txtUbicDestino.setOnFocusChangeListener((v, hasFocus) -> {
+182:            txtCantidad.setOnFocusChangeListener((v, hasFocus) -> {
+
+=== CHECK: setOnKeyListener ===
+134:            txtUbicOrigen.setOnKeyListener((v, keyCode, event) -> {
+147:            txtCodigoPrd.setOnKeyListener((v, keyCode, event) -> {
+154:            txtLicPlate.setOnKeyListener((v, keyCode, event) -> {
+161:            txtUbicDestino.setOnKeyListener((v, keyCode, event) -> {
+174:            txtCantidad.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+286:            txtUbicDestino.setText("");
+291:                txtEstadoDestino.setText("");
+349:                    txtCodigoPrd.setText("");
+371:                    txtLicPlate.setText("");
+411:                    txtLicPlate.setText("");
+427:                    txtCodigoPrd.setText("");
+779:                txtUbicOrigen.setText("");
+951:            txtPosiciones.setText("");
+

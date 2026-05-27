@@ -365,3 +365,20 @@ uso_recomendado_para_cambios:
   - "3) validar reglas R-INV-CIC-* antes de cambiar visibilidad o persistencia."
   - "4) registrar decisión y evidencia en BITACORA_JIRA + LOG_DIARIO."
 
+hallazgos_y_fix_rapido_2026_05_26:
+  - id: H-INV-CIC-001
+    hallazgo: "DAL devolvía genera_lote/control_vencimiento derivados de control_peso en rutas específicas."
+    impacto: "Validaciones HH/BOF podían comportarse con reglas incorrectas según sabor del producto."
+    fix:
+      repo: TOMWMS
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_vw_Partial.vb
+      tag: "#EJC20260526"
+      accion: "Se homologó mapeo a producto.control_lote y producto.control_vencimiento."
+  - id: H-INV-CIC-002
+    hallazgo: "HH exigía licencia con validación redundante, bloqueando escenarios sin LP."
+    impacto: "Conteos válidos sin licencia no podían guardarse."
+    fix:
+      repo: TOMHH2025
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java
+      tag: "#EJC20260526"
+      accion: "Se dejó la exigencia de licencia solo cuando Genera_lp está activo."

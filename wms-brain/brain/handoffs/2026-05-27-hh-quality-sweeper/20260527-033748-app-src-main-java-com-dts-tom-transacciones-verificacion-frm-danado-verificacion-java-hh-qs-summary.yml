@@ -1,0 +1,9 @@
+id: hh-qs-20260527-033748
+tag: '#EJC20260527'
+mode: safe-fix
+target: 'app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_danado_verificacion.java'
+artifacts:
+  report: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033748-app-src-main-java-com-dts-tom-transacciones-verificacion-frm-danado-verificacion-java-hh-qs-report.txt'
+  deps: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033748-app-src-main-java-com-dts-tom-transacciones-verificacion-frm-danado-verificacion-java-hh-qs-deps.txt'
+  safe_fix: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033748-app-src-main-java-com-dts-tom-transacciones-verificacion-frm-danado-verificacion-java-hh-qs-safe-fix.txt'
+status: done

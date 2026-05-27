@@ -1,0 +1,55 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_verificados.java
+=== CHECK: ==\s*null ===
+394:            if ( vditem == null || vditem.getIdinventariores() == 0){
+
+=== CHECK: !=\s*null ===
+162:            if (BeList!=null){
+163:                if (BeList.items!=null){
+296:            if (BeListPres!=null){
+297:                if (BeListPres.items!=null){
+329:            if (BeListEstado!=null){
+330:                if (BeListEstado.items!=null){
+543:            if (BeProducto!=null){
+
+=== CHECK: isEmpty\(\) ===
+123:                        if (!txtCodProdVeri.getText().toString().isEmpty()) {
+136:                        if (!txtUbic.getText().toString().isEmpty()) {
+139:                            if (txtCodProdVeri.getText().toString().isEmpty()) {
+377:            if (txtCantRes.getText().toString().isEmpty()||txtCantRes.getText().equals("")||txtCantRes.getText().equals("0")){
+452:                        if (!txtUbic.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+377:            if (txtCantRes.getText().toString().isEmpty()||txtCantRes.getText().equals("")||txtCantRes.getText().equals("0")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+45:    private WebServiceHandler ws;
+46:    private XMLObject xobj;
+48:    private ProgressDialog progress;
+51:    private ListView ListView;
+53:    private Dialog dialog;
+56:    private clsBeTrans_inv_resumen_grid selItem = new clsBeTrans_inv_resumen_grid();
+57:    private final ArrayList<clsBeTrans_inv_resumen_grid> BeListVerificados = new ArrayList<clsBeTrans_inv_resumen_grid>();
+58:    private clsBeProducto BeProducto = new clsBeProducto();
+59:    private clsBeProducto BBeProducto = new clsBeProducto();
+60:    private clsBeTrans_inv_resumen_gridList BeList = new clsBeTrans_inv_resumen_gridList();
+61:    private clsBeProducto_PresentacionList BeListPres = new clsBeProducto_PresentacionList();
+62:    private clsBeProducto_estadoList BeListEstado = new clsBeProducto_estadoList();
+63:    private clsBeTrans_inv_resumen vditem = new clsBeTrans_inv_resumen();
+67:    private final ArrayList<String> EstadoList= new ArrayList<String>();
+68:    private final ArrayList<String> PresList= new ArrayList<String>();
+70:    private list_adapt_verificados adapter;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+118:            txtCodProdVeri.setOnKeyListener(new View.OnKeyListener() {
+132:            txtUbic.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+140:                                lblPrdContVeri.setText("");
+176:                    btnRegs.setText("Regs: "+Count);
+179:                    btnRegs.setText("Regs: 0");
+182:                btnRegs.setText("Regs: 0");
+432:        txtCodProdVeri.setText("");
+

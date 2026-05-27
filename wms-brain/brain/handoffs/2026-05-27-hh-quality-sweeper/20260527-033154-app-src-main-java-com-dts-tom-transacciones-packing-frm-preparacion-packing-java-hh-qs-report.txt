@@ -1,0 +1,86 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_preparacion_packing.java
+=== CHECK: ==\s*null ===
+335:                if(licenciaPacking == null || !licenciaPacking.toLowerCase(Locale.ROOT).contains(licencia)) {
+341:                if(item.CodigoProducto == null || !item.CodigoProducto.toLowerCase(Locale.ROOT).contains(codigo)) {
+358:            if (item == null) return "";
+487:                    vLotePacking = (packing.Lote==null?"":packing.Lote);
+493:                            (obj.Lote ==null || obj.Lote.equals(vLotePacking)) ) {
+633:                .filter(o -> o.getLote() == null || o.getLote().equals(gl.auxPacking.lote))
+730:        if (pick==null) return;
+813:            if (nBeResolucion == null){
+903:                    obj.Lote = (obj.getLote()==null?"":obj.getLote());
+917:                                .filter(p -> p.getLote() == null || p.getLote().equals(obj.Lote)) // Maneja el caso cuando obj.Lote es null
+947:        if (pick==null) return;
+997:        if (gl.auxPacking == null) {
+
+=== CHECK: !=\s*null ===
+183:                if (nomProd != null && nomProd.contains(":")) {
+360:            if (item.No_linea != null && !item.No_linea.trim().isEmpty()) {
+364:            if (item.EsConteo && item.nom_prod != null && item.nom_prod.contains(":")) {
+557:                if (savedList!=null) {
+815:                if (xobj!=null){
+822:            if (nBeResolucion !=null){
+1045:                        if (nBeResolucion != null) {
+1133:        if (progress != null && progress.isShowing()) {
+1147:        if (progress != null && progress.isShowing()) {
+
+=== CHECK: isEmpty\(\) ===
+301:               boolean tienelic = !txtFiltroLicencia.getText().toString().trim().isEmpty();
+302:               boolean tienecod = !txtFiltroCodigo.getText().toString().trim().isEmpty();
+333:            if(!licencia.isEmpty()){
+340:            if(!codigo.isEmpty()){
+360:            if (item.No_linea != null && !item.No_linea.trim().isEmpty()) {
+376:   boolean tieneLic = !txtFiltroLicencia.getText().toString().trim().isEmpty();
+377:        boolean tieneCod = !txtFiltroCodigo.getText().toString().trim().isEmpty();
+734:            if (ss.isEmpty()) return;
+957:                if (prid.isEmpty() | pick.items.get(i).CodigoProducto.equalsIgnoreCase(prid)) {
+966:                    if (prid.isEmpty()) {
+1414:            if (!txtLicenciaPacking.getText().toString().trim().isEmpty()){
+1430:                if (!pNumeroLP.isEmpty()) {
+1537:                    if (!zpl.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+423:                    if (!actLinea.equals("")) {
+446:            if (!actLinea.equals("")) {
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+54:    private ListView listView;
+57:    private ProgressBar pbar;
+59:    private RelativeLayout relFiltros;
+60:    private WebServiceHandler ws;
+61:    private XMLObject xobj;
+63:    private final ArrayList<clsBeTrans_packing_enc> items = new ArrayList<>();
+64:    private final ArrayList<clsBeTrans_packing_enc> item_list = new ArrayList<>();
+65:    private clsBeTrans_picking_ubicList pick = new clsBeTrans_picking_ubicList();
+66:    private clsBeTrans_packing_encList itemList ;
+67:    private clsBeTrans_packing_encList savedList = new clsBeTrans_packing_encList();
+69:    private list_adapt_lista_packing adapter;
+70:    private clsBeTrans_packing_enc selitem;
+72:    private ObjectAnimator anim;
+73:    private ProgressDialog progress;
+76:    private String sellp=".";
+77:    private boolean idle=true;
+78:    private clsBeResolucion_lp_operador nBeResolucion = null;
+79:    private String pNumeroLP = "";
+80:    private Spinner cmbCantidad;
+81:    private Integer CantCopias =1;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+250:            txtLP.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+91:        txtLinea = findViewById(R.id.editTextNumber);txtLinea.setText("1");
+139:       txtLinea.setText(""+nl);
+305:                   txtFiltroLicencia.setText("");
+306:                   txtFiltroCodigo.setText("");
+308:                   txtFiltroLicencia.setText("");
+310:                   txtFiltroCodigo.setText("");
+513:            lblProc.setText("Procesado : "+(pick.items.size() - pendientes));
+519:        lblPend.setText("Pendiente : "+pendientes);
+520:        txtLP.setText("");focusLP();
+707:            txtLP.setText("");
+1343:                txtLP.setText("");
+

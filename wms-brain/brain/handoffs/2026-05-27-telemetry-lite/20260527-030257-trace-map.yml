@@ -1,0 +1,5 @@
+seed_symbol: BloquearControles_Por_VerificacionBOF
+hits:
+  - '.\TOMIMSV4\TOMIMSV4\Transacciones\Picking\frmPicking.vb:2249:                        BloquearControles_Por_VerificacionBOF(False)'
+  - '.\TOMIMSV4\TOMIMSV4\Transacciones\Picking\frmPicking.vb:2251:                        '    BloquearControles_Por_VerificacionBOF(True)'
+  - '.\TOMIMSV4\TOMIMSV4\Transacciones\Picking\frmPicking.vb:6058:    Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)'

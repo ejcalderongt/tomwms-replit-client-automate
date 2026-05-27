@@ -1,0 +1,651 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java
+=== CHECK: ==\s*null ===
+735:                        if (palletPendiente == null) {
+1127:                        if (DetalleOc==null){
+2605:                                    if (pListBeProductoPallet.items == null) {
+2631:                        if (pListBeStockSeRec.items == null) {
+3168:            if (BeListRecDet == null || BeListRecDet.items == null) {
+3221:                if (detTempActivo == null) {
+3339:            if ((detalleActual == null || detalleActual.IdOrdenCompraDet == 0) && gl.gselitem != null) {
+3343:            if ((detalleActual == null || detalleActual.IdOrdenCompraDet == 0)
+3348:                    if (item == null) continue;
+3374:            if (beTransOCDet == null) {
+3386:            if (BeTransReDet == null) {
+3415:        if (det == null) return;
+3475:        if (BeOcDet == null) {
+3483:        if (gl.gBeOrdenCompra.DetalleLotes.items == null) {
+3527:        if (BeOcDet == null || gl.gBeOrdenCompra.DetalleLotes.items == null) {
+3564:                && gl.gBeOrdenCompra.DetalleLotes.items == null) {
+3634:        if (frm_list_rec_prod.BeProducto == null
+4384:                        if (BeProducto.Presentaciones.items == null || BeOcDet.IdPresentacion == 0) {
+4415:                        if (nBeResolucion == null) {
+4513:                        if (c.Codigo_barra == null || c.Codigo_barra.trim().isEmpty()) {
+4762:                                        (c.Lic_Plate == null || android.text.TextUtils.equals(c.Lic_Plate, LpOrigen)))
+4926:        if (BeINavBarraPallet == null){
+4939:        if (BeINavBarraPallet == null){
+4949:        if (presentacion == null){
+5380:            if(pListBeStockRec.items == null) {
+5471:                if(AuxListTransReDet.items == null) {
+5494:                if (AuxListStockRec.items == null) {
+5678:                if (pListBeStockRec == null || pListBeStockRec.items == null) {
+5693:                } else if (pListBeStockRec.items.get(pIndiceListaStock).Lic_plate == null) {
+5703:                if (pListBeStockRec.items.get(pIndiceListaStock).Serial == null) {
+5802:            if (strFechaVence == null || pFechaActual == null) {
+5903:            if (pListTransRecDet == null) {
+5906:            if (pListTransRecDet.items == null) {
+5909:            if (gl.gBeRecepcion == null) {
+5912:            if (gl.gBeRecepcion.Detalle == null) {
+5915:            if (gl.gBeRecepcion.Detalle.items == null) {
+5918:            if (gl.gBeRecepcion.DetalleParametros == null) {
+5921:            if (gl.gBeRecepcion.DetalleParametros.items == null) {
+5924:            if (plistBeReDetParametros == null) {
+5927:            if (plistBeReDetParametros.items == null) {
+5930:            if (pListBeStockRec == null) {
+5933:            if (pListBeStockRec.items == null) {
+6576:            if (pNumeroLP == null || pNumeroLP.isEmpty()) {
+7673:                                                    (c.Ubicacion == null || c.Ubicacion.isEmpty() || c.Ubicacion.equals(ubiDetLote));
+8064:                        if (listaProdPalletsNuevos.items == null) {
+8116:                if (listaProdPalletsNuevos.items == null) {
+8569:                                if (pListBeStockRec.items.get(0).Lic_plate == null
+8586:                                    if (BeTransReDet.Lic_plate == null
+8753:                                "pIdStock",(pListBeStockRec.items==null?0:pListBeStockRec.items.get(0).IdStockRec));
+9771:            if (nBeResolucion == null){
+9836:                                    if (l.Lic_Plate == null) {
+10112:        if (gl.gBeRecepcion == null) {
+10116:        if (gl.gBeRecepcion.Detalle == null) {
+10120:        if (gl.gBeRecepcion.Detalle.items == null) {
+10667:        if (url == null) {
+11633:        if (idEstado <= 0 || LProductoEstado == null || LProductoEstado.items == null || LProductoEstado.items.isEmpty()) {
+11646:        if (estadoProducto == null) {
+11694:        if (stockRec == null) {
+11708:        if (recDet == null) {
+11743:            if (pListBeStockRec.items.get(0).ProductoEstado == null) {
+11752:        if (lBeINavBarraPallet == null || lBeINavBarraPallet.items == null || lBeINavBarraPallet.items.isEmpty()) {
+11757:        if (lpDigitada == null || lpDigitada.trim().isEmpty()) {
+11761:        lpDigitada = lpDigitada == null ? "" : lpDigitada.trim().replace("$", "");
+11786:        txtNoLP.setText(BeINavBarraPallet.Codigo_barra == null ? "" : BeINavBarraPallet.Codigo_barra);
+11810:            if(lBeINavBarraPallet == null || lBeINavBarraPallet.items == null || lBeINavBarraPallet.items.isEmpty()){
+11820:                if (palletPendiente == null) {
+11851:            if (lBeProducto == null || lBeProducto.items == null) {
+11860:                if (beProducto == null) {
+
+=== CHECK: !=\s*null ===
+468:            if (gl.gselitem != null) {
+688:                    if (BeProducto.Presentacion != null){
+726:                    setEscaneoPallet(lBeINavBarraPallet != null && lBeINavBarraPallet.items != null && !lBeINavBarraPallet.items.isEmpty());
+821:                        if (LProductoEstado.items!=null){
+836:                                if (tmpLProductoEstado != null && !tmpLProductoEstado.isEmpty()) {
+998:                    if(txtLoteRec!=null){
+1008:                    if(txtNoLP!=null){
+1121:                    if (gl.gpListDetalleOC.items != null) {
+1132:                        if (DetalleOc != null) {
+1139:                            if (ListaBeTallColor != null) {
+1240:            if(txtPosiciones.getParent()!= null){
+1276:                    method != null ? method.getName() : "MétodoDesconocido",
+1297:            if (BeProducto.Presentaciones != null) {
+1298:                if (BeProducto.Presentaciones.items != null){
+1314:                if (BeProducto!=null){
+1794:            if (pListBeStockRec!=null){
+1795:                if (pListBeStockRec.items!=null){
+1911:                if (pListBeStockRec.items.get(pIndexStock).Fecha_Ingreso!=null){
+2117:                    method != null
+2269:            if (BeProducto.Presentaciones.items!=null){
+2337:                    if (pListBEProductoParametro!=null){
+2339:                        if (pListBEProductoParametro.items!=null){
+2571:                        if  ((BeProducto.Presentaciones!=null)){
+2573:                            if (BeProducto.Presentaciones.items!=null) {
+2638:                        if (pListBeStockSeRec.items != null) {
+2654:                        if (pListBeStockSeRec.items != null) {
+2671:                            if (pListBeStockRec != null) {
+2691:                    assert pListBeStockRec != null;
+2737:                    if (pListBeStockSeRec.items != null) {
+2745:                        if (plistBeReDetParametros.items != null) {
+2762:                        if (pListBEProductoParametro != null) {
+2764:                            if (pListBEProductoParametro.items != null) {
+2796:                    if (pListBeStockRec.items.get(pIndexStock).Presentacion != null) {
+2847:                        if (pListBeStockSeRec.items!=null){
+2867:                            if (pListBeStockRec.items!=null){
+2899:            if (pListBeStockRec!=null){
+2900:                if (pListBeStockRec.items!=null){
+2999:            if (pListBeStockSeRec.items!=null){
+3247:            if (ListaDetalleCm != null){
+3271:            String methodName = method != null
+3287:            if (gl.gselitem != null) {
+3339:            if ((detalleActual == null || detalleActual.IdOrdenCompraDet == 0) && gl.gselitem != null) {
+3344:                    && gl.gpListDetalleOC != null
+3345:                    && gl.gpListDetalleOC.items != null) {
+3364:            if (detalleActual != null && detalleActual.IdOrdenCompraDet > 0) {
+3397:            if (pListTransRecDet != null && pListTransRecDet.items != null) {
+3403:            if (BeListRecDet != null && BeListRecDet.items != null) {
+3653:        if (frm_list_rec_prod.BeProducto != null
+3686:                if (pListTransRecDet.items!=null){
+3696:                    if (BeProducto.Presentacion != null){
+3734:                if (BeProducto.Presentaciones != null) {
+3735:                    if (BeProducto.Presentaciones.items != null && !BeProducto.Presentaciones.items.isEmpty()) {
+3803:                if (pListTransRecDet.items!=null){
+3813:                    if (BeProducto.Presentacion != null){
+3863:                if (pListTransRecDet.items!=null){
+3932:                    if (gl.gBeOrdenCompra.DetalleLotes.items != null) {
+3961:                    if(BeProducto.Presentaciones.items!=null){
+3972:                if (BeProducto.Presentaciones != null) {
+3973:                    if (BeProducto.Presentaciones.items != null) {
+3997:                if (BeProducto.Presentaciones != null && BeProducto.Presentaciones.items != null && BeProducto.Presentaciones.items.get(Indx).EsPallet) {
+4070:        if (BeProducto.Presentacion != null){
+4151:                if(BeProducto.Presentaciones != null && BeOcDet.IdPresentacion!=0){
+4301:                if (gl.gBeOrdenCompra!=null) {
+4402:                if (BeProducto.Presentaciones.items!=null){
+4451:            if (gl.gImpresora != null){
+4477:            if ( pListTransRecDet.items.get(0).ProductoEstado!=null&&pListTransRecDet.items.get(0).ProductoEstado.IdEstado>0){
+4523:            if (BeINavBarraPallet.UM_Producto != null){
+4753:                    if (ubic.items != null) {
+4772:                        if (ubic.items!=null){
+4790:                            if (ubic.items!=null){
+4805:                            if (ubic.items!=null) {
+4830:                if (BeUbicaciones!=null){
+4871:                    if (ubiDetLote!=null){
+4966:        return presentacion != null
+4967:                && presentacion.Nombre != null
+4973:        if (BeProducto != null
+4974:                && BeProducto.Presentaciones != null
+4975:                && BeProducto.Presentaciones.items != null){
+4985:            if (BeINavBarraPallet != null
+4986:                    && BeINavBarraPallet.UM_Producto != null
+4991:                    boolean codigoBarraCoincide = pres.Codigo_barra != null
+4994:                    boolean codigoCoincide = pres.Codigo != null
+5004:        if (BeProducto != null){
+5018:            if (BeINavBarraPallet!=null){
+5106:            if (BeProducto.Presentaciones!=null){
+5170:            if(BeProducto.Codigos_Barra!=null){
+5172:                if (BeProducto.Codigos_Barra.items!=null){
+5178:                        if (BeProducto.Presentaciones!=null){
+5211:            if (BeProducto.Presentaciones!=null){
+5213:                if (BeProducto.Presentaciones.items!=null){
+5300:            if (BeProducto!=null){
+5355:                    if (txtNoLP != null) {
+5459:                if (ListaBeTallColor != null && ListaBeTallColor.items != null) {
+5467:                if (AuxTallaColor != null) {
+5569:                if (BeProducto.Presentaciones != null) {
+5571:                    if (BeProducto.Presentaciones.items != null){
+5612:            if (pListBeStockRec!=null){
+5613:                if (pListBeStockRec.items!=null){
+5665:                    if (AuxTallaColor != null) {
+5820:            if (gl.pProveedor_Tiempos != null
+5821:                    && gl.pProveedor_Tiempos.items != null
+5966:            if (auxListTransRecDet.items!=null)
+5996:            if (gl.gBeRecepcion.DetalleParametros.items!=null){
+6000:            if (plistBeReDetParametros.items!=null){
+6114:            String methodName = method != null
+6129:            if (gl.IdImpresora>0 && gl.MacPrinter!=null){
+6153:            if (errorMessage != null
+6566:            if (BeTransReDet!=null){
+7221:            if (errorMessage != null && errorMessage.contains("Could not connect to device:")) {
+7250:            if (BeProducto!=null){
+7431:            if (BeProducto!=null){
+7635:            if (detalle_lotes.items != null ){
+7645:                            if (du != null && cmbVence != null && cmbVence.getSelectedItem() != null) {
+7651:                            if (cmbLote != null && cmbLote.getSelectedItem() != null) {
+7739:                    if (BeDetalleLotes != null){
+7758:            if (pListBeStockRec.items!=null){
+7768:                    if (pListBeProductoPallet.items!=null){
+7838:                if (listaStockPalletsNuevos!=null){
+7839:                    if (listaStockPalletsNuevos.items!=null){
+7844:                if (listaStockPalletsNuevos!=null){
+7845:                    if (listaStockPalletsNuevos.items!=null){
+7914:                    if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+7955:                if (BeTransReDet.Lic_plate!=null){
+7960:                            if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+8041:                                if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+8172:            if (BeProducto.Presentaciones!=null){
+8174:                if (BeProducto.Presentaciones.items!=null){
+8212:                if (ubiDetLote!=null) {
+8237:                if (BeProducto.Presentaciones !=null){
+8241:                    if (auxPres!=null){
+8549:                                if (ListaBeTallColor != null && ListaBeTallColor.items != null) {
+8556:                                if (AuxTallaColor != null) {
+8585:                                if (nBeResolucion != null) {
+8617:                                    if (AuxTallaColor != null) {
+8654:                                            if (AuxTallaColor != null) {
+8675:                                        if (AuxTallaColor != null) {
+9080:            final String msg = (e.getMessage() != null) ? e.getMessage() : "";
+9191:            if (vcolores != null) {
+9196:            if (colores != null && colores.items != null) {
+9217:                    method != null ? method.getName() : "MétodoDesconocido",
+9229:            if (vtallas != null) {
+9234:            if (tallas != null && tallas.items != null) {
+9256:            String methodName = method != null
+9269:            if (tallas != null && tallas.items != null && !tallas.items.isEmpty()) {
+9281:                if (BeTallColor != null) {
+9298:            if (colores != null && colores.items != null && !colores.items.isEmpty()) {
+9310:                if (BeTallColor != null) {
+9334:            if (ListaDetalleCm != null){
+9362:            String methodName = method != null
+9381:            if (Resultado!=null){
+9449:            if (BeProducto.Presentaciones != null) {
+9451:                if (BeProducto.Presentaciones.items != null){
+9502:            if (beTransOCDet != null){
+9516:                if ( pListBeStockRec!=null){
+9517:                    if (pListBeStockRec.items!=null){
+9530:                if ( gl.gBeRecepcion.Detalle!=null){
+9531:                    if (gl.gBeRecepcion.Detalle.items!=null){
+9566:            if (BeProducto != null){
+9598:            if (LProductoEstado!=null){
+9681:            if (pListBEProductoParametro!=null){
+9682:                if (pListBEProductoParametro.items!=null){
+9730:            if (AuxList!=null){
+9732:                    if (BeProducto.Presentaciones!=null){
+9733:                        if (BeProducto.Presentaciones.items!=null){
+9775:                if (xobj!=null){
+9783:            if (nBeResolucion !=null){
+9822:                    if (txtLicPlate != null){
+9826:                    if (txtLicPlate != null){
+9833:                        if (gl.gBeOrdenCompra.DetalleLotes != null) {
+9834:                            if (gl.gBeOrdenCompra.DetalleLotes.items != null) {
+9851:                            if (BeOCDetLoteList != null && BeOCDetLoteList.items != null) {
+9864:                            if (BeOCDetLoteList != null && BeOCDetLoteList.items != null) {
+9876:                        if (BeUbicaciones!=null){
+9911:            if (pListBeLicensePlate.items!=null){
+10010:            if (auxRec !=null){
+10079:            if (gl.gBeOrdenCompra.No_Documento_Recepcion_ERP != null){
+10162:                if (Resultado!=null){
+10167:                    if (ubiDetLote!=null){
+10241:                if (vIndex != null) {
+10503:                if (BeProducto!=null){
+10599:            if (LRecepcionCantidad !=null){
+10600:                if (LRecepcionCantidad.items!=null){
+10634:            if (pListBeStockRec != null){
+10788:                    if (BeProducto!=null){
+10976:                if (respuesta != null && !respuesta.isEmpty()) {
+11028:            if (etiqueta != null){
+11058:            String methodName = method != null
+11096:            if (beListProductoImagen != null) {
+11097:                if (beListProductoImagen.items != null) {
+11132:            if (beListTranReImagen != null) {
+11133:                if (beListTranReImagen.items != null) {
+11176:            String methodName = method != null
+11199:            String methodName = method != null
+11235:            String methodName = method != null
+11415:            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+11428:                if (photoFile != null) {
+11531:            if(AuxListTransReDet.items != null) {
+11535:            if(AuxListStockRec.items != null) {
+11551:            String methodName = method != null
+11615:        if (pListBeStockRec != null
+11616:                && pListBeStockRec.items != null
+11626:        if (gl.gBeRecepcion != null) {
+11640:            if (item != null && item.IdEstado == idEstado) {
+11658:        if (estadoProducto.Danado && gl.gUbicMerma != null && !gl.gUbicMerma.trim().isEmpty()) {
+11677:        if (gl.gBeRecepcion != null && gl.gBeRecepcion.Escanear_rec_ubic && gl.recepcionIdUbicacion > 0) {
+11732:        if (pListBeStockRec != null && pListBeStockRec.items != null && !pListBeStockRec.items.isEmpty()) {
+11765:                if (item != null && item.Codigo_barra != null
+11775:            if (item != null) {
+11793:        if (gl.gselitem != null && gl.gselitem.Producto != null) {
+11794:            gl.CodigoRecepcion = (gl.gselitem.Producto.Codigo_barra != null && !gl.gselitem.Producto.Codigo_barra.isEmpty())
+11880:                        gl.Carga_Producto_x_Pallet = gBeStockRec != null && gBeStockRec.IdStockRec > 0;
+11889:                        if (ListaBeTallColor != null) {
+
+=== CHECK: isEmpty\(\) ===
+503:                            !lBeINavBarraPallet.items.isEmpty()){
+726:                    setEscaneoPallet(lBeINavBarraPallet != null && lBeINavBarraPallet.items != null && !lBeINavBarraPallet.items.isEmpty());
+822:                            if (!LProductoEstado.items.isEmpty()){
+836:                                if (tmpLProductoEstado != null && !tmpLProductoEstado.isEmpty()) {
+879:                                        if (!EstadoList.isEmpty() && indx > -1) {
+885:                                        if (!EstadoList.isEmpty()) {
+999:                        if(!txtLoteRec.getText().toString().isEmpty()){
+1009:                        if(!txtNoLP.getText().toString().trim().isEmpty()){
+1114:                    if (codigo.isEmpty()) {
+1153:                                    !lBeINavBarraPallet.items.isEmpty()){
+1293:            if (!txtCantidadCopias.getText().toString().isEmpty()){
+1312:            if (!txtCantidadRec.getText().toString().isEmpty() && !txtCantidadRec.getText().toString().isEmpty()){
+1339:                if(cmbVenceRec.getText().toString().isEmpty()){
+1346:                if(txtLoteRec.getText().toString().isEmpty()){
+1360:                if (txtPeso.getText().toString().isEmpty()){
+1385:                        if (txtPesoUnitario.getText().toString().isEmpty() || Double.parseDouble(txtPesoUnitario.getText().toString())<=0 ){
+1395:            if (txtCantidadRec.getText().toString().isEmpty()){
+1428:            if (!(msg.isEmpty())){
+1454:            if (!(msg.isEmpty())){
+1480:            if (!(msg.isEmpty())){
+1522:                if(txtCantidadRec.getText().toString().isEmpty()){
+1540:                if(txtCantidadRec.getText().toString().isEmpty()){
+1634:            if (!txtCantidadRec.getText().toString().isEmpty()){
+1834:                                if (!txtNoLP.getText().toString().trim().isEmpty()){
+1855:                                    if (!txtNoLP.getText().toString().trim().isEmpty()){
+1912:                    if (pListBeStockRec.items.get(pIndexStock).Fecha_Ingreso.isEmpty()){
+2084:                CamasPorTarima = camas.isEmpty()
+2088:                CajasPorCama = cajas.isEmpty()
+2262:            if (!txtPesoUnitario.getText().toString().isEmpty() && !txtPesoUnitario.getText().toString().isEmpty()){
+2281:                if (!PresList.isEmpty()) cmbPresParams.setSelection(0);
+2378:                            if(!parametros_personalizados.isEmpty()){
+2407:                            if (txtPesoReal.getText().toString().isEmpty()){
+2458:                    if (txtTempReal.getText().toString().isEmpty()){
+2472:                if (!txtTempReal.getText().toString().isEmpty()){
+2510:                    if (txtPesoReal.getText().toString().isEmpty()){
+2662:                        if (txtSerial.getText().toString().isEmpty()) {
+2667:                        if (!txtSerial.getText().toString().isEmpty()) {
+2856:                        if (txtSerial.getText().toString().isEmpty()){
+2863:                        if (!txtSerial.getText().toString().isEmpty()){
+3147:            if (!txtNoLP.getText().toString().trim().isEmpty()){
+3491:        if (requiereDocumentoReferencia() && BeVence.isEmpty()) {
+3504:        if (!gl.gBeOrdenCompra.DetalleLotes.items.isEmpty()) {
+3534:        if (requiereDocumentoReferencia() && BeLote.isEmpty()) {
+3545:        if (!gl.gBeOrdenCompra.DetalleLotes.items.isEmpty()) {
+3552:            if (BeLote.isEmpty()) return false;
+3646:        if (!BeProducto.Presentaciones.items.isEmpty()) {
+3664:        if (!txtNoLP.getText().toString().trim().isEmpty()) {
+3735:                    if (BeProducto.Presentaciones.items != null && !BeProducto.Presentaciones.items.isEmpty()) {
+3917:            String vIndiceRotacion = (BeProducto.Indice_Rotacion.Descripcion.isEmpty()?"N/D":BeProducto.Indice_Rotacion.Descripcion);
+3918:            String vTipoProducto = (BeProducto.TipoProducto.NombreTipoProducto.isEmpty()?"N/D":BeProducto.TipoProducto.NombreTipoProducto);
+3928:                if (!gl.gFechaVenceAnterior.isEmpty()){
+3933:                        if (gl.gBeOrdenCompra.DetalleLotes.items.isEmpty()) {
+4098:            if (!pListTransRecDet.items.get(0).Lic_plate.isEmpty()) {
+4121:                if (!gl.gFechaVenceAnterior.isEmpty()){
+4227:                    if (!gl.gLoteAnterior.isEmpty() &&
+4248:                    if (!gl.gFechaVenceAnterior.isEmpty() && gl.gProductoAnterior.equals(BeProducto.getCodigo())){
+4276:                if (EstadoList.isEmpty()) cmbEstadoProductoRec.setSelection(indice);
+4416:                            if (!txtNoLP.getText().toString().trim().isEmpty()) {
+4435:                    if (!txtNoLP.getText().toString().trim().isEmpty()){
+4452:                if (gl.gImpresora.get(0).Direccion_Ip.isEmpty()){
+4513:                        if (c.Codigo_barra == null || c.Codigo_barra.trim().isEmpty()) {
+4632:            if (!VenceList.isEmpty()) {
+4658:            if (BeProducto.getControl_vencimiento() && !VenceList.isEmpty()){
+4706:            if (!LotesList.isEmpty()) {
+4749:                if ((BeProducto.getControl_vencimiento() && !VenceList.isEmpty())
+4750:                        && (BeProducto.getControl_lote() && !LotesList.isEmpty())){
+4770:                    if (BeProducto.getControl_lote() && !LotesList.isEmpty()
+4788:                        if (BeProducto.getControl_vencimiento() && VenceList.isEmpty() &&
+4832:                    if (!BeUbicaciones.isEmpty()){
+4867:                if (!UbicLotesList.isEmpty()){
+4872:                        if(!ubiDetLote.isEmpty()) {
+4881:                    if (!txtNoLP.getText().toString().trim().isEmpty()){
+4968:                && !presentacion.Nombre.trim().isEmpty();
+4987:                    && !BeINavBarraPallet.UM_Producto.trim().isEmpty()){
+5088:            if (!txtUmbasRec.getText().toString().isEmpty()){
+5176:                    if(vCodBarra.isEmpty()){
+5182:                            if(vCodBarra.isEmpty()){
+5228:                    if (PresList.isEmpty()) cmbPresRec.setSelection(0);
+5262:                if (EstadoList.isEmpty()) cmbEstadoProductoRec.setSelection(indx);
+5264:                if (EstadoList.isEmpty()) cmbEstadoProductoRec.setSelection(0);
+5289:                            && txtNoLP.getText().toString().trim().isEmpty())){
+5295:            if (!txtNoLP.getText().toString().trim().isEmpty() && gl.mode == 1) {
+5356:                        if (txtNoLP.getText().toString().trim().isEmpty()) {
+5564:                //#CKFK20240215 Le quité esta condición al if && gl.gFechaVenceAnterior.isEmpty()
+5634:                    if(txtPesoReal.getText().toString().isEmpty()){
+5642:                    if(txtTempReal.getText().toString().isEmpty()){
+5689:                if (!pLp.isEmpty()) {
+5785:            if (cmbVenceRec.getText().toString().trim().isEmpty()) {
+5822:                    && !gl.pProveedor_Tiempos.items.isEmpty()) {
+6008:            if (pListBeStockRec.items.isEmpty()){
+6139:                if (!MensajeAdicionalParaImpresion.isEmpty()){
+6374:                            (BeProducto.Codigo_barra.isEmpty()?BeProducto.Codigo:BeProducto.Codigo_barra),
+6504:                if (!zpl.isEmpty()){
+6550:            if (!txtNoLP.getText().toString().trim().isEmpty()){
+6576:            if (pNumeroLP == null || pNumeroLP.isEmpty()) {
+6605:                if (NuevasLicencias.isEmpty()) {
+6952:                    if (!zpl.isEmpty()) {
+6965:                        if (!zplSKU.isEmpty()) {
+7176:                        if (!zpl.isEmpty()) {
+7189:                            if (!zplSKU.isEmpty()) {
+7273:                if (!pesoTexto.isEmpty()) {
+7309:                //if (txtUmbasRec.getText().toString().isEmpty()){
+7312:                if (BeProducto.UnidadMedida.Nombre.isEmpty()){
+7340:                if (txtCantidadRec.getText().toString().isEmpty()){
+7357:                if (txtPesoUnitario.getText().toString().isEmpty()){
+7387:                    if (txtLoteRec.getText().toString().isEmpty()){
+7395:                    if (!txtLoteRec.getText().toString().isEmpty()){
+7478:                if (BeProducto.UnidadMedida.Nombre.isEmpty()){
+7502:                if (txtCantidadRec.getText().toString().isEmpty()){
+7519:                if (txtPesoUnitario.getText().toString().isEmpty()){
+7545:                    if (txtLoteRec.getText().toString().isEmpty()){
+7553:                    if (!txtLoteRec.getText().toString().isEmpty()){
+7583:            if (!txtPeso.getText().toString().isEmpty()){
+7599:            if (!txtCostoReal.getText().toString().isEmpty()) {
+7620:            if (!txtCantidadRec.getText().toString().isEmpty()){
+7637:                if (!detalle_lotes.items.isEmpty()){
+7673:                                                    (c.Ubicacion == null || c.Ubicacion.isEmpty() || c.Ubicacion.equals(ubiDetLote));
+7886:            if (!txtUmbasRec.getText().toString().isEmpty()){
+7892:            if (!txtLoteRec.getText().toString().isEmpty()){
+7898:                if (!(BeStockRec.Presentacion.EsPallet||chkPaletizar.isChecked()) && BeStockRec.Lic_plate.isEmpty()){
+7911:                if (!txtNoLP.getText().toString().trim().isEmpty()){
+7914:                    if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+7956:                    if(BeStockRec.Lic_plate.isEmpty()){
+7957:                        if (!txtNoLP.getText().toString().trim().isEmpty()){
+7960:                            if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+8006:                                if (!vBeStockRec.Lic_plate.isEmpty()){
+8037:                        if(BeStockRec.Lic_plate.isEmpty()){
+8038:                            if (!txtNoLP.getText().toString().trim().isEmpty()){
+8041:                                if (pNumeroLP != null && !pNumeroLP.isEmpty()) {
+8145:            if (txtCostoReal.getText().toString().isEmpty()||txtCostoReal.getText().toString().equals("0")||txtCostoReal.getText().toString().equals("0.0")){
+8199:            if (txtCantidadRec.getText().toString().isEmpty()){
+8213:                    if (!ubiDetLote.isEmpty()) {
+8434:                if (!txtCantidadRec.getText().toString().isEmpty()){
+8562:                                if (BeTransReDet.Lic_plate.isEmpty()){
+8563:                                    if (!txtNoLP.getText().toString().trim().isEmpty()) {
+8570:                                        || pListBeStockRec.items.get(0).Lic_plate.isEmpty()) {
+8572:                                    if (!txtNoLP.getText().toString().trim().isEmpty()) {
+8587:                                            || BeTransReDet.Lic_plate.isEmpty()
+8588:                                            || txtNoLP.getText().toString().trim().isEmpty()) {
+8597:                                    if (txtNoLP.getText().toString().isEmpty()){
+8774:                            if(BeTransReDet.Fecha_vence.isEmpty()){
+9269:            if (tallas != null && tallas.items != null && !tallas.items.isEmpty()) {
+9284:                    if (!nombresTallas.isEmpty()) cmbTalla.setSelection(indx);
+9298:            if (colores != null && colores.items != null && !colores.items.isEmpty()) {
+9313:                    if (!codigosColores.isEmpty()) cmbColor.setSelection(indx);
+9385:                if (AuxList.isEmpty()){
+9519:                        if(pNumeroLP.isEmpty()){
+9532:                        if(pNumeroLP.isEmpty()){
+9646:            if (!txtNoLP.getText().toString().trim().isEmpty()){
+9731:                if (AuxList.isEmpty()){
+9821:                if (!txtNoLP.getText().toString().trim().isEmpty()){
+9848:                        if (BeProducto.getControl_vencimiento() && !VenceList.isEmpty()){
+9858:                                                !c.Lic_Plate.isEmpty())
+9868:                                                !c.Lic_Plate.isEmpty() &&
+9878:                            if (BeUbicaciones.isEmpty() && !Escaneo_Pallet){
+10058:            if (!txtNoLP.getText().toString().trim().isEmpty()){
+10080:                if (!gl.gBeOrdenCompra.No_Documento_Recepcion_ERP.isEmpty()){
+10168:                        if (!ubiDetLote.isEmpty()){
+10217:            if (!Resultado.isEmpty()){
+10275:            if (!AuxList.isEmpty()){
+10672:        if (s.isEmpty()) {
+10759:                        if (lblUbicacion.getText().toString().isEmpty())
+10770:                            if (txtNoLP.getText().toString().trim().isEmpty()){
+10780:                        if (lblUbicacion.getText().toString().isEmpty())
+10832:                        if(!lBeINavBarraPallet.items.isEmpty()){
+10908:                if (!respuesta.isEmpty()){
+10976:                if (respuesta != null && !respuesta.isEmpty()) {
+11034:            if (!txtNoLP.getText().toString().trim().isEmpty()){
+11356:                                !valorIngresado.trim().isEmpty()
+11361:                        parametro_personalizado_valido = !txtvalor_t.getText().toString().equals(pListBEProductoParametro.items.get(i).Valor_texto) && !txtvalor_t.getText().toString().isEmpty();
+11366:                        parametro_personalizado_valido = !txtvalor_f.getText().toString().equals(pListBEProductoParametro.items.get(i).Valor_fecha) && !txtvalor_f.getText().toString().isEmpty();
+11575:        if (valor.isEmpty()) {
+11593:        if (!valor.isEmpty()) {
+11617:                && !pListBeStockRec.items.isEmpty()
+11633:        if (idEstado <= 0 || LProductoEstado == null || LProductoEstado.items == null || LProductoEstado.items.isEmpty()) {
+11658:        if (estadoProducto.Danado && gl.gUbicMerma != null && !gl.gUbicMerma.trim().isEmpty()) {
+11732:        if (pListBeStockRec != null && pListBeStockRec.items != null && !pListBeStockRec.items.isEmpty()) {
+11752:        if (lBeINavBarraPallet == null || lBeINavBarraPallet.items == null || lBeINavBarraPallet.items.isEmpty()) {
+11757:        if (lpDigitada == null || lpDigitada.trim().isEmpty()) {
+11763:        if (!lpDigitada.isEmpty()) {
+11794:            gl.CodigoRecepcion = (gl.gselitem.Producto.Codigo_barra != null && !gl.gselitem.Producto.Codigo_barra.isEmpty())
+11810:            if(lBeINavBarraPallet == null || lBeINavBarraPallet.items == null || lBeINavBarraPallet.items.isEmpty()){
+11903:                            !lBeINavBarraPallet.items.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+146:    private TextView lblDatosProd;
+147:    private TextView lblPropPrd;
+148:    private TextView lblPeso;
+149:    private TextView lblPUn;
+150:    private TextView lblCosto;
+151:    private TextView lblCReal;
+152:    private TextView lblPres;
+153:    private TextView lblLote;
+154:    private TextView lblVence;
+155:    private TextView lblEstiba;
+156:    private TextView lblUbicacion;
+157:    private TextView lblSerieTit;
+158:    private Button btnCantPendiente;
+159:    private Button btnLimpiarListas;
+160:    private ProgressDialog progress;
+161:    private DatePicker dpResult;
+164:    private TableRow tblEstiba;
+165:    private TableRow tblVence;
+166:    private TableRow tblLote;
+167:    private TableRow tblTalla;
+168:    private TableRow tblColor;
+171:    private Dialog dialog;
+173:    private boolean imprimirDesdeBoton = false;
+175:    private TextView lblSerialIni;
+176:    private TextView lblSerialFin;
+177:    private TextView lblCantidad;
+178:    private EditText txtLicPlate;
+179:    private EditText txtSerial;
+180:    private EditText txtAnada;
+181:    private EditText txtFechaManu;
+182:    private EditText txtTempReal;
+183:    private EditText txtPesoEsta;
+184:    private EditText txtPesoReal;
+185:    private EditText txtSerieIni;
+186:    private EditText txtSerieFin;
+187:    private EditText txtPosiciones;
+188:    private Spinner cmbPresParams;
+189:    private Spinner cmbCantidad;
+190:    private EditText txtCodigoSku;
+191:    private RecyclerView rvProductos;
+195:    private WebServiceHandler ws;
+196:    private XMLObject xobj;
+197:    private clsDataContractDI dataContractDI;
+200:    private boolean mostrar_parametros_producto;
+201:    private final boolean Mostrar_Propiedades_Parametros = false;
+202:    private double Cant_Recibida_Anterior = 0, Cant_Recibida, Cant_A_Recibir, Cant_Pendiente;
+205:    private String pNumeroLP = "";
+206:    private Integer CantCopias = 1;
+208:    private boolean PallCorrecto = false;
+209:    private int pIndexProdPallet = -1;
+210:    private int IndexPresSelected = -1;
+211:    private String MensajeParam = "";
+212:    private int pIndiceListaStock = -1;
+213:    private double CostoOC = 0;
+214:    private int vPresentacion;
+215:    private String pLp = "";
+216:    private String pSerie = "";
+217:    private boolean Existe_Lp = false;
+218:    private String ubiDetLote = null;
+219:    private boolean guardando_recepcion = false;
+221:    private clsBeTrans_oc_det BeOcDet;
+222:    private clsBeProducto_parametrosList pListBEProductoParametro = new clsBeProducto_parametrosList();
+223:    private clsBeTrans_re_det_parametrosList plistBeReDetParametros = new clsBeTrans_re_det_parametrosList();
+224:    private clsBeStock_se_recList pListBeStockSeRec = new clsBeStock_se_recList();
+225:    private clsBeStock_recList pListBeStockRec = new clsBeStock_recList();
+226:    private clsBeProducto_palletList pListBeProductoPallet = new clsBeProducto_palletList();
+227:    private clsBeTrans_re_detList pListTransRecDet = new clsBeTrans_re_detList();
+228:    private clsBeI_nav_barras_pallet BeINavBarraPallet = new clsBeI_nav_barras_pallet();
+229:    private clsBeTrans_re_det BeTransReDet = new clsBeTrans_re_det();
+230:    private clsBeTrans_oc_det_lote BeDetalleLotes = new clsBeTrans_oc_det_lote();
+231:    private clsBeStock_rec BeStockRecNuevaRec = new clsBeStock_rec();
+232:    private clsBeStock_recList listaStockPalletsNuevos = new clsBeStock_recList();
+233:    private clsBeProducto_palletList listaProdPalletsNuevos = new clsBeProducto_palletList();
+234:    private clsBeStock_rec vBeStockRec = new clsBeStock_rec();
+235:    private clsBeStock_rec vBeStockRecPallet = new clsBeStock_rec();
+236:    private clsBeProducto_pallet BeProdPallet = new clsBeProducto_pallet();
+237:    private clsBeStock gBeStockAnt;
+238:    private clsBeTrans_oc_det beTransOCDet = new clsBeTrans_oc_det();
+239:    private clsBeStock_rec gBeStockRec = new clsBeStock_rec();
+240:    private clsBeStock_se_rec ObjNS = new clsBeStock_se_rec();
+241:    private clsBeTipo_etiqueta pBeTipo_etiqueta;
+242:    private clsBeProducto_Presentacion auxPres = new clsBeProducto_Presentacion();
+265:    private int pIdPropietarioBodega = 0;
+270:    private clsBeProducto BeProducto = new clsBeProducto();
+271:    private clsBeProducto_estadoList LProductoEstado = new clsBeProducto_estadoList();
+273:    private final ArrayList<String> EstadoList = new ArrayList<>();
+274:    private final ArrayList<String> PresList = new ArrayList<>();
+275:    private final ArrayList<String> VenceList = new ArrayList<>();
+276:    private final ArrayList<String> LotesList = new ArrayList<>();
+277:    private final ArrayList<String> UbicLotesList = new ArrayList<>();
+278:    private final ArrayList<String> NuevasLicencias = new ArrayList<>();
+281:    private int year;
+282:    private int month;
+283:    private int day;
+290:    private String MensajeAdicionalParaImpresion = "";
+292:    private double DifCantUbic = 0;
+297:    private String encoded = "";
+298:    private clsBeImagen BeImagen;
+299:    private clsBeProducto_imagen BeProductoImagen = new clsBeProducto_imagen();
+300:    private int tipoCaptura = 1;
+301:    private long CorelSiguiente;
+302:    private int TmpMaxL;
+303:    private int CantidadCopias;
+304:    private clsBeStock pStock;
+310:    private FloatingActionButton btnTareas;
+312:    private final boolean isButtonClickable = true; // Flag para controlar el estado del botón
+313:    private boolean procesando = false;  //flag para controlar que no se procese por doble Enter en el input
+315:    private clsBeColorList colores = new clsBeColorList();
+316:    private clsBeTallaList tallas = new clsBeTallaList();
+317:    private int IdTallaSelect = 0;
+318:    private int IdColorSelect = 0;
+319:    private clsBeProducto_talla_color AuxTallaColor = null;
+320:    private list_adapt_detalle_recepcion_cm adapterCm;
+321:    private clsBeTrans_re_detList BeListRecDet = new clsBeTrans_re_detList();
+322:    private int IdRecDet = 0;
+323:    private clsBeTrans_re_det ItemRec = null;
+324:    private boolean EscaneandoCodigoSKU = false;
+325:    private clsBeTrans_re_det detTempActivo = null;
+327:    private final clsBeTrans_re_detList AuxListTransReDet = new clsBeTrans_re_detList();
+328:    private final clsBeStock_recList AuxListStockRec = new clsBeStock_recList();
+1225:    private int vPosiciones=0;
+4042:    private boolean Call_From_B = false;
+9763:    private clsBeResolucion_lp_operador nBeResolucion = null;
+11493:        private final Pattern mPattern;
+
+=== CHECK: setOnFocusChangeListener ===
+807:            cmbVenceRec.setOnFocusChangeListener((v, hasFocus) -> {
+901:            txtNoLP.setOnFocusChangeListener((v, hasFocus) -> {
+
+=== CHECK: setOnKeyListener ===
+720:            txtNoLP.setOnKeyListener((v, keyCode, event) -> {
+752:                 txtCantidadRec.setOnKeyListener((v, keyCode, event) -> {
+774:            txtPeso.setOnKeyListener((v, keyCode, event) -> {
+1109:            txtCodigoSku.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+428:            lblUbicacion.setText("");
+429:            txtLoteRec.setText("");
+670:                        lblEstiba.setText("Camas por Tarima: " + CamasPorTarima + " Cajas por cama: " +  CajasPorCama);
+673:                        lblEstiba.setText("");
+919:                    lblEstiba.setText("");
+1027:                    txtCantidadCopias.setText("1");
+1032:                    chkCantidadCopias.setText("Deshabilitar");
+1034:                    txtCantidadCopias.setText("0");
+1037:                    chkCantidadCopias.setText("Habilitar");
+1195:                    chkCantidadCopias.setText("Habilitar");
+1197:                    txtCantidadCopias.setText("0");
+1245:            txtPosiciones.setText("2");
+1411:                txtCantidadRec.setText("");
+1534:                    txtCantidadRec.setText("1");
+1649:            lblParametrosA.setText("Parametros A");
+1718:                txtAnada.setText("0");
+1982:                lblDescripcion_parametro.setText("Ingrese valor para: " + pListBEProductoParametro.items.get(i).TipoParametro.Descripcion);
+2205:            lblEstiba.setText("");
+2235:                lblSerieTit.setText("Serie por rango");
+3257:            lblDatosProd.setText("Total: " + mu.frmdecimal(totalCantidad, 2));
+3909:                    txtNoLP.setText("");
+4025:                        txtCantidadRec.setText("1");
+4028:                    txtCantidadRec.setText("");
+4055:            lblEstiba.setText("");
+4105:                    txtNoLP.setText("");
+4223:            txtPeso.setText("");
+4258:                        txtLoteRec.setText("");
+4329:                    txtNoLP.setText("");
+4346:                btnCantPendiente.setText("Total: "+mu.frmdecimal(gl.gselitem.Cantidad, 2)+"\n"
+4350:                btnCantPendiente.setText("Pendiente: " + mu.frmdecimal(Cant_Pendiente, gl.gCantDecDespliegue));
+4858:                                txtNoLP.setText("");
+4883:                        txtNoLP.setText("");
+4893:                        txtNoLP.setText("");
+5153:                txtLoteRec.setText("");
+6294:            //txtMensaje.setText("La fecha de vencimiento del producto " +BeProducto.Codigo+ " - " + BeProducto.Nombre + " es igual o menor a la fecha de hoy.");
+6295:            txtMensaje.setText("El vencimiento es igual o menor a la fecha de hoy.");
+10321:                txtCodigoSku.setText("");
+10322:                txtCantidadRec.setText("");
+10459:                txtNoLP.setText("");
+10485:                txtNoLP.setText("");
+

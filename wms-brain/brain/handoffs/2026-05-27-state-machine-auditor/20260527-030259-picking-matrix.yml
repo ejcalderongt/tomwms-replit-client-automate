@@ -1,0 +1,23 @@
+id: sma-20260527-030302-picking
+tag: '#EJC20260527'
+process: picking
+canonical_states:
+  - 'Nuevo'
+  - 'Pendiente'
+  - 'Procesado'
+  - 'Verificado'
+  - 'Despachado'
+  - 'Anulado'
+transitions:
+  - 'Nuevo->Pendiente'
+  - 'Pendiente->Procesado'
+  - 'Procesado->Verificado'
+  - 'Verificado->Despachado'
+  - 'Nuevo->Anulado'
+  - 'Pendiente->Anulado'
+  - 'Procesado->Anulado'
+  - 'Verificado->Anulado'
+ui_gates: []
+ws_gates: []
+db_observed_states: []
+residual_risk: medium

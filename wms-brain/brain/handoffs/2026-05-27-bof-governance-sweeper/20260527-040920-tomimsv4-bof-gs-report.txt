@@ -1,0 +1,913 @@
+scope: C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4
+vb_files_scanned: 2459
+
+=== UNUSED_PRIVATE_CANDIDATES ===
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\dsUbicSug.Designer.vb:291: private method candidate unused -> ShouldSerializeUbicOrd
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\dsUbicSug.Designer.vb:297: private method candidate unused -> ShouldSerializeUbicSort
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\dsUbicSug.Designer.vb:303: private method candidate unused -> ShouldSerializeUbicTemp
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\dsUbicSug.Designer.vb:309: private method candidate unused -> ShouldSerializeTramoVol
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:2772: private method candidate unused -> Crear_Tarea_Cambio_Ubicacion
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\cliente_direccion_dset.Designer.vb:213: private method candidate unused -> ShouldSerializecliente_direccion
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:419: private method candidate unused -> ShouldSerializeconfiguracion_qa
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:425: private method candidate unused -> ShouldSerializebodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:431: private method candidate unused -> ShouldSerializecliente
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:437: private method candidate unused -> ShouldSerializeempresa
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:443: private method candidate unused -> ShouldSerializeproducto
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:449: private method candidate unused -> ShouldSerializepropietario_bodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb:455: private method candidate unused -> ShouldSerializepropietarios
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\DetTramoByBodega.Designer.vb:239: private method candidate unused -> ShouldSerializebodega_sector
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\DetTramoByBodega.Designer.vb:245: private method candidate unused -> ShouldSerializebodega_tramo
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\DSCalendarioTarea.Designer.vb:275: private method candidate unused -> ShouldSerializebodega_muelles
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\DSCalendarioTarea.Designer.vb:281: private method candidate unused -> ShouldSerializetarea_hh
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\DSCalendarioTarea.Designer.vb:287: private method candidate unused -> ShouldSerializepropietarios
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Dset_Regla_Vence.Designer.vb:213: private method candidate unused -> ShouldSerializeregla_vencimiento
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4MBCalendar.Designer.vb:239: private method candidate unused -> ShouldSerializeAppointments
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4MBCalendar.Designer.vb:245: private method candidate unused -> ShouldSerializeResources
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet.Designer.vb:239: private method candidate unused -> ShouldSerializemotivo_anulacion
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet.Designer.vb:245: private method candidate unused -> ShouldSerializebodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet1.Designer.vb:291: private method candidate unused -> ShouldSerializemotivo_devolucion
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet1.Designer.vb:297: private method candidate unused -> ShouldSerializeempresa
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet1.Designer.vb:303: private method candidate unused -> ShouldSerializebodega_muelles
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet1.Designer.vb:309: private method candidate unused -> ShouldSerializepropietarios
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Settings.vb:29: private method candidate unused -> MySettings_SettingsLoaded
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\WaitForm.Designer.vb:24: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IA\frmIA_Chat.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IA\frmIA_Chat.vb:207: private method candidate unused -> frmIA_Chat_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IA\frmIA_Chat.vb:377: private method candidate unused -> Templates_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:20: private method candidate unused -> frmAcuerdoComercial_Shown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:97: private method candidate unused -> cmbPropietario_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:113: private method candidate unused -> cmdAplicar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:242: private method candidate unused -> GrdAcuerdosComerciales_ValidateRow
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:303: private method candidate unused -> cmbPropietario_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:320: private method candidate unused -> cmdRecargar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:331: private method candidate unused -> GrdAcuerdosComerciales_InvalidRowException
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:342: private method candidate unused -> cmdImportarAcuerdosERP_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:366: private method candidate unused -> DGridAcuerdos_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:397: private method candidate unused -> GrdAcuerdosComerciales_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.vb:426: private method candidate unused -> cmdImpresion_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb:10: private method candidate unused -> frmTipoAcuerdoComercial_Shown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb:67: private method candidate unused -> cmdGuardar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Acuerdos_Comerciales\Tipo_AcuerdoComercial\frmTipoAcuerdoComercial.vb:126: private method candidate unused -> cmbTipoCobro_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteLogin.Designer.vb:24: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteLogin.vb:7: private method candidate unused -> frmAjusteLogin_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteLogin.vb:34: private method candidate unused -> txtClave_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteLogin.vb:38: private method candidate unused -> SimpleButton1_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteLogin.vb:42: private method candidate unused -> frmAjusteLogin_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.vb:26: private method candidate unused -> frnAjusteMotivo_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.vb:79: private method candidate unused -> mnuGuardar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.vb:124: private method candidate unused -> mnuActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.vb:166: private method candidate unused -> mnuEliminar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo.vb:213: private method candidate unused -> frmAjusteMotivo_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:104: private method candidate unused -> cmdNuevo_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:108: private method candidate unused -> cmdActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:112: private method candidate unused -> cmdSalir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:165: private method candidate unused -> grdAjusteMotivo_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:169: private method candidate unused -> GridView1_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:199: private method candidate unused -> frmAjusteMotivo_List_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:203: private method candidate unused -> grdAjusteMotivo_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteMotivo_List.vb:207: private method candidate unused -> frmAjusteMotivo_List_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.vb:28: private method candidate unused -> frmAjusteTipo_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.vb:79: private method candidate unused -> mnuGuardar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.vb:127: private method candidate unused -> BarButtonItem1_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.vb:173: private method candidate unused -> mnuEliminar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo.vb:219: private method candidate unused -> frmAjusteTipo_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:51: private method candidate unused -> frmAjusteTipo_List_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:55: private method candidate unused -> cmdActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:108: private method candidate unused -> cmdNuevo_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:112: private method candidate unused -> cmdSalir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:165: private method candidate unused -> grdAjusteTipo_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:169: private method candidate unused -> GridView1_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:197: private method candidate unused -> grdAjusteTipo_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmAjusteTipo_List.vb:201: private method candidate unused -> frmAjusteTipo_List_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:100: private method candidate unused -> gvPreview_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:114: private method candidate unused -> btnSeleccionar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:134: private method candidate unused -> btnDescargarPlantilla_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:138: private method candidate unused -> btnValidar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:143: private method candidate unused -> btnProcesar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:218: private method candidate unused -> btnCancelar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:1194: private method candidate unused -> Mostrar_Diagnostico_Modal
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:1208: private method candidate unused -> btnImprimirDatos_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:1214: private method candidate unused -> btnImprimirErrores_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Ajuste\frmImportarAjusteExcel.vb:1313: private method candidate unused -> btnInsertarMotivos_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.Designer.vb:27: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:29: private method candidate unused -> frmArancel_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:179: private method candidate unused -> mnuGuardar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:193: private method candidate unused -> mnuActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:210: private method candidate unused -> mnuEliminar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:234: private method candidate unused -> mnuAsignacion_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel.vb:238: private method candidate unused -> frmArancel_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.Designer.vb:27: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:22: private method candidate unused -> frmArancel_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:131: private method candidate unused -> mnuNuevo_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:177: private method candidate unused -> Dgrid_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:181: private method candidate unused -> chkActivos_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:185: private method candidate unused -> mnuSalir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:189: private method candidate unused -> mnuActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:193: private method candidate unused -> cmdImprimir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:249: private method candidate unused -> GridView1_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:279: private method candidate unused -> Dgrid_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Arancel\frmArancel_List.vb:283: private method candidate unused -> frmArancel_List_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Backup\frmBackup.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Backup\frmBackup.vb:9: private method candidate unused -> frmBackup_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Backup\frmBackup.vb:13: private method candidate unused -> mnuGenerarBackup_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Backup\frmBackup.vb:76: private method candidate unused -> Progreso
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Backup\frmBackup.vb:104: private method candidate unused -> btnSearchFolder_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmBD.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmBD.vb:6: private method candidate unused -> frmBD_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmBD.vb:41: private method candidate unused -> dgvTablas_CellClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmBD.vb:69: private method candidate unused -> cmdXcute_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmBD.vb:106: private method candidate unused -> cmdOpenDT_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.Designer.vb:21: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:96: private method candidate unused -> cmdActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:100: private method candidate unused -> cmdSalir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:166: private method candidate unused -> cmdImprimir_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:203: private method candidate unused -> cmdExToExcel_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:207: private method candidate unused -> GridView1_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:239: private method candidate unused -> mnuGuardarLayoutGrid_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:274: private method candidate unused -> mnuEliminarLayoutGrid_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:301: private method candidate unused -> frmTablasBD_Shown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Base_Datos\frmTablasBD.vb:352: private method candidate unused -> GridView_Layout
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\DsBodega.Designer.vb:317: private method candidate unused -> ShouldSerializeArea
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\DsBodega.Designer.vb:323: private method candidate unused -> ShouldSerializeSector
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\DsBodega.Designer.vb:329: private method candidate unused -> ShouldSerializeBodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\DsBodega.Designer.vb:335: private method candidate unused -> ShouldSerializeTramo
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\DsBodega.Designer.vb:341: private method candidate unused -> ShouldSerializeUbicacion
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.Designer.vb:55: private method candidate unused -> InitializeComponent
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:78: private method candidate unused -> frmBodega_Load
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2043: private method candidate unused -> mnuGuardar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2232: private method candidate unused -> mnuEliminar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2419: private method candidate unused -> grdUbicacion_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2480: private method candidate unused -> grdTramo_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2535: private method candidate unused -> grdSectorArea_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2580: private method candidate unused -> chkSectoresActivos_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2597: private method candidate unused -> chkTramosActivos_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2613: private method candidate unused -> chkUbicacionesActivas_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2870: private method candidate unused -> mnuActualizar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2935: private method candidate unused -> lnkUbicacionRecepcion_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2958: private method candidate unused -> lnkUbicacionPicking_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:2981: private method candidate unused -> lnkUbicacionDespacho_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3004: private method candidate unused -> lnkUbicacionMerma_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3027: private method candidate unused -> txtIdUbicacionRecepcion_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3097: private method candidate unused -> txtIdUbicacionRecepcion_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3133: private method candidate unused -> txtIdUbicacionPicking_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3193: private method candidate unused -> txtIdUbicacionPicking_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3233: private method candidate unused -> txtIdUbicacionDespacho_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3307: private method candidate unused -> txtIdUbicacionDespacho_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3350: private method candidate unused -> txtIdUbicacionMerma_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3419: private method candidate unused -> txtIdUbicacionMerma_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3459: private method candidate unused -> lnkTareas_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3470: private method candidate unused -> txtIdTarea_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3534: private method candidate unused -> txtIdTarea_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3546: private method candidate unused -> Button1_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3694: private method candidate unused -> Dgrid_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3753: private method candidate unused -> GridViewSec_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3786: private method candidate unused -> GridViewTramo_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3819: private method candidate unused -> GridViewUbi_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3852: private method candidate unused -> GridView1_RowStyle
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3881: private method candidate unused -> cmdNuevaArea_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3885: private method candidate unused -> cmdGuardarArea_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:3987: private method candidate unused -> grdAreaBodega_DoubleClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4046: private method candidate unused -> chkAreasBodegaActivos_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4050: private method candidate unused -> txtIdTipoTR_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4065: private method candidate unused -> txtIdTipoTR_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4102: private method candidate unused -> txtIdTipoTR_TextChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4125: private method candidate unused -> lnkTipoT_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4175: private method candidate unused -> tabDatos_Paint
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4201: private method candidate unused -> cmbSector_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4217: private method candidate unused -> cmbArea_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4237: private method candidate unused -> cmbAreaUbic_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4256: private method candidate unused -> cmbTramo_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4276: private method candidate unused -> cmbEmpresa_EditValueChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4317: private method candidate unused -> chkEsBodegaVirtual_CheckedChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4321: private method candidate unused -> tsmnuGuardarSector_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4369: private method candidate unused -> tsmnuNuevoSector_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4375: private method candidate unused -> tsmnuGuardarTramo_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4409: private method candidate unused -> tsmnuNuevoTramo_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4415: private method candidate unused -> tsmnuGuardarUbicacion_Click
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4449: private method candidate unused -> ToolStripButton1_Click_1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4541: private method candidate unused -> txtIdMotivoUbicReabasto_KeyPress
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4568: private method candidate unused -> lnkReabasto_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4669: private method candidate unused -> frmBodega_KeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4712: private method candidate unused -> ControlPanelBodega_TabIndexChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4724: private method candidate unused -> ControlPanelBodega_SelectedPageChanged
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4745: private method candidate unused -> LinkLabel1_LinkClicked
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4768: private method candidate unused -> txtIdUbicacionPrdNE_PreviewKeyDown
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4843: private method candidate unused -> mnuEstructuraInicial_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4887: private method candidate unused -> cmdRefrescar_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4893: private method candidate unused -> mnuParametrosInterface_ItemClick
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodega.vb:4921: private method candidate unused -> mnuEditarConnIni_ItemClick
+
+=== DUPLICATE_SQL_FRAGMENT_CANDIDATES ===
+count=1775 | fragment=LDTA.SELECTCOMMAND.COMMANDTYPE = COMMANDTYPE.TEXT
+count=1509 | fragment=LDTA.SELECTCOMMAND.TRANSACTION = LTRANSACTION
+count=337 | fragment=LBLPRG.SELECTIONSTART = LBLPRG.TEXTLENGTH
+count=235 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDBODEGA", PIDBODEGA)
+count=215 | fragment=LDATAADAPTER.SELECTCOMMAND.COMMANDTYPE = COMMANDTYPE.TEXT
+count=178 | fragment=LDATAADAPTER.SELECTCOMMAND.TRANSACTION = LTRANSACTION
+count=155 | fragment=GRIDVIEW1.APPEARANCE.FOCUSEDROW.BACKCOLOR = COLORTRANSLATOR.FROMHTML("#CD5E00")
+count=155 | fragment=GRIDVIEW1.OPTIONSSELECTION.ENABLEAPPEARANCEHIDESELECTION = TRUE
+count=155 | fragment=GRIDVIEW1.APPEARANCE.SELECTEDROW.OPTIONS.USEBACKCOLOR = TRUE
+count=155 | fragment=GRIDVIEW1.APPEARANCE.SELECTEDROW.BACKCOLOR = COLORTRANSLATOR.FROMHTML("#CD5E00")
+count=155 | fragment=GRIDVIEW1.OPTIONSSELECTION.ENABLEAPPEARANCEFOCUSEDROW = TRUE
+count=154 | fragment=GRIDVIEW1.APPEARANCE.SELECTEDROW.FORECOLOR = COLOR.WHITE
+count=148 | fragment=GRIDVIEW1.APPEARANCE.SELECTEDROW.OPTIONS.USEFORECOLOR = TRUE
+count=145 | fragment=GRIDVIEW1.OPTIONSSELECTION.ENABLEAPPEARANCEFOCUSEDCELL = FALSE
+count=121 | fragment=PROTECTED OVERRIDES FUNCTION NEWROWFROMBUILDER(BYVAL BUILDER AS GLOBAL.SYSTEM.DATA.DATAROWBUILDER) AS GLOBAL.SYSTEM.DATA.DATAROW
+count=117 | fragment=DIM LSELECTIONINDEX AS INTEGER = GRIDVIEW1.FOCUSEDROWHANDLE
+count=110 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDBODEGA", IDBODEGA)
+count=107 | fragment=GRIDVIEW1.FOCUSEDROWHANDLE = LSELECTIONINDEX
+count=96 | fragment=LDTA.SELECTCOMMAND.TRANSACTION = PTRANSACTION
+count=72 | fragment=ME.HIDECONTAINERBOTTOM.BACKCOLOR = SYSTEM.DRAWING.COLOR.FROMARGB(CTYPE(CTYPE(240, BYTE), INTEGER), CTYPE(CTYPE(240, BYTE), INTEGER), CTYPE(CTYPE(240, BYTE), INTEGER))
+count=64 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPEDIDOENC", PIDPEDIDOENC)
+count=64 | fragment=ME.ADAPTER.SELECTCOMMAND = ME.COMMANDCOLLECTION(0)
+count=63 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@CODIGO", PCODIGO)
+count=62 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPRODUCTOBODEGA", PIDPRODUCTOBODEGA)
+count=59 | fragment=GRIDVIEW1.RESTORELAYOUTFROMSTREAM(BECONFIGURACIONUSUARIODET.STREAM_TEMPLATE)
+count=53 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPROPIETARIO", PIDPROPIETARIO)
+count=52 | fragment=LBESTOCKEXISTENTE = LBESTOCKEXISTENTE.WHERE(FUNCTION(X) X.CANTIDAD > 0).TOLIST()
+count=50 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPRODUCTO", PIDPRODUCTO)
+count=49 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDRECEPCIONENC", PIDRECEPCIONENC)
+count=45 | fragment=DAD.SELECTCOMMAND.PARAMETERS.ADD(NEW SQLPARAMETER("@IDBODEGA", IDBODEGA))
+count=42 | fragment=DAD.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDBODEGA", PIDBODEGA)
+count=41 | fragment=DAD.SELECTCOMMAND.PARAMETERS.ADD(NEW SQLPARAMETER("@IDBODEGA", PIDBODEGA))
+count=39 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDORDENCOMPRAENC", PIDORDENCOMPRAENC)
+count=37 | fragment=LDATAADAPTER.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDBODEGA", PIDBODEGA)
+count=32 | fragment=GLOBAL.SYSTEM.COMPONENTMODEL.DATAOBJECTMETHODATTRIBUTE(GLOBAL.SYSTEM.COMPONENTMODEL.DATAOBJECTMETHODTYPE.[SELECT], TRUE)> _
+count=31 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDTRAMO", PIDTRAMO)
+count=30 | fragment=DIM VSQL AS STRING = "SELECT *
+count=29 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPICKINGENC", PIDPICKINGENC)
+count=29 | fragment=DIM FILA AS OBJECT = CMBPROPIETARIO.GETSELECTEDDATAROW
+count=28 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDORDENCOMPRAENC", PIDORDENCOMPRA)
+count=28 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDINVENTARIO", PIDINVENTARIO)
+count=27 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPEDIDOENC", IDPEDIDOENC)
+count=26 | fragment=DIM VSQL AS STRING = "SELECT
+count=25 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDPROPIETARIOBODEGA", PIDPROPIETARIOBODEGA)
+count=25 | fragment=WHERE IDBODEGA = @IDBODEGA
+count=25 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDUBICACION", PIDUBICACION)
+count=23 | fragment=LDTA.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDCLIENTE", PIDCLIENTE)
+count=22 | fragment=LDATAADAPTER.SELECTCOMMAND.PARAMETERS.ADDWITHVALUE("@IDINVENTARIOENC", PIDINV)
+count=21 | fragment=BEINAVPEDCOMPRAENC.TRANSFER_FROM_NAME = BEBODEGA.NOMBRE
+count=21 | fragment=PRODUCTO_TIPO ON PRODUCTO.IDTIPOPRODUCTO = PRODUCTO_TIPO.IDTIPOPRODUCTO INNER JOIN
+
+=== HEAVY_QUERY_CANDIDATES ===
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Analitica\clsAnalitica.vb:11: Dim vSQL As String = "SELECT * FROM VW_Stock_Rep_20200112 WHERE IdBodega=@IdBodega "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Analitica\clsAnalitica.vb:255: ORDER BY
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_det.vb:216: Const sp As String = "SELECT * FROM VW_Configuracion_Usuario_Template " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_det.vb:271: Const sp As String = "SELECT * FROM VW_Configuracion_Usuario_Template " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_enc.vb:164: Const sp As String = "SELECT * FROM Configuracion_usuario_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_enc.vb:194: Const sp As String = "SELECT * FROM Configuracion_usuario_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_enc.vb:240: Const sp As String = "SELECT * FROM Configuracion_usuario_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_enc.vb:350: Const sp As String = "SELECT * FROM Configuracion_usuario_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Configuracion_Usuario\clsLnConfiguracion_usuario_enc.vb:399: Const sp As String = "SELECT * FROM Configuracion_usuario_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\DataHistorica\clsLnDh_ocupacion_bodega.vb:167: Const sp As String = "SELECT * FROM Dh_ocupacion_bodega"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\DataHistorica\clsLnDh_ocupacion_bodega.vb:212: Const sp As String = "SELECT * FROM Dh_ocupacion_bodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Diferencias_Movimientos\clsLnDiferencias_movimientos.vb:282: Const sp As String = "SELECT * FROM Diferencias_movimientos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Diferencias_Movimientos\clsLnDiferencias_movimientos.vb:310: Const sp As String = "SELECT * FROM Diferencias_movimientos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Diferencias_Movimientos\clsLnDiferencias_movimientos.vb:355: Const sp As String = "SELECT * FROM Diferencias_movimientos" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:156: Const sp As String = "SELECT * FROM Polizas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:184: Const sp As String = "SELECT * FROM Polizas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:229: Const sp As String = "SELECT * FROM Polizas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:273: Const sp As String = "SELECT * FROM Polizas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:312: Const sp As String = "SELECT * FROM Polizas WHERE Procesada =0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas.vb:360: Const sp As String = "SELECT * FROM Polizas where procesada = 0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas_Ilegibles.vb:192: Const sp As String = "SELECT * FROM Polizas_Ilegibles"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas_Ilegibles.vb:221: Const sp As String = "SELECT * FROM Polizas_Ilegibles"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas_Ilegibles.vb:253: Const sp As String = "SELECT * FROM Polizas_Ilegibles"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnPolizas_Ilegibles.vb:297: Const sp As String = "SELECT * FROM Polizas_Ilegibles"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:249: Const sp As String = "SELECT * FROM Tablas_relacionadas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:277: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE TABLA = 'CEALSA' AND utilizada=0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:322: Const sp As String = "SELECT * FROM Tablas_relacionadas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:366: Const sp As String = "SELECT * FROM Tablas_relacionadas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:405: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE TABLA = 'WMS' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:608: Dim sp As String = "Select * FROM Tablas_relacionadas WHERE tabla = 'CEALSA' AND (replace(descripcion,' ','')  like '%" & pNombre.Replace(" ", "") & "%'
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:609: Or '" & pNombre.Replace(" ", "") & "'   like '%' + replace(descripcion,' ','') + '%') AND utilizada = 0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:692: WHERE IdPedidoEnc in (select IdPedidoEnc from trans_pe_enc WHERE Fecha_Pedido BETWEEN '20230411' AND  '20230811' and IdBodega =  2)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:694: order by descripcion "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:826: Dim sp As String = "Select * FROM Tablas_relacionadas WHERE tabla = 'CEALSA' AND (replace(descripcion,' ','')  like '%" & pNombre.Replace(" ", "") & "%'
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:827: Or '" & pNombre.Replace(" ", "") & "'   like '%' + replace(descripcion,' ','') + '%') AND utilizada = 0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:863: vSQL = "IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tablas_relacionadas]') AND type in (N'U'))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:946: WHERE IdPedidoEnc in (select IdPedidoEnc from trans_pe_enc WHERE Fecha_Pedido BETWEEN '20230411' AND  '20230811' and IdBodega =  2)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:948: order by descripcion "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1108: UPDATE tablas_relacionadas SET descripcion = 'MEDICAMENTO VA' WHERE agente_aduanal IN (SELECT IdPedidoEnc FROM trans_pe_enc WHERE no_documento_externo = '' AND IdBodega = 2 AND fec_agr BETWEEN '20230411' AND  '20230812'
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1334: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE TABLA = 'CEALSA' AND utilizada=0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1367: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE TABLA = 'WMS' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1405: ORDER BY fecha_orden_entrega, cantidad"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1483: Const sp As String = "select * from tmp_trans_pe_pol where numero_orden IN (
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1485: AND agente_aduanal <> 0 AND noOrdenSalida NOT IN (select numero_orden from trans_pe_pol))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1533: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE copoliza = @numero_orden AND Tabla = 'WMS '"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1581: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE copoliza = @numero_orden AND Tabla = 'WMS '"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1615: Const sp As String = "SELECT *
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1658: Const sp As String = "SELECT * from tmp_trans_pe_pol WHERE numero_orden IN (
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1660: AND agente_aduanal <> 0 AND noOrdenSalida NOT IN (SELECT numero_orden FROM trans_pe_pol))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1737: Const sp As String = "SELECT * FROM Tablas_relacionadas WHERE TABLA = 'CEALSA' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1770: Const sp As String = "SELECT * FROM tablas_relacionadas WHERE utilizada =1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1772: AND noOrdenSalida IN (SELECT numero_orden FROM tmp_trans_pe_pol) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1805: Const sp As String = "SELECT * FROM tablas_relacionadas WHERE utilizada =1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1807: AND copoliza IN (SELECT numero_orden FROM tmp_trans_pe_pol) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb:1842: Const sp As String = "SELECT * FROM Tablas_relacionadas
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:202: Const sp As String = "SELECT * FROM Tablas_relacionadas_placas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:230: Const sp As String = "SELECT * FROM Tablas_relacionadas_placas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:275: Const sp As String = "SELECT * FROM Tablas_relacionadas_placas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:319: Const sp As String = "SELECT * FROM Tablas_relacionadas_placas"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:358: Const sp As String = "SELECT * FROM Tablas_relacionadas_placas "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:543: vSQL = "IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tablas_relacionadas_placas]') AND type in (N'U'))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:600: AND COPOLIZA NOT IN (SELECT COPOLIZA FROM tablas_relacionadas WHERE  tabla = 'WMS' )
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:602: and t.IdPedidoEnc in (SELECT agente_aduanal from tablas_relacionadas where tabla = 'WMS' and fecha_orden_entrega BETWEEN '20230411' AND  '20230812' and utilizada=0)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb:603: ORDER BY fecha_orden_entrega, t.fecha_despacho "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:371: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:399: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:447: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:480: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:524: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:556: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:664: Dim vSQL = "SELECT * FROM tmp_trans_pe_pol
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:702: '		Const sp As String = "SELECT * FROM Tmp_trans_pe_pol WHERE numero_orden = @numero_orden"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:749: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol WHERE numero_orden = @numero_orden "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:818: Const sp As String = "SELECT * FROM Tmp_trans_pe_pol WHERE numero_orden = @numero_orden"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:863: Const sp As String = "SELECT * from tmp_trans_pe_pol where numero_orden in (select copoliza from tablas_relacionadas)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_trans_pe_pol.vb:864: AND numero_orden not in (select numero_orden from trans_pe_pol)"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb:33: Const sp As String = "SELECT * FROM vw_pedidos_revision"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb:78: Const sp As String = "SELECT * FROM vw_pedidos_revision"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb:122: Const sp As String = "SELECT * FROM vw_pedidos_revision"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb:163: where idpedidoenc not in (select IdOrdenPedidoEnc from trans_pe_pol) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb:202: where idpedidoenc in (select IdOrdenPedidoEnc from trans_pe_pol) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:314: Const sp As String = "SELECT * FROM I_nav_barras_pallet "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:346: Const sp As String = "SELECT * FROM I_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:385: Const sp As String = "SELECT * FROM I_nav_barras_pallet "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:426: Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(IdPallet = @IdPallet) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:548: Dim vSQL As String = "SELECT * FROM i_nav_barras_pallet WHERE Codigo_Barra=@Codigo_Barra"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:595: Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE 1 >0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:641: Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE 1 >0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:691: Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(codigo_barra = @codigo_barra) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:745: Const sp As String = "SELECT * FROM I_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:807: Const sp As String = "SELECT * FROM I_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:876: Const sp As String = "SELECT * FROM I_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:910: Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(codigo_barra = @codigo_barra and recibido =0) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:974: Const sp As String = "SELECT * FROM i_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:1004: Dim sp As String = "SELECT * FROM I_nav_barras_pallet WHERE IdRecepcion=@IdRecepcionEnc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:1122: Const sp As String = "SELECT * FROM I_nav_barras_pallet Where(codigo_barra = @codigo_barra) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb:1430: Dim sp As String = "SELECT * FROM I_nav_barras_pallet
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet_partial.vb:114: Dim vSQL As String = "SELECT * FROM i_nav_barras_pallet "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet_partial.vb:118: vSQL += " ORDER BY fecha_agregado "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error.vb:213: Const sp As String = "SELECT * FROM I_nav_ejecucion_det_error"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error.vb:234: Const sp As String = "SELECT * FROM I_nav_ejecucion_det_error" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error.vb:267: Const sp As String = "SELECT * FROM I_nav_ejecucion_det_error"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error.vb:302: Const sp As String = "SELECT * FROM I_nav_ejecucion_det_error" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error_Partial.vb:159: Dim vSQL As String = "SELECT * FROM i_nav_ejecucion_det_error WHERE 1>0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Detalle\clsLnI_nav_ejecucion_det_error_Partial.vb:163: vSQL += " ORDER BY FECHA "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc.vb:209: Const sp As String = "SELECT * FROM I_nav_ejecucion_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc.vb:229: Const sp As String = "SELECT * FROM I_nav_ejecucion_enc" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc.vb:265: Const sp As String = "SELECT * FROM I_nav_ejecucion_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc.vb:301: Const sp As String = "SELECT * FROM I_nav_ejecucion_enc" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:116: "       CASE WHEN EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error err WHERE err.idejecucionenc = enc.idejecucionenc AND ISNULL(err.error, '') LIKE '%TRANSAC_WMS%') " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:117: "             OR EXISTS (SELECT 1 FROM i_nav_config_det det INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent WHERE det.idnavconfigenc = enc.idnavconfigenc AND ent.nombre LIKE '%TRANSAC%') " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:119: "       CASE WHEN EXISTS (SELECT 1 FROM i_nav_ejecucion_det_error err WHERE err.idejecucionenc = enc.idejecucionenc AND ISNULL(err.error, '') LIKE '%TRANSAC_WMS%') " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:120: "             OR EXISTS (SELECT 1 FROM i_nav_config_det det INNER JOIN i_nav_ent ent ON det.idnavent = ent.idnavent WHERE det.idnavconfigenc = enc.idnavconfigenc AND ent.nombre LIKE '%TRANSAC%') " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:135: "ORDER BY enc.fecha DESC, enc.idejecucionenc DESC"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:145: "       CASE WHEN ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'TRANSAC_WMS' ELSE '' END AS Origen, " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:146: "       CASE WHEN ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'PULL SAP' ELSE '' END AS Sentido, " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:162: "ORDER BY res.idejecucionenc DESC, res.idejecucionres"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:172: "       CASE WHEN ISNULL(err.error, '') LIKE '%TRANSAC_WMS%' OR ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'TRANSAC_WMS' ELSE '' END AS Origen, " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:173: "       CASE WHEN ISNULL(err.error, '') LIKE '%TRANSAC_WMS%' OR ISNULL(ent.nombre, '') LIKE '%TRANSAC%' THEN 'PULL SAP' ELSE '' END AS Sentido, " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Encabezado\clsLnI_nav_ejecucion_enc_Partial.vb:192: "ORDER BY err.idejecucionenc DESC, err.fecha DESC, err.idejecuciondet DESC"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Resultado\clsLnI_nav_ejecucion_res.vb:220: Const sp As String = "SELECT * FROM I_nav_ejecucion_res"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Resultado\clsLnI_nav_ejecucion_res.vb:241: Const sp As String = "SELECT * FROM I_nav_ejecucion_res" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Resultado\clsLnI_nav_ejecucion_res.vb:274: Const sp As String = "SELECT * FROM I_nav_ejecucion_res"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bitacora\Resultado\clsLnI_nav_ejecucion_res.vb:309: Const sp As String = "SELECT * FROM I_nav_ejecucion_res" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bodega\LN_I_Nav_Bodega\clsLnI_nav_bodega.vb:261: Const sp As String = "SELECT * FROM I_nav_bodega"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bodega\LN_I_Nav_Bodega\clsLnI_nav_bodega.vb:293: Const sp As String = "SELECT * FROM I_nav_bodega Where(bodega_code = @bodega_code)"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bodega\LN_I_Nav_Bodega\clsLnI_nav_bodega.vb:330: Const sp As String = "SELECT * FROM I_nav_bodega"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bodega\LN_I_Nav_Bodega\clsLnI_nav_bodega.vb:373: Const sp As String = "SELECT * FROM I_nav_bodega" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Bodega\LN_I_Nav_Bodega\clsLnI_nav_bodega_Partial.vb:11: Const sp As String = "SELECT * FROM I_nav_bodega "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales.vb:44: Const sp As String = "SELECT * FROM detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales.vb:72: Const sp As String = "SELECT * FROM detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales.vb:119: Const sp As String = "SELECT * FROM detacuerdoscomerciales where corre_cbmaeacuerdosservicios=@corre_cbmaeacuerdosservicios"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:12: Const sp As String = "SELECT * FROM i_nav_acuerdoscomerciales_det WHERE codigo_cliente=@pCodCliente  codacuerdo = @CODACUERDO"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:68: Const sp As String = "SELECT * FROM i_nav_acuerdoscomerciales_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:192: Const sp As String = "SELECT *
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:286: Const sp As String = "SELECT * FROM trans_acuerdoscomerciales_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det.vb:223: Const sp As String = "SELECT * FROM I_nav_acuerdo_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det.vb:251: Const sp As String = "SELECT * FROM I_nav_acuerdo_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det.vb:296: Const sp As String = "SELECT * FROM I_nav_acuerdo_det" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det_Partial.vb:14: Const sp As String = "SELECT * FROM i_nav_acuerdo_det det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det_Partial.vb:121: Const sp As String = "SELECT * FROM I_nav_acuerdo_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det_Partial.vb:174: Const sp As String = "SELECT * FROM i_nav_acuerdo_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_acuerdo_det_Partial.vb:261: Const sp As String = "SELECT * FROM i_nav_acuerdo_det WHERE procesado_wms =0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales.vb:251: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales.vb:281: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales.vb:328: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales.vb:373: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales_Partial.vb:12: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales WHERE codcliente = @codcliente "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales_Partial.vb:65: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales WHERE codcliente = @codcliente AND procesado_wms =0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnI_nav_detacuerdoscomerciales_Partial.vb:192: Const sp As String = "SELECT * FROM I_nav_detacuerdoscomerciales WHERE procesado_wms =0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales.vb:37: Const sp As String = "SELECT * FROM acuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales.vb:65: Const sp As String = "SELECT * FROM acuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales.vb:112: Const sp As String = "SELECT * FROM acuerdoscomerciales"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales.vb:235: Dim vSQL As String = "SELECT * FROM cealsa_vwacuerdocomercialenc where codacuerdo = @CODACUERDO"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales_Partial.vb:12: Const sp As String = "SELECT * FROM i_nav_acuerdoscomerciales_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnCEALSA_acuerdoscomerciales_Partial.vb:114: Const sp As String = "SELECT * FROM i_nav_acuerdoscomerciales_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc.vb:192: '		Const sp As String = "SELECT * FROM I_nav_acuerdo_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc.vb:237: '		Const sp As String = "SELECT * FROM I_nav_acuerdo_enc" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc_Partial.vb:43: Const sp As String = "SELECT * FROM I_nav_acuerdo_enc WHERE IdCliente = @IdCliente"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc_Partial.vb:225: '		Const sp As String = "SELECT * FROM i_nav_acuerdo_enc " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc_Partial.vb:260: Const sp As String = "SELECT * FROM i_nav_acuerdo_enc " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc_Partial.vb:318: Const sp As String = "SELECT * FROM I_nav_acuerdo_enc " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Enc\clsLnI_nav_acuerdo_enc_Partial.vb:349: Const sp As String = "SELECT * FROM i_nav_acuerdo_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Catalago_Productos\clsLnCEALSA_cbcatalogoproductos.vb:251: Const sp As String = "SELECT * FROM CEALSA_cbcatalogoproductos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Catalago_Productos\clsLnCEALSA_cbcatalogoproductos.vb:279: Const sp As String = "SELECT * FROM cbcatalogoproductos where estado = 'A'"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Catalago_Productos\clsLnCEALSA_cbcatalogoproductos.vb:324: Const sp As String = "SELECT * FROM CEALSA_cbcatalogoproductos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Catalago_Productos\clsLnCEALSA_cbcatalogoproductos.vb:368: Const sp As String = "SELECT * FROM CEALSA_cbcatalogoproductos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_NAV_Acuerdo_Producto\clsLnI_nav_acuerdo_productos.vb:216: Dim vSQL As String = "SELECT * FROM i_nav_acuerdo_productos WHERE codigoproducto= @Codigo"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_NAV_Acuerdo_Producto\clsLnI_nav_acuerdo_productos.vb:286: Const sp As String = "SELECT * FROM I_nav_acuerdo_productos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_NAV_Acuerdo_Producto\clsLnI_nav_acuerdo_productos.vb:314: Const sp As String = "SELECT * FROM I_nav_acuerdo_productos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_NAV_Acuerdo_Producto\clsLnI_nav_acuerdo_productos.vb:359: Const sp As String = "SELECT * FROM I_nav_acuerdo_productos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_NAV_Acuerdo_Producto\clsLnI_nav_acuerdo_productos.vb:403: Const sp As String = "SELECT * FROM I_nav_acuerdo_productos"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_Nav_Servicios\clsLnI_nav_servicio.vb:176: Const sp As String = "SELECT * FROM I_nav_servicio"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_Nav_Servicios\clsLnI_nav_servicio.vb:204: Const sp As String = "SELECT * FROM I_nav_servicio"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_Nav_Servicios\clsLnI_nav_servicio.vb:251: Const sp As String = "SELECT * FROM I_nav_servicio" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\I_Nav_Servicios\clsLnI_nav_servicio_Partial.vb:12: Const sp As String = "SELECT * FROM I_nav_servicio WHERE procesado_wms = 0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnCEALSA_clientes.vb:216: Const sp As String = "SELECT * FROM I_nav_cliente"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnCEALSA_clientes.vb:244: Const sp As String = "SELECT * FROM I_nav_cliente"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnCEALSA_clientes.vb:289: Const sp As String = "SELECT * FROM I_nav_cliente" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnCEALSA_clientes.vb:421: Const sp As String = "SELECT * FROM I_nav_cliente WHERE procesado_wms = 0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente.vb:230: Const sp As String = "SELECT * FROM I_nav_cliente"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente.vb:259: Const sp As String = "SELECT * FROM I_nav_cliente "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente.vb:308: Const sp As String = "SELECT * FROM I_nav_cliente"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente.vb:341: Const sp As String = "SELECT * FROM I_nav_cliente" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente_Partial.vb:11: Const sp As String = "SELECT * FROM I_nav_cliente" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnI_nav_cliente_Partial.vb:52: Const sp As String = "SELECT * FROM I_nav_cliente WHERE procesado_wms = 0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det.vb:250: Const sp As String = "SELECT * FROM I_nav_config_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det.vb:274: Const sp As String = "SELECT * FROM I_nav_config_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det.vb:310: Const sp As String = "SELECT * FROM I_nav_config_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det.vb:347: Const sp As String = "SELECT * FROM I_nav_config_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det.vb:415: Const sp As String = "SELECT * FROM I_nav_config_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det_Partial.vb:11: sp = "SELECT * FROM VW_navdetalleconfiguracion  where idnavconfigenc= idnavconfigenc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det_Partial.vb:101: vSQL = "SELECT * FROM i_nav_config_det WHERE 1 > 0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionDetalle\clsLnI_nav_config_det_Partial.vb:103: vSQL = "SELECT * FROM i_nav_config_det WHERE idnavent=@idnavent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:456: Const sp As String = "SELECT * FROM I_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:568: Const sp As String = "SELECT * FROM I_nav_config_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:596: Const sp As String = "SELECT * FROM I_nav_config_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:645: Const sp As String = "SELECT * FROM I_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:696: Const sp As String = "SELECT * FROM I_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:8: Dim vSQL As String = "SELECT * FROM VW_Configuracioninv  where idEmpresa = 1 AND  idBodega=@idBodega"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:30: Dim vSQL As String = "SELECT * FROM VW_Configuracioninv  where correlativo=@pCorrelativo"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:52: Dim vSQL As String = "SELECT * FROM VW_Configuracioninv"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:122: Dim vSQL As String = "SELECT * FROM i_nav_config_enc WHERE idnavconfigenc=@pIdConfiguracionEncabezado"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:159: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:211: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:253: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:475: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:560: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc_Partial.vb:607: Dim vSQL As String = "SELECT * FROM i_nav_config_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEntidad\clsLnI_nav_config_ent.vb:238: Const sp As String = "SELECT * FROM I_nav_config_ent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEntidad\clsLnI_nav_config_ent.vb:262: Const sp As String = "SELECT * FROM I_nav_config_ent" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEntidad\clsLnI_nav_config_ent.vb:298: Const sp As String = "SELECT * FROM I_nav_config_ent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEntidad\clsLnI_nav_config_ent.vb:334: Const sp As String = "SELECT * FROM I_nav_config_ent" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEntidad\clsLnI_nav_config_ent.vb:400: Const sp As String = "SELECT * FROM I_nav_config_ent Where(idnavent = @idnavent and idnavconfigent=@idnavconfigent) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\Entidad\clsLnI_nav_ent.vb:213: Const sp As String = "SELECT * FROM I_nav_ent "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\Entidad\clsLnI_nav_ent.vb:237: Const sp As String = "SELECT * FROM I_nav_ent" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\Entidad\clsLnI_nav_ent.vb:272: Const sp As String = "SELECT * FROM I_nav_ent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\Entidad\clsLnI_nav_ent.vb:308: Const sp As String = "SELECT * FROM I_nav_ent" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\Entidad\clsLnI_nav_ent.vb:374: Const sp As String = "SELECT * FROM I_nav_ent " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:240: Const sp As String = "SELECT * FROM I_nav_conversion"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:268: Const sp As String = "SELECT * FROM I_nav_conversion"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:313: Const sp As String = "SELECT * FROM I_nav_conversion" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:424: Const sp As String = "SELECT * FROM I_nav_conversion WHERE Item_No = @Item_No "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:458: Const sp As String = "SELECT * FROM I_nav_conversion" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Conversion\clsLnI_nav_conversion.vb:506: Const sp As String = "SELECT * FROM I_nav_conversion" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros.vb:207: Const sp As String = "SELECT * FROM I_nav_ent_filtros"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros.vb:229: Const sp As String = "SELECT * FROM I_nav_ent_filtros" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros.vb:263: Const sp As String = "SELECT * FROM I_nav_ent_filtros"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros.vb:294: Const sp As String = "SELECT * FROM I_nav_ent_filtros" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros_partial.vb:27: Const sp As String = "SELECT * FROM I_nav_ent_filtros WHERE idnavent = @idnavent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros_partial.vb:61: Const sp As String = "SELECT * FROM I_nav_ent_filtros WHERE idnavent = @idnavent"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det.vb:267: Const sp As String = "SELECT * FROM I_nav_ped_compra_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det.vb:299: Const sp As String = "SELECT * FROM I_nav_ped_compra_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det.vb:340: Const sp As String = "SELECT * FROM I_nav_ped_compra_det "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det.vb:381: Const sp As String = "SELECT * FROM I_nav_ped_compra_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det_Partial.vb:52: '        Const sp As String = "SELECT * FROM I_nav_ped_compra_det WHERE NoEnc = @NoEnc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det\clsLnI_nav_ped_compra_det_Partial.vb:92: Const sp As String = "SELECT * FROM I_nav_ped_compra_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det_Lote\clsLnI_nav_ped_compra_det_lote.vb:245: Const sp As String = "SELECT * FROM i_nav_ped_compra_det_lote"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det_Lote\clsLnI_nav_ped_compra_det_lote.vb:275: Const sp As String = "SELECT * FROM i_nav_ped_compra_det_lote" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det_Lote\clsLnI_nav_ped_compra_det_lote.vb:318: Const sp As String = "SELECT * FROM i_nav_ped_compra_det_lote "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det_Lote\clsLnI_nav_ped_compra_det_lote.vb:360: Const sp As String = "SELECT * FROM i_nav_ped_compra_det_lote" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Det_Lote\clsLnI_nav_ped_compra_det_lote_partial.vb:57: Const sp As String = "SELECT * FROM i_nav_ped_compra_det_lote
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc.vb:295: Const sp As String = "SELECT * FROM I_nav_ped_compra_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc.vb:327: Const sp As String = "SELECT * FROM I_nav_ped_compra_enc" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc.vb:367: Const sp As String = "SELECT * FROM I_nav_ped_compra_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc.vb:412: Const sp As String = "SELECT * FROM I_nav_ped_compra_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc_Partial.vb:79: Dim sp As String = "SELECT * FROM I_nav_ped_compra_enc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc_Partial.vb:2092: Const sp As String = "SELECT * FROM I_nav_ped_compra_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Compra\Pedido_Compra_Enc\clsLnI_nav_ped_compra_enc_Partial.vb:2133: Order By det.no"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb:406: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb:427: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb:462: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb:497: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb:680: '        Const sp As String = "SELECT * FROM I_nav_ped_traslado_det WHERE NoEnc = @NoEnc "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det_Partial.vb:13: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det WHERE NoEnc = @No "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det_Partial.vb:225: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslada_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:213: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslada_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:241: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslada_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:286: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:212: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:240: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Det_Lotes\clsLnI_nav_ped_traslado_det_lote.vb:285: Const sp As String = "SELECT * FROM I_nav_ped_traslado_det_lote" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:396: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:417: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:450: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:486: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:520: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:596: Order By det.no"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc.vb:648: Order By det.no "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:165: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc WHERE No NOT IN (SELECT referencia FROM trans_pe_enc)"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:202: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:203: WHERE No NOT IN (SELECT referencia FROM trans_pe_enc)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:241: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:242: WHERE No NOT IN (SELECT referencia FROM trans_pe_enc)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:279: Const sp As String = "SELECT * FROM I_nav_ped_traslado_enc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:280: WHERE No NOT IN (SELECT referencia FROM trans_pe_enc)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto\clsLnI_nav_Producto_Partial.vb:13: Dim vSQL As String = "SELECT * FROM i_nav_producto WHERE No= @No "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto\clsLnI_nav_Producto_Partial.vb:40: Const sp As String = "SELECT * FROM I_nav_producto "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto\clsLnI_nav_Producto_Partial.vb:76: Const sp As String = "SELECT * FROM I_nav_producto;"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto_Presentacion\clsLnI_nav_producto_presentacion.vb:205: Const sp As String = "SELECT * FROM I_nav_producto_presentacion"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto_Presentacion\clsLnI_nav_producto_presentacion.vb:233: Const sp As String = "SELECT * FROM I_nav_producto_presentacion"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto_Presentacion\clsLnI_nav_producto_presentacion.vb:282: Const sp As String = "SELECT * FROM I_nav_producto_presentacion WHERE No = @No"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Producto_Presentacion\clsLnI_nav_producto_presentacion.vb:314: Const sp As String = "SELECT * FROM I_nav_producto_presentacion" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Proveedor\clsLnI_nav_Proveedor_Partial.vb:11: Const sp As String = "SELECT * FROM I_nav_proveedor "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Reportes\clsLnTrans_inv_teorico_erp.vb:224: Const sp As String = "SELECT * FROM Trans_inv_teorico_erp"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Reportes\clsLnTrans_inv_teorico_erp.vb:252: Const sp As String = "SELECT * FROM Trans_inv_teorico_erp"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Reportes\clsLnTrans_inv_teorico_erp.vb:297: Const sp As String = "SELECT * FROM Trans_inv_teorico_erp" & _
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Reportes\clsLnTrans_inv_teorico_erp.vb:427: ORDER BY T.ubicacion, T.codigo "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Reportes\clsLnTrans_inv_teorico_erp.vb:573: ORDER BY T.codigo "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out.vb:482: Const sp As String = "SELECT * FROM I_nav_transacciones_out" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out.vb:521: Const sp As String = " SELECT * FROM I_nav_transacciones_out " &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:206: Const sp As String = "SELECT * FROM I_nav_transacciones_out_error" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:237: Const sp As String = "SELECT * FROM I_nav_transacciones_out_error"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:271: Const sp As String = "SELECT * FROM I_nav_transacciones_out_error" &
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:350: Dim sp As String = "SELECT * FROM I_nav_transacciones_out_error WHERE IdDirectorio = @IdDirectorio "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:396: Dim sp As String = "SELECT * FROM I_nav_transacciones_out_error WHERE IdTransaccionWMS = @IdPedidoEnc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_error.vb:437: Dim sp As String = "SELECT * FROM I_nav_transacciones_out_error WHERE IdTransaccionWMS = @IdPedidoEnc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:845: AND o.enviado = 0 AND o.idrecepcionenc in (SELECT IdRecepcionEnc
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:942: Dim sp As String = "SELECT * FROM I_nav_transacciones_out
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:993: Dim sp As String = "SELECT * FROM I_nav_transacciones_out
+
+=== ROUNDTRIP_HOTSPOTS ===
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas.vb: roundtrip-call density = 22
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\FixTheBug\clsLnTablas_relacionadas_placas.vb: roundtrip-call density = 10
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\General\Servidor\clsServidor.vb: roundtrip-call density = 19
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Clientes\clsLnCEALSA_clientes.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsLnI_nav_ped_traslado_det.vb: roundtrip-call density = 11
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb: roundtrip-call density = 15
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTempComparacionInventario.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico.vb: roundtrip-call density = 15
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_Partial.vb: roundtrip-call density = 23
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_ubic.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_operador.vb: roundtrip-call density = 13
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Ajustes\clsLnTrans_ajuste_det_Partial.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Ajustes\clsLnTrans_ajuste_enc_Partial.vb: roundtrip-call density = 9
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb: roundtrip-call density = 35
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Tramo\clsLnBodega_tramo_Partial.vb: roundtrip-call density = 10
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion_Partial.vb: roundtrip-call density = 10
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Importacion\clsLnTrans_bodega_ubicaciones_excel.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb: roundtrip-call density = 20
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoClasificacion\clsLnProducto_clasificacion_Partial.vb: roundtrip-call density = 11
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoFamilia\clsLnProducto_familia_Partial.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion_Partial.vb: roundtrip-call density = 16
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoTipo\clsLnProducto_tipo_Partial.vb: roundtrip-call density = 10
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto_Talla\clsLnTalla.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto_Talla_Color\clsLnProducto_talla_color.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\UnidadMedida\clsLnUnidad_medida_Partial.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\QuickTag\clsLnProducto_Finca.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb: roundtrip-call density = 11
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\TMS\clsLnTms_ticket.vb: roundtrip-call density = 13
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc_Partial.vb: roundtrip-call density = 30
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Packing\clsLnTrans_packing_enc_Partial.vb: roundtrip-call density = 9
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb: roundtrip-call density = 11
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb: roundtrip-call density = 63
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb: roundtrip-call density = 12
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb: roundtrip-call density = 14
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Detalle\clsLnTrans_re_det_Partial.vb: roundtrip-call density = 10
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb: roundtrip-call density = 21
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\RFID\clsLnI_nav_barras_rfid_enc.vb: roundtrip-call density = 9
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock.vb: roundtrip-call density = 11
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_CI.vb: roundtrip-call density = 8
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb: roundtrip-call density = 27
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb: roundtrip-call density = 35
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Tarea_HandHeld\clsLnTarea_hh_Partial.vb: roundtrip-call density = 13
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Configuracion_QADataSet2.Designer.vb: roundtrip-call density = 21
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\IMS4V2DataSet1.Designer.vb: roundtrip-call density = 12
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\TOMIMSV4\Clases_AP\clsTabla.vb: roundtrip-call density = 26
+
+=== BUSINESS_RULE_RISK_CANDIDATES ===
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:240: WHERE codigo_acuerdo = @CODIGO_ACUERDO and estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb:287: WHERE codacuerdo = @CODACUERDO and estado=1 AND prioridad=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:104: If oBeI_nav_config_enc.IdPropietario <> 0 Then Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:282: If oBeI_nav_config_enc.IdPropietario <> 0 Then Upd.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Configuracion\ConfiguracionEncabezado\clsLnI_nav_config_enc.vb:283: If oBeI_nav_config_enc.IdUsuario <> 0 Then Upd.Add("idusuario", "@idusuario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Filtros\clsLnI_nav_ent_filtros_partial.vb:10: Bodega = 3
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\clsSyncPedidoRoad.vb:175: pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\clsSyncPedidoRoad.vb:191: pBePedidoDet.IdEstado = 1 'pBeConfigEnc.IdProductoEstado
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:1757: pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsLnI_nav_ped_traslado_enc_Partial.vb:3226: pBePedidoDet.IdPedidoDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:1499: If IdBodegaWMS <> 0 Then 'Es una transferencia hacia una bodega de WMS.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:1644: If IdBodegaWMS <> 0 Then 'Es una transferencia hacia una bodega de WMS.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:1800: If IdBodegaWMS <> 0 Then 'Es una transferencia hacia una bodega de WMS.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Interface\Transacciones_Out\clsLnI_nav_transacciones_out_partial.vb:3320: If IdBodegaWMS <> 0 Then 'Es una transferencia hacia una bodega de WMS.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:36: If (pIdTarea > 0) Then vSQL &= "AND (idinventarioenc=@IdInventario) AND estado <> 'Finalizado' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:53: And (trans_inv_enc.inicial = 0) AND trans_inv_enc.estado <> 'Finalizado' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:1964: Dim vSQL As String = "SELECT * FROM Trans_inv_enc WHERE idbodega=@idbodega AND Inicial=1 AND regularizado =0  AND estado <> 'Anulado' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:3722: If (pIdTarea > 0) Then vSQL &= "AND (idinventarioenc=@IdInventario) AND estado <> 'Finalizado' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:3743: And (trans_inv_enc.inicial = 0) AND trans_inv_enc.estado <> 'Finalizado'
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Licencia\licencia_item\clsLnLicencia_item_partial.vb:414: If BeLicItem.Estado.Length >= 40 Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Log\clsLnDMS_Log_sincronizacion_fallos.vb:474: '		Dim query As String = "SELECT distinct IdProducto FROM log_dms_sincronizacion_fallos WHERE Estado = 'Error' AND Idproducto<>0 and fec_agr < @pFechaSincro"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Log\clsLnDMS_Log_sincronizacion_fallos.vb:551: Dim query As String = "SELECT distinct IdPedidoEnc FROM log_dms_sincronizacion_fallos WHERE Estado = 'Error' AND IdPedidoEnc<>0 and fec_agr < @pFechaSincro AND IdPropietario IN (" & inClause & ") "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Log\clsLnDMS_Log_sincronizacion_fallos.vb:591: Dim query As String = "SELECT distinct IdOrdenCompraEnc FROM log_dms_sincronizacion_fallos WHERE Estado = 'Error' AND IdOrdenCompraEnc<>0 and fec_agr < @pFechaSincro AND IdPropietario IN (" & inClause & ") "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Det\clsLnTrans_acuerdoscomerciales_det_partial.vb:19: WHERE codigo_acuerdo = @CODIGO_ACUERDO and estado=1 and IdBodega=@IdBodega
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Det\clsLnTrans_acuerdoscomerciales_det_partial.vb:68: WHERE codigo_acuerdo = @CODIGO_ACUERDO and estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Det\clsLnTrans_acuerdoscomerciales_det_partial.vb:117: and det.estado=1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Det\clsLnTrans_acuerdoscomerciales_det_partial.vb:419: '                            and det.estado=1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Det\clsLnTrans_acuerdoscomerciales_det_partial.vb:428: and det.estado=1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:362: '					  WHERE IdCliente=@IdCliente and estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:366: WHERE enc.IdCliente=@IdCliente and enc.estado=1 and det.estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:415: from trans_acuerdoscomerciales_enc where IdCliente=@IdCliente and estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:588: sp += " And det.estado=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:590: sp += " AND det.estado=0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:643: where enc.IdCliente=@IdCliente and enc.estado=1 and det.estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:707: where enc.estado=1 and det.estado=1 and IdCliente=@IdCliente "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:757: where IdCliente=@IdCliente and enc.estado=1 and det.estado=1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Acuerdos_Comerciales\Trans_AcuerdosComerciales_Enc\clsLnTrans_acuerdoscomerciales_enc.vb:810: from trans_acuerdoscomerciales_enc where IdAcuerdoEnc=@pIdAcuerdoEnc and estado=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Ajustes\clsLnTrans_ajuste_det_borrador.vb:115: If oBeTrans_ajuste_det_borrador.IdRecepcionEnc > 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega.vb:987: Dim vSQL As String = "SELECT idbodega, nombre from bodega where IdEmpresa = @IdEmpresa and activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega.vb:1040: Const sp As String = "SELECT * FROM Bodega WHERE Activo = 1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega.vb:1112: Const sp As String = "SELECT * FROM Bodega WHERE Activo = 1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:289: Dim vSQL As String = "SELECT * FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:331: '        Dim vSQL As String = "SELECT * FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:376: FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:420: vSQL += " WHERE bodega.activo = 1 AND propietarios.activo=1 AND propietario_bodega.IdPropietario = @IdPropietario"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:712: Dim vSQL As String = "SELECT * FROM Bodega WHERE Activo = 1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:993: FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:1822: FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1 AND IdBodega = @IdBodega "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:2493: Const sp As String = "SELECT * FROM Bodega WHERE Activo = 1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:3105: Dim vSQL As String = "SELECT * FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega\clsLnBodega_Partial.vb:3439: Dim vSQL As String = "SELECT * FROM Bodega WHERE IdEmpresa =@IdEmpresa AND Activo=1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Muelle\clsLnBodega_muelles.vb:55: If Not oBeBodega_muelles.IdUbicacionDefecto = 0 Then Ins.Add("idubicaciondefecto", "@idubicaciondefecto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Muelle\clsLnBodega_muelles.vb:130: If Not oBeBodega_muelles.IdUbicacionDefecto = 0 Then Upd.Add("idubicaciondefecto", "@idubicaciondefecto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion.vb:295: If Not oBeBodega_ubicacion.IdIndiceRotacion = 0 Then Ins.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion.vb:296: If Not oBeBodega_ubicacion.IdTipoRotacion = 0 Then Ins.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion.vb:415: If Not oBeBodega_ubicacion.IdIndiceRotacion = 0 Then Ins.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion.vb:416: If Not oBeBodega_ubicacion.IdTipoRotacion = 0 Then Ins.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Bodega\Bodega_Ubicacion\clsLnBodega_ubicacion_Partial.vb:3663: Dim vSQL As String = "SELECT IdBodega, Ubicacion, Area, Case when Max(IdStock)>0 then 'Ocupada' Else 'Vacia' End 'Estado'
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Cliente\clsLnCliente_tiempos.vb:46: If Not oBeCliente_tiempos.IdFamilia = 0 Then Ins.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Cliente\clsLnCliente_tiempos.vb:47: If Not oBeCliente_tiempos.IdClasificacion = 0 Then Ins.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMS\clsLnLog_error_wms.vb:54: 'If Not oBeLog_error_wms.Line_No = 0 Then Ins.Add("Line_No", "@Line_No", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMS\clsLnLog_error_wms.vb:58: 'If Not oBeLog_error_wms.Cantidad = 0 Then Ins.Add("Cantidad", "@Cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:15: If Not oBeLog_error_wms_oc.IdEmpresa = 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:16: If Not oBeLog_error_wms_oc.IdBodega = 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:18: If Not oBeLog_error_wms_oc.IdOrdenCompraEnc = 0 Then Ins.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:19: If oBeLog_error_wms_oc.IdOrdenCompraEnc <> 0 AndAlso oBeLog_error_wms_oc.IdOrdenCompraDet <> 0 Then Ins.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:20: If Not oBeLog_error_wms_oc.IdUsuarioAgr = 0 Then Ins.Add("idusuarioagr", "@idusuarioagr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:24: If Not oBeLog_error_wms_oc.Cantidad = 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:26: If Not oBeLog_error_wms_oc.IdUsuario = 0 Then Ins.Add("idusuario", "@idusuario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb:27: If Not oBeLog_error_wms_oc.IdOperador = 0 Then Ins.Add("idoperador", "@idoperador", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:22: If oBe.IdEmpresa <> 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:23: If oBe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:24: If oBe.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:25: If oBe.IdPickingEnc <> 0 Then Ins.Add("idpickingenc", "@idpickingenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:26: If oBe.IdPickingUbic <> 0 Then Ins.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:27: If oBe.IdDespachoEnc <> 0 Then Ins.Add("iddespachoenc", "@iddespachoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:28: If oBe.IdStock <> 0 Then Ins.Add("idstock", "@idstock", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:29: If oBe.IdProductoBodega <> 0 Then Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:30: If oBe.IdProductoEstado <> 0 Then Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:31: If oBe.IdPresentacion <> 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:32: If oBe.IdUnidadMedida <> 0 Then Ins.Add("idunidadmedida", "@idunidadmedida", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:34: If oBe.Cantidad_Bultos_Packing <> 0 Then Ins.Add("cantidad_bultos_packing", "@cantidad_bultos_packing", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb:35: If oBe.IdOperador <> 0 Then Ins.Add("idoperador", "@idoperador", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:19: If oBeLog_error_wms_pe.IdEmpresa <> 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:20: If oBeLog_error_wms_pe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:21: If oBeLog_error_wms_pe.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:22: If oBeLog_error_wms_pe.IdPedidoDet <> 0 Then Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:24: If oBeLog_error_wms_pe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:25: If oBeLog_error_wms_pe.IdUMBas <> 0 Then Ins.Add("idumbas", "@idumbas", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:26: If oBeLog_error_wms_pe.IdEstado <> 0 Then Ins.Add("idestado", "@idestado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:27: If oBeLog_error_wms_pe.NoLinea <> 0 Then Ins.Add("nolinea", "@nolinea", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:28: If oBeLog_error_wms_pe.IdPresentacion <> 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:31: If oBeLog_error_wms_pe.UsrAgr <> 0 Then Ins.Add("usr_agr", "@usr_agr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb:59: If oBeLog_error_wms_pe.IdEstado <> 0 Then cmd.Parameters.Add(New SqlParameter("@idestado", oBeLog_error_wms_pe.IdEstado))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:18: If oBe.IdEmpresa <> 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:19: If oBe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:22: If oBe.IdPickingEnc <> 0 Then Ins.Add("idpickingenc", "@idpickingenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:23: If oBe.IdPickingDet <> 0 Then Ins.Add("idpickingdet", "@idpickingdet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:24: If oBe.IdPickingUbic <> 0 Then Ins.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:26: If oBe.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:27: If oBe.IdPedidoDet <> 0 Then Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:32: If oBe.Cantidad_Recibida <> 0 Then Ins.Add("cantidad_recibida", "@cantidad_recibida", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb:33: If oBe.User_Agr <> 0 Then Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:20: If oBe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:22: If oBe.IdStock <> 0 Then Ins.Add("idstock", "@idstock", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:23: If oBe.IdMovimiento <> 0 Then Ins.Add("idmovimiento", "@idmovimiento", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:26: If oBe.IdResolucion <> 0 Then Ins.Add("idresolucion", "@idresolucion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:27: If oBe.IdProductoBodega <> 0 Then Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:28: If oBe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb:29: If oBe.User_agr <> 0 Then Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:15: If Not oBeLog_error_wms_rec.Line_No = 0 Then Ins.Add("Line_No", "@Line_No", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:19: If Not oBeLog_error_wms_rec.Cantidad = 0 Then Ins.Add("Cantidad", "@Cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:21: If Not oBeLog_error_wms_rec.IdEmpresa = 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:22: If Not oBeLog_error_wms_rec.IdBodega = 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:23: If Not oBeLog_error_wms_rec.IdRecepcionEnc = 0 Then Ins.Add("IdRecepcionEnc", "@IdRecepcionEnc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:24: If Not oBeLog_error_wms_rec.IdRecepcionDet = 0 Then Ins.Add("IdRecepcionDet", "@IdRecepcionDet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb:25: If Not oBeLog_error_wms_rec.IdUsuarioAgr = 0 Then Ins.Add("IdUsuarioAgr", "@IdUsuarioAgr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:20: If oBe.IdEmpresa <> 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:21: If oBe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:24: If oBe.IdTareaUbicacionEnc <> 0 Then Ins.Add("idtareaubicacionenc", "@idtareaubicacionenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:25: If oBe.IdMotivoUbicacion <> 0 Then Ins.Add("idmotivoubicacion", "@idmotivoubicacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:26: If oBe.IdTareaUbicacionDet <> 0 Then Ins.Add("idtareaubicaciondet", "@idtareaubicaciondet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:28: If oBe.IdUbicacionOrigen <> 0 Then Ins.Add("idubicacionorigen", "@idubicacionorigen", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:29: If oBe.IdUbicacionDestino <> 0 Then Ins.Add("idubicaciondestino", "@idubicaciondestino", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:31: If oBe.IdEstadoOrigen <> 0 Then Ins.Add("idestadoorigen", "@idestadoorigen", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:32: If oBe.IdEstadoDestino <> 0 Then Ins.Add("idestadodestino", "@idestadodestino", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:34: If oBe.IdStock <> 0 Then Ins.Add("idstock", "@idstock", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:35: If oBe.IdUMBAs <> 0 Then Ins.Add("idumbas", "@idumbas", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:36: If oBe.IdPresentacion <> 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:37: If oBe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:39: If oBe.IdOperador <> 0 Then Ins.Add("idoperador", "@idoperador", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:40: If oBe.user_agr <> 0 Then Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:22: If oBe.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:23: If oBe.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:24: If oBe.IdPedidoDet <> 0 Then Ins.Add("idpedidodet", "@idpedidodet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:25: If oBe.IdPickingUbic <> 0 Then Ins.Add("idpickingubic", "@idpickingubic", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:26: If oBe.IdPickingEnc <> 0 Then Ins.Add("idpickingenc", "@idpickingenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:27: If oBe.IdPickingDet <> 0 Then Ins.Add("idpickingdet", "@idpickingdet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:28: If oBe.IdProductoBodega <> 0 Then Ins.Add("idproductobodega", "@idproductobodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:30: If oBe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:31: If oBe.IdMotivo <> 0 Then Ins.Add("idmotivo", "@idmotivo", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:32: If oBe.IdEstado <> 0 Then Ins.Add("idestado", "@idestado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb:64: If oBe.IdEstado <> 0 Then cmd.Parameters.Add(New SqlParameter("@idestado", oBe.IdEstado))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:30: If Not oBeProducto.IdPropietario = 0 Then Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:31: If Not oBeProducto.IdClasificacion = 0 Then Ins.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:32: If Not oBeProducto.IdFamilia = 0 Then Ins.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:33: If Not oBeProducto.IdMarca = 0 Then Ins.Add("idmarca", "@idmarca", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:34: If Not oBeProducto.IdTipoProducto = 0 Then Ins.Add("idtipoproducto", "@idtipoproducto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:35: If Not oBeProducto.IdUnidadMedidaBasica = 0 Then Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:36: If Not oBeProducto.IdCamara = 0 Then Ins.Add("idcamara", "@idcamara", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:37: If Not oBeProducto.IdTipoRotacion = 0 Then Ins.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:38: If Not oBeProducto.IdPerfilSerializado = 0 Then Ins.Add("idperfilserializado", "@idperfilserializado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:39: If Not oBeProducto.IdIndiceRotacion = 0 Then Ins.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:40: If Not oBeProducto.IdSimbologia = 0 Then Ins.Add("idsimbologia", "@idsimbologia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:41: If Not oBeProducto.IdArancel = 0 Then Ins.Add("idarancel", "@idarancel", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:207: '        If Not oBeProducto.IdPropietario = 0 Then Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:208: '        If Not oBeProducto.IdClasificacion = 0 Then Ins.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:209: '        If Not oBeProducto.IdFamilia = 0 Then Ins.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:210: '        If Not oBeProducto.IdMarca = 0 Then Ins.Add("idmarca", "@idmarca", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:211: '        If Not oBeProducto.IdTipoProducto = 0 Then Ins.Add("idtipoproducto", "@idtipoproducto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:212: '        If Not oBeProducto.IdUnidadMedidaBasica = 0 Then Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:213: '        If Not oBeProducto.IdCamara = 0 Then Ins.Add("idcamara", "@idcamara", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:214: '        If Not oBeProducto.IdTipoRotacion = 0 Then Ins.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:215: '        If Not oBeProducto.IdPerfilSerializado = 0 Then Ins.Add("idperfilserializado", "@idperfilserializado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:216: '        If Not oBeProducto.IdIndiceRotacion = 0 Then Ins.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:217: '        If Not oBeProducto.IdSimbologia = 0 Then Ins.Add("idsimbologia", "@idsimbologia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:218: '        If Not oBeProducto.IdArancel = 0 Then Ins.Add("idarancel", "@idarancel", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:260: '        'If Not oBeProducto.IdUnidadMedidaCobro = 0 Then Ins.Add("idunidadmedidacobro", "@idunidadmedidacobro", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:372: If Not oBeProducto.IdPropietario = 0 Then Upd.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:373: If Not oBeProducto.IdClasificacion = 0 Then Upd.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:374: If Not oBeProducto.IdFamilia = 0 Then Upd.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:375: If Not oBeProducto.IdMarca = 0 Then Upd.Add("idmarca", "@idmarca", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:376: If Not oBeProducto.IdTipoProducto = 0 Then Upd.Add("idtipoproducto", "@idtipoproducto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:377: If Not oBeProducto.IdUnidadMedidaBasica = 0 Then Upd.Add("idunidadmedidabasica", "@idunidadmedidabasica", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:378: If Not oBeProducto.IdCamara = 0 Then Upd.Add("idcamara", "@idcamara", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:379: If Not oBeProducto.IdTipoRotacion = 0 Then Upd.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:380: If Not oBeProducto.IdPerfilSerializado = 0 Then Upd.Add("idperfilserializado", "@idperfilserializado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:381: If Not oBeProducto.IdIndiceRotacion = 0 Then Upd.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:382: If Not oBeProducto.IdSimbologia = 0 Then Upd.Add("idsimbologia", "@idsimbologia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:383: If Not oBeProducto.IdArancel = 0 Then Upd.Add("idarancel", "@idarancel", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto.vb:425: 'If Not oBeProducto.IdUnidadMedidaCobro = 0 Then Upd.Add("idunidadmedidacobro", "@idunidadmedidacobro", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5910: If Not oBeProducto.IdPropietario = 0 Then Ins.Add("idpropietario", "@idpropietario", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5911: If Not oBeProducto.IdClasificacion = 0 Then Ins.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5912: If Not oBeProducto.IdFamilia = 0 Then Ins.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5913: If Not oBeProducto.IdMarca = 0 Then Ins.Add("idmarca", "@idmarca", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5914: If Not oBeProducto.IdTipoProducto = 0 Then Ins.Add("idtipoproducto", "@idtipoproducto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5915: If Not oBeProducto.IdUnidadMedidaBasica = 0 Then Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5916: If Not oBeProducto.IdCamara = 0 Then Ins.Add("idcamara", "@idcamara", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5917: If Not oBeProducto.IdTipoRotacion = 0 Then Ins.Add("idtiporotacion", "@idtiporotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5918: If Not oBeProducto.IdPerfilSerializado = 0 Then Ins.Add("idperfilserializado", "@idperfilserializado", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5919: If Not oBeProducto.IdIndiceRotacion = 0 Then Ins.Add("idindicerotacion", "@idindicerotacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5920: If Not oBeProducto.IdSimbologia = 0 Then Ins.Add("idsimbologia", "@idsimbologia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5921: If Not oBeProducto.IdArancel = 0 Then Ins.Add("idarancel", "@idarancel", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:5962: If Not oBeProducto.IdUnidadMedidaCobro = 0 Then Ins.Add("idunidadmedidacobro", "@idunidadmedidacobro", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto\clsLnProducto_Partial.vb:8011: '#CKFK20260526 Quite el parametro fijo IdBodega = 1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoEstado\clsLnProducto_estado_Partial.vb:1096: Const sp As String = "Select IdEstado, nombre from producto_estado where activo = 1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoEstado\clsLnProducto_estado_Partial.vb:1128: Const sp As String = "Select IdEstado, nombre from producto_estado where activo = 1 AND sistema=1 AND utilizable=0 "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPallet\clsLnProducto_pallet.vb:47: If Not oBeProducto_pallet.IdPresentacion = 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPallet\clsLnProducto_pallet.vb:49: If Not oBeProducto_pallet.IdImpresora = 0 Then Ins.Add("idimpresora", "@idimpresora", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPallet\clsLnProducto_pallet.vb:51: If Not oBeProducto_pallet.IdRecepcionEnc = 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPallet\clsLnProducto_pallet.vb:52: If Not oBeProducto_pallet.IdRecepcionDet = 0 Then Ins.Add("idrecepciondet", "@idrecepciondet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion.vb:90: If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Ins.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion.vb:92: If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Ins.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion.vb:197: If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Upd.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion.vb:198: If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Upd.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\ProductoPresentacion\clsLnProducto_presentacion.vb:481: If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Upd.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Producto\Producto_Talla_Color\clsLnProducto_talla_color.vb:38: If oBeProducto_talla_color.IdCampaÃ±a > 0 Then Ins.Add("idcampaÃ±a", "@idcampaÃ±a", WMSTipoDato.Tipo.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Propietario\Propietario\clsLnPropietarios.vb:98: If Not oBePropietarios.IdTipoActualizacionCosto = 0 Then Ins.Add("idtipoactualizacioncosto", "@idtipoactualizacioncosto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:75: If Not oBeProveedor.IdUbicacionVirtual = 0 Then Ins.Add("idubicacionvirtual", "@idubicacionvirtual", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:82: If Not oBeProveedor.IdBodegaAreaSAP = 0 Then Ins.Add("idbodegaareasap", "@idbodegaareasap", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:83: If Not oBeProveedor.IdPais = 0 Then Ins.Add("idpais", "@idpais", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:173: If Not oBeProveedor.IdUbicacionVirtual = 0 Then Upd.Add("idubicacionvirtual", "@idubicacionvirtual", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:180: If Not oBeProveedor.IdBodegaAreaSAP = 0 Then Upd.Add("idbodegaareasap", "@idbodegaareasap", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor.vb:181: If Not oBeProveedor.IdPais = 0 Then Upd.Add("idpais", "@idpais", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor_tiempos.vb:63: If Not oBeProveedor_tiempos.IdFamilia = 0 Then Ins.Add("idfamilia", "@idfamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Proveedor\clsLnProveedor_tiempos.vb:64: If Not oBeProveedor_tiempos.IdClasificacion = 0 Then Ins.Add("idclasificacion", "@idclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\ReglaUbicacionEstado\clsLnRegla_ubic_det_pe_Partial.vb:84: " Where(regla_ubic_enc.IdBodega = @IdBodega AND regla_ubic_det_pe.IdEstado = @IdEstado AND regla_ubic_det_pe.Activo = 1) "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:34: If pFiltros.IdEstado <> 0 Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:73: If pFiltros.IdEstado <> 0 Then dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pFiltros.IdEstado)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:133: If pFiltros.IdEstado <> 0 Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:176: If pFiltros.IdEstado <> 0 Then dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pFiltros.IdEstado)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:284: If pFiltros.IdEstado <> 0 Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsLnUbicaciones_por_regla_Partial.vb:326: If pFiltros.IdEstado <> 0 Then dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pFiltros.IdEstado)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Regla_Vence\clsLnRegla_vencimiento.vb:40: If Not oBeRegla_vencimiento.IdProductoFamilia = 0 Then Ins.Add("idproductofamilia", "@idproductofamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Regla_Vence\clsLnRegla_vencimiento.vb:41: If Not oBeRegla_vencimiento.IdProductoClasificacion = 0 Then Ins.Add("idproductoclasificacion", "@idproductoclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Regla_Vence\clsLnRegla_vencimiento.vb:111: If Not oBeRegla_vencimiento.IdProductoFamilia = 0 Then Upd.Add("idproductofamilia", "@idproductofamilia", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Regla_Vence\clsLnRegla_vencimiento.vb:112: If Not oBeRegla_vencimiento.IdProductoClasificacion = 0 Then Upd.Add("idproductoclasificacion", "@idproductoclasificacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Mantenimientos\Road\RoadRuta\clsLnRoad_ruta_Partial.vb:216: Despacho = 2
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\clsLnJornada_sistema_Partial.vb:497: '#GT27122022_1900: en esta copia de mÃ©todo, existe Insertar_Stock_Jornada que no debe ejecutar retroactivo=1 como parametro enviado.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\clsLnJornada_sistema_Partial.vb:630: '#GT27122022_1900: en esta copia de mÃ©todo, existe Insertar_Stock_Jornada que no debe ejecutar retroactivo=1 como parametro enviado.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:131: If oBeStock_jornada.IdPresentacion <> 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:135: If oBeStock_jornada.IdRecepcionEnc <> 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:136: If oBeStock_jornada.IdRecepcionDet <> 0 Then Ins.Add("idrecepciondet", "@idrecepciondet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:137: If oBeStock_jornada.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:369: If oBeStock_jornada.IdPresentacion <> 0 Then Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:373: If oBeStock_jornada.IdRecepcionEnc <> 0 Then Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:374: If oBeStock_jornada.IdRecepcionDet <> 0 Then Ins.Add("idrecepciondet", "@idrecepciondet", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Sistema_Jornada\Stock_Jornada\clsLnStock_jornada.vb:375: If oBeStock_jornada.IdPedidoEnc <> 0 Then Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:50: If oBeTrans_despacho_enc.IdVehiculo <> 0 Then Ins.Add("idvehiculo", "@idvehiculo", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:51: If oBeTrans_despacho_enc.IdPiloto <> 0 Then Ins.Add("idpiloto", "@idpiloto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:52: If oBeTrans_despacho_enc.IdRuta <> 0 Then Ins.Add("idruta", "@idruta", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:314: If oBeTrans_despacho_enc.IdVehiculo <> 0 Then Upd.Add("idvehiculo", "@idvehiculo", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:315: If oBeTrans_despacho_enc.IdPiloto <> 0 Then Upd.Add("idpiloto", "@idpiloto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc.vb:316: If oBeTrans_despacho_enc.IdRuta <> 0 Then Upd.Add("idruta", "@idruta", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:736: '#EJC20190312: Aquí ya se toma lo que se despacho (cantidad despachada > 0)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:2344: BeTransReDet.IdRecepcionDet = 0 'EJC20260226: En recepción automática en destino, el detalle de recepción se va creando a medida que se van procesando las líneas de despacho, por lo tanto no se tiene un IdRecepcionDet definido al momento de crear el objeto.
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Log\clsLnTransacciones_log_Partial.vb:255: '                                                     .IdEstado = 1,
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTransUbicSugerida2.vb:1336: If pFitParams.Estado.ContienePresentacion AndAlso (IdPres <> 0) Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_ubicsug.vb:258: lTransaction) AndAlso pFiltros.IdEstado <> 0 Then
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_ubicsug.vb:259: pFiltros.IdEstado = 0
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:138: If Not oBeTrans_oc_det.IdPropietarioBodega = 0 Then Ins.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:142: If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then Ins.Add("IdOrdenCompraDetPadre", "@IdOrdenCompraDetPadre", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:144: If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Ins.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:145: If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:147: If Not oBeTrans_oc_det.Camas_Tarima = 0 Then Ins.Add("Camas_Tarima", "@Camas_Tarima", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:148: If Not oBeTrans_oc_det.Cajas_Cama = 0 Then Ins.Add("Cajas_Cama", "@Cajas_Cama", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:289: If Not oBeTrans_oc_det.IdPropietarioBodega = 0 Then Upd.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:293: If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then Upd.Add("IdOrdenCompraDetPadre", "@IdOrdenCompraDetPadre", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:296: If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Upd.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:298: If Not oBeTrans_oc_det.Camas_Tarima = 0 Then Upd.Add("Camas_Tarima", "@Camas_Tarima", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Detalle\clsLnTrans_oc_det.vb:299: If Not oBeTrans_oc_det.Cajas_Cama = 0 Then Upd.Add("Cajas_Cama", "@Cajas_Cama", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:110: If oBeTrans_oc_enc.IdNoDocumentoRef <> 0 Then Ins.Add("idnodocumentoref", "@idnodocumentoref", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:111: If oBeTrans_oc_enc.IdAcuerdoComercial <> 0 Then Ins.Add("idacuerdocomercial", "@idacuerdocomercial", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:112: If oBeTrans_oc_enc.IdOperadorBodegaDefecto <> 0 Then Ins.Add("idoperadorbodegadefecto", "@idoperadorbodegadefecto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:116: If oBeTrans_oc_enc.IdCampaÃ±a <> 0 Then Ins.Add("IdCampaÃ±a", "@IdCampaÃ±a", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:235: If oBeTrans_oc_enc.IdNoDocumentoRef <> 0 Then Upd.Add("idnodocumentoref", "@idnodocumentoref", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:237: If oBeTrans_oc_enc.IdAcuerdoComercial <> 0 Then Upd.Add("idacuerdocomercial", "@idacuerdocomercial", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:238: If oBeTrans_oc_enc.IdOperadorBodegaDefecto <> 0 Then Upd.Add("idoperadorbodegadefecto", "@IdOperadorBodegaDefecto", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\OrdenCompra\OC_Encabezado\clsLnTrans_oc_enc.vb:241: If oBeTrans_oc_enc.IdCampaÃ±a <> 0 Then Upd.Add("IdCampaÃ±a", "@IdCampaÃ±a", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc.vb:110: If oBeTrans_pe_enc.IdBodega <> 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc.vb:181: If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then Ins.Add("IdMotivoDevolucion", "@IdMotivoDevolucion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc.vb:303: If Not oBeTrans_pe_enc.IdMuelle = 0 Then Upd.Add("idmuelle", "@idmuelle", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc.vb:366: If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then Upd.Add("IdMotivoDevolucion", "@IdMotivoDevolucion", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:1137: Const sp As String = "SELECT * FROM Trans_pe_enc WHERE ISNULL(Enviado_A_ERP,0) = 0  AND estado IN  ('Despachado','Verificado')  "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:2328: WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente') and pe_tipo.verificar_con_imagen=0"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6136: vSQL = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado') and hora_ini >=@PULTIMAFECHASINCRO "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6264: Dim vSQ As String = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado' and IdPedidoEnc = @pIePedidoEnc)  "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6442: cmd.CommandText = "UPDATE trans_pe_enc SET IdPickingEnc = 0, estado = 'Pendiente', fec_mod = getdate() WHERE IdPedidoEnc = @IdPedidoEnc AND IdPickingEnc = @IdPickingEnc"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6489: vSQ = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado') and hora_ini >=@PULTIMAFECHASINCRO "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:7607: 'Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc.vb:93: If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then Ins.Add("idbodegamuelle", "@idbodegamuelle", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc.vb:190: If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then Upd.Add("idbodegamuelle", "@idbodegamuelle", DataType.Parametro)
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:20: WHERE IdPickingEnc=@IdPickingEnc AND estado <> 'Anulado' AND activo = 1"
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1602: beTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1610: beTareaHH.IdEstado = 1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1649: beTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1904: BeTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1928: BeTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:1981: BeTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:2547: beTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:2555: beTareaHH.IdEstado = 1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:2613: beTareaHH.IdEstado = 4
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:5391: If pIdMotivoUbicacion = 0 Then Throw New Exception("No está definido IdMotivoUbicacion por defecto para ubicación automática, no puede realizarse el reemplazo")
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:5419: beTareaHH.IdEstado = 1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Reabastecimiento\clsLnTrans_reabastecimiento_log_partial.vb:265: AND estado IN ('Nuevo', 'Finalizado Parcial')) AND Indicador = 'REAB'AND cambio_estado = 0 AND Activo=1
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Reabastecimiento\clsLnTrans_reabastecimiento_log_partial.vb:743: .IdEstado = 1,
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Detalle\clsLnTrans_re_det.vb:124: cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", If(oBeTrans_re_det.ProductoEstado.IdEstado = 0, DBNull.Value, oBeTrans_re_det.ProductoEstado.IdEstado)))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Detalle\clsLnTrans_re_det.vb:243: cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", IIf(oBeTrans_re_det.ProductoEstado.IdEstado = 0, DBNull.Value, oBeTrans_re_det.ProductoEstado.IdEstado)))
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Detalle\clsLnTrans_re_det_Partial.vb:123: If BeTransReDet.ProductoEstado.IdEstado = 0 Then BeTransReDet.ProductoEstado.IdEstado = BeTransReDet.IdProductoEstado
+C:\Users\yejc2\source\repos\TOMWMS\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc.vb:70: If Not oBeTrans_re_enc.IdMuelle = 0 Then Ins.Add("idmuelle", "@idmuelle", DataType.Parametro)

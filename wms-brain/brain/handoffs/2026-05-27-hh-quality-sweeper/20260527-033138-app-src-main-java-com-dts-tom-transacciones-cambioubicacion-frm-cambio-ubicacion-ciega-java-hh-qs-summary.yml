@@ -1,0 +1,9 @@
+id: hh-qs-20260527-033138
+tag: '#EJC20260527'
+mode: safe-fix
+target: 'app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java'
+artifacts:
+  report: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033138-app-src-main-java-com-dts-tom-transacciones-cambioubicacion-frm-cambio-ubicacion-ciega-java-hh-qs-report.txt'
+  deps: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033138-app-src-main-java-com-dts-tom-transacciones-cambioubicacion-frm-cambio-ubicacion-ciega-java-hh-qs-deps.txt'
+  safe_fix: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-033138-app-src-main-java-com-dts-tom-transacciones-cambioubicacion-frm-cambio-ubicacion-ciega-java-hh-qs-safe-fix.txt'
+status: done

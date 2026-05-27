@@ -1,0 +1,9 @@
+id: gate-20260527-030304
+tag: '#EJC20260527'
+status: PASS
+evidence:
+  - 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-regression-guardian\20260527-030257-picking-residual-risk.yml'
+  - 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-state-machine-auditor\20260527-030259-picking-matrix.yml'
+  - 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-telemetry-lite\20260527-030302-correlation.yml'
+open_risks: []
+recommendation: 'Close only if status PASS or approved WARN.'

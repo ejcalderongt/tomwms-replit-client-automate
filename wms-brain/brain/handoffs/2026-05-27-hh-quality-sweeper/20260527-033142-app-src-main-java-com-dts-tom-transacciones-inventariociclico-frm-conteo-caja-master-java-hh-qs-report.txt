@@ -1,0 +1,33 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_conteo_caja_master.java
+=== CHECK: ==\s*null ===
+53:            if (ListaCajaMasterConteo == null || ListaCajaMasterConteo.isEmpty()) {
+100:            if (ListaCajaMasterConteo == null || ListaCajaMasterConteo.isEmpty()) {
+
+=== CHECK: !=\s*null ===
+77:                if (ListaCajaMasterConteo != null && gl.reconteo_list != null) {
+
+=== CHECK: isEmpty\(\) ===
+53:            if (ListaCajaMasterConteo == null || ListaCajaMasterConteo.isEmpty()) {
+100:            if (ListaCajaMasterConteo == null || ListaCajaMasterConteo.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+27:    private RecyclerView rvProductos;
+28:    private EditText txtLicencia;
+29:    private ProgressDialog progress;
+30:    private WebServiceHandler ws;
+31:    private XMLObject xobj;
+32:    private list_adapt_detalle_ciclico_cm adapter;
+33:    private clsBeTrans_inv_ciclicoList datos = new clsBeTrans_inv_ciclicoList();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

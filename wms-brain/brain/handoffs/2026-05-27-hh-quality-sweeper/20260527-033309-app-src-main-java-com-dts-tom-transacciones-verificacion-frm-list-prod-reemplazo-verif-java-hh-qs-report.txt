@@ -1,0 +1,52 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+367:                    if (DT.getString(6)!=null){
+373:                    if (DT.getString(7)!=null){
+378:                    if (DT.getString(8)!=null){
+445:                    if (DT.getString(6)!=null){
+451:                    if (DT.getString(7)!=null){
+456:                    if (DT.getString(8)!=null){
+669:        return ConExistencia && selitem != null;
+
+=== CHECK: isEmpty\(\) ===
+166:                    if (!txtFiltro.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+40:    private XMLObject xobj;
+41:    private ProgressDialog progress;
+44:    private EditText txtFiltro;
+45:    private ListView listDispProd;
+48:    private final ArrayList<clsBeStockReemplazo> BeListStock= new ArrayList<clsBeStockReemplazo>();
+49:    private final ArrayList<clsBeStockReemplazo> TempBeListStock= new ArrayList<clsBeStockReemplazo>();
+50:    private list_adapt_detalle_reemplazo_verif adapter;
+51:    private clsBeStockReemplazo selitem;
+52:    private clsBeStock_res StockResReemplazo;
+53:    private clsBeStock_res tmpBeStock_Res  = new clsBeStock_res();
+54:    private clsBeTrans_picking_ubic BePickingUbic = new clsBeTrans_picking_ubic();
+55:    //private clsBeStock_res lBeStockRes = new clsBeStock_res();
+56:    //private clsBeStock_resList lBeStockResAux = new clsBeStock_resList();
+58:    private final double vCant=0;
+59:    private double CantidadPendiente=0;
+60:    private double CantPendSel=0;
+61:    private double pCantTotal= 0;
+62:    private final boolean Distinto=false;
+65:    private boolean ConExistencia = false;
+67:    private Cursor DT;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+323:                lblTituloForma.setText("Picking List No: "+ gl.gIdPickingEnc +
+405:                lblCantRegs.setText("No.Reg: "+count);
+479:                lblCantRegs.setText("No.Reg: "+count);
+

@@ -1,0 +1,13 @@
+check: db_correlation
+tokens:
+  - stock
+  - stock_res
+  - stock_res_cache_hit
+  - stock_res_grid
+  - stock_res_readmodel
+db_exists:
+  - stock: True
+  - stock_res: True
+  - stock_res_cache_hit: False
+  - stock_res_grid: False
+  - stock_res_readmodel: False

@@ -1,0 +1,43 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_agrega_prd.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+(sin hallazgos)
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+39:    private WebServiceHandler ws;
+40:    private XMLObject xobj;
+42:    private ProgressDialog progress;
+46:    private Button btnGuardarPrd;
+50:    private final ArrayList<String> FamiliaList = new ArrayList<String>();
+51:    private final ArrayList<String> ClasiList = new ArrayList<String>();
+52:    private final ArrayList<String> MarcaList = new ArrayList<String>();
+53:    private final ArrayList<String> TipoList = new ArrayList<String>();
+54:    private final ArrayList<String> UMBasList = new ArrayList<String>();
+56:    private final ArrayList<clsBeProducto_familia> BeListFam = new ArrayList<clsBeProducto_familia>();
+57:    private final ArrayList<clsBeProducto_clasificacion> BeListClasi = new ArrayList<clsBeProducto_clasificacion>();
+58:    private final ArrayList<clsBeProducto_marca> BeListMarca = new ArrayList<clsBeProducto_marca>();
+59:    private final ArrayList<clsBeProducto_tipo> BeListTipo = new ArrayList<clsBeProducto_tipo>();
+60:    private final ArrayList<clsBeUnidad_medida> BeListUmBas = new ArrayList<clsBeUnidad_medida>();
+63:    private int IdFamilia=0;
+64:    private int IdClasificacion=0;
+65:    private int IdMarca=0;
+66:    private int IdTipo=0;
+67:    private int IdUmBas=0;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

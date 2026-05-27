@@ -1,0 +1,64 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+166:        if (progress != null && progress.isShowing()) {
+180:        if (progress != null && progress.isShowing()) {
+500:                    if (DT.getString(6)!=null){
+506:                    if (DT.getString(7)!=null){
+511:                    if (DT.getString(8)!=null){
+568:                if (gl.Advertir_Mpq_Umbas && BePresentacion != null) {
+613:                    if (DT.getString(6)!=null){
+619:                    if (DT.getString(7)!=null){
+624:                    if (DT.getString(8)!=null){
+994:            if (lBeStockResAux!=null){
+995:                if (lBeStockResAux.items!=null){
+
+=== CHECK: isEmpty\(\) ===
+129:        if (!gBePickingUbic.Lic_plate.isEmpty()) {
+220:                    if (!txtFiltro.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+48:    private EditText txtFiltro;
+49:    private ListView listDispProd;
+50:    private RecyclerView listaDispProd;
+52:    private ProgressDialog progress;
+54:    private WebServiceHandler ws;
+55:    private XMLObject xobj;
+57:    private final clsBeStockList vListaStock = new clsBeStockList();
+58:    private final clsBeStockList vStock = new clsBeStockList();
+59:    private final clsBeStock_resList  BeListStockRes = new clsBeStock_resList();
+60:    private final clsBeStock_res StockResC=new clsBeStock_res();
+61:    private clsBeStock_res StockResReemplazo=new clsBeStock_res();
+62:    private clsBeStock_res tmpBeStock_Res  = new clsBeStock_res();
+64:    private ArrayList<clsBeStockReemplazo> BeListStock= new ArrayList<clsBeStockReemplazo>();
+65:    private final ArrayList<clsBeStockReemplazo> TempBeListStock= new ArrayList<clsBeStockReemplazo>();
+66:    private list_adapt_reemplazo_detalle adapter;
+67:    private clsBeStockReemplazo selitem;
+69:    private final clsBeTrans_picking_ubic BePickingUbic = new clsBeTrans_picking_ubic();
+70:    private clsBeStock_res lBeStockRes = new clsBeStock_res();
+71:    private clsBeStock_resList lBeStockResAux = new clsBeStock_resList();
+73:    private int CantRes=0, IdUbicDest = 0, IdEstDanadoSelect = 0;
+74:    private double vCant=0, CantidadTotal = 0;
+75:    private boolean Completo=false;
+76:    private boolean Distinto=false;
+77:    private boolean ConExistencia = false;
+78:    private final String resultado="";
+79:    private double CantidadPendiente=0, CantPendSel = 0;
+80:    private clsBeProducto_Presentacion BePresentacion = null;
+82:    private Cursor DT;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+540:                lblCantRegs.setText("No.Reg: "+count);
+653:                lblCantRegs.setText("No.Reg: "+count);
+

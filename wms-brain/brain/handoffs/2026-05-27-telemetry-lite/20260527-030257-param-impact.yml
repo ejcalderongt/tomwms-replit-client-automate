@@ -1,0 +1,19 @@
+id: telemetry-param-impact-20260527-030258
+tag: '#EJC20260527'
+parameters:
+  - name: 'verifica_auto'
+    occurrences: 90
+  - name: 'Verificar_con_imagen'
+    occurrences: 10
+  - name: 'procesado_bof'
+    occurrences: 52
+  - name: 'IdBodega'
+    occurrences: 15225
+  - name: 'IdUbicacionDestino'
+    occurrences: 397
+impact:
+  by_bodega: []
+  by_interface: []
+  blast_radius: []
+unused_candidates: []
+overlap_candidates: []

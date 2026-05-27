@@ -1,0 +1,50 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_reabastecimiento_manual.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+109:            if (progress!=null) progress.cancel();
+117:            if (progress!=null) progress.hide();
+122:            if (BeProducto != null) {
+127:                if (progress!=null) progress.cancel();
+142:            if (BeStockList != null) {
+143:                if (BeStockList.items != null) {
+147:                if (progress!=null) progress.cancel();
+151:            if (progress!=null) progress.cancel();
+154:            if (progress!=null) progress.cancel();
+185:            if (progress!=null) progress.cancel();
+188:            if (progress!=null) progress.cancel();
+218:                if (progress!=null) progress.cancel();
+239:            if (progress!=null) progress.cancel();
+295:            if (progress!=null) progress.cancel();
+
+=== CHECK: isEmpty\(\) ===
+101:            if (!txtCodigoPrd.getText().toString().isEmpty()) {
+285:                if (!txtCodigoPrd.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+25:    private XMLObject xobj;
+26:    private ProgressDialog progress;
+28:    private TextView txtMensajeDialog;
+29:    private final String mensaje_progress ="";
+32:    private ListView listExist;
+33:    private TextView lblNumReg;
+35:    private final int IdUbicacion = 0;
+36:    private clsBeProducto BeProducto = new clsBeProducto();
+37:    private clsBeVW_stock_resList BeStockList = new clsBeVW_stock_resList();
+39:    private list_adapt_reabast_stock_res adapter_stock;
+41:    private int idx = -1;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+68:            txtCodigoPrd.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+91:            txtCodigoPrd.setText("");
+175:            lblNumReg.setText("Reg: " + ListStock.size());
+
