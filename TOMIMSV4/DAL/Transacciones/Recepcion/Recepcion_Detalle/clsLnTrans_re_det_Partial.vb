@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_re_det
@@ -2147,9 +2147,9 @@ Partial Public Class clsLnTrans_re_det
                     FROM trans_re_enc AS re INNER JOIN
                       trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
                       trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc LEFT JOIN
-					  producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
-					  talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
-					  color c on ptc.IdColor = c.IdColor
+                                          producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
+                                          talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
+                                          color c on ptc.IdColor = c.IdColor
                     WHERE (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc)
                     GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, 
                       det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
@@ -2766,7 +2766,35 @@ Partial Public Class clsLnTrans_re_det
                     vFilas += 1
 
                 Else
-                    vFilas += Actualizar(BeTransReDet, lConnection, lTransaction)
+                    '#EJCCKFK20260527: Este overload se invoca siempre tras un DELETE previo
+                    '(Eliminar_Detalle en el llamador). Si IsNew=False, Actualizar no inserta
+                    'la fila (ya fue borrada) -> pListaStockRec queda con el ID calculado
+                    'por la HH -> FK_stock_rec_trans_re_det viola en Guarda_Stock_Rec.
+                    'Aplicar el mismo patron INSERT+SCOPE_IDENTITY que el branch IsNew=True.
+                    Dim IdRecepcionDetOrigenNotNew As Integer = BeTransReDet.IdRecepcionDet
+
+                    BeTransReDet.Fecha_ingreso = Now
+                    BeTransReDet.Fec_agr = Now
+
+                    If BeTransReDet.IdPresentacion = -1 Then
+                        BeTransReDet.IdPresentacion = 0
+                    End If
+
+                    Insertar(BeTransReDet, lConnection, lTransaction)
+
+                    Dim MaxIdRecepcionDetNotNew As Integer = BeTransReDet.IdRecepcionDet
+
+                    If MaxIdRecepcionDetNotNew <= 0 Then
+                        Throw New Exception("ERROR_202605271715: No se obtuvo IdRecepcionDet identity (branch Not IsNew) para la linea de recepcion " & IdRecepcionDetOrigenNotNew)
+                    End If
+
+                    '#EJCCKFK20260527: sincronizar pListaStockRec con el nuevo IDENTITY
+                    Asignar_IdRecepcionDet_StockRec(pListaStockRec,
+                                                    BeTransReDet,
+                                                    IdRecepcionDetOrigenNotNew,
+                                                    MaxIdRecepcionDetNotNew)
+
+                    vFilas += 1
                 End If
 
             Next
