@@ -69,6 +69,7 @@ entry_points:
 ejemplos_tareas_pasadas:
   - { fecha: 2026-05-20, caso: "Audit HH cantidad UMBAS pattern", handoff: brain/handoffs/2026-05-20-audit-hh-cantidad-umbas-pattern/, status: "ACCEPTANCE + ADDENDUM disponibles" }
   - { fecha: 2026-05-20, caso: "HH recepcion pallet presentacion cantidad", handoff: brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ }
+  - { fecha: 2026-05-26, caso: "HH cambio ubicacion: foco destino desde recepcion", nota: "Fix en frm_cambio_ubicacion_ciega con tag #EJC20260526; no tocar recepcion detalle para este sintoma." }
 
 extension_points:
   - "Falta inventario de las 55 activities con su flujo y endpoint WSHHRN consumido"
