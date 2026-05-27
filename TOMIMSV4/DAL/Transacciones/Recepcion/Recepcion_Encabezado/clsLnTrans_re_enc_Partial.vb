@@ -2575,9 +2575,31 @@ Partial Public Class clsLnTrans_re_enc
                                                lTransaction)
             CadenaResultado += "Eliminar_Detalle_Recepción "
 
+'#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+            Dim dictIdOrigenModif As New Dictionary(Of Integer, clsBeTrans_re_det)
+            For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                If Not dictIdOrigenModif.ContainsKey(detOri.IdRecepcionDet) Then
+                    dictIdOrigenModif.Add(detOri.IdRecepcionDet, detOri)
+                End If
+            Next
+
             clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                   lConnection,
                                                   lTransaction)
+
+            '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+            If Not pListStockRec Is Nothing Then
+                For Each kvpModif As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenModif
+                    Dim idOrigModif As Integer = kvpModif.Key
+                    Dim nuevoIdModif As Integer = kvpModif.Value.IdRecepcionDet
+                    If nuevoIdModif > 0 AndAlso idOrigModif <> nuevoIdModif Then
+                        For Each sModif As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigModif)
+                            sModif.IdRecepcionDet = nuevoIdModif
+                        Next
+                    End If
+                Next
+            End If
+
             CadenaResultado += "Guarda_Trans_re_det "
 
             clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
