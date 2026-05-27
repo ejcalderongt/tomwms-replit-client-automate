@@ -24,7 +24,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          trans_inv_ciclico.idoperador, trans_inv_ciclico.user_agr, trans_inv_ciclico.fec_agr, 
                          bodega_ubicacion.IdTramo, producto_estado.nombre AS estado_nombre, producto.nombre AS producto_nombre, 
                          bodega_ubicacion.descripcion AS ubic_nombre, producto_presentacion.nombre AS pres_nombre, unidad_medida.Nombre AS unid_nombre ,
-                         producto.control_peso AS control_peso, producto.control_peso AS genera_lote, producto.control_peso AS control_vencimiento , 
+                         producto.control_peso AS control_peso, producto.control_lote AS genera_lote, producto.control_vencimiento AS control_vencimiento , 
                          trans_inv_ciclico.idPresentacion_nuevo , trans_inv_ciclico.IdProductoEst_nuevo , 0 as idreconteo, producto.codigo as codigo_producto,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x as Columna, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos as Posicion
                          FROM unidad_medida RIGHT OUTER JOIN
@@ -42,7 +42,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          trans_inv_ciclico.idoperador, trans_inv_ciclico.user_agr, trans_inv_ciclico.fec_agr, 
                          bodega_ubicacion.IdTramo, producto_estado.nombre, producto.nombre, 
                          bodega_ubicacion.descripcion, producto_presentacion.nombre, unidad_medida.Nombre,
-                         producto.control_peso, producto.control_peso, producto.control_peso, 
+                         producto.control_peso, producto.control_lote, producto.control_vencimiento, 
                          trans_inv_ciclico.idPresentacion_nuevo , trans_inv_ciclico.IdProductoEst_nuevo, producto.codigo,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos "
             'WHERE(trans_inv_ciclico.idinventarioenc =@idinventarioenc) And ((trans_inv_ciclico.idoperador=@idoperador) Or (trans_inv_ciclico.idoperador=0)) And (trans_inv_ciclico.esnuevo=0) "
@@ -58,8 +58,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          SUM(trans_inv_reconteo.cantidad) AS Cantidad, 0 AS cant_reconteo, 0 AS peso_stock, 
                          SUM(trans_inv_reconteo.peso) AS Peso, 0 AS peso_reconteo, trans_inv_reconteo.IdOperador, 
                          trans_inv_reconteo.user_agr, trans_inv_reconteo.fec_agr, bodega_ubicacion.IdTramo, producto_estado.nombre AS estado_nombre, producto.nombre AS producto_nombre, 
-                         bodega_ubicacion.descripcion AS ubic_nombre, producto_presentacion.nombre AS pres_nombre, unidad_medida.Nombre AS unid_nombre, producto.control_peso, producto.control_peso AS genera_lote, 
-                         producto.control_peso AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, trans_inv_enc_reconteo.reconteo AS idreconteo, producto.codigo as codigo_producto,
+                         bodega_ubicacion.descripcion AS ubic_nombre, producto_presentacion.nombre AS pres_nombre, unidad_medida.Nombre AS unid_nombre, producto.control_peso, producto.control_lote AS genera_lote, 
+                         producto.control_vencimiento AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, trans_inv_enc_reconteo.reconteo AS idreconteo, producto.codigo as codigo_producto,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x as Columna, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos as Posicion
                          FROM  trans_inv_enc_reconteo INNER JOIN
                          trans_inv_reconteo INNER JOIN
@@ -75,7 +75,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          trans_inv_reconteo.fecha_vence, trans_inv_reconteo.cantidad, trans_inv_reconteo.peso, trans_inv_reconteo.IdOperador, 
                          trans_inv_reconteo.user_agr, trans_inv_reconteo.fec_agr, bodega_ubicacion.IdTramo, producto_estado.nombre,
                          producto.nombre, bodega_ubicacion.descripcion, producto_presentacion.nombre, unidad_medida.Nombre, producto.control_peso, 
-                         producto.control_peso, producto.control_peso, trans_inv_enc_reconteo.reconteo, producto.codigo,
+                         producto.control_lote, producto.control_vencimiento, trans_inv_enc_reconteo.reconteo, producto.codigo,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos"
 
             'If ppendiente Then sp &= " And (trans_inv_reconteo.user_agr='') "
@@ -529,7 +529,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          dbo.trans_inv_ciclico.fecha_vence, dbo.trans_inv_ciclico.cant_stock, dbo.trans_inv_ciclico.cantidad, dbo.trans_inv_ciclico.cant_reconteo, dbo.trans_inv_ciclico.peso_stock, dbo.trans_inv_ciclico.peso, 
                          dbo.trans_inv_ciclico.peso_reconteo, dbo.trans_inv_ciclico.idoperador, dbo.trans_inv_ciclico.user_agr, dbo.trans_inv_ciclico.fec_agr, dbo.bodega_ubicacion.IdTramo, dbo.producto_estado.nombre AS estado_nombre, 
                          dbo.producto.nombre AS producto_nombre, dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre ,
-                         dbo.producto.control_peso AS control_peso, dbo.producto.control_peso AS genera_lote, dbo.producto.control_peso AS control_vencimiento , 
+                         dbo.producto.control_peso AS control_peso, dbo.producto.control_lote AS genera_lote, dbo.producto.control_vencimiento AS control_vencimiento , 
                          dbo.trans_inv_ciclico.idPresentacion_nuevo , dbo.trans_inv_ciclico.IdProductoEst_nuevo , 0 as idreconteo, dbo.producto.codigo as codigo_producto,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x as Columna, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos as Posicion
                          FROM dbo.unidad_medida RIGHT OUTER JOIN
@@ -548,8 +548,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          dbo.trans_inv_reconteo.IdPresentacion, dbo.trans_inv_reconteo.IdUbicacion, dbo.trans_inv_reconteo.EsNuevo, '' AS Lote_Stock, dbo.trans_inv_reconteo.lote, GETDATE() AS fecha_vence_stock, 
                          dbo.trans_inv_reconteo.fecha_vence, 0 AS cant_stock, dbo.trans_inv_reconteo.cantidad, 0 AS cant_reconteo, 0 AS peso_stock, dbo.trans_inv_reconteo.peso, 0 AS peso_reconteo, dbo.trans_inv_reconteo.IdOperador, 
                          dbo.trans_inv_reconteo.user_agr, dbo.trans_inv_reconteo.fec_agr, dbo.bodega_ubicacion.IdTramo, dbo.producto_estado.nombre AS estado_nombre, dbo.producto.nombre AS producto_nombre, 
-                         dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre, dbo.producto.control_peso, dbo.producto.control_peso AS genera_lote, 
-                         dbo.producto.control_peso AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, dbo.trans_inv_enc_reconteo.reconteo AS idreconteo, dbo.producto.codigo as codigo_producto,
+                         dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre, dbo.producto.control_peso, dbo.producto.control_lote AS genera_lote, 
+                         dbo.producto.control_vencimiento AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, dbo.trans_inv_enc_reconteo.reconteo AS idreconteo, dbo.producto.codigo as codigo_producto,
 						 bodega_ubicacion.IdTramo, bodega_ubicacion.indice_x as Columna, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos as Posicion
                          FROM  dbo.trans_inv_enc_reconteo INNER JOIN
                          dbo.trans_inv_reconteo INNER JOIN
@@ -644,7 +644,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          dbo.trans_inv_ciclico.fecha_vence, dbo.trans_inv_ciclico.cant_stock, dbo.trans_inv_ciclico.cantidad, dbo.trans_inv_ciclico.cant_reconteo, dbo.trans_inv_ciclico.peso_stock, dbo.trans_inv_ciclico.peso, 
                          dbo.trans_inv_ciclico.peso_reconteo, dbo.trans_inv_ciclico.idoperador, dbo.trans_inv_ciclico.user_agr, dbo.trans_inv_ciclico.fec_agr, dbo.bodega_ubicacion.IdTramo, dbo.producto_estado.nombre AS estado_nombre, 
                          dbo.producto.nombre AS producto_nombre, dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre ,
-                         dbo.producto.control_peso AS control_peso, dbo.producto.control_peso AS genera_lote, dbo.producto.control_peso AS control_vencimiento , 
+                         dbo.producto.control_peso AS control_peso, dbo.producto.control_lote AS genera_lote, dbo.producto.control_vencimiento AS control_vencimiento , 
                          dbo.trans_inv_ciclico.idPresentacion_nuevo , dbo.trans_inv_ciclico.IdProductoEst_nuevo , 0 as idreconteo,dbo.producto.codigo,bodega_ubicacion.IdBodega
                          FROM dbo.unidad_medida RIGHT OUTER JOIN
                          dbo.trans_inv_ciclico INNER JOIN
@@ -664,8 +664,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                          dbo.trans_inv_reconteo.IdPresentacion, dbo.trans_inv_reconteo.IdUbicacion, dbo.trans_inv_reconteo.EsNuevo, '' AS Lote_Stock, dbo.trans_inv_reconteo.lote, GETDATE() AS fecha_vence_stock, 
                          dbo.trans_inv_reconteo.fecha_vence, 0 AS cant_stock, dbo.trans_inv_reconteo.cantidad, 0 AS cant_reconteo, 0 AS peso_stock, dbo.trans_inv_reconteo.peso, 0 AS peso_reconteo, dbo.trans_inv_reconteo.IdOperador, 
                          dbo.trans_inv_reconteo.user_agr, dbo.trans_inv_reconteo.fec_agr, dbo.bodega_ubicacion.IdTramo, dbo.producto_estado.nombre AS estado_nombre, dbo.producto.nombre AS producto_nombre, 
-                         dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre, dbo.producto.control_peso, dbo.producto.control_peso AS genera_lote, 
-                         dbo.producto.control_peso AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, dbo.trans_inv_enc_reconteo.reconteo AS idreconteo,dbo.producto.codigo,bodega_ubicacion.IdBodega
+                         dbo.bodega_ubicacion.descripcion AS ubic_nombre, dbo.producto_presentacion.nombre AS pres_nombre, dbo.unidad_medida.Nombre AS unid_nombre, dbo.producto.control_peso, dbo.producto.control_lote AS genera_lote, 
+                         dbo.producto.control_vencimiento AS control_vencimiento, 0 AS IdPresentacion_nuevo, 0 AS IdProductoEst_nuevo, dbo.trans_inv_enc_reconteo.reconteo AS idreconteo,dbo.producto.codigo,bodega_ubicacion.IdBodega
                          FROM  dbo.trans_inv_enc_reconteo INNER JOIN
                          dbo.trans_inv_reconteo INNER JOIN
                          dbo.bodega_ubicacion ON dbo.trans_inv_reconteo.IdUbicacion = dbo.bodega_ubicacion.IdUbicacion INNER JOIN
