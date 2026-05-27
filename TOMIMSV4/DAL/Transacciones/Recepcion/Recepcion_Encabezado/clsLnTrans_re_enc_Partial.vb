@@ -1399,12 +1399,31 @@ Partial Public Class clsLnTrans_re_enc
                                                         lConnection,
                                                         lTransaction)
 
+                    '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+                    Dim dictIdOrigenV1 As New Dictionary(Of Integer, clsBeTrans_re_det)
+                    For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                        If Not dictIdOrigenV1.ContainsKey(detOri.IdRecepcionDet) Then
+                            dictIdOrigenV1.Add(detOri.IdRecepcionDet, detOri)
+                        End If
+                    Next
+
                     ' Recepción Detalle
                     clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                           True,
                                                           pRecEnc,
                                                           lConnection,
                                                           lTransaction)
+
+                    '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+                    For Each kvpV1 As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenV1
+                        Dim idOrigV1 As Integer = kvpV1.Key
+                        Dim nuevoIdV1 As Integer = kvpV1.Value.IdRecepcionDet
+                        If nuevoIdV1 > 0 AndAlso idOrigV1 <> nuevoIdV1 Then
+                            For Each sV1 As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigV1)
+                                sV1.IdRecepcionDet = nuevoIdV1
+                            Next
+                        End If
+                    Next
 
                     If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
                         'Actualiza cantidad recibida OC.
@@ -1513,12 +1532,31 @@ Partial Public Class clsLnTrans_re_enc
                                                 lConnection,
                                                 lTransaction)
 
+            '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+            Dim dictIdOrigenV2 As New Dictionary(Of Integer, clsBeTrans_re_det)
+            For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                If Not dictIdOrigenV2.ContainsKey(detOri.IdRecepcionDet) Then
+                    dictIdOrigenV2.Add(detOri.IdRecepcionDet, detOri)
+                End If
+            Next
+
             ' Recepción Detalle
             clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                   True,
                                                   pRecEnc,
                                                   lConnection,
                                                   lTransaction)
+
+            '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+            For Each kvpV2 As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenV2
+                Dim idOrigV2 As Integer = kvpV2.Key
+                Dim nuevoIdV2 As Integer = kvpV2.Value.IdRecepcionDet
+                If nuevoIdV2 > 0 AndAlso idOrigV2 <> nuevoIdV2 Then
+                    For Each sV2 As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigV2)
+                        sV2.IdRecepcionDet = nuevoIdV2
+                    Next
+                End If
+            Next
 
             If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
                 'Actualiza cantidad recibida OC.
