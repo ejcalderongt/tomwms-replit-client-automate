@@ -1,14 +1,27 @@
 ---
 tipo: bug-diagnosis
 cliente: MAMPA (TOMWMS_MAMPA_QA)
-rama: dev_2026_mampa
+ramas_afectadas: dev_2026_mampa (bug original), dev_2028_merge (fix aplicado 2026-05-27)
 archivo_principal: TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb
 archivo_secundario: TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Encabezado/clsLnTrans_re_enc_Partial.vb
 tabla_afectada: stock_rec (FK FK_stock_rec_trans_re_det → trans_re_det.IdRecepcionDet)
 error: INSERT statement conflicted with FOREIGN KEY constraint "FK_stock_rec_trans_re_det"
 fecha_diagnostico: 2026-05-27
+fecha_fix_2028: 2026-05-27
 autor_diagnostico: agente-replit
-estado: PATCH LISTO — pendiente revisión EJC
+estado: RESUELTO en dev_2028_merge — pendiente cherry-pick a dev_2026_mampa (awaiting EJC)
+commits_fix:
+  - rama: dev_2028_merge
+    repo: TOMWMS_BOF
+    descripcion: "GuardarHH — fix #1 clsLnTrans_re_det overload lista CON stock (GuardarHHSP path)"
+    tag_original: "#EJCCKFK20260520"
+    nota: ya estaba en 2028 al iniciar la sesion
+  - rama: dev_2028_merge
+    repo: TOMWMS_BOF
+    commit: dea6197489d4
+    push_id: 2292
+    descripcion: "GuardarHH — fix #2 clsLnTrans_re_enc GuardarHH snapshot+propagacion (Guardar_Recepcion path)"
+    tag: "#EJC20260527_IDENTITY_FIX"
 ---
 
 # BUG: FK_stock_rec_trans_re_det — MAMPA_QA
@@ -21,8 +34,17 @@ INSERT statement conflicted with the FOREIGN KEY constraint
 "TOMWMS_MAMPA_QA", table "dbo.trans_re_det", column "IdRecepcionDet".
 ```
 
-Ocurre durante la recepción HH en `Guarda_Stock_Rec`, después del flujo
-que involucra `Eliminar_Detalle_Recepción → Guarda_Trans_re_det → Guarda_Stock_Rec`.
+Ocurre durante la recepción HH.
+
+---
+
+## Estado del fix por rama
+
+| Rama | Path afectado | Estado |
+|---|---|---|
+| `dev_2028_merge` | `Guardar_Recepcion_Sin_Presentacion → GuardarHHSP` | **RESUELTO** `#EJCCKFK20260520` (existía antes de esta sesión) |
+| `dev_2028_merge` | `Guardar_Recepcion → GuardarHH` | **RESUELTO** commit `dea6197489d4` `#EJC20260527_IDENTITY_FIX` |
+| `dev_2026_mampa` | Ambos paths | **PENDIENTE** — awaiting EJC para cherry-pick |
 
 ---
 
@@ -62,136 +84,102 @@ actualiza `pIdRecepcionDet` con el IDENTITY real que generó el servidor.
 
 ---
 
-## Bug principal: overload 2565 de `Guarda_Trans_re_det`
+## Bug #1: overload lista+stock en `clsLnTrans_re_det_Partial.vb`
 
-**Archivo:** `clsLnTrans_re_det_Partial.vb` (línea ~2565)
+### Path afectado
 
-Firma:
+`Guardar_Recepcion_Sin_Presentacion` → WS → `GuardarHHSP` → overload con firma:
 ```vb
-Public Shared Function Guarda_Trans_re_det(ByRef pListRecDet As List(Of clsBeTrans_re_det),
-                                           ByRef pListaStockRec As List(Of clsBeStock_rec),
-                                           ByRef lConnection As SqlConnection,
-                                           ByRef lTransaction As SqlTransaction) As Integer
+Guarda_Trans_re_det(pListRecDet, pListaStockRec, lConnection, lTransaction)
 ```
 
-Código actual BUGGY:
+### Código BUGGY (dev_2026_mampa, ~línea 2565)
+
 ```vb
 If BeTransReDet.IsNew Then
     MaxIdRecepcionDet = 0 'now is identity EJC20260226
 
-    ' ← BUG: la propagación se hace ANTES del Insertar, con MaxIdRecepcionDet = 0
+    ' ← BUG: propagación ANTES del Insertar, con MaxIdRecepcionDet = 0
     pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet) _
                   .ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
 
-    BeTransReDet.Fecha_ingreso = Now
-    BeTransReDet.Fec_agr = Now
-    If BeTransReDet.IdPresentacion = -1 Then BeTransReDet.IdPresentacion = 0
     Insertar(BeTransReDet, lConnection, lTransaction)
-    ' Aquí: BeTransReDet.IdRecepcionDet = Y (nuevo Identity, ej. 547)
-    ' PERO pListaStockRec ya fue actualizado a 0 → stock_rec.IdRecepcionDet = 0
+    ' Aquí: BeTransReDet.IdRecepcionDet = Y (nuevo IDENTITY)
+    ' PERO pListaStockRec ya tiene IdRecepcionDet = 0 → FK viola
 End If
 ```
 
-**Resultado:** `INSERT INTO stock_rec (IdRecepcionDet=0)` → 0 no existe en
-`trans_re_det` → FK viola.
-
-### Fix overload 2565
+### Fix en dev_2028_merge (ya existía con `#EJCCKFK20260520`)
 
 ```vb
 If BeTransReDet.IsNew Then
-    '#EJC20260527_IDENTITY_FIX: Capturar ID original ANTES del insert
     Dim IdRecepcionDetOrigen As Integer = BeTransReDet.IdRecepcionDet
-
-    BeTransReDet.Fecha_ingreso = Now
-    BeTransReDet.Fec_agr = Now
-    If BeTransReDet.IdPresentacion = -1 Then BeTransReDet.IdPresentacion = 0
-
     Insertar(BeTransReDet, lConnection, lTransaction)
-    ' Ahora: BeTransReDet.IdRecepcionDet = Y (nuevo IDENTITY correcto)
-
-    '#EJC20260527_IDENTITY_FIX: Propagar el nuevo IDENTITY al stock_rec DESPUÉS del insert
-    pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = IdRecepcionDetOrigen) _
-                  .ForEach(Sub(s) s.IdRecepcionDet = BeTransReDet.IdRecepcionDet)
-
-    vFilas += 1
-    ...
+    MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
+    If MaxIdRecepcionDet <= 0 Then
+        Throw New Exception("ERROR_202605201645: No se obtuvo IdRecepcionDet identity...")
+    End If
+    Asignar_IdRecepcionDet_StockRec(pListaStockRec, BeTransReDet, IdRecepcionDetOrigen, MaxIdRecepcionDet)
 End If
 ```
 
-**Referencia correcta:** El overload 2650 (para un solo BeTransReDet) ya
-implementa este patrón correctamente con `IdRecepcionDetOrigen`.
+Helper privado `Asignar_IdRecepcionDet_StockRec` filtra por `IdProductoBodega + No_linea + Lic_plate`.
 
 ---
 
-## Bug secundario: `GuardarHH` overload 1805 — sin propagación al stock
+## Bug #2: `GuardarHH` en `clsLnTrans_re_enc_Partial.vb`
 
-**Archivo:** `clsLnTrans_re_enc_Partial.vb` (~línea 1701)
+### Path afectado
 
-`GuardarHH` llama al overload 1805 de `Guarda_Trans_re_det` (el que
-recibe `Comparar_Detalle_Actual = True` pero NO recibe `pListaStockRec`).
-Después de ese call, los objetos `BeRecDet.IdRecepcionDet` ya tienen el
-nuevo Identity, pero el `pListStockRec` que maneja `GuardarHH` por separado
-todavía tiene el ID original calculado por la HH.
+`Guardar_Recepcion` (ruta principal con presentaciones) → WS → `GuardarHH`
 
-Código actual en `GuardarHH`:
-```vb
-' Recepción Detalle (modifica BeRecDet.IdRecepcionDet = nuevo IDENTITY)
-clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet, True, pRecEnc, lConnection, lTransaction)
+### Problema
 
-' ... más operaciones ...
+`GuardarHH` llama al overload `Guarda_Trans_re_det(pListRecDet, True, pRecEnc, ...)` (sin `pListaStockRec`), luego llama `Guarda_Stock_Rec(pListStockRec)` por separado. El `pListStockRec` llega a `Guarda_Stock_Rec` con los IDs calculados localmente por la HH, que no coinciden con los Identities reales generados por el INSERT.
 
-' Stock Rec  ← pListStockRec todavía tiene los IDs originales de la HH
-clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc, IdBodega, pListStockRec, lConnection, lTransaction)
-```
+### Fix aplicado en dev_2028_merge (commit `dea6197489d4`, `#EJC20260527_IDENTITY_FIX`)
 
-### Fix `GuardarHH` — capturar snapshot de IDs antes del call
-
-Insertar entre el call a `Guarda_Trans_re_det` y el call a `Guarda_Stock_Rec`:
+En las DOS versiones de `GuardarHH` (v1 con `pObjTareaHH`, v2 simplificada):
 
 ```vb
-' ─── ANTES del call a Guarda_Trans_re_det ─────────────────────────────────
-'#EJC20260527_IDENTITY_FIX: snapshot {IdOriginal → objeto BeRecDet IsNew}
-Dim dictIdOrigen As New Dictionary(Of Integer, clsBeTrans_re_det)
-For Each det As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
-    If Not dictIdOrigen.ContainsKey(det.IdRecepcionDet) Then
-        dictIdOrigen.Add(det.IdRecepcionDet, det)
+'#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+Dim dictIdOrigenV1 As New Dictionary(Of Integer, clsBeTrans_re_det)
+For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+    If Not dictIdOrigenV1.ContainsKey(detOri.IdRecepcionDet) Then
+        dictIdOrigenV1.Add(detOri.IdRecepcionDet, detOri)
     End If
 Next
 
 ' Recepción Detalle
 clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet, True, pRecEnc, lConnection, lTransaction)
 
-'#EJC20260527_IDENTITY_FIX: sincronizar pListStockRec con los nuevos Identities
-' Después del call, det.IdRecepcionDet ya es el nuevo IDENTITY (la referencia fue mutada por Insertar)
-For Each kvp As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigen
-    Dim idOrig As Integer = kvp.Key
-    Dim nuevoId As Integer = kvp.Value.IdRecepcionDet  ' ya mutado por Insertar
-    For Each s As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrig)
-        s.IdRecepcionDet = nuevoId
-    Next
+'#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+For Each kvpV1 As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenV1
+    Dim idOrigV1 As Integer = kvpV1.Key
+    Dim nuevoIdV1 As Integer = kvpV1.Value.IdRecepcionDet  ' mutado por Insertar
+    If nuevoIdV1 > 0 AndAlso idOrigV1 <> nuevoIdV1 Then
+        For Each sV1 As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigV1)
+            sV1.IdRecepcionDet = nuevoIdV1
+        Next
+    End If
 Next
-' ─────────────────────────────────────────────────────────────────────────
 ```
 
 ---
 
-## Archivos a modificar (cherry-pick)
+## Archivos a modificar para cherry-pick a dev_2026_mampa
 
-| Archivo | Línea aproximada | Tipo de cambio |
-|---|---|---|
-| `clsLnTrans_re_det_Partial.vb` | ~2580-2595 | Mover propagación FindAll/ForEach a DESPUÉS del Insertar; agregar `IdRecepcionDetOrigen` |
-| `clsLnTrans_re_enc_Partial.vb` | ~1700-1745 | Agregar snapshot de IDs antes de `Guarda_Trans_re_det` + propagación antes de `Guarda_Stock_Rec` |
-
-Ambos cambios son en `dev_2026_mampa`. Verificar si `dev_2028_merge` tiene el
-mismo patrón — la conversión a IDENTITY se hizo en `dev_2026_mampa`; si se
-mergeó a 2028 sin este fix, el bug existe allí también.
+| Archivo | Tipo de cambio |
+|---|---|
+| `clsLnTrans_re_det_Partial.vb` ~línea 2565 | Mover propagación DESPUÉS del Insertar; agregar `IdRecepcionDetOrigen`; agregar validación `<= 0` |
+| `clsLnTrans_re_enc_Partial.vb` `GuardarHH` v1 y v2 | Agregar snapshot + propagación `#EJC20260527_IDENTITY_FIX` |
 
 ---
 
 ## Verificación post-fix sugerida
 
 ```sql
--- En TOMWMS_MAMPA_QA: verificar que no queden stock_rec con IdRecepcionDet huérfano
+-- Verificar huérfanos en stock_rec después de aplicar el fix
 SELECT COUNT(*) AS OrfanosMuestreo
 FROM stock_rec sr
 WHERE NOT EXISTS (
@@ -200,77 +188,31 @@ WHERE NOT EXISTS (
 )
 ```
 
-Si el resultado es > 0 tras el fix, limpiar esas filas huérfanas antes del
-deploy a producción.
+Si > 0: limpiar filas huérfanas antes del deploy a producción.
 
 ---
 
 ## Impacto en HH
 
 La HH **no requiere cambios** para este fix. El fix es en BOF (servidor).
-Sin embargo, como mejora futura: el WS podría retornar el nuevo
-`IdRecepcionDet` para que la HH actualice su sesión local (hoy retorna solo `String`).
+Mejora futura opcional: el WS podría retornar el nuevo `IdRecepcionDet` para
+que la HH actualice su sesión local (hoy retorna solo `String`).
 
 ---
 
-## Nota sobre el fingerprint MAMPA
+## Fingerprint MAMPA
 
 - 545 filas en `trans_re_det`, 64 recepciones
 - Talla+Color ON (`IdProductoTallaColor` enviado por HH)
-- El bug se manifestó en MAMPA_QA primero; validar en TOMWMS_MAMPA_PRD antes de aplicar fix ahí.
-
-
----
-
-## Diff exacto — `clsLnTrans_re_det_Partial.vb` (overload 2565)
-
-Ruta en repo: `TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb`
-
-Líneas actuales (BUGGY) ~2580–2596, dentro del overload `Guarda_Trans_re_det(pListRecDet, pListaStockRec, ...)`:
-
-```diff
--                    MaxIdRecepcionDet = 0 'now is identity EJC20260226
--
--                    pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = BeTransReDet.IdRecepcionDet).ForEach(Sub(s) s.IdRecepcionDet = MaxIdRecepcionDet)
--
--                    BeTransReDet.Fecha_ingreso = Now
--                    BeTransReDet.Fec_agr = Now
--
--                    If BeTransReDet.IdPresentacion = -1 Then
--                        BeTransReDet.IdPresentacion = 0
--                    End If
--
--                    Insertar(BeTransReDet, lConnection, lTransaction)
--
--                    vFilas += 1
-+                    '#EJC20260527_IDENTITY_FIX: Capturar ID original ANTES del INSERT
-+                    Dim IdRecepcionDetOrigen As Integer = BeTransReDet.IdRecepcionDet
-+
-+                    BeTransReDet.Fecha_ingreso = Now
-+                    BeTransReDet.Fec_agr = Now
-+
-+                    If BeTransReDet.IdPresentacion = -1 Then
-+                        BeTransReDet.IdPresentacion = 0
-+                    End If
-+
-+                    Insertar(BeTransReDet, lConnection, lTransaction)
-+
-+                    '#EJC20260527_IDENTITY_FIX: Propagar nuevo IDENTITY a stock_rec DESPUÉS del INSERT
-+                    pListaStockRec.FindAll(Function(x) x.IdRecepcionDet = IdRecepcionDetOrigen).ForEach(Sub(s) s.IdRecepcionDet = BeTransReDet.IdRecepcionDet)
-+
-+                    vFilas += 1
-```
-
-Eliminar `MaxIdRecepcionDet` de la declaración `Dim MaxIdRecepcionDet As Integer = 0`
-(línea ~2574) ya que deja de ser necesaria en este overload.
+- Bug manifestado en MAMPA_QA primero; validar en TOMWMS_MAMPA_PRD antes de aplicar fix allí.
 
 ---
 
-## Confirmación de la pila del error
+## Contexto del WS — qué endpoint usa cada path
 
-1. HH llama `Guardar_Recepcion` → WS → `GuardarHHSP` (`clsLnTrans_re_enc_Partial.vb` ~línea 1927)
-2. `GuardarHHSP` llama `Eliminar_Detalle(pIdOrdenCompraEnc, pListRecDet, ...)` → borra `stock_rec`, `stock`, `trans_re_det` del detalle original
-3. `GuardarHHSP` llama `Guarda_Trans_re_det(pListRecDet, pListStockRec, ...)` → overload 2565 BUGGY
-4. Overload 2565: pone `pListaStockRec.IdRecepcionDet = 0` ANTES del INSERT → luego `Insertar` genera `Y` en `trans_re_det`
-5. `GuardarHHSP` llama `Guarda_Stock_Rec(pListStockRec)` → INSERT `stock_rec` con `IdRecepcionDet = 0` → **FK viola** (0 no existe en `trans_re_det`)
-
+| WS Method | LN llamado | Fix aplicado |
+|---|---|---|
+| `Guardar_Recepcion` | `GuardarHH` | `#EJC20260527_IDENTITY_FIX` commit `dea6197489d4` |
+| `Guardar_Recepcion_Sin_Presentacion` | `GuardarHHSP` | `#EJCCKFK20260520` (ya existía) |
+| `Guardar_Recepcion_S` | por confirmar | pendiente revisión |
+| `Guardar_Recepcion_Caja_Master` | por confirmar | pendiente revisión |
