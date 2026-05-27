@@ -8008,10 +8008,10 @@ Partial Public Class clsLnProducto
         Try
 
             '#CKFK20260526 Agregué el CodigoSKU a la consulta para validar también el código de barra del SKU de la tabla producto_talla_color
+            '#CKFK20260526 Quite el parametro fijo IdBodega = 1
             Dim vSQL As String = "SELECT  distinct *
                                   FROM VW_ProductoSI  
-                                  WHERE (IdBodega = 1) and 
-                                        (codigo_barra_pcb = @CodigoBarra or 
+                                  WHERE (codigo_barra_pcb = @CodigoBarra or 
                                          codigo_barra_presentacion = @CodigoBarra or 
                                          codigo_barra = @CodigoBarra or 
                                          codigo = @CodigoBarra or 
