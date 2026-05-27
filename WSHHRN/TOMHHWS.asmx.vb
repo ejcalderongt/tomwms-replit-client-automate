@@ -17233,7 +17233,7 @@ Public Class TOMHHWS
 
         Try
 
-            '#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.
+            '#EJC20260527: consulta HH de existencias sin paginacion; devuelve todos los registros acordes a filtros en un solo payload JSON.
             Dim lStock As List(Of clsBeVW_stock_res_CI) = Nothing
             Dim vLicPlate As String = If(pLicPlate, String.Empty).Trim()
             Dim vEsLicencia As Boolean = Not String.IsNullOrWhiteSpace(vLicPlate)
@@ -17260,6 +17260,8 @@ Public Class TOMHHWS
                 .Error = False,
                 .Fuente = If(vEsLicencia, "LP", "STD"),
                 .Total = lStock.Count,
+                .RegistrosDevueltos = lStock.Count,
+                .SinPaginacion = True,
                 .Items = lStock
             })
 

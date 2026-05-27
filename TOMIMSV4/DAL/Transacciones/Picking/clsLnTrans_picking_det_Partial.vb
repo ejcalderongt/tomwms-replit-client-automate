@@ -5,6 +5,41 @@ Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_picking_det
 
+    '#EJC20260527: Limpia movimientos amarrados al picking antes de eliminar trans_picking_ubic; usa el IdMovimiento identity guardado en trans_picking_ubic_stock.
+    Private Shared Sub Eliminar_Movimientos_Picking_No_Pickeado(ByVal PickingUbic As clsBeTrans_picking_ubic,
+                                                                ByVal lConnection As SqlConnection,
+                                                                ByVal lTransaction As SqlTransaction)
+
+        If PickingUbic Is Nothing Then Exit Sub
+
+        Dim BeTransPickingUbicStock = clsLnTrans_picking_ubic_stock.Get_Single_By_IdPickingUbic_And_IdStock(PickingUbic.IdPickingEnc,
+                                                                                                           PickingUbic.IdPickingUbic,
+                                                                                                           PickingUbic.IdStock,
+                                                                                                           lConnection,
+                                                                                                           lTransaction)
+
+        If BeTransPickingUbicStock Is Nothing OrElse BeTransPickingUbicStock.IdMovimiento <= 0 Then Exit Sub
+
+        Dim BeMovimientoPicking = clsLnTrans_movimientos.Get_Single_By_IdMovimiento(BeTransPickingUbicStock.IdMovimiento,
+                                                                                   lConnection,
+                                                                                   lTransaction)
+
+        clsLnTrans_picking_ubic_stock.Eliminar(BeTransPickingUbicStock,
+                                               lConnection,
+                                               lTransaction)
+
+        clsLnTrans_movimientos.Eliminar_Movimiento_Picking_By_IdMovimiento(BeTransPickingUbicStock.IdMovimiento,
+                                                                           lConnection,
+                                                                           lTransaction)
+
+        If BeMovimientoPicking IsNot Nothing Then
+            clsLnTrans_movimientos.Eliminar_Movimiento_Verificacion_By_PickingUbic(BeMovimientoPicking,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+        End If
+
+    End Sub
+
     Public Shared Function Get_All_By_IdPickingEnc(ByVal pIdPickingEnc As Integer,
                                                    ByVal pIdBodega As Integer) As List(Of clsBeTrans_picking_det)
 
@@ -615,6 +650,10 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                        PickingUbic.IdPickingEnc,
                                                                                                                                        lConnection,
                                                                                                                                        lTransaction)
+
+                                                            Eliminar_Movimientos_Picking_No_Pickeado(PickingUbic,
+                                                                                                     lConnection,
+                                                                                                     lTransaction)
 
                                                             vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_Params(PickingUbic.IdPickingUbic,
                                                                                                                                           PickingUbic.IdPickingEnc,
@@ -1367,6 +1406,9 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                                            lTransaction)
 
 
+                                                                                    Eliminar_Movimientos_Picking_No_Pickeado(PickingUbic,
+                                                                                                                             lConnection,
+                                                                                                                             lTransaction)
 
                                                                                     vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_BePickingUbic(PickingUbic,
                                                                                                                                                                         lConnection,
@@ -1705,6 +1747,9 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                                lTransaction)
 
 
+                                                                            Eliminar_Movimientos_Picking_No_Pickeado(PickingUbic,
+                                                                                                                     lConnection,
+                                                                                                                     lTransaction)
 
                                                                             vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_BePickingUbic(PickingUbic,
                                                                                                                                                                         lConnection,
@@ -1979,6 +2024,10 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                vIdUbicacionDefecto,
                                                                                                                lConnection,
                                                                                                                lTransaction)
+
+                                        Eliminar_Movimientos_Picking_No_Pickeado(PickingUbic,
+                                                                                 lConnection,
+                                                                                 lTransaction)
 
                                         vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_BePickingUbic(PickingUbic, lConnection, lTransaction)
 

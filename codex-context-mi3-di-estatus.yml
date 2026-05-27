@@ -1,4 +1,48 @@
 notas:
+  - fecha: "2026-05-27"
+    area: "HH consulta existencias sin paginacion"
+    detalle: >
+      En WSHHRN Get_Stock_Consulta_CI_Json la firma QA/local no tiene page ni
+      pageSize. La ruta debe devolver en JSON todos los registros acordes a
+      filtros normales (codigo/licencia/ubicacion/bodega/nombre/detallado) en
+      Items, marcando SinPaginacion=True y RegistrosDevueltos=Total. En
+      clsLnStock_CI mantener consultas sin TOP/OFFSET/FETCH y con ORDER BY
+      Codigo, IdPresentacion, ubicacion, LP, lote y vencimiento para que HH
+      renderice totales de forma estable.
+  - fecha: "2026-05-27"
+    area: "HH blindaje estratégico nulos/listas"
+    detalle: >
+      Se priorizó blindaje en fronteras WS/estado vivo: detalle de consulta de
+      existencias y verificación consolidada. Patrón: validar objeto global/lista
+      compartida antes de usar items.get(0), normalizar strings WS antes de
+      isEmpty/trim/contains/parseDouble, y cerrar con mensaje operativo de recarga
+      cuando el contexto quedó obsoleto. Tags usados en HH: #EJC20260527.
+  - fecha: "2026-05-27"
+    area: "HH consulta existencias estado UI"
+    detalle: >
+      En TOMHH2025 frm_consulta_stock, preparar la vista con "Consultando..."
+      antes de execws exige restaurar footer/foco si execws no arranca o si el
+      render falla. Los callbacks stale deben ignorarse sin cerrar el ciclo WS
+      activo, porque el finally puede cruzar estados y dejar la pantalla sin
+      foco o con el footer ocupado.
+  - fecha: "2026-05-27"
+    area: "HH recepción finalizar firma null"
+    detalle: >
+      En TOMHH2025, al finalizar recepción desde frm_list_rec_prod,
+      gl.gBeRecepcion.Firma_piloto puede venir null. No llamar isEmpty()
+      directo; tratar null como firma vacía para abrir la pantalla de firma
+      y continuar el flujo normal. Se agregó guarda también para encabezado
+      de recepción no cargado antes de Finalizar_Recepcion.
+  - fecha: "2026-05-27"
+    area: "HH lint cleanup seguro"
+    detalle: >
+      En TOMHH2025 se validó una ruta segura para bajar lints sin cambiar
+      contratos HH/WS: corregir primero errores bloqueantes de API Android,
+      luego DefaultLocale en normalizaciones internas con Locale.ROOT/US,
+      raw List locales, isEmpty para cadenas, printStackTrace por Log y
+      CutPasteId evidentes contra layout. Evitar hacer masivo HardcodedText,
+      SetTextI18n, ScrollViewSize/TextViewEdits o layouts sin revisar pantalla,
+      porque pueden cambiar texto o visual operativo.
   - fecha: "2026-05-26"
     area: "DB identity trans_movimientos (plan cross-layer)"
     detalle: >
