@@ -43,11 +43,15 @@ Ver traza fina en `TRACE.md`.
 
 | Push | Commit | Path cubierto |
 |---|---|---|
-| ya existía | tag `#EJCCKFK20260520` | `GuardarHHSP` → `Guardar_Recepcion_Sin_Presentacion` |
-| 2292 | `dea6197489d4` | `Guardar` BOF WinForms |
-| 2293 | `6adb53d92a02` | `GuardarHH` 2517 → `GuardarRecepcionModif` |
+| — | `#EJCCKFK20260520` | overload 2728 branch `IsNew=True`: snapshot+INSERT+sync |
+| 2292 | `dea6197489d4` | `Guardar` BOF WinForms: Patrón B |
+| 2293 | `6adb53d92a02` | `GuardarHH` 2517 → `GuardarRecepcionModif`: Patrón B |
+| 2294 | `f8fa402b48a3` | `#EJCCKFK20260527` overload 2728 branch `IsNew=False`: INSERT+sync |
+
+El commit `f8fa402b48a3` cubre automáticamente todos los call sites del overload 2728:
+`GuardarHH` 2790, `GuardarHHSP`, y cualquier futuro llamador.
 
 ## Pendiente
 
-- Cherry-pick de los tres fixes a `dev_2026_mampa` (awaiting EJC).
+- Cherry-pick de los cuatro fixes a `dev_2026_mampa` (awaiting EJC).
 - Verificar `GuardarHH_S` y `GuardarHH_CM` en `clsLnTrans_re_enc_Partial.vb`.
