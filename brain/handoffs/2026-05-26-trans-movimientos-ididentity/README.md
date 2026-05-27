@@ -137,3 +137,45 @@ Pendiente recomendado (fase 2):
 
 1. Barrido de formularios BOF (`frmRegularizarInventario`, `frmAjusteStock`) para eliminar cualquier preasignación residual de `MaxID` en movimientos legacy.
 2. Ejecutar pruebas de regresión HH/WS con DB ya migrada a identity en QA.
+
+## 7) Estado guardado (checkpoint)
+
+Fecha checkpoint: `2026-05-26`  
+Estado: **EN CURSO / ESTABLE PARA CONTINUAR**
+
+Resumen:
+
+- `IdMovimiento` migrado en DAL VB + DALCore a patrón identity (`SCOPE_IDENTITY`).
+- Corrección aplicada: `idmovimiento` removido del `SET` en `UPDATE` (solo se usa en `WHERE`).
+- HH ajustada en flujos de cambio de ubicación y reabastecimiento con parse robusto de:
+  - `pIdStockNuevo`
+  - `pIdMovimientoNuevo`
+- Validaciones agregadas en HH para cortar flujo cuando IDs retornan inválidos (`<= 0`).
+- Kit de escalamiento/diagnóstico creado en:
+  - `tools/diagnostics/scale-readiness-kit/*`
+
+## 8) Cola de trabajo (pendiente priorizado)
+
+### Cola A — Optimización
+
+1. Eliminar preasignaciones residuales de `MaxID` en formularios legacy BOF:
+   - `frmRegularizarInventario`
+   - `frmAjusteStock`
+2. Revisión de transacciones largas en flujos de alta concurrencia:
+   - picking/verificación/reabastecimiento/cambio ubicación
+3. Revisar índices en tablas calientes:
+   - `stock`, `stock_res`, `trans_picking_ubic`, `trans_movimientos`
+
+### Cola B — Trazabilidad de rendimiento (integral)
+
+1. Implementar esquema de observabilidad SQL (tablas `obs_*` en español, propuesta aprobada).
+2. Instrumentar WS/ASMX/WebAPI con `id_correlacion` end-to-end.
+3. Registrar etapas por capa (`HH -> WS -> DAL -> SQL`) y duraciones por etapa.
+4. Construir vista BOF DevExpress para:
+   - p95/p99 por proceso
+   - errores por endpoint/bodega/operador
+   - timeline por `id_correlacion`
+5. Definir alertas operativas tempranas:
+   - deadlocks
+   - bloqueos > umbral
+   - degradación de p95
