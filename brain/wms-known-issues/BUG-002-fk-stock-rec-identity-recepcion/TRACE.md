@@ -248,6 +248,30 @@ Este fix cubre automáticamente **todos** los call sites del overload 2728:
 
 ---
 
+## Fix adicional — helper `Asignar_IdRecepcionDet_StockRec` discriminadores talla/color
+
+**Push 2296** — commit `f37e817ddae2` en `dev_2028_merge`.
+
+### Problema descubierto en debug MAMPA
+El helper buscaba stocks con `x.IdRecepcionDet = pIdRecepcionDetOrigen`, pero para MAMPA
+(mismo producto/línea, variante por talla/color) el `IdRecepcionDet` en `pListaStockRec`
+no coincidía con el origen capturado → `lStockRec.Count = 0` → el loop no asignaba el
+nuevo IDENTITY → FK viola en `Guarda_Stock_Rec`.
+
+El fallback `x.IdRecepcionDet = 0` tampoco encontraba nada porque los stocks tampoco
+tienen 0.
+
+### Fix `#EJC20260527`
+1. **Intento 1**: discriminadores ampliados + `IdProductoTallaColor` + `Atributo_Variante_1`
+2. **Fallback**: relajar `IdRecepcionDet` (solo `IdProductoBodega + No_linea + TallaColor + Atrib1 + LicPlate`) con guard `x.IdRecepcionDet <> pIdRecepcionDetNuevo` para evitar re-asignar stocks ya procesados en iteraciones anteriores del loop
+
+### Por qué el intento 1 puede ser suficiente para clientes sin talla/color
+Para clientes sin `IdProductoTallaColor` (= 0), el filtro `(lTallaColor = 0 OrElse ...)` es
+neutral y el match sigue siendo por `IdRecepcionDet + producto + línea`. Para MAMPA
+con talla/color, `IdProductoTallaColor > 0` discrimina inequívocamente.
+
+---
+
 ## Paths WS — estado final
 
 | WS Method | LN llamado | Estado |
