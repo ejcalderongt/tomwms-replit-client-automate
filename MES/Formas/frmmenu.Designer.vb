@@ -88,8 +88,10 @@ Partial Class frmmenu
         'cmdVersion4
         '
         Me.cmdVersion4.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right
-        Me.cmdVersion4.Caption = "Versión 4.5.8 FP: 20250424"
+        Me.cmdVersion4.Caption = "Versión 8.0.0 FP: 20260528"
         Me.cmdVersion4.Id = 6
+        Me.cmdVersion4.ItemAppearance.Normal.BackColor = System.Drawing.Color.MistyRose
+        Me.cmdVersion4.ItemAppearance.Normal.Options.UseBackColor = True
         Me.cmdVersion4.Name = "cmdVersion4"
         '
         'cmdImpresora
