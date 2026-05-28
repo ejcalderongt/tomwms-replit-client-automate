@@ -127,6 +127,7 @@ Public Class TOMHHWS
         curContext.Response.StatusCode = pStatusCode
         curContext.Response.ContentType = "application/json; charset=utf-8"
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.Response.Flush()
 
@@ -148,6 +149,7 @@ Public Class TOMHHWS
         curContext.Response.Charset = "utf-8"
         curContext.Response.TrySkipIisCustomErrors = True
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.ApplicationInstance.CompleteRequest()
 
@@ -164,6 +166,7 @@ Public Class TOMHHWS
         curContext.Response.StatusCode = pStatusCode
         curContext.Response.ContentType = "application/json; charset=utf-8"
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.Response.Flush()
 
