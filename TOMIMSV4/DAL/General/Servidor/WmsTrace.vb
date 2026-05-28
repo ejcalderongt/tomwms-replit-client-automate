@@ -25,7 +25,7 @@ Public Module WmsTrace
     ' ═══════════════════════════════════════════════════════════════════════════
 
     ''' <summary>True durante pruebas y observabilidad. False en producción.</summary>
-    Public ENABLED As Boolean = False
+    Public ENABLED As Boolean = True
 
     ''' <summary>Umbral de SQL lenta (ms). Default 3000ms.</summary>
     Public SLOW_SQL_MS As Long = 3000
