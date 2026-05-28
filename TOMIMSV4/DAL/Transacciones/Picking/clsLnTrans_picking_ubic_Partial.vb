@@ -7777,7 +7777,6 @@ Partial Public Class clsLnTrans_picking_ubic
 							      cantidad_verificada > 0 AND
                                   IdPickingEnc=@IdPickingEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
-                                  lic_plate=@lic_plate AND 
                                   ISNULL(IdPresentacion,0) = @IdPresentacion AND
                                   (Lote = @Lote OR Lote IS NULL)  AND 
                                   ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
@@ -7795,7 +7794,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPackingEnc.Idunidadmedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPackingEnc.Lote)
                 lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPackingEnc.Fecha_vence)
-                lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPackingEnc.Lic_plate)
+                '#EJCRP fix(packing): @lic_plate param eliminado junto con filtro SQL #EJC20260528
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPackingEnc.Idproductoestado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPackingEnc.Idproductobodega)
 
