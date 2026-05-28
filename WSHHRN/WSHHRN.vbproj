@@ -132,6 +132,7 @@
     <Content Include="DataSets\NN.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="My Project\PublishProfiles\WCFTOM4_DEV.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_MAMPA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_mio.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_PRD.pubxml" />
