@@ -524,104 +524,32 @@ Partial Public Class clsLnTrans_ubic_hh_det
                 pMovimiento.Cantidad = pMovimiento.Cantidad * oBeTrans_ubic_hh_det.ProductoPresentacion.Factor
             End If
 
-            '#EJC20260526:
-            'Flujo dirigido: si la bodega tiene implosión automática activa y la ubicación destino
-            'define una licencia diferente a la licencia origen, usar el flujo integrado
-            '(estado -> implosión -> ubicación) para evitar mover sin cambiar licencia.
-            Dim aplicarFlujoIntegradoImplosionUbicacion As Boolean = False
-            Dim idStockNuevo As Integer = 0
-            Dim idMovNuevo As Integer = 0
+            pMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
-            If pMovimiento IsNot Nothing AndAlso
-               pMovimiento.IdTipoTarea = 2 AndAlso
-               pMovimiento.IdBodegaDestino > 0 AndAlso
-               pMovimiento.IdUbicacionDestino > 0 Then
+            If (pIdReabastecimientoLog = 0) Then
 
-                Dim aplicaImplosionAuto As Boolean = Get_Parametro_Ubic_Implosion_Auto(pMovimiento.IdBodegaDestino,
-                                                                                        lConnection,
-                                                                                        lTransaction)
+                clsLnTrans_movimientos.Aplicar(pMovimiento,
+                                               oBeTrans_ubic_hh_det.Stock.IdStock,
+                                               False,
+                                               lConnection,
+                                               lTransaction,
+                                               pPosiciones)
 
-                If aplicaImplosionAuto Then
-                    Dim stockActual As clsBeVW_stock_res = clsLnStock.Get_Single_By_IdStock(oBeTrans_ubic_hh_det.Stock.IdStock)
+            Else
 
-                    If stockActual IsNot Nothing Then
-                        Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
-                                                                                                           pMovimiento.IdBodegaDestino,
-                                                                                                           lConnection,
-                                                                                                           lTransaction)
+                clsLnTrans_movimientos.Aplicar_Con_Reabastecimiento(pMovimiento,
+                                                                     oBeTrans_ubic_hh_det.Stock.IdStock,
+                                                                     False,
+                                                                     lConnection,
+                                                                     lTransaction,
+                                                                     pIdReabastecimientoLog,
+                                                                     pPosiciones)
 
-                        If infoDestinoDT IsNot Nothing AndAlso infoDestinoDT.Rows.Count > 0 Then
-                            Dim esRackDestino As Boolean = False
-                            If Not IsDBNull(infoDestinoDT.Rows(0).Item("es_rack")) Then
-                                esRackDestino = CBool(infoDestinoDT.Rows(0).Item("es_rack"))
-                            End If
-
-                            Dim licenciaDestino As String = If(IsDBNull(infoDestinoDT.Rows(0).Item("LicenciaDestino")),
-                                                               "",
-                                                               infoDestinoDT.Rows(0).Item("LicenciaDestino").ToString().Trim())
-
-                            '#EJC20260526:
-                            'Implosión automática solo aplica cuando el destino es rack.
-                            If esRackDestino AndAlso
-                               Not String.IsNullOrWhiteSpace(licenciaDestino) AndAlso
-                               Not licenciaDestino.Equals(stockActual.Lic_plate, StringComparison.OrdinalIgnoreCase) Then
-                                If Get_Cantidad_Licencias_Distintas_En_Ubicacion(pMovimiento.IdUbicacionDestino,
-                                                                                 pMovimiento.IdBodegaDestino,
-                                                                                 lConnection,
-                                                                                 lTransaction) > 1 Then
-                                    Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
-                                End If
-
-                                stockActual.CantidadUmBas = pMovimiento.Cantidad
-                                stockActual.Lic_plate_Anterior = stockActual.Lic_plate
-                                pMovimiento.Cantidad = stockActual.CantidadUmBas
-
-                                aplicarFlujoIntegradoImplosionUbicacion = Aplica_Cambio_Estado_Ubic_HH_ConValidacionRack_Interno(pMovimiento,
-                                                                                                                                    stockActual,
-                                                                                                                                    idStockNuevo,
-                                                                                                                                    idMovNuevo,
-                                                                                                                                    pPosiciones,
-                                                                                                                                    lConnection,
-                                                                                                                                    lTransaction,
-                                                                                                                                    False)
-
-                                If Not aplicarFlujoIntegradoImplosionUbicacion Then
-                                    Throw New Exception("No se pudo completar el flujo integrado de implosión y cambio de ubicación.")
-                                End If
-                            End If
-                        End If
-                    End If
-                End If
             End If
 
-            If Not aplicarFlujoIntegradoImplosionUbicacion Then
-                pMovimiento.IdMovimiento = 0
-
-                If (pIdReabastecimientoLog = 0) Then
-
-                    clsLnTrans_movimientos.Aplicar(pMovimiento,
-                                                   oBeTrans_ubic_hh_det.Stock.IdStock,
-                                                   False,
-                                                   lConnection,
-                                                   lTransaction,
-                                                   pPosiciones)
-
-                Else
-
-                    clsLnTrans_movimientos.Aplicar_Con_Reabastecimiento(pMovimiento,
-                                                                         oBeTrans_ubic_hh_det.Stock.IdStock,
-                                                                         False,
-                                                                         lConnection,
-                                                                         lTransaction,
-                                                                         pIdReabastecimientoLog,
-                                                                         pPosiciones)
-
-                End If
-
-                clsLnTrans_movimientos.Insertar(pMovimiento,
-                                                lConnection,
-                                                lTransaction)
-            End If
+            clsLnTrans_movimientos.Insertar(pMovimiento,
+                                            lConnection,
+                                            lTransaction)
 
             If Not oBeTrans_ubic_hh_det Is Nothing Then
                 GetSingle(det)
@@ -667,9 +595,11 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
+            Dim idMaxmov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction) + 1
+
             Dim result As String = clsLnTrans_movimientos.Aplicar(pMovimiento, idstock, True, lConnection, lTransaction)
 
-            pMovimiento.IdMovimiento = 0
+            pMovimiento.IdMovimiento = idMaxmov
             clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
             lTransaction.Commit()
@@ -692,6 +622,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplica_LP_Stock = ""
 
+        Dim IdMaxMov As Integer
         Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
@@ -709,16 +640,33 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Dim vPresentacion As Integer = pStockRes.IdPresentacion
 
             'Validación implosión antes de aplicar LP Stock
-            If Not String.IsNullOrWhiteSpace(pStockRes.Lic_plate_Anterior) AndAlso
+            '#EJC20260528 Aplica_LP_Stock-LicDestino-NuevoLP:
+            'Pre-check: solo ejecutar Validar_Implosion si la licencia destino
+            'ya tiene stock activo en BD. LP destino nueva = asignación de LP,
+            'no es implosión real — skip validación para no bloquear el proceso.
+            '#EJC20260528 Aplica_LP_Stock-ValidarImplosionDirecta:
+            'ValidarImplosionDirecta=True solo cuando el caller es una implosión directa
+            '(Set_LP_Stock). Callers que NO son implosión directa (Aplica_LP_Stock_Mixto)
+            'pasan False (o defaultean False) y omiten toda esta sección.
+            If ValidarImplosionDirecta AndAlso
+               Not String.IsNullOrWhiteSpace(pStockRes.Lic_plate_Anterior) AndAlso
                Not String.IsNullOrWhiteSpace(vNuevoLicPlate) AndAlso
                pStockRes.Lic_plate_Anterior.Trim().ToUpper() <> vNuevoLicPlate.Trim().ToUpper() Then
 
-                Validar_Implosion_MismaUbicacionEstado(pStockRes.Lic_plate_Anterior,
-                                                       vNuevoLicPlate,
-                                                       pMovimiento.IdBodegaDestino,
-                                                       lConnection,
-                                                       lTransaction,
-                                                       True)
+                Dim stockDestinoPreCheck As clsBeVW_stock_res =
+                    clsLnVW_stock_res.Get_Stock_Implosion_By_LicPlate(vNuevoLicPlate,
+                                                                       pMovimiento.IdBodegaDestino,
+                                                                       lConnection,
+                                                                       lTransaction)
+
+                If stockDestinoPreCheck IsNot Nothing Then
+                    Validar_Implosion_MismaUbicacionEstado(pStockRes.Lic_plate_Anterior,
+                                                           vNuevoLicPlate,
+                                                           pMovimiento.IdBodegaDestino,
+                                                           lConnection,
+                                                           lTransaction,
+                                                           True)
+                End If
 
             End If
 
@@ -768,7 +716,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                         lTransaction
                     )
 
-                        pMovimiento.IdMovimiento = 0
+                        IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                        pMovimiento.IdMovimiento = IdMaxMov
 
                         clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -792,7 +741,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
                         lTransaction
                     )
 
-                        pMovimiento.IdMovimiento = 0
+                        IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                        pMovimiento.IdMovimiento = IdMaxMov
 
                         clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -894,7 +844,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim lTransaction As SqlTransaction = Nothing
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -956,7 +906,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = 0
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -988,7 +938,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = 0
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -1098,6 +1048,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
         Aplica_Cambio_Estado_Ubic_En_Picking = ""
 
+        Dim idMaxmov As Integer
+
         Try
 
             Dim ListaStock As New List(Of clsBeVW_stock_res)
@@ -1130,7 +1082,10 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                                                lConnection,
                                                                                                                lTransaction)
 
-                        pMovimiento.IdMovimiento = 0
+                        idMaxmov = clsLnTrans_movimientos.MaxID(lConnection,
+                                                                lTransaction)
+
+                        pMovimiento.IdMovimiento = idMaxmov
 
                         clsLnTrans_movimientos.Insertar(pMovimiento,
                                                         lConnection,
@@ -1156,7 +1111,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                                                lConnection,
                                                                                                                lTransaction)
 
-                        pMovimiento.IdMovimiento = 0
+                        idMaxmov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                        pMovimiento.IdMovimiento = idMaxmov
 
                         clsLnTrans_movimientos.Insertar(pMovimiento,
                                                         lConnection,
@@ -1334,29 +1291,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
     End Function
 
-    '#EJC20260526:
-    'Parametro para habilitar la implosión automática en cambio de ubicación.
-    Private Shared Function Get_Parametro_Ubic_Implosion_Auto(ByVal pIdBodega As Integer,
-                                                              ByVal lConnection As SqlConnection,
-                                                              ByVal lTransaction As SqlTransaction) As Boolean
-        Try
-            Const vSQL As String = "SELECT ISNULL(ubic_implosion_auto, 0) FROM bodega WHERE IdBodega = @IdBodega"
-
-            Using cmd As New SqlCommand(vSQL, lConnection, lTransaction)
-                cmd.CommandType = CommandType.Text
-                cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
-
-                Dim value As Object = cmd.ExecuteScalar()
-                If value Is Nothing OrElse value Is DBNull.Value Then Return False
-
-                Return Convert.ToBoolean(value)
-            End Using
-
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
-        End Try
-    End Function
-
 
     '#MA20260415 metodo para implosionar, mejoras en la cumbre
     Public Shared Function Aplica_Implosion(ByVal pMovimiento As clsBeTrans_movimientos,
@@ -1366,6 +1300,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                             ByVal esImplosion As Boolean) As String
 
         Aplica_Implosion = ""
+
+        Dim IdMaxMov As Integer
+
 
         Try
 
@@ -1432,7 +1369,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                        lConnection,
                                                                                        lTransaction)
 
-                                pMovimiento.IdMovimiento = 0
+                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                pMovimiento.IdMovimiento = IdMaxMov
 
                                 clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -1456,7 +1395,9 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                        lConnection,
                                                                                        lTransaction)
 
-                                pMovimiento.IdMovimiento = 0
+                                IdMaxMov = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+
+                                pMovimiento.IdMovimiento = IdMaxMov
 
                                 clsLnTrans_movimientos.Insertar(pMovimiento, lConnection, lTransaction)
 
@@ -1527,7 +1468,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
         Dim IdStockNuevo As Integer = 0
 
         Dim BePickingUbic As New clsBeTrans_picking_ubic()
-        Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+        Dim stopwatch As Stopwatch = stopwatch.StartNew()
 
         If pMovimiento.IdTipoTarea = 0 Then
             Throw New Exception("ERROR_20220909_0724: " & "El identificador de tipo de tarea es incorrecto, salga de la pantalla e intente nuevamente por favor.")
@@ -1596,7 +1537,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = 0
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -1628,7 +1569,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
                                                                                   lTransaction,
                                                                                   pPosiciones)
 
-                                    IdMovimiento = 0
+                                    IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
 
                                     pMovimiento.IdMovimiento = IdMovimiento
                                     pMovimiento.IdUnidadMedida = StockRes.IdUnidadMedida
@@ -2248,15 +2189,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
             'Aplica solo si la ubicación destino tiene una licencia configurada
             'y esa licencia es distinta a la licencia actual del stock.
             If Not EsCambioEstado Then
-                '#EJC20260526:
-                'Implosión automática solo aplica para ubicaciones destino tipo rack.
-                If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
-                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
-                                                                     pMovimiento.IdBodegaDestino,
-                                                                     lConnection,
-                                                                     lTransaction) > 1 Then
-                        Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
-                    End If
+                If tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
                     requiereImplosion = True
                 End If
             End If
@@ -2645,15 +2578,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
             End If
 
             If Not EsCambioEstado Then
-                '#EJC20260526:
-                'Implosión automática solo aplica para ubicaciones destino tipo rack.
-                If esRack AndAlso tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
-                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
-                                                                     pMovimiento.IdBodegaDestino,
-                                                                     lConnection,
-                                                                     lTransaction) > 1 Then
-                        Throw New Exception("No se puede aplicar implosión automática: la ubicación destino (rack) tiene más de una licencia activa. Seleccione destino/licencia de forma explícita.")
-                    End If
+                If tieneLicenciaDestino AndAlso licenciaDestino <> licenciaOrigen Then
                     requiereImplosion = True
                 End If
             End If
@@ -2805,36 +2730,6 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Throw
         End Try
 
-    End Function
-
-    '#EJC20260526:
-    'Evita selección ambigua de licencia destino cuando hay más de una licencia activa en el rack.
-    Private Shared Function Get_Cantidad_Licencias_Distintas_En_Ubicacion(ByVal pIdUbicacion As Integer,
-                                                                           ByVal pIdBodega As Integer,
-                                                                           ByVal lConnection As SqlConnection,
-                                                                           ByVal lTransaction As SqlTransaction) As Integer
-        Try
-            Const vSQL As String = "SELECT COUNT(DISTINCT LTRIM(RTRIM(lic_plate))) " &
-                                   "FROM vw_stock_res " &
-                                   "WHERE IdUbicacion = @IdUbicacion " &
-                                   "  AND IdBodega = @IdBodega " &
-                                   "  AND ISNULL(LTRIM(RTRIM(lic_plate)), '') <> ''"
-
-            Using cmd As New SqlCommand(vSQL, lConnection, lTransaction)
-                cmd.CommandType = CommandType.Text
-                cmd.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
-                cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
-
-                Dim lReturnValue As Object = cmd.ExecuteScalar()
-                If lReturnValue IsNot Nothing AndAlso lReturnValue IsNot DBNull.Value Then
-                    Return CInt(lReturnValue)
-                End If
-            End Using
-
-            Return 0
-        Catch ex As Exception
-            Throw ex
-        End Try
     End Function
 
 End Class
