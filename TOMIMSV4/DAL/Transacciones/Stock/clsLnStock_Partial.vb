@@ -498,7 +498,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report(ByVal pIdBodega As Integer,
                                                                ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -598,7 +597,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report_Clasificacion(ByVal pIdBodega As Integer,
                                                                              ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -760,7 +758,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega_And_IdPropietario(ByVal DelSubUpdLbl As ChangeLabelDelegate,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByVal pIdPropietarioBodega As Integer,
@@ -824,7 +821,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal IdBodega As Integer,
                                                      ByVal IdRe As Integer,
                                                      ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -890,7 +886,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
 
     '#GT16032022_0837: para el inventario en linea cealsa
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -16399,7 +16394,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Guardar_Stock_Ajuste_Positivo(ByVal pObjStock As clsBeStock,
                                                          ByRef lConnection As SqlConnection,
                                                          ByRef lTransaction As SqlTransaction) As Boolean
@@ -16416,7 +16410,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer) As clsBeStock
 
         GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Nothing
@@ -16467,7 +16460,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer,
                                                                           Optional ByVal pConnection As SqlConnection = Nothing,
                                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeStock
