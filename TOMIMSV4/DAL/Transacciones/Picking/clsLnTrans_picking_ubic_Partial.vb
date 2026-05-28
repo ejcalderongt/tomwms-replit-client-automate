@@ -7775,6 +7775,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                   dañado_verificacion = 0 AND 
                                   no_encontrado = 0 AND 
 							      cantidad_verificada > 0 AND
+                                  Fecha_packing IS NULL AND
                                   IdPickingEnc=@IdPickingEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
                                   ISNULL(IdPresentacion,0) = @IdPresentacion AND
