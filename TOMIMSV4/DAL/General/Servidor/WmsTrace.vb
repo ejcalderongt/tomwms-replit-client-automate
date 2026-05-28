@@ -229,7 +229,7 @@ Public Module WmsTrace
     ' ═══════════════════════════════════════════════════════════════════════════
 
     ''' <summary>Registra un evento puntual (sin duración) dentro del span activo.</summary>
-    Public Sub Event(ByVal eventName As String,
+    Public Sub vEvent(ByVal eventName As String,
                      Optional ByVal attrs As Dictionary(Of String, Object) = Nothing)
         If Not ENABLED Then Return
         Dim sid As String = If(SpanStack.Count > 0, SpanStack.Peek(), "?")
