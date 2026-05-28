@@ -713,7 +713,12 @@ Partial Public Class clsLnTrans_ubic_hh_det
             'Pre-check: solo ejecutar Validar_Implosion si la licencia destino
             'ya tiene stock activo en BD. LP destino nueva = asignación de LP,
             'no es implosión real — skip validación para no bloquear el proceso.
-            If Not String.IsNullOrWhiteSpace(pStockRes.Lic_plate_Anterior) AndAlso
+            '#EJC20260528 Aplica_LP_Stock-ValidarImplosionDirecta:
+            'ValidarImplosionDirecta=True solo cuando el caller es una implosión directa
+            '(Set_LP_Stock). Callers que NO son implosión directa (Aplica_LP_Stock_Mixto)
+            'pasan False (o defaultean False) y omiten toda esta sección.
+            If ValidarImplosionDirecta AndAlso
+               Not String.IsNullOrWhiteSpace(pStockRes.Lic_plate_Anterior) AndAlso
                Not String.IsNullOrWhiteSpace(vNuevoLicPlate) AndAlso
                pStockRes.Lic_plate_Anterior.Trim().ToUpper() <> vNuevoLicPlate.Trim().ToUpper() Then
 
