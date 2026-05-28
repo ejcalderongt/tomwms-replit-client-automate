@@ -307,14 +307,19 @@ Public Class frmImprimir_Etiqueta
                         Throw New Exception("No se generó correctamente el voice pick, revisar")
                     End If
 
+                    '#EJC20260528: A Peticion de axel, por un problema de cabezal de imrpesión en la finca cito textualmente:
+                    'Erik tenemos una emergencia....  en una de las fincas de banasa la cabeza de impresión se quemo del lado izquierdo, a nivel de programa pudes apoyarnos en correr la impresión de la barra hacia la derecha..?
+                    'Se desplazó la etiqueta y su label hacia la derecha por +60 original "^FO40,10, ajustada: ^FO100,10
+                    '^FO40,135 ^FO100,135
+
                     vZPL = String.Format("^XA" & vbCrLf &
                                         "^FX Código de barras GS1-128 ajustado sin texto debajo" & vbCrLf &
                                         "^BY3,3,92" & vbCrLf &
-                                        "^FO40,10" & vbCrLf &
+                                        "^FO100,10" & vbCrLf &
                                         "^BCN,120,N,N,N" & vbCrLf &
                                         "^FD>;{10}^FS" & vbCrLf &
                                         "^FX Texto representativo de AIs con paréntesis (no visible en código)" & vbCrLf &
-                                        "^FO40,135" & vbCrLf &
+                                        "^FO100,135" & vbCrLf &
                                         "^A0N,25,22" & vbCrLf &
                                         "^FD{9}^FS" & vbCrLf &
                                         "^FX Segunda sección con destinatario y datos adicionales" & vbCrLf &
