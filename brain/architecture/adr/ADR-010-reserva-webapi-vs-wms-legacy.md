@@ -1,3 +1,9 @@
+---
+tipo: other
+clientes: [killios]
+ramas_afectadas: [dev_2028_merge]
+autores: [erik]
+---
 # ADR-010: Dos motores de reserva — webapi vs WMS legacy
 
 ## Contexto

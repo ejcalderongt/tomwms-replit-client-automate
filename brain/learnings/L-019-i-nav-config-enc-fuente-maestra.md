@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [becofarma, killios, mampa]
+---
 # L-019 — `i_nav_config_enc` es la fuente maestra de capability flags
 
 > Etiqueta: `L-019_PARAM_CONFIG-ENC-FUENTE-MAESTRA_APPLIED`

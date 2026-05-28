@@ -1,3 +1,9 @@
+---
+tipo: other
+clientes: [cealsa]
+ramas_afectadas: [dev_2028_merge]
+autores: [erik]
+---
 # Scripts del bridge
 
 ## `azdo-*.cjs` — Lectura del repo Azure DevOps `ejcalderon0892`

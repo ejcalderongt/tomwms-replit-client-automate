@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # Respuestas — Tarea 1
 
 > Respondio: Erik Calderon  ·  Fecha: 27 abril 2026  ·  Ciclo: 9

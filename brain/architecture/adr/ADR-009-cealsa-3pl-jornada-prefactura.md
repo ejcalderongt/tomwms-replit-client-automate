@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [cealsa]
+---
 # ADR-009: Modelo CEALSA — 3PL con jornada y prefacturacion
 
 ## Contexto

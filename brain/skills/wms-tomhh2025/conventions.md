@@ -1,3 +1,7 @@
+---
+tipo: other
+ramas_afectadas: [dev_2028_merge]
+---
 # Convenciones canónicas — TOMHH2025
 
 Reglas de estilo y patrones validados sobre el código real (`dev_2028_merge`, snapshot 2026-04-26).

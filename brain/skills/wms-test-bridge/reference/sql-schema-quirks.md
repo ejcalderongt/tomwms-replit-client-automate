@@ -1,3 +1,8 @@
+---
+tipo: reference
+clientes: [killios]
+autores: [erik]
+---
 # Quirks del schema SQL Server (deuda historica)
 
 ## 1. Typo en columna de explosion automatica — RESUELTO

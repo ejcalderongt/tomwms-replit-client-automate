@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [killios]
+---
 # ADR-007: Integracion Killios ↔ SAP Business One via DI-API
 
 ## Contexto

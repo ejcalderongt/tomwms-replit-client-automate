@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [killios]
+---
 # Procesamiento de la consulta de prueba de Carol - Cambio de ubicacion restrictivo
 
 > Generado por el agente brain el 28 abril 2026 a partir de la consulta que Carol envio para poner a prueba al sistema.

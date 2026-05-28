@@ -1,3 +1,8 @@
+---
+tipo: reference
+clientes: [byb, killios]
+autores: [erik]
+---
 # Casos de reserva observados en reserva-WMS legacy (Killios PRD)
 
 > Snapshot 2026-04-27T15:28:58.419Z. Aprendido de `SELECT Caso_Reserva, COUNT(*) FROM trans_pe_det_log_reserva GROUP BY Caso_Reserva` en TOMWMS_KILLIOS_PRD.

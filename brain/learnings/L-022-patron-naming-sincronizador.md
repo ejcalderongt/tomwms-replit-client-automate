@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [becofarma, byb, cealsa, killios]
+---
 # L-022 — Patron de naming del binario sincronizador por ERP
 
 > Etiqueta: `L-022_INTEG_NAMING-SYNC-EXE_APPLIED`

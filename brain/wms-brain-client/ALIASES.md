@@ -1,3 +1,8 @@
+---
+tipo: other
+clientes: [becofarma, byb, cealsa, killios]
+autores: [erik]
+---
 # wms-brain — Alias de clientes
 
 > **Politica de seguridad**: en TODA la documentacion publica del repo

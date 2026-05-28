@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # brain/outputs/
 
 Carpeta raiz para entregables formateados producidos por el agente brain.

@@ -1,3 +1,8 @@
+---
+tipo: reference
+clientes: [byb, cealsa, killios]
+autores: [erik]
+---
 # Tablas del flujo de reserva
 
 > Aprendido el 2026-04-27T15:28:58.419Z desde TOMWMS_KILLIOS_PRD. BYB y CEALSA tienen el mismo schema.

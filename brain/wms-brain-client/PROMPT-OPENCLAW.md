@@ -1,3 +1,7 @@
+---
+tipo: other
+autores: [erik]
+---
 # Prompt para Open Claw (Claude Desktop / Claude Code) — Implementacion de wms-brain-client
 
 > **Como usar**: copiar TODO el bloque de abajo y pegarlo como primer

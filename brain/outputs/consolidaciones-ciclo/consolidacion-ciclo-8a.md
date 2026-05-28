@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [byb, cealsa, killios]
+---
 # Consolidacion Ciclo 8a - cierre via ejecucion live SQL
 
 > Generado por agente brain (sesion replit) el 28 abril 2026.

@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [becofarma, mampa]
+---
 # L-020 — Tres modelos de donde viven los flags de control
 
 > Etiqueta: `L-020_DATA_MODELOS-CONFIG-PRODUCTO-VS-BODEGA_APPLIED`

@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [byb, cealsa, killios]
+---
 # ADR-006: Configuracion multi-ambiente para wmsa
 
 ## Contexto

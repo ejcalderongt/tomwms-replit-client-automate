@@ -1,3 +1,7 @@
+---
+tipo: reference
+clientes: [byb, cealsa, killios]
+---
 # Flags de configuracion WMS (i_nav_config_enc) — v2 corregido
 
 > Aprendido de **i_nav_config_enc** en TOMWMS_KILLIOS_PRD, IMS4MB_BYB_PRD e IMS4MB_CEALSA_QAS.

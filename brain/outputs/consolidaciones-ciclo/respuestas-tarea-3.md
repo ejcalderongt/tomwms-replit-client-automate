@@ -1,3 +1,8 @@
+---
+tipo: other
+clientes: [byb, cealsa, killios]
+autores: [ckfk]
+---
 # Respuestas Ciclo 8a (tarea-3) - CIERRE COMPLETO via ejecucion live SQL
 
 > Documento generado por el agente brain (sesion replit) el 28 abril 2026.

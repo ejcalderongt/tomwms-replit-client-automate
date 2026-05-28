@@ -1,3 +1,7 @@
+---
+tipo: other
+autores: [erik]
+---
 # wms-brain-client — Especificacion de arquitectura
 
 > **Status**: Draft v1 (2026-04-27).

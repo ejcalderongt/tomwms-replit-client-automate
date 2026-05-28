@@ -1,3 +1,7 @@
+---
+tipo: other
+autores: [erik]
+---
 # wms-tomwms — Convenciones de código
 
 Referencia rápida al escribir VB, Java o SQL nuevo en el WMS. Complemento de `SKILL.md`.

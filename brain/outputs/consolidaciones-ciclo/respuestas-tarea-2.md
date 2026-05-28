@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [byb, cealsa, killios]
+---
 # Respuestas — Tarea 2 (resueltas por exploracion SQL)
 
 > Respondio: agente brain por exploracion SQL READ-ONLY de las 3 BDs.

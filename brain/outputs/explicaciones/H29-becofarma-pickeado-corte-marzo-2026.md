@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [becofarma]
+---
 # H29 explicado: el "44% de Pickeado terminal" en BECOFARMA es un corte real del flujo de despacho en marzo 2026
 
 > Evidencia recolectada: 29-abr-2026 sobre `IMS4MB_BECOFARMA_PRD` (snapshot diagnostico restaurado el 28-abr-2026 por Erik).

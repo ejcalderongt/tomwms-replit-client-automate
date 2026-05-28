@@ -1,3 +1,7 @@
+---
+tipo: other
+ramas_afectadas: [dev_2023_estable, dev_2028_merge]
+---
 # Inventario de Código — TOM WMS
 
 > Generado: 2026-05-27 | 4 checkouts analizados

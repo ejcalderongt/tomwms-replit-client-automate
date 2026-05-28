@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # Evidencia A-001
 
 Generada: 2026-04-27 por agent-replit

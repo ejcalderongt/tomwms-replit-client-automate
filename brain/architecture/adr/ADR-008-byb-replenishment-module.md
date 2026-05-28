@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [byb, cealsa, killios]
+---
 # ADR-008: Modulo de reabastecimiento de picking activo en BYB
 
 ## Contexto

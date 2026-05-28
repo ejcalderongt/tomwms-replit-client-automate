@@ -1,3 +1,7 @@
+---
+tipo: reference
+clientes: [byb, cealsa, killios]
+---
 # Configuracion multi-ambiente
 
 > Schema y politica para gestionar credenciales de distintos ambientes desde una unica config local.

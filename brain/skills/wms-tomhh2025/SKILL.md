@@ -1,3 +1,7 @@
+---
+tipo: other
+ramas_afectadas: [dev_2028_merge]
+---
 # Skill: TOMHH2025 (Handheld Android del WMS)
 
 Este skill es la contraparte de `wms-tomwms`. Junto con él forman el panorama completo del WMS.

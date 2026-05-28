@@ -1,3 +1,7 @@
+---
+tipo: other
+ramas_afectadas: [dev_2023_estable, dev_2028_merge]
+---
 # TOM WMS Atlas — BOF/HH 2023↔2028 + Cross-Cliente
 
 > Generado: 2026-05-27 | Ramas: `dev_2028_merge` (activa) · `dev_2023_estable` (baseline)

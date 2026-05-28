@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # Validar IdStock duplicado en importación Excel
 
 ## What & Why

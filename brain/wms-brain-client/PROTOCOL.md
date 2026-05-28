@@ -1,3 +1,7 @@
+---
+tipo: other
+autores: [erik]
+---
 # wms-brain — Protocolo de question/answer/learning cards
 
 > **Status**: Draft v1 (2026-04-27, protocolVersion=1).

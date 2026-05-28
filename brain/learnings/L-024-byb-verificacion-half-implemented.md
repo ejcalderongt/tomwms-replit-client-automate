@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [becofarma, byb, cealsa, mampa]
+---
 # L-024 — Verificacion etiqueta half-implemented (caso BYB)
 
 > Etiqueta: `L-024_FEAT_VERIF-HALF-IMPLEMENTED-BYB_APPLIED`

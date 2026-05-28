@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # Rol arquitectonico de la WebAPI .NET 10 — los 3 modelos posibles
 
 > Aclaracion solicitada por Erik el 29-abr-2026: "no comprendi porque

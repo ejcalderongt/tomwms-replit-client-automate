@@ -1,3 +1,7 @@
+---
+tipo: other
+clientes: [byb]
+---
 # L-023 — BYB outbox parado entre 2024-2025 (caso de estudio)
 
 > Etiqueta: `L-023_DIAG_BYB-CORTE-OPERATIVO-2024_APPLIED`

@@ -1,3 +1,8 @@
+---
+tipo: other
+clientes: [killios]
+autores: [erik]
+---
 # wms-brain-client — Catalogo de cmdlets
 
 > **Status**: Draft v1 (2026-04-27).

@@ -1,3 +1,6 @@
+---
+tipo: other
+---
 # L-021 — Verificacion etiqueta NO es un flag, es un sistema coordinado
 
 > Etiqueta: `L-021_FEAT_VERIF-FLAGS-COORDINADOS_APPLIED`

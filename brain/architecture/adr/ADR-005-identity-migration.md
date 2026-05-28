@@ -1,3 +1,8 @@
+---
+tipo: other
+clientes: [killios]
+ramas_afectadas: [dev_2023_estable, dev_2028_merge]
+---
 # ADR-005 — Migración a IDENTITY y equivalencia funcional dev_2023_merge ↔ dev_2028_merge
 
 **Status**: Accepted
