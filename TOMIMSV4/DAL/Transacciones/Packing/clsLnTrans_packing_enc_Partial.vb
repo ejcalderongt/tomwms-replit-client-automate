@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports DevExpress.Utils.Drawing.Helpers
 Imports DevExpress.XtraReports.Web.ReportDesigner.DataContracts
 
@@ -25,23 +25,16 @@ Partial Public Class clsLnTrans_packing_enc
 
                     For Each BeTransPackingEnc As clsBeTrans_packing_enc In pTrans_packing_enc
 
-                        '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: La verificacion asociada se calcula por linea de packing.
-                        Dim ListaPikcing As List(Of clsBeTrans_picking_ubic) = clsLnTrans_picking_ubic.Get_All_PickingUbic_For_Packing(BeTransPackingEnc,
-                                                                                                                                       lConnection,
-                                                                                                                                       lTransaction)
-
-                        If ListaPikcing Is Nothing OrElse ListaPikcing.Count = 0 Then
-                            Throw New Exception(String.Format("No existen ubicaciones verificadas para empacar el producto {0}, licencia {1}.",
-                                                              BeTransPackingEnc.Idproductobodega,
-                                                              BeTransPackingEnc.Lic_plate))
-                        End If
-
+                        '#EJCRP fix(packing-doble-llamada): Separar ramas INSERT vs UPDATE para evitar falso error
+                        '"No existen ubicaciones verificadas" cuando ACEPTAR re-llama Inserta_Packing sobre un
+                        'packing_enc recien creado cuyo ubic ya tiene Fecha_packing sellada. #EJC20260528
                         If BeTransPackingEnc.Idpackingenc <> 0 Then
+
                             cnt = Actualizar_Cantidad_Packing(BeTransPackingEnc, lConnection, lTransaction)
 
                             '#MECR13112025: Se agrego bitacora de packing
-                            Dim vMsg As String = "Se actualizó el empaque: " + BeTransPackingEnc.Idpackingenc.ToString()
-                            clsLnLog_error_wms_pack.Agregar_Error(vMsg,
+                            Dim vMsgUpd As String = "Se actualizó el empaque: " + BeTransPackingEnc.Idpackingenc.ToString()
+                            clsLnLog_error_wms_pack.Agregar_Error(vMsgUpd,
                                                                   pIdOperador:=BeTransPackingEnc.Idoperadorbodega,
                                                                   pIdBodega:=BeTransPackingEnc.Idbodega,
                                                                   pIdPedidoEnc:=BeTransPackingEnc.IdPedidoEnc,
@@ -56,7 +49,20 @@ Partial Public Class clsLnTrans_packing_enc
                                                                   pUsuario_agr:=BeTransPackingEnc.Usr_mod,
                                                                   pConection:=lConnection,
                                                                   pTransaction:=lTransaction)
+
                         Else
+
+                            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: La verificacion asociada se calcula por linea de packing.
+                            Dim ListaPikcing As List(Of clsBeTrans_picking_ubic) = clsLnTrans_picking_ubic.Get_All_PickingUbic_For_Packing(BeTransPackingEnc,
+                                                                                                                                           lConnection,
+                                                                                                                                           lTransaction)
+
+                            If ListaPikcing Is Nothing OrElse ListaPikcing.Count = 0 Then
+                                Throw New Exception(String.Format("No existen ubicaciones verificadas para empacar el producto {0}, licencia {1}.",
+                                                                  BeTransPackingEnc.Idproductobodega,
+                                                                  BeTransPackingEnc.Lic_plate))
+                            End If
+
                             BeTransPackingEnc.Idpackingenc = vMaxIdPackingEnc
                             Insertar(BeTransPackingEnc, lConnection, lTransaction)
                             vMaxIdPackingEnc += 1
@@ -81,19 +87,21 @@ Partial Public Class clsLnTrans_packing_enc
                                                                   pUsuario_agr:=BeTransPackingEnc.Usr_mod,
                                                                   pConection:=lConnection,
                                                                   pTransaction:=lTransaction)
+
+                            'Cantidad Empacada sin tomar en cuenta la licencia del packing
+                            'Dim CantidadEmpacada As Double = 0
+                            'CantidadEmpacada = Get_CantidadEmpacada(pTrans_packing_enc.Item(0), lConnection, lTransaction)
+
+                            '#AT20250203 Actualizar fecha packing en trans_picking_ubic
+                            'If CantidadEmpacada <= CantVerificada Then
+                            For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
+                                Picking.Fecha_packing = Date.Now()
+                                clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
+                            Next
+                            'End If
+
                         End If
 
-                        'Cantidad Empacada sin tomar en cuenta la licencia del packing
-                        'Dim CantidadEmpacada As Double = 0
-                        'CantidadEmpacada = Get_CantidadEmpacada(pTrans_packing_enc.Item(0), lConnection, lTransaction)
-
-                        '#AT20250203 Actualizar fecha packing en trans_picking_ubic
-                        'If CantidadEmpacada <= CantVerificada Then
-                        For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
-                            Picking.Fecha_packing = Date.Now()
-                            clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
-                        Next
-                        'End If
                     Next
 
                     If pIdResolucion <> 0 Then
@@ -229,12 +237,12 @@ Partial Public Class clsLnTrans_packing_enc
         End Try
 
         'Catch ex As Exception
-        '	If Not lTransaction Is Nothing Then lTransaction.Rollback()
-        '	Throw ex
+        '       If Not lTransaction Is Nothing Then lTransaction.Rollback()
+        '       Throw ex
         'Finally
-        '	If lConnection.State = ConnectionState.Open Then lConnection.Close()
-        '	If Not lConnection Is Nothing Then lConnection.Dispose()
-        '	If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        '       If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        '       If Not lConnection Is Nothing Then lConnection.Dispose()
+        '       If Not lTransaction Is Nothing Then lTransaction.Dispose()
         'End Try
 
     End Function
@@ -528,8 +536,8 @@ Partial Public Class clsLnTrans_packing_enc
                                          ISNULL(t.Codigo,'') Codigo_Talla, ISNULL(t.Nombre,'') Nombre_Talla
                                   FROM Trans_packing_enc p LEFT JOIN 
                                        producto_talla_color ptc ON p.IdProductoTallaColor = ptc.IdProductoTallaColor LEFT JOIN
-	                                   talla t ON ptc.IdTalla = t.IdTalla LEFT JOIN
-	                                   color c ON ptc.IdColor = c.IdColor
+                                           talla t ON ptc.IdTalla = t.IdTalla LEFT JOIN
+                                           color c ON ptc.IdColor = c.IdColor
                                   WHERE (idpickingenc = @idpickingenc) AND (iddespachoenc=0) "
 
             Using lDTA As New SqlDataAdapter(sp, lConnection)
@@ -666,6 +674,22 @@ Partial Public Class clsLnTrans_packing_enc
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             If Eliminar(pBePacking.Idpackingenc, lConnection, lTransaction) > 0 Then
+
+                '#EJCRP fix(packing-fecha-reset): Resetear Fecha_packing en ubics al eliminar un packing_enc para
+                'que el producto pueda volver a empacar (escenario reemplazo + ACEPTAR delete+insert). #EJC20260528
+                Dim cmdResetFp As New SqlCommand(
+                    "UPDATE trans_picking_ubic SET Fecha_packing = '19000101' " &
+                    "WHERE IdPickingEnc = @IdPickingEnc " &
+                    "  AND IdProductoBodega = @IdProductoBodega " &
+                    "  AND ISNULL(lic_plate,'') = ISNULL(@Lic_plate,'') " &
+                    "  AND Fecha_packing > '19010101'",
+                    lConnection, lTransaction)
+                cmdResetFp.Parameters.AddWithValue("@IdPickingEnc", pBePacking.Idpickingenc)
+                cmdResetFp.Parameters.AddWithValue("@IdProductoBodega", pBePacking.Idproductobodega)
+                cmdResetFp.Parameters.AddWithValue("@Lic_plate", If(pBePacking.Lic_plate, ""))
+                cmdResetFp.ExecuteNonQuery()
+                cmdResetFp.Dispose()
+
                 '#MECR12112025: Se agrego bitacora de packing
                 'NoLinea es Licencia Packing
                 'clsLnLog_error_wms.Agregar_Error("Se elimino la licencia: " & pBePacking.Lic_plate & " IdPickingEnc " & pBePacking.Idpickingenc &
@@ -795,6 +819,25 @@ Partial Public Class clsLnTrans_packing_enc
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
+
+            '#EJCRP fix(packing-fecha-reset): Resetear Fecha_packing en ubics al cancelar empaque (reemplazo/des-verificacion)
+            'para que el producto pueda volver al flujo de empaque correctamente. #EJC20260528
+            Dim resetSql As String = "UPDATE trans_picking_ubic SET Fecha_packing = '19000101' " &
+                                     "WHERE IdPickingEnc = @IdPickingEnc " &
+                                     "  AND IdProductoBodega = @IdProductoBodega " &
+                                     "  AND ISNULL(lic_plate,'') = ISNULL(@Lic_plate,'') " &
+                                     "  AND Fecha_packing > '19010101'"
+            Dim cmdReset As SqlCommand
+            If Es_Transaccion_Remota Then
+                cmdReset = New SqlCommand(resetSql, pConnection, pTransaction)
+            Else
+                cmdReset = New SqlCommand(resetSql, lConnection, lTransaction)
+            End If
+            cmdReset.Parameters.AddWithValue("@IdPickingEnc", pBePickingUbic.IdPickingEnc)
+            cmdReset.Parameters.AddWithValue("@IdProductoBodega", pBePickingUbic.IdProductoBodega)
+            cmdReset.Parameters.AddWithValue("@Lic_plate", If(pBePickingUbic.Lic_plate, ""))
+            cmdReset.ExecuteNonQuery()
+            cmdReset.Dispose()
 
             Dim sp1 As String = " Update trans_packing_enc set Finalizado = 0
                                   Where IdPedidoEnc = @IdPedidoEnc and 
