@@ -195,6 +195,7 @@ Public Class frmInventarioRFID
         Try
 
             If gBeTransInvEnc.IsNew Then
+
                 SplashScreenManager.Default.SetWaitFormDescription("Creando tarea de inventario...")
                 Crea_Tarea_HH()
 
@@ -228,7 +229,7 @@ Public Class frmInventarioRFID
 
                 SplashScreenManager.Default.SetWaitFormDescription("Guardando transacción...")
 
-                Guardar = clsLnTrans_inv_enc.Guardar(gBeTransInvEnc, BeTareaHH)
+                Guardar = clsLnTrans_inv_enc.Guardar_RFID(gBeTransInvEnc, BeTareaHH)
 
             Else
 
