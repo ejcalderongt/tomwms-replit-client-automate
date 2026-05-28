@@ -379,6 +379,7 @@ def build_yaml(s):
         },
         "state_path": state_path,
         "anomalies": s.anomalies,
+        "span_tree": getattr(s, "span_tree", []) or [],
         "brain": {
             "analyzed": False,
             "support_tickets": [],
@@ -435,6 +436,134 @@ def build_md(s, yaml_doc):
     ]
     return "\n".join(lines)
 
+
+
+
+# ── v2: Span tree builder (OTel-inspired) ─────────────────────────────────────
+
+# Regex para parsear líneas v2 con span= parent= name=
+RE_SPAN_OPEN  = re.compile(r'span=([a-f0-9]{8,16})\s+parent=([a-f0-9]{0,16})\s+trace=(\S+)\s+name=(\S+)(.*)')
+RE_SPAN_CLOSE = re.compile(r'span=([a-f0-9]{8,16})\s+status=(\S+)\s+dt=(-?\d+)ms(.*)')
+RE_ATTRS      = re.compile(r'(\w[\w.]+)=(\S+)')
+
+def parse_log_v2(filepath):
+    """
+    Parsea logs v2 (WmsTrace_v2.vb / WmsTraceWS_v2.vb).
+    Formato: YYYY-MM-DD HH:mm:ss.fff  LAYER  TAG          span=XXXX parent=YYYY trace=ZZZ name=... [attrs]
+    Devuelve dict: trace_id → lista de spans (flat), para luego armar el árbol.
+    """
+    spans_by_trace = {}   # trace_id → {span_id: span_dict}
+    if not filepath or not Path(filepath).exists():
+        return spans_by_trace
+
+    with open(filepath, encoding="utf-8", errors="replace") as f:
+        for raw in f:
+            m = RE_WS.match(raw.rstrip())
+            if not m:
+                continue
+            ts, layer, tag, body = m.group(1), m.group(2), m.group(3).strip(), m.group(4)
+
+            if ">>" in tag and "span=" in body:
+                sm = RE_SPAN_OPEN.search(body)
+                if not sm:
+                    continue
+                sid, parent, tid, name = sm.group(1), sm.group(2), sm.group(3), sm.group(4)
+                # Parsear atributos
+                attrs = {}
+                for am in RE_ATTRS.finditer(sm.group(5)):
+                    attrs[am.group(1)] = am.group(2)
+
+                if tid not in spans_by_trace:
+                    spans_by_trace[tid] = {}
+                spans_by_trace[tid][sid] = {
+                    "span_id": sid,
+                    "parent_span_id": parent,
+                    "trace_id": tid,
+                    "name": name,
+                    "start_ts": ts,
+                    "end_ts": None,
+                    "duration_ms": None,
+                    "status": None,
+                    "layer": layer,
+                    "attributes": attrs,
+                    "children": [],
+                    "anomalies": [],
+                }
+
+            elif "<<" in tag and "span=" in body:
+                sm = RE_SPAN_CLOSE.search(body)
+                if not sm:
+                    continue
+                sid, status, dt = sm.group(1), sm.group(2), int(sm.group(3))
+                for trace_spans in spans_by_trace.values():
+                    if sid in trace_spans:
+                        trace_spans[sid]["end_ts"] = ts
+                        trace_spans[sid]["duration_ms"] = dt
+                        trace_spans[sid]["status"] = status
+                        break
+
+            elif "!!" in layer:
+                # Anomalía: buscar el span activo más cercano por trace
+                tid_m = RE_WS_TID.search(body)
+                if tid_m and tid_m.group(1) in spans_by_trace:
+                    # Agregar al último span del trace
+                    trace_spans = spans_by_trace[tid_m.group(1)]
+                    if trace_spans:
+                        last_sid = list(trace_spans.keys())[-1]
+                        trace_spans[last_sid]["anomalies"].append({
+                            "tag": tag, "msg": body[:100], "ts": ts
+                        })
+
+    return spans_by_trace
+
+
+def build_span_tree(spans_dict):
+    """
+    Convierte dict {span_id: span} en árbol anidado (children).
+    Devuelve lista de spans raíz (parent_span_id = '').
+    """
+    by_id = dict(spans_dict)  # copia
+    roots = []
+
+    for sid, span in by_id.items():
+        pid = span.get("parent_span_id", "")
+        if pid and pid in by_id:
+            by_id[pid]["children"].append(span)
+        else:
+            roots.append(span)
+
+    return roots
+
+
+def enrich_session_with_spans_v2(session, log_path):
+    """
+    Enriquece una TraceSession existente con los Spans v2 del log.
+    Agrega el árbol de spans al campo 'span_tree'.
+    """
+    if not log_path or not Path(log_path).exists():
+        return
+    all_traces = parse_log_v2(log_path)
+    spans_dict = all_traces.get(session.trace_id, {})
+    if not spans_dict:
+        return
+    session.span_tree = build_span_tree(spans_dict)
+    session.spans_flat = list(spans_dict.values())
+
+    # Detección N+1 en el árbol: hermanos con mismo name
+    def find_n1(node):
+        by_name = {}
+        for child in node.get("children", []):
+            by_name.setdefault(child["name"], []).append(child)
+        for name, siblings in by_name.items():
+            if len(siblings) > 3:
+                node.setdefault("anomalies", []).append({
+                    "type": "N+1", "sp": name, "count": len(siblings),
+                    "recommendation": f"Consolidar {len(siblings)} spans de '{name}' en batch"
+                })
+        for child in node.get("children", []):
+            find_n1(child)
+    for root in (session.span_tree if hasattr(session, "span_tree") else []):
+        find_n1(root)
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
