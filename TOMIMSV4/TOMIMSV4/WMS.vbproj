@@ -40,7 +40,7 @@
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS</SuiteName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>7.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -4649,7 +4649,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe" />
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -4681,6 +4680,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncCumbre.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5649,7 +5649,7 @@
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>9.0.8</Version>
+      <Version>10.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
       <Version>9.0.8</Version>
