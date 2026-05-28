@@ -9219,8 +9219,6 @@ Public Class frmInventario
                 End If
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-                'XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
-                '    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False

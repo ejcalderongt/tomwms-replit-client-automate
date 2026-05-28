@@ -498,7 +498,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report(ByVal pIdBodega As Integer,
                                                                ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -598,7 +597,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report_Clasificacion(ByVal pIdBodega As Integer,
                                                                              ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -760,7 +758,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega_And_IdPropietario(ByVal DelSubUpdLbl As ChangeLabelDelegate,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByVal pIdPropietarioBodega As Integer,
@@ -824,7 +821,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal IdBodega As Integer,
                                                      ByVal IdRe As Integer,
                                                      ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -890,7 +886,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
 
     '#GT16032022_0837: para el inventario en linea cealsa
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -10684,7 +10679,6 @@ Partial Public Class clsLnStock
             Dim vFilasAfectadas As Double = 0
             Dim IdxPresentacion As Integer = 0
             Dim BeMovimiento As New clsBeTrans_movimientos
-            Dim vIdMaxMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdEmpresa As Integer = 0
 
             If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
@@ -10796,7 +10790,7 @@ Partial Public Class clsLnStock
 
                     '#EJC20220204: Registrar movimiento de cambio de ubicación hacia ubicación de picking.
                     BeMovimiento = New clsBeTrans_movimientos
-                    BeMovimiento.IdMovimiento = vIdMaxMovimiento
+                    '#EJC20260526: IdMovimiento es identity; no se asigna manualmente.
                     BeMovimiento.IdEmpresa = IdEmpresa
                     BeMovimiento.IdBodegaOrigen = objStockOrigen.IdBodega
                     BeMovimiento.IdTransaccion = objStockOrigen.IdPedidoEnc
@@ -10851,8 +10845,6 @@ Partial Public Class clsLnStock
                     clsLnTrans_movimientos.Insertar(BeMovimiento,
                                                     lConnection,
                                                     lTransaction)
-
-                    vIdMaxMovimiento += 1
 
                 Next
 
@@ -12190,7 +12182,7 @@ Por favor reportar este problema a DevOps."
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-            IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            IdMovimiento = 0
 
             BeTransInvEnc.Regularizado = True
             BeTransInvEnc.Estado = "Finalizado"
@@ -12216,7 +12208,7 @@ Por favor reportar este problema a DevOps."
             Next
 
             For Each BeMov As clsBeTrans_movimientos In ListBeMovimientos
-                IdMovimiento += 1 : BeMov.IdMovimiento = IdMovimiento
+                BeMov.IdMovimiento = 0
                 clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
             Next
 
@@ -16402,7 +16394,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Guardar_Stock_Ajuste_Positivo(ByVal pObjStock As clsBeStock,
                                                          ByRef lConnection As SqlConnection,
                                                          ByRef lTransaction As SqlTransaction) As Boolean
@@ -16419,7 +16410,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer) As clsBeStock
 
         GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Nothing
@@ -16470,7 +16460,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer,
                                                                           Optional ByVal pConnection As SqlConnection = Nothing,
                                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeStock

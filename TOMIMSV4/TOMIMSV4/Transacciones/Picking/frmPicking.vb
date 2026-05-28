@@ -6056,13 +6056,20 @@ Public Class frmPicking
 
     '#GT01122025: si tipo pedido es verificar por bof, bloquear controles que permiten modificar la verificación en la HH
     Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)
+        '#EJC20260527: mantener acciones de corrección en BOF mientras el picking no esté despachado.
+        Dim permitirCorreccionEnBOF As Boolean = False
+        If BePickingEnc IsNot Nothing Then
+            permitirCorreccionEnBOF = (BePickingEnc.IdPickingEnc > 0 AndAlso
+                                       Not String.Equals(BePickingEnc.Estado, "Despachado", StringComparison.OrdinalIgnoreCase))
+        End If
+
         'cmdNoPickeado.Enabled = estado
         mnuProcesarLinea.Enabled = estado
         mnuProcesar.Enabled = estado
         mnuVerificarPickeados.Enabled = estado
-        cmdVerificarNuevamente.Enabled = estado
-        cmdNoVerificado.Enabled = estado
-        mnuDespachado.Enabled = estado
+        cmdVerificarNuevamente.Enabled = permitirCorreccionEnBOF
+        cmdNoVerificado.Enabled = permitirCorreccionEnBOF
+        mnuDespachado.Enabled = permitirCorreccionEnBOF
         '#GT12012025: porque dejarlo en false?
         'chkProcesarDesdeBOF.Checked = False
         chkProcesarDesdeBOF.Enabled = estado

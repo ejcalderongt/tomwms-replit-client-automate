@@ -775,7 +775,8 @@ Public Class clsLnStock_CI
 					  CantidadSF, ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdProductoBodega, IdUbicacion, IdArea,
                       IdUbicacion_anterior"
 
-                vSQL += "ORDER BY CODIGO, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             Else
                 '#AT20221221 Agregue IdUbicacion Stock_CI
@@ -830,7 +831,8 @@ Public Class clsLnStock_CI
 					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdProductoBodega, IdUbicacion, IdArea,
                       IdUbicacion_anterior"
 
-                vSQL += "ORDER BY Codigo, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             End If
 
@@ -1064,7 +1066,8 @@ Public Class clsLnStock_CI
 					  CantidadSF, ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega,
                       IdRecepcionDet, IdRecepcionEnc, IdArea, IdStock, Nombre_Talla, Codigo_Talla, Nombre_Color, Codigo_Color, CodigoSKU "
 
-                vSQL += "ORDER BY CODIGO, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             Else
                 '#AT20230320 Agregue Convert(Date, Fecha_Ingreso) al group by
@@ -1132,7 +1135,8 @@ Public Class clsLnStock_CI
 					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega, 
                       IdArea, Nombre_Talla, Codigo_Talla, Nombre_Color, Codigo_Color, CodigoSKU "
 
-                vSQL += "ORDER BY Codigo, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             End If
 

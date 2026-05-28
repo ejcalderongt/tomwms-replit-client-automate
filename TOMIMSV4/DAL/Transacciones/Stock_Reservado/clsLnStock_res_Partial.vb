@@ -8364,7 +8364,7 @@ Partial Public Class clsLnStock_res
 
                                 BeMovimiento = New clsBeTrans_movimientos()
 
-                                BeMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                BeMovimiento.IdMovimiento = 0
                                 BeMovimiento.IdTransaccion = BeStockResAReubicar.IdPicking
                                 BeMovimiento.IdEmpresa = BeEmpresa.IdEmpresa
                                 BeMovimiento.IdBodegaOrigen = BeStockResAReubicar.IdBodega

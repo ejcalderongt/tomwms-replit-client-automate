@@ -81,18 +81,10 @@ Public Class frmVerificacionBOF
 
             clsTransaccion.Begin_Transaction()
 
-            vRutaCDN = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-
-            If String.IsNullOrEmpty(vRutaCDN) Then
-                XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            End If
-
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            SplashScreenManager.Default.SetWaitFormCaption("Cargando rutas...")
 
-            Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
-            _listaRutasPng = archivosPng.ToList()
+            vRutaCDN = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            TryLoadRutasImagenes()
 
             SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
 
@@ -128,6 +120,34 @@ Public Class frmVerificacionBOF
         End Try
 
     End Sub
+
+    Private Function TryLoadRutasImagenes() As Boolean
+        Try
+            _listaRutasPng = New List(Of String)()
+
+            If SplashScreenManager.Default IsNot Nothing Then
+                SplashScreenManager.Default.SetWaitFormCaption("Cargando rutas...")
+            End If
+
+            If String.IsNullOrWhiteSpace(vRutaCDN) Then
+                clsLnLog_error_wms.Agregar_Error("#EJC20260527: Verificacion BOF sin ruta CDN de imagenes; se continua cargando datos.")
+                Return False
+            End If
+
+            If Not Directory.Exists(vRutaCDN) Then
+                clsLnLog_error_wms.Agregar_Error("#EJC20260527: Verificacion BOF ruta CDN no disponible: " & vRutaCDN)
+                Return False
+            End If
+
+            _listaRutasPng = Directory.GetFiles(vRutaCDN, "*.png").ToList()
+            Return True
+
+        Catch ex As Exception
+            _listaRutasPng = New List(Of String)()
+            clsLnLog_error_wms.Agregar_Error("#EJC20260527: Verificacion BOF fallo no fatal al cargar rutas de imagenes: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Private Sub Cargar_Estados()
         Try

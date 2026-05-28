@@ -31,6 +31,82 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
+<member name="T:TOMWMS.WmsTrace">
+ <summary>
+ WmsTrace v2 — Modelo OTel-inspired para BOF/MI3/LN.
+
+ Adopta del estándar OpenTelemetry:
+   - Span model (SpanId + ParentSpanId + name + attributes)
+   - WMS Semantic Conventions (wms.* + db.* + http.*)
+   - Árbol de Spans (jerarquía padre-hijo por stack thread-local)
+
+ Cero dependencias externas. El brain es el "backend".
+
+ Formato de log enriquecido:
+   YYYY-MM-DD HH:mm:ss.fff  LAYER  TAG        span=XXXX parent=YYYY trace=ZZZZ [attrs] [note]
+
+ #EJC20260528
+ </summary>
+</member>
+<member name="F:TOMWMS.WmsTrace.ENABLED">
+ <summary>True durante pruebas y observabilidad. False en producción.</summary>
+</member>
+<member name="F:TOMWMS.WmsTrace.SLOW_SQL_MS">
+ <summary>Umbral de SQL lenta (ms). Default 3000ms.</summary>
+</member>
+<member name="F:TOMWMS.WmsTrace.SLOW_TX_MS">
+ <summary>Umbral de TX lenta (ms). Default 8000ms.</summary>
+</member>
+<member name="F:TOMWMS.WmsTrace.N1_THRESHOLD">
+ <summary>Umbral de N+1: mismo SP > N veces en la misma TX.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.BeginSpan(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+ <summary>
+ Abre un nuevo Span. Devuelve el SpanId para pasarlo a EndSpan.
+ El ParentSpanId se toma automáticamente del stack del thread.
+
+ Uso:
+   Dim sid = WmsTrace.BeginSpan("LN.Procesar_Recepcion_HH", WmsTrace.A("wms.operation","recepcion"))
+   ... código ...
+   WmsTrace.EndSpan(sid, "OK", dtMs)
+ </summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.EndSpan(System.String,System.String,System.Int64,System.Collections.Generic.Dictionary{System.String,System.Object})">
+ <summary>Cierra el Span abierto con BeginSpan. Siempre llamar en Finally.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.OpStart(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+ <summary>Apertura de una operación LN (un método de negocio completo).</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.OpEnd(System.String,System.Int32,System.Boolean,System.Int64)">
+ <summary>Cierre de operación LN.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.TxBegin(System.String)">
+ <summary>Apertura de bloque transaccional. Devuelve spanId para cerrar.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.TxCommit(System.String,System.Int64)">
+ <summary>Commit exitoso de la TX.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.TxRollback(System.String,System.Int64,System.String)">
+ <summary>Rollback de la TX.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.SqlStart(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+ <summary>
+ Inicio de un SqlCommand (SP o query inline).
+ Devuelve el spanId + el tiempo de inicio para calcular duración.
+ </summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.SqlEnd(System.String,System.Int64,System.Int32,System.String,System.String)">
+ <summary>Fin de un SqlCommand.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.vEvent(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+ <summary>Registra un evento puntual (sin duración) dentro del span activo.</summary>
+</member>
+<member name="M:TOMWMS.WmsTrace.A(System.Object[])">
+ <summary>
+ Helper para construir dicts de atributos inline.
+ Uso: WmsTrace.A("wms.operation","recepcion", "wms.case",16)
+ </summary>
+</member>
 <member name="M:TOMWMS.clsLnAjuste_motivo.Insertar_Motivo_Si_No_Existe(System.String,System.String)">
  <summary>
  Inserta un motivo de ajuste con el nombre dado, solo si no existe.
@@ -1161,15 +1237,6 @@ Row event argument class
  </summary>
  <param name="pIdOrdenCompraEnc"></param>
  <returns></returns>
-</member>
-<member name="M:TOMWMS.clsLnTrans_re_det.Guarda_Trans_re_det(System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det}@,System.Collections.Generic.List{TOMWMS.clsBeStock_rec}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
- <summary>
- #EJC202209211314: Concurrencia y copias de stock.
- </summary>
- <param name="pListRecDet"></param>
- <param name="pListaStockRec"></param>
- <param name="lConnection"></param>
- <param name="lTransaction"></param>
 </member>
 <member name="M:TOMWMS.clsLnTrans_re_enc.GuardarHH(TOMWMS.clsBeTrans_re_enc,TOMWMS.clsBeTrans_re_oc,System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det_parametros},System.Collections.Generic.List{TOMWMS.clsBeStock_se_rec},System.Collections.Generic.List{TOMWMS.clsBeStock_rec},System.Collections.Generic.List{TOMWMS.clsBeProducto_pallet},TOMWMS.clsBeTrans_oc_det_lote,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
  <summary>

@@ -8008,10 +8008,10 @@ Partial Public Class clsLnProducto
         Try
 
             '#CKFK20260526 Agregué el CodigoSKU a la consulta para validar también el código de barra del SKU de la tabla producto_talla_color
+            '#CKFK20260526 Quite el parametro fijo IdBodega = 1
             Dim vSQL As String = "SELECT  distinct *
                                   FROM VW_ProductoSI  
-                                  WHERE (IdBodega = 1) and 
-                                        (codigo_barra_pcb = @CodigoBarra or 
+                                  WHERE (codigo_barra_pcb = @CodigoBarra or 
                                          codigo_barra_presentacion = @CodigoBarra or 
                                          codigo_barra = @CodigoBarra or 
                                          codigo = @CodigoBarra or 
@@ -11348,6 +11348,109 @@ Partial Public Class clsLnProducto
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    '#AT20260521 Funcion para codigos de barra en ciclico
+    Public Shared Function Get_List_Product_By_CodigoBarra_By_Cilcico(ByVal pCodigoBarra As String,
+                                                                      ByVal pIdBodega As Integer,
+                                                                      ByVal pIdInventario As Integer) As List(Of clsBeProducto)
+
+        Get_List_Product_By_CodigoBarra_By_Cilcico = Nothing
+
+        Try
+            Dim vSQL As String = "SELECT DISTINCT IdBodega, IdProductoBodega, IdProducto, IdPropietario, IdClasificacion, IdFamilia, IdMarca, 
+                                     IdTipoProducto, IdUnidadMedidaBasica, IdCamara, IdTipoRotacion, IdPerfilSerializado, IdIndiceRotacion, 
+                                     IdSimbologia, IdArancel, codigo, nombre, codigo_barra, precio, existencia_min, existencia_max, costo, 
+                                     peso_referencia, peso_tolerancia, noparte, noserie, control_peso, ciclo_vida, tolerancia, kit, materia_prima, 
+                                     control_lote, control_vencimiento, genera_lote, serializado, codigo_barra_presentacion, '' codigo_barra_pcb, 
+                                     '' NomPresentacion, activopp, 0 IdPresentacion, 0 factor, peso_recepcion, peso_despacho, temperatura_referencia, 
+                                     temperatura_tolerancia, temperatura_recepcion, temperatura_despacho, fechamanufactura, capturar_aniada, 
+                                     Arancel, user_agr, fec_agr, user_mod, fec_mod, captura_arancel, es_hardware, activo, imagen, largo, ancho,  
+                                     alto, genera_lp_old, IdUnidadMedidaCobro, IdTipoEtiqueta, dias_inventario_promedio, IdProductoParametroA, 
+                                     IdProductoParametroB, IdTipoManufactura, Margen_Impresion, IdTalla, IdColor
+                              FROM VW_ProductoSI v
+                              WHERE (IdBodega = @IdBodega) and 
+                                    (codigo_barra_pcb = @CodigoBarra or 
+                                     codigo_barra_presentacion = @CodigoBarra or 
+                                     codigo_barra = @CodigoBarra or 
+                                     codigo = @CodigoBarra) AND
+                                     EXISTS (SELECT * 
+                                            FROM trans_inv_ciclico d
+                                            WHERE d.idinventarioenc = @IdInventario AND 
+                                                  d.IdProductoBodega = v.IdProductoBodega AND 
+                                                  d.IdUnidadMedida = v.IdUnidadMedidaBasica)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@CodigoBarra", pCodigoBarra)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdInventario", pIdInventario)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim oBeProducto As New clsBeProducto()
+                            Dim lBeProducto As New List(Of clsBeProducto)
+
+                            For Each lRow In lDT.Rows
+
+                                oBeProducto = New clsBeProducto
+
+                                Cargar(oBeProducto, lRow, lConnection, lTransaction)
+
+                                If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                    oBeProducto.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                                End If
+
+                                If lRow("IdTalla") IsNot DBNull.Value AndAlso lRow("IdTalla") IsNot Nothing AndAlso
+                                    lRow("IdColor") IsNot DBNull.Value AndAlso lRow("IdColor") IsNot Nothing Then
+                                    oBeProducto.IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(lRow("IdTalla"),
+                                                                                                                                             lRow("IdColor"),
+                                                                                                                                             oBeProducto.IdProducto,
+                                                                                                                                             lConnection,
+                                                                                                                                             lTransaction)
+                                End If
+
+                                oBeProducto.IsNew = False
+
+                                lBeProducto.Add(oBeProducto)
+
+                            Next
+
+                            If Not lBeProducto Is Nothing Then
+
+                                lBeProducto = lBeProducto.Distinct.ToList()
+
+                                Get_List_Product_By_CodigoBarra_By_Cilcico = lBeProducto
+
+                            End If
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function
