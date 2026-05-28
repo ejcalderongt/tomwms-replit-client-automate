@@ -709,16 +709,28 @@ Partial Public Class clsLnTrans_ubic_hh_det
             Dim vPresentacion As Integer = pStockRes.IdPresentacion
 
             'Validación implosión antes de aplicar LP Stock
+            '#EJC20260528 Aplica_LP_Stock-LicDestino-NuevoLP:
+            'Pre-check: solo ejecutar Validar_Implosion si la licencia destino
+            'ya tiene stock activo en BD. LP destino nueva = asignación de LP,
+            'no es implosión real — skip validación para no bloquear el proceso.
             If Not String.IsNullOrWhiteSpace(pStockRes.Lic_plate_Anterior) AndAlso
                Not String.IsNullOrWhiteSpace(vNuevoLicPlate) AndAlso
                pStockRes.Lic_plate_Anterior.Trim().ToUpper() <> vNuevoLicPlate.Trim().ToUpper() Then
 
-                Validar_Implosion_MismaUbicacionEstado(pStockRes.Lic_plate_Anterior,
-                                                       vNuevoLicPlate,
-                                                       pMovimiento.IdBodegaDestino,
-                                                       lConnection,
-                                                       lTransaction,
-                                                       True)
+                Dim stockDestinoPreCheck As clsBeVW_stock_res =
+                    clsLnVW_stock_res.Get_Stock_Implosion_By_LicPlate(vNuevoLicPlate,
+                                                                       pMovimiento.IdBodegaDestino,
+                                                                       lConnection,
+                                                                       lTransaction)
+
+                If stockDestinoPreCheck IsNot Nothing Then
+                    Validar_Implosion_MismaUbicacionEstado(pStockRes.Lic_plate_Anterior,
+                                                           vNuevoLicPlate,
+                                                           pMovimiento.IdBodegaDestino,
+                                                           lConnection,
+                                                           lTransaction,
+                                                           True)
+                End If
 
             End If
 
