@@ -31,20 +31,6 @@ DAL
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnAjuste_motivo.Insertar_Motivo_Si_No_Existe(System.String,System.String)">
- <summary>
- Inserta un motivo de ajuste con el nombre dado, solo si no existe.
- </summary>
- <param name="nombre">Nombre del motivo (ej: ENTRADA, SALIDA, INVENTARIO).</param>
- <returns>IdMotivoAjuste insertado o existente; 0 en caso de error.</returns>
-</member>
-<member name="M:TOMWMS.clsLnAjuste_motivo.Get_IdMotivo_By_Codigo(System.String)">
- <summary>
- Obtiene el ID del motivo de ajuste por su c�digo o nombre
- </summary>
- <param name="motivoTexto">C�digo o nombre del motivo (ENT, SAL, INV, MER, DEV, CAM, OTR, etc.)</param>
- <returns>ID del motivo, o 0 si no se encuentra</returns>
-</member>
 <member name="M:TOMWMS.clsLnLog_error_wms.Get_All_By_Referencia_Documento(System.String)">
  <summary>
  #EJC202303011651
@@ -78,7 +64,7 @@ DAL
 </member>
 <member name="M:TOMWMS.clsLnTrans_manufactura_enc.Insertar_Manufactura_Por_Defecto(TOMWMS.clsBeI_nav_ped_traslado_enc,TOMWMS.clsBeTrans_pe_enc,TOMWMS.clsBeI_nav_config_enc)">
  <summary>
- #EJC202404020635: Inserta la transacción de manufactura después de que se inserta el pedido de SAP.
+ #EJC202404020635: Inserta la transacci�n de manufactura despu�s de que se inserta el pedido de SAP.
  </summary>
  <param name="INavPedidoCliente"></param>
  <param name="BePedidoEncResult"></param>
@@ -234,6 +220,17 @@ DAL
  </summary>
  <param name="pIdInventario"></param>
  <param name="pCodigo"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(TOMWMS.clsBeI_nav_ped_compra_enc@,TOMWMS.clsBeTrans_oc_enc@,System.Windows.Forms.RichTextBox@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Procesar_Pedido_Compra_MI3 (Con transacción)
+ </summary>
+ <param name="navPedidoCompraEnc"></param>
+ <param name="OutBeOrdenCompra"></param>
+ <param name="lblprg"></param>
+ <param name="lConnection"></param>
+ <param name="lTransInterface"></param>
  <returns></returns>
 </member>
 <member name="M:TOMWMS.clsLnI_nav_ped_traslado_enc.Actualizar_Estado(TOMWMS.clsBeI_nav_ped_traslado_enc@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
@@ -752,18 +749,6 @@ Row event argument class
 Row event argument class
 </summary>
 </member>
-<member name="M:TOMWMS.clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc(System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
- <summary>
- #EJC202508111059: Este query se debe unificar.
- </summary>
- <param name="pIdPedidoEnc"></param>
- <param name="PendientesDeDespacho"></param>
- <param name="EsPickingNuevo"></param>
- <param name="EsPicking"></param>
- <param name="lConnection"></param>
- <param name="lTransaction"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.clsLnTrans_pe_enc.GetSingle(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20200125: Se utiliza en I_Nav_Transacciones_Out para interface MI3.
@@ -918,7 +903,6 @@ Row event argument class
 <member name="M:TOMWMS.clsLnProducto.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeProducto}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
  Creado por Ricardo García
- Update GT30032026 mostrar que producto esta dando la excepcion
  </summary>
  <param name="pListObjP"></param>
  <remarks></remarks>
@@ -999,16 +983,6 @@ Row event argument class
  For TMS By Erik C On 20210124
  </summary>
  <param name="IdEmpresa"></param>
- <returns></returns>
-</member>
-<member name="M:TOMWMS.clsLnProveedor.Get_Single_By_IdStock(System.Int32)">
- <summary>
- #EJC20260420: Devuelve el proveedor que entregó un stock específico, o Nothing si
- el stock no proviene de una recepción contra OC (ej. ajuste manual
- inicial, transferencia, etc.).
- Es DETERMINÍSTICO: cada stock proviene de a lo sumo una OC.   
- </summary>
- <param name="pIdStock"></param>
  <returns></returns>
 </member>
 <member name="M:TOMWMS.clsLnTrans_oc_det.Actualizar_Cantidad(TOMWMS.clsBeTrans_oc_det@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
@@ -1126,6 +1100,14 @@ Row event argument class
  <param name="pIdBodega"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnTrans_picking_ubic.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
 <member name="M:TOMWMS.clsLnTrans_picking_ubic.Get_Single_By_IdStock(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20220330: Obtener el registro de picking por IdStock y Bodega asociado para actualizar el IdUbicacionVirtual
@@ -1162,7 +1144,16 @@ Row event argument class
  <param name="pIdOrdenCompraEnc"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_re_enc.GuardarHH(TOMWMS.clsBeTrans_re_enc,TOMWMS.clsBeTrans_re_oc,System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det_parametros},System.Collections.Generic.List{TOMWMS.clsBeStock_se_rec},System.Collections.Generic.List{TOMWMS.clsBeStock_rec},System.Collections.Generic.List{TOMWMS.clsBeProducto_pallet},TOMWMS.clsBeTrans_oc_det_lote,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+<member name="M:TOMWMS.clsLnTrans_re_det.Guarda_Trans_re_det(System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeStock_rec}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC202209211314: Concurrencia y copias de stock.
+ </summary>
+ <param name="pListRecDet"></param>
+ <param name="pListaStockRec"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.GuardarHH(TOMWMS.clsBeTrans_re_enc,TOMWMS.clsBeTrans_re_oc,System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det_parametros},System.Collections.Generic.List{TOMWMS.clsBeStock_se_rec},System.Collections.Generic.List{TOMWMS.clsBeStock_rec},System.Collections.Generic.List{TOMWMS.clsBeProducto_pallet},TOMWMS.clsBeTrans_oc_det_lote,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
  <summary>
  AT20220921 Recibir cantidad de copias.
  </summary>
@@ -1230,15 +1221,12 @@ Row event argument class
  <param name="lTransaction"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnTrans_re_oc.GetSingle(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+<member name="M:TOMWMS.clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(System.Int32)">
  <summary>
- #EJC20250902: Creada para la interface de mampa.
+ Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
  </summary>
- <param name="pIdRecepcionEnc"></param>
  <param name="pIdOrdenCompraEnc"></param>
- <param name="lConnection"></param>
- <param name="lTransaction"></param>
- <returns></returns>
+ <returns>Lista de Recepciones solamente Ids</returns>
 </member>
 <member name="M:TOMWMS.clsLnUnidad_medida.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeUnidad_medida}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
@@ -1246,11 +1234,6 @@ Row event argument class
  </summary>
  <param name="pListObjUM"></param>
  <remarks></remarks>
-</member>
-<member name="M:TOMWMS.clsLnStock.Get_Single_By_ProductoBodega_Ubicacion_Lote(System.Int32,System.Int32,System.String,System.Int32)">
- <summary>
- Obtiene un stock específico por producto bodega, ubicación y lote
- </summary>
 </member>
 <member name="M:TOMWMS.clsLnStock.Get_All_By_IdPropietarioBodega(System.Int32)">
  <summary>
