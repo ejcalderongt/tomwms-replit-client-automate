@@ -502,7 +502,12 @@ Public Class frmImpresion_OC_RFID
                                                cantidad As String,
                                                descripcionProducto As String,
                                                GTIN As String) As String
+
+
+
+
         Try
+
             Dim sb As New StringBuilder()
             Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
 
@@ -516,39 +521,37 @@ Public Class frmImpresion_OC_RFID
             sb.AppendLine("^RS4")
             sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
 
-            sb.AppendLine("^FO3,3^GB1029,594,3^FS")
-            sb.AppendLine("^FT40,55^A0N,25,25^FH^FDTOMWMS^FS")
+            sb.AppendLine("^FT40,36^A0N,20,20^FH^FDTOMWMS^FS")
+            sb.AppendLine("^FT350,36^A0N,20,20^FH^FDEmp:^FS")
+            sb.AppendLine("^FT404,36^A0N,20,20^FH^FD" & empresa & "^FS")
 
-            sb.AppendLine("^FT350,55^A0N,26,24^FH^FDEmp:^FS")
-            sb.AppendLine("^FT400,55^A0N,26,24^FH^FD" & empresa & "^FS")
+            sb.AppendLine("^FO0,48^GB1035,4,4^FS")
 
-            sb.AppendLine("^FT40,245^A0N,26,24^FH^FDGTIN^FS")
-            sb.AppendLine("^FT210,245^A0N,26,24^FH^FD" & GTIN & "^FS")
+            sb.AppendLine("^FT40,115^A0N,49,52^FH^FDSAVONA:^FS")
+            sb.AppendLine("^FT253,115^A0N,49,52^FH^FD" & skuSavona & "^FS")
 
-            sb.AppendLine("^FO3,70^GB1029,4,4^FS")
+            sb.AppendLine("^FT462,108^A0N,29,36^FH^FDGTIN:^FS")
+            sb.AppendLine("^FT563,108^A0N,29,36^FH^FD" & GTIN & "^FS")
 
-            sb.AppendLine("^FT40,110^A0N,26,34^FH^FDSAVONA:^FS")
-            sb.AppendLine("^FT180,110^A0N,26,34^FH^FD" & skuSavona & "^FS")
+            sb.AppendLine("^FO40,133^A0N,38,42^FB952,2,6,L,0^FH^FD" & descripcionProducto & "^FS")
 
-            sb.AppendLine("^FT40,140^A0N,24,32^FH^FD" & descripcionProducto & "^FS")
+            sb.AppendLine("^FT40,242^A0N,26,25^FH^FDCANT:^FS")
+            sb.AppendLine("^FT123,242^A0N,26,25^FH^FD" & cantidad & "^FS")
 
-            sb.AppendLine("^FT40,185^A0N,26,24^FH^FDCANT:^FS")
-            sb.AppendLine("^FT210,185^A0N,26,24^FH^FD" & cantidad & "^FS")
+            sb.AppendLine("^FT231,242^A0N,26,25^FH^FDFECHA PROD:^FS")
+            sb.AppendLine("^FT397,242^A0N,26,25^FH^FD" & fechaProd & "^FS")
 
-            sb.AppendLine("^FT40,215^A0N,26,24^FH^FDFECHA PROD:^FS")
-            sb.AppendLine("^FT210,215^A0N,26,24^FH^FD" & fechaProd & "^FS")
+            sb.AppendLine("^FT563,242^A0N,26,25^FH^FDLOTE:^FS")
+            sb.AppendLine("^FT642,242^A0N,26,25^FH^FD" & lote & "^FS")
 
-            sb.AppendLine("^FT380,215^A0N,26,24^FH^FDLOTE:^FS")
-            sb.AppendLine("^FT450,215^A0N,26,24^FH^FD" & lote & "^FS")
-
-            sb.AppendLine("^FO3,270^GB1029,4,4^FS")
+            sb.AppendLine("^FO0,261^GB1035,4,4^FS")
 
             sb.AppendLine("^BY2,2,120")
-            sb.AppendLine("^FT50,400^BCN,110,Y,N,N")
+            sb.AppendLine("^FT50,391^BCN,111,Y,N,N")
             sb.AppendLine("^FD" & gs1 & "^FS")
 
             sb.AppendLine("^BY3,2,105")
-            sb.AppendLine("^FT50,545^BCN,110,Y,N,N")
+            sb.AppendLine("^FT50,537^BCN,110,Y,N,N")
             sb.AppendLine("^FD" & sscc & "^FS")
 
             sb.AppendLine("^PQ1,0,1,Y")
@@ -559,6 +562,64 @@ Public Class frmImpresion_OC_RFID
         Catch ex As Exception
             Throw
         End Try
+
+        'Try
+        '    Dim sb As New StringBuilder()
+        '    Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
+
+        '    sb.AppendLine("^XA")
+        '    sb.AppendLine("^MMT")
+        '    sb.AppendLine("^PW1035")
+        '    sb.AppendLine("^LL0600")
+        '    sb.AppendLine("^LS0")
+        '    sb.AppendLine("^CI27")
+
+        '    sb.AppendLine("^RS4")
+        '    sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
+
+        '    sb.AppendLine("^FO3,3^GB1029,594,3^FS")
+        '    sb.AppendLine("^FT40,55^A0N,25,25^FH^FDTOMWMS^FS")
+
+        '    sb.AppendLine("^FT350,55^A0N,26,24^FH^FDEmp:^FS")
+        '    sb.AppendLine("^FT400,55^A0N,26,24^FH^FD" & empresa & "^FS")
+
+        '    sb.AppendLine("^FT40,245^A0N,26,24^FH^FDGTIN^FS")
+        '    sb.AppendLine("^FT210,245^A0N,26,24^FH^FD" & GTIN & "^FS")
+
+        '    sb.AppendLine("^FO3,70^GB1029,4,4^FS")
+
+        '    sb.AppendLine("^FT40,110^A0N,26,34^FH^FDSAVONA:^FS")
+        '    sb.AppendLine("^FT180,110^A0N,26,34^FH^FD" & skuSavona & "^FS")
+
+        '    sb.AppendLine("^FT40,140^A0N,24,32^FH^FD" & descripcionProducto & "^FS")
+
+        '    sb.AppendLine("^FT40,185^A0N,26,24^FH^FDCANT:^FS")
+        '    sb.AppendLine("^FT210,185^A0N,26,24^FH^FD" & cantidad & "^FS")
+
+        '    sb.AppendLine("^FT40,215^A0N,26,24^FH^FDFECHA PROD:^FS")
+        '    sb.AppendLine("^FT210,215^A0N,26,24^FH^FD" & fechaProd & "^FS")
+
+        '    sb.AppendLine("^FT380,215^A0N,26,24^FH^FDLOTE:^FS")
+        '    sb.AppendLine("^FT450,215^A0N,26,24^FH^FD" & lote & "^FS")
+
+        '    sb.AppendLine("^FO3,270^GB1029,4,4^FS")
+
+        '    sb.AppendLine("^BY2,2,120")
+        '    sb.AppendLine("^FT50,400^BCN,110,Y,N,N")
+        '    sb.AppendLine("^FD" & gs1 & "^FS")
+
+        '    sb.AppendLine("^BY3,2,105")
+        '    sb.AppendLine("^FT50,545^BCN,110,Y,N,N")
+        '    sb.AppendLine("^FD" & sscc & "^FS")
+
+        '    sb.AppendLine("^PQ1,0,1,Y")
+        '    sb.AppendLine("^XZ")
+
+        '    Return sb.ToString()
+
+        'Catch ex As Exception
+        '    Throw
+        'End Try
     End Function
 
 
@@ -574,15 +635,14 @@ Public Class frmImpresion_OC_RFID
                                                        cantidad As String,
                                                        descripcionProducto As String,
                                                        GTIN As String) As String
+
+
         Try
             Dim sb As New StringBuilder()
             Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
 
             sb.AppendLine("^XA")
             sb.AppendLine("^MMT")
-
-            ' 300 dpi original: PW1035 / LL0600
-            ' Escalado aproximado a 208 dpi: 208 / 300 = 0.6933
             sb.AppendLine("^PW718")
             sb.AppendLine("^LL416")
             sb.AppendLine("^LS0")
@@ -591,39 +651,37 @@ Public Class frmImpresion_OC_RFID
             sb.AppendLine("^RS4")
             sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
 
-            sb.AppendLine("^FO2,2^GB713,412,2^FS")
-            sb.AppendLine("^FT28,38^A0N,17,17^FH^FDTOMWMS^FS")
+            sb.AppendLine("^FT28,25^A0N,14,14^FH^FDTOMWMS^FS")
+            sb.AppendLine("^FT243,25^A0N,14,14^FH^FDEmp:^FS")
+            sb.AppendLine("^FT280,25^A0N,14,14^FH^FD" & empresa & "^FS")
 
-            sb.AppendLine("^FT243,38^A0N,18,17^FH^FDEmp:^FS")
-            sb.AppendLine("^FT280,38^A0N,18,17^FH^FD" & empresa & "^FS")
+            sb.AppendLine("^FO0,33^GB718,3,3^FS")
 
-            sb.AppendLine("^FT28,170^A0N,18,17^FH^FDGTIN^FS")
-            sb.AppendLine("^FT146,170^A0N,18,17^FH^FD" & GTIN & "^FS")
+            sb.AppendLine("^FT28,80^A0N,34,36^FH^FDSAVONA:^FS")
+            sb.AppendLine("^FT175,80^A0N,34,36^FH^FD" & skuSavona & "^FS")
 
-            sb.AppendLine("^FO2,49^GB713,3,3^FS")
+            sb.AppendLine("^FT320,75^A0N,20,25^FH^FDGTIN:^FS")
+            sb.AppendLine("^FT390,75^A0N,20,25^FH^FD" & GTIN & "^FS")
 
-            sb.AppendLine("^FT28,76^A0N,18,24^FH^FDSAVONA:^FS")
-            sb.AppendLine("^FT125,76^A0N,18,24^FH^FD" & skuSavona & "^FS")
+            sb.AppendLine("^FO28,92^A0N,26,29^FB660,2,4,L,0^FH^FD" & descripcionProducto & "^FS")
 
-            sb.AppendLine("^FT28,97^A0N,17,22^FH^FD" & descripcionProducto & "^FS")
+            sb.AppendLine("^FT28,168^A0N,18,17^FH^FDCANT:^FS")
+            sb.AppendLine("^FT85,168^A0N,18,17^FH^FD" & cantidad & "^FS")
 
-            sb.AppendLine("^FT28,128^A0N,18,17^FH^FDCANT:^FS")
-            sb.AppendLine("^FT146,128^A0N,18,17^FH^FD" & cantidad & "^FS")
+            sb.AppendLine("^FT160,168^A0N,18,17^FH^FDFECHA PROD:^FS")
+            sb.AppendLine("^FT275,168^A0N,18,17^FH^FD" & fechaProd & "^FS")
 
-            sb.AppendLine("^FT28,149^A0N,18,17^FH^FDFECHA PROD:^FS")
-            sb.AppendLine("^FT146,149^A0N,18,17^FH^FD" & fechaProd & "^FS")
+            sb.AppendLine("^FT390,168^A0N,18,17^FH^FDLOTE:^FS")
+            sb.AppendLine("^FT445,168^A0N,18,17^FH^FD" & lote & "^FS")
 
-            sb.AppendLine("^FT263,149^A0N,18,17^FH^FDLOTE:^FS")
-            sb.AppendLine("^FT312,149^A0N,18,17^FH^FD" & lote & "^FS")
-
-            sb.AppendLine("^FO2,187^GB713,3,3^FS")
+            sb.AppendLine("^FO0,181^GB718,3,3^FS")
 
             sb.AppendLine("^BY1,2,83")
-            sb.AppendLine("^FT35,277^BCN,76,Y,N,N")
+            sb.AppendLine("^FT35,271^BCN,77,Y,N,N")
             sb.AppendLine("^FD" & gs1 & "^FS")
 
             sb.AppendLine("^BY2,2,73")
-            sb.AppendLine("^FT35,378^BCN,76,Y,N,N")
+            sb.AppendLine("^FT35,372^BCN,76,Y,N,N")
             sb.AppendLine("^FD" & sscc & "^FS")
 
             sb.AppendLine("^PQ1,0,1,Y")
@@ -634,6 +692,68 @@ Public Class frmImpresion_OC_RFID
         Catch ex As Exception
             Throw
         End Try
+
+
+        'Try
+        '    Dim sb As New StringBuilder()
+        '    Dim fechaActual As String = DateTime.Now.ToString("dd/MM/yyyy")
+
+        '    sb.AppendLine("^XA")
+        '    sb.AppendLine("^MMT")
+
+        '    ' 300 dpi original: PW1035 / LL0600
+        '    ' Escalado aproximado a 208 dpi: 208 / 300 = 0.6933
+        '    sb.AppendLine("^PW718")
+        '    sb.AppendLine("^LL416")
+        '    sb.AppendLine("^LS0")
+        '    sb.AppendLine("^CI27")
+
+        '    sb.AppendLine("^RS4")
+        '    sb.AppendLine("^RFW,H^FD" & epc96Hex & "^FS")
+
+        '    sb.AppendLine("^FO2,2^GB713,412,2^FS")
+        '    sb.AppendLine("^FT28,38^A0N,17,17^FH^FDTOMWMS^FS")
+
+        '    sb.AppendLine("^FT243,38^A0N,18,17^FH^FDEmp:^FS")
+        '    sb.AppendLine("^FT280,38^A0N,18,17^FH^FD" & empresa & "^FS")
+
+        '    sb.AppendLine("^FT28,170^A0N,18,17^FH^FDGTIN^FS")
+        '    sb.AppendLine("^FT146,170^A0N,18,17^FH^FD" & GTIN & "^FS")
+
+        '    sb.AppendLine("^FO2,49^GB713,3,3^FS")
+
+        '    sb.AppendLine("^FT28,76^A0N,18,24^FH^FDSAVONA:^FS")
+        '    sb.AppendLine("^FT125,76^A0N,18,24^FH^FD" & skuSavona & "^FS")
+
+        '    sb.AppendLine("^FT28,97^A0N,17,22^FH^FD" & descripcionProducto & "^FS")
+
+        '    sb.AppendLine("^FT28,128^A0N,18,17^FH^FDCANT:^FS")
+        '    sb.AppendLine("^FT146,128^A0N,18,17^FH^FD" & cantidad & "^FS")
+
+        '    sb.AppendLine("^FT28,149^A0N,18,17^FH^FDFECHA PROD:^FS")
+        '    sb.AppendLine("^FT146,149^A0N,18,17^FH^FD" & fechaProd & "^FS")
+
+        '    sb.AppendLine("^FT263,149^A0N,18,17^FH^FDLOTE:^FS")
+        '    sb.AppendLine("^FT312,149^A0N,18,17^FH^FD" & lote & "^FS")
+
+        '    sb.AppendLine("^FO2,187^GB713,3,3^FS")
+
+        '    sb.AppendLine("^BY1,2,83")
+        '    sb.AppendLine("^FT35,277^BCN,76,Y,N,N")
+        '    sb.AppendLine("^FD" & gs1 & "^FS")
+
+        '    sb.AppendLine("^BY2,2,73")
+        '    sb.AppendLine("^FT35,378^BCN,76,Y,N,N")
+        '    sb.AppendLine("^FD" & sscc & "^FS")
+
+        '    sb.AppendLine("^PQ1,0,1,Y")
+        '    sb.AppendLine("^XZ")
+
+        '    Return sb.ToString()
+
+        'Catch ex As Exception
+        '    Throw
+        'End Try
     End Function
 
 

@@ -450,7 +450,7 @@ Partial Public Class clsLnTrans_re_enc
                                   trans_re_enc.idmotivoanulacionbodega,trans_re_fact.NoFactura
                                   FROM trans_re_fact RIGHT OUTER JOIN
                                   trans_re_enc ON trans_re_fact.IdRecepcionEnc = trans_re_enc.IdRecepcionEnc inner join 
-						          propietario_bodega on trans_re_enc.IdPropietarioBodega = propietario_bodega.IdPropietarioBodega
+                                                          propietario_bodega on trans_re_enc.IdPropietarioBodega = propietario_bodega.IdPropietarioBodega
                                   WHERE (trans_re_enc.IdRecepcionEnc = @IdRecepcionEnc and propietario_bodega.IdBodega = @IdBodega)"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1399,12 +1399,31 @@ Partial Public Class clsLnTrans_re_enc
                                                         lConnection,
                                                         lTransaction)
 
+                    '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+                    Dim dictIdOrigenV1 As New Dictionary(Of Integer, clsBeTrans_re_det)
+                    For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                        If Not dictIdOrigenV1.ContainsKey(detOri.IdRecepcionDet) Then
+                            dictIdOrigenV1.Add(detOri.IdRecepcionDet, detOri)
+                        End If
+                    Next
+
                     ' Recepción Detalle
                     clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                           True,
                                                           pRecEnc,
                                                           lConnection,
                                                           lTransaction)
+
+                    '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+                    For Each kvpV1 As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenV1
+                        Dim idOrigV1 As Integer = kvpV1.Key
+                        Dim nuevoIdV1 As Integer = kvpV1.Value.IdRecepcionDet
+                        If nuevoIdV1 > 0 AndAlso idOrigV1 <> nuevoIdV1 Then
+                            For Each sV1 As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigV1)
+                                sV1.IdRecepcionDet = nuevoIdV1
+                            Next
+                        End If
+                    Next
 
                     If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
                         'Actualiza cantidad recibida OC.
@@ -1513,12 +1532,31 @@ Partial Public Class clsLnTrans_re_enc
                                                 lConnection,
                                                 lTransaction)
 
+            '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+            Dim dictIdOrigenV2 As New Dictionary(Of Integer, clsBeTrans_re_det)
+            For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                If Not dictIdOrigenV2.ContainsKey(detOri.IdRecepcionDet) Then
+                    dictIdOrigenV2.Add(detOri.IdRecepcionDet, detOri)
+                End If
+            Next
+
             ' Recepción Detalle
             clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                   True,
                                                   pRecEnc,
                                                   lConnection,
                                                   lTransaction)
+
+            '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+            For Each kvpV2 As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenV2
+                Dim idOrigV2 As Integer = kvpV2.Key
+                Dim nuevoIdV2 As Integer = kvpV2.Value.IdRecepcionDet
+                If nuevoIdV2 > 0 AndAlso idOrigV2 <> nuevoIdV2 Then
+                    For Each sV2 As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigV2)
+                        sV2.IdRecepcionDet = nuevoIdV2
+                    Next
+                End If
+            Next
 
             If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
                 'Actualiza cantidad recibida OC.
@@ -1649,7 +1687,8 @@ Partial Public Class clsLnTrans_re_enc
         Dim vResultadoInsertReEnc As Integer = 0
         Dim vResultadoGuarda_Trans_Re_OC As Integer = 0
         Dim vResultadoEliminar_Detalle As String = ""
-        Dim vResultadoGuarda_Trans_re_det As Integer = 0
+        '#EJC20260527: Dictionary idOrigen->idNuevo para verificacion explicita de sincronizacion
+        Dim vResultadoGuarda_Trans_re_det As New Dictionary(Of Integer, Integer)
         Dim vResultadoGuarda_Trans_re_det_lote As Integer = 0
         Dim vResultadoGuarda_Trans_Re_Det_Parametros As Integer = 0
         Dim vResultadoActualiza_Cantidad_Recibida_OC As Integer = 0
@@ -1777,10 +1816,23 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                   lConnection,
                                                                                                   lTransaction)
 
-                            If vResultadoGuarda_Trans_re_det > 0 Then
-                                CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det
+                            '#EJC20260527: verificacion explicita — mapa debe tener una entrada por cada detalle
+                            If vResultadoGuarda_Trans_re_det.Count <> pListRecDet.Count Then
+                                Throw New Exception("ERROR_202605271801: Mismatch IDs IDENTITY generados (" & vResultadoGuarda_Trans_re_det.Count & ") vs detalles esperados (" & pListRecDet.Count & ").")
+                            End If
+
+                            If vResultadoGuarda_Trans_re_det.Count > 0 Then
+                                CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det.Count
                             Else
                                 Throw New Exception("ERROR_202210051158: No se pudo insertar el detalle de la recepción.")
+                            End If
+
+                            '#EJC20260527-ASSERT BUG-003B: validar que pListStockRec no tiene items sin IdRecepcionDet tras mapa
+                            If Not pListStockRec Is Nothing Then
+                                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                If huérfanos.Count > 0 Then
+                                    Throw New Exception("ERROR_202605271902: GuardarHH_Pallet dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                End If
                             End If
 
                             If Not pLotesRec Is Nothing Then
@@ -2240,6 +2292,11 @@ Partial Public Class clsLnTrans_re_enc
                 Throw New Exception("#ERR202209161211B: La lista de recepcion det es nothing.")
             End If
 
+            '#EJC20260527-ASSERT BUG-003B: validar IdRecepcionDet real antes de propagar a stock_rec
+            If vIdRecepcionDetNuevoPorConcurrencia <= 0 Then
+                Throw New Exception("ERROR_202605271900: GuardarHH_CM intento asignar IdRecepcionDet=0 a todo pListStockRec. RecEnc=" & pRecEnc.IdRecepcionEnc)
+            End If
+
             For Each S In pListStockRec
                 S.IdRecepcionDet = vIdRecepcionDetNuevoPorConcurrencia
             Next
@@ -2537,9 +2594,50 @@ Partial Public Class clsLnTrans_re_enc
                                                lTransaction)
             CadenaResultado += "Eliminar_Detalle_Recepción "
 
+'#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+            Dim dictIdOrigenModif As New Dictionary(Of Integer, clsBeTrans_re_det)
+            For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
+                If Not dictIdOrigenModif.ContainsKey(detOri.IdRecepcionDet) Then
+                    dictIdOrigenModif.Add(detOri.IdRecepcionDet, detOri)
+                End If
+            Next
+
             clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
                                                   lConnection,
                                                   lTransaction)
+
+            '#EJC20260527_IDENTITY_FIX: propagar nuevos Identities al pListStockRec
+            If Not pListStockRec Is Nothing Then
+                For Each kvpModif As KeyValuePair(Of Integer, clsBeTrans_re_det) In dictIdOrigenModif
+                    Dim idOrigModif As Integer = kvpModif.Key
+                    Dim nuevoIdModif As Integer = kvpModif.Value.IdRecepcionDet
+                    If nuevoIdModif > 0 AndAlso idOrigModif <> nuevoIdModif Then
+                        For Each sModif As clsBeStock_rec In pListStockRec.Where(Function(x) x.IdRecepcionDet = idOrigModif)
+                            sModif.IdRecepcionDet = nuevoIdModif
+                        Next
+                    End If
+                Next
+            End If
+
+            '#EJC20260527-ASSERT BUG-003B: validar que pListStockRec no tiene items huerfanos tras propagar IDs
+            If Not pListStockRec Is Nothing Then
+                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                If huérfanos.Count > 0 Then
+                    ' Fallback: cruzar por No_linea + IdProductoBodega si el snapshot no pudo emparejar
+                    For Each o As clsBeStock_rec In huérfanos
+                        Dim match As clsBeTrans_re_det = pListRecDet.FirstOrDefault(Function(d) d.No_Linea = o.No_linea AndAlso d.IdProductoBodega = o.IdProductoBodega)
+                        If match IsNot Nothing AndAlso match.IdRecepcionDet > 0 Then
+                            o.IdRecepcionDet = match.IdRecepcionDet
+                            CadenaResultado += " BUG003B_FALLBACK_NoLinea "
+                        End If
+                    Next
+                End If
+                Dim aunHuerfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                If aunHuerfanos.Count > 0 Then
+                    Throw New Exception("ERROR_202605271901: GuardarHH dejo " & aunHuerfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado antes de Guarda_Stock_Rec. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                End If
+            End If
+
             CadenaResultado += "Guarda_Trans_re_det "
 
             clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
@@ -2751,7 +2849,8 @@ Partial Public Class clsLnTrans_re_enc
         Dim pIdOrdenCompraEnc As Integer = 0
         Dim IdTipoDocumento As Integer = 0
         Dim vResultadoOc As Integer = 0
-        Dim vResultadoGuardarReDet As Integer = 0
+        '#EJC20260527: Dictionary idOrigen->idNuevo para verificacion explicita de sincronizacion
+        Dim vResultadoGuardarReDet As New Dictionary(Of Integer, Integer)
         Dim vResultadoEliminar As String = ""
         Dim vResultadoActualizarCantidadRecibidaDI As Integer = 0
         Dim vResultadoStockSeRec As Integer = 0
@@ -2933,8 +3032,13 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                    lConnection,
                                                                                                    lTransaction)
 
-                                    If vResultadoGuardarReDet > 0 Then
-                                        CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                    '#EJC20260527: verificacion explicita — mapa debe tener una entrada por cada detalle
+                                    If vResultadoGuardarReDet.Count <> pListRecDet.Count Then
+                                        Throw New Exception("ERROR_202605271802: Mismatch IDs IDENTITY generados (" & vResultadoGuardarReDet.Count & ") vs detalles esperados (" & pListRecDet.Count & ").")
+                                    End If
+
+                                    If vResultadoGuardarReDet.Count > 0 Then
+                                        CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet.Count
                                     End If
 
                                     '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
@@ -5888,6 +5992,14 @@ Partial Public Class clsLnTrans_re_enc
                                 CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                             End If
 
+                            '#EJC20260527-ASSERT BUG-003B: verificar que el stock_rec en memoria tenga IdRecepcionDet real
+                            If Not pListStockRec Is Nothing Then
+                                Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                If huérfanos.Count > 0 Then
+                                    Throw New Exception("ERROR_202605271903: HH_GuardarRecepcion_S dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                End If
+                            End If
+
                             '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
                             vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
                                                                                                     lConnection,
@@ -6383,6 +6495,14 @@ Partial Public Class clsLnTrans_re_enc
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                                 Else
                                     Throw New Exception("ERROR_202605201650_HH_GuardarRecepcion_S: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
+                                End If
+
+                                '#EJC20260527-ASSERT BUG-003B: verificar que pListStockRec tenga IdRecepcionDet real
+                                If Not pListStockRec Is Nothing Then
+                                    Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                    If huérfanos.Count > 0 Then
+                                        Throw New Exception("ERROR_202605271904: HH_GuardarRecepcion_S_v2 dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                    End If
                                 End If
 
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
@@ -7256,6 +7376,14 @@ Partial Public Class clsLnTrans_re_enc
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                                 Else
                                     Throw New Exception("ERROR_202605201651_GuardarHH_BOF: No se obtuvo el IdRecepcionDet identity para la linea de recepcion; se detiene antes de guardar stock_rec.")
+                                End If
+
+                                '#EJC20260527-ASSERT BUG-003B: verificar que pListStockRec tenga IdRecepcionDet real
+                                If Not pListStockRec Is Nothing Then
+                                    Dim huérfanos As List(Of clsBeStock_rec) = pListStockRec.Where(Function(x) x.IdRecepcionDet = 0).ToList()
+                                    If huérfanos.Count > 0 Then
+                                        Throw New Exception("ERROR_202605271905: GuardarHH_BOF dejo " & huérfanos.Count & " stock_rec(s) sin IdRecepcionDet asignado. RecEnc=" & pRecEnc.IdRecepcionEnc)
+                                    End If
                                 End If
 
                                 '#EJC202402121836: Retornar el MaxIdRecepcionDet (para recepción BOF)

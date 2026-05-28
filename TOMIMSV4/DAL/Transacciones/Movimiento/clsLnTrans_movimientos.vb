@@ -65,7 +65,6 @@ Public Class clsLnTrans_movimientos
         Try
 
             Ins.Init("trans_movimientos")
-            Ins.Add("idmovimiento", "@idmovimiento", DataType.Parametro)
             Ins.Add("idempresa", "@idempresa", DataType.Parametro)
             Ins.Add("idbodegaorigen", "@idbodegaorigen", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
@@ -104,7 +103,7 @@ Public Class clsLnTrans_movimientos
             Ins.Add("Talla", "@Talla", DataType.Parametro)
             Ins.Add("Color", "@Color", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL()
+            Dim sp As String = Ins.SQL() & "; SELECT CAST(SCOPE_IDENTITY() AS INT);"
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
@@ -117,7 +116,6 @@ Public Class clsLnTrans_movimientos
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDMOVIMIENTO", oBeTrans_movimientos.IdMovimiento))
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeTrans_movimientos.IdEmpresa))
             cmd.Parameters.Add(New SqlParameter("@IDBODEGAORIGEN", oBeTrans_movimientos.IdBodegaOrigen))
             cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeTrans_movimientos.IdTransaccion))
@@ -157,17 +155,17 @@ Public Class clsLnTrans_movimientos
             cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_movimientos.Color))
 
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+            Dim idGeneradoObj As Object = cmd.ExecuteScalar()
+            Dim rowsAffected As Integer = 0
+
+            If idGeneradoObj IsNot Nothing AndAlso Not IsDBNull(idGeneradoObj) Then
+                oBeTrans_movimientos.IdMovimiento = Convert.ToInt32(idGeneradoObj)
+                rowsAffected = oBeTrans_movimientos.IdMovimiento
+            End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return rowsAffected
-
-            If rowsAffected = 1 Then
-                Return 1
-            Else
-                Return 0
-            End If
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
@@ -230,7 +228,6 @@ Public Class clsLnTrans_movimientos
         Try
 
             Upd.Init("trans_movimientos")
-            Upd.Add("idmovimiento", "@idmovimiento", DataType.Parametro)
             Upd.Add("idempresa", "@idempresa", DataType.Parametro)
             Upd.Add("idbodegaorigen", "@idbodegaorigen", DataType.Parametro)
             Upd.Add("idtransaccion", "@idtransaccion", DataType.Parametro)

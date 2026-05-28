@@ -1,4 +1,7 @@
-﻿Imports System.ComponentModel
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
 Imports System.Reflection
@@ -7,14 +10,12 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Web
 Imports System.Web.Caching
+Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
-
-Imports System.Data.SqlClient
-Imports System.Web.Script.Serialization
 Imports TOMWMS.wsBYBNavCUWMS
 Imports TOMWMS.wsBYBNavMovProd
 Imports TOMWMS.wsBYBNavUbicarAlmacen
@@ -126,6 +127,7 @@ Public Class TOMHHWS
         curContext.Response.StatusCode = pStatusCode
         curContext.Response.ContentType = "application/json; charset=utf-8"
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.Response.Flush()
 
@@ -147,6 +149,7 @@ Public Class TOMHHWS
         curContext.Response.Charset = "utf-8"
         curContext.Response.TrySkipIisCustomErrors = True
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.ApplicationInstance.CompleteRequest()
 
@@ -163,6 +166,7 @@ Public Class TOMHHWS
         curContext.Response.StatusCode = pStatusCode
         curContext.Response.ContentType = "application/json; charset=utf-8"
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
+        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.Response.Flush()
 
@@ -17232,7 +17236,7 @@ Public Class TOMHHWS
 
         Try
 
-            '#EJC_MEJORA_20260523: endpoint unificado para consulta de stock (codigo/ubic/licencia) con paginacion.
+            '#EJC20260527: consulta HH de existencias sin paginacion; devuelve todos los registros acordes a filtros en un solo payload JSON.
             Dim lStock As List(Of clsBeVW_stock_res_CI) = Nothing
             Dim vLicPlate As String = If(pLicPlate, String.Empty).Trim()
             Dim vEsLicencia As Boolean = Not String.IsNullOrWhiteSpace(vLicPlate)
@@ -17259,6 +17263,8 @@ Public Class TOMHHWS
                 .Error = False,
                 .Fuente = If(vEsLicencia, "LP", "STD"),
                 .Total = lStock.Count,
+                .RegistrosDevueltos = lStock.Count,
+                .SinPaginacion = True,
                 .Items = lStock
             })
 
@@ -20346,6 +20352,139 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#AT20260525 Función para buscar codigo de barras inventario ciclico
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_List_Product_By_CodigoBarra_By_Ciclico(ByVal pCodigo As String,
+                                                               ByVal IdBodega As Integer,
+                                                               ByVal IdInventario As Integer) As List(Of clsBeProducto)
+
+
+        Get_List_Product_By_CodigoBarra_By_Ciclico = Nothing
+
+        Try
+
+            Return clsLnProducto.Get_List_Product_By_CodigoBarra_By_Cilcico(pCodigo, IdBodega, IdInventario)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#AT20260523 Contar por caja master inventario ciclico
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Inventario_Ciclico_Conteo_Caja_Master(ByVal pInvCiclico As List(Of clsBeTrans_inv_ciclico)) As Integer
+
+        Inventario_Ciclico_Conteo_Caja_Master = 0
+
+        Try
+            Dim Res As String = ""
+            Return clsLnTrans_inv_ciclico.Actualiza_Conteo_Ciclico_Caja_Master_HH(pInvCiclico)
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    '#AT20260525 Obtener detalle de gondola por inventario
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_Detalle_Ciclic_By_Gondola(ByVal pBeCiclico As clsBeTrans_inv_ciclico) As DataTable
+
+        Get_Detalle_Ciclic_By_Gondola = Nothing
+
+        Try
+
+            Return clsLnTrans_inv_ciclico_vw.Get_Detalle_Gondola_Ciclico(pBeCiclico)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 

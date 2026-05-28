@@ -7,6 +7,10 @@ Public Class clsTransaccion
     Public Property lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
     Public Property lTransaction As SqlTransaction
 
+    '#EJC20260528: WmsTrace v2 — tracking del span de TX para correlación OTel-inspired
+    Private _traceSpanId As String = ""
+    Private _txStartMs As Long = 0
+
     Sub New()
         lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         lTransaction = Nothing
@@ -17,6 +21,7 @@ Public Class clsTransaccion
         Try
 
             Await lConnection.OpenAsync() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            _traceSpanId = WmsTrace.TxBegin("Async") : _txStartMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260528
 
             Return True
 
@@ -35,6 +40,7 @@ Public Class clsTransaccion
             lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            _traceSpanId = WmsTrace.TxBegin() : _txStartMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260528
 
             Return True
 
@@ -85,6 +91,7 @@ Public Class clsTransaccion
 
             If Not lTransaction Is Nothing Then
                 lTransaction.Commit()
+                WmsTrace.TxCommit(_traceSpanId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _txStartMs) '#EJC20260528
             End If
 
         Catch ex As Exception
@@ -99,7 +106,10 @@ Public Class clsTransaccion
 
         Try
 
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            If lTransaction IsNot Nothing Then
+                lTransaction.Rollback()
+                WmsTrace.TxRollback(_traceSpanId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _txStartMs) '#EJC20260528
+            End If
 
         Catch ex As Exception
             Throw ex

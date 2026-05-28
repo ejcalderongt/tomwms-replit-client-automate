@@ -4538,6 +4538,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
             Upd.Add("gondola", "@gondola", DataType.Parametro)
+            Upd.Add("lic_plate", "@licencia", DataType.Parametro)
             Upd.Add("contado", "@contado", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
@@ -4578,6 +4579,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@GONDOLA",
                 If(oBeTrans_inv_ciclico.Gondola Is Nothing, "", oBeTrans_inv_ciclico.Gondola.Trim())
             ))
+            cmd.Parameters.Add(New SqlParameter("@LICENCIA", oBeTrans_inv_ciclico.lic_plate))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -7914,4 +7916,140 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
+    Public Shared Function Actualiza_Conteo_Ciclico_Caja_Master_HH(ByVal ListaTransInvCiclico As List(Of clsBeTrans_inv_ciclico)) As Integer
+
+        Dim registrosProcesados As Integer = 0
+        Dim lTransaction As SqlTransaction = Nothing
+
+        If ListaTransInvCiclico Is Nothing OrElse ListaTransInvCiclico.Count = 0 Then
+            Return 0
+        End If
+
+        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+            Try
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                Dim pCampos(2) As clsBeProducto.ProdPropiedades
+
+                pCampos(0) = clsBeProducto.ProdPropiedades.Control_lote
+                pCampos(1) = clsBeProducto.ProdPropiedades.Control_vencimiento
+
+                For Each BeTransInvCiclico As clsBeTrans_inv_ciclico In ListaTransInvCiclico
+
+                    Dim rslt As Integer = 0
+                    Dim pBeProducto As New clsBeProducto
+                    Dim InvCiclico As clsBeTrans_inv_ciclico = Nothing
+
+                    pBeProducto.IdProducto = clsLnProducto.Get_Id_Producto_By_IdProductoBodega(BeTransInvCiclico.IdProductoBodega,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+
+                    pBeProducto = clsLnProducto.GetSingle(pBeProducto.IdProducto,
+                                                          pCampos,
+                                                          lConnection,
+                                                          lTransaction)
+
+                    InvCiclico = Get_Inventario_Ciclico(BeTransInvCiclico,
+                                                        pBeProducto,
+                                                        lConnection,
+                                                        lTransaction)
+
+                    If InvCiclico Is Nothing Then
+                        Throw New Exception(
+                            "No se encontró información de inventario para el producto: " &
+                            BeTransInvCiclico.IdProductoBodega.ToString())
+                    End If
+
+                    InvCiclico.Fec_Mod = Now
+                    InvCiclico.Contado = True
+                    InvCiclico.Cantidad = InvCiclico.Cant_stock
+
+                    rslt = Act_Inventario_Ciclico_Caja_Master(InvCiclico,
+                                                              lConnection,
+                                                              lTransaction)
+
+
+
+                    If rslt <= 0 Then
+                        Throw New Exception(
+                            "No fue posible actualizar el producto: " &
+                            BeTransInvCiclico.IdProductoBodega.ToString())
+                    End If
+
+                    registrosProcesados += 1
+
+                Next
+
+                lTransaction.Commit()
+
+                Return registrosProcesados
+
+            Catch ex As Exception
+
+                If lTransaction IsNot Nothing Then
+                    lTransaction.Rollback()
+                End If
+
+                Throw
+
+            End Try
+
+        End Using
+
+    End Function
+
+    '#AT20260523 Actualizar inventario ciclico por idinvciclico caja master
+    Public Shared Function Act_Inventario_Ciclico_Caja_Master(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico,
+                                                              Optional ByVal pConection As SqlConnection = Nothing,
+                                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Upd.Init("trans_inv_ciclico")
+
+            Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
+            Upd.Add("cantidad", "@cantidad", DataType.Parametro)
+            Upd.Add("contado", "@contado", DataType.Parametro)
+            Upd.Where("idinvciclico = @idinvciclico")
+
+            Dim sp As String = Upd.SQL()
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico.IdInvCiclico))
+            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico.Cantidad))
+            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
+            cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
 End Class

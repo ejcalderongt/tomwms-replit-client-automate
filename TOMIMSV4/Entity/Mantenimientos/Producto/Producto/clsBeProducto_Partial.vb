@@ -20,6 +20,7 @@
     Public Property Factor As Double = 0.0
     Public Property ExistenciaUMBas As Double = 0
     Public Property Indice_Rotacion As clsBeIndice_rotacion
+    Public Property IdProductoTallaColor As Integer = 0
     Public ReadOnly Property Volumen() As Double
         Get
             Return Alto * Largo * Ancho

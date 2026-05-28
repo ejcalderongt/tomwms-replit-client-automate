@@ -3115,21 +3115,17 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
-            Dim lMaxMov As Integer = MaxID(lConnection, lTransaction)
-
             If pListObjMov IsNot Nothing AndAlso pListObjMov.Count > 0 Then
 
                 For Each Obj As clsBeTrans_movimientos In pListObjMov
 
                     If Obj.IdMovimiento = 0 Then
-                        Obj.IdMovimiento = lMaxMov
                         '#MA20260519 
                         If Obj.IdTransaccion = 0 Then
                             Obj.IdTransaccion = IdTareaUbicacionEnc
                         End If
                         Obj.Fecha = Now
                         Insertar(Obj, lConnection, lTransaction)
-                        lMaxMov += 1
                     End If
                 Next
 
@@ -3156,7 +3152,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockRec.IdRecepcionEnc
@@ -3769,6 +3765,11 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
+            '#EJC20260527: el movimiento PIK debe guardar la ubicación destino enviada por picking/muelle; sin esto trans_movimientos.IdUbicacionDestino queda NULL.
+            If vIdUbicacionPicking = 0 Then
+                Throw New Exception("ERROR_20260527A: No se puede insertar movimiento de picking sin ubicación destino.")
+            End If
+
             Dim pStock = clsLnStock.Get_Single_Stock_By_IdStock_And_IdProducto_Bodega(oBeTrans_picking_ubic.IdStock,
                                                                                       oBeTrans_picking_ubic.IdProductoBodega,
                                                                                       lConnection,
@@ -3784,7 +3785,7 @@ Partial Public Class clsLnTrans_movimientos
 
             If Not pStock Is Nothing Then
 
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -3793,6 +3794,7 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.IdProductoBodega = oBeTrans_picking_ubic.IdProductoBodega
                 '#CKFK20250507 Validar si se debe enviar la ubicación o la ubicación anterior
                 BeTransMovimiento.IdUbicacionOrigen = pStock.IdUbicacion
+                BeTransMovimiento.IdUbicacionDestino = vIdUbicacionPicking
                 BeTransMovimiento.IdPresentacion = oBeTrans_picking_ubic.IdPresentacion
                 BeTransMovimiento.IdEstadoOrigen = oBeTrans_picking_ubic.IdProductoEstado
                 BeTransMovimiento.IdEstadoDestino = oBeTrans_picking_ubic.IdProductoEstado
@@ -3873,7 +3875,7 @@ Partial Public Class clsLnTrans_movimientos
                                                                                           lTransaction)
 
                 Dim BeTransMovimiento As New clsBeTrans_movimientos()
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -4002,7 +4004,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockNew.IdRecepcionEnc
