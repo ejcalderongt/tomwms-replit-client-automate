@@ -181,10 +181,10 @@ Public Module WmsTrace
     ''' <summary>Fin de un SqlCommand.</summary>
     Public Sub SqlEnd(ByVal spanId As String, ByVal startMs As Long,
                       ByVal rows As Integer, ByVal spName As String,
-                      Optional ByVal error As String = "")
+                      Optional ByVal verror As String = "")
         If Not ENABLED OrElse String.IsNullOrEmpty(spanId) Then Return
         Dim dtMs As Long = NowMs() - startMs
-        Dim ok As Boolean = String.IsNullOrEmpty(error)
+        Dim ok As Boolean = String.IsNullOrEmpty(verror)
 
         ' N+1 detection: contar en la TX activa
         Dim key As String = ExtractSpName(spName)
@@ -198,7 +198,7 @@ Public Module WmsTrace
         Dim slowFlag As String = If(dtMs > SLOW_SQL_MS, " [!! SLOW_SQL]", "")
 
         EndSpan(spanId, If(ok, "OK", "ERROR"), dtMs,
-                Merge(A("db.rows_affected", rows), If(ok, Nothing, A("error.message", Truncate(error, 100)))))
+                Merge(A("db.rows_affected", rows), If(ok, Nothing, A("error.message", Truncate(verror, 100)))))
 
         If n1Flag <> "" OrElse slowFlag <> "" Then
             TraceLog("!!", $"{If(n1Flag <> "", "N+1", "")}{If(slowFlag <> "", "SLOW", "")}",
@@ -218,10 +218,10 @@ Public Module WmsTrace
     End Function
 
     Public Sub MiExit(ByVal spanId As String, ByVal ok As Boolean,
-                      ByVal dtMs As Long, Optional ByVal error As String = "")
+                      ByVal dtMs As Long, Optional ByVal verror As String = "")
         If Not ENABLED OrElse String.IsNullOrEmpty(spanId) Then Return
         EndSpan(spanId, If(ok, "OK", "ERROR"), dtMs,
-                If(ok, Nothing, A("error.message", Truncate(error, 100))))
+                If(ok, Nothing, A("error.message", Truncate(verror, 100))))
     End Sub
 
     ' ═══════════════════════════════════════════════════════════════════════════
@@ -229,7 +229,7 @@ Public Module WmsTrace
     ' ═══════════════════════════════════════════════════════════════════════════
 
     ''' <summary>Registra un evento puntual (sin duración) dentro del span activo.</summary>
-    Public Sub Event(ByVal eventName As String,
+    Public Sub vEvent(ByVal eventName As String,
                      Optional ByVal attrs As Dictionary(Of String, Object) = Nothing)
         If Not ENABLED Then Return
         Dim sid As String = If(SpanStack.Count > 0, SpanStack.Peek(), "?")

@@ -146,6 +146,7 @@
     <Compile Include="FixTheBug\clsLnTablas_relacionadas_placas.vb" />
     <Compile Include="FixTheBug\clsLnTmp_trans_pe_pol.vb" />
     <Compile Include="FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb" />
+    <Compile Include="General\Servidor\WmsTrace.vb" />
     <Compile Include="Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb" />
     <Compile Include="Interface\Barras_Pallet\clsLnI_nav_barras_pallet_partial.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb" />
