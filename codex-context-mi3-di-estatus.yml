@@ -1,5 +1,17 @@
 notas:
   - fecha: "2026-05-27"
+    area: "RFID inventario fisico ILP"
+    detalle: >
+      Se documento fine-trace del modulo RFID en
+      C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-27-rfid-inventario-fisico/RFID-INVENTARIO-GRAFO-TRAZA-FINA-2026-05-27.yml
+      y se agrego skill local C:/Users/yejc2/.codex/skills/wms-rfid-inventory/SKILL.md.
+      Hallazgo central: el inventario RFID necesita snapshot atomico al crear
+      trans_inv_enc/tarea_hh, contra stock RFID separado. Revisar contradiccion
+      entre Guardar_RFID (comentario "no hay stock") y el flujo actual con
+      i_nav_barras_rfid_stock/trans_inv_ciclico_rfid. Antes de implementar,
+      confirmar fuente canonica del congelado: i_nav_barras_rfid_stock activo
+      o ING sin SAL.
+  - fecha: "2026-05-27"
     area: "HH consulta existencias sin paginacion"
     detalle: >
       En WSHHRN Get_Stock_Consulta_CI_Json la firma QA/local no tiene page ni
