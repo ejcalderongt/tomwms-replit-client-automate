@@ -297,6 +297,18 @@ Partial Public Class clsLnTrans_packing_enc
         Dim lReturnList As New List(Of clsBeTrans_packing_enc)
 
         Try
+            ' #EJC20260529 FIX_CUMBRE (PUNTO 3/4) - BOF SIN JOIN A TABLA DE PRODUCTO:
+            ' Get_All_By_IdPicking solo hacía SELECT a.* de Trans_packing_enc.
+            ' Esa tabla guarda el ID numérico del producto (Idproductobodega) pero NUNCA
+            ' el nombre ni el código — no los necesita para operar internamente.
+            ' La HH compensaba buscando esos datos en pick.items (ubics pendientes),
+            ' pero cuando PUNTO 1 filtró las ubics ya empacadas, si el producto estaba
+            ' 100% empacado ya no existía en pick.items → Código/Nombre vacíos en pantalla.
+            ' FIX: el BOF navega Trans_packing_enc → trans_picking_det → trans_pe_det para
+            ' traer codigo_producto y nombre_producto que el pedido capturó al crear el
+            ' picking. trans_pe_det los tiene porque son datos del detalle de pedido,
+            ' inmutables una vez creado el picking. El mapeo post-Cargar() abajo los
+            ' vuelca al objeto entidad para que el WS los incluya en la trama XML.
             Const sp As String = "SELECT a.*,
                                             c.Codigo Codigo_Talla,
                                             c.Nombre Nombre_Talla,
@@ -311,6 +323,7 @@ Partial Public Class clsLnTrans_packing_enc
                                             left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
                                             left join talla c On c.IdTalla = b.IdTalla
                                             left join color d On d.IdColor = b.IdColor
+                                                                            -- #EJC20260529 FIX_CUMBRE: navegamos hasta trans_pe_det para obtener nombre/codigo del producto
                                             left join (
                                                 SELECT DISTINCT pkd.IdPickingEnc, pdt.IdProductoBodega,
                                                                 pdt.codigo_producto, pdt.nombre_producto,
@@ -342,6 +355,10 @@ Partial Public Class clsLnTrans_packing_enc
                         For Each dr As DataRow In lDataTable.Rows
                             vBeTrans_packing_enc = New clsBeTrans_packing_enc()
                             Cargar(vBeTrans_packing_enc, dr, IsForAndr)
+                            ' #EJC20260529 FIX_CUMBRE PUNTO 3 — mapeo post-Cargar: Cargar() no conoce las
+                            ' columnas nuevas del JOIN (no está en el Partial), así que las leemos aquí
+                            ' directamente del DataRow con Columns.Contains para evitar crash si alguna
+                            ' BD de otro cliente no tiene la vista o las tablas de pedido enlazadas.
                             If lDataTable.Columns.Contains("CodigoProducto") AndAlso Not IsDBNull(dr.Item("CodigoProducto")) Then vBeTrans_packing_enc.CodigoProducto = CStr(dr.Item("CodigoProducto"))
                             If lDataTable.Columns.Contains("nom_prod") AndAlso Not IsDBNull(dr.Item("nom_prod")) Then vBeTrans_packing_enc.nom_prod = CStr(dr.Item("nom_prod"))
                             If lDataTable.Columns.Contains("ProductoPresentacion") AndAlso Not IsDBNull(dr.Item("ProductoPresentacion")) Then vBeTrans_packing_enc.ProductoPresentacion = CStr(dr.Item("ProductoPresentacion"))

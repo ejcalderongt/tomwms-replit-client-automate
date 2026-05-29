@@ -6690,6 +6690,18 @@ Partial Public Class clsLnTrans_picking_ubic
         Try
             '#CKFK20250626 Agregué esto pu.cantidad_verificada<>pu.cantidad_despachada
             '#EJC20260526: En packing/verificación mostrar y filtrar por licencia de empaque (MM...) en lugar de licencia de stock.
+            ' #EJC20260529 FIX_CUMBRE (PUNTO 1/4) - ORIGEN DEL BUG EN EL FLUJO PACKING:
+            ' Antes solo filtrábamos con cantidad_verificada<>cantidad_despachada.
+            ' El problema: Inserta_Packing estampa Fecha_packing en la ubic al empacar,
+            ' pero NO toca cantidad_despachada (ese campo lo maneja el despacho, no el packing).
+            ' Resultado: ubics ya empacadas seguían pasando el filtro y apareciendo como
+            ' PENDIENTE en la HH (ej. PENDIENTE:33 cuando debería mostrar 32).
+            ' FIX: filtramos por Fecha_packing — si tiene valor real (distinto al sentinela
+            ' 1900-01-01 que el WMS usa para sin-fecha), la ubic ya fue empacada.
+            ' EFECTO SECUNDARIO IMPORTANTE: al sacar esas ubics de pick.items, los productos
+            ' 100% empacados desaparecían del lookup en la HH → Código/Nombre vacíos.
+            ' Ese efecto secundario se resuelve en PUNTO 2 (entity) y PUNTO 3 (DAL packing_enc)
+            ' y PUNTO 4 (frm_preparacion_packing.java).
             Dim vSQL As String = "SELECT  pu.IdPickingEnc, 0 IdPickingUbic, max(pu.IdPickingDet) IdPickingDet, max(pu.IdUbicacion) IdUbicacion, 
                                             max(pu.IdStock) IdStock, pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                                     max(pu.IdUbicacionAnterior) IdUbicacionAnterior, MAX(pu.IdRecepcion) IdRecepcion, pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
