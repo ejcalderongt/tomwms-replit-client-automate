@@ -1,0 +1,23 @@
+{
+  "type": "learning",
+  "id": "20260529-LEARN-LA-CUMBRE-PACKING-MASA-UPDATE",
+  "createdAt": "2026-05-29T08:00:00Z",
+  "source": "replit-agent",
+  "operator": "ejc",
+  "codename": "LA_CUMBRE",
+  "environment": "QA",
+  "title": "Masa-update fecha_packing bloquea Inserta_Packing — regla de limpieza QA",
+  "priority": "high",
+  "tags": ["packing", "trans_picking_ubic", "Inserta_Packing", "QA-testing", "fecha_packing"],
+  "summary": "Al hacer UPDATE masivo de trans_picking_ubic.fecha_packing=GETDATE() para 'limpiar' el picking en QA, el BOF Inserta_Packing no puede procesar nuevas licencias porque valida fecha_packing='1900-01-01'. Los 5 productos fallidos tenían cantidad_bultos_packing=0 en el INSERT masivo (COALESCE de 0 no es NULL). Fix: resetear fecha_packing='19000101' sin tocar packing_enc.",
+  "relatedFile": "brain/learnings/answered/ejc/2026-05-29/LA-CUMBRE-LEARN-001-packing-hh-masa-update-bloquea-inserta-packing.md",
+  "actionRequired": false,
+  "context": {
+    "picking": 3559,
+    "pedido": 7622,
+    "error": "No existen ubicaciones verificadas para empacar el producto 42524, licencia MM000021398",
+    "rootCause": "fecha_packing masivamente seteado bloquea validacion BOF",
+    "traceConfirmed": "EmpaqueTarima=true PackingConsolidado=false [WMS-PKD]",
+    "fixApplied": "UPDATE trans_picking_ubic SET fecha_packing='19000101' WHERE IdPickingEnc=3559 AND fecha_packing>='19010101'"
+  }
+}
