@@ -3415,6 +3415,14 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim lTransaction As SqlTransaction = Nothing
         Dim resultado As String = ""
         Dim FilasAfectadas As Integer = 0
+        Dim t0 As DateTime = DateTime.Now
+        Dim sqlRoundtrips As Integer = 0
+        Dim sid As String = WmsTrace.OpStart("PickingUbic.ActualizarPorVerificacion",
+                                              WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                                         "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                                         "wms.cant_verif", oBeTrans_picking_ubic.Cantidad_Verificada,
+                                                         "wms.id_stock_res", BeStockRes.IdStockRes,
+                                                         "wms.sr_estado_in", BeStockRes.Estado))
 
         Try
 
@@ -3427,6 +3435,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en trans_picking_ubic, cantidad {1}, operador {2}, pedido {3}, pedidodet {4} IdPickingUbic {5} ",
                                            FilasAfectadas.ToString, oBeTrans_picking_ubic.Cantidad_Verificada,
@@ -3436,13 +3445,26 @@ Partial Public Class clsLnTrans_picking_ubic
                 FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
                                                        IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
+
+                '#EJC20260529 log: alerta si stock_res.Actualizar no afectó ninguna fila — stock_res puede quedar PICKEADO en escenario split
+                If FilasAfectadas = 0 Then
+                    resultado += "[!! VERIF_SR_ZERO_ROWS]"
+                    WmsTrace.vEvent("VERIF_SR_ZERO_ROWS",
+                                    WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                               "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                               "wms.id_stock_res", BeStockRes.IdStockRes,
+                                               "wms.sr_estado_in", BeStockRes.Estado,
+                                               "!!warn", "stock_res.Actualizar=0 filas estado no transitó a VERIFICADO"))
+                End If
 
                 Dim BeStock As New clsBeStock
                 BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock,
                                                            IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                            IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
                                                                                      BeStock.IdUbicacion,
@@ -3450,6 +3472,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                      pPeso,
                                                                                      IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                                                      IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
 
@@ -3457,13 +3480,24 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 resultado += ", terminó la actualizacion"
 
+            Else
+                '#EJC20260529 log: alerta guard cant_verif=0 — stock_res NO se actualiza (escenario split + verificación posterior)
+                resultado += "[VERIF_SR_GUARD_SKIP cant_verif=0]"
+                WmsTrace.vEvent("VERIF_SR_GUARD_SKIP",
+                                WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                           "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                           "wms.id_stock_res", BeStockRes.IdStockRes,
+                                           "wms.sr_estado_in", BeStockRes.Estado,
+                                           "!!warn", "stock_res NO actualizado porque cant_verif=0"))
             End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
+            WmsTrace.OpEnd(sid, sqlRoundtrips, True, CLng(DateTime.Now.Subtract(t0).TotalMilliseconds))
             Return resultado
 
         Catch ex As Exception
+            WmsTrace.OpEnd(sid, sqlRoundtrips, False, CLng(DateTime.Now.Subtract(t0).TotalMilliseconds))
             If Not Es_Transaccion_Remota AndAlso Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
@@ -3473,6 +3507,7 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
 
     Public Shared Function Eliminar_By_IdPickingDet(ByVal IdPickingDet As Integer,
                                                     ByVal pConection As SqlConnection,
