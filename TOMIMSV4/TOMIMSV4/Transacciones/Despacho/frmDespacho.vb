@@ -2675,11 +2675,22 @@ Public Class frmDespacho
 
                                     If pIdOperador > 0 Then
                                         Dim BeOperador = clsLnOperador.Get_Single_By_IdOperador(pIdOperador)
-                                        vNombreOperadorPickeo = BeOperador.Nombres + "" + BeOperador.Apellidos
+
+                                        If BeOperador IsNot Nothing Then
+                                            vNombreOperadorPickeo = BeOperador.Nombres + "" + BeOperador.Apellidos
+                                        Else
+                                            vNombreOperadorPickeo = "N/D"
+                                        End If
 
                                     Else
                                         BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                        vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+
+                                        If BeUsuarioEntrega IsNot Nothing Then
+                                            vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
+                                        Else
+                                            vNombreOperadorPickeo = "N/D"
+                                        End If
+
                                     End If
 
                                 Else
