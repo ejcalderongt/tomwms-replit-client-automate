@@ -6734,7 +6734,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                     WHERE  (pu.IdPickingEnc=@IdPickingEnc AND pu.IdPedidoEnc = @IdPedidoEnc AND 
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
-                                            pu.cantidad_verificada<>pu.cantidad_despachada)
+                                            pu.cantidad_verificada<>pu.cantidad_despachada AND
+                                            (pu.fecha_packing IS NULL OR pu.fecha_packing < '19010101'))
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
                                             pu.lic_plate, 
