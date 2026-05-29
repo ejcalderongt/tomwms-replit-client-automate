@@ -9099,13 +9099,15 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Inventario_Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico, pIdResolucion As Integer) As Integer
+    Public Function Inventario_Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico,
+                                              pIdResolucion As Integer,
+                                              pTallaColor As clsBeProducto_talla_color) As Integer
 
         Inventario_Agregar_Conteo = 0
 
         Try
 
-            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion)
+            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion, pTallaColor)
 
         Catch ex As Exception
 
