@@ -315,11 +315,11 @@ Public Class frmImprimir_Etiqueta
                     vZPL = String.Format("^XA" & vbCrLf &
                                         "^FX Código de barras GS1-128 ajustado sin texto debajo" & vbCrLf &
                                         "^BY3,3,92" & vbCrLf &
-                                        "^FO100,10" & vbCrLf &
+                                        "^FO40,10" & vbCrLf &
                                         "^BCN,120,N,N,N" & vbCrLf &
                                         "^FD>;{10}^FS" & vbCrLf &
                                         "^FX Texto representativo de AIs con paréntesis (no visible en código)" & vbCrLf &
-                                        "^FO100,135" & vbCrLf &
+                                        "^FO40,135" & vbCrLf &
                                         "^A0N,25,22" & vbCrLf &
                                         "^FD{9}^FS" & vbCrLf &
                                         "^FX Segunda sección con destinatario y datos adicionales" & vbCrLf &
