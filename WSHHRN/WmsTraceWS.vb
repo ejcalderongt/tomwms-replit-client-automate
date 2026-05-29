@@ -5,7 +5,7 @@ Imports System.Threading
 Imports System.Web
 
 ''' <summary>
-''' WmsTraceWS v2 — WebService ASMX interceptor con modelo OTel-inspired.
+''' WmsTraceWS v2.1 — WebService ASMX interceptor con modelo OTel-inspired.
 '''
 ''' Adopta:
 '''   - W3C traceparent header (00-{32hex}-{16hex}-01)
@@ -14,6 +14,15 @@ Imports System.Web
 '''   - Bitácora diaria producción-safe (DAILY_LOG siempre activa)
 '''
 ''' #EJC20260528
+''' #EJC20260529: v2.1 — fixes observabilidad para métodos XML/SOAP:
+'''   1. AutoFlush=True en dailyWriter y traceWriter → datos llegan a disco
+'''      en cada escritura (antes quedaban en buffer hasta reciclar app pool).
+'''   2. ExtractMethod movido antes del If Not ENABLED → nombre del método
+'''      queda registrado en daily log para TODOS los métodos (XML y JSON).
+'''   3. OnRequestEnd no cancela si traceId falta → genera ID de emergencia
+'''      para que el daily log nunca se pierda aunque BeginRequest no corriera.
+'''   4. WmsTrace.CurrentTraceId envuelto en Try/Catch → no revienta la
+'''      petición si el DAL no expone el símbolo en algún cliente.
 ''' </summary>
 Public Module WmsTraceWS
 
@@ -85,13 +94,20 @@ Public Module WmsTraceWS
         CurrentTraceId = traceId
         CurrentSpanId  = spanId
 
-        ' También propagar a WmsTrace.vb (BOF) si está importado
-        WmsTrace.CurrentTraceId = traceId
+        ' FIX v2.1: envuelto en Try/Catch — si WmsTrace.vb no está en el DAL
+        ' de este cliente, el símbolo no existe y no debe reventar el request.
+        Try
+            WmsTrace.CurrentTraceId = traceId
+        Catch : End Try
+
+        ' FIX v2.1: ExtractMethod se ejecuta SIEMPRE (antes estaba detrás de
+        ' ENABLED). Así el daily log muestra el nombre real del método para
+        ' peticiones XML/SOAP aunque ENABLED=False.
+        Dim method As String = ExtractMethod(ctx)
+        ctx.Items("WmsMethod") = method
 
         If Not ENABLED Then Return
 
-        Dim method As String = ExtractMethod(ctx)
-        ctx.Items("WmsMethod") = method
         TraceLog("WS", ">>",
                  $"trace={traceId} span={spanId} parent= name=WS.{method}" &
                  $" http.method={ctx.Request.HttpMethod}" &
@@ -105,9 +121,17 @@ Public Module WmsTraceWS
     Public Sub OnRequestEnd(ByVal ctx As HttpContext)
         If ctx Is Nothing Then Return
 
-        Dim traceId  As String = TryCast(ctx.Items("WmsTraceId"), String)
-        Dim spanId   As String = TryCast(ctx.Items("WmsRootSpanId"), String)
-        If String.IsNullOrEmpty(traceId) Then Return
+        Dim traceId As String = TryCast(ctx.Items("WmsTraceId"), String)
+        Dim spanId  As String = TryCast(ctx.Items("WmsRootSpanId"), String)
+
+        ' FIX v2.1: antes se cancelaba si traceId era vacío, perdiendo el
+        ' daily log si por alguna razón BeginRequest no corrió.
+        ' Ahora se genera un ID de emergencia para que siempre quede registro.
+        If String.IsNullOrEmpty(traceId) Then
+            traceId = "emg-" & NewTraceId()
+            spanId  = NewSpanId()
+        End If
+        If String.IsNullOrEmpty(spanId) Then spanId = NewSpanId()
 
         Dim startMs As Long = 0
         Dim so As Object = ctx.Items("WmsTraceStartMs")
@@ -232,6 +256,11 @@ Public Module WmsTraceWS
         Catch : Return "?" : End Try
     End Function
 
+    ' FIX v2.1: AutoFlush=True → cada WriteLine llega al disco inmediatamente.
+    ' Antes AutoFlush=False hacía que los datos quedaran en el buffer del
+    ' StreamWriter hasta que el app pool reciclara o la fecha cambiara.
+    ' Para métodos XML/SOAP de baja frecuencia el buffer nunca se llenaba
+    ' y los archivos parecían vacíos aunque OnRequestEnd sí los llamaba.
     Private Sub DailyLog(ByVal msg As String)
         SyncLock dailyLock
             Try
@@ -240,7 +269,7 @@ Public Module WmsTraceWS
                     dailyWriter?.Flush() : dailyWriter?.Dispose()
                     If Not Directory.Exists(LogDir) Then Directory.CreateDirectory(LogDir)
                     dailyWriter = New StreamWriter(
-                        Path.Combine(LogDir, $"wms-ws-daily-{today}.log"), append:=True) With {.AutoFlush = False}
+                        Path.Combine(LogDir, $"wms-ws-daily-{today}.log"), append:=True) With {.AutoFlush = True}
                     dailyDate = today
                 End If
                 dailyWriter.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}  {msg}")
@@ -257,7 +286,7 @@ Public Module WmsTraceWS
                     traceWriter?.Flush() : traceWriter?.Dispose()
                     If Not Directory.Exists(LogDir) Then Directory.CreateDirectory(LogDir)
                     traceWriter = New StreamWriter(
-                        Path.Combine(LogDir, $"wms-ws-trace-{today}.log"), append:=True) With {.AutoFlush = False}
+                        Path.Combine(LogDir, $"wms-ws-trace-{today}.log"), append:=True) With {.AutoFlush = True}
                     traceDate = today
                 End If
                 traceWriter.WriteLine(line)
