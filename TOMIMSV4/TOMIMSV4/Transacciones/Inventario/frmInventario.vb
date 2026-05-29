@@ -401,6 +401,8 @@ Public Class frmInventario
         DTInventarioConteo.Columns.Add("Código", GetType(String)) '4
         DTInventarioConteo.Columns.Add("Producto", GetType(String)) '5
         DTInventarioConteo.Columns.Add("Presentación", GetType(String)) '6
+        DTInventarioConteo.Columns.Add("Talla", GetType(String))
+        DTInventarioConteo.Columns.Add("Color", GetType(String))
         DTInventarioConteo.Columns.Add("Cantidad Conteo", GetType(Double)) '7
         DTInventarioConteo.Columns.Add("Estado Detalle", GetType(String)) '8
         DTInventarioConteo.Columns.Add("Operador", GetType(String)) '9
@@ -434,6 +436,8 @@ Public Class frmInventario
         DTInventarioVerifica.Columns.Add("Código", GetType(String))
         DTInventarioVerifica.Columns.Add("Producto", GetType(String))
         DTInventarioVerifica.Columns.Add("Presentación", GetType(String))
+        DTInventarioVerifica.Columns.Add("Talla", GetType(String))
+        DTInventarioVerifica.Columns.Add("Color", GetType(String))
         DTInventarioVerifica.Columns.Add("Cantidad Verifica", GetType(Double))
         DTInventarioVerifica.Columns.Add("Estado Verifica", GetType(String))
         DTInventarioVerifica.Columns.Add("Operador", GetType(String))
@@ -455,6 +459,8 @@ Public Class frmInventario
         DTC.Columns.Add("Código", GetType(String))
         DTC.Columns.Add("Producto", GetType(String))
         DTC.Columns.Add("Presentación", GetType(String))
+        DTC.Columns.Add("Talla", GetType(String))
+        DTC.Columns.Add("Color", GetType(String))
         DTC.Columns.Add("UM", GetType(String))
         DTC.Columns.Add("Conteo", GetType(Double))
         DTC.Columns.Add("Verifica", GetType(Double))
@@ -901,23 +907,45 @@ Public Class frmInventario
 
                 vCantidad = 0.0
 
-                gBeAgregar = New clsBeTrans_inv_enc()
-                gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
-                gBeAgregar.IdProducto = Ob.IdProducto
-                gBeAgregar.IdPresentacion = Ob.IdPresentacion
-                gBeAgregar.IdTramo = Ob.IdTramo
-                gBeAgregar.Tramo = Ob.Tramo
-                gBeAgregar.Presentacion = Ob.Presentacion
-                gBeAgregar.Detalle = Ob.Detalle
-                gBeAgregar.Resumen = Ob.Resumen
-                gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
-                gBeAgregar.EstadoResumen = Ob.EstadoResumen
-                gBeAgregar.OperadorConteo = Ob.OperadorConteo
-                gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
-                gBeAgregar.Producto = Ob.Producto
-                gBeAgregar.Codigo = Ob.Codigo
-                gBeAgregar.UMBas = Ob.UMBas
-                gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                If AP.Bodega.Control_Talla_Color Then
+                    gBeAgregar = New clsBeTrans_inv_enc()
+                    gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
+                    gBeAgregar.IdProducto = Ob.IdProducto
+                    gBeAgregar.IdPresentacion = Ob.IdPresentacion
+                    gBeAgregar.IdTramo = Ob.IdTramo
+                    gBeAgregar.Tramo = Ob.Tramo
+                    gBeAgregar.Presentacion = Ob.Presentacion
+                    gBeAgregar.Detalle = Ob.Detalle
+                    gBeAgregar.Resumen = Ob.Resumen
+                    gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
+                    gBeAgregar.EstadoResumen = Ob.EstadoResumen
+                    gBeAgregar.OperadorConteo = Ob.OperadorConteo
+                    gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
+                    gBeAgregar.Producto = Ob.Producto
+                    gBeAgregar.Codigo = Ob.Codigo
+                    gBeAgregar.Codigo_Talla = Ob.Codigo_Talla
+                    gBeAgregar.Codigo_Color = Ob.Codigo_Color
+                    gBeAgregar.UMBas = Ob.UMBas
+                    gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                Else
+                    gBeAgregar = New clsBeTrans_inv_enc()
+                    gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
+                    gBeAgregar.IdProducto = Ob.IdProducto
+                    gBeAgregar.IdPresentacion = Ob.IdPresentacion
+                    gBeAgregar.IdTramo = Ob.IdTramo
+                    gBeAgregar.Tramo = Ob.Tramo
+                    gBeAgregar.Presentacion = Ob.Presentacion
+                    gBeAgregar.Detalle = Ob.Detalle
+                    gBeAgregar.Resumen = Ob.Resumen
+                    gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
+                    gBeAgregar.EstadoResumen = Ob.EstadoResumen
+                    gBeAgregar.OperadorConteo = Ob.OperadorConteo
+                    gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
+                    gBeAgregar.Producto = Ob.Producto
+                    gBeAgregar.Codigo = Ob.Codigo
+                    gBeAgregar.UMBas = Ob.UMBas
+                    gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                End If
                 'clsLnTrans_inv_enc.InsertarComparacionInventario(gBeAgregar)
                 glistaInv.Add(gBeAgregar)
 
@@ -941,6 +969,8 @@ Public Class frmInventario
 
     Private Sub llena_Grid_Comparacion()
 
+        Dim vGridUpdateSuspendido As Boolean = False
+
         Try
 
             Dim vDif As Double = 0.0
@@ -951,49 +981,60 @@ Public Class frmInventario
 
             If ListaConteos.Count > 0 Then
 
-                DTC.Clear()
+                gviewComparativo.BeginDataUpdate()
+                vGridUpdateSuspendido = True
 
-                For Each BeTransInvEnc In ListaConteos
+                DTC.BeginLoadData()
+                Try
+                    DTC.Clear()
 
-                    vDif = (BeTransInvEnc.Detalle - BeTransInvEnc.Resumen)
+                    For Each BeTransInvEnc In ListaConteos
 
-                    If vDif < 0 Then
-                        vDif = vDif * -1
-                    End If
+                        vDif = (BeTransInvEnc.Detalle - BeTransInvEnc.Resumen)
 
-                    If chkComparativoConUbicacion.Checked Then
-                        DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
-                                 BeTransInvEnc.IdTramo,
-                                 BeTransInvEnc.IdProducto,
-                                 BeTransInvEnc.Tramo,
-                                 BeTransInvEnc.Codigo,
-                                 BeTransInvEnc.Producto,
-                                 BeTransInvEnc.Presentacion,
-                                 BeTransInvEnc.UMBas,
-                                 BeTransInvEnc.Detalle,
-                                 BeTransInvEnc.Resumen,
-                                 vDif,
-                                 BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen,
-                                 BeTransInvEnc.UbicacionCompleta)
-                    Else
-                        DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
-                                 BeTransInvEnc.IdTramo,
-                                 BeTransInvEnc.IdProducto,
-                                 BeTransInvEnc.Tramo,
-                                 BeTransInvEnc.Codigo,
-                                 BeTransInvEnc.Producto,
-                                 BeTransInvEnc.Presentacion,
-                                 BeTransInvEnc.UMBas,
-                                 BeTransInvEnc.Detalle,
-                                 BeTransInvEnc.Resumen,
-                                 vDif,
-                                 BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen)
-                    End If
+                        If vDif < 0 Then
+                            vDif = vDif * -1
+                        End If
 
+                        If chkComparativoConUbicacion.Checked Then
+                            DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
+                                     BeTransInvEnc.IdTramo,
+                                     BeTransInvEnc.IdProducto,
+                                     BeTransInvEnc.Tramo,
+                                     BeTransInvEnc.Codigo,
+                                     BeTransInvEnc.Producto,
+                                     BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.Codigo_Talla,
+                                     BeTransInvEnc.Codigo_Color,
+                                     BeTransInvEnc.UMBas,
+                                     BeTransInvEnc.Detalle,
+                                     BeTransInvEnc.Resumen,
+                                     vDif,
+                                     BeTransInvEnc.EstadoDetalle,
+                                     BeTransInvEnc.EstadoResumen,
+                                     BeTransInvEnc.UbicacionCompleta)
+                        Else
+                            DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
+                                     BeTransInvEnc.IdTramo,
+                                     BeTransInvEnc.IdProducto,
+                                     BeTransInvEnc.Tramo,
+                                     BeTransInvEnc.Codigo,
+                                     BeTransInvEnc.Producto,
+                                     BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.Codigo_Talla,
+                                     BeTransInvEnc.Codigo_Color,
+                                     BeTransInvEnc.UMBas,
+                                     BeTransInvEnc.Detalle,
+                                     BeTransInvEnc.Resumen,
+                                     vDif,
+                                     BeTransInvEnc.EstadoDetalle,
+                                     BeTransInvEnc.EstadoResumen)
+                        End If
 
-                Next
+                    Next
+                Finally
+                    DTC.EndLoadData()
+                End Try
 
                 dgridComparativoInvInicial.DataSource = DTC
 
@@ -1002,6 +1043,11 @@ Public Class frmInventario
                 If gviewComparativo.RowCount > 0 Then
                     gviewComparativo.Columns("IdProducto").Visible = False
                     gviewComparativo.Columns("IdInventario").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewComparativo.Columns("Talla").Visible = False
+                        gviewComparativo.Columns("Colot").Visible = False
+                    End If
 
                     gviewComparativo.OptionsView.ShowFooter = True
 
@@ -1042,6 +1088,11 @@ Public Class frmInventario
 
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        Finally
+            If vGridUpdateSuspendido Then
+                gviewComparativo.EndDataUpdate()
+            End If
 
         End Try
 
@@ -1409,6 +1460,8 @@ Public Class frmInventario
                                                 BeConteoDetalle.Codigo,
                                                 BeConteoDetalle.Producto,
                                                 BeConteoDetalle.Presentacion,
+                                                BeConteoDetalle.Codigo_Talla,
+                                                BeConteoDetalle.Codigo_Color,
                                                 BeConteoDetalle.Detalle,
                                                 BeConteoDetalle.EstadoDetalle,
                                                 BeConteoDetalle.OperadorConteo,
@@ -1431,6 +1484,11 @@ Public Class frmInventario
                     gviewConteo.Columns("IdProducto").Visible = False
                     gviewConteo.Columns("IdInventario").Visible = False
                     gviewConteo.Columns("Idinventariodet").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewConteo.Columns("Talla").Visible = False
+                        gviewConteo.Columns("Color").Visible = False
+                    End If
 
                     gviewConteo.OptionsView.ShowFooter = True
 
@@ -1492,19 +1550,21 @@ Public Class frmInventario
                 For Each BeTrans_inv_enc As clsBeTrans_inv_enc In ListaConteos
 
                     DTInventarioVerifica.Rows.Add(BeTrans_inv_enc.Idinventarioenc,
-                                                  BeTrans_inv_enc.IdTramo,
-                                                  BeTrans_inv_enc.Tramo,
-                                                  BeTrans_inv_enc.Codigo,
-                                                  BeTrans_inv_enc.Producto,
-                                                  BeTrans_inv_enc.Presentacion,
-                                                  BeTrans_inv_enc.Resumen,
-                                                  BeTrans_inv_enc.EstadoResumen,
-                                                  BeTrans_inv_enc.OperadorVerifica,
-                                                  BeTrans_inv_enc.Fecha,
-                                                  BeTrans_inv_enc.IdProducto,
-                                                  BeTrans_inv_enc.IdInventarioRes,
-                                                  BeTrans_inv_enc.UbicacionCompleta,
-                                                  BeTrans_inv_enc.Licencia)
+                                                      BeTrans_inv_enc.IdTramo,
+                                                      BeTrans_inv_enc.Tramo,
+                                                      BeTrans_inv_enc.Codigo,
+                                                      BeTrans_inv_enc.Producto,
+                                                      BeTrans_inv_enc.Presentacion,
+                                                      BeTrans_inv_enc.Codigo_Talla,
+                                                      BeTrans_inv_enc.Codigo_Color,
+                                                      BeTrans_inv_enc.Resumen,
+                                                      BeTrans_inv_enc.EstadoResumen,
+                                                      BeTrans_inv_enc.OperadorVerifica,
+                                                      BeTrans_inv_enc.Fecha,
+                                                      BeTrans_inv_enc.IdProducto,
+                                                      BeTrans_inv_enc.IdInventarioRes,
+                                                      BeTrans_inv_enc.UbicacionCompleta,
+                                                      BeTrans_inv_enc.Licencia)
 
                 Next
 
@@ -1517,6 +1577,11 @@ Public Class frmInventario
                     gviewVerifica.Columns("IdProducto").Visible = False
                     gviewVerifica.Columns("IdInventario").Visible = False
                     gviewVerifica.Columns("IdInventarioRes").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewVerifica.Columns("Talla").Visible = False
+                        gviewVerifica.Columns("Color").Visible = False
+                    End If
 
                     gviewVerifica.OptionsView.ShowFooter = True
 
@@ -2621,6 +2686,197 @@ Public Class frmInventario
     End Sub
 
     Private lPresentaciones As New List(Of clsBeProducto_Presentacion)
+    Private ReadOnly mRegularizacionProductoBodegaCache As New Dictionary(Of Integer, Integer)
+    Private ReadOnly mRegularizacionPropietarioBodegaCache As New Dictionary(Of String, Integer)
+    Private ReadOnly mRegularizacionPresentacionCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
+    Private mRegularizacionUltimoTick As Integer = 0
+
+    Private Sub Precargar_Caches_Regularizacion(ByVal pStock As List(Of clsBeTrans_inv_detalle))
+
+        If pStock Is Nothing OrElse pStock.Count = 0 Then Return
+
+        If Not gBeTransInvEnc.multi_propietario Then
+            Get_IdPropietarioBodega_Regularizacion(gBeTransInvEnc.Idpropietario)
+        End If
+
+        Dim vProductos As List(Of Integer) = pStock.Select(Function(x) x.Idproducto).
+                                                   Where(Function(x) x > 0).
+                                                   Distinct().
+                                                   ToList()
+
+        Dim vPresentaciones As List(Of Integer) = pStock.Select(Function(x) x.IdPresentacion).
+                                                        Where(Function(x) x > 0).
+                                                        Distinct().
+                                                        ToList()
+
+        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            lConnection.Open()
+            Precargar_ProductoBodega_Regularizacion(vProductos, lConnection)
+            Precargar_Presentaciones_Regularizacion(vPresentaciones, lConnection)
+        End Using
+
+    End Sub
+
+    Private Sub Precargar_ProductoBodega_Regularizacion(ByVal pProductos As List(Of Integer),
+                                                        ByVal pConnection As SqlConnection)
+
+        If pProductos Is Nothing OrElse pProductos.Count = 0 Then Return
+
+        Const vTamanoBloque As Integer = 500
+
+        For vInicio As Integer = 0 To pProductos.Count - 1 Step vTamanoBloque
+            Dim vBloque As List(Of Integer) = pProductos.Skip(vInicio).Take(vTamanoBloque).ToList()
+            Dim vParametros As New List(Of String)
+
+            Using lCommand As New SqlCommand()
+                lCommand.Connection = pConnection
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdBodega", AP.IdBodega)
+
+                For i As Integer = 0 To vBloque.Count - 1
+                    Dim vNombreParametro As String = "@IdProducto" & i
+                    vParametros.Add(vNombreParametro)
+                    lCommand.Parameters.AddWithValue(vNombreParametro, vBloque(i))
+                Next
+
+                lCommand.CommandText = "SELECT IdProducto, IdProductoBodega " &
+                                       "FROM producto_bodega " &
+                                       "WHERE IdBodega = @IdBodega " &
+                                       "AND IdProducto IN (" & String.Join(",", vParametros) & ")"
+
+                Using lReader As SqlDataReader = lCommand.ExecuteReader()
+                    While lReader.Read()
+                        Dim vIdProducto As Integer = If(IsDBNull(lReader("IdProducto")), 0, CInt(lReader("IdProducto")))
+                        Dim vIdProductoBodega As Integer = If(IsDBNull(lReader("IdProductoBodega")), 0, CInt(lReader("IdProductoBodega")))
+
+                        If vIdProducto <> 0 AndAlso Not mRegularizacionProductoBodegaCache.ContainsKey(vIdProducto) Then
+                            mRegularizacionProductoBodegaCache(vIdProducto) = vIdProductoBodega
+                        End If
+                    End While
+                End Using
+            End Using
+        Next
+
+    End Sub
+
+    Private Sub Precargar_Presentaciones_Regularizacion(ByVal pPresentaciones As List(Of Integer),
+                                                        ByVal pConnection As SqlConnection)
+
+        If pPresentaciones Is Nothing OrElse pPresentaciones.Count = 0 Then Return
+
+        Const vTamanoBloque As Integer = 500
+
+        For vInicio As Integer = 0 To pPresentaciones.Count - 1 Step vTamanoBloque
+            Dim vBloque As List(Of Integer) = pPresentaciones.Skip(vInicio).Take(vTamanoBloque).ToList()
+            Dim vParametros As New List(Of String)
+
+            Using lCommand As New SqlCommand()
+                lCommand.Connection = pConnection
+                lCommand.CommandType = CommandType.Text
+
+                For i As Integer = 0 To vBloque.Count - 1
+                    Dim vNombreParametro As String = "@IdPresentacion" & i
+                    vParametros.Add(vNombreParametro)
+                    lCommand.Parameters.AddWithValue(vNombreParametro, vBloque(i))
+                Next
+
+                lCommand.CommandText = "SELECT * " &
+                                       "FROM producto_presentacion " &
+                                       "WHERE IdPresentacion IN (" & String.Join(",", vParametros) & ")"
+
+                Using lDataAdapter As New SqlDataAdapter(lCommand)
+                    Dim lDataTable As New DataTable()
+                    lDataAdapter.Fill(lDataTable)
+
+                    For Each dr As DataRow In lDataTable.Rows
+                        Dim BePresentacion As New clsBeProducto_Presentacion
+                        clsLnProducto_presentacion.Cargar(BePresentacion, dr)
+
+                        If BePresentacion.IdPresentacion <> 0 AndAlso Not mRegularizacionPresentacionCache.ContainsKey(BePresentacion.IdPresentacion) Then
+                            mRegularizacionPresentacionCache(BePresentacion.IdPresentacion) = BePresentacion
+                            lPresentaciones.Add(BePresentacion)
+                        End If
+                    Next
+                End Using
+            End Using
+        Next
+
+    End Sub
+
+    Private Function Get_IdProductoBodega_Regularizacion(ByVal pIdProducto As Integer) As Integer
+
+        If Not mRegularizacionProductoBodegaCache.ContainsKey(pIdProducto) Then
+            mRegularizacionProductoBodegaCache(pIdProducto) = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pIdProducto, AP.IdBodega)
+        End If
+
+        Return mRegularizacionProductoBodegaCache(pIdProducto)
+
+    End Function
+
+    Private Function Get_IdPropietarioBodega_Regularizacion(ByVal pIdPropietario As Integer) As Integer
+
+        Dim vKey As String = String.Format("{0}|{1}", AP.IdBodega, pIdPropietario)
+
+        If Not mRegularizacionPropietarioBodegaCache.ContainsKey(vKey) Then
+            mRegularizacionPropietarioBodegaCache(vKey) = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, pIdPropietario)
+        End If
+
+        Return mRegularizacionPropietarioBodegaCache(vKey)
+
+    End Function
+
+    Private Function Get_Presentacion_Regularizacion(ByVal pIdPresentacion As Integer) As clsBeProducto_Presentacion
+
+        If Not mRegularizacionPresentacionCache.ContainsKey(pIdPresentacion) Then
+            Dim BePresentacion As New clsBeProducto_Presentacion
+            BePresentacion.IdPresentacion = pIdPresentacion
+            clsLnProducto_presentacion.GetSingle(BePresentacion)
+
+            If BePresentacion IsNot Nothing Then
+                mRegularizacionPresentacionCache(pIdPresentacion) = BePresentacion
+                lPresentaciones.Add(BePresentacion)
+            End If
+        End If
+
+        Return mRegularizacionPresentacionCache(pIdPresentacion)
+
+    End Function
+
+    Private Sub Actualizar_Progreso_Regularizacion(ByVal pMensaje As String,
+                                                   ByVal pActual As Integer,
+                                                   ByVal pTotal As Integer,
+                                                   Optional ByVal pForzar As Boolean = False)
+
+        Dim vAhora As Integer = Environment.TickCount
+
+        If Not pForzar AndAlso pActual < pTotal AndAlso Math.Abs(vAhora - mRegularizacionUltimoTick) < 250 Then
+            Return
+        End If
+
+        mRegularizacionUltimoTick = vAhora
+
+        Try
+            Dim vTotal As Integer = Math.Max(pTotal, 1)
+            Dim vActual As Integer = Math.Min(Math.Max(pActual, 0), vTotal)
+            Dim vTexto As String = String.Format("{0} ({1}/{2})", pMensaje, vActual, vTotal)
+
+            If SplashScreenManager.Default IsNot Nothing Then
+                SplashScreenManager.Default.SetWaitFormDescription(vTexto)
+            End If
+
+            lblPrg.Visible = True
+            lblPrg.Text = vTexto
+            prg.Visible = True
+            prg.Minimum = 0
+            prg.Maximum = vTotal
+            prg.Value = vActual
+
+            Application.DoEvents()
+
+        Catch ex As Exception
+        End Try
+
+    End Sub
 
     Private Sub Regularizar_Inventario()
 
@@ -2632,22 +2888,38 @@ Public Class frmInventario
         Dim mov As New clsBeTrans_movimientos
         Dim BePresentacion As New clsBeProducto_Presentacion
         Dim IdxPres As Integer = 0
+        Dim vIdPropietarioBodega As Integer = 0
 
         If XtraMessageBox.Show("¿Iniciar proceso de regularizacion?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
         If XtraMessageBox.Show("¡Este proceso no se puede revertir !" & vbCrLf & "¿Está seguro de continuar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
 
         Try
 
+            lPresentaciones.Clear()
+            mRegularizacionProductoBodegaCache.Clear()
+            mRegularizacionPropietarioBodegaCache.Clear()
+            mRegularizacionPresentacionCache.Clear()
+            mRegularizacionUltimoTick = 0
+
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Obteniendo inventario")
 
+            vIdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
             stock = clsLnTrans_inv_detalle.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc)
+            If stock Is Nothing Then stock = New List(Of clsBeTrans_inv_detalle)
+
+            Dim vTotal As Integer = If(stock Is Nothing, 0, stock.Count)
+            Dim vProcesado As Integer = 0
+
+            Actualizar_Progreso_Regularizacion("Preparando inventario", 0, vTotal, True)
+            Precargar_Caches_Regularizacion(stock)
 
             For Each st As clsBeTrans_inv_detalle In stock
 
+                vProcesado += 1
                 item = New clsBeStock
 
-                SplashScreenManager.Default.SetWaitFormDescription("Procesando producto: " & st.Idproducto)
+                Actualizar_Progreso_Regularizacion("Procesando producto: " & st.Idproducto, vProcesado, vTotal)
 
                 With item
 
@@ -2655,11 +2927,11 @@ Public Class frmInventario
                     If gBeTransInvEnc.multi_propietario Then
                         .IdPropietarioBodega = st.IdPropietarioBodega
                     Else
-                        .IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
+                        .IdPropietarioBodega = vIdPropietarioBodega
                     End If
 
                     .IdStock = 0
-                    .IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(st.Idproducto, AP.IdBodega)
+                    .IdProductoBodega = Get_IdProductoBodega_Regularizacion(st.Idproducto)
                     .IdProductoEstado = st.Idproductoestado
                     .ProductoEstado.IdEstado = st.Idproductoestado
                     .IdPresentacion = st.IdPresentacion
@@ -2690,21 +2962,13 @@ Public Class frmInventario
                     .Peso = st.Peso
                     .Temperatura = 0
                     .Atributo_Variante_1 = st.Codigo_variante
+                    .IdProductoTallaColor = st.IdProductoTallaColor
 
                 End With
 
                 If st.IdPresentacion <> 0 Then
 
-                    IdxPres = lPresentaciones.FindIndex(Function(x) x.IdPresentacion = st.IdPresentacion)
-
-                    If IdxPres = -1 Then
-                        BePresentacion = New clsBeProducto_Presentacion
-                        BePresentacion.IdPresentacion = st.IdPresentacion
-                        clsLnProducto_presentacion.GetSingle(BePresentacion)
-                        lPresentaciones.Add(BePresentacion)
-                    Else
-                        BePresentacion = lPresentaciones(IdxPres)
-                    End If
+                    BePresentacion = Get_Presentacion_Regularizacion(st.IdPresentacion)
 
                     item.Cantidad = item.Cantidad * BePresentacion.Factor
 
@@ -2743,6 +3007,7 @@ Public Class frmInventario
                 mov.Cantidad_hist = 0
                 mov.Peso = item.Peso
                 mov.Peso_hist = 0
+                mov.IdProductoTallaColor = item.IdProductoTallaColor
 
                 movs.Add(mov)
 
@@ -2750,11 +3015,11 @@ Public Class frmInventario
 
             Next
 
-            SplashScreenManager.Default.SetWaitFormDescription("Insertando inventario...")
+            Actualizar_Progreso_Regularizacion("Insertando inventario", vTotal, vTotal, True)
 
             clsLnStock.Importar_Inventario(gBeTransInvEnc, items, movs)
 
-            SplashScreenManager.Default.SetWaitFormDescription("Finalizando...")
+            Actualizar_Progreso_Regularizacion("Finalizando", vTotal, vTotal, True)
 
             rgrpRegularizar.Visible = False
             rgprImportar.Visible = False
@@ -2769,6 +3034,10 @@ Public Class frmInventario
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            prg.Value = 0
+            prg.Visible = False
+            lblPrg.Visible = False
         End Try
 
     End Sub
@@ -5216,7 +5485,7 @@ Public Class frmInventario
                 'cTrans.Commit_Transaction()
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-               
+
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -9003,8 +9272,6 @@ Public Class frmInventario
                 End If
 
                 dgridInventarioCiclico.DataSource = DTInventarioCiclico
-                XtraMessageBox.Show("TallaColor: " & AP.Bodega.Control_Talla_Color.ToString() &
-                    " | Gondola: " & AP.Bodega.Control_Gondola.ToString())
                 If gdviewTeorico.RowCount > 0 Then
 
                     gdviewTeorico.Columns("IdInventario").Visible = False
@@ -9666,7 +9933,13 @@ Public Class frmInventario
     End Function
 
     Private Sub Carga_Regularizacion(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
+        Dim vGridUpdateSuspendido As Boolean = False
+
         Try
+
+            GridView1.BeginDataUpdate()
+            vGridUpdateSuspendido = True
+            GridView1.GroupSummary.Clear()
 
             grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Regularizacion_Inventario(gBeTransInvEnc.Idinventarioenc,
                                                                                                     lConnection,
@@ -9793,6 +10066,10 @@ Public Class frmInventario
 
         Catch ex As Exception
 
+        Finally
+            If vGridUpdateSuspendido Then
+                GridView1.EndDataUpdate()
+            End If
         End Try
 
     End Sub

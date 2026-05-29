@@ -126,6 +126,25 @@ Partial Public Class clsLnTrans_movimientos
         End Try
     End Function
 
+    Private Shared Function Normalizar_Cantidad_Verificacion_UMBAS(ByVal pPickingUbic As clsBeTrans_picking_ubic,
+                                                                   ByVal pCantidad As Double,
+                                                                   ByVal pCantidadEnUmbas As Boolean,
+                                                                   ByVal pConnection As SqlConnection,
+                                                                   ByVal pTransaction As SqlTransaction) As Double
+        If pCantidadEnUmbas OrElse pPickingUbic Is Nothing OrElse pPickingUbic.IdPresentacion <= 0 Then
+            Return Math.Round(pCantidad, 6)
+        End If
+
+        Dim vFactor As Double = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                         pPickingUbic.IdPresentacion,
+                                                                                         pConnection,
+                                                                                         pTransaction)
+
+        If vFactor <= 0 Then Return Math.Round(pCantidad, 6)
+
+        Return Math.Round(pCantidad * vFactor, 6)
+    End Function
+
     Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer, ByVal pFechaDel As Date, ByVal pFechaAl As Date, Optional ByVal pLote As String = Nothing) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -3096,21 +3115,17 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
-            Dim lMaxMov As Integer = MaxID(lConnection, lTransaction)
-
             If pListObjMov IsNot Nothing AndAlso pListObjMov.Count > 0 Then
 
                 For Each Obj As clsBeTrans_movimientos In pListObjMov
 
                     If Obj.IdMovimiento = 0 Then
-                        Obj.IdMovimiento = lMaxMov
                         '#MA20260519 
                         If Obj.IdTransaccion = 0 Then
                             Obj.IdTransaccion = IdTareaUbicacionEnc
                         End If
                         Obj.Fecha = Now
                         Insertar(Obj, lConnection, lTransaction)
-                        lMaxMov += 1
                     End If
                 Next
 
@@ -3137,7 +3152,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockRec.IdRecepcionEnc
@@ -3750,6 +3765,11 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
 
+            '#EJC20260527: el movimiento PIK debe guardar la ubicación destino enviada por picking/muelle; sin esto trans_movimientos.IdUbicacionDestino queda NULL.
+            If vIdUbicacionPicking = 0 Then
+                Throw New Exception("ERROR_20260527A: No se puede insertar movimiento de picking sin ubicación destino.")
+            End If
+
             Dim pStock = clsLnStock.Get_Single_Stock_By_IdStock_And_IdProducto_Bodega(oBeTrans_picking_ubic.IdStock,
                                                                                       oBeTrans_picking_ubic.IdProductoBodega,
                                                                                       lConnection,
@@ -3765,7 +3785,7 @@ Partial Public Class clsLnTrans_movimientos
 
             If Not pStock Is Nothing Then
 
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -3774,6 +3794,7 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.IdProductoBodega = oBeTrans_picking_ubic.IdProductoBodega
                 '#CKFK20250507 Validar si se debe enviar la ubicación o la ubicación anterior
                 BeTransMovimiento.IdUbicacionOrigen = pStock.IdUbicacion
+                BeTransMovimiento.IdUbicacionDestino = vIdUbicacionPicking
                 BeTransMovimiento.IdPresentacion = oBeTrans_picking_ubic.IdPresentacion
                 BeTransMovimiento.IdEstadoOrigen = oBeTrans_picking_ubic.IdProductoEstado
                 BeTransMovimiento.IdEstadoDestino = oBeTrans_picking_ubic.IdProductoEstado
@@ -3828,7 +3849,8 @@ Partial Public Class clsLnTrans_movimientos
                                                             ByVal pCantidad As Double,
                                                             ByVal pPeso As Double,
                                                             ByRef lConnection As SqlConnection,
-                                                            ByRef lTransaction As SqlTransaction) As Integer
+                                                            ByRef lTransaction As SqlTransaction,
+                                                            Optional ByVal pCantidadEnUmbas As Boolean = False) As Integer
 
         Insertar_Movimiento_Verificacion = 0
 
@@ -3846,8 +3868,14 @@ Partial Public Class clsLnTrans_movimientos
                                                           lTransaction)
 
             If pStock IsNot Nothing Then
+                Dim vCantidadMovimiento As Double = Normalizar_Cantidad_Verificacion_UMBAS(oBeTrans_picking_ubic,
+                                                                                          pCantidad,
+                                                                                          pCantidadEnUmbas,
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
                 Dim BeTransMovimiento As New clsBeTrans_movimientos()
-                BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+                BeTransMovimiento.IdMovimiento = 0
                 BeTransMovimiento.IdEmpresa = pEmpresa.IdEmpresa
                 BeTransMovimiento.IdBodegaOrigen = oBeTrans_picking_ubic.IdBodega
                 BeTransMovimiento.IdBodegaDestino = oBeTrans_picking_ubic.IdBodega
@@ -3868,7 +3896,7 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.IdPedidoDet = oBeTrans_picking_ubic.IdPedidoDet
                 BeTransMovimiento.IdDespachoEnc = 0
                 BeTransMovimiento.IdDespachoDet = 0
-                BeTransMovimiento.Cantidad = pCantidad
+                BeTransMovimiento.Cantidad = vCantidadMovimiento
                 BeTransMovimiento.Serie = oBeTrans_picking_ubic.Serial
                 BeTransMovimiento.Peso = pPeso
                 BeTransMovimiento.Lote = oBeTrans_picking_ubic.Lote
@@ -3976,7 +4004,7 @@ Partial Public Class clsLnTrans_movimientos
         Try
 
             Dim BeTransMovimiento As New clsBeTrans_movimientos()
-            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction)
+            BeTransMovimiento.IdMovimiento = 0
             BeTransMovimiento.IdEmpresa = pIdEmpresa
             BeTransMovimiento.IdBodegaOrigen = pIdBodega
             BeTransMovimiento.IdTransaccion = BeStockNew.IdRecepcionEnc

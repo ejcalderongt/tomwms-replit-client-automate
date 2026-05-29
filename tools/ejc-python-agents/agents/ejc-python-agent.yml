@@ -1,0 +1,42 @@
+agent:
+  name: ejc-python-agent
+  version: 0.1
+  mode: draft
+
+repo:
+  code_roots:
+    - TOMIMSV4/TOMIMSV4
+    - WSHHRN
+    - brain
+  guardrails:
+    - No tocar Reference.vb.
+    - No mezclar cambios HH y VB en la misma fase.
+    - Solo diagnostico y trazabilidad por defecto.
+
+lanes:
+  data:
+    goals:
+      - Verificar estado del documento/lineas/cantidades.
+      - Identificar condicion de negocio en base a datos.
+    seed_tables:
+      - trans_oc_enc
+      - trans_oc_det
+      - trans_oc_estado
+      - trans_oc_ti
+      - trans_re_enc
+  operativity:
+    goals:
+      - Ubicar reglas de visibilidad de botones y transiciones.
+      - Cruzar flujo UI con estado de BD.
+    seed_targets:
+      - frmOrdenCompra.vb
+      - frmPedido.vb
+      - frmAjusteStock.vb
+
+search:
+  default_terms:
+    - Back-order
+    - BACK ORDER
+    - No Enviado
+    - mnuEstadoEnviadoAERP
+    - Cerrar pedido de ingreso

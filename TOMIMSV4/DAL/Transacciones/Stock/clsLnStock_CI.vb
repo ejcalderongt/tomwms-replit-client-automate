@@ -764,9 +764,8 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= "And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 vSQL += " Group by NomEstado, CONVERT(DATE, Fecha_Ingreso), Codigo,
@@ -776,12 +775,14 @@ Public Class clsLnStock_CI
 					  CantidadSF, ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdProductoBodega, IdUbicacion, IdArea,
                       IdUbicacion_anterior"
 
-                vSQL += "ORDER BY CODIGO, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             Else
                 '#AT20221221 Agregue IdUbicacion Stock_CI
                 '#AT20230320 Agregue Convert(Date, Fecha_Ingreso) al group by
-                '#AT20230322 Sum de peso 
+                '#AT20230322 Sum de peso
+                '#EJC20260526: Corregir sintaxis SQL; "Convert(Of Date,...)" provoca "Incorrect syntax near the keyword 'Of'".
                 vSQL = "SELECT Codigo,
 						   Nombre,
                            UM = UnidadMedida,
@@ -797,7 +798,7 @@ Public Class clsLnStock_CI
                            SUM(ISNULL(Peso, 0)) Peso, 
                            Lote,
                            LicPlate = lic_plate,
-                           Ingreso = Convert(Of Date, Fecha_Ingreso),
+                           Ingreso = Convert(Date, Fecha_Ingreso),
                            Vence = Fecha_Vence,
                            Ubic = Nombre_Completo,
                            codigo_poliza,
@@ -818,10 +819,9 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= "And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre Like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
-            End If
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
+                End If
 
             '#CKFK20221024 Aqui vamos a quitar el Group by por las cantidades  CantidadReservada, Cantidad,  CantidadSF,
             vSQL += " Group by NomEstado, Codigo, Convert(Date, Fecha_Ingreso),
@@ -831,7 +831,8 @@ Public Class clsLnStock_CI
 					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdProductoBodega, IdUbicacion, IdArea,
                       IdUbicacion_anterior"
 
-                vSQL += "ORDER BY Codigo, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             End If
 
@@ -849,6 +850,7 @@ Public Class clsLnStock_CI
                         If pIdUbicacion <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         If pLicPlate <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@pLicPlate", pLicPlate)
                         If pIdBodega <> 0 Then lDTA.SelectCommand.Parameters.AddWithValue("@pIdBodega", pIdBodega)
+                        If pNombre.Trim <> "" Then lDTA.SelectCommand.Parameters.AddWithValue("@pNombre", pNombre.Trim())
 
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
@@ -1053,9 +1055,8 @@ Public Class clsLnStock_CI
                 If pIdBodega <> 0 Then vSQL &= " And IdBodega = @pIdBodega "
 
                 '#AT20220404 Buscar por nombre de producto
-                If pNombre <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " Or Lote like '%" + pNombre + "%')"
+                If pNombre.Trim <> "" Then
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 vSQL += " Group by NomEstado, Convert(DATE,Fecha_Ingreso), Codigo,
@@ -1065,7 +1066,8 @@ Public Class clsLnStock_CI
 					  CantidadSF, ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega,
                       IdRecepcionDet, IdRecepcionEnc, IdArea, IdStock, Nombre_Talla, Codigo_Talla, Nombre_Color, Codigo_Color, CodigoSKU "
 
-                vSQL += "ORDER BY CODIGO, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             Else
                 '#AT20230320 Agregue Convert(Date, Fecha_Ingreso) al group by
@@ -1122,8 +1124,7 @@ Public Class clsLnStock_CI
 
                 '#AT20220404 Buscar por nombre de producto
                 If pNombre.Trim <> "" Then
-                    vSQL &= " And (nombre like '%" + pNombre + "%'"
-                    vSQL &= " OR Lote like '%" + pNombre + "%')"
+                    vSQL &= " And (nombre like '%' + @pNombre + '%' Or Lote like '%' + @pNombre + '%')"
                 End If
 
                 '#CKFK20221024 Vamos a quitar el Group by por cantidades CantidadSF, CantidadReservada, Cantidad
@@ -1134,7 +1135,8 @@ Public Class clsLnStock_CI
 					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega, 
                       IdArea, Nombre_Talla, Codigo_Talla, Nombre_Color, Codigo_Color, CodigoSKU "
 
-                vSQL += "ORDER BY Codigo, Nombre_Completo "
+                '#EJC20260527: sin TOP/OFFSET; orden estable para que HH renderice todos los registros y totales en una sola carga.
+                vSQL += " ORDER BY Codigo, IdPresentacion, Nombre_Completo, LicPlate, Lote, Vence "
 
             End If
 
@@ -1152,6 +1154,7 @@ Public Class clsLnStock_CI
                         If pIdUbicacion <> "0" Then lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         lDTA.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto)
                         If pIdBodega <> 0 Then lDTA.SelectCommand.Parameters.AddWithValue("@pIdBodega", pIdBodega)
+                        If pNombre.Trim <> "" Then lDTA.SelectCommand.Parameters.AddWithValue("@pNombre", pNombre.Trim())
 
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)

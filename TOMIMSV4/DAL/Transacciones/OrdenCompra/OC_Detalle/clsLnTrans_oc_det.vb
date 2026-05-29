@@ -1,11 +1,12 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 
 Public Class clsLnTrans_oc_det
 
     Public Shared Sub Cargar(ByRef oBeTrans_oc_det As clsBeTrans_oc_det,
                              ByRef dr As DataRow,
                              ByRef lConnection As SqlConnection,
-                             ByRef lTransaction As SqlTransaction)
+                             ByRef lTransaction As SqlTransaction,
+                             Optional ByVal pCargarPresentacion As Boolean = True)
 
         Try
 
@@ -40,7 +41,7 @@ Public Class clsLnTrans_oc_det
                 .Atributo_variante_1 = IIf(IsDBNull(dr.Item("atributo_variante_1")), "", dr.Item("atributo_variante_1"))
                 .Codigo_Producto = IIf(IsDBNull(dr.Item("codigo_producto")), 0.0, dr.Item("codigo_producto"))
 
-                If Not .Presentacion.IdPresentacion = Nothing Then
+                If pCargarPresentacion AndAlso Not .Presentacion.IdPresentacion = Nothing Then
                     .Presentacion = clsLnProducto_presentacion.GetSingle(.Presentacion.IdPresentacion, lConnection, lTransaction)
                 End If
 

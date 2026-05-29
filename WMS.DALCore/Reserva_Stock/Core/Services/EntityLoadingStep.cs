@@ -67,10 +67,13 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
-            context.Product = clsLnProducto.Get_Single_By_IdProducto(
-                context.ProductId,
-                context.Connection,
-                context.Transaction);
+            if (context.Product == null || context.Product.IdProducto <= 0)
+            {
+                context.Product = clsLnProducto.Get_Single_By_IdProducto(
+                    context.ProductId,
+                    context.Connection,
+                    context.Transaction);
+            }
 
             if (context.Product == null)
             {
@@ -78,15 +81,19 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
-            context.DefaultPresentation = clsLnProducto_presentacion
-                .Get_Presentacion_Defecto_By_IdProducto(
-                    context.ProductId,
-                    context.Connection,
-                    context.Transaction);
+            if (context.DefaultPresentation == null || context.DefaultPresentation.IdPresentacion <= 0)
+            {
+                context.DefaultPresentation = clsLnProducto_presentacion
+                    .Get_Presentacion_Defecto_By_IdProducto(
+                        context.ProductId,
+                        context.Connection,
+                        context.Transaction);
+            }
 
             if (context.DefaultPresentation != null)
             {
-                context.CachedPresentations.Add(context.DefaultPresentation);
+                if (!context.CachedPresentations.Any(p => p.IdPresentacion == context.DefaultPresentation.IdPresentacion))
+                    context.CachedPresentations.Add(context.DefaultPresentation);
             }
 
             try

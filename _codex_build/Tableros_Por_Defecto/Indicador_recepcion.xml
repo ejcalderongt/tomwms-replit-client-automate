@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-ES">
+  <Title Text="Tablero de Ingresos" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_CEALSA_QAP_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="localhost" />
+          <Parameter Name="database" Value="IMS4MB_CEALSA_QAP" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="vw_indicador_recepciones">
+        <Tables>
+          <Table Name="vw_indicador_recepciones" X="30" Y="30" Width="125" Height="464" />
+        </Tables>
+        <Columns>
+          <Column Table="vw_indicador_recepciones" Name="IdRecepcionEnc" />
+          <Column Table="vw_indicador_recepciones" Name="IdRecepcionDet" />
+          <Column Table="vw_indicador_recepciones" Name="IdProductoBodega" />
+          <Column Table="vw_indicador_recepciones" Name="IdPresentacion" />
+          <Column Table="vw_indicador_recepciones" Name="IdUnidadMedida" />
+          <Column Table="vw_indicador_recepciones" Name="IdOperadorBodega" />
+          <Column Table="vw_indicador_recepciones" Name="cantidad_recibida" />
+          <Column Table="vw_indicador_recepciones" Name="cajas/bultos" />
+          <Column Table="vw_indicador_recepciones" Name="unidades" />
+          <Column Table="vw_indicador_recepciones" Name="nombre_presentacion" />
+          <Column Table="vw_indicador_recepciones" Name="nombre_unidad_medida" />
+          <Column Table="vw_indicador_recepciones" Name="lic_plate" />
+          <Column Table="vw_indicador_recepciones" Name="IdOrdenCompraEnc" />
+          <Column Table="vw_indicador_recepciones" Name="IdOrdenCompraDet" />
+          <Column Table="vw_indicador_recepciones" Name="presentacion" />
+          <Column Table="vw_indicador_recepciones" Name="factor" />
+          <Column Table="vw_indicador_recepciones" Name="bodega" />
+          <Column Table="vw_indicador_recepciones" Name="IdTipoIngresoOC" />
+          <Column Table="vw_indicador_recepciones" Name="documento" />
+          <Column Table="vw_indicador_recepciones" Name="fecha" />
+        </Columns>
+        <Filter></Filter>
+        <GroupFilter></GroupFilter>
+      </Query>
+      <Query Type="SelectQuery" Name="bodega">
+        <Tables>
+          <Table Name="bodega" X="30" Y="30" Width="125" Height="1744" />
+        </Tables>
+        <Columns>
+          <AllColumns Table="bodega" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="vw_indicador_recepciones">
+            <Field Name="IdRecepcionEnc" Type="Int32" />
+            <Field Name="IdRecepcionDet" Type="Int32" />
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdPresentacion" Type="Int32" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="IdOperadorBodega" Type="Int32" />
+            <Field Name="cantidad_recibida" Type="Double" />
+            <Field Name="cajas/bultos" Type="Double" />
+            <Field Name="unidades" Type="Double" />
+            <Field Name="nombre_presentacion" Type="String" />
+            <Field Name="nombre_unidad_medida" Type="String" />
+            <Field Name="lic_plate" Type="String" />
+            <Field Name="IdOrdenCompraEnc" Type="Int32" />
+            <Field Name="IdOrdenCompraDet" Type="Int32" />
+            <Field Name="presentacion" Type="String" />
+            <Field Name="factor" Type="Double" />
+            <Field Name="bodega" Type="String" />
+            <Field Name="IdTipoIngresoOC" Type="Int32" />
+            <Field Name="documento" Type="String" />
+            <Field Name="fecha" Type="DateTime" />
+          </View>
+          <View Name="bodega">
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="IdPais" Type="Int32" />
+            <Field Name="IdEmpresa" Type="Int32" />
+            <Field Name="codigo" Type="String" />
+            <Field Name="codigo_barra" Type="String" />
+            <Field Name="nombre" Type="String" />
+            <Field Name="nombre_comercial" Type="String" />
+            <Field Name="direccion" Type="String" />
+            <Field Name="telefono" Type="String" />
+            <Field Name="email" Type="String" />
+            <Field Name="encargado" Type="String" />
+            <Field Name="ubic_recepcion" Type="String" />
+            <Field Name="ubic_picking" Type="String" />
+            <Field Name="ubic_despacho" Type="String" />
+            <Field Name="ubic_merma" Type="String" />
+            <Field Name="user_agr" Type="String" />
+            <Field Name="fec_agr" Type="DateTime" />
+            <Field Name="user_mod" Type="String" />
+            <Field Name="fec_mod" Type="DateTime" />
+            <Field Name="activo" Type="Boolean" />
+            <Field Name="coordenada_x" Type="String" />
+            <Field Name="coordenada_y" Type="String" />
+            <Field Name="largo" Type="Double" />
+            <Field Name="ancho" Type="Double" />
+            <Field Name="alto" Type="Double" />
+            <Field Name="reservar_stocks_por_linea" Type="Boolean" />
+            <Field Name="rechazar_pedido_por_stock" Type="Boolean" />
+            <Field Name="IdTipoTransaccion" Type="String" />
+            <Field Name="zoom" Type="Double" />
+            <Field Name="IdMotivoUbicacionDañadoPicking" Type="Int32" />
+            <Field Name="cambio_ubicacion_auto" Type="Boolean" />
+            <Field Name="codigo_bodega_erp" Type="String" />
+            <Field Name="ubic_producto_ne" Type="Int32" />
+            <Field Name="IdProductoEstadoNE" Type="Int32" />
+            <Field Name="Cuenta_Ingreso_Mercancias" Type="String" />
+            <Field Name="Cuenta_Egreso_Mercancias" Type="String" />
+            <Field Name="notificacion_voz" Type="Boolean" />
+            <Field Name="control_tarifa_servicios" Type="Boolean" />
+            <Field Name="Id_Motivo_Ubic_Reabasto" Type="Int32" />
+            <Field Name="operador_defecto_en_documento_ingreso" Type="Boolean" />
+            <Field Name="es_bodega_fiscal" Type="Boolean" />
+            <Field Name="habilitar_ingreso_consolidado" Type="Boolean" />
+            <Field Name="bloquear_lp_hh" Type="Boolean" />
+            <Field Name="captura_estiba_ingreso" Type="Boolean" />
+            <Field Name="captura_pallet_no_estandar" Type="Boolean" />
+            <Field Name="valor_porcentaje_iva" Type="Double" />
+            <Field Name="Permitir_Verificacion_Consolidada" Type="Boolean" />
+            <Field Name="control_banderas_cliente" Type="Boolean" />
+            <Field Name="IdTamañoEtiquetaUbicacionDefecto" Type="Int32" />
+            <Field Name="priorizar_ubicrec_sobre_ubicest" Type="Boolean" />
+            <Field Name="ubicar_tarimas_completas_reabasto" Type="Boolean" />
+            <Field Name="validar_disponibilidad_ubicaicon_destino" Type="Boolean" />
+            <Field Name="IdTipoTransaccionSalida" Type="Int32" />
+            <Field Name="permitir_eliminar_documento_salida" Type="Boolean" />
+            <Field Name="mostrar_area_en_hh" Type="Boolean" />
+            <Field Name="confirmar_codigo_en_picking" Type="Boolean" />
+            <Field Name="control_operador_ubicacion" Type="Boolean" />
+            <Field Name="inferir_origen_en_cambio_ubic" Type="Boolean" />
+            <Field Name="eliminar_documento_salida" Type="Boolean" />
+            <Field Name="operador_picking_realiza_verificacion" Type="Boolean" />
+            <Field Name="permitir_cambio_ubic_producto_picking" Type="Boolean" />
+            <Field Name="despachar_producto_vencido" Type="Boolean" />
+            <Field Name="TIPO_PANTALLA_PICKING" Type="Int32" />
+            <Field Name="verificacion_consolidada" Type="Boolean" />
+            <Field Name="tipo_pantalla_recepcion" Type="Int32" />
+            <Field Name="tipo_pantalla_verificacion" Type="Int32" />
+            <Field Name="PERMITIR_BUEN_ESTADO_EN_REEMPLAZO" Type="Boolean" />
+            <Field Name="restringir_vencimiento_en_reemplazo" Type="Boolean" />
+            <Field Name="restringir_lote_en_reemplazo" Type="Boolean" />
+            <Field Name="industria_motriz" Type="Boolean" />
+            <Field Name="top_reabastecimiento_manual" Type="Int32" />
+            <Field Name="permitir_decimales" Type="Boolean" />
+            <Field Name="permitir_repeticiones_en_ingreso" Type="Boolean" />
+            <Field Name="dias_maximo_vencimiento_reemplazo" Type="Int32" />
+            <Field Name="validar_existencias_inv_ini" Type="Boolean" />
+            <Field Name="calcular_ubicacion_sugerida_ml" Type="Boolean" />
+            <Field Name="permitir_reemplazo_picking" Type="Boolean" />
+            <Field Name="permitir_no_encontrado_picking" Type="Boolean" />
+            <Field Name="permitir_reemplazo_verificacion" Type="Boolean" />
+            <Field Name="ordenar_por_nombre_completo" Type="Boolean" />
+            <Field Name="ordenar_picking_descendente" Type="Boolean" />
+            <Field Name="Permitir_Reemplazo_Picking_Misma_Licencia" Type="Boolean" />
+            <Field Name="dias_limite_retroactivo" Type="Int32" />
+            <Field Name="horario_ejecucion_historico" Type="Unknown" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="vBodega" AllowMultiselect="true" SelectAllValues="true">
+      <DynamicListLookUpSettings DataSourceName="dashboardSqlDataSource1" DataMember="bodega" ValueMember="nombre" DisplayMember="nombre" />
+    </Parameter>
+  </Parameters>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Ingresos por régimen" DataSource="dashboardSqlDataSource1" DataMember="vw_indicador_recepciones" FilterString="[DataItem3] In (?vBodega)">
+      <ColoringOptions UseGlobalColors="false" />
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Measure DataMember="IdRecepcionEnc" Name="Recepciones" SummaryType="CountDistinct" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Month" DefaultId="DataItem2" />
+        <Dimension DataMember="bodega" DefaultId="DataItem3" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Day" DefaultId="DataItem4" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem3" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+        <Argument DefaultId="DataItem2" />
+        <Argument DefaultId="DataItem4" />
+      </Arguments>
+      <ColorScheme>
+        <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_indicador_recepciones" Color="-9457373">
+          <DimensionKeys>
+            <DimensionKey>
+              <Definition DataMember="bodega" />
+              <Value Type="System.String" Value="BODEGA FISCAL" />
+            </DimensionKey>
+          </DimensionKeys>
+        </Entry>
+        <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_indicador_recepciones" Color="-1361637">
+          <DimensionKeys>
+            <DimensionKey>
+              <Definition DataMember="bodega" />
+              <Value Type="System.String" Value="BODEGA GENERAL" />
+            </DimensionKey>
+          </DimensionKeys>
+        </Entry>
+      </ColorScheme>
+      <Panes>
+        <Pane Name="Panel 1">
+          <AxisY Title="Cantidad" />
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend OutsidePosition="TopCenterHorizontal" />
+    </Chart>
+    <Gauge ComponentName="gaugeDashboardItem1" Name="Gauges 1" ViewType="CircularQuarterLeft" />
+  </Items>
+  <ColorScheme>
+    <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_indicador_recepciones" PaletteIndex="10">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="bodega" />
+          <Value Type="System.String" Value="BODEGA FISCAL" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+    <Entry DataSource="dashboardSqlDataSource1" DataMember="vw_indicador_recepciones" Color="-2011886">
+      <DimensionKeys>
+        <DimensionKey>
+          <Definition DataMember="bodega" />
+          <Value Type="System.String" Value="BODEGA GENERAL" />
+        </DimensionKey>
+      </DimensionKeys>
+    </Entry>
+  </ColorScheme>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutGroup Weight="100">
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="100" />
+        <LayoutItem DashboardItem="gaugeDashboardItem1" Weight="100" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

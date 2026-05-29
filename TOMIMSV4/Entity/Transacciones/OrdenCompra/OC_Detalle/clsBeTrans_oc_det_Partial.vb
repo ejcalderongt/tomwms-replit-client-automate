@@ -14,6 +14,7 @@
     Public Property Nombre_Propietario As String = ""
     Public Property Talla As clsBeTalla = New clsBeTalla()
     Public Property Color As clsBeColor = New clsBeColor()
+    Public Property CodigoSKU As String = ""
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

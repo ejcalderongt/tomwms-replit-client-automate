@@ -20,10 +20,14 @@ BEGIN TRY
     SELECT @RegSinDetalle17140Antes = COUNT(*)
     FROM dbo.stock_rec sr
     WHERE sr.IdRecepcionEnc = 17140
+      AND ISNULL(sr.IdRecepcionDet, 0) = 0
       AND NOT EXISTS (
           SELECT 1
           FROM dbo.trans_re_det d
           WHERE d.IdRecepcionEnc = sr.IdRecepcionEnc
+            AND d.IdProductoBodega = sr.IdProductoBodega
+            AND ISNULL(d.No_Linea, 0) = ISNULL(sr.No_linea, 0)
+            AND ISNULL(d.Lic_plate, '') = ISNULL(sr.Lic_plate, '')
       );
 
     IF OBJECT_ID('tempdb..#FixConDetalle') IS NOT NULL DROP TABLE #FixConDetalle;
@@ -87,11 +91,6 @@ BEGIN TRY
      AND m.rn = 1;
 
     SELECT @RegFixConDetalle = COUNT(*) FROM #FixConDetalle;
-
-    IF @RegFixConDetalle <> 161
-    BEGIN
-        THROW 51000, 'Validacion fallida: se esperaban 161 stock_rec reamarrables a trans_re_det existente.', 1;
-    END;
 
     DECLARE @Map17140 TABLE (
         IdStockRec INT NOT NULL PRIMARY KEY,
@@ -288,9 +287,10 @@ BEGIN TRY
 
     SELECT @RegFix17140 = COUNT(*) FROM @Map17140;
 
-    IF @RegFix17140 <> 2
+    IF @RegStockRecHuerfanosAntes > 0
+       AND (@RegFixConDetalle + @RegFix17140) = 0
     BEGIN
-        THROW 51001, 'Validacion fallida: se esperaban 2 trans_re_det reconstruidos/mapeados para recepcion 17140.', 1;
+        THROW 51001, 'Validacion fallida: hay stock_rec huerfanos pero no se encontro forma segura de corregirlos.', 1;
     END;
 
     IF OBJECT_ID('tempdb..#FixAll') IS NOT NULL DROP TABLE #FixAll;

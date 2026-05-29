@@ -108,8 +108,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=10.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Packaging.10.0.5\lib\net462\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=10.0.0.8, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Packaging.10.0.8\lib\net462\System.IO.Packaging.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
@@ -232,6 +232,9 @@
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_doc.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_enc_Partial.vb" />
     <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodegaSeleccion.vb" />
+    <Compile Include="Transacciones\Movimento_Barras_Pallet\clsBeI_nav_barras_rfid_mov.vb" />
+    <Compile Include="Transacciones\Stock_RFID\clsBeI_nav_barras_rfid_stock.vb" />
+    <Compile Include="Transacciones\Movimento_Barras_Pallet\clsBeI_nav_barras_rfid_tipo_mov.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeResultadoValidacionCambioUbic.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsBeTrans_bodega_ubicaciones_excel.vb" />
     <Compile Include="Mantenimientos\Bodega\Smtp_configuracion\Smtp_Configuracion.vb" />

@@ -4,6 +4,155 @@ Imports System.Reflection
 Partial Public Class clsLnTrans_oc_det
 
     Public Shared Property lProductosInMemory As New List(Of clsBeProducto)
+    '#EJC20260522_OC_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmOrdenCompra.
+    Private Const SP_OC_READMODEL As String = "dbo.usp_wms_ordencompra_readmodel_v1"
+
+    Private Shared Function OCReadModel_HasColumn(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        Return pRow IsNot Nothing AndAlso
+               pRow.Table IsNot Nothing AndAlso
+               pRow.Table.Columns.Contains(pColumnName)
+
+    End Function
+
+    Private Shared Function OCReadModel_Int(ByVal pRow As DataRow, ByVal pColumnName As String) As Integer
+
+        If Not OCReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToInt32(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function OCReadModel_Double(ByVal pRow As DataRow, ByVal pColumnName As String) As Double
+
+        If Not OCReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToDouble(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function OCReadModel_Bool(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        If Not OCReadModel_HasColumn(pRow, pColumnName) Then Return False
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return False
+        Return Convert.ToBoolean(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function OCReadModel_String(ByVal pRow As DataRow, ByVal pColumnName As String) As String
+
+        If Not OCReadModel_HasColumn(pRow, pColumnName) Then Return String.Empty
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return String.Empty
+        Return Convert.ToString(pRow(pColumnName))
+
+    End Function
+
+    '#EJC20260522_OC_READMODEL: hidrata el detalle de OC desde un solo SP y conserva agrupacion de hijos kit.
+    Private Shared Function Get_Detalle_OC_By_IdOrdenCompraEnc_ReadModel(ByVal pIdOrdenCompraEnc As Integer,
+                                                                         ByRef lConnection As SqlConnection,
+                                                                         ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_det)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_oc_det)
+
+            Using lDTA As New SqlDataAdapter(SP_OC_READMODEL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.StoredProcedure
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable Is Nothing Then Return lReturnList
+
+                For Each lRow As DataRow In lDataTable.Rows
+
+                    Dim BeTransOcDet As New clsBeTrans_oc_det
+                    Cargar(BeTransOcDet, lRow, lConnection, lTransaction, False)
+
+                    BeTransOcDet.Producto.IdProducto = OCReadModel_Int(lRow, "Producto_IdProducto")
+                    If BeTransOcDet.Producto.IdProducto = 0 Then BeTransOcDet.Producto.IdProducto = OCReadModel_Int(lRow, "IdProducto")
+                    BeTransOcDet.Producto.IdProductoBodega = BeTransOcDet.IdProductoBodega
+                    BeTransOcDet.Producto.IdPropietario = OCReadModel_Int(lRow, "Producto_IdPropietario")
+                    BeTransOcDet.Producto.IdClasificacion = OCReadModel_Int(lRow, "Producto_IdClasificacion")
+                    BeTransOcDet.Producto.IdUnidadMedidaBasica = OCReadModel_Int(lRow, "Producto_IdUnidadMedidaBasica")
+                    BeTransOcDet.Producto.Codigo = OCReadModel_String(lRow, "Producto_Codigo")
+                    If String.IsNullOrEmpty(BeTransOcDet.Producto.Codigo) Then BeTransOcDet.Producto.Codigo = BeTransOcDet.Codigo_Producto
+                    BeTransOcDet.Producto.Nombre = OCReadModel_String(lRow, "Producto_Nombre")
+                    If String.IsNullOrEmpty(BeTransOcDet.Producto.Nombre) Then BeTransOcDet.Producto.Nombre = BeTransOcDet.Nombre_producto
+                    BeTransOcDet.Producto.Kit = OCReadModel_Bool(lRow, "Producto_Kit")
+                    BeTransOcDet.Producto.Control_peso = OCReadModel_Bool(lRow, "Producto_ControlPeso")
+                    BeTransOcDet.Producto.Peso_referencia = OCReadModel_Double(lRow, "Producto_PesoReferencia")
+                    BeTransOcDet.Producto.IsNew = False
+
+                    BeTransOcDet.Producto.Clasificacion.IdClasificacion = OCReadModel_Int(lRow, "Clasificacion_IdClasificacion")
+                    BeTransOcDet.Producto.Clasificacion.Nombre = OCReadModel_String(lRow, "Clasificacion_Nombre")
+                    BeTransOcDet.Producto.Clasificacion.Codigo = OCReadModel_String(lRow, "Clasificacion_Codigo")
+                    BeTransOcDet.Nombre_Clasificacion = BeTransOcDet.Producto.Clasificacion.Nombre
+
+                    BeTransOcDet.UnidadMedida.IdUnidadMedida = OCReadModel_Int(lRow, "Unidad_IdUnidadMedida")
+                    If BeTransOcDet.UnidadMedida.IdUnidadMedida = 0 Then BeTransOcDet.UnidadMedida.IdUnidadMedida = BeTransOcDet.IdUnidadMedidaBasica
+                    BeTransOcDet.UnidadMedida.Codigo = OCReadModel_String(lRow, "Unidad_Codigo")
+                    BeTransOcDet.UnidadMedida.Nombre = OCReadModel_String(lRow, "Unidad_Nombre")
+                    BeTransOcDet.UnidadMedida.factor = OCReadModel_Double(lRow, "Unidad_Factor")
+
+                    BeTransOcDet.Producto.UnidadMedida.IdUnidadMedida = BeTransOcDet.UnidadMedida.IdUnidadMedida
+                    BeTransOcDet.Producto.UnidadMedida.Codigo = BeTransOcDet.UnidadMedida.Codigo
+                    BeTransOcDet.Producto.UnidadMedida.Nombre = BeTransOcDet.UnidadMedida.Nombre
+                    BeTransOcDet.Producto.UnidadMedida.factor = BeTransOcDet.UnidadMedida.factor
+
+                    If BeTransOcDet.IdPresentacion <> 0 Then
+                        BeTransOcDet.Presentacion.IdPresentacion = OCReadModel_Int(lRow, "Presentacion_IdPresentacion")
+                        BeTransOcDet.Presentacion.IdProducto = OCReadModel_Int(lRow, "Presentacion_IdProducto")
+                        BeTransOcDet.Presentacion.Codigo_barra = OCReadModel_String(lRow, "Presentacion_CodigoBarra")
+                        BeTransOcDet.Presentacion.Nombre = OCReadModel_String(lRow, "Presentacion_Nombre")
+                        BeTransOcDet.Presentacion.Peso = OCReadModel_Double(lRow, "Presentacion_Peso")
+                        BeTransOcDet.Presentacion.Factor = OCReadModel_Double(lRow, "Presentacion_Factor")
+                        BeTransOcDet.Presentacion.Activo = OCReadModel_Bool(lRow, "Presentacion_Activo")
+                        BeTransOcDet.Presentacion.EsPallet = OCReadModel_Bool(lRow, "Presentacion_EsPallet")
+                        BeTransOcDet.Presentacion.Costo = OCReadModel_Double(lRow, "Presentacion_Costo")
+                        BeTransOcDet.Presentacion.CamasPorTarima = OCReadModel_Double(lRow, "Presentacion_CamasPorTarima")
+                        BeTransOcDet.Presentacion.CajasPorCama = OCReadModel_Double(lRow, "Presentacion_CajasPorCama")
+                        BeTransOcDet.Presentacion.IdPresentacionPallet = OCReadModel_Int(lRow, "Presentacion_IdPresentacionPallet")
+                        BeTransOcDet.Presentacion.Codigo = OCReadModel_String(lRow, "Presentacion_Codigo")
+                    End If
+
+                    If BeTransOcDet.IdEmbarcador <> 0 Then
+                        BeTransOcDet.Nombre_Embarcador = OCReadModel_String(lRow, "Embarcador_Nombre")
+                    End If
+
+                    If BeTransOcDet.IdProductoTallaColor <> 0 Then
+                        BeTransOcDet.Talla.IdTalla = OCReadModel_Int(lRow, "IdTalla")
+                        BeTransOcDet.Talla.Codigo = OCReadModel_String(lRow, "codigo_talla")
+                        BeTransOcDet.Color.IdColor = OCReadModel_Int(lRow, "IdColor")
+                        BeTransOcDet.Color.Codigo = OCReadModel_String(lRow, "codigo_color")
+                        BeTransOcDet.CodigoSKU = OCReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
+                    End If
+
+                    BeTransOcDet.IsNew = False
+
+                    If Not BeTransOcDet.IdOrdenCompraDetPadre = 0 Then
+                        Dim ObjPadre As clsBeTrans_oc_det = lReturnList.Find(Function(x) x.IdProductoBodega = BeTransOcDet.IdOrdenCompraDetPadre)
+                        If Not ObjPadre Is Nothing Then
+                            ObjPadre.lProductosHijosKit.Add(BeTransOcDet)
+                        End If
+                    Else
+                        lReturnList.Add(BeTransOcDet)
+                    End If
+
+                Next
+
+            End Using
+
+            Return lReturnList
+
+        Catch
+            Return Nothing
+        End Try
+
+    End Function
 
     Public Shared Function Get_Peso_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(idOrdenCompraEnc As Integer, idOrdenCompraDet As Integer) As Double
 
@@ -39,6 +188,11 @@ Partial Public Class clsLnTrans_oc_det
         Dim lReturnList As New List(Of clsBeTrans_oc_det)
 
         Try
+
+            Dim vReadModelList As List(Of clsBeTrans_oc_det) = Get_Detalle_OC_By_IdOrdenCompraEnc_ReadModel(pIdOrdenCompraEnc,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
+            If vReadModelList IsNot Nothing Then Return vReadModelList
 
             '#CKFK20250526 Quité lo de tomar el codigo del producto del campo noparte cuando la empresa fuera Killios
             '#AT20250610 Espero que no ocurra nada malo... p.codigo codigo_producto a det.codigo_producto

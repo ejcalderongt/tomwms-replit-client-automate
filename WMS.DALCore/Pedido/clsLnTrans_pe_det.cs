@@ -7,6 +7,7 @@ using WMS.DALCore.I_nav_ped_traslado_det;
 using WMS.EntityCore.Picking;
 using WMS.DALCore.Picking;
 using WMS.StockReservation.Compatibility;
+using WMS.StockReservation.Core.Domain;
 using WMS.EntityCore.Producto;
 public class clsLnTrans_pe_det
 {
@@ -1052,8 +1053,8 @@ public class clsLnTrans_pe_det
             INNER JOIN producto_bodega pb   ON pd.IdProductoBodega  = pb.IdProductoBodega
             INNER JOIN producto p           ON pb.IdProducto         = p.IdProducto
             LEFT  JOIN producto_presentacion pp ON pd.IdPresentacion = pp.IdPresentacion
-            LEFT  JOIN stock_res sr ON sr.IdTransaccion    = @IdPedidoEnc
-                                   AND sr.IdProductoBodega  = pd.IdProductoBodega
+            LEFT  JOIN stock_res sr ON sr.IdPedidoDet      = pd.IdPedidoDet
+                                   AND sr.IdTransaccion    = @IdPedidoEnc
             LEFT  JOIN stock s          ON sr.IdStock       = s.IdStock
             LEFT  JOIN bodega_ubicacion bu ON sr.IdUbicacion = bu.IdUbicacion
                                           AND sr.IdBodega    = bu.IdBodega
@@ -1114,8 +1115,8 @@ public class clsLnTrans_pe_det
             INNER JOIN producto_bodega pb    ON pd.IdProductoBodega  = pb.IdProductoBodega
             INNER JOIN producto p            ON pb.IdProducto         = p.IdProducto
             LEFT  JOIN producto_presentacion pp ON pd.IdPresentacion  = pp.IdPresentacion
-            LEFT  JOIN stock_res sr ON sr.IdTransaccion    = @IdPedidoEnc
-                                   AND sr.IdProductoBodega  = pd.IdProductoBodega
+            LEFT  JOIN stock_res sr ON sr.IdPedidoDet       = pd.IdPedidoDet
+                                   AND sr.IdTransaccion     = @IdPedidoEnc
             LEFT  JOIN stock s          ON sr.IdStock       = s.IdStock
             LEFT  JOIN bodega_ubicacion bu ON sr.IdUbicacion = bu.IdUbicacion
                                           AND sr.IdBodega    = bu.IdBodega
@@ -1290,7 +1291,8 @@ public class clsLnTrans_pe_det
                                                           ref object plblprg,
                                                           SqlConnection lConnection,
                                                           SqlTransaction lTransaction,
-                                                          bool pEsManufactura = false)
+                                                          bool pEsManufactura = false,
+                                                          StockReservationDocumentCache? pDocumentCache = null)
     {
         bool result = false;
 
@@ -1312,6 +1314,11 @@ public class clsLnTrans_pe_det
                                             lTransaction);
 
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                if (ResultadoInsert > 0)
+                {
+                    pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                    pBeStockRes.IdPedidoDet = ResultadoInsert;
+                }
             }
             else
             {
@@ -1325,6 +1332,11 @@ public class clsLnTrans_pe_det
                                                 lConnection,
                                                 lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                    if (ResultadoInsert > 0)
+                    {
+                        pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                        pBeStockRes.IdPedidoDet = ResultadoInsert;
+                    }
                 }
                 else
                 {
@@ -1372,7 +1384,8 @@ public class clsLnTrans_pe_det
                                                                               false,
                                                                               pBeTrasladoDet,
                                                                               pBePedidoDet,
-                                                                              pEsManufactura))
+                                                                              pEsManufactura,
+                                                                              pDocumentCache))
                             {
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
                                 var firstPicking = pBePedidoDet.ListaPickingUbic?.FirstOrDefault();
@@ -1418,7 +1431,8 @@ public class clsLnTrans_pe_det
                                                                      false,
                                                                      pBeTrasladoDet,
                                                                      pBePedidoDet,
-                                                                     pEsManufactura))
+                                                                     pEsManufactura,
+                                                                     pDocumentCache))
                     {
                         result = true;
                         pBeTrasladoDet.Qty_to_Receive = Qty_received2;
@@ -1514,7 +1528,8 @@ public class clsLnTrans_pe_det
                                                           int IdPropietarioBodega,
                                                           SqlConnection lConnection,
                                                           SqlTransaction lTransaction,
-                                                          bool pEsManufactura = false)
+                                                          bool pEsManufactura = false,
+                                                          StockReservationDocumentCache? pDocumentCache = null)
     {
         bool result = false;
 
@@ -1536,6 +1551,11 @@ public class clsLnTrans_pe_det
                                             lTransaction);
 
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                if (ResultadoInsert > 0)
+                {
+                    pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                    pBeStockRes.IdPedidoDet = ResultadoInsert;
+                }
             }
             else
             {
@@ -1549,6 +1569,11 @@ public class clsLnTrans_pe_det
                                                 lConnection,
                                                 lTransaction);
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                    if (ResultadoInsert > 0)
+                    {
+                        pBePedidoDet.IdPedidoDet = ResultadoInsert;
+                        pBeStockRes.IdPedidoDet = ResultadoInsert;
+                    }
                 }
                 else
                 {
@@ -1606,7 +1631,8 @@ public class clsLnTrans_pe_det
                                                                              lConnection,
                                                                              lTransaction,
                                                                              pBePedidoDet: ref pBePedidoDet,
-                                                                             pEsManufactura: pEsManufactura))
+                                                                             pEsManufactura: pEsManufactura,
+                                                                             pDocumentCache: pDocumentCache))
                             {
                                 
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
@@ -1662,7 +1688,8 @@ public class clsLnTrans_pe_det
                                                                 false,
                                                                 pBeTrasladoDet,
                                                                 pBePedidoDet,
-                                                                pEsManufactura))
+                                                                pEsManufactura,
+                                                                pDocumentCache))
                 {
                     result = true;
                     Qty_received = pBeTrasladoDet.Qty_to_Receive;

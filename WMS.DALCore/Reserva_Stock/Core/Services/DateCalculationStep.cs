@@ -22,30 +22,41 @@ namespace WMS.StockReservation.Core.Services
 
             // Calcular fecha mínima en zona Picking
             context.MinExpirationDatePickingZone = defaultDate;
-            if (context.StockListPickingZone != null && context.StockListPickingZone.Count > 0)
+            var stockPickingDisponible = context.StockListPickingZone?
+                .Where(s => s != null && s.Cantidad > 0.000001)
+                .ToList();
+            if (stockPickingDisponible != null && stockPickingDisponible.Count > 0)
             {
-                context.MinExpirationDatePickingZone = context.StockListPickingZone.Min(s => s.Fecha_vence);
+                context.MinExpirationDatePickingZone = stockPickingDisponible.Min(s => s.Fecha_vence);
             }
 
             // Calcular fecha mínima en zonas no-Picking
             context.MinExpirationDateNonPickingZones = defaultDate;
-            if (context.StockListNonPickingZones != null && context.StockListNonPickingZones.Count > 0)
+            var stockNoPickingDisponible = context.StockListNonPickingZones?
+                .Where(s => s != null && s.Cantidad > 0.000001)
+                .ToList();
+            if (stockNoPickingDisponible != null && stockNoPickingDisponible.Count > 0)
             {
-                context.MinExpirationDateNonPickingZones = context.StockListNonPickingZones.Min(s => s.Fecha_vence);
+                context.MinExpirationDateNonPickingZones = stockNoPickingDisponible.Min(s => s.Fecha_vence);
             }
 
             // Determinar fecha mínima global
             context.GlobalMinimumExpirationDate = defaultDate;
-            if (context.WorkingStockList != null && context.WorkingStockList.Count > 0)
+            var stockDisponible = context.WorkingStockList?
+                .Where(s => s != null && s.Cantidad > 0.000001)
+                .ToList();
+            if (stockDisponible != null && stockDisponible.Count > 0)
             {
-                context.GlobalMinimumExpirationDate = context.WorkingStockList.Min(s => s.Fecha_vence);
+                context.GlobalMinimumExpirationDate = stockDisponible.Min(s => s.Fecha_vence);
             }
 
             // Para Clavaud: calcular fechas para pallets completos/incompletos
+            context.MinExpirationCompletePalletsClavaud = defaultDate;
+            context.MinExpirationIncompletePalletsClavaud = defaultDate;
             if (context.Configuration.Conservar_Zona_Picking_Clavaud)
             {
                 // Pallets completos
-                var completePallets = context.StockListNonPickingZones?
+                var completePallets = stockNoPickingDisponible?
                     .Where(s => s.Pallet_Completo &&
                                !s.UbicacionPicking &&
                                s.UbicacionNivel > 0)
@@ -57,7 +68,7 @@ namespace WMS.StockReservation.Core.Services
                 }
 
                 // Pallets incompletos
-                var incompletePallets = context.StockListNonPickingZones?
+                var incompletePallets = stockNoPickingDisponible?
                     .Where(s => !s.Pallet_Completo &&
                                !s.UbicacionPicking &&
                                s.UbicacionNivel > 0)

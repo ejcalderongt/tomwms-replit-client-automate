@@ -1292,9 +1292,12 @@ Public Class clsLnI_nav_barras_pallet
                         WHEN EXISTS (
                             SELECT 1
                             FROM i_nav_barras_rfid_det d
-                            INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc
+                            INNER JOIN i_nav_barras_rfid_enc e 
+                                ON e.IdRFIDEnc = d.IdRFIDEnc
+                            INNER JOIN i_nav_barras_rfid_tipo_mov tm
+                                ON tm.IdrfidTipoMov = e.Tipo
                             WHERE d.barra_epc = p.codigo_barra
-                              AND e.Tipo = 'ING'
+                              AND e.Tipo = 1
                         )
                         THEN 1
                         ELSE 0
@@ -1342,7 +1345,7 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
-    Public Shared Function GetAll_By_IdProducto_And_Barra_And_Idbodega(ByVal pIdProductoBodega As Integer, ByVal pCodigo_barra As String,
+    Public Shared Function GetAll_By_IdProducto_And_Barra_And_Idbodega(ByVal pIdProductoBodega As Integer, ByVal pCodigo As String,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByRef lConnection As SqlConnection,
                                                                        ByRef lTransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
@@ -1378,18 +1381,19 @@ Public Class clsLnI_nav_barras_pallet
                                     Impreso,
                                     fecha_procesado_erp,
                                     IdOrdenCompraEnc,
-                                    IdOrdenCompraDet
+                                    IdOrdenCompraDet,
+                                    Peso
                                     FROM I_nav_barras_pallet nav
                                     inner join producto pr 
 								    on nav.codigo=pr.codigo inner join producto_bodega pb
-								    on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=@pIdProductoBodega 
+								    on pr.IdProducto = pb.IdProducto where (nav.Codigo=@pCodigo 
                                     and pb.IdBodega=@pIdBodega) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@pCodigo_barra", pCodigo_barra))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pCodigo", pCodigo))
 
             Dim dt As New DataTable
             dad.Fill(dt)

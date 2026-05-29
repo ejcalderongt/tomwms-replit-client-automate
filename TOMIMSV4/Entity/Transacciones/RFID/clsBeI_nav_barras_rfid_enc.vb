@@ -8,7 +8,7 @@ Public Class clsBeI_nav_barras_rfid_enc
 	Public Property Fec_agr() As Date = Date.Now
 	Public Property Fec_mod() As Date = Date.Now
 	Public Property Estado() As String = ""
-	Public Property Tipo() As String = ""
+	Public Property Tipo() As Integer = 0
 	Public Property IdProveedor() As Integer = 0
 	Public Property IdCliente() As Integer = 0
 	Public Property IdPedidoEnc() As Integer = 0

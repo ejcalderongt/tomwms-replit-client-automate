@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMS.EntityCore.Log
@@ -8,6 +9,8 @@ namespace WMS.EntityCore.Log
     {
         [Column("IdError")]
         [DisplayName("IdError")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdError { get; set; } = 0;
 
         [Column("IdEmpresa")]
