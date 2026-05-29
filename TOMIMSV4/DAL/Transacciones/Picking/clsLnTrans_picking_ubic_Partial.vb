@@ -3462,6 +3462,17 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 resultado += "Inicia la actualizacion"
 
+                '#EJC20260529 fix BUG-004 (belt-and-suspenders): durante verificación,
+                '  fecha_packing NO debe cambiar (packing aún no ocurrió). Si Cargar() la
+                '  defaulteó a Date.Now (bug: NULL→Date.Now), forzar el sentinel 1900-01-01
+                '  para que el filtro fecha_packing<'19010101' no excluya este ubic.
+                If oBeTrans_picking_ubic.Fecha_packing > New Date(1901, 1, 1) Then
+                    WmsTrace.vEvent("VERIF_FP_GUARD",
+                                    WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                               "wms.fp_before", oBeTrans_picking_ubic.Fecha_packing.ToString("yyyy-MM-dd"),
+                                               "!!warn", "Fecha_packing envenenada por Cargar NULL→Date.Now; reset a 1900-01-01"))
+                    oBeTrans_picking_ubic.Fecha_packing = New Date(1900, 1, 1)
+                End If
                 FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
