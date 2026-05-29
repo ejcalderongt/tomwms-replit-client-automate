@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProducto_presentacion
@@ -3696,6 +3697,32 @@ Partial Public Class clsLnProducto_presentacion
             End If
 
             Return lFactor
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Elimina_By_IdProducto_And_Presentacion_Distinta(ByVal pIdProducto As Integer,
+                                                                          ByVal pNombre As String,
+                                                                          ByRef lConnection As SqlConnection,
+                                                                          ByRef lTransaction As SqlTransaction) As Boolean
+
+        Elimina_By_IdProducto_And_Presentacion_Distinta = False
+
+        Dim vSQL As String = "DELETE FROM producto_presentacion 
+                              WHERE IdProducto = @IdProducto AND nombre<>@pNombre"
+
+        Try
+
+            Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdProducto", pIdProducto)
+            cmd.Parameters.AddWithValue("@pNombre", pNombre)
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Return True
 
         Catch ex As Exception
             Throw ex
