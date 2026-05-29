@@ -6737,7 +6737,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pu.cantidad_verificada<>pu.cantidad_despachada)
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-                                            pu.lic_plate, '#EJC20260529' 
+                                            pu.lic_plate, 
                                             pu.fecha_real_vence, ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), '')),
                                             pu.activo, pu.dañado_picking, 
                                             pu.lic_plate_reemplazo, pu.IdUbicacion_reemplazo, pu.IdStock_reemplazo, pdet.IdPedidoEnc, 
