@@ -4747,7 +4747,8 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim CantidadPresentacion As Double = 0
         Dim resultado As String = ""
 
-        WmsTrace.OpStart("Reemplazo_Producto_En_Picking", IdPickingEnc.ToString()) '#EJC20260529
+        Dim _wmsSpanReemplazoProductoEnPicking As String = WmsTrace.OpStart("Reemplazo_Producto_En_Picking", WmsTrace.A("ctx", IdPickingEnc.ToString())) '#EJC20260529
+        Dim _wmsT0ReemplazoProductoEnPicking As Long = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260529
         Try
 
             If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
@@ -4889,11 +4890,11 @@ Partial Public Class clsLnTrans_picking_ubic
                                                  MaquinaQueSolicita)
             End If
 
-            WmsTrace.OpEnd("Reemplazo_Producto_En_Picking", True, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanReemplazoProductoEnPicking, 1, True, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0ReemplazoProductoEnPicking) '#EJC20260529
             Return True
 
         Catch ex As Exception
-            WmsTrace.OpEnd("Reemplazo_Producto_En_Picking", False, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanReemplazoProductoEnPicking, 1, False, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0ReemplazoProductoEnPicking) '#EJC20260529
             Throw ex
         End Try
 
@@ -4920,7 +4921,8 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim Factor As Double = 0
         Dim CantidadPresentacion As Double = 0
 
-        WmsTrace.OpStart("Reemplazo_Producto_En_Picking_NE", IdPickingEnc.ToString()) '#EJC20260529
+        Dim _wmsSpanReemplazoProductoEnPickingNE As String = WmsTrace.OpStart("Reemplazo_Producto_En_Picking_NE", WmsTrace.A("ctx", IdPickingEnc.ToString())) '#EJC20260529
+        Dim _wmsT0ReemplazoProductoEnPickingNE As Long = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260529
         Try
 
             If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
@@ -5015,11 +5017,11 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                lTransaction,
                                                                MaquinaQueSolicita)
 
-            WmsTrace.OpEnd("Reemplazo_Producto_En_Picking_NE", True, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanReemplazoProductoEnPickingNE, 1, True, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0ReemplazoProductoEnPickingNE) '#EJC20260529
             Return True
 
         Catch ex As Exception
-            WmsTrace.OpEnd("Reemplazo_Producto_En_Picking_NE", False, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanReemplazoProductoEnPickingNE, 1, False, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0ReemplazoProductoEnPickingNE) '#EJC20260529
             '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -5170,7 +5172,8 @@ Partial Public Class clsLnTrans_picking_ubic
 
         Dim vResult As String = ""
 
-        WmsTrace.OpStart("Marcar_No_Encontrado", IdStock.ToString()) '#EJC20260529
+        Dim _wmsSpanMarcarNoEncontrado As String = WmsTrace.OpStart("Marcar_No_Encontrado", WmsTrace.A("ctx", IdStock.ToString())) '#EJC20260529
+        Dim _wmsT0MarcarNoEncontrado As Long = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260529
         Try
 
             If Not Es_Transaccion_Remota Then lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
@@ -5219,7 +5222,7 @@ Partial Public Class clsLnTrans_picking_ubic
             End If
 
         Catch ex As Exception
-            WmsTrace.OpEnd("Marcar_No_Encontrado", False, IdStock.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanMarcarNoEncontrado, 1, False, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0MarcarNoEncontrado) '#EJC20260529
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw New Exception(String.Format("{0} {1} Result {2}", MethodBase.GetCurrentMethod.Name(), ex.Message, vResult))
         Finally
@@ -5227,7 +5230,7 @@ Partial Public Class clsLnTrans_picking_ubic
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
 
-        WmsTrace.OpEnd("Marcar_No_Encontrado", True, IdStock.ToString()) '#EJC20260529
+        WmsTrace.OpEnd(_wmsSpanMarcarNoEncontrado, 1, True, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0MarcarNoEncontrado) '#EJC20260529
         Return vResult
 
     End Function
@@ -5588,7 +5591,8 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim lTransaction As SqlTransaction = Nothing
         Dim CantidadStockDestino As Double = 0
 
-        WmsTrace.OpStart("Sustituir_Producto_NE_Picking", IdPickingEnc.ToString()) '#EJC20260529
+        Dim _wmsSpanSustituirProductoNEPicking As String = WmsTrace.OpStart("Sustituir_Producto_NE_Picking", WmsTrace.A("ctx", IdPickingEnc.ToString())) '#EJC20260529
+        Dim _wmsT0SustituirProductoNEPicking As Long = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() '#EJC20260529
         Try
 
             resultado = ""
@@ -5680,11 +5684,11 @@ Partial Public Class clsLnTrans_picking_ubic
 
             lTransaction.Commit()
 
-            WmsTrace.OpEnd("Sustituir_Producto_NE_Picking", True, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanSustituirProductoNEPicking, 1, True, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0SustituirProductoNEPicking) '#EJC20260529
             Return True
 
         Catch ex As Exception
-            WmsTrace.OpEnd("Sustituir_Producto_NE_Picking", False, IdPickingEnc.ToString()) '#EJC20260529
+            WmsTrace.OpEnd(_wmsSpanSustituirProductoNEPicking, 1, False, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _wmsT0SustituirProductoNEPicking) '#EJC20260529
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
