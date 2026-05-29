@@ -6693,7 +6693,7 @@ Partial Public Class clsLnTrans_picking_ubic
             Dim vSQL As String = "SELECT  pu.IdPickingEnc, 0 IdPickingUbic, max(pu.IdPickingDet) IdPickingDet, max(pu.IdUbicacion) IdUbicacion, 
                                             max(pu.IdStock) IdStock, pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                                     max(pu.IdUbicacionAnterior) IdUbicacionAnterior, MAX(pu.IdRecepcion) IdRecepcion, pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-                                                    ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), pu.lic_plate)) AS lic_plate, 0 acepto, SUM(pu.peso_solicitado) peso_solicitado, SUM(pu.peso_recibido) peso_recibido, 
+                                                    pu.lic_plate AS lic_plate,  0 acepto, SUM(pu.peso_solicitado) peso_solicitado, SUM(pu.peso_recibido) peso_recibido, 
                                                     SUM(pu.peso_verificado) peso_verificado, SUM(pu.peso_despachado) peso_despachado, 
                                             SUM(pu.cantidad_solicitada) cantidad_solicitada, SUM(pu.cantidad_recibida) cantidad_recibida, 
                                             SUM(pu.cantidad_verificada) cantidad_verificada, 0 encontrado, 0 dañado_verificacion,
@@ -6737,7 +6737,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pu.cantidad_verificada<>pu.cantidad_despachada)
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-                                            ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), pu.lic_plate)), 
+                                            pu.lic_plate, '#EJC20260529' 
                                             pu.fecha_real_vence, ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), '')),
                                             pu.activo, pu.dañado_picking, 
                                             pu.lic_plate_reemplazo, pu.IdUbicacion_reemplazo, pu.IdStock_reemplazo, pdet.IdPedidoEnc, 
