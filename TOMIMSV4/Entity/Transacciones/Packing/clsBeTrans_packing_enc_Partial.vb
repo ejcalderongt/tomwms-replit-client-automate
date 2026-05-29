@@ -5,6 +5,11 @@
     Public Property Nombre_Talla As String = ""
     Public Property Codigo_Talla As String = ""
     Public Property Nombre_Color As String = ""
+    Public Property nom_prod As String = ""
+    Public Property CodigoProducto As String = ""
+    Public Property ProductoPresentacion As String = ""
+    Public Property ProductoUnidadMedida As String = ""
+    Public Property ProductoEstado As String = ""
     Public Property Codigo_Color As String = ""
 
     Protected Overridable Sub Dispose(disposing As Boolean)
