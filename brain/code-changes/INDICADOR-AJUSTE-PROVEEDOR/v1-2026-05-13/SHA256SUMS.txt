@@ -1,0 +1,2 @@
+d2253dcd49fd84da51a5b88125eccf674af65b8e3ec635296ce01a7891434cf3  frmIndicadorAjusteProveedor.vb
+50b12d1e72068aaad9629380fa583e385bfc872028dd6ae2a1cfd2fa37d502dc  frmIndicadorAjusteProveedor.Designer.vb

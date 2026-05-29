@@ -1,0 +1,79 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/frm_existencias_rfid.java
+=== CHECK: ==\s*null ===
+81:                if (ws == null || cargando) return;
+83:                if (!esTodo && (pTextoBusqueda == null || pTextoBusqueda.trim().length() < pTextoMinimo)) return;
+
+=== CHECK: !=\s*null ===
+318:                    pTextoBusqueda = s != null ? s.toString() : "";
+324://                    if (adapter != null) {
+325://                        adapter.filtrar(s != null ? s.toString() : "");
+423:            if (adapter != null) {
+427:            if (readerManager != null && !readerManager.isInventoryRunning()) {
+443:            if (adapter != null) {
+457:                    readerManager != null && readerManager.isReaderReady()
+467:            return stockList != null && !stockList.isEmpty();
+493:            if (readerManager != null && !readerManager.isInventoryRunning()) {
+505:            if (searchManager != null) {
+509:            if (readerManager != null && readerManager.isInventoryRunning()) {
+533:                                : (etBuscar.getText() != null ? etBuscar.getText().toString() : "");
+588:            final String msg = (e.getMessage() != null) ? e.getMessage() : "";
+607:            if (resultado != null && !resultado.isEmpty()) {
+635:            if (adapter != null) {
+661:            if (readerManager != null) {
+665:            if (searchManager != null) {
+684:            if (readerManager != null) {
+
+=== CHECK: isEmpty\(\) ===
+467:            return stockList != null && !stockList.isEmpty();
+607:            if (resultado != null && !resultado.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+39:    private RelativeLayout reltop;
+40:    private RelativeLayout relbot;
+41:    private TextView lblTituloForma;
+42:    private EditText etBuscar;
+43:    private Spinner spFiltroBusqueda;
+44:    private LinearLayout btnOrdenar;
+45:    private RecyclerView rvTags;
+46:    private TextView tvTotalTags;
+48:    private TextView tvOrdenar;
+50:    private TextView lblProcesoCarga;
+51:    private ProgressBar progressBarLoad;
+52:    private LinearLayout layoutCarga;
+54:    private InventarioRfidAdapter adapter;
+55:    private InventarioRfidSearchManager searchManager;
+56:    private InventarioRfidReaderManager readerManager;
+57:    private InventarioRfidSelectionManager selectionManager;
+59:    private WebServiceHandler ws;
+60:    private XMLObject xobj;
+62:    private final List<clsBeI_nav_barras_rfid_enc> stockList = new ArrayList<>();
+64:    private int paginaActual = 1;
+65:    private int tamanoPagina = 10;
+66:    private boolean cargando = false;
+69:    private boolean ordenAscendente = true;
+70:    private String pCriterioBusqueda = "PR";
+71:    private String pTextoBusqueda = "";
+72:    private long pDebounce = 600;
+73:    private int pTextoMinimo = 4;
+74:    private boolean spinnerFiltroInicializado = false;
+75:    private boolean cambioTextoProgramatico = false;
+76:    private final Handler debounceBusquedaHandler = new Handler(Looper.getMainLooper());
+77:    private final Runnable debounceBusquedaRunnable = new Runnable() {
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+200:        lblTituloForma.setText("Inventario RFID");
+201:        tvTotalTags.setText("Total Pallets: 0");
+236:                    etBuscar.setText("");
+619:                tvTotalTags.setText("Total Pallets: 0");
+636:                tvTotalTags.setText("Total Pallets: " + adapter.getItemCount());
+638:                tvTotalTags.setText("Total Pallets: 0");
+

@@ -1,0 +1,228 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java
+=== CHECK: ==\s*null ===
+689:            if (vUnidadMedida == null || vUnidadMedida.isEmpty()) {
+1628:            if (gBeProducto==null){
+2597:                if (op.Codigo == null || op.Codigo.isEmpty() ||
+2598:                    op.Clave == null || op.Clave.isEmpty()) {
+
+=== CHECK: !=\s*null ===
+232:        if (selitem != null) {
+350:            if (txtLicencia !=null){
+375:            if (txtLicEscaneada !=null){
+391:            assert txtLicencia != null;
+617:                    if (gBeProducto != null && gBeProducto.Presentaciones != null &&
+618:                            gBeProducto.Presentaciones.items != null &&
+627:                            vUnidadMedida = filteredList.get(0).Nombre != null ? filteredList.get(0).Nombre : "";
+690:                vUnidadMedida = gBePickingUbic.ProductoUnidadMedida != null
+696:            if (gBePickingUbic.IdPresentacion > 0 && gBeProducto != null && gBeProducto.Presentaciones != null && gBeProducto.Presentaciones.items != null && !gBeProducto.Presentaciones.items.isEmpty()) {
+701:                        if (presentacion.Nombre != null && !presentacion.Nombre.isEmpty()) {
+992:                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+1047:                            if (ListBeStockPalletEscaneado.items != null) {
+1051:                                if (BeStockPallet != null) {
+1102:                                    if (BeStockPallet != null) {
+1258:                            if (ListBeStockPalletEscaneado.items != null) {
+1262:                                if (BeStockPallet != null) {
+1312:                                    if (BeStockPallet != null) {
+1667:                if (LProductoEstadoIngreso!=null){
+2012:                if (view != null) {
+2154:            if (beListProductoImagen != null) {
+2155:                if (beListProductoImagen.items != null) {
+2585:                if (dialogSupervisor != null && dialogSupervisor.isShowing()) {
+2622:            if (gBeProducto!=null){
+2647:                    if (gBeProducto.Presentaciones!=null){
+2649:                        if (gBeProducto.Presentaciones.items!=null){
+2723:                    if (gBeProducto.Presentaciones.items!=null){
+2811:            if (gBeProducto.Presentaciones!=null){
+2813:                if (gBeProducto.Presentaciones.items!=null){
+2904:            if (tmpgBeProducto!=null){
+2938:            if(BePickingDet!=null){
+2972:            if (BeStockRes!=null){
+3093:            if (gBeProducto.Presentaciones!=null){
+3094:                if (gBeProducto.Presentaciones.items!=null){
+3282:            if(progress!=null){
+3285:                    if(txtMensajeDialog!=null){
+3310:            if(txtMensajeDialog!=null){
+
+=== CHECK: isEmpty\(\) ===
+282:                            if (!gBePickingUbic.Lic_plate.isEmpty() && !gBePickingUbic.Lic_plate.equals("0")) {
+305:                            if (!gBePickingUbic.Lote.isEmpty()) {
+315:                            if (!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()) {
+355:                        if (!txtLicencia.getText().toString().isEmpty()) {
+402:                        if (!txtLicencia.getText().toString().isEmpty()) {
+443:                            if(gl.IdUbicacionMuelle==0 || gl.Codigo_Barra_Muelle.isEmpty() || gBePicking.IdBodegaMuelle==0){
+463:                        if(gl.IdUbicacionMuelle==0 || gl.Codigo_Barra_Muelle.isEmpty() || gBePicking.IdBodegaMuelle==0){
+512:            if (!CodigoProd.isEmpty()) {
+584:                if (!gBePickingUbic.Lic_plate.isEmpty()) {
+619:                            !gBeProducto.Presentaciones.items.isEmpty()) {
+626:                        if (!filteredList.isEmpty()) {
+633:                        + ((!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()) ?
+634:                        " Vence: " + gBePickingUbic.Fecha_Vence : "") + ((!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()) ?
+636:                        + (!gBePickingUbic.Lote.isEmpty() ? " Lote: " + gBePickingUbic.Lote : ""));
+663:            if (!gBePickingUbic.Lic_plate.isEmpty()) {
+689:            if (vUnidadMedida == null || vUnidadMedida.isEmpty()) {
+696:            if (gBePickingUbic.IdPresentacion > 0 && gBeProducto != null && gBeProducto.Presentaciones != null && gBeProducto.Presentaciones.items != null && !gBeProducto.Presentaciones.items.isEmpty()) {
+701:                        if (presentacion.Nombre != null && !presentacion.Nombre.isEmpty()) {
+710:                    + ((!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty())?
+711:                    " Vence: " + gBePickingUbic.Fecha_Vence :"" ) +((!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty())?
+713:                    + (!gBePickingUbic.Lote.isEmpty()?" Lote: " + gBePickingUbic.Lote:""));
+740:            if (!EstadoList.isEmpty()) cmbEstado.setSelection(0);
+754:                if (txtLicencia.getText().toString().isEmpty()){
+810:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+834:            if (!txtLicencia.getText().toString().isEmpty()) {
+882:        if(!pLP.isEmpty() && !pLP.equals("0")){
+889:            if (!AuxList.isEmpty()) {
+910:            if (!txtCodigoProducto.getText().toString().isEmpty()) {
+967:            if (valorIngresado.isEmpty()) {
+996:                if (valorIngresado.isEmpty()) {
+1043:                    if (!gBePickingUbic.Lic_plate.isEmpty()){
+1231:                }else if ((!Escaneo_Pallet) && (!gBePickingUbic.Lic_plate.isEmpty()) &&
+1242:                    if (pCodigo.isEmpty()){
+1254:                    if (!gBePickingUbic.Lic_plate.isEmpty()){
+1445:                }else if ((!Escaneo_Pallet) && (!gBePickingUbic.Lic_plate.isEmpty()) &&
+1460:                    if (pCodigo.isEmpty()){
+1611:            if (!txtCodigoProducto.getText().toString().isEmpty()){
+1619:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+1634:                if (pCodigo.isEmpty()){
+1747:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+1904:        if (licencia.isEmpty()) {
+1909:        if (codigoProducto.isEmpty()) {
+1951:            if (!txtCantidadPick.getText().toString().isEmpty()||!txtCantidadPick.getText().equals("0")){
+2046:                if (gBePickingUbic.Fecha_Vence.isEmpty()){
+2083:            if (!txtLicencia.getText().toString().isEmpty() || !txtCodigoProducto.getText().toString().isEmpty()) {
+2087:                        txtCantidadPick.getText().toString().isEmpty() ||
+2088:                        txtCantidadPick.getText().toString().isEmpty()) {
+2117:                if (trLP.getVisibility() == View.VISIBLE && txtLicencia.getText().toString().isEmpty()) {
+2131:                if (trLP.getVisibility() == View.GONE && txtCodigoProducto.getText().toString().isEmpty()) {
+2257:        if (usuario.isEmpty()) {
+2261:        if (clave.isEmpty()) {
+2597:                if (op.Codigo == null || op.Codigo.isEmpty() ||
+2598:                    op.Clave == null || op.Clave.isEmpty()) {
+2819:                    if (!gBePickingUbic.Lic_plate.isEmpty()) {
+2873:            if (!gBePickingUbic.Lic_plate.isEmpty()) {
+3031:            if (!lpickingubic.items.isEmpty()) {
+3036:                    if (!lpickingubic.items.get(0).Lic_plate.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+73:    private WebServiceHandler ws;
+74:    private XMLObject xobj;
+77:    private final clsBeTrans_picking_ubicList tmpListPickingUbi = new clsBeTrans_picking_ubicList();
+80:    private clsBeProducto_estadoList LProductoEstadoIngreso = new clsBeProducto_estadoList();
+81:    private final clsBeProductoList ListBeStockPalletEscaneado = new clsBeProductoList();
+82:    private clsBeProducto BeStockPallet = new clsBeProducto();
+83:    private clsBeTrans_picking_det BePickingDet = new clsBeTrans_picking_det();
+84:    private clsBeStock_res BeStockRes = new clsBeStock_res();
+85:    private final ArrayList<String> EstadoList = new ArrayList<>();
+86:    private clsBeProducto_Presentacion auxPres = new clsBeProducto_Presentacion();
+88:    private Dialog progress;
+89:    private TextView lblTituloForma;
+90:    private TextView lblLicPlate;
+91:    private TextView lblEstiba;
+92:    private TextView lblCantidad;
+93:    private TextView lblPresSol;
+94:    private TextView lblPresRec;
+95:    private TextView lblUnidadSol;
+96:    private TextView lblUnidadRec;
+97:    private FloatingActionButton btnConfirmarPk;
+98:    private EditText txtLicencia;
+99:    private EditText txtFechaCad;
+100:    private EditText txtLote;
+101:    private EditText txtUniBas;
+102:    private EditText txtCantidadPick;
+103:    private EditText txtPesoPick;
+104:    private EditText txtCodigoProducto;
+105:    private EditText txtPreSol;
+106:    private EditText txtUnidadSol;
+107:    private EditText txtPresRec;
+108:    private EditText txtUnidadRec;
+109:    private EditText txtLicEscaneada;
+110:    private EditText txtTalla;
+111:    private EditText txtColor;
+112:    private Spinner cmbEstado;
+113:    private TableRow trCaducidad;
+114:    private TableRow trLP;
+115:    private TableRow trPeso;
+116:    private TableRow trPresentacion;
+117:    private TableRow trLote;
+118:    private TableRow tblEstiba;
+119:    private TableRow trTalla;
+120:    private TableRow trColor;
+121:    private RelativeLayout relNe;
+122:    private RelativeLayout relReemplazo;
+123:    private RelativeLayout relEnc;
+124:    private ScrollView scrollDatos;
+125:    private TableRow tblTallaColor;
+126:    private RecyclerView rvProductos;
+128:    private boolean Escaneo_Pallet = false, pEntre_Reemplazo = false, pEntre_NoEnc = false;
+129:    private String pLP = "";
+130:    private String pCodigo = "", vUnidadMedida="";
+140:    private int DifDias = 0;
+142:    private TextToSpeech mTTS;
+143:    private boolean confirmar_codigo_en_picking;
+144:    private boolean btnGuardar = false;
+146:    private boolean btnEnterLp = false, btnEnterCod = false;
+147:    private boolean ReubicarPickingAereo = false;
+152:    private TextView lblLicenciaPicking;
+158:    private AlertDialog dialogSupervisor;
+159:    private String opcionPermiso;
+930:    private boolean vPalletValido = false;
+3299:    private TextView txtMensajeDialog;
+3300:    private String mensaje_progress ="";
+3319:    private final Runnable mUpdate = new Runnable() {
+
+=== CHECK: setOnFocusChangeListener ===
+421:            txtCantidadPick.setOnFocusChangeListener((view, hasFocus) -> {
+
+=== CHECK: setOnKeyListener ===
+353:                txtLicencia.setOnKeyListener((v, keyCode, event) -> {
+379:                txtLicEscaneada.setOnKeyListener((v, keyCode, event) -> {
+397:            txtCodigoProducto.setOnKeyListener((v, keyCode, event) -> {
+428:            txtCantidadPick.setOnKeyListener((v, keyCode, event) -> {
+457:            btnConfirmarPk.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+226:        lblEstiba.setText("");
+227:        lblLicPlate.setText("");
+382:                        txtLicEscaneada.setText("");
+571:                lblTituloForma.setText("Pickeando Caja Master");
+597:                    lblLicPlate.setText("");
+632:                lblTituloForma.setText("Prod: " + gBePickingUbic.CodigoProducto + "-" + gBePickingUbic.NombreProducto + "\r\n"
+672:                lblLicPlate.setText("");
+709:            lblTituloForma.setText("Prod: " + gBePickingUbic.CodigoProducto + "-" + gBePickingUbic.NombreProducto + "\r\n"
+795:        txtLicencia.setText("");
+796:        txtLote.setText("");
+798:        txtUniBas.setText("");
+799:        txtCantidadPick.setText("0.00");
+801:        txtPesoPick.setText("0.00");
+818:                txtFechaCad.setText("");
+857:                                    //txtLicencia.setText("");
+900:                txtLicencia.setText("");
+1161:                                                            txtLicencia.setText("");
+1182:                                                txtLicencia.setText("");
+1193:                                        txtLicencia.setText("");
+1210:                        txtLicencia.setText("");
+1371:                                                            txtLicencia.setText("");
+1392:                                                txtLicencia.setText("");
+1403:                                        txtLicencia.setText("");
+1420:                        txtLicencia.setText("");
+1536:            lblLicPlate.setText("NLP:"+BeStockPallet.Stock.Lic_plate);
+1577:            txtPreSol.setText("0");
+1649:                txtCantidadPick.setText(""+0);
+1662:                    //txtCantidadPick.setText(""+CantARec);
+1686:                txtPesoPick.setText("0");
+1755:                txtFechaCad.setText("");
+1765:                lblCantidad.setText("Cantidad ("+auxPres.Nombre+"): ");
+1767:                lblCantidad.setText("Cantidad ("+vUnidadMedida+"): ");
+1772:                txtCantidadPick.setText(""+0);
+1776:                txtCantidadPick.setText(""+CantARec);
+1788:                txtPesoPick.setText("0");
+2716:                                txtPresRec.setText("0.00");
+2717:                                txtUnidadRec.setText("0.00");
+3098:                    lblCantidad.setText("Cantidad ("+auxPres.Nombre+"): ");
+3108:                        lblEstiba.setText("Camas por Tarima: " + vCamasPorTarima + " Cajas por cama: " +  vCajasPorCama);
+3111:                        lblEstiba.setText("");
+3116:            lblCantidad.setText("Cantidad ("+vUnidadMedida+"): ");
+3118:            lblEstiba.setText("");
+

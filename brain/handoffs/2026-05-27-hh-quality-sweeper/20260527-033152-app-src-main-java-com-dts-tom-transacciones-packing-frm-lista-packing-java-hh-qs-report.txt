@@ -1,0 +1,38 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Packing/frm_lista_packing.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+155:            if (pListBeTareasPickingHH!=null){
+157:                if (pListBeTareasPickingHH.items!=null){
+
+=== CHECK: isEmpty\(\) ===
+366:            if (txtTarea.getText().toString().isEmpty()) return;
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+38:    private EditText txtTarea;
+41:    private ListView listView;
+42:    private ProgressBar pbar;
+44:    private WebServiceHandler ws;
+45:    private XMLObject xobj;
+47:    private clsBeTrans_picking_encList pListBeTareasPickingHH = new clsBeTrans_picking_encList();
+48:    private final ArrayList<clsBeTareasIngresoHH> BeListTareas = new ArrayList<clsBeTareasIngresoHH>();
+49:    private final ArrayList<clsBeTrans_picking_enc> BeListTareasPicking = new ArrayList<clsBeTrans_picking_enc>();
+50:    private list_adapt_tareashh_picking adapterPicking;
+52:    private ObjectAnimator anim;
+53:    private ProgressDialog progress;
+55:    private boolean idle=true;
+57:    private ImageView btnBuscarPedido;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+121:            txtTarea.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+183:                    lblRegs.setText("Regs: "+ count);
+

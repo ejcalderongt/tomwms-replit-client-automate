@@ -180,12 +180,34 @@ Mientras un solo cliente afectado quede sin fix aplicado, este BUG sigue OPEN.
 
 ---
 
+## Cross-impact con Release 8.4.2 La Cumbre (2026-05-05)
+
+> Detalle completo: `release-notes/v8.4.2-la-cumbre-2026-05-05.md` §Cross-impact con BUG-001
+
+**El release 8.4.2 NO arregla este BUG**, pero introduce 5 cambios que
+tocan el mismo modulo y obligan a re-evaluar el PLAYBOOK-FIX:
+
+| Item release | Impacto sobre BUG-001 | Severidad |
+|---|---|---|
+| BOF #1 — UI Reemplazo desde BOF | DUPLICA universo de operadores que pueden generar el bug (antes solo HH, ahora tambien BOF) | **CRITICA** — auditar antes de promover |
+| HH #4 — Password autorizacion reemplazo | Contencion por friccion (baja volumen, no fix) | MEDIA — riesgo de "falso fix" |
+| HH #8 — Restricciones stock reemplazo (4 nuevos flags bodega) | Filtra que stock es valido como reemplazo, NO arregla descuento del danado original | MEDIA |
+| HH #10 — Cambio ubic+estado+licencia en 1 movimiento | Cambia patron de generacion `trans_movimientos`; queries forenses del PLAYBOOK pueden necesitar ajuste | ALTA — re-validar queries |
+| BOF #11-#15 — Ajustes con borrador + Excel | Habilita reconciliacion masiva via AJCANTN importado | OPORTUNIDAD — sumar al PLAYBOOK §reconciliacion |
+
+**Recomendacion**: aplicar PLAYBOOK-FIX ANTES de promover el release 8.4.2
+a clientes con BUG-001 activo (Killios, BYB, MERCOPAN).
+
+---
+
 ## Cross-refs
 
 - Caso anchor: `customer-open-cases/CP-013-killios-wms164/`
 - Caso transversal historico (DEPRECATED): `debuged-cases/CP-015-bug-danado-picking-transversal/`
 - Trace de codigo profundo: `code-deep-flow/traza-002-danado-picking.md`
 - Feature hermano (mismo modulo, archivos vecinos): `wms-incorporated-features/FEAT-001-validacion-implosion-rack/`
+- Release que cruza este bug: `release-notes/v8.4.2-la-cumbre-2026-05-05.md`
+- Reconciliacion 2026-05-06 (datos Carolina): `reconciliacion/2026-05-06-replanteo-tras-datos-carolina.md`
 - Convencion taxonomica: `agent-context/TAXONOMIA.md`
 - Convencion numeracion: `agent-context/NUMERACION.md`
 - Colas abiertas: `colas-pendientes.md` (C-006 a C-011 son del bug; C-019 es de la interaccion con FEAT-001)

@@ -1,0 +1,115 @@
+id: bof-gs-plan-20260527-01
+tag: "#EJC20260527"
+scope: "TOMIMSV4"
+objective: "Reducir latencia y riesgo funcional en BOF atacando primero los hotspots de mayor impacto."
+
+strategy:
+  waves:
+    - wave: 1
+      name: "Top 5 impacto inmediato"
+      goal: "Quick wins + reducción de roundtrips/queries pesados sin cambio funcional."
+      success_criteria:
+        - "0 errores de compilación"
+        - "0 regresiones en smoke tests operativos"
+        - "al menos 3 consultas pesadas migradas/optimizadas"
+    - wave: 2
+      name: "Top 6-10 consolidación"
+      goal: "Estandarizar DAL crítico y reducir duplicación SQL."
+      success_criteria:
+        - "fragmentos SQL duplicados reducidos >= 20%"
+        - "métodos DAL críticos con validaciones uniformes"
+    - wave: 3
+      name: "Top 11-20 hardening"
+      goal: "Refuerzo de gobernanza de reglas y preparación de auditoría continua."
+      success_criteria:
+        - "cobertura de checklist de reglas >= 90%"
+        - "residual risk documentado por archivo"
+
+wave_1_top5:
+  - rank: 1
+    file: "DAL/FixTheBug/clsLnTablas_relacionadas.vb"
+    why: "Alta densidad de SELECT * y alto puntaje de query pesada."
+    actions:
+      - "Reemplazar SELECT * por proyección explícita de columnas."
+      - "Verificar filtros de búsqueda y ordenamiento para evitar full scans."
+      - "Evaluar mover consultas repetidas a SP dedicado versionado."
+    risk: "medio"
+    validation:
+      - "comparar resultado antes/después con dataset de referencia"
+      - "medir tiempo de ejecución en escenario de carga media"
+
+  - rank: 2
+    file: "DAL/Mantenimientos/Producto/Producto/clsLnProducto.vb"
+    why: "Alta mezcla de riesgo de regla de negocio + roundtrip."
+    actions:
+      - "Mapear reglas hardcodeadas de estado/parámetro y centralizarlas."
+      - "Reducir roundtrips agrupando lecturas consecutivas."
+      - "Añadir guardas uniformes para parámetros obligatorios."
+    risk: "alto"
+    validation:
+      - "checklist de reglas por flujo (altas/edición/producto-bodega)"
+      - "prueba cruzada con datos reales de QA"
+
+  - rank: 3
+    file: "TOMIMSV4/Mantenimientos/Bodega/frmBodega.vb"
+    why: "Exceso de candidatos no usados; deuda de mantenibilidad."
+    actions:
+      - "Separar métodos event-handler huérfanos vs realmente activos."
+      - "Eliminar código muerto confirmado (no diseñador, no wiring dinámico)."
+      - "Reducir ruido para facilitar cambios futuros."
+    risk: "medio"
+    validation:
+      - "validar eventos UI críticos (load, guardar, refrescar)"
+      - "compilar y ejecutar smoke manual de formulario"
+
+  - rank: 4
+    file: "DAL/Interface/Barras_Pallet/clsLnI_nav_barras_pallet.vb"
+    why: "Consultas amplias + potencial cuello por volumen."
+    actions:
+      - "Reescribir consultas principales con columnas explícitas."
+      - "Agregar condiciones de corte tempranas por estado/empresa/bodega."
+      - "Proponer índice SQL objetivo (si no existe) en columnas filtro."
+    risk: "medio"
+    validation:
+      - "comparar filas retornadas antes/después"
+      - "benchmark simple en QA"
+
+  - rank: 5
+    file: "DAL/Mantenimientos/Producto/Producto/clsLnProducto_Partial.vb"
+    why: "Roundtrip density alta en operaciones de producto."
+    actions:
+      - "Combinar secuencias de consulta en una sola llamada cuando aplique."
+      - "Eliminar lecturas redundantes de la misma entidad en el mismo request."
+      - "Preparar candidate-SP para operaciones frecuentes de lectura compuesta."
+    risk: "alto"
+    validation:
+      - "traza de llamadas antes/después"
+      - "verificación funcional de altas/actualizaciones"
+
+execution_protocol:
+  order:
+    - "Intervenir 1 archivo por vez"
+    - "Compilar + smoke inmediatamente"
+    - "Documentar evidencia y residual risk"
+  gates:
+    - "No tocar Reference.vb"
+    - "No refactor cross-file sin evidencia de impacto"
+    - "Rollback rápido por archivo ante regresión"
+
+kpis_tracking:
+  - name: "mttr_reduccion_estimada"
+    baseline: "pendiente"
+    target: "-25% en 90 días"
+  - name: "queries_pesadas_optimizadas"
+    baseline: 0
+    target: 15
+  - name: "roundtrip_hotspots_reducidos"
+    baseline: 51
+    target: 30
+  - name: "duplicados_sql_reducidos"
+    baseline: 50
+    target: 35
+
+notes:
+  - "Priorizar compatibilidad funcional sobre agresividad de refactor."
+  - "Toda optimización con evidencia comparativa mínima."

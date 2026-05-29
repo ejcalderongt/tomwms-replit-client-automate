@@ -1,0 +1,68 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_contados.java
+=== CHECK: ==\s*null ===
+498:            if (dditem == null || dditem.getIdinventariodet() == 0){
+
+=== CHECK: !=\s*null ===
+357:            if (BeListDet!=null){
+358:                if (BeListDet.items!=null){
+709:            if (BeProducto!=null){
+788:            if (BeListPres!=null){
+789:                if (BeListPres.items!=null){
+810:            if (BeListEstado!=null){
+811:                if (BeListEstado.items!=null){
+
+=== CHECK: isEmpty\(\) ===
+145:                        if (!txtCodProd.getText().toString().isEmpty()) {
+158:                        if (!txtUbicConts.getText().toString().isEmpty()) {
+436:            if (!dditem.Idproductoestado.isEmpty()){
+517:            if (txtCantDetalle.getText().toString().isEmpty()||txtCantDetalle.getText().equals("")||txtCantDetalle.getText().equals("0")){
+524:                if (txtPesoDetalle.getText().toString().isEmpty()||txtPesoDetalle.getText().equals("")||txtPesoDetalle.getText().equals("0")){
+713:            if (!txtUbicConts.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+517:            if (txtCantDetalle.getText().toString().isEmpty()||txtCantDetalle.getText().equals("")||txtCantDetalle.getText().equals("0")){
+524:                if (txtPesoDetalle.getText().toString().isEmpty()||txtPesoDetalle.getText().equals("")||txtPesoDetalle.getText().equals("0")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+51:    private ListView listView;
+54:    private DatePicker dpResult;
+55:    private ImageView imgDate;
+57:    private Dialog dialog;
+59:    private WebServiceHandler ws;
+60:    private XMLObject xobj;
+62:    private clsBeTrans_inv_detalle_gridList BeListDet = new clsBeTrans_inv_detalle_gridList();
+63:    private clsBeProducto BeProducto = new clsBeProducto();
+64:    private clsBeProducto BBeProducto = new clsBeProducto();
+65:    private clsBeBodega_ubicacion BeUbica = new  clsBeBodega_ubicacion();
+66:    private final ArrayList<clsBeTrans_inv_detalle_grid> BeListContados = new ArrayList<clsBeTrans_inv_detalle_grid>();
+67:    private list_adapt_contados adapter;
+68:    private clsBeTrans_inv_detalle_grid selItem;
+69:    private clsBeTrans_inv_detalle dditem = new clsBeTrans_inv_detalle();
+70:    private clsBeProducto_PresentacionList BeListPres = new clsBeProducto_PresentacionList();
+71:    private clsBeProducto_estadoList BeListEstado = new clsBeProducto_estadoList();
+73:    private final ArrayList<String> EstadoList= new ArrayList<String>();
+74:    private final ArrayList<String> PresList= new ArrayList<String>();
+77:    private int year;
+78:    private int month;
+79:    private int day;
+83:    private int IdEstadoSelect=0;
+84:    private int IdPresSelect=0;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+141:            txtCodProd.setOnKeyListener(new View.OnKeyListener() {
+154:            txtUbicConts.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+372:                    btnRegs.setText("Regs: "+Count);
+375:                    btnRegs.setText("Regs: 0");
+378:                btnRegs.setText("Regs: 0");
+466:                txtPesoDetalle.setText("0");
+476:                txtLoteDetalle.setText("");
+486:                txtVenceDetalle.setText("");
+580:            txtCodProd.setText("");
+581:            lblPrdCont.setText("");
+582:            txtUbicConts.setText("");
+

@@ -1,0 +1,82 @@
+slug: domain-hh-android
+nombre: Handheld Android - TOMHH2025 Java
+proposito: Aplicacion movil para operadores de almacen. Single repo, single app id.
+estado: vigente
+ramas_relevantes: [dev_2023_estable, dev_2028_merge, dev_2028_Cumbre]
+runtime:
+  java_version: 8+
+  android:
+    minSdk: 24
+    targetSdk: 24
+    compileSdk: 34
+    applicationId: com.dts.tom
+    version_actual: 8.2.3
+  ide: Android Studio
+
+stats:
+  archivos_java: 405
+  activities: 55
+
+archivos_clave:
+  comunicacion_backend:
+    - { path: app/src/main/java/com/dts/tom/WebService.java, rol: "Cliente SOAP/JSON contra WSHHRN. Linea 352 tiene .replace(N,n) que debe eliminarse (REGLA 3)" }
+  recepcion:
+    - { path: app/src/main/java/com/dts/tom/recepcion/, rol: "Activities recepcion (OC, MI3, pallet)" }
+  picking:
+    - { path: app/src/main/java/com/dts/tom/picking/, rol: "Activities picking" }
+  verificacion:
+    - { path: app/src/main/java/com/dts/tom/verificacion/, rol: "Activities verificacion + ZPL etiquetas" }
+  ajuste:
+    - { path: app/src/main/java/com/dts/tom/ajuste/, rol: "Activities ajuste" }
+
+reglas_vinculantes:
+  - "REGLA 3: Mantener N en lugar de n - eliminar .replace(N,n) en WebService.java linea 352. UTF-8 directo."
+  - "REGLA 5: NO mezclar cambios HH y BOF en mismo commit"
+  - "REGLA 6: Cantidad en UMBAS para stock/movimientos/stock_res. Si IdPresentacion > 0, interpretar Cantidad/Factor al usuario pero persistir UMBAS."
+  - "REGLA 6 bis: Si NO hay presentacion, objeto presentacion es null y factor 0 -> usar UMBAS, NO abortar"
+  - "REGLA 6 ter: CamasPorTarima y CajasPorCama si vienen null/0 son palletizado nuevo definido - NO defaultear a 1 ni abortar"
+  - "REGLA 7: En HH, blindar fronteras WS/estado vivo antes de usar objetos globales, .items.get(0), .items, Stock/Detalle/Presentaciones o strings de WS. Si el contexto quedo obsoleto por refresco/reintento, mostrar recarga operativa y no continuar con datos viejos."
+  - "REGLA 8: Consulta de existencias HH no debe paginar. WSHHRN Get_Stock_Consulta_CI_Json devuelve todos los registros filtrados en Items; si se optimiza, mantener JSON sin TOP/OFFSET/FETCH y ordenar estable para totales HH."
+
+patrones_brain:
+  - brain/code-changes/HH/  # carpeta - listar contenido
+  # ver tambien:
+  - brain/handoffs/2026-05-20-audit-hh-cantidad-umbas-pattern/
+  - brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/
+
+tablas_bd_consumidas_via_wshhrn:
+  - tarea_hh                              # tareas asignadas al operador
+  - trans_re_oc, trans_picking_ubic       # captura HH
+  - stock, stock_res                      # consulta y reserva
+  - tarea_hh_estado                       # ver brain/reference/catalogo-tarea-hh-estados.md
+
+glosario:
+  HH: "Handheld (terminal Android Honeywell/Zebra usado por operadores)"
+  IdTipoTarea: "1=Recepcion, 2=Picking, 3=Verificacion (ver brain/reference/catalogo-tarea-hh-estados.md)"
+  ZPL: "Zebra Programming Language para impresion etiquetas"
+  Cantidad_UMBAS: "Siempre en unidad basica - regla 6"
+
+cross_refs:
+  - domain-integration-services  # WSHHRN es el backend; protocolo SOAP/JSON
+  - domain-bof                   # contraparte escritorio del flujo
+  - domain-reserva               # cuando la HH dispara reserva (picking)
+  - domain-database              # cuando se diagnostica via SQL los efectos del HH
+
+entry_points:
+  preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
+  bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
+  parsing_soap: "WebService.java - parseo respuestas WSHHRN. Cuidar .replace(N,n) linea 352"
+  nueva_activity: "Seguir patron de activities existentes en mismo modulo (recepcion/picking/etc)"
+  cliente_cumbre: "rama dedicada dev_2028_Cumbre - NO mezclar con dev_2028_merge"
+
+ejemplos_tareas_pasadas:
+  - { fecha: 2026-05-20, caso: "Audit HH cantidad UMBAS pattern", handoff: brain/handoffs/2026-05-20-audit-hh-cantidad-umbas-pattern/, status: "ACCEPTANCE + ADDENDUM disponibles" }
+  - { fecha: 2026-05-20, caso: "HH recepcion pallet presentacion cantidad", handoff: brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ }
+  - { fecha: 2026-05-26, caso: "HH cambio ubicacion: foco destino desde recepcion", nota: "Fix en frm_cambio_ubicacion_ciega con tag #EJC20260526; no tocar recepcion detalle para este sintoma." }
+  - { fecha: 2026-05-27, caso: "HH blindaje nulos/listas estrategico", nota: "Patron #EJC20260527 aplicado en cambio ubicacion, consulta existencias detalle y verificacion consolidada; extender por frontera WS, no masivo." }
+  - { fecha: 2026-05-27, caso: "HH consulta existencias sin paginacion", nota: "Get_Stock_Consulta_CI_Json debe retornar Items completos acorde filtros; Total=RegistrosDevueltos y SinPaginacion=True." }
+
+extension_points:
+  - "Falta inventario de las 55 activities con su flujo y endpoint WSHHRN consumido"
+  - "Falta diff completo HH 2023 vs 2028 (parcialmente en brain/code-deep-flow/DIFF-HH-2023-VS-2028.md)"
+  - "Falta documentar como se distribuye el APK por cliente (cumbre tiene rama propia)"

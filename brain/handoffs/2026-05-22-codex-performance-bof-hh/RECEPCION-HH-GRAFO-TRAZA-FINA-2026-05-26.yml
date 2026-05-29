@@ -1,0 +1,212 @@
+meta:
+  nombre: "Recepción HH - Grafo y trazabilidad fina"
+  fecha: "2026-05-26"
+  autor: "Codex + EJC"
+  objetivo:
+    - "Documentar flujo end-to-end de recepción HH (lista -> detalle -> datos)."
+    - "Identificar por qué se percibe lento y dónde medir/optimizar."
+    - "Estandarizar ruta JSON para evitar variaciones XML/JSON."
+  alcance:
+    repo_hh: "C:/Users/yejc2/StudioProjects/TOMHH2025"
+    repo_ws: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN"
+    repo_dal: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL"
+  ultima_actualizacion:
+    cambio: "Homologación GetSingleRec a JSON en frm_detalle_ingresos"
+    tag: "#EJC20260526"
+    archivo: "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java"
+
+flujo_principal:
+  descripcion: "Usuario entra a Tareas de Recepción, selecciona/escanea tarea y continúa a captura de recepción."
+  pasos:
+    - "HH.REC.LISTA_CARGA"
+    - "HH.REC.RESOLVER_TAREA"
+    - "HH.REC.GET_SINGLE"
+    - "HH.REC.DETALLE_CARGA"
+    - "HH.REC.DATOS_CAPTURA"
+
+nodos:
+  # HH
+  - id: "HH.REC.LISTA_CARGA"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+    metodo: "Load() -> execws(1)"
+    ws:
+      endpoint: "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador_JSON"
+      tipo: "JSON"
+    costo_estimado_ms:
+      red: "120-700"
+      parse: "20-120"
+      ui: "30-120"
+    riesgo_lentitud:
+      - "Lista amplia por operador sin paginado."
+      - "Parse + render de listview en equipos HH de bajos recursos."
+
+  - id: "HH.REC.RESOLVER_TAREA"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+    metodo: "processIdOrdenCompra()/processListaOrdenCompra()"
+    ws:
+      endpoint: "Get_IdOrdenCompraEnc_By_Licencia o Get_ListOrdenCompraEnc_By_Codigo_Producto"
+      tipo: "SOAP/XML"
+    costo_estimado_ms:
+      red: "100-500"
+      parse: "10-90"
+      logica_local: "10-70"
+    riesgo_lentitud:
+      - "Escaneo con fallback (licencia -> producto) agrega roundtrip."
+      - "Sin cache caliente, siempre cae a resolver nuevamente."
+
+  - id: "HH.REC.GET_SINGLE"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+    metodo: "execws(7) -> processIdRecepcion()"
+    ws:
+      endpoint: "GetSingleRec_JSON_Lite (fallback GetSingleRec_JSON)"
+      tipo: "JSON"
+    costo_estimado_ms:
+      red: "180-1100"
+      parse: "40-220"
+      cache: "0-20"
+    riesgo_lentitud:
+      - "Payload de recepción puede ser pesado por detalle OC y objetos anidados."
+      - "Cuando Lite falla y cae fallback, duplica costo."
+
+  - id: "HH.REC.DETALLE_CARGA"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_detalle_ingresos.java"
+    metodo: "Load() -> execws(1)->(2)->(3) -> processgBeRecepcion()"
+    ws:
+      endpoints:
+        - "Get_Banderas_Recepcion"
+        - "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa"
+        - "GetSingleRec_JSON"
+      tipo: "Mixto (SOAP + JSON)"
+    costo_estimado_ms:
+      secuencia_total: "350-1800"
+      parse_json_single: "40-220"
+    riesgo_lentitud:
+      - "Encadenamiento serial de 3 llamadas antes de habilitar interacción."
+      - "Doble carga de GetSingle si no se reusa contexto global."
+    estado_actual:
+      - "Homologado a JSON para GetSingleRec (#EJC20260526)."
+      - "Reusa gl.gBeRecepcion cuando coincide IdRecepcionEnc."
+
+  - id: "HH.REC.DATOS_CAPTURA"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+    metodo: "carga detalle/validaciones y guardado"
+    ws:
+      tipo: "Mixto (varios endpoints)"
+    costo_estimado_ms:
+      por_operacion: "120-900"
+    riesgo_lentitud:
+      - "Formulario con alta densidad de callbacks y validaciones."
+      - "Mayor riesgo de overlap si hay múltiples triggers de teclado/scanner."
+
+  # WS
+  - id: "WS.REC.GET_SINGLE_JSON"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+    metodo: "GetSingleRec_JSON / GetSingleRec_JSON_Lite"
+    internals:
+      - "clsLnTrans_re_enc.GetSingleHH(...)"
+      - "serialización JSON (Process_Result)"
+    riesgo_lentitud:
+      - "Objeto de respuesta grande en escenarios con OC detallada."
+      - "Posible recomputo por falta de cache efectivo (TTL corto o cold)."
+
+  # DAL
+  - id: "DAL.REC.ENC"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Encabezado/clsLnTrans_re_enc_Partial.vb"
+    metodo: "GetSingleHH / GetSingleHH_Lite"
+    riesgo_lentitud:
+      - "Carga de objetos relacionados (orden compra, tarea HH, muelle, etc.)."
+      - "Consultas encadenadas sin proyección mínima cuando no es Lite."
+
+  - id: "DAL.REC.DET"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb"
+    metodo: "Get_All_By_IdRecepcionEnc(...)"
+    riesgo_lentitud:
+      - "Hidratación de entidades por fila (producto/presentación/estado/talla/color)."
+      - "N+1 lógico en enriquecimiento por cada detalle."
+
+  # BD
+  - id: "BD.TRANS_RE"
+    capa: "BD"
+    tablas:
+      - "trans_re_enc"
+      - "trans_re_det"
+      - "trans_re_oc"
+      - "trans_oc_enc/trans_oc_det (relación)"
+      - "producto / producto_talla_color / stock_rec"
+    riesgo_lentitud:
+      - "Índices no óptimos para filtros por IdRecepcionEnc / IdOrdenCompraEnc."
+      - "Bloqueos intermitentes en horas pico de operación."
+
+aristas:
+  - from: "HH.REC.LISTA_CARGA"
+    to: "WS.REC.GET_LISTA"
+    via: "Get_All_Recepciones_For_HH_By_IdBodega_By_Operador_JSON"
+  - from: "HH.REC.RESOLVER_TAREA"
+    to: "WS.REC.RESOLVER"
+    via: "Get_IdOrdenCompraEnc_By_Licencia / Get_ListOrdenCompraEnc_By_Codigo_Producto"
+  - from: "HH.REC.GET_SINGLE"
+    to: "WS.REC.GET_SINGLE_JSON"
+    via: "GetSingleRec_JSON_Lite / GetSingleRec_JSON"
+  - from: "WS.REC.GET_SINGLE_JSON"
+    to: "DAL.REC.ENC"
+    via: "clsLnTrans_re_enc.GetSingleHH*"
+  - from: "DAL.REC.ENC"
+    to: "DAL.REC.DET"
+    via: "carga de detalle y entidades relacionadas"
+  - from: "DAL.REC.*"
+    to: "BD.TRANS_RE"
+    via: "SELECT sobre encabezado/detalle/OC"
+  - from: "HH.REC.DETALLE_CARGA"
+    to: "HH.REC.DATOS_CAPTURA"
+    via: "startActivity(frm_list_rec_prod / frm_recepcion_datos)"
+
+diagnostico_lentitud_actual:
+  hallazgos:
+    - id: "L1"
+      severidad: "alta"
+      detalle: "Secuencia serial de llamadas en detalle de recepción (banderas -> estado default -> single rec)."
+      impacto: "Aumenta TTI (time-to-interact) en equipos HH."
+    - id: "L2"
+      severidad: "alta"
+      detalle: "Payload de GetSingleRec con alto nivel de anidamiento."
+      impacto: "Costo de red y parse en JVM Android."
+    - id: "L3"
+      severidad: "media"
+      detalle: "Persistencia de caminos mixtos SOAP/JSON por pantalla."
+      impacto: "Comportamiento no homogéneo y depuración más lenta."
+    - id: "L4"
+      severidad: "media"
+      detalle: "Faltan métricas de latencia por callback para distinguir red vs DAL."
+      impacto: "Optimización reactiva en vez de dirigida por evidencia."
+
+instrumentacion_sugerida:
+  hh:
+    - "Registrar timestamp por callback (inicio/fin) con etiqueta endpoint y tamaño aproximado de respuesta."
+    - "Medir TTI desde tap/enter hasta pantalla interactiva."
+  ws:
+    - "Log técnico por endpoint con ms total y ms DAL (si aplica)."
+    - "Agregar correlation-id por request HH para traza cross-layer."
+  dal_bd:
+    - "Medir ms por consulta principal de GetSingleHH/GetSingleHH_Lite."
+    - "Revisar plan de ejecución e índices por IdRecepcionEnc."
+
+quick_wins:
+  - "Mantener ruta JSON homogénea para GetSingleRec en todas las pantallas de recepción."
+  - "Reusar gl.gBeRecepcion para evitar llamada duplicada al entrar a detalle."
+  - "Preferir endpoint Lite cuando el siguiente paso no necesita detalle completo."
+  - "Agregar guardas inFlight en pantallas de recepción con alto input scanner."
+
+validacion_post_fix:
+  checklist:
+    - "Entrar desde lista de tareas recepción y abrir detalle sin error XMLObject."
+    - "Confirmar que no se invoca GetSingleRec (XML) en frm_detalle_ingresos."
+    - "Verificar que flujo mantiene datos de propietario/proveedor/tipo doc sin regresión."
+    - "Comparar tiempo promedio antes/después (mínimo 10 ejecuciones)."

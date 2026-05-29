@@ -1,0 +1,102 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java
+=== CHECK: ==\s*null ===
+390:            if (selitem == null || selitem.IdUbicacion == 0) {
+527://            if (progress ==null){
+1379:            if (lBeProducto == null || lBeProducto.items == null) {
+
+=== CHECK: !=\s*null ===
+415:                    if (pSubListPickingU!=null){
+417:                        if (pSubListPickingU.items!=null){
+449:                    if (gBePicking.ListaPickingDet != null) {
+451:                        if (gBePicking.ListaPickingDet.items != null) {
+561:                    if (pSubListPickingU!=null){
+563:                        if (pSubListPickingU.items!=null){
+595:                    if (gBePicking.ListaPickingDet != null) {
+597:                        if (gBePicking.ListaPickingDet.items != null) {
+716:            if (plistPickingUbi!=null){
+718:                if (plistPickingUbi.items!=null){
+773:            if (plistPickingUbi!=null){
+774:                if (plistPickingUbi.items!=null){
+890:            if (plistPickingUbi != null){
+891:                if (plistPickingUbi.items != null){
+1230:            if (gBePicking!=null){
+1325:            if(vListStock2 != null){
+1460:            if (beUbicacion!=null){
+1575:       /* if(window!=null){
+1581:            if(txtMensajeDialog!=null){
+1592:            if(progress!=null){
+1595:                    if(txtMensajeDialog!=null){
+
+=== CHECK: isEmpty\(\) ===
+286:                    if (termino.isEmpty()) {
+317:                if (!txtFiltro.getText().toString().isEmpty()) {
+492:            if (!termino.isEmpty()) {
+690:            titulo = gl.gReferencia.isEmpty() ? "Picking #" + gl.gIdPickingEnc : "Picking #" + gl.gIdPickingEnc +" - "+gl.gReferencia;
+1231:                if (gBePicking.IdBodegaMuelle != 0 && !gBePicking.NombreMuelle.isEmpty()) {
+1287:            if (!gl.termino.isEmpty())
+1303:            if (!gl.termino.isEmpty()){
+1332:            if (!gl.termino.isEmpty()){
+1496:            if (!gl.termino.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+69:    private WebServiceHandler ws;
+70:    private XMLObject xobj;
+72:    private Dialog progress;
+73:    private ListView listView;
+74:    private Spinner cmbOrdenadorPor;
+83:    private clsBeTrans_picking_det gbePickingDet = new clsBeTrans_picking_det();
+84:    private final clsBeTrans_pe_enc gBePedidoEnc = new clsBeTrans_pe_enc();
+86:    private ArrayList<clsBeTrans_picking_ubic> BeListPickingUbic = new ArrayList<clsBeTrans_picking_ubic>();
+87:    private final ArrayList<clsBeTrans_picking_ubic> AuxBePickingUbic = new ArrayList<clsBeTrans_picking_ubic>();
+88:    private ArrayList<clsBeTrans_picking_ubic> AuxBeListPickingUbic = new ArrayList<clsBeTrans_picking_ubic>();
+89:    private list_adapt_detalle_tareas_picking adapter;
+90:    private list_adapt_detalle_tareas_picking2 adapter2;
+91:    private list_adapt_detalle_tareas_picking3 adapter3;
+94:    private final List TipoOrden = new ArrayList();
+96:    private boolean primeravez = false;
+100:    private boolean PreguntoPorDiferencia=false;
+101:    private boolean Finalizar=true;
+102:    private boolean areaprimera = true;
+103:    private final boolean filtros = false;
+104:    private boolean asignar_operador_linea_picking = false;
+105:    private ArrayList<String> ListRack = new ArrayList<>();
+106:    private ArrayList<String> ListRackSel = new ArrayList<>();
+107:    private ArrayList<Integer> IdxFiltos = new ArrayList<>();
+110:    private Boolean procesando = false;
+1565:    private TextView txtMensajeDialog;
+1566:    private String mensaje_progress ="";
+1609:    private final Runnable mUpdate = new Runnable() {
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+275:            txtUbicacionFiltro.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+162:            lblBodega.setText("Bodega: "+ gl.IdBodega + " - "+gl.gNomBodega);
+163:            lblOperador.setText("Operador: "+gl.OperadorBodega.IdOperadorBodega+" - "+ gl.OperadorBodega.Nombre_Completo);
+305:            txtFiltro.setText("");
+408:                    txtUbicacionFiltro.setText(""+selitem.Lic_plate);
+444:                    txtUbicacionFiltro.setText(""+selitem.Lic_plate);
+469:            txtFiltro.setText("");
+517:            btnPendientes.setText("Regs: " + AuxBePickingUbic.size());
+555:                txtUbicacionFiltro.setText(""+selitem.IdUbicacion);
+591:                txtUbicacionFiltro.setText(""+selitem.IdUbicacion);
+615:            txtFiltro.setText("");
+686:            btnRes_Det.setText("D.");
+763:                    btnPendientes.setText("Regs: "+count);
+825:                btnPendientes.setText("Completa");
+862:                    btnRes_Det.setText("D.");
+867:                    btnRes_Det.setText("C.");
+1233:                    lblMuelle.setText("Muelle: " + gBePicking.IdBodegaMuelle + " - " + gBePicking.NombreMuelle);
+1351:                btnRes_Det.setText("D.");
+1354:                btnRes_Det.setText("C.");
+1478:                txtUbicacionFiltro.setText("");
+1502:                txtUbicacionFiltro.setText("");
+1666:                btnPendientes.setText("Regs: " + BeListPickingUbic.size());
+1728:            btnPendientes.setText("Regs: " + BeListPickingUbic.size() + "/" + AuxBeListPickingUbic.size());
+

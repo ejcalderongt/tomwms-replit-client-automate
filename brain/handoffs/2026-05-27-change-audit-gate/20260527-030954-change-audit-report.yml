@@ -1,0 +1,11 @@
+id: cag-20260527-031001
+tag: '#EJC20260527'
+status: PASS
+checks:
+  null_safety: done
+  business_rules: done
+  db_correlation: done
+  state_safety: referenced_by_state_machine_auditor
+findings:
+  - none
+recommendation: 'Promote to PASS only when WARN findings are acknowledged or fixed.'

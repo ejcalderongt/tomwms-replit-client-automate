@@ -1,0 +1,11 @@
+id: telemetry-param-impact-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+processes: []
+parameters: []
+impact:
+  by_bodega: []
+  by_interface: []
+  blast_radius: []
+unused_candidates: []
+overlap_candidates: []
+

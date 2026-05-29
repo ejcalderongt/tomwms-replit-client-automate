@@ -1,0 +1,384 @@
+meta:
+  modulo: inventario_ciclico
+  fecha: 2026-05-26
+  autor: Codex
+  objetivo: >
+    Grafo fino end-to-end del proceso de inventario ciclico con reconteo y regularizacion,
+    incluyendo HH, WebService, BOF, DAL y persistencia para acelerar diagnostico y cambios.
+  enfoque_modelado:
+    estrategia: "un solo archivo segmentado/ramificado"
+    motivo:
+      - "Permite ver de un vistazo el flujo cross-layer completo (HH->WS->DAL->BD->BOF)."
+      - "Evita drift entre dos documentos separados para BOF y HH."
+      - "Facilita impacto de cambios cuando una regla nace en HH y se materializa en DAL/BD."
+    reglas_lectura:
+      - "Segmentos por canal: HH, WS, BOF, DAL, BD."
+      - "Cada nodo incluye archivo real y operacion principal."
+      - "Aristas con condicion de negocio y datos que viajan."
+  decision_funcional_vigente:
+    caja_master:
+      gate: Control_Talla_Color
+      estado: vigente
+      nota: "Mantener visibilidad/uso ligado a talla-color hasta nueva definición formal de negocio."
+
+entradas_parametros_clave:
+  bodega:
+    - Control_Talla_Color
+    - Control_Gondola
+    - Crea_Presentacion_Conteo
+    - Crea_Estado_Conteo
+    - Crea_Ubicacion_Conteo
+  inventario:
+    - Idinventarioenc
+    - Pendientes_vs_Contados
+    - Reconteo_activo
+  producto:
+    - IdProductoBodega
+    - IdProductoTallaColor
+    - IdPresentacion
+    - Factor
+    - Lote
+    - Fecha_vence
+    - Licence_plate
+    - CodigoSKU
+
+grafo:
+  nodos:
+    # HH
+    - id: HH.INV_CIC_CONTEO
+      capa: HH
+      tipo: activity
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java
+      responsabilidad:
+        - "Lista conteos (pendientes/contados)."
+        - "Escaneo inteligente por ubicacion/codigo/licencia."
+        - "Entrada a caja master (si gate activo)."
+      ws_callbacks:
+        - "Inventario_Ciclico_Listar_Conteo"
+        - "Inventario_Ciclico_ReConteos"
+        - "Get_List_Product_By_CodigoBarra_By_Ciclico"
+    - id: HH.INV_CIC_ADD
+      capa: HH
+      tipo: activity
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java
+      responsabilidad:
+        - "Edicion de conteo por linea."
+        - "Conversión presentacion<->UMBas."
+        - "Datos complementarios: talla/color, licencia, gondola."
+      ws_callbacks:
+        - "Inventario_Ciclico_Act_Conteo_Andr"
+    - id: HH.INV_CIC_GUARDAR
+      capa: HH
+      tipo: activity
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java
+      responsabilidad:
+        - "Alta de nuevos conteos no asignados."
+        - "Persistencia de valores iniciales en ciclico."
+    - id: HH.CAJA_MASTER
+      capa: HH
+      tipo: activity
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_conteo_caja_master.java
+      responsabilidad:
+        - "Confirmacion de conteo masivo por licencia."
+        - "Envio de lista al WS para marcar contado."
+      ws_callbacks:
+        - "Inventario_Ciclico_Conteo_Caja_Master"
+    - id: HH.DETALLE_GONDOLA
+      capa: HH
+      tipo: activity
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_detalle_gondola.java
+      responsabilidad:
+        - "Consulta por gondola de lineas del inventario."
+      ws_callbacks:
+        - "Get_Detalle_Ciclic_By_Gondola"
+
+    # WS
+    - id: WS.LISTAR_CONTEO
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Inventario_Ciclico_Listar_Conteo
+    - id: WS.RECONTEOS
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Inventario_Ciclico_ReConteos
+    - id: WS.ACT_CONTEO
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Inventario_Ciclico_Act_Conteo_Andr
+    - id: WS.ACT_RECONTEO
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Inventario_Ciclico_Actualiza_Reconteo
+    - id: WS.CAJA_MASTER
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Inventario_Ciclico_Conteo_Caja_Master
+    - id: WS.DETALLE_GONDOLA
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Get_Detalle_Ciclic_By_Gondola
+    - id: WS.BUSCAR_BARRA_CICLICO
+      capa: WS
+      tipo: webmethod
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb
+      metodo: Get_List_Product_By_CodigoBarra_By_Ciclico
+
+    # BOF
+    - id: BOF.FRM_INVENTARIO
+      capa: BOF
+      tipo: form
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb
+      responsabilidad:
+        - "Visualizacion y operación administrativa del inventario ciclico."
+        - "Comparacion stock/conteo/reconteo."
+        - "Regularizacion y cierre."
+    - id: BOF.FRM_RECONTEO
+      capa: BOF
+      tipo: form
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmReConteo.vb
+      responsabilidad:
+        - "Edicion puntual de reconteo por ubic/stock."
+    - id: BOF.FRM_REGULARIZAR
+      capa: BOF
+      tipo: form
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.vb
+      responsabilidad:
+        - "Ajuste/regularizacion masiva según diferencias y reglas."
+
+    # DAL
+    - id: DAL.INV_CIC
+      capa: DAL
+      tipo: class
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_Partial.vb
+      metodos_clave:
+        - Actualiza_Inventario_Ciclico_Andr
+        - Actualiza_Inventario_Ciclico_Reconteo
+        - Actualiza_Conteo_Ciclico_Caja_Master_HH
+        - Act_Inventario_Ciclico_Caja_Master
+    - id: DAL.INV_CIC_VW
+      capa: DAL
+      tipo: class
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_vw_Partial.vb
+      metodos_clave:
+        - GetAllByInventarioEncOperador
+        - Get_Detalle_Gondola_Ciclico
+    - id: DAL.PRODUCTO
+      capa: DAL
+      tipo: class
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Mantenimientos/Producto/Producto/clsLnProducto_Partial.vb
+      metodos_clave:
+        - Get_List_Product_By_CodigoBarra_By_Cilcico
+
+    # BD
+    - id: BD.TRANS_INV_CICLICO
+      capa: BD
+      tipo: tabla
+      nombre: trans_inv_ciclico
+      columnas_relevantes:
+        - idinvciclico
+        - idinventarioenc
+        - IdProductoBodega
+        - IdUbicacion
+        - IdUnidadMedida
+        - IdPresentacion
+        - IdProductoEstado
+        - IdProductoTallaColor
+        - lic_plate
+        - gondola
+        - cantidad
+        - contado
+        - cant_stock
+        - cant_reconteo
+        - peso
+        - peso_reconteo
+    - id: BD.TRANS_INV_RECONTEO
+      capa: BD
+      tipo: tabla
+      nombre: trans_inv_reconteo
+    - id: BD.TRANS_INV_ENC_RECONTEO
+      capa: BD
+      tipo: tabla
+      nombre: trans_inv_enc_reconteo
+    - id: BD.STOCK
+      capa: BD
+      tipo: tabla
+      nombre: stock
+    - id: BD.PRODUCTO_TALLA_COLOR
+      capa: BD
+      tipo: tabla
+      nombre: producto_talla_color
+
+  aristas:
+    # HH -> WS
+    - from: HH.INV_CIC_CONTEO
+      to: WS.LISTAR_CONTEO
+      accion: listar
+      datos: [Idinventarioenc, IdOperador, Pendientes]
+    - from: HH.INV_CIC_CONTEO
+      to: WS.RECONTEOS
+      accion: detectar_reconteo_activo
+      datos: [Idinventarioenc]
+    - from: HH.INV_CIC_CONTEO
+      to: WS.BUSCAR_BARRA_CICLICO
+      accion: resolver_producto_por_barra
+      datos: [CodigoEscaneado, IdBodega, Idinventarioenc]
+    - from: HH.INV_CIC_ADD
+      to: WS.ACT_CONTEO
+      accion: actualizar_conteo_linea
+      datos: [IdInvCiclico, Cantidad, Presentacion, Estado, Ubicacion, Licencia, Gondola, IdProductoTallaColor]
+    - from: HH.CAJA_MASTER
+      to: WS.CAJA_MASTER
+      accion: conteo_masivo_por_licencia
+      condicion: "Control_Talla_Color = true (regla vigente)"
+      datos: [lista(IdInvCiclico, IdProductoBodega, Idinventarioenc)]
+    - from: HH.DETALLE_GONDOLA
+      to: WS.DETALLE_GONDOLA
+      accion: consultar_detalle
+      datos: [Idinventarioenc, Gondola, IdBodega]
+
+    # WS -> DAL
+    - from: WS.LISTAR_CONTEO
+      to: DAL.INV_CIC_VW
+      accion: query_vista_consolidada
+    - from: WS.RECONTEOS
+      to: DAL.INV_CIC
+      accion: listar_reconteos
+    - from: WS.ACT_CONTEO
+      to: DAL.INV_CIC
+      accion: update_conteo
+    - from: WS.ACT_RECONTEO
+      to: DAL.INV_CIC
+      accion: update_reconteo
+    - from: WS.CAJA_MASTER
+      to: DAL.INV_CIC
+      accion: update_masivo_contado
+    - from: WS.DETALLE_GONDOLA
+      to: DAL.INV_CIC_VW
+      accion: query_detalle_gondola
+    - from: WS.BUSCAR_BARRA_CICLICO
+      to: DAL.PRODUCTO
+      accion: resolver_producto_ciclico
+
+    # DAL -> BD
+    - from: DAL.INV_CIC
+      to: BD.TRANS_INV_CICLICO
+      accion: read_write
+    - from: DAL.INV_CIC
+      to: BD.STOCK
+      accion: conciliacion_stock_en_regularizacion
+    - from: DAL.INV_CIC_VW
+      to: BD.TRANS_INV_CICLICO
+      accion: read
+    - from: DAL.INV_CIC_VW
+      to: BD.TRANS_INV_RECONTEO
+      accion: read
+    - from: DAL.INV_CIC_VW
+      to: BD.PRODUCTO_TALLA_COLOR
+      accion: read
+    - from: DAL.PRODUCTO
+      to: BD.TRANS_INV_CICLICO
+      accion: filtro_existencia_en_inventario_actual
+      condicion: "Idinventarioenc + IdProductoBodega + unidad"
+
+    # BOF -> DAL
+    - from: BOF.FRM_INVENTARIO
+      to: DAL.INV_CIC
+      accion: operaciones_admin_ciclico
+    - from: BOF.FRM_INVENTARIO
+      to: DAL.INV_CIC_VW
+      accion: carga_grid_teorico_vs_conteo
+    - from: BOF.FRM_RECONTEO
+      to: DAL.INV_CIC
+      accion: ajuste_reconteo_puntual
+    - from: BOF.FRM_REGULARIZAR
+      to: DAL.INV_CIC
+      accion: regularizacion_masiva
+
+subflujos:
+  HH_conteo_basico:
+    pasos:
+      - HH.INV_CIC_CONTEO -> WS.LISTAR_CONTEO -> DAL.INV_CIC_VW -> BD.TRANS_INV_CICLICO
+      - HH.INV_CIC_CONTEO -> WS.RECONTEOS
+      - HH.INV_CIC_CONTEO -> HH.INV_CIC_ADD -> WS.ACT_CONTEO -> DAL.INV_CIC
+  HH_reconteo:
+    pasos:
+      - HH.INV_CIC_CONTEO detecta reconteo activo (WS.RECONTEOS)
+      - HH.INV_CIC_ADD actualiza valores de reconteo segun regla de diferencia
+      - WS.ACT_RECONTEO / DAL.INV_CIC persisten reconteo
+  HH_caja_master:
+    gate: Control_Talla_Color
+    pasos:
+      - HH.INV_CIC_CONTEO filtra por Licence_plate
+      - HH.CAJA_MASTER confirma lote
+      - WS.CAJA_MASTER -> DAL.INV_CIC.Actualiza_Conteo_Ciclico_Caja_Master_HH
+      - DAL marca contado y cantidad = cant_stock por línea
+    riesgos:
+      - "si lista vacía no validada, error índice"
+      - "puede pisar conteos manuales si no se discrimina origen"
+  BOF_regularizacion:
+    pasos:
+      - BOF.FRM_INVENTARIO/BOF.FRM_REGULARIZAR calcula diferencias teorico-conteo-reconteo
+      - DAL.INV_CIC aplica ajustes sobre stock/transacciones
+      - validacion posterior de consistencia
+
+reglas_negocio_modeladas:
+  - id: R-INV-CIC-001
+    regla: "Caja Master visible/usable solo con Control_Talla_Color activo."
+  - id: R-INV-CIC-002
+    regla: "Conteo y reconteo persisten en UMBAS; presentación es vista/captura de usuario."
+  - id: R-INV-CIC-003
+    regla: "Si hay Control_Gondola, la línea debe conservar/validar gondola."
+  - id: R-INV-CIC-004
+    regla: "Escaneo por barra en ciclico debe acotarse al Idinventarioenc vigente."
+  - id: R-INV-CIC-005
+    regla: "Regularizacion BOF no debe ejecutarse sin precheck y postcheck."
+
+puntos_finossensibles:
+  - nombre: "Resolución producto por barra y unidad"
+    riesgo: "Filtro estricto por unidad básica puede excluir presentaciones válidas."
+    nodos: [WS.BUSCAR_BARRA_CICLICO, DAL.PRODUCTO]
+  - nombre: "Caja Master overwrite"
+    riesgo: "cantidad = cant_stock puede sobrescribir conteo manual."
+    nodos: [WS.CAJA_MASTER, DAL.INV_CIC]
+  - nombre: "Gate funcional de caja master"
+    riesgo: "Cambiar gate sin acuerdo rompe contrato de negocio cliente."
+    nodos: [HH.INV_CIC_CONTEO, HH.CAJA_MASTER]
+
+trazabilidad_cambios_2026_05_26:
+  commits_relacionados:
+    bof: [5018efb0, b7c974e0]
+    hh: [694295da, 6ff8ac0f, 9ade428d]
+  documentos_relacionados:
+    - C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/QA-RIESGOS-INV-CICLICO-ABI-ANDERLY-2026-05-26.yml
+    - C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/ESTADO-ARTE-CAJA-MASTER-INV-CICLICO-2026-05-26.md
+    - C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/codex-context-hh-ws-concurrency-map.yml
+
+uso_recomendado_para_cambios:
+  - "1) ubicar subflujo afectado (HH_conteo_basico / HH_reconteo / HH_caja_master / BOF_regularizacion)."
+  - "2) recorrer aristas desde nodo origen hasta BD para identificar blast radius."
+  - "3) validar reglas R-INV-CIC-* antes de cambiar visibilidad o persistencia."
+  - "4) registrar decisión y evidencia en BITACORA_JIRA + LOG_DIARIO."
+
+hallazgos_y_fix_rapido_2026_05_26:
+  - id: H-INV-CIC-001
+    hallazgo: "DAL devolvía genera_lote/control_vencimiento derivados de control_peso en rutas específicas."
+    impacto: "Validaciones HH/BOF podían comportarse con reglas incorrectas según sabor del producto."
+    fix:
+      repo: TOMWMS
+      archivo: C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_vw_Partial.vb
+      tag: "#EJC20260526"
+      accion: "Se homologó mapeo a producto.control_lote y producto.control_vencimiento."
+  - id: H-INV-CIC-002
+    hallazgo: "HH exigía licencia con validación redundante, bloqueando escenarios sin LP."
+    impacto: "Conteos válidos sin licencia no podían guardarse."
+    fix:
+      repo: TOMHH2025
+      archivo: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java
+      tag: "#EJC20260526"
+      accion: "Se dejó la exigencia de licencia solo cuando Genera_lp está activo."

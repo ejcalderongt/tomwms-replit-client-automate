@@ -1,0 +1,22 @@
+id: rg-footprint-20260527-025025
+tag: '#EJC20260527'
+process: picking
+fix_scope:
+  files:
+    - 'TOMIMSV4/TOMIMSV4/Transacciones/Picking/frmPicking.vb'
+  methods:
+    - 'BloquearControles_Por_VerificacionBOF'
+    - 'Linea_No_Verificada'
+  tables:
+    - 'trans_picking_enc'
+    - 'trans_picking_ubic'
+    - 'trans_movimientos'
+  flags:
+    - 'Verificar_con_imagen'
+    - 'verifica_auto'
+  states:
+    - 'Procesado'
+    - 'Verificado'
+    - 'Despachado'
+failure_class: ''
+notes: ''

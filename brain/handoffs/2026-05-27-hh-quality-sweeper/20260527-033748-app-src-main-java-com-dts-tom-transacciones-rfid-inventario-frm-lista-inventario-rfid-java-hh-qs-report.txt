@@ -1,0 +1,37 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/Inventario/frm_lista_inventario_rfid.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+272:            if (pListTareas != null) {
+273:                if (pListTareas.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+85:                            if (txtIdTareaInv.getText().toString().isEmpty()) {
+163:            if (txtIdTareaInv.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+25:    private clsBeTrans_inv_encList pListTareas = new clsBeTrans_inv_encList();
+26:    private int idtarea = 0;
+28:    private WebServiceHandler ws;
+29:    private XMLObject xobj;
+31:    private ProgressDialog progress;
+32:    private ListView listView;
+33:    private EditText txtIdTareaInv;
+34:    private Button btnRegs;
+36:    private ArrayList<clsBeTrans_inv_enc> BeListInv = new ArrayList<>();
+37:    private list_adapt_tareas_inventario adapter;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+80:            txtIdTareaInv.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+124:            btnRegs.setText("Regs:" + count);
+195:            btnRegs.setText("Regs:" + count);
+

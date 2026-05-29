@@ -1,0 +1,10 @@
+id: rg-risk-20260527-030259
+tag: '#EJC20260527'
+process: picking
+risk_level: medium
+open_risks: []
+evidence:
+  footprint: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-regression-guardian\20260527-030257-picking-footprint.yml'
+  sibling_scan: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-regression-guardian\20260527-030257-picking-sibling-scan.txt'
+  checklist: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-regression-guardian\20260527-030257-picking-checklist.yml'
+recommendation: 'Run checklist and close only if no high-risk findings remain.'

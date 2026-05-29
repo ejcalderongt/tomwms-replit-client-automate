@@ -1,0 +1,490 @@
+=== PATTERN: IdUbicacionDestino ===
+.\DynamicsNavInterface\Web References\WebReference\Reference.vb:19538:        Public Property IdUbicacionDestino() As Integer
+.\DynamicsNavInterface\Web References\WebReference\Reference.vb:19925:        Public Property IdUbicacionDestino() As Integer
+.\WSHHRN\TOMHHWS.asmx.vb:6357:                                                  pIdUbicacionDestino:=oBeTrans_ubic_hh_det.IdUbicacionDestino,
+.\WSHHRN\TOMHHWS.asmx.vb:13676:            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pIdUbicacionDestino:=pIdUbicacion)
+.\WSHHRN\TOMHHWS.asmx.vb:13717:            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pIdUbicacionDestino:=pIdUbicacion)
+.\WSHHRN\TOMHHWS.asmx.vb:19993:            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pIdUbicacionDestino:=pIdUbicacion)
+.\WSHHRN\TOMHHWS.asmx.vb:20173:                                                                                                       primeraLinea.Movimiento.IdUbicacionDestino,
+.\DMS\Dal\Transacciones\Ingresos\clsLnTrans_oc_encDMS.vb:907:                                                                            .IdUbicacionDestino = pTrans_movimientos.IdUbicacionDestino,
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:621:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:664:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1135:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1137:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1407:                    pBeMovsInverso.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1497:                    pBeMovsUbicacion.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\TOMIMSV4\Transacciones\Inventario\frmInventario.vb:2502:                mov.IdUbicacionDestino = item.IdUbicacion
+.\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:508:                    pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+.\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:534:                    mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:881:                        pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+.\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:913:                        mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb:726:                        pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+.\TOMIMSV4\Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb:758:                        mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:81:        Me.txtIdUbicacionDestino = New DevExpress.XtraEditors.TextEdit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:125:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:563:        Me.GroupControl5.Controls.Add(Me.txtIdUbicacionDestino)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:602:        'txtIdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:604:        Me.txtIdUbicacionDestino.Location = New System.Drawing.Point(98, 30)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:605:        Me.txtIdUbicacionDestino.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:606:        Me.txtIdUbicacionDestino.MenuManager = Me.RibbonControl
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:607:        Me.txtIdUbicacionDestino.Name = "txtIdUbicacionDestino"
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:608:        Me.txtIdUbicacionDestino.Properties.Mask.EditMask = "n0"
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:609:        Me.txtIdUbicacionDestino.Size = New System.Drawing.Size(77, 22)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:610:        Me.txtIdUbicacionDestino.TabIndex = 1
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:699:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:733:    Friend WithEvents txtIdUbicacionDestino As DevExpress.XtraEditors.TextEdit
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:474:                    'BeStock.IdUbicacion = pListObjDet.Find(Function(x) x.IdStock = SU.IdStock AndAlso x.IdTareaUbicacionDet = su.IdTareaUbicacionDet).IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:487:            DT.Columns.Add("IdUbicacionDestino", GetType(Integer))
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:532:                If Obj.IdUbicacionDestino <> Nothing AndAlso Obj.IdUbicacionDestino <> 0 Then
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:533:                    lRow("IdUbicacionDestino") = Obj.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:534:                    Obj.UbicacionDestino.IdUbicacion = Obj.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:536:                    lRow("Ubicacion_Destino") = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(Obj.IdUbicacionDestino, Obj.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:576:            GridViewDet.Columns("IdUbicacionDestino").Visible = False
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:674:                txtIdUbicacionDestino.Text = pListObjDet(lIndex).IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:965:                pListObjDet(lIndex).IdUbicacionDestino = CInt(txtIdUbicacionDestino.Text.Trim())
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1347:                    txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1461:                        pObjDet.IdUbicacionDestino = Val(txtIdUbicacionDestino.Text)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1471:                            pObjDet.IdUbicacionDestino = CInt(txtIdUbicacionDestino.Text.Trim())
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1616:    Private Sub txtIdUbicacionDestino_KeyDown(sender As Object, e As KeyEventArgs) Handles txtIdUbicacionDestino.KeyDown
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1617:        If e.KeyCode = Keys.Enter AndAlso txtIdUbicacionDestino.Text.Trim <> "" Then
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1739:    Private Sub txtIdUbicacionDestino_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtIdUbicacionDestino.KeyPress
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1755:    Private Sub txtIdUbicacionDestino_LostFocus(sender As Object, e As EventArgs) Handles txtIdUbicacionDestino.LostFocus
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1759:    Private Sub txtIdUbicacionDestino_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles txtIdUbicacionDestino.PreviewKeyDown
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1762:                txtIdUbicacionDestino_LostFocus(Nothing, Nothing)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1958:            txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2181:            lUbic.idUbicacion = Obj.IdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2218:        txtIdUbicacionDestino.Enabled = False
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2267:    Private Sub txtIdUbicacionDestino_Validated(sender As Object, e As EventArgs) Handles txtIdUbicacionDestino.Validated
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2271:            If String.IsNullOrEmpty(txtIdUbicacionDestino.Text.Trim()) = False Then
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2273:                If (txtIdOrigen.Text.Trim() <> txtIdUbicacionDestino.Text.Trim()) Then
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2276:                    BeBodegaUbicacion = clsLnBodega_ubicacion.GetSingle(CInt(txtIdUbicacionDestino.Text.Trim()), AP.IdBodega, "", Dañado, 0)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2292:                        txtIdUbicacionDestino.Text = BeBodegaUbicacion.IdUbicacion
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2295:                        XtraMessageBox.Show(String.Format("No existe Ubicación código {0}", txtIdUbicacionDestino.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2296:                        txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2301:                    txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2303:                    XtraMessageBox.Show(String.Format("La ubicación debe ser diferente", txtIdUbicacionDestino.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2304:                    txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:177:        Me.txtIdUbicacionDestino = New DevExpress.XtraEditors.TextEdit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:299:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1328:        Me.GroupControl5.Controls.Add(Me.txtIdUbicacionDestino)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1387:        'txtIdUbicacionDestino
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1389:        Me.txtIdUbicacionDestino.Location = New System.Drawing.Point(101, 30)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1390:        Me.txtIdUbicacionDestino.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1391:        Me.txtIdUbicacionDestino.MenuManager = Me.RibbonControl
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1392:        Me.txtIdUbicacionDestino.Name = "txtIdUbicacionDestino"
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1393:        Me.txtIdUbicacionDestino.Properties.Mask.EditMask = "n0"
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1394:        Me.txtIdUbicacionDestino.Properties.ReadOnly = True
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1395:        Me.txtIdUbicacionDestino.Size = New System.Drawing.Size(77, 22)
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1396:        Me.txtIdUbicacionDestino.TabIndex = 1
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:2019:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+.\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:2126:    Friend WithEvents txtIdUbicacionDestino As DevExpress.XtraEditors.TextEdit
+.\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:2639:                BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:2756:                BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:2865:            BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:2924:            BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:621:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:664:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:1135:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:1137:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:1407:                    pBeMovsInverso.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\reservastockfrommi3\vctmp50560_255693.frmRegularizarInventario.d67850d0.Resultado.vb:1497:                        pBeMovsUbicacion.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\TOMIMSV4\DAL\Transacciones\Log\clsLnTransacciones_log_Partial.vb:367:                BeUbicHHDet.IdUbicacionDestino = pIdUbicDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsLnTrans_ubic_hh_stock_Partial.vb:148:                                                               AndAlso x.IdUbicacionDestino = Obj.IdUbicacion)
+.\TOMIMSV4\Entity\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeTrans_ubic_hh_det.vb:8:    Public Property IdUbicacionDestino() As Integer = 0
+.\TOMIMSV4\Entity\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeTrans_ubic_hh_det.vb:26:            ByVal IdUbicacionDestino As Integer, ByVal IdEstadoOrigen As Integer, ByVal IdEstadoDestino As Integer, ByVal IdOperador As Integer,
+.\TOMIMSV4\Entity\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeTrans_ubic_hh_det.vb:33:        Me.IdUbicacionDestino = IdUbicacionDestino
+.\TOMIMSV4\Entity\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeResultadoValidacionCambioUbic.vb:6:    Public Property IdUbicacionDestino As Integer
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:1308:                                            BeMovimiento.IdUbicacionDestino = IdUbicacionTransitoBodegaWMS
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:1323:                                            BeMovimiento.IdUbicacionDestino = IdUbicacionRecepcionEstadoSAP
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:1333:                                            BeMovimiento.IdUbicacionDestino = BePickingUbic.IdUbicacion
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:1335:                                            BeMovimiento.IdUbicacionDestino = BePickingUbic.IdUbicacionTemporal
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:119:                                If lRow("IdUbicacionDestino") IsNot DBNull.Value AndAlso lRow("IdUbicacionDestino") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:120:                                    Obj.IdUbicacionDestino = CType(lRow("IdUbicacionDestino"), Integer)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:121:                                    Obj.UbicacionDestino.IdUbicacion = Obj.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:123:                                    Obj.UbicacionDestino = clsLnBodega_ubicacion.Get_Single_With_Tramo_And_Sector(Obj.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:321:                        If lRow("IdUbicacionDestino") IsNot DBNull.Value AndAlso lRow("IdUbicacionDestino") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:322:                            BeTrans_ubic_hh_det.IdUbicacionDestino = CType(lRow("IdUbicacionDestino"), Integer)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:323:                            BeTrans_ubic_hh_det.UbicacionDestino.IdUbicacion = BeTrans_ubic_hh_det.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:325:                            BeTrans_ubic_hh_det.UbicacionDestino = clsLnBodega_ubicacion.Get_Single_With_Tramo_And_Sector(BeTrans_ubic_hh_det.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:475:                            If lRow("IdUbicacionDestino") IsNot DBNull.Value AndAlso lRow("IdUbicacionDestino") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:538:               pMovimiento.IdUbicacionDestino > 0 Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:548:                        Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:568:                                If Get_Cantidad_Licencias_Distintas_En_Ubicacion(pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:911:                                                  pMovimiento.IdUbicacionDestino, pMovimiento.IdEstadoOrigen, pMovimiento.IdEstadoDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1047:                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1070:                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1194:                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1548:                                                  pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1687:                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:1710:                                                          pIdUbicacionDestino:=pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2157:            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2168:            Dim IdUbicacionDestino As Integer = pMovimiento.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2254:                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2268:                If IdUbicacionDestino > 0 AndAlso IdUbicacionDestino <> IdUbicacionOrigen Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2300:                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2358:                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2391:                pMovimiento.IdUbicacionDestino = IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2413:                pStockRes.IdUbicacion = IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2450:                                                                                           ByVal pIdUbicacionDestino As Integer,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2502:                stockLinea.Movimiento.IdUbicacionDestino = pIdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2569:            Dim infoDestinoDT As DataTable = clsLnBodega_ubicacion.Get_Info_Ubicacion_Destino(pMovimiento.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2578:            Dim IdUbicacionDestino As Integer = pMovimiento.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2651:                    If Get_Cantidad_Licencias_Distintas_En_Ubicacion(IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2663:                If IdUbicacionDestino > 0 AndAlso IdUbicacionDestino <> IdUbicacionOrigen Then
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2725:                    pMovimiento.IdUbicacionDestino = IdUbicacionOrigen
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2766:                pMovimiento.IdUbicacionDestino = IdUbicacionOrigen ' 0 'No mover de ubicación, hasta el final.
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2779:                pMovimiento.IdUbicacionDestino = IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det_Partial.vb:2797:                pStockRes.IdUbicacion = IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:12:                .IdUbicacionDestino = IIf(IsDBNull(dr.Item("IdUbicacionDestino")), 0, dr.Item("IdUbicacionDestino"))
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:40:                                                  pIdUbicacionDestino:=oBeTrans_ubic_hh_det.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:94:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", oBeTrans_ubic_hh_det.IdUbicacionDestino))
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:173:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", oBeTrans_ubic_hh_det.IdUbicacionDestino))
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:351:                                                  pIdUbicacionDestino:=oBeTrans_ubic_hh_det.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:438:                                                  pIdUbicacionDestino:=pBeTrans_ubic_hh_det.IdUbicacionDestino,
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:608:                                                                .IdUbicacionDestino = clsLnBodega_area.Get_IdUbicacion_Recepcion_By_IdArea(vAreaWMSTo, lConnection, lTransaction)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsLnTrans_ubic_hh_det.vb:643:                                                                .IdUbicacion = BeTransUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:528:            pListObjStock(0).IdUbicacion = pListObjDet(0).IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:592:            pListObjStock(0).IdUbicacion = pListObjDet(0).IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:867:                beUbicHHDet.IdUbicacionDestino = IdUbicDest
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:895:            pMov.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, IdUbicDest)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1204:                beUbicHHDet.IdUbicacionDestino = IdUbicDest
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1230:            pMov.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, IdUbicDest)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1472:                beUbicHHDet.IdUbicacionDestino = IdUbicDest
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1501:            pMov.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, IdUbicDest)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1773:                beUbicHHDet.IdUbicacionDestino = IdUbicDest
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:1798:            pMov.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, IdUbicDest)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:2050:                    beUbicHHDet.IdUbicacionDestino = IdUbicDest
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:2075:                pMov.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, IdUbicDest)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:2927:                        pMov.IdUbicacionDestino = BeTransUbicHHD.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:3006:                                    .IdUbicacionDestino = clsLnBodega_area.Get_IdUbicacion_Confirmacion_By_IdArea(vArea.IdArea, lConnection, lTransaction)
+.\TOMIMSV4\DAL\Transacciones\Transaccion_Ubicacion_HH\clsLnTrans_ubic_hh_enc_Partial.vb:3040:                                    .IdUbicacion = BeTransUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\DAL\TMS\clsLnTms_ticket.vb:14:                .IdUbicacionDestino = IIf(IsDBNull(dr.Item("IdUbicacionDestino")), 0, dr.Item("IdUbicacionDestino"))
+.\TOMIMSV4\DAL\TMS\clsLnTms_ticket.vb:86:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", oBeTms_ticket.IdUbicacionDestino))
+.\TOMIMSV4\DAL\TMS\clsLnTms_ticket.vb:170:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", oBeTms_ticket.IdUbicacionDestino))
+.\TOMIMSV4\DAL\TMS\clsLnTms_ticket.vb:255:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", oBeTms_ticket.IdUbicacionDestino))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:5454:                beUbicHHDet.IdUbicacionDestino = beBodega.ubic_producto_ne 'IdUbicDest Preguntar
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:5481:            pBeMovimiento.IdUbicacionDestino = IIf(Not UbicaAuto, beUbicHHDet.IdUbicacionDestino, beBodega.ubic_producto_ne)
+.\TMS\Formas\frmTicketN.vb:257:            cmbBodega.EditValue = BeTicket.IdUbicacionDestino
+.\TMS\Formas\frmTicketN.vb:440:                    BeTicket.IdUbicacionDestino = cmbBodega.EditValue
+.\TMS\Formas\frmPrintTicket.vb:48:            BeTicket.IdUbicacionDestino = 0
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:713:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:756:                            pBeMovs.IdUbicacionDestino = BeVWStockRes.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1268:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1270:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1507:                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1577:                    pBeMovsInverso.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmRegularizarInventario.vb:1670:                    pBeMovsUbicacion.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+.\TOMIMSV4\DAL\Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb:8376:                                BeMovimiento.IdUbicacionDestino = IdUbicacion
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:10805:                    BeMovimiento.IdUbicacionDestino = ObjStockDestino.IdUbicacion
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11040:                    vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11259:                    vTransUbicHHDet = pListObjDet.Find(Function(x) x.IdStock = ObjStockDestino.IdStock AndAlso x.IdUbicacionDestino = ObjStockDestino.IdUbicacion)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Inventario\frmInventario.vb:2936:                mov.IdUbicacionDestino = item.IdUbicacion
+.\TOMIMSV4\Entity\Transacciones\Stock\Retroactivo\clsBeVW_MovimientosRetro.vb:9:    Public Property IdUbicacionDestino As Integer
+.\TOMIMSV4\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:508:                    pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:551:                    mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:901:                        pUbicHHDet.IdUbicacionDestino = Stock.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Implosion\frmImplosion.vb:933:                        mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\Entity\TMS\clsBeTms_ticket.vb:7:    Public Property IdUbicacionDestino() As Integer = 0
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnVW_Movimientos.vb:36:                If dr.Table.Columns.Contains("IdUbicacionDestino") Then .IdUbicacionDestino = IIf(IsDBNull(dr.Item("IdUbicacionDestino")), 0, dr.Item("IdUbicacionDestino"))
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:85:                "  AND ISNULL(IdUbicacionDestino, 0) = @IdUbicacionDestino " &
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:106:                lCommand.Parameters.AddWithValue("@IdUbicacionDestino", pMovimiento.IdUbicacionDestino)
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:765:                    motivo_ubicacion.Nombre AS Motivo,propietarios.nombre_comercial AS Propietario,trans_movimientos.IdUbicacionOrigen,trans_movimientos.IdUbicacionDestino,trans_movimientos.fecha,ubicO.IdBodega AS IdBodegaOrigen,ubicD.IdBodega AS IdBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:779:                    bodega_ubicacion ubicD on trans_movimientos.IdUbicacionDestino = ubicD.Idubicacion
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:852:                                If lRow("IdUbicacionDestino") IsNot DBNull.Value AndAlso lRow("IdUbicacionDestino") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:854:                                    Ubicacion = clsLnBodega_ubicacion.GetSingle(lRow("IdUbicacionDestino"), lRow("IdBodegaDestino"))
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:1663:                               IdPresentacion, IdUnidadMedida, IdProductoBodega, Fecha, Umbas, Presentación,IdUbicacionDestino, Licencia
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:1710:                                            Umbas, Presentación,IdUbicacionOrigen,IdUbicacionDestino, Licencia, IdTransaccion) AS t
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:1983:                                    bodega_ubicacion AS u2 ON m.IdUbicacionDestino = u2.IdUbicacion LEFT OUTER JOIN
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:2529:            BeStockNuevo.IdUbicacion = IIf(oBeTrans_movimientos.IdUbicacionDestino = 0, BeStockOrigen.IdUbicacion, oBeTrans_movimientos.IdUbicacionDestino)
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:2714:            BeStockNuevo.IdUbicacion = IIf(oBeTrans_movimientos.IdUbicacionDestino = 0, BeStockOrigen.IdUbicacion, oBeTrans_movimientos.IdUbicacionDestino)
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:2904:            BeStockNuevo.IdUbicacion = IIf(oBeTrans_movimientos.IdUbicacionDestino = 0, BeStockOrigen.IdUbicacion, oBeTrans_movimientos.IdUbicacionDestino)
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:3057:            BeStockNuevo.IdUbicacion = oBeTrans_movimientos.IdUbicacionDestino
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:3162:            BeTransMovimiento.IdUbicacionDestino = BeStockRec.IdUbicacion
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:3768:            '#EJC20260527: el movimiento PIK debe guardar la ubicación destino enviada por picking/muelle; sin esto trans_movimientos.IdUbicacionDestino queda NULL.
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:3797:                BeTransMovimiento.IdUbicacionDestino = vIdUbicacionPicking
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:3887:                BeTransMovimiento.IdUbicacionDestino = vIdUbicacionPicking
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:4014:            BeTransMovimiento.IdUbicacionDestino = pIdUbicacionVirtualDestino
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos_Partial.vb:4732:                                      IdUbicacionDestino IN (
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos.vb:19:                .IdUbicacionDestino = IIf(IsDBNull(dr.Item("IdUbicacionDestino")), 0, dr.Item("IdUbicacionDestino"))
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos.vb:125:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", IIf(oBeTrans_movimientos.IdUbicacionDestino = 0, DBNull.Value, oBeTrans_movimientos.IdUbicacionDestino)))
+.\TOMIMSV4\DAL\Transacciones\Movimiento\clsLnTrans_movimientos.vb:291:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONDESTINO", IIf(oBeTrans_movimientos.IdUbicacionDestino = 0, DBNull.Value, oBeTrans_movimientos.IdUbicacionDestino)))
+.\TOMIMSV4\TOMIMSV4\Service References\wsTOMHH\Reference.vb:3779:        Public Property IdUbicacionDestino() As Integer
+.\TOMIMSV4\TOMIMSV4\Service References\wsTOMHH\Reference.vb:3785:                Me.RaisePropertyChanged("IdUbicacionDestino")
+.\TOMIMSV4\TOMIMSV4\Service References\wsTOMHH\Reference.vb:13524:        Public Property IdUbicacionDestino() As Integer
+.\TOMIMSV4\TOMIMSV4\Service References\wsTOMHH\Reference.vb:13530:                Me.RaisePropertyChanged("IdUbicacionDestino")
+.\TOMIMSV4\TOMIMSV4\Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb:748:                        pUbicHHDet.IdUbicacionDestino = Stock_Actual.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb:780:                        mov.IdUbicacionDestino = pUbicHHDet.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb:1235:            row("UbicacionDestino") = d.IdUbicacionDestino.ToString()
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2295:        Private IdUbicacionDestinoField As Integer
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2678:        Public Property IdUbicacionDestino() As Integer
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2680:                Return Me.IdUbicacionDestinoField
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2683:                If (Me.IdUbicacionDestinoField.Equals(value) <> true) Then
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2684:                    Me.IdUbicacionDestinoField = value
+.\TOMIMSV4\TOMIMSV4\Service References\srvRoadDespacho\Reference.vb:2685:                    Me.RaisePropertyChanged("IdUbicacionDestino")
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb:45:            If gvErrores.Columns("IdUbicacionDestino") IsNot Nothing Then
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb:46:                gvErrores.Columns("IdUbicacionDestino").Caption = "Ubicación destino"
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb:47:                gvErrores.Columns("IdUbicacionDestino").Width = 120
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:81:        Me.txtIdUbicacionDestino = New DevExpress.XtraEditors.TextEdit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:125:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:563:        Me.GroupControl5.Controls.Add(Me.txtIdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:602:        'txtIdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:604:        Me.txtIdUbicacionDestino.Location = New System.Drawing.Point(98, 30)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:605:        Me.txtIdUbicacionDestino.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:606:        Me.txtIdUbicacionDestino.MenuManager = Me.RibbonControl
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:607:        Me.txtIdUbicacionDestino.Name = "txtIdUbicacionDestino"
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:608:        Me.txtIdUbicacionDestino.Properties.Mask.EditMask = "n0"
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:609:        Me.txtIdUbicacionDestino.Size = New System.Drawing.Size(77, 22)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:610:        Me.txtIdUbicacionDestino.TabIndex = 1
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:699:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCantidadUbicacion.Designer.vb:733:    Friend WithEvents txtIdUbicacionDestino As DevExpress.XtraEditors.TextEdit
+.\TOMIMSV4\DAL\Transacciones\Reabastecimiento\clsLnTrans_reabastecimiento_log_partial.vb:965:                        BeUbicHHDet.IdUbicacionDestino = pIdUbicDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:527:                    'BeStock.IdUbicacion = pListObjDet.Find(Function(x) x.IdStock = SU.IdStock AndAlso x.IdTareaUbicacionDet = su.IdTareaUbicacionDet).IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:540:            DT.Columns.Add("IdUbicacionDestino", GetType(Integer))
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:606:                If Obj.IdUbicacionDestino <> Nothing AndAlso Obj.IdUbicacionDestino <> 0 Then
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:607:                    lRow("IdUbicacionDestino") = Obj.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:608:                    Obj.UbicacionDestino.IdUbicacion = Obj.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:610:                    lRow("Ubicacion_Destino") = clsLnBodega_ubicacion.Get_Nombre_Completo_By_IdUbicacion(Obj.IdUbicacionDestino, Obj.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:649:            GridViewDet.Columns("IdUbicacionDestino").Visible = False
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:747:                txtIdUbicacionDestino.Text = pListObjDet(lIndex).IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1038:                pListObjDet(lIndex).IdUbicacionDestino = CInt(txtIdUbicacionDestino.Text.Trim())
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1430:                    txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1563:                        pObjDet.IdUbicacionDestino = Val(txtIdUbicacionDestino.Text)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1573:                            pObjDet.IdUbicacionDestino = CInt(txtIdUbicacionDestino.Text.Trim())
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1718:    Private Sub txtIdUbicacionDestino_KeyDown(sender As Object, e As KeyEventArgs) Handles txtIdUbicacionDestino.KeyDown
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1719:        If e.KeyCode = Keys.Enter AndAlso txtIdUbicacionDestino.Text.Trim <> "" Then
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1841:    Private Sub txtIdUbicacionDestino_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtIdUbicacionDestino.KeyPress
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1857:    Private Sub txtIdUbicacionDestino_LostFocus(sender As Object, e As EventArgs) Handles txtIdUbicacionDestino.LostFocus
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1861:    Private Sub txtIdUbicacionDestino_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles txtIdUbicacionDestino.PreviewKeyDown
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:1864:                txtIdUbicacionDestino_LostFocus(Nothing, Nothing)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2060:            txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2286:            lUbic.idUbicacion = Obj.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2323:        txtIdUbicacionDestino.Enabled = False
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2372:    Private Sub txtIdUbicacionDestino_Validated(sender As Object, e As EventArgs) Handles txtIdUbicacionDestino.Validated
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2376:            If String.IsNullOrEmpty(txtIdUbicacionDestino.Text.Trim()) = False Then
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2378:                If (txtIdOrigen.Text.Trim() <> txtIdUbicacionDestino.Text.Trim()) Then
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2381:                    BeBodegaUbicacion = clsLnBodega_ubicacion.GetSingle(txtIdUbicacionDestino.Text.Trim(), AP.IdBodega, "", Dañado, 0)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2397:                        txtIdUbicacionDestino.Text = BeBodegaUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2400:                        XtraMessageBox.Show(String.Format("No existe Ubicación código {0}", txtIdUbicacionDestino.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2401:                        txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2406:                    txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2408:                    XtraMessageBox.Show(String.Format("La ubicación debe ser diferente", txtIdUbicacionDestino.Text.Trim()), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.vb:2409:                    txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:182:        Me.txtIdUbicacionDestino = New DevExpress.XtraEditors.TextEdit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:305:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1382:        Me.GroupControl5.Controls.Add(Me.txtIdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1441:        'txtIdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1443:        Me.txtIdUbicacionDestino.Location = New System.Drawing.Point(101, 30)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1444:        Me.txtIdUbicacionDestino.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1445:        Me.txtIdUbicacionDestino.MenuManager = Me.RibbonControl
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1446:        Me.txtIdUbicacionDestino.Name = "txtIdUbicacionDestino"
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1447:        Me.txtIdUbicacionDestino.Properties.Mask.EditMask = "n0"
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1448:        Me.txtIdUbicacionDestino.Properties.ReadOnly = True
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1449:        Me.txtIdUbicacionDestino.Size = New System.Drawing.Size(77, 22)
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:1450:        Me.txtIdUbicacionDestino.TabIndex = 1
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:2067:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+.\TOMIMSV4\TOMIMSV4\Transacciones\Cambio_Ubicacion_Estado\frmCambioUbicacion.Designer.vb:2174:    Friend WithEvents txtIdUbicacionDestino As DevExpress.XtraEditors.TextEdit
+.\TOMIMSV4\DAL\Mantenimientos\Ajustes\clsLnTrans_ajuste_enc_Partial.vb:800:                .IdUbicacionDestino = BeStock.IdUbicacion,
+.\TOMIMSV4\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:4312:                BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:4438:                BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:4551:            BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Transacciones\Ajustes\frmAjusteStock.vb:4612:            BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_Partial.vb:2425:                                        dbo.trans_inv_ciclico.IdUbicacion = dbo.trans_movimientos.IdUbicacionDestino"
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_Partial.vb:4231:                                                                    Or (((x.IdUbicacionOrigen = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen = x.IdUbicacionDestino) OrElse
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_Partial.vb:4232:                                                                         (x.IdUbicacionDestino = Temp.IdUbicacion AndAlso x.IdUbicacionOrigen <> x.IdUbicacionDestino)) And
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTrans_inv_ciclico_Partial.vb:7318:                .IdUbicacion_nuevo = Temp.IdUbicacionDestino
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTempComparacionInventario.vb:71:            Ins.Add("IdUbicacionDestino", "@IdUbicacionDestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Inventario\InvCiclico\clsLnTempComparacionInventario.vb:123:            cmd.Parameters.Add(New SqlParameter("@IdUbicacionDestino", oBeTempComparacionInventario.IdUbicacionDestino))
+.\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic_partial.vb:14:                                    Optional ByVal pIdUbicacionDestino As Integer = 0,
+.\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic_partial.vb:43:            oBe.IdUbicacionDestino = pIdUbicacionDestino
+.\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:29:            If oBe.IdUbicacionDestino <> 0 Then Ins.Add("idubicaciondestino", "@idubicaciondestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb:68:            If oBe.IdUbicacionDestino <> 0 Then cmd.Parameters.Add(New SqlParameter("@idubicaciondestino", oBe.IdUbicacionDestino))
+.\TOMIMSV4\Entity\Transacciones\Movimiento\clsBeVW_Movimientos_Poliza.vb:9:    Public Property IdUbicacionDestino As Integer
+.\TOMIMSV4\Entity\Transacciones\Movimiento\clsBeVW_Movimientos.vb:9:    Public Property IdUbicacionDestino As Integer
+.\TOMIMSV4\Entity\Inventario\Ciclico\clsBeTempComparacionInventario.vb:40:    Public Property IdUbicacionDestino As Integer = 0
+.\TOMIMSV4\Entity\Transacciones\Movimiento\clsBeTrans_movimientos.vb:12:    Public Property IdUbicacionDestino() As Integer = 0
+.\TOMIMSV4\Entity\Transacciones\Movimiento\clsBeTrans_movimientos.vb:67:    Sub New(ByRef IdMovimiento As Integer, ByVal IdEmpresa As Integer, ByVal IdBodegaOrigen As Integer, ByVal IdTransaccion As Integer, ByVal IdPropietarioBodega As Integer, ByVal IdProductoBodega As Integer, ByVal IdUbicacionOrigen As Integer, ByVal IdUbicacionDestino As Integer, ByVal IdPresentacion As Integer, ByVal IdEstadoOrigen As Integer, ByVal IdEstadoDestino As Integer, ByVal IdUnidadMedida As Integer, ByVal IdTipoTarea As Integer, ByVal IdBodegaDestino As Integer, ByVal IdRecepcion As Integer, ByVal cantidad As Double, ByVal serie As String, ByVal peso As Double, ByVal lote As String, ByVal fecha_vence As Date, ByVal fecha As Date, ByVal barra_pallet As String, ByVal hora_ini As Date, ByVal hora_fin As Date, ByVal fecha_agr As Date, ByVal usuario_agr As String, ByVal cantidad_hist As Double, ByVal peso_hist As Double)
+.\TOMIMSV4\Entity\Transacciones\Movimiento\clsBeTrans_movimientos.vb:75:        Me.IdUbicacionDestino = IdUbicacionDestino
+.\TOMIMSV4\DAL\Inventario\clsLnTrans_inv_enc_Partial.vb:2216:                        mov.IdUbicacionDestino = item.IdUbicacion
+.\TOMIMSV4\Entity\Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugeridaList.vb:6:    Public Property IdUbicacionDestino As Integer = 0
+.\TOMIMSV4\Entity\Mantenimientos\LogErrorWMSUbic\clsBeLog_error_wms_ubic.vb:13:    Public Property IdUbicacionDestino() As Integer = 0
+.\TOMIMSV4\TOMIMSV4\Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.Designer.vb:639:        ColumnExpression11.ColumnName = "IdUbicacionDestino"
+.\TOMIMSV4\TOMIMSV4\Reportes\ControlCalidad\rptControlCalidadCambioEstado.Designer.vb:579:        ColumnExpression11.ColumnName = "IdUbicacionDestino"
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:710:            Dim lIdStocksMemoriaPorUbicacion = (From P In pListObjDet Where P.IdUbicacionDestino = pBeUbicacion.IdUbicacion Select P).ToList
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:772:            selUbic = New clsBeUbicacionSugeridaList() With {.IdUbicacionDestino = pBeUbicacion.IdUbicacion,
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1250:                    If d.IdUbicacionDestino <> pBeUbicacion.IdUbicacion Then Return False
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1309:                    If d.IdUbicacionDestino <> ubicPareja.IdUbicacion Then Return False
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1334:                                                                   Return d.IdUbicacionDestino = ubicPareja.IdUbicacion AndAlso
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1449:                    pObjDet.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1465:                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1477:                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1496:                        err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1512:                    pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1556:                    pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1565:                    err.IdUbicacionDestino = pBeUbicacion.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1594:            idx = lUbicSel.FindIndex(Function(x) x.IdUbicacionDestino = selUbic.IdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1624:            idx = lUbicSel.FindIndex(Function(x) x.IdUbicacionDestino = dr.IdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1743:                                               pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1777:                                               pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1828:                pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1870:                pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:1947:                .IdUbicacionDestino = det.IdUbicacionDestino,
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:2217:                idx = lUbicSel.FindIndex(Function(x) x.IdUbicacionDestino = selUbic.IdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:2218:                idxd = pListObjDet.FindIndex(Function(x) x.IdUbicacionDestino = selUbic.IdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Bodega\frmBodegaSelUbic.vb:2219:                idxm = pListObjMov.FindIndex(Function(x) x.IdUbicacionDestino = selUbic.IdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4236:        Dim pIdUbicacionDestino As Integer = 0
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4411:                    pIdUbicacionDestino = CInt(pDT(i)(4))
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4417:                    AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4426:                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4446:                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4459:                    pBeUbicacionDestino = clsLnBodega_ubicacion.GetSingle(pIdUbicacionDestino, AP.IdBodega)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4463:                        If pObjStock.IdUbicacion = pIdUbicacionDestino Then
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4465:                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pObjStock.IdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4501:                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4510:                            AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4518:                            selUbic.IdUbicacionDestino = pIdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4532:                        AgregarErrorCargaCambioUbic(IdStock, pCodigoProducto, pIdUbicacion, pIdUbicacionDestino, motivoFila)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4612:        Dim pIdUbicacionDestino As Integer = 0
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4755:                    pIdUbicacionDestino = pDT(i)(4)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4805:                    pBeUbicacionDestino = clsLnBodega_ubicacion.GetSingle(pIdUbicacionDestino, AP.IdBodega)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4825:                                selUbic.IdUbicacionDestino = pIdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4919:        err.IdUbicacionDestino = idUbicDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:4978:                                               pObjUbicHHDet.IdUbicacionDestino = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:5023:                                               pObjStockMov.IdUbicacion = Ubic.IdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Carga_Excel\frmCargaExcel.vb:5388:                .IdUbicacionDestino = det.IdUbicacionDestino,
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:113:                txtIdUbicacionDestino.Text = gBeRoadRuta.IdUbicacionTransito
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:185:                txtIdUbicacionDestino.Text = objtemporal.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:188:                'txtIdUbicacionDestino.Text = pObj.IdUbicacionTransito
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:311:            ElseIf String.IsNullOrEmpty(txtIdUbicacionDestino.Text.Trim) And String.IsNullOrEmpty(txtUbicacionDestino.Text.Trim) Then
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:313:                txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:334:            objetoRuta.IdUbicacionTransito = txtIdUbicacionDestino.Text 'SpinIdUbicacion.Value 'txtIdUbicacionDestino.Text*********************************
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:406:                gBeRoadRuta.IdUbicacionTransito = Integer.Parse(txtIdUbicacionDestino.Text.Trim) 'Integer.Parse(SpinIdUbicacion.Value)***********************************
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:545:                txtIdUbicacionDestino.Text = frmbodegaUbicacionLink.pObj.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:556:    Private Sub txtIdUbicacionDestino_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtIdUbicacionDestino.KeyPress
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:570:            If e.KeyChar = Convert.ToChar(8) AndAlso txtIdUbicacionDestino.Text.Length = 1 Then
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:571:                txtIdUbicacionDestino.Text = String.Empty
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:579:    Private Sub txtIdUbicacionDestino_KeyDown(sender As Object, e As KeyEventArgs) Handles txtIdUbicacionDestino.KeyDown
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:594:                txtIdUbicacionDestino.Text = AP.Bodega.Ubic_despacho
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:609:        If String.IsNullOrEmpty(txtIdUbicacionDestino.Text.Trim()) = False Then
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:610:            pObj.IdUbicacion = CInt(txtIdUbicacionDestino.Text.Trim())
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:623:                    txtIdUbicacionDestino.Text = pObj.IdUbicacion
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:627:                    txtIdUbicacionDestino.Text = ""
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:628:                    txtIdUbicacionDestino.Focus() ': txtIdUbicacionDestino.SelectAll()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:631:                txtIdUbicacionDestino.Text = ""
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:633:                txtIdUbicacionDestino.Focus()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:637:            txtIdUbicacionDestino.Text = ""
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.vb:652:        txtIdUbicacionDestino.Text = ""
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:76:        Me.txtIdUbicacionDestino = New DevExpress.XtraEditors.TextEdit()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:190:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:809:        Me.GroupControl10.Controls.Add(Me.txtIdUbicacionDestino)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:847:        'txtIdUbicacionDestino
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:849:        Me.txtIdUbicacionDestino.EditValue = ""
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:850:        Me.txtIdUbicacionDestino.Location = New System.Drawing.Point(99, 193)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:851:        Me.txtIdUbicacionDestino.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:852:        Me.txtIdUbicacionDestino.MenuManager = Me.RibbonControl
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:853:        Me.txtIdUbicacionDestino.Name = "txtIdUbicacionDestino"
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:854:        Me.txtIdUbicacionDestino.Size = New System.Drawing.Size(75, 22)
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:855:        Me.txtIdUbicacionDestino.TabIndex = 9
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:1788:        CType(Me.txtIdUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Road_Ruta\frmRoadxRuta.Designer.vb:1976:    Friend WithEvents txtIdUbicacionDestino As DevExpress.XtraEditors.TextEdit
+
+=== PATTERN: isEmpty\\(\\) ===
+(sin hallazgos)
+
+=== PATTERN: cantidad_verificada ===
+.\TOMIMSV4\Entity\Transacciones\Despacho\clsBeVW_Despacho_Rep.vb:146:                        ByVal cantidad_verificada As Double, ByVal Peso_Pickeado As Double,
+.\TOMIMSV4\Entity\Transacciones\Despacho\clsBeVW_Despacho_Rep.vb:187:        Me.Cantidad_verificada = cantidad_verificada
+.\TOMIMSV4\TOMIMSV4\Transacciones\Verificacion_BOF\frmVerificacionBOF.vb:1395:                    ' Validar líneas no verificadas (cantidad_verificada = 0), agrupadas por pedido
+.\TOMIMSV4\DAL\Transacciones\Tarea_HandHeld\clsLnTarea_hh_Partial.vb:1794:                                          WHERE cantidad_verificada>0 and 
+.\TOMIMSV4\DAL\Transacciones\Tarea_HandHeld\clsLnTarea_hh_Partial.vb:1795:                                                cantidad_despachada < cantidad_verificada AND
+.\TOMIMSV4\DAL\Transacciones\Tarea_HandHeld\clsLnTarea_hh_Partial.vb:2108:                                            WHERE cantidad_verificada>0 and 
+.\TOMIMSV4\DAL\Transacciones\Tarea_HandHeld\clsLnTarea_hh_Partial.vb:2109:                                                cantidad_despachada < cantidad_verificada AND
+.\TOMIMSV4\DAL\Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta.vb:40:				.Cantidad_verificada = IIf(IsDBNull(dr.Item("cantidad_verificada")), 0.0, dr.Item("cantidad_verificada"))
+.\TOMIMSV4\DAL\Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta.vb:93:			Ins.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta.vb:213:			Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnVW_Despacho_Rep.vb:35:                .Cantidad_verificada = IIf(IsDBNull(dr.Item("cantidad_verificada")), 0.0, dr.Item("cantidad_verificada"))
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_det_Partial.vb:545:		                                    peso_verificado, pu.peso_despachado, d.PesoDespachado, cantidad_solicitada, cantidad_recibida, d.CantidadDespachada cantidad_verificada, 
+.\TOMIMSV4\DAL\Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb:3276:                '#EJC20260526: En verificación el disponible real es (cantidad_recibida - cantidad_verificada).
+.\TOMIMSV4\DAL\Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb:5930:                              AND pu.cantidad_verificada <> pu.cantidad_solicitada AND pu.dañado_picking = 0 and pu.dañado_verificacion = 0 
+.\TOMIMSV4\DAL\Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb:35134:                                         0 cantidad_verificada,   
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:34:                .Cantidad_verificada = IIf(IsDBNull(dr.Item("cantidad_verificada")), 0.0, dr.Item("cantidad_verificada"))
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:88:            Ins.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:210:            Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:38:                .Cantidad_Verificada = IIf(IsDBNull(dr.Item("cantidad_verificada")), 0.0, dr.Item("cantidad_verificada"))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:1550:							      cantidad_verificada <> cantidad_recibida AND " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:1698:							      AND (cantidad_solicitada <> cantidad_recibida OR cantidad_solicitada <> cantidad_verificada)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:1774:							      AND (cantidad_solicitada <> cantidad_recibida OR cantidad_solicitada <> cantidad_verificada)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:4069:                                                         OR ISNULL(cantidad_verificada, 0) > 0
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:4088:                                                              OR ISNULL(cantidad_verificada, 0) > 0
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6675:            '#CKFK20250626 Agregué esto pu.cantidad_verificada<>pu.cantidad_despachada
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6683:                                            SUM(pu.cantidad_verificada) cantidad_verificada, 0 encontrado, 0 dañado_verificacion,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6719:                                            pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6721:                                            pu.cantidad_verificada<>pu.cantidad_despachada)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6816:                         AS cantidad_solicitada, SUM(pu.cantidad_recibida) AS cantidad_recibida, 0 AS cantidad_verificada, 0 AS encontrado, 0 AS dañado_verificacion, NULL AS fecha_real_vence, 0 AS no_packing, NULL AS fecha_picking, NULL AS fecha_verificado, NULL 
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:7777:							      cantidad_verificada > 0 AND
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:38:                .Cantidad_Verificada = IIf(IsDBNull(dr.Item("cantidad_verificada")), 0.0, dr.Item("cantidad_verificada"))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:199:            Ins.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:362:            Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:977:            Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1176:            Upd.Add("cantidad_verificada", "@cantidad_verificada", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1238:                                 "SET cantidad_verificada = cantidad_recibida " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1241:                                 "  AND ISNULL(p.cantidad_verificada,0) = 0 " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1313:                             "        SUM(ISNULL(p.cantidad_verificada,0)) AS cantidad_verificada, " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1347:                             "    ISNULL(p.cantidad_verificada,0) AS cantidad_verificada, " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1362:                             "        WHEN ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0 THEN 'VERIFICACION_EN_CERO' " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1363:                             "        WHEN ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_recibida,0) - ISNULL(p.cantidad_verificada,0)) > 0.000001 THEN 'VERIFICACION_PARCIAL' " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1364:                             "        WHEN ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_verificada,0) - ISNULL(pk.cantidad_empacada,0)) > 0.000001 THEN 'PACKING_NO_CUADRA' " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1367:                             "    CASE WHEN p.IdPickingEnc IS NOT NULL AND ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0 THEN 1 ELSE 0 END AS permite_correccion_auto " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1381:                             "WHERE (ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0) " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1382:                             "   OR (ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_recibida,0) - ISNULL(p.cantidad_verificada,0)) > 0.000001) " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1383:                             "   OR (ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_verificada,0) - ISNULL(pk.cantidad_empacada,0)) > 0.000001) " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:578:                                            trans_picking_ubic.cantidad_verificada AS Cantidad_Verificada, trans_picking_ubic.cantidad_despachada,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:606:                                            trans_picking_ubic.cantidad_verificada AS Cantidad_Verificada, trans_picking_ubic.cantidad_despachada,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:782:                                  trans_picking_ubic.cantidad_verificada AS Cantidad_Verificada, trans_picking_ubic.cantidad_despachada,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_enc_Partial.vb:815:                                  trans_picking_ubic.cantidad_verificada AS Cantidad_Verificada, trans_picking_ubic.cantidad_despachada,
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:794:                    SUM(ISNULL(dbo.trans_picking_ubic.cantidad_verificada, 0)) AS cantidad_verificada, 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:826:                vSQL += " AND (trans_picking_ubic.cantidad_despachada < trans_picking_ubic.cantidad_verificada) "
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:830:                vSQL += " AND (trans_picking_ubic.cantidad_verificada > 0) "
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:895:                                If lRow("cantidad_verificada") IsNot DBNull.Value AndAlso lRow("cantidad_verificada") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:896:                                    Obj.Cantidad_Verificada = CType(lRow("cantidad_verificada"), Double)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:969:                        SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:994:                vSQL += " AND (trans_picking_ubic.cantidad_verificada > 0) "
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:1054:                        If lRow("cantidad_verificada") IsNot DBNull.Value AndAlso lRow("cantidad_verificada") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:1055:                            Obj.Cantidad_Verificada = CType(lRow("cantidad_verificada"), Double)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3003:                                          AND cantidad_recibida > cantidad_verificada 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3128:                        SUM(pubic.cantidad_verificada) AS cantidad_verificada, 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3293:        Obj.Cantidad_Verificada = Get_Row_Double(lRow, "cantidad_verificada")
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3378:                   SUM(ISNULL(dbo.trans_picking_ubic.cantidad_verificada, 0)) AS cantidad_verificada,
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3414:              AND (@PendientesDeDespacho = 0 OR trans_picking_ubic.cantidad_despachada < trans_picking_ubic.cantidad_verificada)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3415:              AND (@EsPicking = 1 OR trans_picking_ubic.cantidad_verificada > 0)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3484:                    SUM(ISNULL(dbo.trans_picking_ubic.cantidad_verificada, 0)) AS cantidad_verificada, 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3520:                vSQL += " AND (trans_picking_ubic.cantidad_despachada < trans_picking_ubic.cantidad_verificada) "
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3524:                vSQL += " AND (trans_picking_ubic.cantidad_verificada > 0) "
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3595:                                If lRow("cantidad_verificada") IsNot DBNull.Value AndAlso lRow("cantidad_verificada") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3596:                                    Obj.Cantidad_Verificada = CType(lRow("cantidad_verificada"), Double)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:3644:                                          cantidad_recibida as Cantidad_Picking, cantidad_verificada as Cantidad_Verificada, 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:4871:                    SUM(ISNULL(ubic.cantidad_verificada, 0)) AS cantidad_verificada, 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:4946:                                If lRow("cantidad_verificada") IsNot DBNull.Value AndAlso lRow("cantidad_verificada") IsNot Nothing Then
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:4947:                                    Obj.Cantidad_Verificada = CType(lRow("cantidad_verificada"), Double)
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_det_Partial.vb:5006:                                                cantidad_verificada <> cantidad_recibida AND 
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:54:               "            SUM(ISNULL(cantidad_verificada, 0)) AS Cantidad_Verificada_Total, " &
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6884:                                            u.cantidad_verificada
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6887:                                          AND u.cantidad_verificada > 0
+.\TOMIMSV4\DAL\Transacciones\Pedido\clsLnTrans_pe_enc_Partial.vb:6912:                                                  WHERE ISNULL(o.cant_despachada_otros, 0) < e.cantidad_verificada
+.\TOMIMSV4\TOMIMSV4\Transacciones\Pedido\frmPedido_List.vb:852:                     "cantidad_verificada",
+.\TOMIMSV4\TOMIMSV4\Transacciones\Despacho\frmDespacho.vb:4075:                    Dim verificado As Double = ToDouble(row("cantidad_verificada"))
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:58:                    'GridView1.Columns("cantidad_verificada").SummaryItem.SummaryType = SummaryItemType.Sum
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:59:                    'GridView1.Columns("cantidad_verificada").SummaryItem.DisplayFormat = "{0:n6}"
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:60:                    'GridView1.Columns("cantidad_verificada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:61:                    'GridView1.Columns("cantidad_verificada").DisplayFormat.FormatString = "{0:n6}"
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:88:                    '    With {.FieldName = "cantidad_verificada", .SummaryType = SummaryItemType.Sum,
+.\TOMIMSV4\TOMIMSV4\Reportes\Despacho\frmTiemposDespacho.vb:89:                    '    .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("cantidad_verificada")}
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:59:                    GridView1.Columns("cantidad_verificada").SummaryItem.SummaryType = SummaryItemType.Sum
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:60:                    GridView1.Columns("cantidad_verificada").SummaryItem.DisplayFormat = "{0:n6}"
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:61:                    GridView1.Columns("cantidad_verificada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:62:                    GridView1.Columns("cantidad_verificada").DisplayFormat.FormatString = "{0:n6}"
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:89:                        With {.FieldName = "cantidad_verificada", .SummaryType = SummaryItemType.Sum,
+.\TOMIMSV4\TOMIMSV4\Reportes\Picking\frmAuditoriaPicking.vb:90:                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("cantidad_verificada")}
+
+=== PATTERN: estado\s*=\s*"Despachado" ===
+(sin hallazgos)
+

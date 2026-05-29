@@ -1,0 +1,10 @@
+id: rg-risk-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+process: picking
+risk_level: medium
+open_risks: []
+evidence:
+  footprint: ''
+  sibling_scan: ''
+  checklist: ''
+recommendation: ''

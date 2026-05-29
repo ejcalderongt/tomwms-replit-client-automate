@@ -1,0 +1,38 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_tramos.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+316:            if (Listtramos!=null){
+317:                if (Listtramos.items!=null){
+337:            if (BeUbic !=null){
+
+=== CHECK: isEmpty\(\) ===
+115:                        if (!txtTramUbic.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+35:    private WebServiceHandler ws;
+36:    private XMLObject xobj;
+38:    private EditText txtTramUbic;
+39:    private ListView listInvTramos;
+42:    private ProgressDialog progress;
+43:    private Dialog dialog;
+48:    private ArrayList<clsBeTrans_inv_tramo> BeListTramos = new ArrayList<clsBeTrans_inv_tramo>();
+49:    private list_adapt_tramos_inv_ini adapter;
+53:    private boolean pMoverAPanelDeConteo;
+54:    private int TipoConteo=0;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+111:            txtTramUbic.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+188:            cmdTraRec.setText("Regs: "+Count);
+190:            cmdTraDet.setText("Det: "+cnt_det);
+191:            cmdTraVer.setText("Ver: "+cnt_ver);
+

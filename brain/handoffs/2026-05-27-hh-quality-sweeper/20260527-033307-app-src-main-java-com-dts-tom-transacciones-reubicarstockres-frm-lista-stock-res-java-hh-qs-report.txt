@@ -1,0 +1,39 @@
+target: app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_lista_stock_res.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+197:                if (detStockRes != null) {
+210:                if (detStockRes != null) {
+211:                    if (detStockRes.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+172:            if (!ubicacion.isEmpty() || !codigo.isEmpty() || !referencia.isEmpty()) {
+268:                        if (!txtUbicacion.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+28:    private XMLObject xobj;
+29:    private ProgressDialog progress;
+32:    private TextView lblRegs;
+33:    private ListView listStockRes;
+35:    private clsBeVW_stock_resList detStockRes = new clsBeVW_stock_resList();
+39:    private list_adapt_stock_res adapter;
+40:    private list_adapt_stock_res_mixto adapterMixto;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+69:            txtCodigo.setOnKeyListener((v, keyCode, event) -> {
+91:            txtUbicacion.setOnKeyListener((v, keyCode, event) -> {
+113:            txtReferencia.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+205:                    lblRegs.setText("REGS: " + distinctStockList.size());
+232:                        lblRegs.setText("REGS: " + detStockRes.items.size());
+239:                        lblRegs.setText("REGS: 0");
+244:                    lblRegs.setText("REGS: 0");
+

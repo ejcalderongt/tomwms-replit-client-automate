@@ -1,0 +1,15 @@
+id: bof-gs-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+mode: report-only
+repo_path: ''
+scope_path: ''
+summary:
+  vb_files_scanned: 0
+  unused_private_candidates: 0
+  duplicate_query_candidates: 0
+  heavy_query_candidates: 0
+  roundtrip_hotspots: 0
+  business_rule_risk_candidates: 0
+top_hotspots: []
+findings: []
+next_batch: []

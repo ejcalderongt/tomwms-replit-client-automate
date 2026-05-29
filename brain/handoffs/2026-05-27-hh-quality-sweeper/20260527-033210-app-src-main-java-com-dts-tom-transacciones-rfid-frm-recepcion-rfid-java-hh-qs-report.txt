@@ -1,0 +1,113 @@
+target: app/src/main/java/com/dts/tom/Transacciones/RFID/frm_recepcion_rfid.java
+=== CHECK: ==\s*null ===
+222:            if (readers == null) {
+343:                if (eventHandler == null) {
+389:            if (reader == null || !reader.isConnected()) {
+429:                if (reader == null || !reader.isConnected()) {
+435:                if (myTags == null || myTags.length == 0) {
+446:                    if (tag == null || tag.getTagID() == null || tag.getTagID().trim().isEmpty()) {
+535:                if (!eventosApi3Autorizados || rfidStatusEvents == null || rfidStatusEvents.StatusEventData == null) {
+602:                if (reader == null || !reader.isConnected()) {
+708:                    if (tbeep == null) {
+829:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+872:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+901:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+973:            if (reader == null || !readerListo) {
+1101:                if (epcHex == null) {
+1120:                if (binary == null || binary.length() != 96) {
+1135:                if (partitionData == null) {
+1155:                if (companyPrefix == null || !COMPANY_PREFIX.equals(companyPrefix)) {
+1160:                if (serialReference == null || serialReference.length() != partitionData.serialRefDigits) {
+1282:                if (epcHex == null) {
+1301:                if (bytes == null || bytes.length != 12) {
+
+=== CHECK: !=\s*null ===
+159:            if (btnMenuGuardar != null) {
+169:            if (btnLimpiar != null) {
+240:                        if (readers != null) {
+243:                            if (availableRFIDReaderList != null && availableRFIDReaderList.size() > 0) {
+262:                        initError = e.getMessage() != null ? e.getMessage() : "InvalidUsageException";
+266:                        initError = e.getVendorMessage() != null ? e.getVendorMessage() : "OperationFailureException";
+270:                        initError = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+341:            if (reader != null && reader.isConnected()) {
+459:                    //if (tagSSCC != null && tagSSCC.length() == 18) {
+460:                    if (tagSSCC != null ) {
+480:                    item.IdDispositivo = IdDevice != null ? IdDevice : "";
+481:                    item.IdOperador = IdUsuarioHH != null ? IdUsuarioHH : 0;
+487:                        if (tag.getMemoryBankData() != null && tag.getMemoryBankData().length() > 0) {
+509:                            if (adapter_rfid != null) {
+513:                            if (TotalRegistros != null) {
+645:            if (layoutCarga != null) {
+649:            if (progressBarLoad != null) {
+653:            if (lblProcesoCarga != null) {
+657:            if (btnLimpiar != null) {
+661:            if (btnMenuGuardar != null) {
+665:            if (rcListaLecturasRfid != null) {
+676:            if (progressBarLoad != null) {
+680:            if (layoutCarga != null) {
+684:            if (btnLimpiar != null) {
+688:            if (btnMenuGuardar != null) {
+692:            if (rcListaLecturasRfid != null) {
+733:            if (tbeep != null) {
+768:                if (Lista_Detalle_rfid != null) {
+781:            if (adapter_rfid != null) {
+785:            if (TotalRegistros != null) {
+844:                if (item != null && item.Barra_epc != null && !item.Barra_epc.trim().isEmpty()) {
+880:                if (item != null && !"Incompatible".equalsIgnoreCase(item.Tagid)) {
+924:            if (reader != null && reader.isConnected()) {
+1038:            if (reader != null) {
+1052:                    if (eventHandler != null) {
+1070:            if (readers != null) {
+
+=== CHECK: isEmpty\(\) ===
+446:                    if (tag == null || tag.getTagID() == null || tag.getTagID().trim().isEmpty()) {
+493:                if (nuevos.isEmpty()) {
+829:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+844:                if (item != null && item.Barra_epc != null && !item.Barra_epc.trim().isEmpty()) {
+872:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+885:            if (listaValida.isEmpty()) {
+901:            if (Lista_Detalle_rfid == null || Lista_Detalle_rfid.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+64:    private RecyclerView rcListaLecturasRfid;
+65:    private TextView lblDatosProd;
+66:    private TextView TotalRegistros;
+67:    private ImageButton btnMenuGuardar;
+68:    private Button btnLimpiar;
+69:    private ProgressBar progressBarLoad;
+70:    private RelativeLayout layoutCarga;
+71:    private TextView lblProcesoCarga;
+72:    private final Object lockListaRfid = new Object();
+74:    private ArrayList<clsBeI_nav_barras_rfid_det> Lista_Detalle_rfid;
+75:    private RfidAdapter adapter_rfid;
+77:    private String IdDevice;
+78:    private Integer IdUsuarioHH;
+80:    private Readers readers;
+81:    private ArrayList<ReaderDevice> availableRFIDReaderList;
+82:    private ReaderDevice readerDevice;
+83:    private RFIDReader reader;
+86:    private boolean beepON = false;
+87:    private EventHandler eventHandler;
+88:    private boolean readerListo = false;
+92:    private boolean gatilloPresionado = false;
+97:    private final Object lockInventario = new Object();
+98:    private final Object lockTagsVistos = new Object();
+99:    private final AtomicLong ultimaLecturaTagMs = new AtomicLong(0L);
+101:    private final ArrayList<clsBeI_nav_barras_rfid_det> bufferNuevosTags = new ArrayList<>();
+235:                private String initError = "";
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+156:            lblDatosProd.setText("Lectura de " + tipoTransaccion);
+157:            TotalRegistros.setText("Pallets: 0");
+654:                lblProcesoCarga.setText("Preparando RFID...");
+786:                TotalRegistros.setText("Pallets: 0");
+

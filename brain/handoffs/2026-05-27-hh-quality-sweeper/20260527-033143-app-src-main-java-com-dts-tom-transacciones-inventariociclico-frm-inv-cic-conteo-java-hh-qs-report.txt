@@ -1,0 +1,101 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java
+=== CHECK: ==\s*null ===
+424:        if (valor == null || valor.isEmpty()) return false;
+
+=== CHECK: !=\s*null ===
+169:                                    .filter(item -> item.Licence_plate != null
+265:                if(DT !=null){
+283:                            if(DT.getString(4) != null){
+291:                            if(DT.getString(7)!=null){
+297:                            if(DT.getString(8)!=null){
+304:                            if (DT.getString(9)!=null){
+311:                            if (DT.getString(10)!=null){
+345:                            data_rec.Codigo_Color = DT.getString(42) != null ? DT.getString(42) : "";
+346:                            data_rec.Nombre_Color = DT.getString(43) != null ? DT.getString(43) : "";
+347:                            data_rec.Codigo_Talla = DT.getString(44) != null ? DT.getString(44) : "";
+348:                            data_rec.Nombre_Talla = DT.getString(45) != null ? DT.getString(45) : "";
+366:                        if (DT!=null) DT.close();
+388:            if (reconteos != null){
+390:                if(reconteos.items != null){
+639:                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+711:            if (item.NoUbic == evaluar && item.cantidad != null && item.cantidad.equals(0.0)) {
+1172:            if(gl.lista_estados !=null){
+1299:            if (lBeProducto != null && lBeProducto.items != null && !lBeProducto.items.isEmpty()) {
+1322:                    if (siguiente != null) {
+1361:            if (BeProducto != null){
+1571:        if (data_list != null) {
+1574:        if (gl.reconteo_list != null) {
+1578:        if (lista_filtro != null) {
+1583:        if (DT != null && !DT.isClosed()) {
+1588:        if (progress != null && progress.isShowing()) {
+
+=== CHECK: isEmpty\(\) ===
+173:                            if (!ListaCajaMasterConteo.isEmpty()) {
+177:                            if (!texto.isEmpty()) {
+424:        if (valor == null || valor.isEmpty()) return false;
+434:            if (termino.isEmpty()) {
+496:        if (resultados.isEmpty()) {
+520:            if (resultados.isEmpty()) {
+574:        if (!tmp.isEmpty()) {
+660:            if (valor.isEmpty()) {
+695:        if (filtroTexto.isEmpty()) {
+1299:            if (lBeProducto != null && lBeProducto.items != null && !lBeProducto.items.isEmpty()) {
+1306:                if (!tmp.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+263:            if(!txtBuscFiltro.equals("")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+50:    private WebServiceHandler ws;
+51:    private XMLObject xobj;
+52:    private list_adapt_consulta_ciclico adapter_ciclico;
+54:    private ImageView btnAgregar;
+55:    private EditText txtBuscFiltro;
+56:    private ListView listCiclico;
+57:    private CheckBox chkCajaMaster;
+58:    private ProgressDialog progress;
+66:    private Integer Idx;
+67:    private Cursor DT;
+68:    private boolean Busqueda;
+69:    private String ultimoFiltro = "";
+70:    private int ultimoIdProductoEscaneado = -1;
+71:    private int ultimoIdInventarioCiclicoContado = 0;
+72:    private int ultimaUbicacionContada = 0;
+75:    private clsBe_inv_reconteo_data data_rec = new clsBe_inv_reconteo_data();
+76:    private ArrayList<clsBe_inv_reconteo_data> lista_filtro = new ArrayList<clsBe_inv_reconteo_data>();
+77:    private final ArrayList<clsBe_inv_reconteo_data> data_list = new ArrayList<clsBe_inv_reconteo_data>();
+78:    private clsBeTrans_inv_enc_reconteoList reconteos = new clsBeTrans_inv_enc_reconteoList();
+79:    private final clsBeTrans_inv_enc_reconteoList registro_ciclico = new clsBeTrans_inv_enc_reconteoList();
+80:    private ArrayList<clsBe_inv_reconteo_data> listaVisible = data_list;
+81:    private boolean filtroActivo = false;
+82:    private Object item;
+83:    private clsBeProducto BeProducto;
+85:    private String ultimoCodigoEscaneado = "";
+419:    private String CodigoEscaneado = null;
+420:    private String UbicacionEscaneada = "";
+421:    private List<clsBe_inv_reconteo_data> tmp = new ArrayList<>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+160:            txtBuscFiltro.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+120:        checkbox.setText("Pendientes");
+199:                    checkbox.setText("Pendientes");
+206:                    checkbox.setText("Contados");
+235:            cmdList.setText(" 0/0 ");
+405:                lblConteo.setText("Conteo - Inventario "+ BeInvEnc.Idinventarioenc);
+407:                lblConteo.setText("Reconteo #" + idreconteo);
+719:        //txtBuscFiltro.setText("");  // ← ¡Siempre limpia después de escanear!
+760:            txtBuscFiltro.setText("");
+793:                txtBuscFiltro.setText("");
+1007:                txtBuscFiltro.setText("");
+1049:            txtBuscFiltro.setText("");
+1083:                txtBuscFiltro.setText("");
+1174:                //txtBuscFiltro.setText("");
+1185:        txtBuscFiltro.setText("");
+1453:                    // txtBuscFiltro.setText("");
+1560:        txtBuscFiltro.setText("");
+

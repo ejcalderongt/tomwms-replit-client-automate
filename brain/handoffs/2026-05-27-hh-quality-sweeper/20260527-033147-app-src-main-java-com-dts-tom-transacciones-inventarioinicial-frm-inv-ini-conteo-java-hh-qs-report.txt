@@ -1,0 +1,129 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioInicial/frm_inv_ini_conteo.java
+=== CHECK: ==\s*null ===
+1257:            if (InvTeorico == null) {
+
+=== CHECK: !=\s*null ===
+619:            if (BeUbic != null) {
+871://            if (InvTeorico != null) {
+872://                if (InvTeorico.items != null) {
+878://                    if (InvTeoricoPorProducto != null) {
+879://                        if (InvTeoricoPorProducto.items != null) {
+958:            if (InvTeorico != null) {
+960:                if (InvTeorico.items != null) {
+1053:            /*if (Listtramos != null) {
+1054:                if (Listtramos.items != null) {
+1059:            if (BeInvTramo != null) {
+1103:            if (BeProducto!=null){
+1702:            if (BeUbic != null) {
+1722:            if (BeProducto != null) {
+1747:            if (BeListPres!=null){
+1748:                if (BeListPres.items!=null){
+1777:            if (BeListEstado!=null){
+1778:                if (BeListEstado.items!=null){
+1800:            if(InvTeorico!=null){
+1924:            if (listInvDet != null) {
+1957:            if (BeInvResumen != null) {
+1969:                if (listInvRes != null) {
+1970:                    if (listInvRes.items != null) {
+1991:            if (listInvDet != null) {
+
+=== CHECK: isEmpty\(\) ===
+191:                        if (!txtUbicInv.getText().toString().isEmpty()) {
+209:                        if (!txtCodBarra.getText().toString().isEmpty()) {
+228:                        if (!txtLicencia.getText().toString().isEmpty()) {
+270:                    if (nuevaLic.isEmpty()) {
+977:                    } else if(InvTeorico.items.size() == 1 && InvTeorico.items.get(0).Lote.isEmpty()) {
+1106:                    if (ditem.getLote().isEmpty()){
+1194:            vPeso = (vPeso.isEmpty()?"0":vPeso);
+1230:                if(txtLoteInvIni.getText().toString().isEmpty()){
+1238:                    txtCantInvIni.getText().toString().isEmpty()||
+1247:                        txtPesoInvIni.getText().toString().isEmpty()||
+1686:            if (txtUbicInv.getText().toString().isEmpty()) {
+2174:            if (!FechaSelect.isEmpty()){
+2180:            if (!LoteSelect.isEmpty() && !FechaSelect.isEmpty()){
+2187:            }else if(!LoteSelect.isEmpty()){
+2193:            }else if(!FechaSelect.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+1239:                    txtCantInvIni.getText().toString().equals("")){
+1248:                        txtPesoInvIni.getText().toString().equals("")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+64:    private DatePicker dpResult;
+66:    private RelativeLayout relFechaItems;
+68:    private WebServiceHandler ws;
+69:    private XMLObject xobj;
+72:    private int codestmalo = 0;
+73:    private int IdEstadoSelect=0;
+74:    private int IdPresSelect=0;
+80:    private double CantidadConteo = 0;
+83:    private int year;
+84:    private int month;
+85:    private int day;
+87:    private clsBeTrans_inv_tramo utramo = new clsBeTrans_inv_tramo();
+88:    private clsBeProducto BeProducto = new clsBeProducto();
+89:    private clsBeProducto_PresentacionList BeListPres = new clsBeProducto_PresentacionList();
+90:    private clsBeProducto_estadoList BeListEstado = new clsBeProducto_estadoList();
+91:    private clsBeTrans_inv_stock_prodList InvTeorico = new clsBeTrans_inv_stock_prodList();
+92:    private clsBeTrans_inv_stock_prodList InvTeoricoPorProducto = new clsBeTrans_inv_stock_prodList();
+93:    private clsBeTrans_inv_detalle  ditem = new clsBeTrans_inv_detalle();
+94:    private final clsBeTrans_inv_stock_prod BeLotes = new clsBeTrans_inv_stock_prod();
+95:    private clsBeTrans_inv_detalleList listInvDet = new clsBeTrans_inv_detalleList();
+96:    private clsBeTrans_inv_resumen BeInvResumen = new clsBeTrans_inv_resumen();
+97:    private clsBeTrans_inv_resumenList listInvRes= new clsBeTrans_inv_resumenList();
+99:    private ArrayList<String> EstadoList = new ArrayList<String>();
+100:    private ArrayList<String> PresList = new ArrayList<String>();
+101:    private final ArrayList<String> LoteList = new ArrayList<String>();
+102:    private final ArrayList<String> FechasVenceList = new ArrayList<String>();
+103:    private ArrayAdapter<String> dataAdapterFecha;
+107:    private int pIdTramo=0;
+109:    private boolean tramoEnProcesoSincronizado = false;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+187:            txtUbicInv.setOnKeyListener(new View.OnKeyListener() {
+205:            txtCodBarra.setOnKeyListener(new View.OnKeyListener() {
+224:            txtLicencia.setOnKeyListener(new View.OnKeyListener() {
+263:            txtLicenciaEdit.setOnKeyListener((v, keyCode, event) -> {
+299:            txtCantInvIni.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+448:                    txtLote.setText("");
+560:            txtUbicInv.setText("");
+561:            txtCodBarra.setText("");
+562:            txtLoteInvIni.setText("");
+563:            txtVenceInvIni.setText("");
+564:            txtCantInvIni.setText("");
+565:            txtPesoInvIni.setText("");
+567:            lblUbicDesc.setText("");
+568:            lblDescProd.setText("");
+569:            lblUnidadInv.setText("");
+595:                txtUbicInv.setText("" + BeUbic.IdUbicacion);
+638:                txtCodBarra.setText("");
+653:                    txtCodBarra.setText("");
+668:            lblUbicDesc.setText("" + BeUbic.Descripcion);
+856:            txtCantInvIni.setText("");
+862:            txtPesoInvIni.setText("");
+1011:            txtCodBarra.setText("");
+1038:                txtUbicInv.setText("");
+1039:                lblUbicDesc.setText("");
+1254:                txtPesoInvIni.setText("0");
+1280:            txtUbicInv.setText("");
+1281:            lblUbicDesc.setText("");
+1282:            txtCodBarra.setText("");
+1283:            txtLicencia.setText("");
+1284:            lblDescProd.setText("");
+1285:            txtCantInvIni.setText("");
+1286:            lblUbicDesc.setText("");
+1287:            txtVenceInvIni.setText("");
+1288:            txtLoteInvIni.setText("");
+1289:            txtPesoInvIni.setText("");
+1291:            txtLote.setText("");
+1292:            txtFechaVen.setText("");
+1684:            lblTituloForma.setText("TRAMO :" + BeInvTramo.Nombre_Tramo);
+1706:                txtUbicInv.setText("");
+1707:                lblUbicDesc.setText("");
+2206:                txtLicencia.setText("");
+

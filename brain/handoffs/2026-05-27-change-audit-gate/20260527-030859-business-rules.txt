@@ -1,0 +1,9 @@
+check: business_rules
+verifica_auto=7
+procesado_bof=5
+Verificar_con_imagen=1
+Fotografia_Verificacion=3
+TipoPedido=9
+IdBodega=95
+Estado=86
+IdUbicacionDestino=0

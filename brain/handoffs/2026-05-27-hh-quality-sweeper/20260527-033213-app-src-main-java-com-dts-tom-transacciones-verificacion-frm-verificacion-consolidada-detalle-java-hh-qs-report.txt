@@ -1,0 +1,48 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_verificacion_consolidada_detalle.java
+=== CHECK: ==\s*null ===
+103:        return value == null ? "" : value;
+107:        if (pSubListPickingU == null || pSubListPickingU.items == null || pSubListPickingU.items.isEmpty()) {
+128:            if (pSubListPickingU.items == null || pSubListPickingU.items.isEmpty()) {
+199:            if (pickingUbic == null) {
+
+=== CHECK: !=\s*null ===
+85:        if (BePedidoDetVerif != null && pSubListPickingU != null &&
+86:                pSubListPickingU.items != null && !pSubListPickingU.items.isEmpty()) {
+95:            if (progress != null) progress.cancel();
+121:                    .where(c-> c != null)
+248:                if (pListaPedidoDet!= null) {
+249:                    if (pListaPedidoDet.items != null) {
+332:            if (pListaPedidoDet!=null){
+333:                if(pListaPedidoDet.items!=null) {
+
+=== CHECK: isEmpty\(\) ===
+86:                pSubListPickingU.items != null && !pSubListPickingU.items.isEmpty()) {
+107:        if (pSubListPickingU == null || pSubListPickingU.items == null || pSubListPickingU.items.isEmpty()) {
+128:            if (pSubListPickingU.items == null || pSubListPickingU.items.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+150:            /*if (TareaDet.LicPlate.equals("")) {
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+41:    private ListView ListVeri;
+42:    private TextView txtDetalleProd;
+43:    private Button btnRegs;
+44:    private TextView txtMensaje;
+46:    private ImageView icono;
+49:    private XMLObject xobj;
+51:    private ProgressDialog progress;
+52:    private final ArrayList<clsBeDetallePedidoAVerificar> pListBeTareasVerificacionHH= new ArrayList<clsBeDetallePedidoAVerificar>();
+53:    private clsBeDetallePedidoAVerificarList pListaPedidoDet = new clsBeDetallePedidoAVerificarList();
+54:    private list_adapt_detalle_tareas_verificacion adapter;
+55:    private clsBeDetallePedidoAVerificar selItem = new clsBeDetallePedidoAVerificar();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+280:                        btnRegs.setText("Registros: " + pListaPedidoDet.items.size());
+417:            btnCambiar.setText("CANCELAR");
+

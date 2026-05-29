@@ -1,0 +1,12 @@
+=== PATTERN: IdUbicacionDestino ===
+(sin hallazgos)
+
+=== PATTERN: isEmpty\\(\\) ===
+(sin hallazgos)
+
+=== PATTERN: cantidad_verificada ===
+(sin hallazgos)
+
+=== PATTERN: estado\s*=\s*"Despachado" ===
+(sin hallazgos)
+

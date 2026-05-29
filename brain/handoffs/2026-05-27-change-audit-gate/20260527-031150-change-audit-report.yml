@@ -1,0 +1,11 @@
+id: cag-20260527-031156
+tag: '#EJC20260527'
+status: WARN
+checks:
+  null_safety: done
+  business_rules: done
+  db_correlation: done
+  state_safety: referenced_by_state_machine_auditor
+findings:
+  - 'Some DB tokens are unresolved in current database lookup.'
+recommendation: 'Promote to PASS only when WARN findings are acknowledged or fixed.'

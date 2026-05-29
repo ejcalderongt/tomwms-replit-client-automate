@@ -1,0 +1,33 @@
+id: business-rule-atlas-20260527-030421
+tag: '#EJC20260527'
+rules:
+  - name: 'verifica_auto'
+    occurrences: 90
+    impact_amplitude: 'medium'
+  - name: 'procesado_bof'
+    occurrences: 52
+    impact_amplitude: 'medium'
+  - name: 'Verificar_con_imagen'
+    occurrences: 10
+    impact_amplitude: 'low'
+  - name: 'Fotografia_Verificacion'
+    occurrences: 30
+    impact_amplitude: 'medium'
+  - name: 'IdBodega'
+    occurrences: 15225
+    impact_amplitude: 'very_high'
+  - name: 'IdUbicacionDestino'
+    occurrences: 397
+    impact_amplitude: 'high'
+  - name: 'TipoPedido'
+    occurrences: 551
+    impact_amplitude: 'very_high'
+  - name: 'Estado'
+    occurrences: 14344
+    impact_amplitude: 'very_high'
+candidate_unused_rules: []
+candidate_overlap_rules: []
+next_actions:
+  - 'Validate high-amplitude rules by process and client.'
+  - 'Audit low-occurrence rules for deprecation or missing wiring.'
+  - 'Cross-check overlap candidates in BOF/HH/WS gate conditions.'

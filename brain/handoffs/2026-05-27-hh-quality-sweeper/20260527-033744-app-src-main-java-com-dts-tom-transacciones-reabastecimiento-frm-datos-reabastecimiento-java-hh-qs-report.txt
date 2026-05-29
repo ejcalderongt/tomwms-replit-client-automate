@@ -1,0 +1,61 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Reabastecimiento/frm_datos_reabastecimiento.java
+=== CHECK: ==\s*null ===
+615:            if (raw == null) return 0;
+621:                return val == null ? 0 : val;
+
+=== CHECK: !=\s*null ===
+494:            if (BeUbic != null) {
+528:            if (resolucionActivaLpByBodega !=null){
+
+=== CHECK: isEmpty\(\) ===
+117:                        if (!txtLicPlate.getText().toString().isEmpty()) {
+138:                            if (!txtCodigoPrd.getText().toString().isEmpty()) {
+160:                        if (!txtUbicDestino.getText().toString().isEmpty()) {
+176:                        if (txtUbicDestino.getText().toString().isEmpty()) {
+190:                        if (!txtUbicOrigen.getText().toString().isEmpty()) {
+303:            if (!selitem.Lic_plate.isEmpty()  && !selitem.Lic_plate.equals("-")) {
+383:            if (!txtUbicDestino.getText().toString().isEmpty()) {
+396:            if (!txtUbicDestino.getText().toString().isEmpty()) {
+451:            if (txtUbicOrigen.getText().toString().isEmpty()) {
+462:                if (txtLicPlate.getText().toString().isEmpty()) {
+473:            if (txtCodigoPrd.getText().toString().isEmpty()) {
+548:            if (!vNuevoPalletId.isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+32:    private XMLObject xobj;
+38:    private CheckBox chkExplosionar;
+40:    private clsBeTrans_movimientos gMovimientoDet = new clsBeTrans_movimientos();
+41:    private final clsBeVW_stock_res vStockRes = new clsBeVW_stock_res();
+43:    private int vIdStockNuevo = 0;
+44:    private int vIdMovimientoNuevo = 0;
+45:    private int IdUbicacion = 0;
+47:    private String vNuevoPalletId = "";
+49:    private boolean explosionar = false;
+50:    private boolean UbicValida = false;
+52:    private clsBeBodega_ubicacion BeUbic = new clsBeBodega_ubicacion();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+113:            txtLicPlate.setOnKeyListener(new View.OnKeyListener() {
+134:                txtCodigoPrd.setOnKeyListener(new View.OnKeyListener() {
+156:            txtUbicDestino.setOnKeyListener(new View.OnKeyListener() {
+172:            lblUbicCompDestino.setOnKeyListener(new View.OnKeyListener() {
+186:            txtUbicOrigen.setOnKeyListener(new View.OnKeyListener() {
+
+=== CHECK: setText\(\" ===
+143:                                    txtCodigoPrd.setText("");
+209:                                txtLicPlate.setText("");
+251:                lblCantidad.setText("Cantidad ("+selitem.Nombre_Presentacion+"): ");
+254:                txtCantidad.setText(""+selitem.CantidadPresentacion);
+255:                lblCant.setText(""+selitem.CantidadPresentacion);
+257:                lblCantidad.setText("Cantidad ("+selitem.UMBas+"): ");
+258:                txtCantidad.setText(""+selitem.CantidadReservadaUMBas);
+259:                lblCant.setText(""+selitem.CantidadReservadaUMBas);
+505:                    lblUbicCompDestino.setText("");
+511:                lblUbicCompDestino.setText("");
+

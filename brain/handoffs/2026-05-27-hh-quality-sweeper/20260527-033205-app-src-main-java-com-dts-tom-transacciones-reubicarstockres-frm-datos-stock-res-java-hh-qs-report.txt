@@ -1,0 +1,61 @@
+target: app/src/main/java/com/dts/tom/Transacciones/ReubicarStockRes/frm_datos_stock_res.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+367:            if (BeUbic != null) {
+
+=== CHECK: isEmpty\(\) ===
+205:            if (selitem.Nombre_Presentacion.isEmpty()) {
+213:            if (selitem.Lote.isEmpty()) {
+264:            if (!txtUbicOrigen.getText().toString().isEmpty()) {
+308:            if (!txtLicensePlate.getText().toString().isEmpty()) {
+342:            if (!txtCodigoPrd.getText().toString().isEmpty()) {
+432:            if (txtUbicOrigen.getText().toString().isEmpty()) {
+440:            if (txtLicensePlate.getText().toString().isEmpty()) {
+448:            if (txtCodigoPrd.getText().toString().isEmpty()) {
+456:            if (txtUbicDestino.getText().toString().isEmpty() ) {
+461:            if (txtCantidad.getText().toString().isEmpty()) {
+478:            if (txtUbicOrigen.getText().toString().isEmpty()) {
+486:            if (txtLicensePlate.getText().toString().isEmpty()) {
+494:            if (txtUbicDestino.getText().toString().isEmpty() ) {
+510:            if (!txtUbicDestino.getText().toString().isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+34:    private XMLObject xobj;
+40:    private ListView listProductos;
+41:    private RecyclerView recyclerView;
+43:    private int IdUbicacion = 0;
+44:    private final int IdUbicacionDest = 0;
+45:    private int CambioUbicRealizado = 0;
+46:    private boolean UbicValida = false;
+47:    private list_adapt_lista_productos_recubic adapter;
+48:    private ArrayList<clsBeVW_stock_res> filtrada = new ArrayList<>();
+50:    private clsBeBodega_ubicacion BeUbic = new clsBeBodega_ubicacion();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+117:            txtUbicDestino.setOnKeyListener(new View.OnKeyListener() {
+136:            txtUbicOrigen.setOnKeyListener((v, keyCode, event) -> {
+152:            txtLicensePlate.setOnKeyListener((v, keyCode, event) -> {
+163:            txtCodigoPrd.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+196:                lblCantidad.setText("Cantidad ("+selitem.Nombre_Presentacion+"): ");
+197:                txtCantidad.setText(""+selitem.CantidadPresentacion);
+198:                lbCant.setText(""+selitem.CantidadPresentacion);
+200:                lblCantidad.setText("Cantidad ("+selitem.UMBas+"): ");
+201:                txtCantidad.setText(""+selitem.CantidadReservadaUMBas);
+202:                lbCant.setText(""+selitem.CantidadReservadaUMBas);
+271:                    txtUbicOrigen.setText("");
+279:                txtUbicOrigen.setText("");
+315:                    txtLicensePlate.setText("");
+329:                txtLicensePlate.setText("");
+382:                    lblNomDestino.setText("");
+388:                lblNomDestino.setText("");
+

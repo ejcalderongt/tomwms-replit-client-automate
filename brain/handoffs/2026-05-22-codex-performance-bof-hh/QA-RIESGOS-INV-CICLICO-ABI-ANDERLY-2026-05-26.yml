@@ -1,0 +1,160 @@
+meta:
+  fecha: 2026-05-26
+  analista: Codex
+  alcance:
+    - "Cruce checklist QA inventario ciclico vs cambios Abi/Anderly en BOF + HH"
+    - "Analisis estatico de codigo (primera pasada, sin ejecucion funcional)"
+  commits_revisados:
+    bof:
+      - "5018efb0 - Inventario ciclico mejoras y ajustes"
+      - "b7c974e0 - validaciones mampa"
+    hh:
+      - "694295da - Ajustes y mejoras para inventario ciclico"
+
+resumen:
+  conclusion_general: "Hay riesgo real de ruido funcional en 5 puntos; 2 son potencialmente bloqueantes."
+  bloqueantes_probables: 2
+  riesgos_medios: 3
+  fortalezas:
+    - "Se agrego filtro por inventario en busqueda por codigo de barras (reduce falsos positivos cross-inventario)."
+    - "Se incorpora CodigoSKU e IdProductoTallaColor para mejorar resolucion en talla/color."
+
+hallazgos:
+  - id: INV-CIC-R001
+    severidad: alta
+    categoria: crash
+    checklist_relacionado:
+      - "Regresion tecnica: filtros/escaneo no regresen errores de indice/lista vacia"
+      - "Caja Master / reconteo"
+    evidencia:
+      archivo: "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_conteo_caja_master.java"
+      lineas: [52]
+      detalle: "Uso directo de ListaCajaMasterConteo.get(0) sin validar lista vacia."
+    riesgo: "Si entra sin elementos (filtro no coincide o estado de lista cambia), revienta con IndexOutOfBounds."
+    fix_propuesto:
+      - "Validar null/empty antes de get(0)."
+      - "Si vacia: toast + finish() controlado."
+
+  - id: INV-CIC-R002
+    severidad: alta
+    categoria: crash
+    checklist_relacionado:
+      - "Escaneo por codigo normal/presentacion/SKU/talla-color"
+      - "Regresion tecnica: errores de indice/lista vacia"
+    evidencia:
+      archivo: "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java"
+      lineas: [1296, 1297]
+      detalle: "Valida lBeProducto.items != null, pero no valida items.isEmpty() antes de items.get(0)."
+    riesgo: "Escaneo sin match real puede devolver lista vacia y romper flujo."
+    fix_propuesto:
+      - "Condicion robusta: lBeProducto != null && lBeProducto.items != null && !lBeProducto.items.isEmpty()."
+      - "Fallback: mensaje claro + no cambiar seleccion actual."
+
+  - id: INV-CIC-R003
+    severidad: alta
+    categoria: negocio
+    checklist_relacionado:
+      - "Escanear por codigo de presentacion debe resolver producto correcto del ciclico"
+    evidencia:
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Mantenimientos/Producto/Producto/clsLnProducto_Partial.vb"
+      lineas: [11358, 11361, 11362]
+      detalle: "Filtro EXISTS fuerza d.IdUnidadMedida = v.IdUnidadMedidaBasica."
+    riesgo: "Puede excluir productos contados en unidad/presentacion distinta a UMBas, afectando escaneo por presentacion."
+    fix_propuesto:
+      - "Cambiar filtro a IdUnidadMedida del inventario segun producto escaneado o remover restriccion a UMBas."
+      - "Si se mantiene restriccion, documentar que solo escaneo UMBas es valido (contradice checklist actual)."
+
+  - id: INV-CIC-R004
+    severidad: media
+    categoria: negocio
+    checklist_relacionado:
+      - "Caja Master / reconteo: no sobreescribir cantidades manuales en escenarios mixtos"
+    evidencia:
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_Partial.vb"
+      lineas: [7966, 7967]
+      detalle: "En caja master se fuerza Contado=True y Cantidad = Cant_stock para cada registro."
+    riesgo: "Puede pisar conteos manuales previos si lista incluye lineas ya intervenidas."
+    fix_propuesto:
+      - "Agregar guard clause para no sobrescribir si ya tenia conteo manual valido (o bandera de origen CM)."
+      - "Auditar por campo extra: origen_conteo = 'CM'/'MANUAL'."
+
+  - id: INV-CIC-R005
+    severidad: media
+    categoria: flujo
+    checklist_relacionado:
+      - "Caja Master / reconteo"
+      - "BOF/HH columnas claras y sin ambiguedad"
+    evidencia:
+      archivo: "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_conteo.java"
+      lineas: [137, 140, 144]
+      detalle: "Visibilidad de chkCajaMaster atada a gl.Control_Talla_Color."
+    riesgo: "Si caja master aplica en productos sin talla/color, la opcion queda oculta indebidamente."
+    fix_propuesto:
+      - "Desacoplar visibilidad de CajaMaster de Control_Talla_Color."
+      - "Controlarlo por parametro especifico (ej. Control_Caja_Master) o por existencia de licencia."
+
+  - id: INV-CIC-R006
+    severidad: baja
+    categoria: calidad_datos
+    checklist_relacionado:
+      - "Escaneo SKU/talla-color consistente"
+    evidencia:
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Mantenimientos/Producto/Producto/clsLnProducto_Partial.vb"
+      lineas: [11413]
+      detalle: "lBeProducto.Distinct.ToList() en objetos sin comparer (posible deduplicacion no efectiva)."
+    riesgo: "Resultados duplicados en retorno WS cuando hay combinaciones equivalentes."
+    fix_propuesto:
+      - "Deduplicar por llave de negocio (IdProductoBodega + IdProductoTallaColor)."
+
+matriz_checklist_vs_codigo:
+  tabs_ciclico_vs_inicial:
+    estado: "sin evidencia de riesgo en esta pasada"
+  columnas_umbrales_um:
+    estado: "requiere validacion funcional visual"
+  refresco_datos_producto:
+    estado: "parcialmente cubierto; sin bug evidente en esta pasada"
+  contados_no_contados:
+    estado: "sin hallazgo bloqueante directo"
+  tramos_contados:
+    estado: "sin hallazgo directo, validar en QA funcional"
+  escaneo_sku_talla_color:
+    estado: "riesgo alto (INV-CIC-R003, INV-CIC-R002)"
+  conversion_unidades_cajas:
+    estado: "sin hallazgo directo en esta pasada"
+  licencia_vacia:
+    estado: "sin hallazgo directo en esta pasada"
+  detalle_gondola:
+    estado: "funcionalidad nueva; riesgo medio por robustez de parseo cursor"
+  caja_master_reconteo:
+    estado: "riesgo alto/medio (INV-CIC-R001, INV-CIC-R004, INV-CIC-R005)"
+  reservas_picking_durante_conteo:
+    estado: "no se detecta control explicito nuevo; requiere pruebas de integracion"
+  regresion_menu_permisos:
+    estado: "sin hallazgo directo en estos commits"
+
+propuesta_faseada_fixes:
+  fase_1_bloqueantes:
+    - "INV-CIC-R001"
+    - "INV-CIC-R002"
+  fase_2_negocio:
+    - "INV-CIC-R003"
+    - "INV-CIC-R004"
+  fase_3_ajustes:
+    - "INV-CIC-R005"
+    - "INV-CIC-R006"
+
+queries_sugeridas_validacion_post_fix:
+  - nombre: "Lineas ciclico con unidad distinta a UMBas (para validar R003)"
+    sql: |
+      SELECT TOP 200 d.idinventarioenc, d.IdProductoBodega, d.IdUnidadMedida, p.IdUnidadMedidaBasica
+      FROM trans_inv_ciclico d
+      INNER JOIN producto_bodega pb ON pb.IdProductoBodega = d.IdProductoBodega
+      INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+      WHERE d.IdUnidadMedida <> p.IdUnidadMedidaBasica
+      ORDER BY d.idinventarioenc DESC;
+  - nombre: "Conteos potencialmente pisados por caja master"
+    sql: |
+      SELECT TOP 200 idinventarioenc, idinvciclico, cantidad, contado, fec_mod, user_mod
+      FROM trans_inv_ciclico
+      WHERE contado = 1
+      ORDER BY fec_mod DESC;

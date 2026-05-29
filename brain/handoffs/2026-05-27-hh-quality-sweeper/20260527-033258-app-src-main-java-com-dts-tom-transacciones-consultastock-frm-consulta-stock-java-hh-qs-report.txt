@@ -1,0 +1,141 @@
+target: app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java
+=== CHECK: ==\s*null ===
+108:    private String safe(String s){ return s == null ? "" : s; }
+110:        return editText == null || editText.getText() == null ? "" : editText.getText().toString();
+113:        return TextUtils.isEmpty(value == null ? null : value.trim());
+116:        if (value == null) return "";
+122:        String raw = rawJson == null ? "" : rawJson.trim();
+143:                    focusViewIdAfterBusy = currentFocus == null ? View.NO_ID : currentFocus.getId();
+403:                        String estado = estadoSeleccionado == null ? "" : estadoSeleccionado.toString();
+434:                        String orden = ordenSeleccionado == null ? "" : ordenSeleccionado.toString();
+518:            int a = safeInt(left == null ? null : left.idUbic);
+519:            int b = safeInt(right == null ? null : right.idUbic);
+527:            String l = left == null ? "" : left.getIdProductoEstado();
+528:            String r = right == null ? "" : right.getIdProductoEstado();
+529:            if (l == null && r == null) return 0;
+530:            if (l == null) return -1;
+531:            if (r == null) return 1;
+553:            String raw = ws.xmlresult == null ? "" : ws.xmlresult.trim();
+643:                    if (jsonArray == null || jsonArray.trim().isEmpty()) {
+644:                        if (pListStock2 == null || pListStock2.items == null) {
+689:                    if (vListStock2 == null) {
+969:            if (pListStock2 == null || pListStock2.items == null) {
+1037:        if (pListStock2 == null || pListStock2.items == null) {
+1293:                                "pLicPlate", (pLicensePlate == null ? 0 : pLicensePlate),
+1307:                                       "pLicPlate", (pLicensePlate == null ? "" : pLicensePlate),
+1356:                error = (e.getMessage() == null || e.getMessage().isEmpty())
+1447:            if (pListStock2 == null || pListStock2.items == null) {
+1461:        String codigo = txtCodigo.getText() == null ? "" : txtCodigo.getText().toString().trim();
+1462:        String ubic = txtUbic.getText() == null ? "" : txtUbic.getText().toString().trim();
+1463:        String nombre = txtNombre.getText() == null ? "" : txtNombre.getText().toString().trim();
+1471:            if (ts == null || data == null) return null;
+1484:        if (key == null || data == null) return;
+1492:            if (rawJson == null || rawJson.trim().isEmpty()) return null;
+1498:                if (list == null) {
+1506:            if (arr == null && root.has("d")) {
+1517:            if (arr == null) {
+1522:            if (list == null) {
+1533:        if (root == null || keys == null) return null;
+1544:                if (nested == null) nested = wrapper.optJSONArray("Items");
+1545:                if (nested == null) nested = wrapper.optJSONArray(key);
+1622:            return Integer.parseInt(value == null ? "0" : value.trim());
+1673:            if (cm == null) return false;
+1676:                if (nw == null) return false;
+
+=== CHECK: !=\s*null ===
+209:        if (progress != null) {
+234:        if (view != null) view.setVisibility(visibility);
+248:            if (listView != null) {
+432:                    if (pListStock2 != null && pListStock2.items != null && !pListStock2.items.isEmpty()){
+566:            if (cUbic != null){
+601:            if (beProducto != null){
+709:                    boolean cacheEsLicencia = pLicensePlate != null && !pLicensePlate.trim().isEmpty();
+714:            if (pListStock2 != null && pListStock2.items != null) {
+1227:                    if (cached != null) {
+1537:            if (direct != null) {
+1542:            if (wrapper != null) {
+1546:                if (nested != null) {
+1565:        if (pLicensePlate != null && !pLicensePlate.trim().isEmpty()) {
+1678:                return nc != null && (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+1683:                return ni != null && ni.isConnected();
+
+=== CHECK: isEmpty\(\) ===
+125:        if (raw.isEmpty()) {
+296:        if (codBod.isEmpty() && gl.IdBodega > 0) {
+300:        if (codBod.isEmpty()) codBod = "--";
+301:        if (nomBod.isEmpty()) nomBod = "Bodega";
+432:                    if (pListStock2 != null && pListStock2.items != null && !pListStock2.items.isEmpty()){
+643:                    if (jsonArray == null || jsonArray.trim().isEmpty()) {
+709:                    boolean cacheEsLicencia = pLicensePlate != null && !pLicensePlate.trim().isEmpty();
+718:                if(conteo == 0 || pListStock2.items.isEmpty()){
+727:                    if (!pListStock2.items.isEmpty()) lpid=pListStock2.items.get(0).Codigo;else lpid=" ";
+831:                            if (!txtCodigo.getText().toString().isEmpty()){
+1356:                error = (e.getMessage() == null || e.getMessage().isEmpty())
+1492:            if (rawJson == null || rawJson.trim().isEmpty()) return null;
+1508:                if (!d.isEmpty()) {
+1565:        if (pLicensePlate != null && !pLicensePlate.trim().isEmpty()) {
+1660:                if (!txtUbic.getText().toString().isEmpty())
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+62:    private XMLObject xobj;
+63:    private ProgressDialog progress;
+65:    private ListView listView;
+66:    private ImageView btnFiltros;
+67:    private Button registros;
+68:    private RelativeLayout relFiltros;
+70:    private CheckBox chkDetalle;
+73:    private String ubicacionProcesada = "";
+74:    private boolean ubicacionProcesadaValida = false;
+79:    private TextView lblNombreUbicacion;
+80:    private TextView lblNombreProducto;
+81:    private int selest;
+82:    private clsBeVW_stock_res_CI_List pListStock2;
+83:    private boolean intentoFallbackLegacy = false;
+84:    private boolean forcedSoapFallbackInQuery = false;
+85:    private boolean wsInFlight = false;
+86:    private boolean chainedRequestInCallback = false;
+87:    private boolean pendingUbicValidation = false;
+88:    private boolean pendingStockSearch = false;
+89:    private boolean forceRefreshNextQuery = false;
+90:    private long wsRequestSeq = 0L;
+91:    private long wsActiveRequestId = 0L;
+92:    private int wsActiveCallback = 0;
+93:    private int focusViewIdAfterBusy = View.NO_ID;
+94:    private long lastEnterActionMs = 0L;
+96:    private String lastStockParseError = "";
+97:    private String lastStockPayloadType = "";
+98:    private String lastStockPayloadPreview = "";
+99:    private String lastStockTraceId = "";
+100:    private int lastStockCallback = 0;
+101:    private list_adapt_consulta_stock adapter_stock;
+102:    private list_adapt_consulta_stock2 adapter_stock2;
+103:    private final ArrayList<clsBeVW_stock_res_CI> items_stock = new ArrayList<>();
+104:    private final ArrayList<clsBeVW_stock_res_CI> items_stock2 = new ArrayList<>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+323:            txtUbic.setOnKeyListener((v, keyCode, event) -> {
+347:            txtCodigo.setOnKeyListener((v, keyCode, event) -> {
+370:            txtNombre.setOnKeyListener((view, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+216:            registros.setText("REGISTROS: " + conteo);
+358:                        lblNombreProducto.setText("");
+579:                lblNombreUbicacion.setText("Ubicaci├│n no existe en la bodega " + gl.IdBodega);
+720:                    lblNombreUbicacion.setText("U.S.P");
+738:                            registros.setText("Procesando: " + i + "/" + conteo);
+942:            registros.setText("Registros: "+ conteo);
+955:            txtCodigo.setText("");
+957:            txtUbic.setText("");
+977:            registros.setText("REGISTROS: "+ conteo);
+1039:            registros.setText("REGISTROS: 0");
+1131:        registros.setText("REGISTROS: "+ conteo);
+1169:            lblNombreProducto.setText("");
+1269:        registros.setText("Consultando...");
+1270:        lblNombreProducto.setText("");
+

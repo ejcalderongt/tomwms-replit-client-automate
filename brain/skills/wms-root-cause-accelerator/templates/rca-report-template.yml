@@ -1,0 +1,22 @@
+id: rca-YYYYMMDD-HHMMSS-process
+tag: '#EJCYYYYMMDD'
+created_at: 'YYYY-MM-DDTHH:MM:SS'
+process: picking
+symptom: ''
+status: in_analysis
+candidate_path:
+  - "HH: screen or form"
+  - "WS: asmx method"
+  - "DAL: class/method"
+  - "SQL: table/view/sp"
+branch_drift:
+  compare_against:
+    - dev_2026_mampa
+    - dev_2023_estable
+  findings: []
+null_guard_risks: []
+causal_hypothesis: ''
+fix_plan: []
+post_fix_verification:
+  checklist: []
+  result: pending

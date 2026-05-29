@@ -952,3 +952,66 @@ drift conocido:
 2. Mapear `dsUbicSug.xsd` (motor de ubicación sugerida CEALSAMI3) — Erik dice que es uno de los 4 módulos más complejos
 3. Caso 10 — reemplazo en HH durante picking (flujo end-to-end con `frmCantidadreemplazo`)
 4. Otra anécdota nueva de Erik para nuevo entry del diario
+
+---
+
+## Actualizacion 07-may-2026 — Release 8.4.2 La Cumbre mapeado
+
+Liberacion oficial **BOF 8.4.2 + HH 8.4.2** firmada por Erik el 5-may-2026,
+mergeada en `dev_2028_merge`. Mapeo completo en
+`release-notes/v8.4.2-la-cumbre-2026-05-05.md`:
+
+- **39 items** del PDF (21 BOF + 18 HH); 32 con codigo localizado en repo
+- **9 nuevas columnas en `bodega`** validadas en KILLIOS_2026 (cambio_ubic_restrictivo, indice_menor, mismo_producto_posiciones, centro_costo_erp/dep/dir, control_talla_color, tipo_pantalla_picking/recepcion/verificacion)
+- **Tabla nueva `producto_talla_color`** + FK `IdProductoTallaColor` propagada a stock, stock_hist, i_nav_transacciones_out
+- **Nueva tabla `trans_ajuste_det_borrador`** (probable) + columna `Borrador` en `trans_ajuste_enc`
+- **Caja Master**: campos en stock + lic_plate padre/hijo en recepcion y picking
+- **5 items con cross-impact directo a BUG-001** (UI Reemplazo BOF, password autorizacion, restricciones reemplazo, cambio_ubic+estado+licencia unificado, ajustes con borrador)
+
+**Recomendacion clave**: aplicar PLAYBOOK-FIX BUG-001 ANTES de promover
+8.4.2 a clientes con bug activo (Killios, BYB, MERCOPAN). El item BOF #1
+(UI Reemplazo desde BOF) puede multiplicar el bug si replica la logica
+defectuosa actual.
+
+| ID_RAIZ | Etiqueta human-readable | Estado | Archivo |
+|---|---|---|---|
+| REL-8.4.2-LACUMBRE | `RELEASE_v8.4.2_CUMBRE_dev_2028_merge` | VIGENTE | release-notes/v8.4.2-la-cumbre-2026-05-05.md |
+
+---
+
+## Actualizacion 09-may-2026 — CP-014 Killios WMS62 Maiz Galon (variante BUG-001)
+
+Caso reportado por Zulma Martinez (operativo Killios, garesa.co): stock
+WMS muestra +10 cajas vs kardex SAP en producto WMS62 (Maiz Dulce
+Miguels Galon 6/2900g). Diagnostico forense confirma match exacto sobre
+BD `TOMWMS_KILLIOS_PRD_2026` snapshot 2026-05-09 10:23 UTC.
+
+| Vista | UM | Cajas |
+|---|---:|---:|
+| Stock vivo BD bodega 1 | 2.741 | 456,83 |
+| Kardex SAP cliente | 2.681 | 446,83 |
+| Delta fantasma | +60 | **+10** |
+
+**Smoking gun**: 17/17 matriculas vivas sin movs en `trans_movimientos`
+para WMS62 bodega 1. Las matriculas en log son antiguas (FU04xxx); las
+vivas son nuevas (FU08xxx-FU09xxx, JM*, A3*) y no tienen contraparte
+contable.
+
+**Variante**: a diferencia de CP-013 (flag `dañado_picking`), aqui el
+gatillo es **TipoTarea 25/26 REEMP_BE_PICK / REEMP_ME_PICK** (HH) +
+cambio manual `IdProductoEstado: 1 → 8` (backoffice TOMIMSV4). Ambos
+con `Contabilizar=false` en `sis_tipo_tarea`.
+
+5 docs nuevos en `customer-open-cases/CP-014-killios-wms62-maiz-galon/`:
+INDEX.md, traza-001-stock-fantasma.md (27 lineas con IdStock + lic_plate
++ ubicacion para ajuste manual), INFORME-CLIENTE-KILLIOS.md (borrador
+para Zulma), INFORME-CAROLINA.md (4 hipotesis A/B/C/D, recomienda
+priorizar C=REEMP_BE_PICK), PLAYBOOK-FIX.md (hereda CP-013).
+
+Updates aplicadas a BUG-001/CASOS-RELACIONADOS.md (entrada CP-014 +
+arbol visual con 2 hijos) y BUG-001/CLIENTES-AFECTADOS.md (seccion
+Update 2026-05-09 — Variante CP-014).
+
+| ID_RAIZ | Etiqueta human-readable | Estado | Archivo |
+|---|---|---|---|
+| CP-014 | `CP_014_KILLIOS_WMS62_MAIZ_GALON_open` | OPEN | customer-open-cases/CP-014-killios-wms62-maiz-galon/INDEX.md |

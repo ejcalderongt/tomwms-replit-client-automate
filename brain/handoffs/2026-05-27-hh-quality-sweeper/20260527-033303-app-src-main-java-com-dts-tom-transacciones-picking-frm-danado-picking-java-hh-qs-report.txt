@@ -1,0 +1,37 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_danado_picking.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+358:            if (LProductoEstadoDanado != null) {
+359:                if (LProductoEstadoDanado.items != null) {
+
+=== CHECK: isEmpty\(\) ===
+95:                    if (txtUbicDest.getText().toString().isEmpty() || txtUbicDest.getText().toString().equals("0")) {
+111:                    if (!txtUbicDest.getText().toString().isEmpty()){
+151:        if (!txtUbicDest.getText().toString().isEmpty()){
+153:           if (lblNomUbic.getText().toString().isEmpty()){
+401:                if (!ubic.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+39:    private Spinner cmbEstadoDanado;
+41:    private EditText txtUbicDest;
+43:    private ProgressDialog progress;
+45:    private WebServiceHandler ws;
+46:    private XMLObject xobj;
+48:    private clsBeProducto_estadoList LProductoEstadoDanado = new clsBeProducto_estadoList();
+49:    private clsBeBodega_ubicacion BeUbicDestino = new clsBeBodega_ubicacion();
+53:    private final ArrayList<String> EstadoList = new ArrayList<String>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+109:            txtUbicDest.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

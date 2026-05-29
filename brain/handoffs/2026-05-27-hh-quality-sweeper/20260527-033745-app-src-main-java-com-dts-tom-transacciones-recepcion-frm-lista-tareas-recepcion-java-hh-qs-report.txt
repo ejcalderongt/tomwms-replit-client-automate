@@ -1,0 +1,85 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java
+=== CHECK: ==\s*null ===
+449:        if (url == null) {
+1104:            if (cached == null || ts == null || (now - ts) > RECEPCION_CACHE_TTL_MS) {
+1286:        if (valor == null) return false;
+
+=== CHECK: !=\s*null ===
+345:                        String codigoBuscar = (codigoProductoVerificacion != null && !codigoProductoVerificacion.trim().isEmpty())
+368:                if (anim != null) anim.cancel();
+549:            if (recepciones != null) {
+613:            if (pListBeTareasPickingHH!=null){
+615:                if (pListBeTareasPickingHH.items!=null){
+674:            if (pListBeTransPeEnc!=null){
+676:                if (pListBeTransPeEnc.items!=null){
+735:            if (pListBeTareasIngresoHH!=null){
+737:                if (pListBeTareasIngresoHH.items!=null){
+935:            if (dt!=null){
+996:            if (detalle != null) {
+1002:                if (detalle.CodigoSKU != null && !detalle.CodigoSKU.trim().isEmpty()) {
+1004:                } else if (detalle.Codigo != null && !detalle.Codigo.trim().isEmpty()) {
+1047:                if(gl.gBodega_Destino != null && !gl.gBodega_Destino.trim().isEmpty()
+1079:        if (gl.gBeRecepcion != null) {
+1087:        if (idRecepcionEnc > 0 && recepcion != null) {
+1138:            if (progress != null && progress.isShowing()) progress.cancel();
+1205:            if (e.getMessage() !=null){
+1219:        if (txtMensajeDialog != null) {
+1228:            if (progress != null && progress.isShowing()) {
+1230:                    if (txtMensajeDialog != null) {
+
+=== CHECK: isEmpty\(\) ===
+239:                    if (!txtTarea.getText().toString().isEmpty()) {
+345:                        String codigoBuscar = (codigoProductoVerificacion != null && !codigoProductoVerificacion.trim().isEmpty())
+454:        if (s.isEmpty()) {
+853:                if (pListBeTransPeEnc.items.isEmpty()) throw new Exception();
+1002:                if (detalle.CodigoSKU != null && !detalle.CodigoSKU.trim().isEmpty()) {
+1004:                } else if (detalle.Codigo != null && !detalle.Codigo.trim().isEmpty()) {
+1047:                if(gl.gBodega_Destino != null && !gl.gBodega_Destino.trim().isEmpty()
+1151:            if (!txtTarea.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+56:    private EditText txtTarea;
+57:    private TextView lblTitulo;
+60:    private WebServiceHandler ws;
+61:    private XMLObject xobj;
+63:    private clsBeTareasIngresoHHList pListBeTareasIngresoHH = new clsBeTareasIngresoHHList();
+64:    private clsBeTrans_picking_encList pListBeTareasPickingHH = new clsBeTrans_picking_encList();
+65:    private clsBeTrans_pe_encList pListBeTransPeEnc = new clsBeTrans_pe_encList();
+67:    private ArrayList<clsBeTareasIngresoHH> BeListTareas = new ArrayList<>();
+68:    private final ArrayList<clsBeTrans_picking_enc> BeListTareasPicking = new ArrayList<>();
+69:    private final ArrayList<clsBeTrans_pe_enc> BeListTareasPedido = new ArrayList<>();
+71:    private list_adapter_tareashh adapter;
+72:    private list_adapt_tareashh_picking adapterPicking;
+73:    private list_adapt_tareas_verificacion adapterVerificacion;
+74:    private ListView listView;
+75:    private clsBeTrans_picking_enc selitempicking;
+76:    private clsBeTrans_pe_enc selitempe;
+77:    private ObjectAnimator anim;
+78:    private Dialog progress;
+79:    private TextView txtMensajeDialog;
+80:    private int IdOrdenCompra = 0;
+81:    private final List<Integer> pListaPedidos = new ArrayList<>();
+83:    private String codigoProductoVerificacion = "";
+84:    private boolean scanFlowInProgress = false;
+86:    private boolean triedProductoFallback = false;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+227:            txtTarea.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+133:                lblTitulo.setText("Tareas de Recepci├│n");
+146:                lblTitulo.setText("Tareas de Picking");
+151:                lblTitulo.setText("Tareas de Verificaci├│n");
+833:                    txtTarea.setText("");
+862:            txtTarea.setText("");
+911:            txtTarea.setText("");
+1053:                txtTarea.setText("");
+1110:            txtTarea.setText("");
+1313:                txtTarea.setText("");
+

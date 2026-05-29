@@ -35,6 +35,26 @@ tags: [known-issue]
 - Total UM fantasma acumuladas en inventario logico: **989,036**
 - 100% de los casos sin AJCANTN compensatorio asociado (comportamiento deterministico, no intermitente)
 
+### Update 2026-05-09 — Variante CP-014 (REEMP_BE_PICK)
+
+CP-014 (Killios WMS62 MAIZ DULCE MIGUELS GALON 6/2900g) confirma una
+**segunda variante** del bug que NO involucra el flag `dañado_picking`
+sino:
+- TipoTarea 25/26 (REEMP_BE_PICK / REEMP_ME_PICK) en flujo HH de
+  reemplazo de pallet durante picking — `Contabilizar=false` en
+  `sis_tipo_tarea`.
+- Cambio manual `IdProductoEstado: 1 → 8 (BUEN → REEMPACAR)` desde
+  backoffice TOMIMSV4.
+
+Smoking gun: 17 de 17 matriculas vivas en stock NO tienen registros en
+`trans_movimientos` para WMS62 bodega 1 — el WMS escribio `stock` sin
+contraparte en log de movimientos contables. Match exacto +10 cajas
+vs kardex SAP. Detalle completo: `customer-open-cases/CP-014-killios-wms62-maiz-galon/`.
+
+Esta variante amplia el alcance del fix: el patch de PLAYBOOK CP-013 §A
+debe extenderse para cubrir tambien REEMP_*_PICK + cambio backoffice de
+`IdProductoEstado`.
+
 ---
 
 ## B. Severidad por cliente

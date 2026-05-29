@@ -1,0 +1,47 @@
+target: app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_detalle_cambio_ubicacion.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+294:            if (pBeTransUbicHhDetList!=null) {
+296:                if( pBeTransUbicHhDetList.items!=null ){
+330:                        if (pBeTransUbicHhDetList.items.get(i).Stock!=null){
+356:                    if (pBeTransUbicHhDetList!=null){
+357:                        if (pBeTransUbicHhDetList.items!=null){
+433:            if(pBeTransUbicHhDetList!=null){
+435:                if(pBeTransUbicHhDetList.items!=null){
+442:            if (progress !=null )progress.cancel();
+457:            if (bProd != null){
+
+=== CHECK: isEmpty\(\) ===
+138:                                if (!txtCodigo.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+365:                                   if(txtCodigo.getText().toString().equals("")){
+380:                                if(txtCodigo.getText().toString().equals("")){
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+39:    private EditText txtCodigo;
+40:    private ListView listView;
+41:    private CheckBox chkTodos;
+42:    private Button btnRegs;
+45:    private XMLObject xobj;
+46:    private ProgressDialog progress;
+48:    private boolean Modo=false;
+49:    private String eststr="";
+50:    private int BeBuscaProducto;
+52:    private list_adapter_detalle_cambio_ubic adapter;
+54:    private final clsBeTrans_ubic_hh_det pBeTransUbicHhDet = new clsBeTrans_ubic_hh_det();
+55:    private clsBeTrans_ubic_hh_detList pBeTransUbicHhDetList = new clsBeTrans_ubic_hh_detList();
+57:    private final ArrayList<clsBeTrans_ubic_hh_det> pBeTransUbicHhDetListArray= new ArrayList<clsBeTrans_ubic_hh_det>();
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+129:            txtCodigo.setOnKeyListener(new View.OnKeyListener(){
+
+=== CHECK: setText\(\" ===
+93:        lblTotal.setText(" - ");
+353:                    btnRegs.setText("REGISTROS: "+listUser);
+

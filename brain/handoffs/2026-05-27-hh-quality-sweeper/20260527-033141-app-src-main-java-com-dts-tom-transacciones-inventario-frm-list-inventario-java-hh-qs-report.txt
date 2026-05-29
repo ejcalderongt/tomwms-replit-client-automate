@@ -1,0 +1,37 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Inventario/frm_list_inventario.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+269:            if (pListTareas!=null){
+270:                if (pListTareas.items!=null){
+
+=== CHECK: isEmpty\(\) ===
+89:                            if (txtIdTareaInv.getText().toString().isEmpty()){
+161:            if (txtIdTareaInv.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+26:    private clsBeTrans_inv_encList pListTareas = new clsBeTrans_inv_encList();
+27:    private int idtarea=0;
+29:    private WebServiceHandler ws;
+30:    private XMLObject xobj;
+32:    private ProgressDialog progress;
+33:    private ListView listView;
+34:    private EditText txtIdTareaInv;
+35:    private Button btnRegs;
+37:    private ArrayList<clsBeTrans_inv_enc> BeListInv = new ArrayList<clsBeTrans_inv_enc>();
+38:    private list_adapt_tareas_inventario adapter;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+84:            txtIdTareaInv.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+128:            btnRegs.setText("Regs:"+count);
+193:            btnRegs.setText("Regs:"+count);
+

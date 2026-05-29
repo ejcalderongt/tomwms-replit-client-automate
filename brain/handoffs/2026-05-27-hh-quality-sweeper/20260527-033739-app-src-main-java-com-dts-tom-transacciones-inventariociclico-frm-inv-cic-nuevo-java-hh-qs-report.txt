@@ -1,0 +1,51 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_nuevo.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+248:            if(gl.pBeProductoNuevo != null){
+337:            if(ctableUMB !=null) {
+351:                    if (ctableUMB!=null) ctableUMB.close();
+380:            if(ctableTipo !=null) {
+394:                    if (ctableTipo!=null) ctableTipo.close();
+425:            if(ctableMarca !=null) {
+439:                    if (ctableMarca!=null) ctableMarca.close();
+470:            if(ctableClasi !=null) {
+484:                    if (ctableClasi!=null) ctableClasi.close();
+514:            if(ctableFamilia !=null) {
+528:                    if (ctableFamilia!=null) ctableFamilia.close();
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+31:    private WebServiceHandler ws;
+32:    private XMLObject xobj;
+34:    //private clsBeProducto pBeProductoNuevo;
+36:    private clsBe_inv_ciclico_spinner item_spinner;
+37:    private final ArrayList<clsBe_inv_ciclico_spinner>  list_spinner = new ArrayList<clsBe_inv_ciclico_spinner>();
+38:    private final ArrayList<clsBe_inv_ciclico_spinner>  list_spinner2 = new ArrayList<clsBe_inv_ciclico_spinner>();
+39:    private final ArrayList<clsBe_inv_ciclico_spinner>  list_spinner3 = new ArrayList<clsBe_inv_ciclico_spinner>();
+40:    private final ArrayList<clsBe_inv_ciclico_spinner>  list_spinner4 = new ArrayList<clsBe_inv_ciclico_spinner>();
+41:    private final ArrayList<clsBe_inv_ciclico_spinner>  list_spinner5 = new ArrayList<clsBe_inv_ciclico_spinner>();
+43:    private final ArrayList<String> bodlist= new ArrayList<String>();
+44:    private final ArrayList<String> bodlist2= new ArrayList<String>();
+45:    private final ArrayList<String> bodlist3= new ArrayList<String>();
+46:    private final ArrayList<String> bodlist4= new ArrayList<String>();
+47:    private final ArrayList<String> bodlist5= new ArrayList<String>();
+49:    private ProgressDialog progress;
+54:    private Button cmdAddProd;
+56:    private String fecha_reg;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

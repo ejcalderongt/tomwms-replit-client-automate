@@ -1,0 +1,27 @@
+<!--
+  ============================================================
+  Snippet para AGREGAR al App.config de TOMIMSV4 (WMS.exe)
+  ============================================================
+  NO reemplaces todo el App.config — solo agregá estas 3 keys
+  dentro del bloque <appSettings> que ya tenés (donde está "CST").
+-->
+
+<appSettings>
+  <!-- ... tus keys actuales (CST, etc) van acá arriba ... -->
+
+  <!--
+    Toggle del proxy de Bodega.
+    "Local"  = comportamiento actual (BD directa via DAL). DEFAULT seguro.
+    "Remote" = el form llama a la WebAPI WmsBodegaApi.
+  -->
+  <add key="BodegaDataMode" value="Local" />
+
+  <!-- URL base de la WebAPI. Cambiar segón dónde la hostees:
+       - Dev local con IIS Express:  http://localhost:59800/
+       - Dev en EC2 (PRD):           https://wms-api.tudominio.com/
+  -->
+  <add key="WebApiBaseUrl" value="http://localhost:59800/" />
+
+  <!-- Mismo valor que pusiste en Web.config de WmsBodegaApi -->
+  <add key="WebApiKey" value="poc-bodega-key-cambiar" />
+</appSettings>

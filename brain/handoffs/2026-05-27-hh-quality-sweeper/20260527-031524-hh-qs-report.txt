@@ -1,0 +1,40 @@
+target: app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_tareas_cambio_ubicacion.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+155:                                    if (pListBeTransUbicHhEnc!=null){
+156:                                        if(pListBeTransUbicHhEnc.items != null){
+249:            if(pListBeTransUbicHhEnc != null) {
+251:                if(pListBeTransUbicHhEnc.items!=null ){
+379:            if(pListBeTransUbicHhEnc!=null){
+380:                if(pListBeTransUbicHhEnc.items!=null){
+
+=== CHECK: isEmpty\(\) ===
+152:                                if (!txtTarea.getText().toString().isEmpty()){
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+36:    private EditText txtTarea;
+37:    private ListView listView;
+38:    private int pIdTarea=0;
+41:    private WebServiceHandler ws;
+42:    private XMLObject xobj;
+43:    private ProgressDialog progress;
+45:    private clsBeTrans_ubic_hh_encList pListBeTransUbicHhEnc = new clsBeTrans_ubic_hh_encList();
+47:    private list_view_tareas_cambio_ubic adapter;
+49:    private final ArrayList<clsBeTrans_ubic_hh_enc> pListBeTareasCambioHH= new ArrayList<clsBeTrans_ubic_hh_enc>();
+51:    private int index;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+142:            txtTarea.setOnKeyListener(new View.OnKeyListener(){
+
+=== CHECK: setText\(\" ===
+164:                                            txtTarea.setText("");
+266:                    lblRegs.setText("Regs: "+pListBeTransUbicHhEnc.items.size());
+

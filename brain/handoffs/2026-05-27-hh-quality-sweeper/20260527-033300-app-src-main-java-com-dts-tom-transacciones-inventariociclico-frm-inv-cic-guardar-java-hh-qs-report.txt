@@ -1,0 +1,60 @@
+target: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java
+=== CHECK: ==\s*null ===
+422:            if(nprod == null){
+544:            if(gl.pBeProductoNuevo == null){
+639:            if (nBeResolucion == null){
+
+=== CHECK: !=\s*null ===
+128:            if(gl.pBeProductoNuevo != null){
+226:            if(lista_estados != null){
+275:            if(BeProducto_PresentacionList != null){
+321:            if(InvTeoricoPorProductoList != null){
+364:            if(nubic != null){
+621:            if (Valida != null) {
+641:                if (xobj!=null){
+648:            if (nBeResolucion !=null){
+702:                        if (nBeResolucion != null) {
+978:        if (progress != null && progress.isShowing()) {
+
+=== CHECK: isEmpty\(\) ===
+487:               if(txtNUbic.getText().toString().trim().isEmpty()){
+532:        if(txtNUbic.getText().toString().trim().isEmpty()){
+537:        }else if(txtNCantContada.getText().toString().trim().isEmpty()){
+837:            if (!txtLicencia.getText().toString().trim().isEmpty()){
+853:                if (!pNumeroLP.isEmpty()) {
+956:                    if (!zpl.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+49:    private WebServiceHandler ws;
+50:    private XMLObject xobj;
+54:    private Button btnBack;
+55:    private int year;
+56:    private int month;
+57:    private int day;
+62:    private ProgressDialog progress;
+66:    private clsBeProducto nprod = new clsBeProducto();
+67:    private clsBeTrans_inv_ciclico BeTrans_inv_ciclico;
+68:    private clsBeProducto_PresentacionList BeProducto_PresentacionList = new clsBeProducto_PresentacionList();
+69:    private clsBeProducto_estadoList lista_estados = new clsBeProducto_estadoList();
+70:    private clsBeBodega_ubicacion nubic = new clsBeBodega_ubicacion();
+72:    private final clsBeTrans_inv_stock_prod InvTeoricoPorProducto = new clsBeTrans_inv_stock_prod();
+73:    private clsBeTrans_inv_stock_prodList InvTeoricoPorProductoList = new clsBeTrans_inv_stock_prodList();
+75:    private final ArrayList<String> bodlist= new ArrayList<String>();
+76:    private final ArrayList<String> Preslist= new ArrayList<String>();
+77:    private final ArrayList<String> Lotelist= new ArrayList<String>();
+79:    private clsBeResolucion_lp_operador nBeResolucion = null;
+80:    private String pNumeroLP = "";
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+484:        txtNUbic.setOnKeyListener((v, keyCode, event) -> {
+510:        txtNProd.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

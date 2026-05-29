@@ -1,0 +1,8 @@
+id: hh-qs-20260527-031550
+tag: '#EJC20260527'
+mode: report-only
+target: 'app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_dirigida.java'
+artifacts:
+  report: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-031550-app-src-main-java-com-dts-tom-transacciones-cambioubicacion-frm-cambio-ubicacion-dirigida-java-hh-qs-report.txt'
+  deps: 'C:\Users\yejc2\source\repos\wms-brain\wms-brain\brain\handoffs\2026-05-27-hh-quality-sweeper\20260527-031550-app-src-main-java-com-dts-tom-transacciones-cambioubicacion-frm-cambio-ubicacion-dirigida-java-hh-qs-deps.txt'
+status: done

@@ -1,0 +1,46 @@
+meta:
+  nombre: "Existencias HH/BOF - Grafo y traza fina"
+  fecha: "2026-05-26"
+  objetivo:
+    - "Mapear flujo de consulta de existencias por ubicación, código y licencia."
+    - "Separar claramente licencia de stock vs licencia de packing según proceso."
+
+flujo:
+  - "HH.EXI.ESCANEAR_UBICACION_O_CODIGO"
+  - "WS.EXI.CONSULTA_STOCK"
+  - "DAL.EXI.VW_STOCK_RES/consultas CI"
+  - "HH/BOF render de lista detallada"
+
+nodos:
+  - id: "HH.EXI"
+    capa: "HH"
+    archivo: "app/src/main/java/com/dts/tom/Transacciones/ConsultaStock/frm_consulta_stock.java"
+  - id: "WS.EXI"
+    capa: "WSHHRN"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/WSHHRN/TOMHHWS.asmx.vb"
+  - id: "DAL.EXI.STOCK"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_CI.vb"
+  - id: "DAL.EXI.STOCK_PARTIAL"
+    capa: "DAL"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb"
+  - id: "BD.EXI"
+    capa: "BD"
+    tablas_vistas:
+      - "stock"
+      - "stock_res"
+      - "VW_Stock_Res"
+
+riesgos_principales:
+  - "Errores de sintaxis SQL en conversión/aliases impactan pantalla HH/BOF."
+  - "Filtros por nombre/lote sin parametrización pueden romper consulta."
+  - "Confusión funcional entre licencia operativa de stock y licencia de packing."
+
+mejoras_ya_existentes_detectadas:
+  - "Corrección de sintaxis SQL (`Convert(Date, Fecha_Ingreso)`) y robustecimiento de filtros."
+  - "Separación funcional de filtro por licencia packing en flujo de packing."
+
+quick_wins:
+  - "Estándar de filtros parametrizados en todas las variantes de consulta."
+  - "Indicador visual de tipo de licencia aplicada (stock vs packing)."
+  - "Métrica de tiempo por filtro y tamaño de resultado."

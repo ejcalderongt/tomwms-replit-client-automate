@@ -1,0 +1,8 @@
+id: telemetry-correlation
+tag: '#EJC20260527'
+summary:
+  trace_map_lines: 81
+  param_impact_lines: 19
+notes:
+  - 'Correlate trace_id and entity_ids during incident replay.'
+  - 'Prioritize parameters with high occurrences and cross-process spread.'

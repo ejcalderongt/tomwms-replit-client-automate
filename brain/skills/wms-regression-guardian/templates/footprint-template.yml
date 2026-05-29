@@ -1,0 +1,16 @@
+id: rg-footprint-YYYYMMDD-HHMMSS
+tag: '#EJCYYYYMMDD'
+process: picking
+fix_scope:
+  files: []
+  methods: []
+  tables: []
+  flags: []
+  states: []
+branch_context:
+  target: dev_2028_merge
+  baselines:
+    - dev_2026_mampa
+    - dev_2023_estable
+failure_class: ''
+notes: ''

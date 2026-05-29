@@ -99,6 +99,43 @@ tags: [known-issue]
 
 ---
 
+### CP-014-killios-wms62-maiz-galon (OLA 2 — variante REEMP_BE_PICK)
+
+- **Tipo**: caso individual de cliente, materializado en BUG-001 (variante).
+- **Cliente**: Killios.
+- **Producto especifico**: WMS62 — MAIZ DULCE MIGUELS GALON 6/2900g (`IdProducto=271`).
+- **Fecha de descubrimiento**: 2026-05-09.
+- **Reportado por**: Zulma Martinez (operativo Killios — garesa.co).
+- **Estado**: OPEN.
+- **Ubicacion**: `customer-open-cases/CP-014-killios-wms62-maiz-galon/`.
+- **Match exacto**: stock vivo BD bodega 1 = **2.741 UM (456,83 cajas)** vs
+  kardex SAP del cliente = **2.681 UM (446,83 cajas)** = **+60 UM = +10
+  cajas fantasma**. Diferencia coincide al 100% con el reporte.
+- **Smoking gun**: 17 de 17 matriculas (lic_plate) vivas en `stock` NO
+  tienen registros en `trans_movimientos` para WMS62 bodega 1. Las
+  matriculas en `trans_movimientos` son de la serie antigua FU04xxx
+  (operadores 2025); las vivas son FU08xxx-FU09xxx, JM001xxx, A3000001
+  (recepciones 2026-04 y 2026-05). Cruce join lic_plate-a-lic_plate da
+  **0 matches**.
+- **Variante del bug**: a diferencia de CP-013 (flag `dañado_picking`),
+  esta variante apunta a **TipoTarea 25/26 (REEMP_BE_PICK / REEMP_ME_PICK)**
+  + cambio manual `IdProductoEstado: 1 → 8 (BUEN → REEMPACAR)`. Ambos
+  flujos no escriben AJCANTN compensatorio.
+- **Contenido relevante**:
+  - `INFORME-CLIENTE-KILLIOS.md` — borrador para Zulma.
+  - `INFORME-CAROLINA.md` — analisis codigo, donde buscar el bug
+    (3 hipotesis: A recepcion HH, B UPDATE-cae-INSERT, C REEMP_BE_PICK,
+    D backoffice REEMPACAR).
+  - `traza-001-stock-fantasma.md` — listado completo 27 lineas
+    IdStock + lic_plate + ubicacion + cantidad para ajuste manual.
+  - `PLAYBOOK-FIX.md` — hereda CP-013/PLAYBOOK-FIX.md §A-§H + ajustes
+    WMS62.
+- **Cross-link snapshot**: `data-deep-dive/killios_2026/snapshot-2026-05-05.md`
+  (10.565 lineas con dañado_picking=1 / 0 AJCANTN compensatorios — escala
+  productiva del bug que cubre tanto CP-013 como CP-014).
+
+---
+
 ## Features hermanos (mismo modulo, archivos vecinos)
 
 ### FEAT-001-validacion-implosion-rack
@@ -131,13 +168,16 @@ existente en CP-013 (es el mismo fix para todos).
 ```
                             BUG-001
                               |
-            +-----------------+-----------------+
-            |                 |                 |
-       CP-013 (anchor)    CP-015 (DEPRECATED)  Trace
-       OPEN, Killios      vista transversal    code-deep-flow/
-       customer-open      debuged-cases/       traza-002-danado-picking.md
-       -cases/            (mantiene ref)
-            |
+       +-------------+--------+----------+--------------+
+       |             |                   |              |
+   CP-013         CP-014           CP-015 (DEPRECATED) Trace
+   (anchor)       (ola 2 variante  vista transversal   code-deep-flow/
+   OPEN Killios   REEMP_BE_PICK)   debuged-cases/      traza-002-...md
+   WMS164         OPEN Killios     (mantiene ref)
+                  WMS62
+       |             |
+       +------+------+
+              |
        PLAYBOOK-FIX.md (vigente para todos los clientes del BUG-001)
             |
        Validacion en MAMPA QA → promocion a 2028 → eventual hotfix 2023

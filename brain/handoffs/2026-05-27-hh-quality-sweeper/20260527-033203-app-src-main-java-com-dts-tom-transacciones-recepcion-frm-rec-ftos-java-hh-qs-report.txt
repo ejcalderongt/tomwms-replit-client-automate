@@ -1,0 +1,26 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_rec_ftos.java
+=== CHECK: ==\s*null ===
+(sin hallazgos)
+
+=== CHECK: !=\s*null ===
+59:            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+67:                if (photoFile != null) {
+
+=== CHECK: isEmpty\(\) ===
+(sin hallazgos)
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+(sin hallazgos)
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+(sin hallazgos)
+
+=== CHECK: setText\(\" ===
+(sin hallazgos)
+

@@ -1,0 +1,143 @@
+target: app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java
+=== CHECK: ==\s*null ===
+591:                    if (pListDetalleOC == null || pListDetalleOC.items == null || pListDetalleOC.items.isEmpty()){
+807:            if (lBeProducto == null || lBeProducto.items == null) {
+816:                if (beProducto == null) {
+865:            if (lBeProducto == null || lBeProducto.items == null) return;
+909:                if (beProducto == null) {
+1537:            if(lBeINavBarraPallet ==null){
+1574:            if (BeProducto==null){
+1736:            if (gl.gBeOrdenCompra == null
+1737:                    || gl.gBeOrdenCompra.DetalleLotes == null
+1738:                    || gl.gBeOrdenCompra.DetalleLotes.items == null){
+1770:            if (lotesWs == null) {
+1773:            if (lotesWs.items == null) {
+1777:            if (gl.gBeOrdenCompra == null) {
+1782:            if (gBeOrdenCompra == null) {
+1810:            if (gl.Codigo_Producto == null || gl.Codigo_Producto.isEmpty()) return;
+1811:            if (pListDetalleOC == null || pListDetalleOC.items == null || pListDetalleOC.items.isEmpty()) return;
+2062:                if (gl.gBeRecepcion == null) {
+2081:        return value == null || value.isEmpty();
+2237:        if (url == null) {
+
+=== CHECK: !=\s*null ===
+229:            if (gl.gBeRecepcion.OrdenCompraRec.OC.DetalleLotes.items != null) {
+272:            if (selitem!=null) {
+308:                if (gBeConfiguracionBarraPallet!=null){
+333:                         }else if  (gl.gBeOrdenCompra.DetalleLotes != null && gl.gBeOrdenCompra.DetalleLotes.items != null) {
+346:                             if (gBeConfiguracionBarraPallet!=null){
+351:                             if (gBeConfiguracionBarraPallet!=null){
+356:                             if (gBeConfiguracionBarraPallet!=null){
+370:                             if (gBeConfiguracionBarraPallet!=null){
+468:                if (idx >-1 || BeINavBarraPallet!=null){
+470:                    if (BeINavBarraPallet!=null){
+565:                if (gl.gBeRecepcion!=null){
+600:                    if (frm_detalle_ingresos.gBeConfiguracionBarraPallet!=null){
+606:                    if(gBeOrdenCompra.No_Documento!=null & gBeOrdenCompra.Referencia!=null){
+667:                if (selitem!=null){
+686:                        if (gl.gBeOrdenCompra.DetalleLotes !=null){
+688:                            if (gl.gBeOrdenCompra.DetalleLotes.items !=null){
+695:                                    if (tmp != null) {
+836:                        gl.Carga_Producto_x_Pallet = gBeStockRec != null && gBeStockRec.IdStockRec > 0;
+886:                    if (vOrdenCompraDet != null) {
+923:                        gl.Carga_Producto_x_Pallet = gBeStockRec != null && gBeStockRec.IdStockRec > 0;
+974:        return (item.Producto.Codigo_barra != null && !item.Producto.Codigo_barra.isEmpty())
+1017:                    gl.CodigoRecepcion = (selitem.Producto.Codigo_barra != null && !selitem.Producto.Codigo_barra.isEmpty())
+1048:            if (gBeOrdenCompra.DetalleOC!=null){
+1115:            if(pListDetalleOC.items!=null){
+1184:            if(TipoIngreso!=null) es_poliza_consolidada = TipoIngreso.Es_Poliza_Consolidada;
+1510:                if (gl.Codigo_Producto!=null){
+1544:            if (gBeStockRec!=null){
+1580:                if (lBeINavBarraPallet!=null){
+1582:                    if (lBeINavBarraPallet.items!=null){
+1699:                if (Resultado!=null){
+1896:            if (pListTransRecDet!=null){
+1897:                if (pListTransRecDet.items!=null){
+2108:            if(TipoIngreso!=null) es_poliza_consolidada = TipoIngreso.Es_Poliza_Consolidada;
+
+=== CHECK: isEmpty\(\) ===
+143:        if (!txtCodigoProductoRecepcion.getText().toString().isEmpty()) {
+237:                if (!tmp.isEmpty()) {
+248:            if (!ListaDetLotesOc.items.isEmpty()) {
+274:            } else if (!ListaFiltradaOc.isEmpty() && EsCajaMaster) {
+304:            if (!vCodigoBarraProducto.isEmpty()){
+309:                    if (!gBeConfiguracionBarraPallet.IdentificadorInicio.isEmpty()){
+383:                                if (vLP.isEmpty()){
+591:                    if (pListDetalleOC == null || pListDetalleOC.items == null || pListDetalleOC.items.isEmpty()){
+689:                                if (!gl.gBeOrdenCompra.DetalleLotes.items.isEmpty()){
+974:        return (item.Producto.Codigo_barra != null && !item.Producto.Codigo_barra.isEmpty())
+1017:                    gl.CodigoRecepcion = (selitem.Producto.Codigo_barra != null && !selitem.Producto.Codigo_barra.isEmpty())
+1511:                    if (!gl.Codigo_Producto.isEmpty()){
+1810:            if (gl.Codigo_Producto == null || gl.Codigo_Producto.isEmpty()) return;
+1811:            if (pListDetalleOC == null || pListDetalleOC.items == null || pListDetalleOC.items.isEmpty()) return;
+1829:            if (!ListaBeTallColor.items.isEmpty()) {
+2081:        return value == null || value.isEmpty();
+2242:        if (s.isEmpty()) {
+
+=== CHECK: equals\(\"\"\) ===
+(sin hallazgos)
+
+=== CHECK: private\s+(final\s+)?[A-Za-z0-9_<>,\[\]]+\s+[A-Za-z0-9_]+\s*(=|;) ===
+68:    private WebServiceHandler ws;
+69:    private XMLObject xobj;
+72:    private Button btnRegs;
+73:    private Button btnCompletaRec;
+74:    private ListView listView;
+75:    private CheckBox chkCajaMaster;
+76:    private EditText txtCodigoProductoRecepcion;
+77:    private DrawingView txtFirma;
+78:    private ProgressDialog progress;
+79:    private CheckBox chkRecepcionados;
+80:    private RelativeLayout relbot;
+81:    private FloatingActionButton btnTareas;
+83:    private clsBeTrans_oc_enc gBeOrdenCompra = new clsBeTrans_oc_enc();
+84:    private clsBeTrans_re_detList pListTransRecDet = new clsBeTrans_re_detList();
+85:    private clsBeTrans_oc_detList pListDetalleOC = new clsBeTrans_oc_detList();
+89:    private final clsBeStock_recList pListBeStockRecPI = new clsBeStock_recList();
+96:    private boolean Escaneo_Pallet;
+97:    private boolean Finalizada = false, Anulada = false;
+103:    private  int vIdOrdenCompra=0;
+104:    private double vTipoDiferencia=0;
+105:    private boolean Finalizar=false;
+107:    private boolean backorder = false;
+108:    private Dialog dialog;
+109:    private byte[] firmByte;
+110:    private String encodedImage;
+112:    private clsBeTrans_oc_det selitem;
+114:    private list_adapt_detalle_recepcion listdetadapter;
+115:    private list_adapt_detalle_recepcion2 listdetadapter2;
+116:    private list_adapt_detalle_recepcion3 listdetadpater3;
+119:    private boolean areaprimera = true;
+127:    private boolean enterScanInFlight = false;
+128:    private long lastEnterScanAt = 0L;
+
+=== CHECK: setOnFocusChangeListener ===
+(sin hallazgos)
+
+=== CHECK: setOnKeyListener ===
+746:            txtCodigoProductoRecepcion.setOnKeyListener((v, keyCode, event) -> {
+
+=== CHECK: setText\(\" ===
+151:            txtCodigoProductoRecepcion.setText("");
+289:            txtCodigoProductoRecepcion.setText("");
+384:                                    txtCodigoProductoRecepcion.setText("");
+400:                         txtCodigoProductoRecepcion.setText("");
+501:                                txtCodigoProductoRecepcion.setText("");
+507:                            txtCodigoProductoRecepcion.setText("");
+513:                        txtCodigoProductoRecepcion.setText("");
+519:                    txtCodigoProductoRecepcion.setText("");
+525:                txtCodigoProductoRecepcion.setText("");
+552:            progressText.setText("Inicializando Documento");
+557:            progressText.setText("Inicializando valores");
+559:            lblTituloForma.setText("Ingreso de producto TOMWMS");
+592:                        progressText.setText("Cargando detalle del documento...");
+630:                progressText.setText("Consultando servicios...");
+950:        txtCodigoProductoRecepcion.setText("");
+1063:                            btnCompletaRec.setText("DIF - (NEG)");
+1070:                            btnCompletaRec.setText(" DIF - (POS)");
+1077:                            btnCompletaRec.setText("COMPLETA");
+1085:                        btnCompletaRec.setText("DIF - (NEG)");
+1175:                btnRegs.setText("Registros: "+pListDetalleOC.items.size());
+1436:                        txtCodigoProductoRecepcion.setText("");
+2320:                        txtCodigoProductoRecepcion.setText("");
+
