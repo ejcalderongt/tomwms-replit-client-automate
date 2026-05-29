@@ -297,16 +297,29 @@ Partial Public Class clsLnTrans_packing_enc
         Dim lReturnList As New List(Of clsBeTrans_packing_enc)
 
         Try
-            Const sp As String = "SELECT a.*, 
-                                c.Codigo Codigo_Talla, 
-                                c.Nombre Nombre_Talla, 
-                                d.Codigo Codigo_Color, 
-                                d.Nombre Nombre_Color  
-                                FROM Trans_packing_enc a 
-                                left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
-                                left join talla c On c.IdTalla = b.IdTalla 
-                                left join color d On d.IdColor = b.IdColor " &
-                                " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
+            Const sp As String = "SELECT a.*,
+                                            c.Codigo Codigo_Talla,
+                                            c.Nombre Nombre_Talla,
+                                            d.Codigo Codigo_Color,
+                                            d.Nombre Nombre_Color,
+                                            ISNULL(pdet.codigo_producto,'') AS CodigoProducto,
+                                            ISNULL(pdet.nombre_producto,'') AS nom_prod,
+                                            ISNULL(pdet.nom_presentacion,'') AS ProductoPresentacion,
+                                            ISNULL(pdet.nom_unid_med,'') AS ProductoUnidadMedida,
+                                            ISNULL(est.nombre,'') AS ProductoEstado
+                                            FROM Trans_packing_enc a
+                                            left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
+                                            left join talla c On c.IdTalla = b.IdTalla
+                                            left join color d On d.IdColor = b.IdColor
+                                            left join (
+                                                SELECT DISTINCT pkd.IdPickingEnc, pdt.IdProductoBodega,
+                                                                pdt.codigo_producto, pdt.nombre_producto,
+                                                                pdt.nom_presentacion, pdt.nom_unid_med
+                                                FROM trans_picking_det pkd
+                                                INNER JOIN trans_pe_det pdt ON pdt.IdPedidoDet = pkd.IdPedidoDet
+                                            ) pdet ON pdet.IdPickingEnc = a.Idpickingenc AND pdet.IdProductoBodega = a.Idproductobodega
+                                            left join dbo.producto_estado est ON est.IdEstado = a.Idproductoestado " &
+                                            " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
 
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -329,6 +342,11 @@ Partial Public Class clsLnTrans_packing_enc
                         For Each dr As DataRow In lDataTable.Rows
                             vBeTrans_packing_enc = New clsBeTrans_packing_enc()
                             Cargar(vBeTrans_packing_enc, dr, IsForAndr)
+                            If lDataTable.Columns.Contains("CodigoProducto") AndAlso Not IsDBNull(dr.Item("CodigoProducto")) Then vBeTrans_packing_enc.CodigoProducto = CStr(dr.Item("CodigoProducto"))
+                            If lDataTable.Columns.Contains("nom_prod") AndAlso Not IsDBNull(dr.Item("nom_prod")) Then vBeTrans_packing_enc.nom_prod = CStr(dr.Item("nom_prod"))
+                            If lDataTable.Columns.Contains("ProductoPresentacion") AndAlso Not IsDBNull(dr.Item("ProductoPresentacion")) Then vBeTrans_packing_enc.ProductoPresentacion = CStr(dr.Item("ProductoPresentacion"))
+                            If lDataTable.Columns.Contains("ProductoUnidadMedida") AndAlso Not IsDBNull(dr.Item("ProductoUnidadMedida")) Then vBeTrans_packing_enc.ProductoUnidadMedida = CStr(dr.Item("ProductoUnidadMedida"))
+                            If lDataTable.Columns.Contains("ProductoEstado") AndAlso Not IsDBNull(dr.Item("ProductoEstado")) Then vBeTrans_packing_enc.ProductoEstado = CStr(dr.Item("ProductoEstado"))
                             lReturnList.Add(vBeTrans_packing_enc)
                         Next
 
