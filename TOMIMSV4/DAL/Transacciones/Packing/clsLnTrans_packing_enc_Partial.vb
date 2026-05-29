@@ -88,17 +88,23 @@ Partial Public Class clsLnTrans_packing_enc
                                                                   pConection:=lConnection,
                                                                   pTransaction:=lTransaction)
 
-                            'Cantidad Empacada sin tomar en cuenta la licencia del packing
-                            'Dim CantidadEmpacada As Double = 0
-                            'CantidadEmpacada = Get_CantidadEmpacada(pTrans_packing_enc.Item(0), lConnection, lTransaction)
-
-                            '#AT20250203 Actualizar fecha packing en trans_picking_ubic
-                            'If CantidadEmpacada <= CantVerificada Then
+                            '#EJC20260529 fix(packing-parcial): Restaurar guard de packing parcial.
+                            '#AT20250203 comentó la guarda y siempre sellaba fecha_packing=Date.Now()
+                            'aunque fuera packing parcial → ubic desaparecía de PENDIENTE en la HH.
+                            'Get_CantidadEmpacada YA filtra por lic_plate (el comentario estaba desactualizado).
+                            'Fix: solo estampar Date.Now() si total empacado >= cantidad_verificada del ubic;
+                            'para packing parcial, restaurar sentinel 1900-01-01 → ubic sigue en PENDIENTE.
+                            Dim CantidadEmpacada As Double = Get_CantidadEmpacada(BeTransPackingEnc, lConnection, lTransaction)
                             For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
-                                Picking.Fecha_packing = Date.Now()
+                                If CantidadEmpacada >= Picking.Cantidad_Verificada Then
+                                    '#EJC20260529 PACK_PARCIAL_GUARD: completamente empacado → sellar
+                                    Picking.Fecha_packing = Date.Now()
+                                Else
+                                    '#EJC20260529 PACK_PARCIAL_GUARD: parcial → mantener sentinel 1900 en PENDIENTE
+                                    Picking.Fecha_packing = New Date(1900, 1, 1)
+                                End If
                                 clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
                             Next
-                            'End If
 
                         End If
 
