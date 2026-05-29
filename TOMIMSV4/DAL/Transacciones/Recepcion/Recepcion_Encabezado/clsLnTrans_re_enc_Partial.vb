@@ -2594,7 +2594,7 @@ Partial Public Class clsLnTrans_re_enc
                                                lTransaction)
             CadenaResultado += "Eliminar_Detalle_Recepción "
 
-'#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
+            '#EJC20260527_IDENTITY_FIX: snapshot IDs de detalles IsNew antes del INSERT
             Dim dictIdOrigenModif As New Dictionary(Of Integer, clsBeTrans_re_det)
             For Each detOri As clsBeTrans_re_det In pListRecDet.Where(Function(x) x.IsNew)
                 If Not dictIdOrigenModif.ContainsKey(detOri.IdRecepcionDet) Then
@@ -4297,7 +4297,7 @@ Partial Public Class clsLnTrans_re_enc
 
 
 
-                                        If Not BeTransOcDet Is Nothing Then
+                                    If Not BeTransOcDet Is Nothing Then
                                         pBeStockRec.No_linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.No_Linea = BeTransOcDet.No_Linea
                                         pBeTransReDet.IdOrdenCompraDet = BeTransOcDet.IdOrdenCompraDet

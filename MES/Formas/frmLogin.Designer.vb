@@ -110,7 +110,7 @@ Partial Class frmLogin
         'cmdVersion4
         '
         Me.cmdVersion4.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right
-        Me.cmdVersion4.Caption = "Versión 4.5.8 FP: 20250424"
+        Me.cmdVersion4.Caption = "Versión 8.0.0 FP: 20260528"
         Me.cmdVersion4.Id = 16
         Me.cmdVersion4.ImageOptions.Image = CType(resources.GetObject("cmdVersion4.ImageOptions.Image"), System.Drawing.Image)
         Me.cmdVersion4.ImageOptions.LargeImage = CType(resources.GetObject("cmdVersion4.ImageOptions.LargeImage"), System.Drawing.Image)
