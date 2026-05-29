@@ -239,36 +239,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
                         End If
 
-                        '#EJC20260529 DIAG: contar filas excluidas por cada filtro del WHERE — detecta qué saca un producto de PENDIENTE packing
-                        '#  excl_cv=cant_verif=0, excl_fp=fecha_packing set, excl_vd=verif=despachada, excl_dañado=flags daño/noEnc, excl_sr=INNER JOIN stock_res sin match
-                        If WmsTrace.ENABLED Then
-                            Using diagCmd As New SqlCommand(
-                                "SELECT SUM(CASE WHEN pu.cantidad_verificada=0 THEN 1 ELSE 0 END) excl_cv," &
-                                " SUM(CASE WHEN NOT(pu.fecha_packing IS NULL OR pu.fecha_packing<'19010101') THEN 1 ELSE 0 END) excl_fp," &
-                                " SUM(CASE WHEN pu.cantidad_verificada>0 AND pu.cantidad_verificada=pu.cantidad_despachada THEN 1 ELSE 0 END) excl_vd," &
-                                " SUM(CASE WHEN pu.dañado_picking<>0 OR pu.no_encontrado<>0 OR pu.dañado_verificacion<>0 THEN 1 ELSE 0 END) excl_dañado," &
-                                " SUM(CASE WHEN NOT EXISTS(SELECT 1 FROM dbo.stock_res sr WHERE sr.IdUbicacion=pu.IdUbicacion AND sr.IdStockRes=pu.IdStockRes AND sr.IdPropietarioBodega=pu.IdPropietarioBodega AND sr.IdProductoBodega=pu.IdProductoBodega AND sr.IdPedidoDet=pu.IdPedidoDet) THEN 1 ELSE 0 END) excl_sr," &
-                                " COUNT(*) tot" &
-                                " FROM dbo.trans_picking_ubic pu WHERE pu.IdPickingEnc=@p AND pu.IdPedidoEnc=@q",
-                                lConnection, lTransaction)
-                                diagCmd.Parameters.AddWithValue("@p", pIdPickingEnc)
-                                diagCmd.Parameters.AddWithValue("@q", pIdPedidoEnc)
-                                Using diagRdr = diagCmd.ExecuteReader()
-                                    If diagRdr.Read() Then
-                                        WmsTrace.vEvent("UBIC_FILTER_DIAG",
-                                            WmsTrace.A("picking", pIdPickingEnc, "pedido", pIdPedidoEnc,
-                                                       "tot", diagRdr("tot"),
-                                                       "returned", lDataTable.Rows.Count,
-                                                       "excl_cv", diagRdr("excl_cv"),
-                                                       "excl_fp", diagRdr("excl_fp"),
-                                                       "excl_vd", diagRdr("excl_vd"),
-                                                       "excl_dañado", diagRdr("excl_dañado"),
-                                                       "excl_sr", diagRdr("excl_sr")))
-                                    End If
-                                End Using
-                            End Using
-                        End If
-
                     End Using
 
                     lTransaction.Commit()
