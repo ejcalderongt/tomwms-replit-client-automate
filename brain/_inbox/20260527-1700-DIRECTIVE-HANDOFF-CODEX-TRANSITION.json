@@ -7,7 +7,7 @@
   "host": "replit-workspace",
   "ref": {
     "bundle": null,
-    "commit_sha": null,
+    "commit_sha": "de9b2a44e1d18f955acd5a1adb89f8de445dc36a",
     "rama_destino": "main",
     "files_changed": [
       "brain/agent-context/HANDOFF-2026-05-27-TRANSICION-CODEX.md",
@@ -35,14 +35,20 @@
   },
   "analysis": null,
   "proposal": null,
-  "status": "pending",
-  "decision": null,
+  "status": "delivered",
+  "decision": "accepted",
   "history": [
     {
       "at": "2026-05-27T17:00:00-03:00",
       "action": "notify",
       "by": "mary-jane (agente Replit workspace)",
       "note": "Handoff de transicion de gobernanza. Autorizado por EJC el 2026-05-27."
+    },
+    {
+      "at": "2026-05-30T12:00:00-06:00",
+      "action": "delivered",
+      "by": "mary-jane (agente Replit workspace)",
+      "note": "Archivos pusheados a wms-brain. commit_sha actualizado. Status: delivered."
     }
   ]
 }
