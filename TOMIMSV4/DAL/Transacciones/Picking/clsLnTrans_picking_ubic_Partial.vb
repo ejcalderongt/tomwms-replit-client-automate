@@ -42,7 +42,12 @@ Partial Public Class clsLnTrans_picking_ubic
                 .No_packing = IIf(IsDBNull(dr.Item("no_packing")), "", dr.Item("no_packing"))
                 .Fecha_picking = IIf(IsDBNull(dr.Item("fecha_picking")), Date.Now, dr.Item("fecha_picking"))
                 .Fecha_verificado = IIf(IsDBNull(dr.Item("fecha_verificado")), Date.Now, dr.Item("fecha_verificado"))
-                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), Date.Now, dr.Item("fecha_packing"))
+                '#EJC20260530 FIX_CARGAR_POISON (BUG-004): NULL → sentinel 1900-01-01, NO Date.Now.
+                'Si fecha_packing viene NULL/sin-empacar y se defaulteaba a Date.Now, cualquier round-trip
+                'Cargar→Actualizar escribía una fecha real → la ubic quedaba excluida del filtro
+                'fecha_packing < ''19010101'' → desaparecía de PENDIENTE de forma permanente. El sentinel
+                '1900 es la convención establecida y es inmune a ese envenenamiento.
+                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), New Date(1900, 1, 1), dr.Item("fecha_packing"))
                 .Fecha_despachado = IIf(IsDBNull(dr.Item("fecha_despachado")), Date.Now, dr.Item("fecha_despachado"))
                 .Cantidad_despachada = IIf(IsDBNull(dr.Item("cantidad_despachada")), 0.0, dr.Item("cantidad_despachada"))
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
