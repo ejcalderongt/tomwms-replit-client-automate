@@ -19,7 +19,7 @@ Module m_Global
     Public vRutaServicio As String = CurDir() & "/WMS_PrintService.exe"
     Public vRutaInterfaceCEALSA As String = CurDir() & "/CEALSASync.exe"
 
-    Public Property gVersionApp As String = "8.6.6"  '#EJC20260529 fix(packing-BOF): bump — LA_CUMBRE
+    Public Property gVersionApp As String = "8.6.7"  '#EJC20260529 mejora(lista-packing): +PorcentajePacking SQL
     Public Property gVersionWS  As String = "8.9.0"  '#EJC20260529 versión WSHHRN TOMHHWS.asmx.vb
 
     Public gVersionBD As String = "1"

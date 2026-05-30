@@ -1787,7 +1787,13 @@ Partial Public Class clsLnTarea_hh
                                     b.nombre AS NombreBodega, 
                                     pp.nombre_comercial,
                                     d.IdPedidoEnc,
-		                            pe.bodega_destino Referencia
+		                            pe.bodega_destino Referencia,
+                                    CAST(ISNULL(
+                                        CASE WHEN (SELECT COUNT(*) FROM trans_picking_ubic WHERE IdPickingEnc = p.IdPickingEnc AND cantidad_verificada > 0) = 0 THEN 0
+                                        ELSE (SELECT COUNT(*) FROM trans_picking_ubic WHERE IdPickingEnc = p.IdPickingEnc AND cantidad_verificada > 0 AND Fecha_packing > '19010101') * 100 /
+                                             (SELECT COUNT(*) FROM trans_picking_ubic WHERE IdPickingEnc = p.IdPickingEnc AND cantidad_verificada > 0)
+                                        END, 0) AS INT) AS PorcentajePacking
+                                    '#EJC20260529 % ubics empacadas/verificadas
                                     FROM trans_picking_enc AS p INNER JOIN 
                                          (SELECT distinct IdPedidoEnc, IdPickingEnc 
                                           FROM trans_picking_ubic 
@@ -1849,6 +1855,7 @@ Partial Public Class clsLnTarea_hh
                     .NombrePropietarioPicking = IIf(IsDBNull(dr("nombre_comercial")), "", dr("nombre_comercial"))
                     .IdPedidoEnc = dr("IdPedidoEnc")
                     .Referencia = IIf(IsDBNull(dr("Referencia")), "", dr("Referencia"))
+                    .PorcentajePacking = IIf(IsDBNull(dr("PorcentajePacking")), 0, CInt(dr("PorcentajePacking"))) '#EJC20260529
 
                 End With
 
