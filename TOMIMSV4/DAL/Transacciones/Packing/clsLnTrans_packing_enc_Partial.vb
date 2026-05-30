@@ -97,13 +97,21 @@ Partial Public Class clsLnTrans_packing_enc
                             Dim CantidadEmpacada As Double = Get_CantidadEmpacada(BeTransPackingEnc, lConnection, lTransaction)
                             For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
                                 If CantidadEmpacada >= Picking.Cantidad_Verificada Then
-                                    '#EJC20260529 PACK_PARCIAL_GUARD: completamente empacado → sellar
+                                    '#EJC20260530 PACK_PARCIAL_GUARD: completamente empacado → sellar
                                     Picking.Fecha_packing = Date.Now()
+                                    clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
                                 Else
-                                    '#EJC20260529 PACK_PARCIAL_GUARD: parcial → mantener sentinel 1900 en PENDIENTE
-                                    Picking.Fecha_packing = New Date(1900, 1, 1)
+                                    '#EJC20260530 FIX_VIEW_NULL: parcial → resetear a NULL (no 1900-01-01).
+                                    'VW_PickingUbic_By_IdPickingEnc incluye (fecha_packing IS NULL);
+                                    'el sentinel 1900 la excluía porque IS NULL = FALSE para esa fecha.
+                                    Dim sqlNull As String = "UPDATE trans_picking_ubic " &
+                                        " SET fecha_packing = NULL " &
+                                        " WHERE IdPickingUbic = @IdPickingUbic"
+                                    Using cmdNull As New SqlCommand(sqlNull, lConnection, lTransaction)
+                                        cmdNull.Parameters.Add(New SqlParameter("@IdPickingUbic", Picking.IdPickingUbic))
+                                        cmdNull.ExecuteNonQuery()
+                                    End Using
                                 End If
-                                clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
                             Next
 
                         End If
