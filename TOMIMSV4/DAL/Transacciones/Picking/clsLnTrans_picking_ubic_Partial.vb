@@ -42,7 +42,12 @@ Partial Public Class clsLnTrans_picking_ubic
                 .No_packing = IIf(IsDBNull(dr.Item("no_packing")), "", dr.Item("no_packing"))
                 .Fecha_picking = IIf(IsDBNull(dr.Item("fecha_picking")), Date.Now, dr.Item("fecha_picking"))
                 .Fecha_verificado = IIf(IsDBNull(dr.Item("fecha_verificado")), Date.Now, dr.Item("fecha_verificado"))
-                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), Date.Now, dr.Item("fecha_packing"))
+                '#EJC20260530 FIX_CARGAR_POISON (BUG-004): NULL → sentinel 1900-01-01, NO Date.Now.
+                'Si fecha_packing viene NULL/sin-empacar y se defaulteaba a Date.Now, cualquier round-trip
+                'Cargar→Actualizar escribía una fecha real → la ubic quedaba excluida del filtro
+                'fecha_packing < ''19010101'' → desaparecía de PENDIENTE de forma permanente. El sentinel
+                '1900 es la convención establecida y es inmune a ese envenenamiento.
+                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), New Date(1900, 1, 1), dr.Item("fecha_packing"))
                 .Fecha_despachado = IIf(IsDBNull(dr.Item("fecha_despachado")), Date.Now, dr.Item("fecha_despachado"))
                 .Cantidad_despachada = IIf(IsDBNull(dr.Item("cantidad_despachada")), 0.0, dr.Item("cantidad_despachada"))
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
@@ -1709,7 +1714,7 @@ Partial Public Class clsLnTrans_picking_ubic
             If BeBodega.Control_Talla_Color Then
                 vSQL += " AND IdProductoTallaColor = @IdProductoTallaColor "
             Else
-                vSQL + = " AND (Lote = @Lote OR Lote IS NULL)   
+                vSQL += " AND (Lote = @Lote OR Lote IS NULL)   
                            AND ISNULL(CONVERT(DATE, fecha_vence), CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) "
             End If
 
@@ -3415,6 +3420,14 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim lTransaction As SqlTransaction = Nothing
         Dim resultado As String = ""
         Dim FilasAfectadas As Integer = 0
+        Dim t0 As DateTime = DateTime.Now
+        Dim sqlRoundtrips As Integer = 0
+        Dim sid As String = WmsTrace.OpStart("PickingUbic.ActualizarPorVerificacion",
+                                              WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                                         "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                                         "wms.cant_verif", oBeTrans_picking_ubic.Cantidad_Verificada,
+                                                         "wms.id_stock_res", BeStockRes.IdStockRes,
+                                                         "wms.sr_estado_in", BeStockRes.Estado))
 
         Try
 
@@ -3424,9 +3437,21 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 resultado += "Inicia la actualizacion"
 
+                '#EJC20260529 fix BUG-004 (belt-and-suspenders): durante verificación,
+                '  fecha_packing NO debe cambiar (packing aún no ocurrió). Si Cargar() la
+                '  defaulteó a Date.Now (bug: NULL→Date.Now), forzar el sentinel 1900-01-01
+                '  para que el filtro fecha_packing<'19010101' no excluya este ubic.
+                If oBeTrans_picking_ubic.Fecha_packing > New Date(1901, 1, 1) Then
+                    WmsTrace.vEvent("VERIF_FP_GUARD",
+                                    WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                               "wms.fp_before", oBeTrans_picking_ubic.Fecha_packing.ToString("yyyy-MM-dd"),
+                                               "!!warn", "Fecha_packing envenenada por Cargar NULL→Date.Now; reset a 1900-01-01"))
+                    oBeTrans_picking_ubic.Fecha_packing = New Date(1900, 1, 1)
+                End If
                 FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en trans_picking_ubic, cantidad {1}, operador {2}, pedido {3}, pedidodet {4} IdPickingUbic {5} ",
                                            FilasAfectadas.ToString, oBeTrans_picking_ubic.Cantidad_Verificada,
@@ -3436,13 +3461,26 @@ Partial Public Class clsLnTrans_picking_ubic
                 FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
                                                        IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
+
+                '#EJC20260529 log: alerta si stock_res.Actualizar no afectó ninguna fila — stock_res puede quedar PICKEADO en escenario split
+                If FilasAfectadas = 0 Then
+                    resultado += "[!! VERIF_SR_ZERO_ROWS]"
+                    WmsTrace.vEvent("VERIF_SR_ZERO_ROWS",
+                                    WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                               "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                               "wms.id_stock_res", BeStockRes.IdStockRes,
+                                               "wms.sr_estado_in", BeStockRes.Estado,
+                                               "!!warn", "stock_res.Actualizar=0 filas estado no transitó a VERIFICADO"))
+                End If
 
                 Dim BeStock As New clsBeStock
                 BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock,
                                                            IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                            IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
                                                                                      BeStock.IdUbicacion,
@@ -3450,6 +3488,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                                      pPeso,
                                                                                      IIf(Es_Transaccion_Remota, pConection, lConnection),
                                                                                      IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                sqlRoundtrips += 1
 
                 resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
 
@@ -3457,13 +3496,24 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 resultado += ", terminó la actualizacion"
 
+            Else
+                '#EJC20260529 log: alerta guard cant_verif=0 — stock_res NO se actualiza (escenario split + verificación posterior)
+                resultado += "[VERIF_SR_GUARD_SKIP cant_verif=0]"
+                WmsTrace.vEvent("VERIF_SR_GUARD_SKIP",
+                                WmsTrace.A("wms.picking_ubic", oBeTrans_picking_ubic.IdPickingUbic,
+                                           "wms.pedido", oBeTrans_picking_ubic.IdPedidoEnc,
+                                           "wms.id_stock_res", BeStockRes.IdStockRes,
+                                           "wms.sr_estado_in", BeStockRes.Estado,
+                                           "!!warn", "stock_res NO actualizado porque cant_verif=0"))
             End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
+            WmsTrace.OpEnd(sid, sqlRoundtrips, True, CLng(DateTime.Now.Subtract(t0).TotalMilliseconds))
             Return resultado
 
         Catch ex As Exception
+            WmsTrace.OpEnd(sid, sqlRoundtrips, False, CLng(DateTime.Now.Subtract(t0).TotalMilliseconds))
             If Not Es_Transaccion_Remota AndAlso Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
@@ -3473,6 +3523,7 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
 
     Public Shared Function Eliminar_By_IdPickingDet(ByVal IdPickingDet As Integer,
                                                     ByVal pConection As SqlConnection,
@@ -6690,6 +6741,18 @@ Partial Public Class clsLnTrans_picking_ubic
         Try
             '#CKFK20250626 Agregué esto pu.cantidad_verificada<>pu.cantidad_despachada
             '#EJC20260526: En packing/verificación mostrar y filtrar por licencia de empaque (MM...) en lugar de licencia de stock.
+            ' #EJC20260529 FIX_CUMBRE (PUNTO 1/4) - ORIGEN DEL BUG EN EL FLUJO PACKING:
+            ' Antes solo filtrábamos con cantidad_verificada<>cantidad_despachada.
+            ' El problema: Inserta_Packing estampa Fecha_packing en la ubic al empacar,
+            ' pero NO toca cantidad_despachada (ese campo lo maneja el despacho, no el packing).
+            ' Resultado: ubics ya empacadas seguían pasando el filtro y apareciendo como
+            ' PENDIENTE en la HH (ej. PENDIENTE:33 cuando debería mostrar 32).
+            ' FIX: filtramos por Fecha_packing — si tiene valor real (distinto al sentinela
+            ' 1900-01-01 que el WMS usa para sin-fecha), la ubic ya fue empacada.
+            ' EFECTO SECUNDARIO IMPORTANTE: al sacar esas ubics de pick.items, los productos
+            ' 100% empacados desaparecían del lookup en la HH → Código/Nombre vacíos.
+            ' Ese efecto secundario se resuelve en PUNTO 2 (entity) y PUNTO 3 (DAL packing_enc)
+            ' y PUNTO 4 (frm_preparacion_packing.java).
             Dim vSQL As String = "SELECT  pu.IdPickingEnc, 0 IdPickingUbic, max(pu.IdPickingDet) IdPickingDet, max(pu.IdUbicacion) IdUbicacion, 
                                             max(pu.IdStock) IdStock, pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                                     max(pu.IdUbicacionAnterior) IdUbicacionAnterior, MAX(pu.IdRecepcion) IdRecepcion, pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
@@ -6734,10 +6797,11 @@ Partial Public Class clsLnTrans_picking_ubic
                                     WHERE  (pu.IdPickingEnc=@IdPickingEnc AND pu.IdPedidoEnc = @IdPedidoEnc AND 
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
-                                            pu.cantidad_verificada<>pu.cantidad_despachada)
+                                            pu.cantidad_verificada<>pu.cantidad_despachada AND
+                                            (pu.fecha_packing IS NULL OR pu.fecha_packing < '19010101'))
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
-                                            pu.lic_plate, '#EJC20260529' 
+                                            pu.lic_plate, 
                                             pu.fecha_real_vence, ISNULL(pk.no_linea, ISNULL(NULLIF(CONVERT(nvarchar(50), pu.no_packing), '0'), '')),
                                             pu.activo, pu.dañado_picking, 
                                             pu.lic_plate_reemplazo, pu.IdUbicacion_reemplazo, pu.IdStock_reemplazo, pdet.IdPedidoEnc, 

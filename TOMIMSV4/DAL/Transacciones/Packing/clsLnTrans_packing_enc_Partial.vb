@@ -88,17 +88,37 @@ Partial Public Class clsLnTrans_packing_enc
                                                                   pConection:=lConnection,
                                                                   pTransaction:=lTransaction)
 
-                            'Cantidad Empacada sin tomar en cuenta la licencia del packing
-                            'Dim CantidadEmpacada As Double = 0
-                            'CantidadEmpacada = Get_CantidadEmpacada(pTrans_packing_enc.Item(0), lConnection, lTransaction)
-
-                            '#AT20250203 Actualizar fecha packing en trans_picking_ubic
-                            'If CantidadEmpacada <= CantVerificada Then
+                            '#EJC20260529 fix(packing-parcial): Restaurar guard de packing parcial.
+                            '#AT20250203 comentó la guarda y siempre sellaba fecha_packing=Date.Now()
+                            'aunque fuera packing parcial → ubic desaparecía de PENDIENTE en la HH.
+                            'Get_CantidadEmpacada YA filtra por lic_plate (el comentario estaba desactualizado).
+                            'Fix: solo estampar Date.Now() si total empacado >= cantidad_verificada del ubic;
+                            'para packing parcial, restaurar sentinel 1900-01-01 → ubic sigue en PENDIENTE.
+                            Dim CantidadEmpacada As Double = Get_CantidadEmpacada(BeTransPackingEnc, lConnection, lTransaction)
                             For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
-                                Picking.Fecha_packing = Date.Now()
-                                clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
+                                If CantidadEmpacada >= Picking.Cantidad_Verificada Then
+                                    '#EJC20260530 PACK_PARCIAL_GUARD: completamente empacado → sellar
+                                    Picking.Fecha_packing = Date.Now()
+                                    clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
+                                Else
+                                    '#EJC20260530 FIX_SENTINEL_1900: parcial → resetear al sentinel 1900-01-01 (NO NULL).
+                                    'La consulta real que alimenta PENDIENTE en la HH es el overload (Int,Int)
+                                    'Get_All_PickingUbic_By_IdPickingEnc (clsLnTrans_picking_ubic_Partial línea 6731,
+                                    'vía WS Get_All_PickingUbic_By_PickingEnc) y su WHERE YA acepta
+                                    '(fecha_packing IS NULL OR fecha_packing < ''19010101''); 1900 SIEMPRE se vio como
+                                    'pendiente, así que la premisa de FIX_VIEW_NULL (NULL) era falsa. Usar NULL además
+                                    'reactivaba el poison de Cargar (NULL→Date.Now) y los reset de borrado
+                                    '(SET ''19000101'' WHERE fecha_packing > ''19010101'') no normalizaban NULL.
+                                    '1900-01-01 es la convención establecida: inmune al poison y compatible con los reset.
+                                    Dim sqlSentinel As String = "UPDATE trans_picking_ubic " &
+                                        " SET fecha_packing = '19000101' " &
+                                        " WHERE IdPickingUbic = @IdPickingUbic"
+                                    Using cmdSentinel As New SqlCommand(sqlSentinel, lConnection, lTransaction)
+                                        cmdSentinel.Parameters.Add(New SqlParameter("@IdPickingUbic", Picking.IdPickingUbic))
+                                        cmdSentinel.ExecuteNonQuery()
+                                    End Using
+                                End If
                             Next
-                            'End If
 
                         End If
 
@@ -297,16 +317,42 @@ Partial Public Class clsLnTrans_packing_enc
         Dim lReturnList As New List(Of clsBeTrans_packing_enc)
 
         Try
-            Const sp As String = "SELECT a.*, 
-                                c.Codigo Codigo_Talla, 
-                                c.Nombre Nombre_Talla, 
-                                d.Codigo Codigo_Color, 
-                                d.Nombre Nombre_Color  
-                                FROM Trans_packing_enc a 
-                                left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
-                                left join talla c On c.IdTalla = b.IdTalla 
-                                left join color d On d.IdColor = b.IdColor " &
-                                " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
+            ' #EJC20260529 FIX_CUMBRE (PUNTO 3/4) - BOF SIN JOIN A TABLA DE PRODUCTO:
+            ' Get_All_By_IdPicking solo hacía SELECT a.* de Trans_packing_enc.
+            ' Esa tabla guarda el ID numérico del producto (Idproductobodega) pero NUNCA
+            ' el nombre ni el código — no los necesita para operar internamente.
+            ' La HH compensaba buscando esos datos en pick.items (ubics pendientes),
+            ' pero cuando PUNTO 1 filtró las ubics ya empacadas, si el producto estaba
+            ' 100% empacado ya no existía en pick.items → Código/Nombre vacíos en pantalla.
+            ' FIX: el BOF navega Trans_packing_enc → trans_picking_det → trans_pe_det para
+            ' traer codigo_producto y nombre_producto que el pedido capturó al crear el
+            ' picking. trans_pe_det los tiene porque son datos del detalle de pedido,
+            ' inmutables una vez creado el picking. El mapeo post-Cargar() abajo los
+            ' vuelca al objeto entidad para que el WS los incluya en la trama XML.
+            Const sp As String = "SELECT a.*,
+                                            c.Codigo Codigo_Talla,
+                                            c.Nombre Nombre_Talla,
+                                            d.Codigo Codigo_Color,
+                                            d.Nombre Nombre_Color,
+                                            ISNULL(pdet.codigo_producto,'') AS CodigoProducto,
+                                            ISNULL(pdet.nombre_producto,'') AS nom_prod,
+                                            ISNULL(pdet.nom_presentacion,'') AS ProductoPresentacion,
+                                            ISNULL(pdet.nom_unid_med,'') AS ProductoUnidadMedida,
+                                            ISNULL(est.nombre,'') AS ProductoEstado
+                                            FROM Trans_packing_enc a
+                                            left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
+                                            left join talla c On c.IdTalla = b.IdTalla
+                                            left join color d On d.IdColor = b.IdColor
+                                                                            -- #EJC20260529 FIX_CUMBRE: navegamos hasta trans_pe_det para obtener nombre/codigo del producto
+                                            left join (
+                                                SELECT DISTINCT pkd.IdPickingEnc, pdt.IdProductoBodega,
+                                                                pdt.codigo_producto, pdt.nombre_producto,
+                                                                pdt.nom_presentacion, pdt.nom_unid_med
+                                                FROM trans_picking_det pkd
+                                                INNER JOIN trans_pe_det pdt ON pdt.IdPedidoDet = pkd.IdPedidoDet
+                                            ) pdet ON pdet.IdPickingEnc = a.Idpickingenc AND pdet.IdProductoBodega = a.Idproductobodega
+                                            left join dbo.producto_estado est ON est.IdEstado = a.Idproductoestado " &
+                                            " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
 
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -329,6 +375,15 @@ Partial Public Class clsLnTrans_packing_enc
                         For Each dr As DataRow In lDataTable.Rows
                             vBeTrans_packing_enc = New clsBeTrans_packing_enc()
                             Cargar(vBeTrans_packing_enc, dr, IsForAndr)
+                            ' #EJC20260529 FIX_CUMBRE PUNTO 3 — mapeo post-Cargar: Cargar() no conoce las
+                            ' columnas nuevas del JOIN (no está en el Partial), así que las leemos aquí
+                            ' directamente del DataRow con Columns.Contains para evitar crash si alguna
+                            ' BD de otro cliente no tiene la vista o las tablas de pedido enlazadas.
+                            If lDataTable.Columns.Contains("CodigoProducto") AndAlso Not IsDBNull(dr.Item("CodigoProducto")) Then vBeTrans_packing_enc.CodigoProducto = CStr(dr.Item("CodigoProducto"))
+                            If lDataTable.Columns.Contains("nom_prod") AndAlso Not IsDBNull(dr.Item("nom_prod")) Then vBeTrans_packing_enc.nom_prod = CStr(dr.Item("nom_prod"))
+                            If lDataTable.Columns.Contains("ProductoPresentacion") AndAlso Not IsDBNull(dr.Item("ProductoPresentacion")) Then vBeTrans_packing_enc.ProductoPresentacion = CStr(dr.Item("ProductoPresentacion"))
+                            If lDataTable.Columns.Contains("ProductoUnidadMedida") AndAlso Not IsDBNull(dr.Item("ProductoUnidadMedida")) Then vBeTrans_packing_enc.ProductoUnidadMedida = CStr(dr.Item("ProductoUnidadMedida"))
+                            If lDataTable.Columns.Contains("ProductoEstado") AndAlso Not IsDBNull(dr.Item("ProductoEstado")) Then vBeTrans_packing_enc.ProductoEstado = CStr(dr.Item("ProductoEstado"))
                             lReturnList.Add(vBeTrans_packing_enc)
                         Next
 

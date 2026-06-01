@@ -12,9 +12,11 @@ Public Class Global
         ' Activar bitácora diaria siempre (liviana, producción-safe)
         WmsTraceWS.DAILY_LOG_ENABLED = True
 
-        ' Activar trace fino SOLO en ambiente debug / pruebas:
-        ' WmsTraceWS.ENABLED = True
-        ' WmsTraceWS.Reset("sesion-prueba-20260528")
+        ' #EJC20260529 trace fino habilitado temporalmente para diagnóstico bug packing La Cumbre
+        ' (excl_fp / excl_vd / excl_sr en wms-ws-trace y wms-bof-trace)
+        ' Volver a False cuando concluya el diagnóstico.
+        WmsTraceWS.ENABLED = True
+        WmsTraceWS.Reset("diag-packing-cumbre-20260529")
     End Sub
 
     Sub Application_End(sender As Object, e As EventArgs)

@@ -113,6 +113,12 @@ Public Class clsSyncSAPPresentaciones : Inherits clsInterfaceBase
 
                         If Not BeProductoExistente Is Nothing Then
 
+                            '#CKFK20260528 Agregué esta condición para eliminar las presentaciones del producto distintas a la que estoy importando
+                            clsLnProducto_presentacion.Elimina_By_IdProducto_And_Presentacion_Distinta(BeProductoExistente.IdProducto,
+                                                                                                       BeSAPPresentacion.Codigo_Pres,
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
+
                             BeProductoPresentacionExistente = clsLnProducto_presentacion.Existe_By_IdProducto_And_Presentacion(BeProductoExistente.IdProducto,
                                                                                                                                BeSAPPresentacion.Codigo_Pres,
                                                                                                                                lConnection,
