@@ -97,13 +97,27 @@ Partial Public Class clsLnTrans_packing_enc
                             Dim CantidadEmpacada As Double = Get_CantidadEmpacada(BeTransPackingEnc, lConnection, lTransaction)
                             For Each Picking As clsBeTrans_picking_ubic In ListaPikcing
                                 If CantidadEmpacada >= Picking.Cantidad_Verificada Then
-                                    '#EJC20260529 PACK_PARCIAL_GUARD: completamente empacado → sellar
+                                    '#EJC20260530 PACK_PARCIAL_GUARD: completamente empacado → sellar
                                     Picking.Fecha_packing = Date.Now()
+                                    clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
                                 Else
-                                    '#EJC20260529 PACK_PARCIAL_GUARD: parcial → mantener sentinel 1900 en PENDIENTE
-                                    Picking.Fecha_packing = New Date(1900, 1, 1)
+                                    '#EJC20260530 FIX_SENTINEL_1900: parcial → resetear al sentinel 1900-01-01 (NO NULL).
+                                    'La consulta real que alimenta PENDIENTE en la HH es el overload (Int,Int)
+                                    'Get_All_PickingUbic_By_IdPickingEnc (clsLnTrans_picking_ubic_Partial línea 6731,
+                                    'vía WS Get_All_PickingUbic_By_PickingEnc) y su WHERE YA acepta
+                                    '(fecha_packing IS NULL OR fecha_packing < ''19010101''); 1900 SIEMPRE se vio como
+                                    'pendiente, así que la premisa de FIX_VIEW_NULL (NULL) era falsa. Usar NULL además
+                                    'reactivaba el poison de Cargar (NULL→Date.Now) y los reset de borrado
+                                    '(SET ''19000101'' WHERE fecha_packing > ''19010101'') no normalizaban NULL.
+                                    '1900-01-01 es la convención establecida: inmune al poison y compatible con los reset.
+                                    Dim sqlSentinel As String = "UPDATE trans_picking_ubic " &
+                                        " SET fecha_packing = '19000101' " &
+                                        " WHERE IdPickingUbic = @IdPickingUbic"
+                                    Using cmdSentinel As New SqlCommand(sqlSentinel, lConnection, lTransaction)
+                                        cmdSentinel.Parameters.Add(New SqlParameter("@IdPickingUbic", Picking.IdPickingUbic))
+                                        cmdSentinel.ExecuteNonQuery()
+                                    End Using
                                 End If
-                                clsLnTrans_picking_ubic.Actualizar_FechaPacking(Picking, lConnection, lTransaction)
                             Next
 
                         End If

@@ -292,7 +292,7 @@ Public Module WmsTraceWS
                 traceWriter.WriteLine(line)
             Catch : End Try
         End SyncLock
-        System.Diagnostics.Debug.WriteLine(line)
+        Debug.WriteLine(line)
     End Sub
 
 End Module
