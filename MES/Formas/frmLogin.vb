@@ -314,7 +314,7 @@ Public Class frmLogin
             CadenaConexion = ListaInstancias(IndiceInstanciaDefecto).CadenaConexionSQLClient
         End If
 
-        Dim lConnection As New SqlClient.SqlConnection("")
+        Dim lConnection As New SqlClient.SqlConnection(CadenaConexion)
 
         Try
 
