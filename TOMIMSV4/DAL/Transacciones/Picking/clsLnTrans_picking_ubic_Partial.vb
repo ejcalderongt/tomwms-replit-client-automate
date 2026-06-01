@@ -1714,7 +1714,7 @@ Partial Public Class clsLnTrans_picking_ubic
             If BeBodega.Control_Talla_Color Then
                 vSQL += " AND IdProductoTallaColor = @IdProductoTallaColor "
             Else
-                vSQL + = " AND (Lote = @Lote OR Lote IS NULL)   
+                vSQL += " AND (Lote = @Lote OR Lote IS NULL)   
                            AND ISNULL(CONVERT(DATE, fecha_vence), CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) "
             End If
 
