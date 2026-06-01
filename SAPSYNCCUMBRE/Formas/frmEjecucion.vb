@@ -880,7 +880,6 @@ Public Class frmEjecucion
 
         Try
 
-
             Dim SAPPresentaciones As New clsSyncSAPPresentaciones
             SAPPresentaciones.Importar_Presentaciones_Productos(lblprg, prg)
 
