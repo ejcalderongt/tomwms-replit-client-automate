@@ -6078,7 +6078,8 @@ Partial Public Class clsLnStock
                                      ByRef lConnection As SqlConnection,
                                      ByRef ltransaction As SqlTransaction,
                                      Optional ByVal pExcluirUbicacionPicking As Boolean = False,
-                                     Optional ByVal pRestringir As Boolean = False) As DataTable
+                                     Optional ByVal pRestringir As Boolean = False,
+                                     Optional ByVal pIdClienteReglaLote As Integer = 0) As DataTable
 
         lStock_DT = Nothing
 
@@ -6173,6 +6174,42 @@ Partial Public Class clsLnStock
                       AND producto_bodega.idproductobodega=@idproductobodega                     
 					  AND stock.idunidadmedida =@idunidadmedida 
 					  AND stock.idproductoestado=@idproductoestado "
+
+            If pIdClienteReglaLote > 0 Then
+                '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, aquí filtro los lotes de reemplazo con la misma regla de cliente_lotes.
+                'Si el cliente tiene lotes permitidos para producto/estado, solo se listan esos; si tiene bloqueados, se excluyen.
+                vSQL += " AND NOT EXISTS (
+                              SELECT 1
+                              FROM cliente_lotes cl
+                              WHERE cl.IdCliente = @IdClienteReglaLote
+                                AND ISNULL(cl.activo, 0) = 1
+                                AND ISNULL(cl.bloquear, 0) = 1
+                                AND cl.IdProducto = producto.IdProducto
+                                AND ISNULL(cl.IdProductoEstado, 0) = stock.IdProductoEstado
+                                AND ISNULL(cl.Lote, '') = ISNULL(stock.lote, '')
+                          )
+                          AND (
+                              NOT EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                              )
+                              OR EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                                    AND ISNULL(clp.Lote, '') = ISNULL(stock.lote, '')
+                              )
+                          ) "
+            End If
 
             If Not BeBodega Is Nothing Then
                 '#EJC202302231735: Parametricé, Permitir_Reemplazo_Picking_Misma_Licencia 
@@ -6325,6 +6362,10 @@ Partial Public Class clsLnStock
 
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pBeStockRes.IdUnidadMedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pBeStockRes.IdProductoEstado)
+
+                If pIdClienteReglaLote > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdClienteReglaLote", pIdClienteReglaLote)
+                End If
 
                 If DiasVencimiento <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@DiasVencimientoCliente", DiasVencimiento)
@@ -6582,7 +6623,8 @@ Partial Public Class clsLnStock
                                                     ByVal pBeConfigEnc As clsBeI_nav_config_enc,
                                                     ByRef lConnection As SqlConnection,
                                                     ByRef ltransaction As SqlTransaction,
-                                                    Optional ByVal pExcluirUbicacionPicking As Boolean = False) As DataTable
+                                                    Optional ByVal pExcluirUbicacionPicking As Boolean = False,
+                                                    Optional ByVal pIdClienteReglaLote As Integer = 0) As DataTable
         Try
             Dim DTDatos As DataTable
             Dim RDatos As DataTable = New DataTable
@@ -6596,7 +6638,8 @@ Partial Public Class clsLnStock
                                 lConnection,
                                 ltransaction,
                                 False,
-                                True)
+                                True,
+                                pIdClienteReglaLote)
 
             '#CKFK20220722 Agregué esto para 
             If DTDatos.Rows.Count = 0 Then
@@ -6609,7 +6652,9 @@ Partial Public Class clsLnStock
                                     pBeConfigEnc,
                                     lConnection,
                                     ltransaction,
-                                    False)
+                                    False,
+                                    False,
+                                    pIdClienteReglaLote)
 
             End If
 
@@ -6779,6 +6824,81 @@ Partial Public Class clsLnStock
 
         Catch ex As Exception
             Throw ex
+        End Try
+    End Function
+
+    Public Shared Function Stock_Cumple_Regla_Lote_Cliente_Reemplazo(ByVal pIdStock As Integer,
+                                                                     ByVal pIdPedidoEnc As Integer,
+                                                                     ByRef lConnection As SqlConnection,
+                                                                     ByRef ltransaction As SqlTransaction) As Boolean
+        Try
+            If pIdStock <= 0 OrElse pIdPedidoEnc <= 0 Then
+                Return True
+            End If
+
+            Dim vIdCliente As Integer = clsLnTrans_pe_enc.GetIdCliente(pIdPedidoEnc, lConnection, ltransaction)
+            If vIdCliente <= 0 Then
+                Return True
+            End If
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, esto es el candado de confirmación.
+            'Aunque una HH vieja o una carrera de datos mande el IdStock, el reemplazo no continúa si el lote ya no aplica al cliente.
+            Const vSQL As String = "
+                SELECT CASE
+                    WHEN NOT EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes cl ON cl.IdCliente = @IdCliente
+                            AND ISNULL(cl.activo, 0) = 1
+                            AND ISNULL(cl.bloquear, 0) = 1
+                            AND cl.IdProducto = p.IdProducto
+                            AND ISNULL(cl.IdProductoEstado, 0) = s.IdProductoEstado
+                            AND ISNULL(cl.Lote, '') = ISNULL(s.lote, '')
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes clp ON clp.IdCliente = @IdCliente
+                            AND ISNULL(clp.activo, 0) = 1
+                            AND ISNULL(clp.bloquear, 0) = 0
+                            AND clp.IdProducto = p.IdProducto
+                            AND ISNULL(clp.IdProductoEstado, 0) = s.IdProductoEstado
+                        WHERE s.IdStock = @IdStock
+                    )
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes clp ON clp.IdCliente = @IdCliente
+                            AND ISNULL(clp.activo, 0) = 1
+                            AND ISNULL(clp.bloquear, 0) = 0
+                            AND clp.IdProducto = p.IdProducto
+                            AND ISNULL(clp.IdProductoEstado, 0) = s.IdProductoEstado
+                            AND ISNULL(clp.Lote, '') = ISNULL(s.lote, '')
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    ELSE 1
+                END"
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, ltransaction) With {.CommandType = CommandType.Text}
+                lCommand.Parameters.AddWithValue("@IdStock", pIdStock)
+                lCommand.Parameters.AddWithValue("@IdCliente", vIdCliente)
+                Return Convert.ToBoolean(lCommand.ExecuteScalar())
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
     End Function
 
@@ -13035,7 +13155,8 @@ Por favor reportar este problema a DevOps."
                                                        pBeConfigEnc,
                                                        lConnection,
                                                        lTransaction,
-                                                       False)
+                                                       False,
+                                                       vIdCliente)
                 pasos = 9
                 lTransaction.Commit()
                 pasos = 10

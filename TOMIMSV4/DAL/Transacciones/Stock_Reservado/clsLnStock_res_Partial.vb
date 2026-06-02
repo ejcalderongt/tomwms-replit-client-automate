@@ -3266,6 +3266,14 @@ Partial Public Class clsLnStock_res
                 BePickingUbic.IdPickingEnc = IdPickingEnc
             End If
 
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, aquí no basta con que la lista venga filtrada; se valida de nuevo al confirmar.
+            If Not clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(pBeStock_res.IdStock,
+                                                                               IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
+            End If
+
             ListTransPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_PickingUbic(BePickingUbic,
                                                                                               lConnection,
                                                                                               lTransaction)
@@ -3771,6 +3779,14 @@ Partial Public Class clsLnStock_res
 
             BeBodega = New clsBeBodega With {.IdBodega = pIdBodega}
             clsLnBodega.GetSingle(BeBodega, lConnection, lTransaction)
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: mismo candado para verificación, porque comparte la pantalla de stock candidato con picking.
+            If Not TOMWMS.clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(pBeStockRes.IdStock,
+                                                                               plistPickingUbi.IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
+            End If
 
             If tmpBePickingUbic.Count > 0 Then
 
@@ -4377,6 +4393,14 @@ Partial Public Class clsLnStock_res
             Dim BeStockRes As New clsBeStock_res
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: valida el stock recibido por IdStock antes de reservar/reemplazar.
+            If Not TOMWMS.clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(IdStockReservarDesde,
+                                                                               IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
+            End If
 
             If Reservar_Stock_By_IdStock(IdStockReservarDesde,
                                          CantSol,
