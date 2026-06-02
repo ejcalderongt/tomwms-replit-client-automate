@@ -55,6 +55,9 @@ Public Class TOMHHWS
     Private Const HH_CACHE_RECEPCION_SEGUNDOS As Integer = 60
     Private Shared ReadOnly HH_CACHE_LOCK As New Object()
 
+    '#EJC20260529 versión del servicio WS TOMHHWS — alinear con versionName HH en cada release
+    Public Const WS_VERSION As String = "8.9.0"
+
     '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
     ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
@@ -149,7 +152,7 @@ Public Class TOMHHWS
         curContext.Response.Charset = "utf-8"
         curContext.Response.TrySkipIisCustomErrors = True
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
-        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
+        OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.ApplicationInstance.CompleteRequest()
 
@@ -166,7 +169,7 @@ Public Class TOMHHWS
         curContext.Response.StatusCode = pStatusCode
         curContext.Response.ContentType = "application/json; charset=utf-8"
         curContext.Response.AddHeader("Access-Control-Allow-Methods", "POST")
-        WmsTraceWS.OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
+        OnJsonResponse(pStatusCode, json.Length) '#EJC20260528
         curContext.Response.Write(json)
         curContext.Response.Flush()
 
@@ -9099,13 +9102,16 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Inventario_Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico, pIdResolucion As Integer) As Integer
+    Public Function Inventario_Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico,
+                                              pIdResolucion As Integer,
+                                              pTallaColor As clsBeProducto_talla_color,
+                                              pCrearTallaColor As Boolean) As Integer
 
         Inventario_Agregar_Conteo = 0
 
         Try
 
-            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion)
+            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion, pTallaColor, pCrearTallaColor)
 
         Catch ex As Exception
 
@@ -19570,11 +19576,12 @@ Public Class TOMHHWS
     End Function
 
     '#MA20260116
+    '#AT20260526 Agregue el parametro IdInventarioEnc
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer, pIdInventario As Integer) As List(Of clsBeProducto)
         Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
         Try
-            Return clsLnProducto.Get_BeProducto_By_Codigo_Or_Barra(pCodigo, IdBodega)
+            Return clsLnProducto.Get_List_Product_By_CodigoBarra_By_Cilcico(pCodigo, IdBodega, pIdInventario)
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)

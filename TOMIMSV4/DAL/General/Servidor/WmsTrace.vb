@@ -321,8 +321,10 @@ Public Module WmsTrace
                 If traceWriter Is Nothing OrElse today <> traceDate Then
                     traceWriter?.Flush() : traceWriter?.Dispose()
                     If Not IO.Directory.Exists(LogDir) Then IO.Directory.CreateDirectory(LogDir)
+                    '#EJC20260529 v2.1 fix: AutoFlush=True — igual que WmsTraceWS. AutoFlush=False dejaba datos en buffer
+                    ' y el log parecía vacío hasta que el proceso terminaba o cambiaba la fecha.
                     traceWriter = New StreamWriter(Path.Combine(LogDir, $"wms-bof-trace-{today}.log"),
-                                                  append:=True) With {.AutoFlush = False}
+                                                  append:=True) With {.AutoFlush = True}
                     traceDate = today
                 End If
                 traceWriter.WriteLine(line)

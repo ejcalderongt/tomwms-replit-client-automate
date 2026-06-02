@@ -4128,54 +4128,59 @@ Public Class frmDespacho
 
                 If ped Is Nothing Then Continue For
 
-                Dim dt As DataTable = clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
+                If ped.Picking.Requiere_Preparacion Then
 
-                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+                    Dim dt As DataTable = clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
 
-                If sb.Length = 0 Then
-                    sb.AppendLine("Se encontraron diferencias entre verificación y packing.")
+                    If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                    If sb.Length = 0 Then
+                        sb.AppendLine("Se encontraron diferencias entre verificación y packing.")
+                        sb.AppendLine("")
+                    End If
+
+                    sb.AppendLine(String.Format("Pedido: {0}", ped.IdPedidoEnc))
                     sb.AppendLine("")
+
+                    For Each row As DataRow In dt.Rows
+
+                        Dim idPickingEnc As Integer = ToInteger(row("IdPickingEnc"))
+                        Dim idStockRes As Integer = ToInteger(row("IdStockRes"))
+                        Dim codigo As String = Nz(row("codigo"))
+                        Dim producto As String = Nz(row("producto"))
+                        Dim lote As String = Nz(row("lote"))
+                        Dim licencia As String = Nz(row("lic_plate"))
+                        Dim tipoDiferencia As String = If(dt.Columns.Contains("tipo_diferencia"), Nz(row("tipo_diferencia")), "")
+                        Dim permiteCorreccion As Boolean = If(dt.Columns.Contains("permite_correccion_auto"), ToInteger(row("permite_correccion_auto")) = 1, False)
+
+                        Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
+                        Dim verificado As Double = ToDouble(row("cantidad_verificada"))
+                        Dim empacado As Double = ToDouble(row("cantidad_empacada"))
+
+                        If Not permiteCorreccion Then
+                            pPermiteCorreccionAuto = False
+                        End If
+
+                        sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
+                        sb.AppendLine(String.Format("Producto: {0}", producto))
+                        sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
+                        If tipoDiferencia <> String.Empty Then
+                            sb.AppendLine(String.Format("Diferencia: {0}", tipoDiferencia))
+                        End If
+                        sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
+                                                pickeado,
+                                                verificado,
+                                                empacado))
+                        sb.AppendLine(String.Format("IdStockRes: {0}", idStockRes))
+                        sb.AppendLine(New String("-"c, 90))
+
+                        totalRegistros += 1
+                    Next
+
+                    sb.AppendLine("")
+
                 End If
 
-                sb.AppendLine(String.Format("Pedido: {0}", ped.IdPedidoEnc))
-                sb.AppendLine("")
-
-                For Each row As DataRow In dt.Rows
-
-                    Dim idPickingEnc As Integer = ToInteger(row("IdPickingEnc"))
-                    Dim idStockRes As Integer = ToInteger(row("IdStockRes"))
-                    Dim codigo As String = Nz(row("codigo"))
-                    Dim producto As String = Nz(row("producto"))
-                    Dim lote As String = Nz(row("lote"))
-                    Dim licencia As String = Nz(row("lic_plate"))
-                    Dim tipoDiferencia As String = If(dt.Columns.Contains("tipo_diferencia"), Nz(row("tipo_diferencia")), "")
-                    Dim permiteCorreccion As Boolean = If(dt.Columns.Contains("permite_correccion_auto"), ToInteger(row("permite_correccion_auto")) = 1, False)
-
-                    Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
-                    Dim verificado As Double = ToDouble(row("cantidad_verificada"))
-                    Dim empacado As Double = ToDouble(row("cantidad_empacada"))
-
-                    If Not permiteCorreccion Then
-                        pPermiteCorreccionAuto = False
-                    End If
-
-                    sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
-                    sb.AppendLine(String.Format("Producto: {0}", producto))
-                    sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
-                    If tipoDiferencia <> String.Empty Then
-                        sb.AppendLine(String.Format("Diferencia: {0}", tipoDiferencia))
-                    End If
-                    sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
-                                            pickeado,
-                                            verificado,
-                                            empacado))
-                    sb.AppendLine(String.Format("IdStockRes: {0}", idStockRes))
-                    sb.AppendLine(New String("-"c, 90))
-
-                    totalRegistros += 1
-                Next
-
-                sb.AppendLine("")
             Next
 
             If totalRegistros = 0 Then
