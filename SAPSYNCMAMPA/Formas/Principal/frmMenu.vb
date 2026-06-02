@@ -1,5 +1,6 @@
 ﻿Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
+Imports System.ComponentModel
 Imports System.Reflection
 
 Public Class frmMenu
@@ -142,10 +143,11 @@ Public Class frmMenu
 
     Private Sub frmMenu_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
 
-        If e.CloseReason = CloseReason.UserClosing Then
-            e.Cancel = True
-            Me.Hide()
-        End If
+        '#CKFK20260602 Puse esto en cometario por etapa de desarrollo
+        'If e.CloseReason = CloseReason.UserClosing Then
+        '    e.Cancel = True
+        '    Me.Hide()
+        'End If
 
     End Sub
 
@@ -162,4 +164,5 @@ Public Class frmMenu
         Application.Exit()
 
     End Sub
+
 End Class
