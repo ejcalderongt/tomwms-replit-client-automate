@@ -694,6 +694,7 @@ Public Class frmLoginEx
             lLicenciasProgramacion.Add("DESKTOP-790O7S2")
             lLicenciasProgramacion.Add("Marcela1306")
             lLicenciasProgramacion.Add("AbigailAlvarado")
+            lLicenciasProgramacion.Add("DESKTOP-KUJFGRC")
 
 
             '#EJC20210517: Cuando lo encuentren, 

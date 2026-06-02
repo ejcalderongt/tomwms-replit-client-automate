@@ -9104,13 +9104,14 @@ Public Class TOMHHWS
     <WebMethod(), SoapHeader("mArch")>
     Public Function Inventario_Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico,
                                               pIdResolucion As Integer,
-                                              pTallaColor As clsBeProducto_talla_color) As Integer
+                                              pTallaColor As clsBeProducto_talla_color,
+                                              pCrearTallaColor As Boolean) As Integer
 
         Inventario_Agregar_Conteo = 0
 
         Try
 
-            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion, pTallaColor)
+            Return clsLnTrans_inv_ciclico.Agregar_Conteo(pBeTransInvCiclico, pIdResolucion, pTallaColor, pCrearTallaColor)
 
         Catch ex As Exception
 
@@ -19575,11 +19576,12 @@ Public Class TOMHHWS
     End Function
 
     '#MA20260116
+    '#AT20260526 Agregue el parametro IdInventarioEnc
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer, pIdInventario As Integer) As List(Of clsBeProducto)
         Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
         Try
-            Return clsLnProducto.Get_BeProducto_By_Codigo_Or_Barra(pCodigo, IdBodega)
+            Return clsLnProducto.Get_List_Product_By_CodigoBarra_By_Cilcico(pCodigo, IdBodega, pIdInventario)
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
