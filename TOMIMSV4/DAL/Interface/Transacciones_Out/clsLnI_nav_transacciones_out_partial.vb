@@ -466,7 +466,8 @@ Partial Public Class clsLnI_nav_transacciones_out
                                                                                     lTransaction)
 
                     If Not BeTipoDocumento Is Nothing Then
-                        vEnviado = (BeTipoDocumento.Marcar_Registros_Enviados_MI3 OrElse BePedidoEnc.Enviado_A_ERP)
+                        '#CKFK20260602: Agregué esto AndAlso BePedidoEnc.Referencia = ""
+                        vEnviado = (BeTipoDocumento.Marcar_Registros_Enviados_MI3 OrElse (BePedidoEnc.Enviado_A_ERP AndAlso BePedidoEnc.Referencia = ""))
                     End If
 
                     If vEnviado AndAlso Not BePedidoEnc.Enviado_A_ERP Then
