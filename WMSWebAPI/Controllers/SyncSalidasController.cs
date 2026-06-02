@@ -125,6 +125,49 @@ namespace WMSWebAPI.Controllers
             }
         }
 
+        [HttpPost("anular-salida")]
+        public IActionResult AnularSalida([FromBody] AnularSalidaRequestDto request,
+                                          [FromServices] IConfiguration configuration,
+                                          [FromServices] ILogger<SyncSalidasController> _logger)
+        {
+            try
+            {
+                var resultado = _salidaService.Anular_salida(request);
+
+                if (resultado.Exito)
+                {
+                    _logger.LogInformation("Salida anulada. IdPedidoEnc={IdPedidoEnc}, Referencia={Referencia}, StockLiberado={StockLiberado}",
+                                           resultado.IdPedidoEnc,
+                                           resultado.Referencia,
+                                           resultado.StockReservadoLiberado);
+                    return Ok(resultado);
+                }
+
+                return resultado.Codigo switch
+                {
+                    "REQUEST_INVALID" => BadRequest(resultado),
+                    "PEDIDO_NO_ENCONTRADO" => NotFound(resultado),
+                    "PEDIDO_AMBIGUO" => Conflict(resultado),
+                    "PEDIDO_YA_ANULADO" => Conflict(resultado),
+                    "PICKING_ASOCIADO" => UnprocessableEntity(resultado),
+                    "ESTADO_NO_ANULABLE" => UnprocessableEntity(resultado),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, resultado)
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al anular documento de salida.");
+                var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Exito = false,
+                    Codigo = "ERROR_INTERNO",
+                    Mensaje = ex.Message,
+                    Detalles = showStackTrace ? ex.ToString() : null
+                });
+            }
+        }
+
         /// <summary>
         /// Inserta un documento de traslado/pedido desde MI3.
         /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente

@@ -162,15 +162,27 @@ Public Class frmDespacho
                 Return False
             End If
 
-            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking()
+            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: Las diferencias parciales bloquean; solo las verificaciones en cero mantienen correccion automatica.
+            Dim permiteCorreccionAutoPacking As Boolean = False
+            msgDiferenciaDespachoPacking = ObtenerMensajeDiferenciasDespachoPacking(permiteCorreccionAutoPacking)
 
             If msgDiferenciaDespachoPacking <> String.Empty Then
 
+                If Not permiteCorreccionAutoPacking Then
+                    XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
+                                        "Corrija la diferencia en picking/verificación o packing antes de despachar.",
+                                        Text,
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Exclamation)
+
+                    Return False
+                End If
+
                 Dim vRespuesta As DialogResult = XtraMessageBox.Show(msgDiferenciaDespachoPacking & vbCrLf & vbCrLf &
-                                                                    "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
-                                                                    Text,
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Question)
+                                                                     "¿Desea corregir automáticamente la cantidad verificada con la cantidad pickeada?",
+                                                                     Text,
+                                                                     MessageBoxButtons.YesNo,
+                                                                     MessageBoxIcon.Question)
 
                 If vRespuesta = DialogResult.Yes Then
 
@@ -187,6 +199,9 @@ Public Class frmDespacho
                 End If
 
             End If
+
+            '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: Evitar diferencia falsa por summaries duplicados del grid.
+            NormalizarResumenesDespachoPacking()
 
             If Existe_Diferencia_Despacho_vrs_Packing() Then
                 Return False
@@ -829,6 +844,7 @@ Public Class frmDespacho
 
             grdvPickingUbic.Columns("Factor").Visible = False
             grdvPickingUbic.Columns("Factor").OptionsColumn.ShowInCustomizationForm = True
+            grdvPickingUbic.GroupSummary.Clear()
 
             Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "Factor",
@@ -940,6 +956,7 @@ Public Class frmDespacho
             grdvPickingUbic.OptionsView.ShowFooter = True
 
             'grdvPickingUbic.Columns("Código").Group()
+            grdvPickingUbic.GroupSummary.Clear()
 
             Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
                     With {.FieldName = "Cantidad_Disp",
@@ -1786,13 +1803,15 @@ Public Class frmDespacho
             Dim DT As New DataTable
             DT = clsLnTrans_packing_enc.Get_All_By_IdPicking_And_IdPedido_And_IdDespacho_DT(IdPickingEnc, IdPedidoEnc, IdDespachoEnc, lConnection, lTransaction)
 
+            RemoverPackingCargado(IdPickingEnc, IdPedidoEnc, IdDespachoEnc)
             DTPacking.Merge(DT)
 
             dgridPacking.DataSource = DTPacking
 
-            If grdvPickingUbic.Columns.Count > 1 Then
+            If gvPacking.Columns.Count > 1 Then
 
                 gvPacking.Columns("no_linea").Group()
+                gvPacking.GroupSummary.Clear()
 
                 Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem()
                 item1.FieldName = "cantidad_bultos_packing"
@@ -1832,13 +1851,15 @@ Public Class frmDespacho
             Dim DT As New DataTable
             DT = clsLnTrans_packing_enc.Get_All_By_IdPicking_DT(IdPickingEnc, IdPedidoEnc, lConnection, lTransaction)
 
+            RemoverPackingCargado(IdPickingEnc, IdPedidoEnc, IdDespachoEnc)
             DTPacking.Merge(DT)
 
             dgridPacking.DataSource = DTPacking
 
-            If grdvPickingUbic.Columns.Count > 1 Then
+            If gvPacking.Columns.Count > 1 Then
 
                 gvPacking.Columns("no_linea").Group()
+                gvPacking.GroupSummary.Clear()
 
                 Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem()
                 item1.FieldName = "cantidad_bultos_packing"
@@ -1886,6 +1907,11 @@ Public Class frmDespacho
 
                     For Each BeTransPickingUbic In pBePedidoDet.ListaPickingUbic
 
+                        Dim vFactor As Double = 0
+                        Dim vCantidadRecUMBas As Double = BeTransPickingUbic.Cantidad_Recibida
+                        Dim vCantidadVerUMBas As Double = BeTransPickingUbic.Cantidad_Verificada
+                        Dim vCantidadDespUMBas As Double = BeTransPickingUbic.Cantidad_despachada
+
                         If (BeTransPickingUbic.IdPresentacion = 0) OrElse (pBePedidoDet.IdPresentacion = 0) Then
                             vCantidadReservadaUMBas = BeTransPickingUbic.Cantidad_Solicitada
                             vCantidadReservadaPres = 0
@@ -1897,24 +1923,26 @@ Public Class frmDespacho
                             BePresentacion = listaPresentaciones.Find(Function(x) x.IdPresentacion = BeTransPickingUbic.IdPresentacion)
 
                             If Not BePresentacion Is Nothing Then
+                                '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: calcular UMBas sin mutar el objeto de picking.
+                                vFactor = BePresentacion.Factor
                                 vCantidadReservadaPres = BeTransPickingUbic.Cantidad_Solicitada
-                                vCantidadReservadaUMBas = Math.Round(BeTransPickingUbic.Cantidad_Solicitada * BePresentacion.Factor, 6)
+                                vCantidadReservadaUMBas = Math.Round(BeTransPickingUbic.Cantidad_Solicitada * vFactor, 6)
                                 vCantidadRecPres = BeTransPickingUbic.Cantidad_Recibida
-                                BeTransPickingUbic.Cantidad_Recibida = Math.Round(BeTransPickingUbic.Cantidad_Recibida * BePresentacion.Factor, 6)
+                                vCantidadRecUMBas = Math.Round(BeTransPickingUbic.Cantidad_Recibida * vFactor, 6)
                                 vCantidadVerPres = BeTransPickingUbic.Cantidad_Verificada
-                                BeTransPickingUbic.Cantidad_Verificada = Math.Round(BeTransPickingUbic.Cantidad_Verificada * BePresentacion.Factor, 6)
+                                vCantidadVerUMBas = Math.Round(BeTransPickingUbic.Cantidad_Verificada * vFactor, 6)
                                 vCantidadDespPres = BeTransPickingUbic.Cantidad_despachada
-                                BeTransPickingUbic.Cantidad_despachada = Math.Round(BeTransPickingUbic.Cantidad_despachada * BePresentacion.Factor, 6)
+                                vCantidadDespUMBas = Math.Round(BeTransPickingUbic.Cantidad_despachada * vFactor, 6)
                             Else
                                 Throw New Exception("No se pudo obtener la presentación con identificador: " & BeTransPickingUbic.IdPresentacion)
                             End If
 
                         End If
 
-                        vCantPendiente = vCantidadReservadaUMBas - BeTransPickingUbic.Cantidad_Recibida
+                        vCantPendiente = vCantidadReservadaUMBas - vCantidadRecUMBas
 
                         If vCantPendiente = 0 Then
-                            vCantPendiente = BeTransPickingUbic.Cantidad_Recibida - BeTransPickingUbic.Cantidad_Verificada
+                            vCantPendiente = vCantidadRecUMBas - vCantidadVerUMBas
                         End If
 
                         DTStockRes.Rows.Add(BeTransPickingUbic.IdPedidoEnc,
@@ -1929,15 +1957,15 @@ Public Class frmDespacho
                                             BeTransPickingUbic.Lote,
                                             BeTransPickingUbic.Lic_plate,
                                             BeTransPickingUbic.Fecha_Vence,
-                                            BePresentacion.Factor,
+                                            vFactor,
                                             vCantidadReservadaPres,
                                             vCantidadReservadaUMBas,
                                             vCantidadRecPres,
-                                            BeTransPickingUbic.Cantidad_Recibida,
+                                            vCantidadRecUMBas,
                                             vCantidadVerPres,
-                                            BeTransPickingUbic.Cantidad_Verificada,
+                                            vCantidadVerUMBas,
                                             vCantidadDespPres,
-                                            BeTransPickingUbic.Cantidad_despachada,
+                                            vCantidadDespUMBas,
                                             vCantPendiente,
                                             BeTransPickingUbic.Peso_recibido,
                                             BeTransPickingUbic.Peso_verificado,
@@ -1978,6 +2006,7 @@ Public Class frmDespacho
                 grdvPickingUbic.OptionsView.ShowFooter = True
 
                 grdvPickingUbic.Columns("Código").Group()
+                grdvPickingUbic.GroupSummary.Clear()
 
                 Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
                 With {.FieldName = "Cantidad_Disp",
@@ -3589,6 +3618,67 @@ Public Class frmDespacho
 
     End Function
 
+    '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: La validacion debe leer datos, no mutar ni depender del footer visual.
+    Private Sub NormalizarResumenesDespachoPacking()
+
+        Try
+            ConfigurarSummaryColumna(gvPacking, "cantidad_bultos_packing")
+            ConfigurarSummaryColumna(grdvPickingUbic, "Cant_Veri_UMBas")
+            ConfigurarSummaryColumna(grdvPickingUbic, "Cant_Desp_UMBas")
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+        End Try
+
+    End Sub
+
+    Private Sub ConfigurarSummaryColumna(ByVal pView As GridView,
+                                         ByVal pFieldName As String,
+                                         Optional ByVal pDisplayFormat As String = "{0:n6}")
+
+        If pView Is Nothing Then Return
+
+        Dim column = pView.Columns.ColumnByFieldName(pFieldName)
+        If column Is Nothing Then Return
+
+        column.Summary.Clear()
+        column.Summary.Add(SummaryItemType.Sum, pFieldName, pDisplayFormat)
+
+    End Sub
+
+    Private Function SumarColumna(ByVal pTabla As DataTable,
+                                  ByVal pColumna As String,
+                                  Optional ByVal pFiltro As String = "") As Double
+
+        If pTabla Is Nothing OrElse Not pTabla.Columns.Contains(pColumna) Then Return 0
+        If pTabla.Rows.Count = 0 Then Return 0
+
+        Dim valor As Object = pTabla.Compute(String.Format("SUM([{0}])", pColumna), pFiltro)
+        Return ToDouble(valor)
+
+    End Function
+
+    Private Sub RemoverPackingCargado(ByVal IdPickingEnc As Integer,
+                                      ByVal IdPedidoEnc As Integer,
+                                      ByVal IdDespachoEnc As Integer)
+
+        If DTPacking Is Nothing OrElse DTPacking.Columns.Count = 0 Then Return
+        If Not DTPacking.Columns.Contains("IdPickingEnc") Then Return
+        If Not DTPacking.Columns.Contains("IdPedidoEnc") Then Return
+        If Not DTPacking.Columns.Contains("IdDespachoEnc") Then Return
+
+        Dim filtro As String = String.Format("[IdPickingEnc] = {0} AND [IdPedidoEnc] = {1} AND [IdDespachoEnc] = {2}",
+                                             IdPickingEnc,
+                                             IdPedidoEnc,
+                                             IdDespachoEnc)
+
+        For Each row As DataRow In DTPacking.Select(filtro)
+            row.Delete()
+        Next
+
+        DTPacking.AcceptChanges()
+
+    End Sub
+
     '#CKFK20250324 Creé esta función para validar si existe diferencia entre packing y despacho
     Public Function Existe_Diferencia_Despacho_vrs_Packing() As Boolean
 
@@ -3603,21 +3693,23 @@ Public Class frmDespacho
 
                     If Ped.Picking.Requiere_Preparacion Then
 
-                        Dim vCantidadPacking As Double = 0
-
-                        gvPacking.Columns("cantidad_bultos_packing").Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-
-                        vCantidadPacking = Math.Round(Convert.ToDouble(gvPacking.Columns("cantidad_bultos_packing").SummaryItem.SummaryValue), 6)
-
-                        Dim vCantidadADespachar As Double = 0
-                        Dim vCantidadDespachada As Double = 0
-
-                        grdvPickingUbic.Columns(18).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-                        vCantidadADespachar = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(18).SummaryItem.SummaryValue), 6)
-                        grdvPickingUbic.Columns(20).Summary.Add(SummaryItemType.Sum, "", "{0:N2}")
-                        vCantidadDespachada = Math.Round(Convert.ToDouble(grdvPickingUbic.Columns(20).SummaryItem.SummaryValue), 6)
+                        Dim filtroPedido As String = String.Format("[Pedido] = {0}", Ped.IdPedidoEnc)
+                        Dim filtroPacking As String = String.Format("[IdPedidoEnc] = {0}", Ped.IdPedidoEnc)
+                        Dim vCantidadPacking As Double = Math.Round(SumarColumna(DTPacking, "cantidad_bultos_packing", filtroPacking), 6)
+                        Dim vCantidadADespachar As Double = Math.Round(SumarColumna(DTStockRes, "Cant_Veri_UMBas", filtroPedido), 6)
+                        Dim vCantidadDespachada As Double = Math.Round(SumarColumna(DTStockRes, "Cant_Desp_UMBas", filtroPedido), 6)
 
                         If vCantidadADespachar - vCantidadDespachada <> vCantidadPacking Then
+                            XtraMessageBox.Show(String.Format("Existe diferencia entre packing y despacho para el pedido {0}.{1}{1}Verificado: {2:N6}{1}Despachado previamente: {3:N6}{1}A despachar: {4:N6}{1}Packing: {5:N6}",
+                                                              Ped.IdPedidoEnc,
+                                                              vbCrLf,
+                                                              vCantidadADespachar,
+                                                              vCantidadDespachada,
+                                                              vCantidadADespachar - vCantidadDespachada,
+                                                              vCantidadPacking),
+                                                Text,
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Exclamation)
                             Return True
                         End If
                     End If
@@ -4018,9 +4110,10 @@ Public Class frmDespacho
 
     End Function
 
-    Private Function ObtenerMensajeDiferenciasDespachoPacking() As String
+    Private Function ObtenerMensajeDiferenciasDespachoPacking(ByRef pPermiteCorreccionAuto As Boolean) As String
 
         Dim sb As New System.Text.StringBuilder()
+        pPermiteCorreccionAuto = True
 
         Try
             If BeDespachoEnc Is Nothing _
@@ -4035,45 +4128,59 @@ Public Class frmDespacho
 
                 If ped Is Nothing Then Continue For
 
-                Dim dt As DataTable = clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
+                If ped.Picking.Requiere_Preparacion Then
 
-                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+                    Dim dt As DataTable = clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing(ped.IdPedidoEnc)
 
-                If sb.Length = 0 Then
-                    sb.AppendLine("Se encontraron diferencias entre verificación y packing.")
+                    If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                    If sb.Length = 0 Then
+                        sb.AppendLine("Se encontraron diferencias entre verificación y packing.")
+                        sb.AppendLine("")
+                    End If
+
+                    sb.AppendLine(String.Format("Pedido: {0}", ped.IdPedidoEnc))
                     sb.AppendLine("")
+
+                    For Each row As DataRow In dt.Rows
+
+                        Dim idPickingEnc As Integer = ToInteger(row("IdPickingEnc"))
+                        Dim idStockRes As Integer = ToInteger(row("IdStockRes"))
+                        Dim codigo As String = Nz(row("codigo"))
+                        Dim producto As String = Nz(row("producto"))
+                        Dim lote As String = Nz(row("lote"))
+                        Dim licencia As String = Nz(row("lic_plate"))
+                        Dim tipoDiferencia As String = If(dt.Columns.Contains("tipo_diferencia"), Nz(row("tipo_diferencia")), "")
+                        Dim permiteCorreccion As Boolean = If(dt.Columns.Contains("permite_correccion_auto"), ToInteger(row("permite_correccion_auto")) = 1, False)
+
+                        Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
+                        Dim verificado As Double = ToDouble(row("cantidad_verificada"))
+                        Dim empacado As Double = ToDouble(row("cantidad_empacada"))
+
+                        If Not permiteCorreccion Then
+                            pPermiteCorreccionAuto = False
+                        End If
+
+                        sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
+                        sb.AppendLine(String.Format("Producto: {0}", producto))
+                        sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
+                        If tipoDiferencia <> String.Empty Then
+                            sb.AppendLine(String.Format("Diferencia: {0}", tipoDiferencia))
+                        End If
+                        sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
+                                                pickeado,
+                                                verificado,
+                                                empacado))
+                        sb.AppendLine(String.Format("IdStockRes: {0}", idStockRes))
+                        sb.AppendLine(New String("-"c, 90))
+
+                        totalRegistros += 1
+                    Next
+
+                    sb.AppendLine("")
+
                 End If
 
-                sb.AppendLine(String.Format("Pedido: {0}", ped.IdPedidoEnc))
-                sb.AppendLine("")
-
-                For Each row As DataRow In dt.Rows
-
-                    Dim idPickingEnc As Integer = ToInteger(row("IdPickingEnc"))
-                    Dim idStockRes As Integer = ToInteger(row("IdStockRes"))
-                    Dim codigo As String = Nz(row("codigo"))
-                    Dim producto As String = Nz(row("producto"))
-                    Dim lote As String = Nz(row("lote"))
-                    Dim licencia As String = Nz(row("lic_plate"))
-
-                    Dim pickeado As Double = ToDouble(row("cantidad_recibida"))
-                    Dim verificado As Double = ToDouble(row("cantidad_verificada"))
-                    Dim empacado As Double = ToDouble(row("cantidad_empacada"))
-
-                    sb.AppendLine(String.Format("Picking: {0} | Código: {1}", idPickingEnc, codigo))
-                    sb.AppendLine(String.Format("Producto: {0}", producto))
-                    sb.AppendLine(String.Format("Lote: {0} | Licencia: {1}", lote, licencia))
-                    sb.AppendLine(String.Format("Pickeado: {0:N6} | Verificado: {1:N6} | Empacado: {2:N6}",
-                                            pickeado,
-                                            verificado,
-                                            empacado))
-                    sb.AppendLine(String.Format("IdStockRes: {0}", idStockRes))
-                    sb.AppendLine(New String("-"c, 90))
-
-                    totalRegistros += 1
-                Next
-
-                sb.AppendLine("")
             Next
 
             If totalRegistros = 0 Then

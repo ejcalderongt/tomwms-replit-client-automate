@@ -1,4 +1,222 @@
 notas:
+  - fecha: "2026-05-27"
+    area: "RFID inventario fisico ILP"
+    detalle: >
+      Se documento fine-trace del modulo RFID en
+      C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-27-rfid-inventario-fisico/RFID-INVENTARIO-GRAFO-TRAZA-FINA-2026-05-27.yml
+      y se agrego skill local C:/Users/yejc2/.codex/skills/wms-rfid-inventory/SKILL.md.
+      Hallazgo central: el inventario RFID necesita snapshot atomico al crear
+      trans_inv_enc/tarea_hh, contra stock RFID separado. Revisar contradiccion
+      entre Guardar_RFID (comentario "no hay stock") y el flujo actual con
+      i_nav_barras_rfid_stock/trans_inv_ciclico_rfid. Antes de implementar,
+      confirmar fuente canonica del congelado: i_nav_barras_rfid_stock activo
+      o ING sin SAL.
+  - fecha: "2026-05-27"
+    area: "HH consulta existencias sin paginacion"
+    detalle: >
+      En WSHHRN Get_Stock_Consulta_CI_Json la firma QA/local no tiene page ni
+      pageSize. La ruta debe devolver en JSON todos los registros acordes a
+      filtros normales (codigo/licencia/ubicacion/bodega/nombre/detallado) en
+      Items, marcando SinPaginacion=True y RegistrosDevueltos=Total. En
+      clsLnStock_CI mantener consultas sin TOP/OFFSET/FETCH y con ORDER BY
+      Codigo, IdPresentacion, ubicacion, LP, lote y vencimiento para que HH
+      renderice totales de forma estable.
+  - fecha: "2026-05-27"
+    area: "HH blindaje estratégico nulos/listas"
+    detalle: >
+      Se priorizó blindaje en fronteras WS/estado vivo: detalle de consulta de
+      existencias y verificación consolidada. Patrón: validar objeto global/lista
+      compartida antes de usar items.get(0), normalizar strings WS antes de
+      isEmpty/trim/contains/parseDouble, y cerrar con mensaje operativo de recarga
+      cuando el contexto quedó obsoleto. Tags usados en HH: #EJC20260527.
+  - fecha: "2026-05-27"
+    area: "HH consulta existencias estado UI"
+    detalle: >
+      En TOMHH2025 frm_consulta_stock, preparar la vista con "Consultando..."
+      antes de execws exige restaurar footer/foco si execws no arranca o si el
+      render falla. Los callbacks stale deben ignorarse sin cerrar el ciclo WS
+      activo, porque el finally puede cruzar estados y dejar la pantalla sin
+      foco o con el footer ocupado.
+  - fecha: "2026-05-27"
+    area: "HH recepción finalizar firma null"
+    detalle: >
+      En TOMHH2025, al finalizar recepción desde frm_list_rec_prod,
+      gl.gBeRecepcion.Firma_piloto puede venir null. No llamar isEmpty()
+      directo; tratar null como firma vacía para abrir la pantalla de firma
+      y continuar el flujo normal. Se agregó guarda también para encabezado
+      de recepción no cargado antes de Finalizar_Recepcion.
+  - fecha: "2026-05-27"
+    area: "HH lint cleanup seguro"
+    detalle: >
+      En TOMHH2025 se validó una ruta segura para bajar lints sin cambiar
+      contratos HH/WS: corregir primero errores bloqueantes de API Android,
+      luego DefaultLocale en normalizaciones internas con Locale.ROOT/US,
+      raw List locales, isEmpty para cadenas, printStackTrace por Log y
+      CutPasteId evidentes contra layout. Evitar hacer masivo HardcodedText,
+      SetTextI18n, ScrollViewSize/TextViewEdits o layouts sin revisar pantalla,
+      porque pueden cambiar texto o visual operativo.
+  - fecha: "2026-05-26"
+    area: "DB identity trans_movimientos (plan cross-layer)"
+    detalle: >
+      Se confirmó en TOMWMS_MAMPA_QA que dbo.trans_movimientos.IdMovimiento no
+      es identity y depende de MaxID()+1 en DAL VB, WSHHRN/HH y WMS.DALCore.
+      Se dejó script de migración con preservación de IDs históricos en
+      tools/diagnostics/20260526_fix_trans_movimientos_idmovimiento_identity.sql
+      y árbol de impacto faseado en
+      brain/handoffs/2026-05-26-trans-movimientos-ididentity/README.md.
+  - fecha: "2026-05-26"
+    area: "HH picking reemplazo/no encontrado cantidad_solicitada"
+    detalle: >
+      En QA La Cumbre (TOMWMS_LA_CUMBRE_QA) el constraint
+      Stock_NonNegative_20250228_CKFK de trans_picking_ubic valida
+      cantidad_solicitada > 0. Se detecto que los flujos de reemplazo/no
+      encontrado evaluaban parcial con "Cantidad_Solicitada <> 0", por lo que
+      cantidades negativas caian en UPDATE y rompian el check. Fix aplicado en
+      clsLnStock_res_Partial y clsLnTrans_picking_ubic_Partial: condiciones de
+      parcial cambiadas a > 0 y caminos de cierre/eliminacion a <= 0 para
+      evitar updates con cero/negativo en escenarios de merma/no encontrado.
+      Se identifico caso adicional en Reemplaza_Producto_Dannado_Menor donde
+      cuando CantidadPendiente = 0 la cantidad dañada quedaba en 0 por no
+      entrar a ramas >0/<0; se corrigio para asignar pCantLinea en igualdad.
+      Tambien se agrego guard clause en Modificar_PickingUbic_By_Reem para
+      omitir update cuando CantSol <= 0 y evitar violacion del check.
+  - fecha: "2026-05-26"
+    area: "HH menu roles"
+    detalle: >
+      En TOMHH2025 el mapeo del menu principal debe resolver permisos por
+      nombre normalizado y, si el nombre viene vacio o con variante, usar
+      IdMenuSistemaOP numerico antes de IdTipoTarea. Esto evita que roles
+      productivos pierdan opciones como Implosion para pickeador o Empaque
+      para recepcion cuando el contrato de menu llega con nombre distinto.
+  - fecha: "2026-05-26"
+    area: "JIRA WMS - resumen correcciones del dia"
+    detalle: >
+      Se corrigieron incidencias en HH/WS/DAL de QA La Cumbre. 1) Picking
+      reemplazo/no encontrado: con el check
+      Stock_NonNegative_20250228_CKFK (cantidad_solicitada > 0), se ajustaron
+      rutas para evitar updates con cantidad <= 0 en
+      clsLnStock_res_Partial/clsLnTrans_picking_ubic_Partial. 2) Se detecto
+      ruta adicional en Reemplaza_Producto_Dannado_Menor y flujo Sin_Exist:
+      cuando CantidadPendiente=0 la cantidad dañada quedaba en 0; se corrigio
+      asignando pCantLinea en igualdad y guard clause CantSol<=0 en
+      Modificar_PickingUbic_By_Reem. 3) Existencias HH: error SQL
+      "Incorrect syntax near 'Of'" corregido en clsLnStock_CI
+      cambiando Convert(Of Date,...) por Convert(Date,...) y parametrizando
+      filtros pNombre/lote. 4) Verificacion HH fuera de lista general: escaneo
+      no navegaba a confirmacion por enviar gIdPedidoEnc en lugar de
+      pIdPedidoEnc; se corrigio request y matching por CodigoSKU en
+      frm_detalle_tareas_verificacion.
+  - fecha: "2026-05-25"
+    area: "WebAPI salidas anulacion bajo demanda"
+    detalle: >
+      Se agrego endpoint POST /api/sync/salidas/anular-salida para anular un
+      documento de salida desde WebAPI con reglas equivalentes al flujo WMS de
+      frmPedido: requiere IdPedidoEnc o Referencia, motivo de anulacion,
+      valida que no exista picking activo asociado, permite estados Nuevo,
+      Incompleto, Pendiente, Pickeado y Verificado, libera stock_res por
+      IdPedido y marca trans_pe_enc.estado='Anulado' con
+      IdMotivoAnulacionBodega en una sola transaccion; si la bodega es fiscal,
+      tambien desactiva trans_pe_pol.activo para la poliza del pedido. La
+      respuesta usa codigos tipificados: ANULACION_OK, REQUEST_INVALID, PEDIDO_NO_ENCONTRADO,
+      PEDIDO_AMBIGUO, PEDIDO_YA_ANULADO, ESTADO_NO_ANULABLE, PICKING_ASOCIADO,
+      ANULACION_FALLIDA y ERROR_INTERNO.
+  - fecha: "2026-05-23"
+    area: "WSHH consulta stock ubicacion JSON estable"
+    detalle: >
+      Se agrego endpoint backend dedicado Get_Stock_Por_Producto_Ubicacion_CI_Json_v2
+      en WSHHRN/TOMHHWS.asmx.vb para ruta HH de consulta por ubicacion.
+      La salida es siempre JSON uniforme {Error,Mensaje,Total,Items,TraceId}
+      mediante EscribirJsonHHSeguro (TrySkipIisCustomErrors + CompleteRequest),
+      evitando que IIS/ASMX reemplace respuestas por XML/HTML en errores.
+      El endpoint v2 incluye TraceId opcional para trazabilidad server-side.
+  - fecha: "2026-05-23"
+    area: "HH wrapper JSON global + recepcion scan"
+    detalle: >
+      Se movio la compatibilidad de colecciones JSON a capa base
+      (com.dts.base.WebService) con normalizacion recursiva generica. Cualquier
+      propiedad que llegue como arreglo ahora se transforma a wrapper compatible
+      para modelos *List de HH sin parches campo-por-campo, manteniendo doble
+      clave ("items" y nombre original) para clases con @SerializedName.
+      frm_lista_tareas_recepcion ya no hace normalizacion local y consume
+      ws.xmlresult directo.
+  - fecha: "2026-05-23"
+    area: "Recepcion HH/WS flujo Lite"
+    detalle: >
+      Se agrego ruta ligera para apertura de recepcion por escaneo:
+      GetSingleRec_JSON_Lite en WSHHRN, con cache corto servidor. DAL incluye
+      GetSingleHH_Lite (encabezado recepcion), GetSingleLite (trans_re_oc) y
+      Get_Encabezado_OC_HH_Lite (OC sin detalle pesado/lotes/imagenes). En HH,
+      frm_lista_tareas_recepcion intenta Lite y cae a GetSingleRec_JSON como
+      fallback. frm_list_rec_prod carga detalle OC bajo demanda via execws(15)
+      cuando el payload Lite llega sin lineas.
+  - fecha: "2026-05-22"
+    area: "HH recepcion scan producto - traza parseo JSON"
+    detalle: >
+      Diagnostico reproducido sin cambios funcionales para error al escanear
+      producto en frm_lista_tareas_recepcion (processIdRecepcion). El flujo HH
+      llama GetSingleRec_JSON y hace Gson.fromJson(ws.xmlresult,
+      clsBeTrans_re_enc). En ambiente 26.2.183.105/wcftom4 se verifico que el
+      payload real devuelve OrdenCompraRec.OC.DetalleOC como arreglo JSON
+      (DetalleOC:[...]); la HH actual modela DetalleOC como
+      clsBeTrans_oc_detList (objeto wrapper), por eso Gson lanza
+      IllegalStateException Expected BEGIN_OBJECT but was BEGIN_ARRAY en la ruta
+      $.OrdenCompraRec.OC.DetalleOC. Evidencia local: request POST
+      /tomhhws.asmx/GetSingleRec_JSON con pIdRecepcionEnc=8431 confirma
+      DetalleOC=ARRAY. Cambio pendiente: alinear contrato HH con arreglo JSON o
+      agregar adaptador de deserializacion compatible objeto/arreglo.
+  - fecha: "2026-05-22"
+    area: "HH recepcion XML contrato clsBeTrans_oc_det"
+    detalle: >
+      Se confirma que el repo HH local activo para sesiones Codex es
+      C:/Users/yejc2/StudioProjects/TOMHH2025. Fix aplicado en HH para
+      compatibilidad con respuesta del WS de recepcion: la clase
+      com.dts.classes.Transacciones.OrdenCompra.Trans_oc_det.clsBeTrans_oc_det
+      ahora incluye el campo XML CodigoSKU (con getter/setter) para evitar
+      XMLObject Error 2 al parsear GetSingleRecResult cuando el servidor envia
+      <CodigoSKU>.
+  - fecha: "2026-05-22"
+    area: "frmPrincipal02 read-model tareas correccion"
+    detalle: >
+      Se corrigio dbo.usp_wms_principal02_tareas_readmodel_v1 para no depender
+      de columnas que no forman parte del contrato fisico/base del monitor:
+      no debe seleccionar b.IdTransaccion desde vw_tareas_activas_hh porque la
+      forma usa Correlativo; la ubicacion de recepcion sale de
+      bodega_ubicacion.descripcion via trans_re_enc.IdUbicacionRecepcion, no de
+      trans_re_enc.UbicacionRecepcion; y el encabezado trans_ubic_hh_enc no
+      garantiza Nombre_Operador, por lo que el read-model conserva cadena vacia
+      igual que el fallback legacy. En VB el fallback del monitor tambien cubre
+      error SQL 207 para caer a la vista legacy si un SP instalado no calza con
+      el schema del cliente. Ajuste posterior: en clientes con mezcla
+      Modern_Spanish_CI_AS / SQL_Latin1_General_CP1_CI_AS, las columnas texto
+      calculadas por CASE (Origen, Destino, CalendarioAsunto,
+      CalendarioUbicacion) deben devolver COLLATE DATABASE_DEFAULT para evitar
+      conflicto de collation en el SELECT.
+  - fecha: "2026-05-22"
+    area: "frmPrincipal02 performance"
+    detalle: >
+      Se inicio optimizacion de frmPrincipal02 para enlaces con latencia.
+      Cambio principal: read-model dbo.usp_wms_principal02_tareas_readmodel_v1
+      en tools/principal-readmodel/001_create_wms_principal02_tareas_readmodel_v1.sql
+      para refrescar el monitor de tareas con una sola lectura enriquecida,
+      evitando GetSingle/detalles por cada tarea de recepcion, picking y
+      ubicacion. clsLnTarea_hh.Get_Lista_Tareas_Monitor_By_IdBodega consume el
+      SP y cae al metodo legacy si aun no esta instalado. En la forma se
+      respeta el contrato de columnas del grid y se usan Origen/Destino/
+      Progreso/Calendario del read-model cuando estan disponibles. Tambien se
+      agrego cache local de producto_presentacion en Listar_Reabastecimiento_Productos
+      para evitar consultas repetidas por IdPresentacionAbastercerCon.
+  - fecha: "2026-05-22"
+    area: "Context router local con LM Studio"
+    detalle: >
+      Se agrego tools/wms-context como mecanismo local para reducir tokens antes
+      de iniciar trabajo WMS. El wrapper wms_context.ps1 selecciona contexto
+      desde brain/agents/_index.yml, carga solo coordinator/domain/client
+      aplicables y genera tools/wms-context/out/current-brief.md. Si LM Studio
+      esta activo en http://127.0.0.1:1234/v1 usa el endpoint
+      OpenAI-compatible para comprimir el contexto; si no, cae a un brief
+      deterministico sin LLM. La herramienta no escribe en Brain ni en DB
+      productiva, no debe exponer secretos y redacta campos sensibles como
+      password/token/definition SQL.
   - fecha: "2026-05-21"
     area: "WebAPI MI3 payload reserva BYB EA-153304"
     detalle: >
@@ -788,3 +1006,70 @@ notas:
       control: check local versionado/build/secret scan y check Brain API
       health/repos-sync/index cuando exista BRAIN_IMPORT_TOKEN. Si no hay token,
       se debe hacer push a origin y dejar el comando exacto para sincronizar.
+  - fecha: "2026-05-21"
+    area: "Codex skills WMS"
+    detalle: >
+      Se crearon skills reales de Codex en C:/Users/yejc2/.codex/skills y copia
+      versionada en brain/skills: wms-reserva-diagnostics, wms-webapi-debug y
+      wms-bof-hh-guardrails. Las skills son workflows cortos que cargan
+      selectivamente brain/agents y herramientas existentes; no duplican todo
+      el conocimiento. _index.yml ahora mapea triggers/domains a estas skills
+      para acelerar diagnostico, correccion y mejoras de reserva, WebAPI y
+      BOF/HH.
+  - fecha: "2026-05-22"
+    area: "BOF frmPedido performance read-model"
+    detalle: >
+      Fase experimental en rama codex/mejora-pedido-readmodel: se agrego el SP
+      dbo.usp_wms_pedido_readmodel_v1 en tools/pedido-readmodel para precargar
+      producto_bodega, presentaciones, estados, clientes de detalle y reservas
+      por linea de frmPedido. La forma consume ese SP solo como acelerador y
+      mantiene fallback al DAL puntual si el SP no existe, falla o no devuelve
+      alguna fila. En la DB local TOMWMS_LA_CUMBRE_PRD el SP fue creado con
+      autenticacion integrada y validado contra pedido 2360/bodega 89.
+  - fecha: "2026-05-22"
+    area: "BOF frmPedido performance stock lazy"
+    detalle: >
+      En frmPedido, al editar pedido, Cant.Disp se estaba precargando por cada
+      linea con Get_Existencia_Disp_By_IdProducto y luego se le sumaba la
+      cantidad actual de la linea; por eso visualmente podia coincidir con lo
+      pedido cuando la disponibilidad externa era cero. Se agrego carga lazy de
+      stock disponible en edicion: durante la apertura muestra la cantidad del
+      documento y marca la celda como pendiente; si el usuario edita/valida la
+      linea, recalcula la disponibilidad real antes de aplicar las validaciones.
+      Toggle de rollback: TOMWMS_PEDIDO_STOCK_LAZY_EDITAR=0.
+  - fecha: "2026-05-22"
+    area: "BOF frmOrdenCompra performance read-model"
+    detalle: >
+      Se agrego dbo.usp_wms_ordencompra_readmodel_v1 en
+      tools/ordencompra-readmodel para cargar el detalle de OC con producto,
+      clasificacion, unidad, presentacion, embarcador y talla/color en un solo
+      roundtrip. clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc usa el SP
+      como acelerador con fallback al flujo anterior, y clsLnTrans_oc_det.Cargar
+      acepta omitir la carga puntual de presentacion para evitar doble query por
+      linea. frmOrdenCompra agrega traza local en
+      %TEMP%/TOMWMS/ordencompra-load-trace.log y bloquea validaciones/repintado
+      mientras llena el grid. Toggle de traza: TOMWMS_OC_TRACE=0.
+  - fecha: "2026-05-22"
+    area: "BOF frmOrdenCompra performance producto lookup lazy"
+    detalle: >
+      En frmOrdenCompra, ProductoGridLookUpEdit estaba cargando al inicio
+      clsLnProducto.Get_Lista_For_Grid_By_IdBodega(cmbBodega.EditValue), lo que
+      en clientes con ~39k productos por bodega agrega un roundtrip/carga pesada
+      aunque el usuario solo consulte una OC existente. Se cambio a DataSource
+      vacio durante la configuracion inicial y carga lazy al abrir el editor de
+      producto o al refrescar luego de crear producto manual. La lista se cachea
+      por propietario/bodega y deja marca producto_lookup_load en la traza local
+      de OC para medir filas y milisegundos.
+  - fecha: "2026-05-22"
+    area: "BOF frmPicking performance fase 1"
+    detalle: >
+      En frmPicking se inicio fase conservadora sobre rama
+      codex/mejora-frmpicking-performance: trace local en
+      %TEMP%/TOMWMS/picking-load-trace.log, batching de grids durante
+      Cargar_Datos, bloqueo de eventos/validaciones de dgridDetallePicking
+      mientras la carga es programatica, cache por bodega para
+      clsLnOperador_bodega.Get_All_By_IdBodega_DT y cache por pedido/detalle
+      para clsLnTrans_pe_det.Tiene_Manufactura_Asociada. Set_Stock_Res mantiene
+      el comportamiento por defecto y solo difiere asignar DataSource cuando
+      Cargar_Datos procesa varios pedidos para asignarlo una vez al final.
+      Toggle de traza: TOMWMS_PICKING_TRACE=0.

@@ -146,6 +146,7 @@
     <Compile Include="FixTheBug\clsLnTablas_relacionadas_placas.vb" />
     <Compile Include="FixTheBug\clsLnTmp_trans_pe_pol.vb" />
     <Compile Include="FixTheBug\clsLnTmp_VW_Pedidos_Revision.vb" />
+    <Compile Include="General\Servidor\WmsTrace.vb" />
     <Compile Include="Interface\Barras_Pallet\clsLnI_nav_barras_pallet.vb" />
     <Compile Include="Interface\Barras_Pallet\clsLnI_nav_barras_pallet_partial.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsLnCEALSA_detacuerdoscomerciales_Partial.vb" />
@@ -328,6 +329,8 @@
     <Compile Include="Transacciones\Movimiento\clsLnTransUbicSugerida2.vb" />
     <Compile Include="Transacciones\Movimiento\clsLnTrans_movimiento_pallet.vb" />
     <Compile Include="Transacciones\Movimiento\clsLnVW_Movimientos_Poliza.vb" />
+    <Compile Include="Transacciones\Movimiento_Barra_Pallet_RFID\clsLnI_nav_barras_rfid_mov.vb" />
+    <Compile Include="Transacciones\Movimiento_Barra_Pallet_RFID\clsLnI_nav_barras_rfid_tipo_mov.vb" />
     <Compile Include="Transacciones\OrdenCompra\Embarcador\clsLnTrans_oc_embarcador.vb" />
     <Compile Include="Transacciones\OrdenCompra\Importación_Excel_Op_Log\clsLnTrans_inv_inicial_excel_op_log.vb" />
     <Compile Include="Transacciones\OrdenCompra\OC_Detalle_Lotes\clsLnTrans_oc_det_lote.vb" />
@@ -763,6 +766,7 @@
     <Compile Include="Transacciones\Stock_Reservado\clsLnStock_res_Partial.vb" />
     <Compile Include="Transacciones\Stock_Reservado\clsLnVW_Stock_Res_Pedido.vb" />
     <Compile Include="Transacciones\Stock_res\clsLnVW_stock_res.vb" />
+    <Compile Include="Transacciones\Stock_RFID\clsLnI_nav_barras_rfid_stock.vb" />
     <Compile Include="Transacciones\Stock_Transito\clsLnStock_transito_Partial.vb" />
     <Compile Include="Transacciones\Stock_Transito\clsLnStock_transito.vb" />
     <Compile Include="Transacciones\Tarea_HandHeld\clsLnTarea_hh.vb" />

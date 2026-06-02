@@ -195,6 +195,7 @@ Public Class frmInventarioRFID
         Try
 
             If gBeTransInvEnc.IsNew Then
+
                 SplashScreenManager.Default.SetWaitFormDescription("Creando tarea de inventario...")
                 Crea_Tarea_HH()
 
@@ -228,7 +229,7 @@ Public Class frmInventarioRFID
 
                 SplashScreenManager.Default.SetWaitFormDescription("Guardando transacción...")
 
-                Guardar = clsLnTrans_inv_enc.Guardar(gBeTransInvEnc, BeTareaHH)
+                Guardar = clsLnTrans_inv_enc.Guardar_RFID(gBeTransInvEnc, BeTareaHH)
 
             Else
 
@@ -739,17 +740,22 @@ Public Class frmInventarioRFID
                     gdviewTeorico.Columns("idinventarioenc").Visible = False
                     gdviewTeorico.Columns("IdPallet").Visible = False
 
+                    gdviewTeorico.Columns("GTIN").Visible = False
+
                     gdviewTeorico.Columns("IdProductoBodega").Visible = False
                     gdviewTeorico.Columns("user_agr").Visible = False
                     gdviewTeorico.Columns("user_mod").Visible = False
                     gdviewTeorico.Columns("EsPallet").Visible = False
                     gdviewTeorico.Columns("EsReconteo").Visible = False
                     gdviewTeorico.Columns("cantidad_reconteo").Visible = False
+                    gdviewTeorico.Columns("fec_mod").Visible = False
 
+
+                    gdviewTeorico.Columns("SSCC").Caption = "Etiqueta RFID"
                     gdviewTeorico.Columns("Codigo_Barra").Caption = "Barra"
                     gdviewTeorico.Columns("Fecha_Produccion").Caption = "Producción"
                     gdviewTeorico.Columns("fec_agr").Caption = "Fecha Registro"
-                    gdviewTeorico.Columns("fec_mod").Caption = "Fecha Modificación"
+                    'gdviewTeorico.Columns("fec_mod").Caption = "Fecha Modificación"
                     gdviewTeorico.Columns("IdOperador").Caption = "Operador"
                     gdviewTeorico.Columns("Iddispositivo").Caption = "Dispositivo"
 
@@ -960,5 +966,38 @@ Public Class frmInventarioRFID
         End Try
 
     End Function
+
+    Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdRegularizarInventario.ItemClick
+        Procesar_Regularizar_Inventario()
+    End Sub
+
+    Private Sub Procesar_Regularizar_Inventario()
+
+
+        Try
+            Dim RegularizaInventario As New frmRegularizarInventarioRFID(frmRegularizarInventarioRFID.TipoTrans.Nuevo) With
+                {.gBeInventario = gBeTransInvEnc}
+            RegularizaInventario.ShowDialog()
+            RegularizaInventario.Dispose()
+
+            If gBeTransInvEnc.Regularizado Then
+                Close()
+                'Desactiva_Menu()
+            Else
+                'Listar_Datos_De_Inventario()
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+    End Sub
 
 End Class

@@ -24,8 +24,10 @@ Partial Class frmInventarioRFID
         Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEliminar = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdRegularizarInventario = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.xtraTabInv = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
@@ -129,9 +131,9 @@ Partial Class frmInventarioRFID
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar, Me.mnuEliminar, Me.cmdActualizar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar, Me.mnuEliminar, Me.cmdActualizar, Me.cmdRegularizarInventario})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 4
+        Me.RibbonControl.MaxItemId = 5
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.Size = New System.Drawing.Size(1617, 193)
@@ -158,9 +160,16 @@ Partial Class frmInventarioRFID
         Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdActualizar.Name = "cmdActualizar"
         '
+        'cmdRegularizarInventario
+        '
+        Me.cmdRegularizarInventario.Caption = "Regularizar Inventario"
+        Me.cmdRegularizarInventario.Id = 4
+        Me.cmdRegularizarInventario.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdRegularizarInventario.Name = "cmdRegularizarInventario"
+        '
         'RibbonPage1
         '
-        Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
+        Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
         Me.RibbonPage1.Name = "RibbonPage1"
         Me.RibbonPage1.Text = "Inventario RFID"
         '
@@ -170,6 +179,11 @@ Partial Class frmInventarioRFID
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
+        '
+        'RibbonPageGroup2
+        '
+        Me.RibbonPageGroup2.ItemLinks.Add(Me.cmdRegularizarInventario)
+        Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         '
         'RibbonStatusBar
         '
@@ -232,7 +246,7 @@ Partial Class frmInventarioRFID
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1615, 422)
+        Me.GroupControl1.Size = New System.Drawing.Size(2019, 528)
         Me.GroupControl1.TabIndex = 0
         '
         'chkCapturarNoAsignado
@@ -603,7 +617,7 @@ Partial Class frmInventarioRFID
         'dgridAsignacionProductos
         '
         Me.dgridAsignacionProductos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridAsignacionProductos.Location = New System.Drawing.Point(0, 114)
+        Me.dgridAsignacionProductos.Location = New System.Drawing.Point(0, 143)
         Me.dgridAsignacionProductos.Margin = New System.Windows.Forms.Padding(5)
         Me.dgridAsignacionProductos.Name = "dgridAsignacionProductos"
         Me.dgridAsignacionProductos.OptionsBehavior.AllowBoundCheckBoxesInVirtualMode = True
@@ -613,7 +627,7 @@ Partial Class frmInventarioRFID
         Me.dgridAsignacionProductos.OptionsView.ShowAutoFilterRow = True
         Me.dgridAsignacionProductos.OptionsView.ShowSummaryFooter = True
         Me.dgridAsignacionProductos.RowHeight = 30
-        Me.dgridAsignacionProductos.Size = New System.Drawing.Size(1615, 308)
+        Me.dgridAsignacionProductos.Size = New System.Drawing.Size(2019, 385)
         Me.dgridAsignacionProductos.TabIndex = 2
         Me.dgridAsignacionProductos.TreeLevelWidth = 17
         '
@@ -633,7 +647,7 @@ Partial Class frmInventarioRFID
         Me.grpProductos.Margin = New System.Windows.Forms.Padding(5)
         Me.grpProductos.Name = "grpProductos"
         Me.grpProductos.ShowCaption = False
-        Me.grpProductos.Size = New System.Drawing.Size(1615, 114)
+        Me.grpProductos.Size = New System.Drawing.Size(2019, 114)
         Me.grpProductos.TabIndex = 1
         '
         'cmdQuitaOpProd
@@ -740,12 +754,12 @@ Partial Class frmInventarioRFID
         '
         Me.dgridInventarioCiclico.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridInventarioCiclico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(5)
-        Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 170)
+        Me.dgridInventarioCiclico.Location = New System.Drawing.Point(0, 213)
         Me.dgridInventarioCiclico.MainView = Me.gdviewTeorico
         Me.dgridInventarioCiclico.Margin = New System.Windows.Forms.Padding(5)
         Me.dgridInventarioCiclico.MenuManager = Me.RibbonControl
         Me.dgridInventarioCiclico.Name = "dgridInventarioCiclico"
-        Me.dgridInventarioCiclico.Size = New System.Drawing.Size(1615, 252)
+        Me.dgridInventarioCiclico.Size = New System.Drawing.Size(2019, 315)
         Me.dgridInventarioCiclico.TabIndex = 2
         Me.dgridInventarioCiclico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gdviewTeorico})
         '
@@ -772,17 +786,17 @@ Partial Class frmInventarioRFID
         Me.grpConteoCi.Location = New System.Drawing.Point(0, 0)
         Me.grpConteoCi.Margin = New System.Windows.Forms.Padding(5)
         Me.grpConteoCi.Name = "grpConteoCi"
-        Me.grpConteoCi.Size = New System.Drawing.Size(1615, 170)
+        Me.grpConteoCi.Size = New System.Drawing.Size(2019, 170)
         Me.grpConteoCi.TabIndex = 1
         Me.grpConteoCi.Text = "Filtros"
         '
         'prgPanInvConteo
         '
         Me.prgPanInvConteo.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 127)
+        Me.prgPanInvConteo.Location = New System.Drawing.Point(2, 117)
         Me.prgPanInvConteo.Margin = New System.Windows.Forms.Padding(5)
         Me.prgPanInvConteo.Name = "prgPanInvConteo"
-        Me.prgPanInvConteo.Size = New System.Drawing.Size(1611, 41)
+        Me.prgPanInvConteo.Size = New System.Drawing.Size(2015, 51)
         Me.prgPanInvConteo.TabIndex = 18
         Me.prgPanInvConteo.Visible = False
         '
@@ -968,4 +982,6 @@ Partial Class frmInventarioRFID
     Friend WithEvents LinklblOperador As LinkLabel
     Friend WithEvents dgridInventarioCiclico As DevExpress.XtraGrid.GridControl
     Friend WithEvents gdviewTeorico As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents cmdRegularizarInventario As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
 End Class

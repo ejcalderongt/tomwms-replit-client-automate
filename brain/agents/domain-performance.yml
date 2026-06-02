@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-21"
+updated: "2026-05-23"
 domain: performance
 scope: >
   Measurement-first optimization for reservation, WebAPI and SQL paths. Focus on
@@ -102,3 +102,94 @@ tooling:
   compare_baseline_script: tools/webapi-mi3-reserva/compare-mi3-reserva-baseline.ps1
   trace_location_pattern: tools/webapi-mi3-reserva/wmswebapi-*.out.log
   cleanup_expectation: "zero rows for synthetic document after every cycle"
+
+known_optimizations:
+  frmInventarioImport_validar_datos_grid:
+    file: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioImport.vb
+    rule: >
+      For long DataGridView validation loops, SuspendLayout alone is not
+      enough; pair it with WM_SETREDRAW in a Try/Finally and throttle
+      CurrentCell/progress UI updates so per-cell Value/Style writes do not
+      repaint the grid thousands of times.
+  frmInventario_comparacion_readmodel:
+    files:
+      form: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb
+      dal: TOMIMSV4/DAL/Inventario/clsLnTrans_inv_enc_Partial.vb
+      sql: tools/inventario-readmodel/002_create_wms_inventario_comparacion_readmodel_v1.sql
+    rule: >
+      Get_All_By_Comparacion_Inventario should avoid per-row
+      Bodega_ubicacion.ObtenerWithTramo calls. The comparison grid only needs
+      IdUbicacion for filtering and UbicacionCompleta for display, both
+      provided by the read-model/fallback query.
+  frmInventario_regularizacion_progress_cache:
+    files:
+      form: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb
+      regularizacion: TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmRegularizarInventario.vb
+    rule: >
+      For inventory regularization, cache per-run low-volatility lookups such
+      as product-bodega, propietario-bodega, ajuste motivo, bodega ERP,
+      producto and talla/color. Keep stock and adjustment writes fresh inside
+      the transaction. Throttle progress updates and suspend GridView data
+      updates while assigning data source, summaries and formatting to avoid
+      UI refresh stalls.
+  hh_ws_catalog_cache:
+    file: WSHHRN/TOMHHWS.asmx.vb
+    rule: >
+      Cache only low-volatility HH catalog reads with a short absolute TTL and
+      parameterized keys. Do not cache operative stock, picking, verification
+      or reservation payloads because HH integrity depends on fresh values.
+  hh_stock_by_ubicacion_readmodel:
+    files:
+      ws: WSHHRN/TOMHHWS.asmx.vb
+      dal: TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb
+      sql: tools/hh-readmodel/001_create_wms_hh_stock_by_ubicacion_v1.sql
+    rule: >
+      Get_Productos_By_IdUbicacion_JSON must preserve its List(Of
+      clsBeVW_stock_res) and JSON contract. The DAL can use
+      dbo.usp_wms_hh_stock_by_ubicacion_v1 for the read path, but must fall
+      back to the legacy VW_Stock_Res query if the SP is not deployed yet.
+  hh_session_bootstrap_json:
+    file: WSHHRN/TOMHHWS.asmx.vb
+    endpoint: Get_HH_Session_Bootstrap_JSON
+    rule: >
+      For HH startup/login flows, prefer one compact JSON bootstrap with
+      operator identity, bodega, role, permissions, cached role menu and task
+      counters. Keep legacy SOAP/XML methods alive; the Android client can
+      migrate gradually without changing existing contracts. Do not pass the
+      password on GET/querystring; use POST for this endpoint.
+  hh_recepcion_json_load:
+    files:
+      ws: WSHHRN/TOMHHWS.asmx.vb
+      hh: C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java
+    rule: >
+      For reception task list and initial document open, keep legacy SOAP
+      methods but add parallel POST JSON endpoints. JSON avoids SOAP/XML
+      parsing cost in the HH while preserving the same entity/list payload
+      shape expected by existing screens.
+  frmPrincipal02_tareas_readmodel:
+    procedure: dbo.usp_wms_principal02_tareas_readmodel_v1
+    goal: >
+      Reduce latency-sensitive refresh cost in frmPrincipal02 task monitor by
+      replacing per-row detail loading with one enriched read-model.
+    expected_behavior:
+      - Same grid base data as vw_tareas_activas_hh.
+      - Enriched Origen, Destino, Progreso and calendar columns when the SP is installed.
+      - Legacy enrichment path remains active when the SP is missing or incompatible.
+    known_failure_modes:
+      - Invalid column if the SP assumes IdTransaccion, UbicacionRecepcion or Nombre_Operador from the wrong source.
+      - Collation conflict in CASE text outputs when client DB mixes Modern_Spanish_CI_AS and SQL_Latin1_General_CP1_CI_AS.
+    acceptance:
+      - SP compiles on the target DB.
+      - frmPrincipal02 monitor refresh succeeds with the read-model installed.
+      - Removing or breaking the SP still falls back to the legacy query path.
+  frmRecepcion_detalle_readmodel:
+    files:
+      form: TOMIMSV4/TOMIMSV4/Transacciones/Recepcion/frmRecepcion.vb
+      dal: TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb
+      sql: tools/recepcion-readmodel/001_create_wms_recepcion_detalle_readmodel_v1.sql
+    rule: >
+      For frmRecepcion edit load, avoid per-line Producto/Presentacion/UM/Estado/
+      Talla/Color/OC detail lookups by hydrating the reception detail from a
+      read-model SP. Keep the legacy VW_Get_Detalle_By_IdRecepcionEnc path as
+      fallback when the SP is not installed, and cache only form/session lookups
+      such as presentations and product states.

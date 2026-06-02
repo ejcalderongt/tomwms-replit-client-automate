@@ -969,7 +969,8 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
                         ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
-                        ,res.color as Codigo_Color,res.talla as Codigo_Talla
+                        ,res.color as Codigo_Color,res.talla as Codigo_Talla,
+                        dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IdBodega) AS NomUbic
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -984,10 +985,11 @@ Partial Public Class clsLnTrans_pe_det
                         trans_picking_ubic.IdUbicacion = bu.IdUbicacion AND res.IdStock = trans_picking_ubic.IdStock 
                         and res.IdStockres = trans_picking_ubic.IdStockres LEFT OUTER JOIN 
                         producto_presentacion AS pp ON res.IdPresentacion = pp.IdPresentacion AND p.IdProducto = pp.IdProducto 
-                        WHERE(Res.IdPedido = @IdPedido) AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) "
+                        WHERE(Res.IdPedido = @IdPedido) AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) AND (ISNULL(trans_picking_ubic.no_encontrado, 0) = 0) "
 
             If PendientesDeDespacho Then
-                vSQL += " AND (trans_picking_ubic.cantidad_despachada = 0) "
+                '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: incluir parciales pendientes, no solo lineas sin despacho.
+                vSQL += " AND (ISNULL(trans_picking_ubic.cantidad_despachada, 0) < ISNULL(trans_picking_ubic.cantidad_verificada, 0)) "
             End If
 
             If Not EsPicking Then
@@ -1003,7 +1005,7 @@ Partial Public Class clsLnTrans_pe_det
                         ISNULL(trans_picking_ubic.encontrado, 0),
                         bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
                         s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor,
-                        res.color ,res.talla "
+                        res.color, res.talla, res.IdBodega "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 
@@ -1026,10 +1028,9 @@ Partial Public Class clsLnTrans_pe_det
 
                         clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
 
-                        '#CKFK 20180419 09:59 PM Agregué el obtener de la ubicación para poder tener el nombre completo en GetAllStockResByPedido
                         Obj.UbicacionActual.IdUbicacion = IIf(IsDBNull(lRow.Item("IdUbicacion")), 0, lRow.Item("IdUbicacion"))
-                        clsLnBodega_ubicacion.Get_For_Picking(Obj.UbicacionActual, lConnection, lTransaction)
-                        Obj.Ubicacion_Nombre = Obj.UbicacionActual.NombreCompleto '#CKFK 20180603 Agregué esta línea para que se cargara el nombre de la ubicación
+                        Obj.Ubicacion_Nombre = IIf(IsDBNull(lRow("NomUbic")), "", lRow("NomUbic"))
+                        Obj.UbicacionActual.NombreCompleto = Obj.Ubicacion_Nombre
 
                         If lRow("encontrado") IsNot DBNull.Value AndAlso lRow("encontrado") IsNot Nothing Then
                             Obj.encontrado = CType(lRow("encontrado"), Boolean)
@@ -2080,20 +2081,27 @@ Partial Public Class clsLnTrans_pe_det
                                                                      lConnection,
                                                                      lTransaction) Then
 
-                                If Not pBePedidoDet.ListaPickingUbic Is Nothing Then
+                                If pBePedidoDet.ListaPickingUbic IsNot Nothing AndAlso pBePedidoDet.ListaPickingUbic.Count > 0 Then
 
-                                    vIdPickingEnc = pBePedidoDet.ListaPickingUbic.FirstOrDefault.IdPickingEnc
+                                    Dim vPickUbic = pBePedidoDet.ListaPickingUbic.FirstOrDefault()
+                                    If vPickUbic IsNot Nothing Then
+                                        vIdPickingEnc = vPickUbic.IdPickingEnc
 
-                                    If Actualiza_Picking_Existente(pBeStockRes,
-                                                                   pBePedidoDet,
-                                                                   vIdPickingEnc,
-                                                                   lConnection,
-                                                                   lTransaction) Then
+                                        If Actualiza_Picking_Existente(pBeStockRes,
+                                                                       pBePedidoDet,
+                                                                       vIdPickingEnc,
+                                                                       lConnection,
+                                                                       lTransaction) Then
 
+                                            Reservar_Stock_Por_Linea_Interface = True
+
+                                        End If
+                                    Else
                                         Reservar_Stock_Por_Linea_Interface = True
-
                                     End If
-
+                                Else
+                                    'No hay picking asociado aún para la línea; la reserva ya quedó aplicada.
+                                    Reservar_Stock_Por_Linea_Interface = True
                                 End If
 
                             Else
@@ -2291,20 +2299,27 @@ Partial Public Class clsLnTrans_pe_det
                                                                     False,
                                                                     pBeTrasladoDet) Then
 
-                                If Not pBePedidoDet.ListaPickingUbic Is Nothing Then
+                                If pBePedidoDet.ListaPickingUbic IsNot Nothing AndAlso pBePedidoDet.ListaPickingUbic.Count > 0 Then
 
-                                    vIdPickingEnc = pBePedidoDet.ListaPickingUbic.FirstOrDefault.IdPickingEnc
+                                    Dim vPickUbic = pBePedidoDet.ListaPickingUbic.FirstOrDefault()
+                                    If vPickUbic IsNot Nothing Then
+                                        vIdPickingEnc = vPickUbic.IdPickingEnc
 
-                                    If Actualiza_Picking_Existente(pBeStockRes,
-                                                                   pBePedidoDet,
-                                                                   vIdPickingEnc,
-                                                                   lConnection,
-                                                                   lTransaction) Then
+                                        If Actualiza_Picking_Existente(pBeStockRes,
+                                                                       pBePedidoDet,
+                                                                       vIdPickingEnc,
+                                                                       lConnection,
+                                                                       lTransaction) Then
 
+                                            Reservar_Stock_Por_Linea_Interface = True
+
+                                        End If
+                                    Else
                                         Reservar_Stock_Por_Linea_Interface = True
-
                                     End If
-
+                                Else
+                                    'No hay picking asociado aún para la línea; la reserva ya quedó aplicada.
+                                    Reservar_Stock_Por_Linea_Interface = True
                                 End If
 
                             Else
@@ -3162,6 +3177,253 @@ Partial Public Class clsLnTrans_pe_det
         Catch ex As Exception
             Throw ex
         End Try
+
+    End Function
+
+    '#EJC20260522_PICKING_READMODEL: carga el stock reservado de todo el picking en una sola llamada y evita mapeos con gets anidados por fila.
+    Public Shared Function Get_All_Stock_Res_By_IdPickingEnc_ReadModel(ByVal pIdPickingEnc As Integer,
+                                                                       ByVal PendientesDeDespacho As Boolean,
+                                                                       ByVal EsPickingNuevo As Boolean,
+                                                                       ByVal EsPicking As Boolean,
+                                                                       ByRef lConnection As SqlConnection,
+                                                                       ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
+
+        Try
+            Using lCMD As New SqlCommand("dbo.usp_wms_picking_stock_res_readmodel_v1", lConnection, lTransaction)
+                lCMD.CommandType = CommandType.StoredProcedure
+                lCMD.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+                lCMD.Parameters.AddWithValue("@PendientesDeDespacho", PendientesDeDespacho)
+                lCMD.Parameters.AddWithValue("@EsPickingNuevo", EsPickingNuevo)
+                lCMD.Parameters.AddWithValue("@EsPicking", EsPicking)
+
+                Return Get_All_Stock_Res_From_Command_ReadModel(lCMD)
+            End Using
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 208
+            Return Get_All_Stock_Res_By_IdPickingEnc_ReadModel_LegacySql(pIdPickingEnc,
+                                                                         PendientesDeDespacho,
+                                                                         EsPickingNuevo,
+                                                                         EsPicking,
+                                                                         lConnection,
+                                                                         lTransaction)
+        End Try
+
+    End Function
+
+    Private Shared Function Get_All_Stock_Res_By_IdPickingEnc_ReadModel_LegacySql(ByVal pIdPickingEnc As Integer,
+                                                                                  ByVal PendientesDeDespacho As Boolean,
+                                                                                  ByVal EsPickingNuevo As Boolean,
+                                                                                  ByVal EsPicking As Boolean,
+                                                                                  ByRef lConnection As SqlConnection,
+                                                                                  ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
+
+        Dim vSQL As String = Get_SQL_Stock_Res_Picking_ReadModel()
+
+        Using lCMD As New SqlCommand(vSQL, lConnection, lTransaction)
+            lCMD.CommandType = CommandType.Text
+            lCMD.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+            lCMD.Parameters.AddWithValue("@PendientesDeDespacho", PendientesDeDespacho)
+            lCMD.Parameters.AddWithValue("@EsPickingNuevo", EsPickingNuevo)
+            lCMD.Parameters.AddWithValue("@EsPicking", EsPicking)
+
+            Return Get_All_Stock_Res_From_Command_ReadModel(lCMD)
+        End Using
+
+    End Function
+
+    Private Shared Function Get_All_Stock_Res_From_Command_ReadModel(ByVal pCommand As SqlCommand) As List(Of clsBeVW_stock_res)
+
+        Dim lReturnList As New List(Of clsBeVW_stock_res)
+
+        Using lDTA As New SqlDataAdapter(pCommand)
+            Dim lDataTable As New DataTable
+            lDTA.Fill(lDataTable)
+
+            If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                For Each lRow As DataRow In lDataTable.Rows
+                    Dim Obj As New clsBeVW_stock_res
+                    Cargar_Stock_Res_Picking_ReadModel(Obj, lRow)
+                    lReturnList.Add(Obj)
+                Next
+            End If
+        End Using
+
+        Return lReturnList
+
+    End Function
+
+    Private Shared Sub Cargar_Stock_Res_Picking_ReadModel(ByRef Obj As clsBeVW_stock_res,
+                                                          ByRef lRow As DataRow)
+
+        Obj.IdBodega = Get_Row_Integer(lRow, "IdBodega")
+        Obj.IdPropietarioBodega = Get_Row_Integer(lRow, "IdPropietarioBodega")
+        Obj.IdProductoBodega = Get_Row_Integer(lRow, "IdProductoBodega")
+        Obj.IdProductoEstado = Get_Row_Integer(lRow, "IdProductoEstado")
+        Obj.IdPresentacion = Get_Row_Integer(lRow, "IdPresentacion")
+        Obj.IdUnidadMedida = Get_Row_Integer(lRow, "IdUnidadMedida")
+        Obj.IdUbicacion = Get_Row_Integer(lRow, "IdUbicacion")
+        Obj.IdStock = Get_Row_Integer(lRow, "IdStock")
+        Obj.IdStockRes = Get_Row_Integer(lRow, "IdStockRes")
+        Obj.IdPedido = Get_Row_Integer(lRow, "IdPedido")
+        Obj.IdPedidoDet = Get_Row_Integer(lRow, "IdPedidoDet")
+        Obj.IdPicking = Get_Row_Integer(lRow, "IdPicking")
+        Obj.IdRecepcionEnc = Get_Row_Integer(lRow, "IdRecepcionEnc")
+        Obj.IdRecepcionDet = Get_Row_Integer(lRow, "IdRecepcionDet")
+        Obj.IdProductoTallaColor = Get_Row_Integer(lRow, "IdProductoTallaColor")
+        Obj.IdUbicacion_Anterior = Get_Row_Integer(lRow, "IdUbicacion_anterior")
+
+        Obj.Codigo_Producto = Get_Row_String(lRow, "Codigo")
+        Obj.Nombre_Producto = Get_Row_String(lRow, "Nombre")
+        Obj.Nombre_Presentacion = Get_Row_String(lRow, "Presentacion")
+        Obj.NomEstado = Get_Row_String(lRow, "NomEstado")
+        Obj.UMBas = Get_Row_String(lRow, "UnidadMedida")
+        Obj.Propietario = Get_Row_String(lRow, "Propietario")
+        Obj.Ubicacion_Nombre = Get_Row_String(lRow, "NomUbic")
+        Obj.UbicacionActual.NombreCompleto = Obj.Ubicacion_Nombre
+        Obj.Lote = Get_Row_String(lRow, "Lote")
+        Obj.Lic_plate = Get_Row_String(lRow, "Lic_plate")
+        Obj.Serial = Get_Row_String(lRow, "Serial")
+        Obj.Codigo_Color = Get_Row_String(lRow, "Color")
+        Obj.Codigo_Talla = Get_Row_String(lRow, "Talla")
+        Obj.Añada = Get_Row_Integer(lRow, "añada")
+
+        Obj.CantidadUmBas = Get_Row_Double(lRow, "CantidadSF")
+        Obj.CantidadPresentacion = Get_Row_Double(lRow, "Cantidad")
+        Obj.Factor = Get_Row_Double(lRow, "Factor")
+        Obj.CantidadReservadaUMBas = Get_Row_Double(lRow, "CantidadReservada")
+        Obj.Cantidad_Pickeada = Get_Row_Double(lRow, "cantidad_recibida")
+        Obj.Cantidad_Verificada = Get_Row_Double(lRow, "cantidad_verificada")
+        Obj.Cantidad_Despachada = Get_Row_Double(lRow, "Cantidad_Despachada")
+        Obj.Peso = Get_Row_Double(lRow, "Peso")
+        Obj.peso_pickeado = Get_Row_Double(lRow, "Peso_Recibido")
+        Obj.peso_verificado = Get_Row_Double(lRow, "Peso_Verificado")
+
+        Obj.Fecha_ingreso = Get_Row_Date(lRow, "Fecha_ingreso", Date.Now)
+        Obj.Fecha_Vence = Get_Row_Date(lRow, "Fecha_vence", New Date(1900, 1, 1))
+        Obj.encontrado = Get_Row_Boolean(lRow, "Encontrado")
+        Obj.acepto = Get_Row_Boolean(lRow, "Acepto")
+
+    End Sub
+
+    Private Shared Function Get_Row_Integer(ByVal pRow As DataRow, ByVal pColumn As String) As Integer
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return 0
+        Return CInt(pRow.Item(pColumn))
+    End Function
+
+    Private Shared Function Get_Row_Double(ByVal pRow As DataRow, ByVal pColumn As String) As Double
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return 0.0
+        Return CDbl(pRow.Item(pColumn))
+    End Function
+
+    Private Shared Function Get_Row_String(ByVal pRow As DataRow, ByVal pColumn As String) As String
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return ""
+        Return CStr(pRow.Item(pColumn))
+    End Function
+
+    Private Shared Function Get_Row_Boolean(ByVal pRow As DataRow, ByVal pColumn As String) As Boolean
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return False
+        Return CBool(pRow.Item(pColumn))
+    End Function
+
+    Private Shared Function Get_Row_Date(ByVal pRow As DataRow, ByVal pColumn As String, ByVal pDefault As Date) As Date
+        If Not pRow.Table.Columns.Contains(pColumn) OrElse IsDBNull(pRow.Item(pColumn)) Then Return pDefault
+        Return CDate(pRow.Item(pColumn))
+    End Function
+
+    Private Shared Function Get_SQL_Stock_Res_Picking_ReadModel() As String
+
+        Return "
+            SELECT p.codigo,
+                   p.nombre,
+                   pp.nombre AS presentacion,
+                   pe.nombre AS NomEstado,
+                   um.Nombre AS unidadmedida,
+                   pr.nombre_comercial AS propietario,
+                   bu.descripcion AS bodegaubicacion,
+                   ISNULL(s.cantidad, 0) AS CantidadSF,
+                   pp.factor,
+                   ISNULL(ISNULL(s.cantidad, 0) / NULLIF(pp.factor, 0), 0) AS Cantidad,
+                   res.IdStockRes,
+                   res.IdTransaccion,
+                   res.Indicador,
+                   res.IdPedidoDet,
+                   res.IdStock,
+                   res.IdPropietarioBodega,
+                   res.IdProductoBodega,
+                   res.IdUbicacion,
+                   res.IdProductoEstado,
+                   res.IdPresentacion,
+                   res.IdUnidadMedida,
+                   res.lote,
+                   res.lic_plate,
+                   res.serial,
+                   CASE
+                       WHEN @EsPickingNuevo = 1 THEN MAX(res.Cantidad)
+                       ELSE SUM(ISNULL(trans_picking_ubic.cantidad_solicitada, 0))
+                   END AS CantidadReservada,
+                   res.peso,
+                   res.estado,
+                   res.fecha_vence,
+                   res.uds_lic_plate,
+                   res.ubicacion_ant AS IdUbicacion_anterior,
+                   res.no_bulto,
+                   res.IdRecepcion AS IdRecepcionEnc,
+                   res.IdPicking,
+                   res.IdPedido,
+                   res.IdDespacho,
+                   res.añada,
+                   res.fecha_manufactura,
+                   SUM(ISNULL(dbo.trans_picking_ubic.peso_recibido, 0)) AS Peso_Recibido,
+                   SUM(ISNULL(dbo.trans_picking_ubic.peso_verificado, 0)) AS Peso_Verificado,
+                   ISNULL(dbo.trans_picking_ubic.acepto, 0) AS Acepto,
+                   SUM(ISNULL(dbo.trans_picking_ubic.cantidad_recibida, 0)) AS cantidad_recibida,
+                   SUM(ISNULL(dbo.trans_picking_ubic.cantidad_verificada, 0)) AS cantidad_verificada,
+                   SUM(ISNULL(dbo.trans_picking_ubic.cantidad_despachada, 0)) AS Cantidad_Despachada,
+                   ISNULL(dbo.trans_picking_ubic.encontrado, 0) AS Encontrado,
+                   dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IDBODEGA) AS NomUbic,
+                   res.IDBODEGA,
+                   res.fecha_ingreso,
+                   s.IdRecepcionEnc,
+                   s.IdRecepcionDet,
+                   res.IdProductoTallaColor,
+                   col.Codigo AS Color,
+                   tal.Codigo AS Talla
+            FROM stock_res AS res
+                 INNER JOIN propietario_bodega AS prb ON res.IdPropietarioBodega = prb.IdPropietarioBodega
+                 INNER JOIN producto_bodega AS pb ON pb.IdProductoBodega = res.IdProductoBodega
+                 INNER JOIN producto_estado AS pe ON res.IdProductoEstado = pe.IdEstado
+                 INNER JOIN unidad_medida AS um ON res.IdUnidadMedida = um.IdUnidadMedida
+                 INNER JOIN propietarios AS pr ON prb.IdPropietario = pr.IdPropietario
+                 INNER JOIN producto AS p ON pb.IdProducto = p.IdProducto
+                 LEFT OUTER JOIN bodega_ubicacion AS bu
+                 RIGHT OUTER JOIN trans_picking_det
+                 INNER JOIN trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet
+                    ON bu.IdBodega = trans_picking_ubic.IdBodega
+                   AND bu.IdUbicacion = trans_picking_ubic.IdUbicacion
+                    ON res.IDBODEGA = trans_picking_ubic.IdBodega
+                   AND res.IdPedidoDet = trans_picking_det.IdPedidoDet
+                   AND res.IdStock = trans_picking_ubic.IdStock
+                   AND res.IdStockRes = trans_picking_ubic.IdStockRes
+                 LEFT OUTER JOIN stock AS s ON res.IdStock = s.IdStock
+                 LEFT OUTER JOIN producto_presentacion AS pp ON res.IdPresentacion = pp.IdPresentacion
+                 LEFT JOIN producto_talla_color AS ptc ON ptc.IdProductoTallaColor = res.IdProductoTallaColor
+                 LEFT JOIN color AS col ON col.IdColor = ptc.IdColor
+                 LEFT JOIN talla AS tal ON tal.IdTalla = ptc.IdTalla
+            WHERE trans_picking_ubic.IdPickingEnc = @IdPickingEnc
+              AND ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0
+              AND ISNULL(trans_picking_ubic.dañado_picking, 0) = 0
+              AND ISNULL(trans_picking_ubic.no_encontrado, 0) = 0
+              AND (@PendientesDeDespacho = 0 OR trans_picking_ubic.cantidad_despachada < trans_picking_ubic.cantidad_verificada)
+              AND (@EsPicking = 1 OR trans_picking_ubic.cantidad_verificada > 0)
+            GROUP BY p.codigo, p.nombre, pp.nombre, pe.nombre, um.Nombre, pr.nombre_comercial, bu.descripcion,
+                     s.cantidad, pp.factor, s.cantidad / NULLIF(pp.factor, 0), res.IdStockRes, res.IdTransaccion, res.Indicador,
+                     res.IdPedidoDet, res.IdStock, res.IdPropietarioBodega, res.IdProductoBodega, res.IdUbicacion,
+                     res.IdProductoEstado, res.IdPresentacion, res.IdUnidadMedida, res.lote, res.lic_plate, res.serial,
+                     res.cantidad, res.peso, res.estado, res.fecha_vence, res.uds_lic_plate, res.ubicacion_ant,
+                     res.no_bulto, res.IdRecepcion, res.IdPicking, res.IdPedido, res.IdDespacho, res.añada,
+                     res.fecha_manufactura, ISNULL(trans_picking_ubic.acepto, 0), ISNULL(trans_picking_ubic.encontrado, 0),
+                     bu.IdTramo, bu.Indice_x, bu.Nivel, bu.IdUbicacion, res.IdBodega, res.fecha_ingreso,
+                     s.IdRecepcionEnc, s.IdRecepcionDet, res.IdProductoTallaColor, col.Codigo, tal.Codigo
+            ORDER BY bu.IdTramo, bu.Indice_x, bu.Nivel, bu.IdUbicacion"
 
     End Function
 
@@ -4732,16 +4994,24 @@ Partial Public Class clsLnTrans_pe_det
                 lConnection.Open()
 
                 Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    Dim vProducto As String = If(pProducto, "").Trim()
+                    Dim vProductoSinPrefijo0 As String = vProducto
+                    If vProductoSinPrefijo0.StartsWith("0") AndAlso vProductoSinPrefijo0.Length > 1 Then
+                        vProductoSinPrefijo0 = vProductoSinPrefijo0.Substring(1)
+                    End If
+
+                    '#EJC20260526: Permite escaneo por código interno, SKU o código con prefijo 0.
                     Dim vSQL As String = "SELECT TOP(1) * FROM VW_Verificacion_Consolidada 
                                           WHERE IdPedidoEnc IN (" & parametros & ") AND 
-                                                codigo = @Producto AND 
+                                                (codigo = @Producto OR CodigoSKU = @Producto OR codigo = @ProductoAlt OR CodigoSKU = @ProductoAlt) AND 
                                                 cantidad_verificada <> cantidad_recibida AND 
                                                 cantidad_recibida <> 0"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                         lDTA.SelectCommand.CommandType = CommandType.Text
                         lDTA.SelectCommand.Transaction = ltransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@Producto", pProducto)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Producto", vProducto)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@ProductoAlt", vProductoSinPrefijo0)
 
                         For i As Integer = 0 To listaIds.Count - 1
                             lDTA.SelectCommand.Parameters.AddWithValue("@Pedidos" & i, listaIds(i))

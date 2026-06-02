@@ -397,6 +397,37 @@ Partial Public Class clsLnTarea_hh
 
 
     End Function
+
+    Public Shared Function Get_Lista_Tareas_Monitor_By_IdBodega(ByVal IdBodega As Integer,
+                                                                ByVal pFechaDel As Date,
+                                                                ByVal pFechaAl As Date,
+                                                                ByVal lConnection As SqlConnection,
+                                                                ByVal lTransaction As SqlTransaction) As DataTable
+
+        Dim lTable As New DataTable("Result")
+
+        Try
+
+            '#EJC20260522_PRINCIPAL02_TAREAS_READMODEL: Read-model para evitar GetSingle/detalles por tarea en frmPrincipal02.
+            Using lDataAdapter As New SqlDataAdapter("dbo.usp_wms_principal02_tareas_readmodel_v1", lConnection)
+                lDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", IdBodega))
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@FechaDel", pFechaDel.Date))
+                lDataAdapter.SelectCommand.Parameters.Add(New SqlParameter("@FechaAl", pFechaAl.Date))
+                lDataAdapter.Fill(lTable)
+            End Using
+
+            Return lTable
+
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 208 OrElse ex.Number = 207
+            '#EJC20260522_PRINCIPAL02_TAREAS_READMODEL: Fallback si el SP aun no esta instalado o no calza con la BD del cliente.
+            Return Get_Lista_Tareas_By_IdBodega(IdBodega, pFechaDel, pFechaAl, lConnection, lTransaction)
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
     Public Shared Function Get_Recepciones_By_IdBodega(ByVal IdBodega As Integer) As List(Of clsBeTrans_re_enc)
 
         Try
@@ -1736,48 +1767,92 @@ Partial Public Class clsLnTarea_hh
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Dim vSQL As String = "  SELECT p.IdPickingEnc, 
-                                    p.IdBodega, 
-                                    p.IdPropietarioBodega, 
-                                    p.IdUbicacionPicking, 
-                                    p.fecha_picking, 
-                                    p.hora_ini, p.hora_fin, 
-                                    p.estado, 
-                                    p.user_agr, 
-                                    p.fec_agr, 
-                                    p.user_mod, 
-                                    p.fec_mod, 
-                                    p.detalle_operador, 
-                                    p.activo, 
+            Dim vSQL As String = "
+                                SELECT 
+                                    p.IdPickingEnc,
+                                    p.IdBodega,
+                                    p.IdPropietarioBodega,
+                                    p.IdUbicacionPicking,
+                                    p.fecha_picking,
+                                    p.hora_ini,
+                                    p.hora_fin,
+                                    p.estado,
+                                    p.user_agr,
+                                    p.fec_agr,
+                                    p.user_mod,
+                                    p.fec_mod,
+                                    p.detalle_operador,
+                                    p.activo,
                                     p.verifica_auto,
                                     p.procesado_bof,
                                     p.Requiere_Preparacion,
                                     p.Tipo_Preparacion,
-                                    b.nombre AS NombreBodega, 
+                                    b.nombre AS NombreBodega,
                                     pp.nombre_comercial,
                                     d.IdPedidoEnc,
-		                            pe.bodega_destino Referencia
-                                    FROM trans_picking_enc AS p INNER JOIN 
-                                         (SELECT distinct IdPedidoEnc, IdPickingEnc 
-                                          FROM trans_picking_ubic 
-                                          WHERE cantidad_verificada>0 and 
-                                                cantidad_despachada < cantidad_verificada AND
-                                                dañado_picking =0 AND
-                                                dañado_verificacion = 0 AND 
-                                                no_encontrado = 0) AS d ON p.IdPickingEnc = d.IdPickingEnc INNER JOIN
-                                    	  trans_pe_enc pe ON pe.IdPickingEnc = p.IdPickingEnc AND 
-                                                             d.IdPedidoEnc = pe.IdPedidoEnc INNER JOIN
-                                          bodega AS b ON p.IdBodega = b.IdBodega INNER JOIN
-                                          propietario_bodega AS pb ON pb.IdPropietarioBodega = p.IdPropietarioBodega AND
-                                                                      b.IdBodega = pb.IdBodega INNER JOIN
-                                          propietarios AS pp ON pp.IdPropietario = pb.IdPropietario 
-                                    WHERE (p.estado in ('Procesado', 'Pendiente','Verificado')
-                                    AND p.Requiere_Preparacion=1 
-                                    AND p.activo=1 
-                                    AND p.IdBodega=@IdBodega 
-                                    AND p.estado_preparacion IN ('Nuevo','Pendiente'))  
-                                    AND d.IdPedidoEnc NOT IN (SELECT IdPedidoEnc FROM trans_packing_enc WHERE finalizado = 1 AND IdDespachoEnc = 0)
-									AND d.IdPedidoEnc NOT IN (SELECT IdPedidoEnc FROM trans_pe_enc WHERE estado = 'Despachado')"
+                                    pe.bodega_destino AS Referencia,
+                                    CAST(
+                                        ISNULL(
+                                            CASE 
+                                                WHEN (SELECT COUNT(*) 
+                                                      FROM trans_picking_ubic 
+                                                      WHERE IdPickingEnc = p.IdPickingEnc 
+                                                        AND cantidad_verificada > 0) = 0 
+                                                THEN 0
+                                                ELSE (
+                                                    (SELECT COUNT(*) 
+                                                     FROM trans_picking_ubic 
+                                                     WHERE IdPickingEnc = p.IdPickingEnc 
+                                                       AND cantidad_verificada > 0 
+                                                       AND Fecha_packing > '19010101') * 100
+                                                ) / (
+                                                    SELECT COUNT(*) 
+                                                    FROM trans_picking_ubic 
+                                                    WHERE IdPickingEnc = p.IdPickingEnc 
+                                                      AND cantidad_verificada > 0
+                                                )
+                                            END, 0
+                                        ) AS INT
+                                    ) AS PorcentajePacking
+                                    -- #EJC20260529 % ubicaciones empacadas/verificadas
+                                FROM trans_picking_enc AS p
+                                INNER JOIN (
+                                    SELECT DISTINCT IdPedidoEnc, IdPickingEnc
+                                    FROM trans_picking_ubic
+                                    WHERE cantidad_verificada > 0
+                                      AND cantidad_despachada < cantidad_verificada
+                                      AND dañado_picking = 0
+                                      AND dañado_verificacion = 0
+                                      AND no_encontrado = 0
+                                ) AS d ON p.IdPickingEnc = d.IdPickingEnc
+                                INNER JOIN trans_pe_enc AS pe 
+                                    ON pe.IdPickingEnc = p.IdPickingEnc 
+                                   AND d.IdPedidoEnc = pe.IdPedidoEnc
+                                INNER JOIN bodega AS b 
+                                    ON p.IdBodega = b.IdBodega
+                                INNER JOIN propietario_bodega AS pb 
+                                    ON pb.IdPropietarioBodega = p.IdPropietarioBodega 
+                                   AND b.IdBodega = pb.IdBodega
+                                INNER JOIN propietarios AS pp 
+                                    ON pp.IdPropietario = pb.IdPropietario
+                                WHERE p.estado IN ('Procesado', 'Pendiente', 'Verificado')
+                                  AND p.Requiere_Preparacion = 1
+                                  AND p.activo = 1
+                                  AND p.IdBodega = @IdBodega
+                                  AND p.estado_preparacion IN ('Nuevo', 'Pendiente')
+                                  AND d.IdPedidoEnc NOT IN (
+                                      SELECT IdPedidoEnc 
+                                      FROM trans_packing_enc 
+                                      WHERE finalizado = 1 
+                                        AND IdDespachoEnc = 0
+                                  )
+                                  AND d.IdPedidoEnc NOT IN (
+                                      SELECT IdPedidoEnc 
+                                      FROM trans_pe_enc 
+                                      WHERE estado = 'Despachado'
+                                  )
+                            "
+
 
             Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -1818,6 +1893,7 @@ Partial Public Class clsLnTarea_hh
                     .NombrePropietarioPicking = IIf(IsDBNull(dr("nombre_comercial")), "", dr("nombre_comercial"))
                     .IdPedidoEnc = dr("IdPedidoEnc")
                     .Referencia = IIf(IsDBNull(dr("Referencia")), "", dr("Referencia"))
+                    .PorcentajePacking = IIf(IsDBNull(dr("PorcentajePacking")), 0, CInt(dr("PorcentajePacking"))) '#EJC20260529
 
                 End With
 

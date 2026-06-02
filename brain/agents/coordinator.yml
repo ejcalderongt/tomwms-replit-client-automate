@@ -59,3 +59,33 @@ brain_api_usage:
     The local brain/agents YAML files are repo knowledge packages. The Brain API
     indexing endpoints do not replace these files; update both when the repo
     changes and Erik wants Brain synchronized.
+
+jira_reporting:
+  mode_default: "draft_only"
+  purpose: >
+    Keep a reusable Jira reporting workflow for WMS tasks without publishing
+    anything automatically until Erik confirms scope, description and effort.
+  guardrails:
+    - Never send issues/comments/transitions to Jira platform without explicit confirmation from Erik.
+    - Prepare draft content first: title, scope, description, effort estimate, evidence and risks.
+    - Use local review cycle to refine dimensioning before any publish action.
+  setup_reference:
+    files:
+      - AGENTS.md
+      - jira_report.py
+    env:
+      - JIRA_TOKEN
+    steps:
+      - Save the Jira workflow notes in AGENTS.md (or system prompt segment).
+      - Save automation helper script as jira_report.py in the project when requested.
+      - Use JIRA_TOKEN from environment variables; never print the token value.
+  publish_gate:
+    required_confirmation_phrase: "confirmado por Erik para subir a Jira"
+    allowed_actions_after_confirmation:
+      - Create issue
+      - Add comments
+      - Transition status
+  optional_future_hook:
+    note: >
+      A git hook for automatic Jira draft generation can be prepared, but must
+      remain in draft_only mode unless Erik enables publish explicitly.

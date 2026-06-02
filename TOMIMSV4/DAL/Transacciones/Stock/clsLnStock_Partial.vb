@@ -149,7 +149,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Stock_DataTable(ByVal pIdBodega As Integer,
                                                        ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -246,7 +245,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Valoracion_Stock_DataTable(ByVal pIdBodega As Integer,
                                                                   ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -345,7 +343,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Valoracion_By_OC_DataTable(ByVal pIdBodega As Integer,
                                                                   ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -441,9 +438,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
-
-
     Public Shared Function Get_Reporte_Stock_All_DataTable(ByVal pIdBodega As Integer,
                                                            ByVal pIdPropietarioBodega As Integer,
                                                            ByRef DTDetalleSeries As DataTable) As DataTable
@@ -504,7 +498,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report(ByVal pIdBodega As Integer,
                                                                ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -604,7 +597,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report_Clasificacion(ByVal pIdBodega As Integer,
                                                                              ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -766,7 +758,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega_And_IdPropietario(ByVal DelSubUpdLbl As ChangeLabelDelegate,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByVal pIdPropietarioBodega As Integer,
@@ -830,7 +821,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal IdBodega As Integer,
                                                      ByVal IdRe As Integer,
                                                      ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -896,7 +886,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
 
     '#GT16032022_0837: para el inventario en linea cealsa
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -5103,13 +5092,14 @@ Partial Public Class clsLnStock
                             Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
                             Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
 
-                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
-                            BeStockAActualizar.Talla = vTalla
-                            BeStockAActualizar.Color = vColor
+                            BeStockNuevo.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockNuevo.Talla = vTalla
+                            BeStockNuevo.Color = vColor
 
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
+                            BeTransAjusteDet.IdStock = IdStock
 
                         End If
 
@@ -8386,12 +8376,43 @@ Partial Public Class clsLnStock
 
     Public Shared Function Get_All_By_IdUbicacion(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
 
+        Try
+            Return Get_All_By_IdUbicacion_ReadModel(pIdUbicacion, pIdBodega)
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 208 OrElse ex.Number = 207
+            Return Get_All_By_IdUbicacion_Text(pIdUbicacion, pIdBodega)
+        End Try
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_ReadModel(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
+
+        Return Get_All_By_IdUbicacion_Internal(pIdUbicacion,
+                                               pIdBodega,
+                                               "dbo.usp_wms_hh_stock_by_ubicacion_v1",
+                                               CommandType.StoredProcedure)
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_Text(ByVal pIdUbicacion As Integer, ByVal pIdBodega As Integer) As List(Of clsBeVW_stock_res)
+
+        Dim vSQL As String = "SELECT * FROM VW_Stock_Res
+						WHERE IdUbicacion = @IdUbicacion AND IdBodega = @IdBodega"
+
+        Return Get_All_By_IdUbicacion_Internal(pIdUbicacion,
+                                               pIdBodega,
+                                               vSQL,
+                                               CommandType.Text)
+
+    End Function
+
+    Private Shared Function Get_All_By_IdUbicacion_Internal(ByVal pIdUbicacion As Integer,
+                                                            ByVal pIdBodega As Integer,
+                                                            ByVal pCommandText As String,
+                                                            ByVal pCommandType As CommandType) As List(Of clsBeVW_stock_res)
+
         Dim lReturnList As New List(Of clsBeVW_stock_res)
 
         Try
-
-            Dim vSQL As String = "SELECT * FROM VW_Stock_Res 
-						WHERE IdUbicacion = @IdUbicacion AND IdBodega = @IdBodega"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -8399,10 +8420,10 @@ Partial Public Class clsLnStock
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                    Using lDTA As New SqlDataAdapter(pCommandText, lConnection)
 
                         lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.CommandType = pCommandType
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
@@ -10658,7 +10679,6 @@ Partial Public Class clsLnStock
             Dim vFilasAfectadas As Double = 0
             Dim IdxPresentacion As Integer = 0
             Dim BeMovimiento As New clsBeTrans_movimientos
-            Dim vIdMaxMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdEmpresa As Integer = 0
 
             If pListObjStock IsNot Nothing AndAlso pListObjStock.Count > 0 Then
@@ -10770,7 +10790,7 @@ Partial Public Class clsLnStock
 
                     '#EJC20220204: Registrar movimiento de cambio de ubicación hacia ubicación de picking.
                     BeMovimiento = New clsBeTrans_movimientos
-                    BeMovimiento.IdMovimiento = vIdMaxMovimiento
+                    '#EJC20260526: IdMovimiento es identity; no se asigna manualmente.
                     BeMovimiento.IdEmpresa = IdEmpresa
                     BeMovimiento.IdBodegaOrigen = objStockOrigen.IdBodega
                     BeMovimiento.IdTransaccion = objStockOrigen.IdPedidoEnc
@@ -10825,8 +10845,6 @@ Partial Public Class clsLnStock
                     clsLnTrans_movimientos.Insertar(BeMovimiento,
                                                     lConnection,
                                                     lTransaction)
-
-                    vIdMaxMovimiento += 1
 
                 Next
 
@@ -12164,7 +12182,7 @@ Por favor reportar este problema a DevOps."
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
-            IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            IdMovimiento = 0
 
             BeTransInvEnc.Regularizado = True
             BeTransInvEnc.Estado = "Finalizado"
@@ -12190,7 +12208,7 @@ Por favor reportar este problema a DevOps."
             Next
 
             For Each BeMov As clsBeTrans_movimientos In ListBeMovimientos
-                IdMovimiento += 1 : BeMov.IdMovimiento = IdMovimiento
+                BeMov.IdMovimiento = 0
                 clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
             Next
 
@@ -15736,7 +15754,6 @@ Por favor reportar este problema a DevOps."
     '    End Try
 
     'End Function
-
     Public Shared Function Get_Existencia_Disp_Menos_Picking_By_IdProducto_By_IdUbicacion(ByRef pBeStockConsulta As clsBeStock,
                                                                                           ByRef pBeStockConsultaUbicacion As clsBeStock,
                                                                                           ByVal pIdBodega As Integer,
@@ -15912,7 +15929,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_By_Referencia(ByVal pReferencia As String) As DataTable
 
 
@@ -16296,7 +16312,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Stock_Transito(ByVal IdBodega As Integer) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -16343,7 +16358,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Single_By_Lic_Plate_Ubic(ByVal lic_plate As String,
                                                         ByVal IdUbicacion As Integer,
                                                         ByRef lConnection As SqlConnection,
@@ -16380,8 +16394,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
-
     Public Shared Function Guardar_Stock_Ajuste_Positivo(ByVal pObjStock As clsBeStock,
                                                          ByRef lConnection As SqlConnection,
                                                          ByRef lTransaction As SqlTransaction) As Boolean
@@ -16398,7 +16410,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer) As clsBeStock
 
         GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Nothing
@@ -16449,7 +16460,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer,
                                                                           Optional ByVal pConnection As SqlConnection = Nothing,
                                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeStock
@@ -16502,7 +16512,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Lotes_Disponibles_DT_By_IdCliente(ByVal pIdBodega As Integer, ByVal pIdCliente As Integer, Optional ByVal Edicion As Boolean = False) As DataTable
 
         Get_Lotes_Disponibles_DT_By_IdCliente = Nothing
@@ -16579,7 +16588,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Estados_Producto_En_Stock() As DataTable
 
         Get_Estados_Producto_En_Stock = Nothing
@@ -16618,7 +16626,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_Reporte_Stock_By_IdBodega_and_IdPropietario_For_Implosion(ByVal pIdBodega As Integer,
                                                                                          ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -16730,7 +16737,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_By_IdUbicacion_And_LicPlate(ByVal pIdUbicacion As Integer, pLicencia As String) As List(Of clsBeStock)
 
         Dim lReturnList As List(Of clsBeStock) = Nothing
@@ -16774,7 +16780,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Get_All_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of clsBeVW_stock_res)
 
         Dim lReturnList As New List(Of clsBeVW_stock_res)

@@ -948,6 +948,114 @@ Partial Public Class clsLnTrans_inv_enc
 
     End Function
 
+    Private Shared Function Get_Comparacion_Inventario_ReadModel_DT(ByVal pIdInv As Integer,
+                                                                    ByVal pConUbicacion As Boolean,
+                                                                    ByVal lConnection As SqlConnection,
+                                                                    ByVal lTransaction As SqlTransaction) As DataTable
+        Using lDataAdapter As New SqlDataAdapter("dbo.usp_wms_inventario_comparacion_readmodel_v1", lConnection)
+            lDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure
+            lDataAdapter.SelectCommand.Transaction = lTransaction
+            lDataAdapter.SelectCommand.CommandTimeout = 0
+            lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdInventario", pIdInv)
+            lDataAdapter.SelectCommand.Parameters.AddWithValue("@ConUbicacion", pConUbicacion)
+
+            Dim lDataTable As New DataTable()
+            lDataAdapter.Fill(lDataTable)
+            Return lDataTable
+        End Using
+    End Function
+
+    Private Shared Function Map_Comparacion_Inventario(ByVal pDataTable As DataTable,
+                                                       ByVal pConUbicacion As Boolean) As List(Of clsBeTrans_inv_enc)
+        Dim lReturnList As New List(Of clsBeTrans_inv_enc)
+
+        If pDataTable Is Nothing OrElse pDataTable.Rows.Count = 0 Then Return lReturnList
+
+        For Each lRow As DataRow In pDataTable.Rows
+            Dim Obj As New clsBeTrans_inv_enc()
+
+            If lRow("IDINVENTARIO") IsNot DBNull.Value AndAlso lRow("IDINVENTARIO") IsNot Nothing Then
+                Obj.Idinventarioenc = CType(lRow("IDINVENTARIO"), Integer)
+            End If
+
+            If lRow("IDTRAMO") IsNot DBNull.Value AndAlso lRow("IDTRAMO") IsNot Nothing Then
+                Obj.IdTramo = CType(lRow("IDTRAMO"), Integer)
+            End If
+
+            If lRow("IDPRESENTACION") IsNot DBNull.Value AndAlso lRow("IDPRESENTACION") IsNot Nothing Then
+                Obj.IdPresentacion = CType(lRow("IDPRESENTACION"), Integer)
+            End If
+
+            If lRow("TRAMO") IsNot DBNull.Value AndAlso lRow("TRAMO") IsNot Nothing Then
+                Obj.Tramo = CType(lRow("TRAMO"), String)
+            End If
+
+            If lRow("DETALLE") IsNot DBNull.Value AndAlso lRow("DETALLE") IsNot Nothing Then
+                Obj.Detalle = CType(lRow("DETALLE"), Double)
+            End If
+
+            If lRow("RESUMEN") IsNot DBNull.Value AndAlso lRow("RESUMEN") IsNot Nothing Then
+                Obj.Resumen = CType(lRow("RESUMEN"), Double)
+            End If
+
+            If lRow("Codigo") IsNot DBNull.Value AndAlso lRow("Codigo") IsNot Nothing Then
+                Obj.Codigo = CType(lRow("Codigo"), String)
+            End If
+
+            If lRow("IDPRODUCTO") IsNot DBNull.Value AndAlso lRow("IDPRODUCTO") IsNot Nothing Then
+                Obj.IdProducto = CType(lRow("IDPRODUCTO"), Integer)
+            End If
+
+            If lRow("PRODUCTO") IsNot DBNull.Value AndAlso lRow("PRODUCTO") IsNot Nothing Then
+                Obj.Producto = CType(lRow("PRODUCTO"), String)
+            End If
+
+            If lRow("PRESENTACION") IsNot DBNull.Value AndAlso lRow("PRESENTACION") IsNot Nothing Then
+                Obj.Presentacion = CType(lRow("PRESENTACION"), String)
+            End If
+
+            If lRow("EstadoConteo") IsNot DBNull.Value AndAlso lRow("EstadoConteo") IsNot Nothing Then
+                Obj.EstadoDetalle = CType(lRow("EstadoConteo"), String)
+            End If
+
+            If lRow("EstadoResumen") IsNot DBNull.Value AndAlso lRow("EstadoResumen") IsNot Nothing Then
+                Obj.EstadoResumen = CType(lRow("EstadoResumen"), String)
+            End If
+
+            If lRow("IdPropietario") IsNot DBNull.Value AndAlso lRow("IdPropietario") IsNot Nothing Then
+                Obj.Idpropietario = CType(lRow("IdPropietario"), Integer)
+            End If
+
+            If lRow("UMBas") IsNot DBNull.Value AndAlso lRow("UMBas") IsNot Nothing Then
+                Obj.UMBas = CType(lRow("UMBas"), String)
+            End If
+
+            If pDataTable.Columns.Contains("Codigo_Talla") AndAlso lRow("Codigo_Talla") IsNot DBNull.Value AndAlso lRow("Codigo_Talla") IsNot Nothing Then
+                Obj.Codigo_Talla = CType(lRow("Codigo_Talla"), String)
+            End If
+
+            If pDataTable.Columns.Contains("Codigo_Color") AndAlso lRow("Codigo_Color") IsNot DBNull.Value AndAlso lRow("Codigo_Color") IsNot Nothing Then
+                Obj.Codigo_Color = CType(lRow("Codigo_Color"), String)
+            End If
+
+            If pConUbicacion Then
+                If lRow("Ubicacion_Conteo") IsNot DBNull.Value AndAlso lRow("Ubicacion_Conteo") IsNot Nothing Then
+                    Obj.UbicacionCompleta = CType(lRow("Ubicacion_Conteo"), String)
+                    Obj.Ubicacion.Descripcion = Obj.UbicacionCompleta
+                End If
+
+                If pDataTable.Columns.Contains("IdUbicacion") AndAlso lRow("IdUbicacion") IsNot DBNull.Value AndAlso lRow("IdUbicacion") IsNot Nothing Then
+                    Obj.Ubicacion.IdUbicacion = CType(lRow("IdUbicacion"), Integer)
+                    Obj.Ubicacion.IdTramo = Obj.IdTramo
+                End If
+            End If
+
+            lReturnList.Add(Obj)
+        Next
+
+        Return lReturnList
+    End Function
+
     Public Shared Function Get_All_By_Comparacion_Inventario(ByVal pIdInv As Integer, ByVal ConUbicacion As Boolean) As List(Of clsBeTrans_inv_enc)
 
         Dim lReturnList As New List(Of clsBeTrans_inv_enc)
@@ -976,7 +1084,7 @@ Partial Public Class clsLnTrans_inv_enc
 	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
 	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
 	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega
-	                    UNION
+	                    UNION ALL
 	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
 	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega
@@ -1023,7 +1131,7 @@ Partial Public Class clsLnTrans_inv_enc
 	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
 	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
                         trans_inv_detalle.IdUbicacion
-	                    UNION
+	                    UNION ALL
 	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
 	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
@@ -1448,8 +1556,10 @@ Partial Public Class clsLnTrans_inv_enc
             clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
 
             'Crea copia de stock cuando es inventario ciclico. 
-            'clsLnTrans_inv_stock.Guarda_Copia_Stock(pBeInventarioEnc, lConnection, lTransaction)
             clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, pBeInventarioEnc.IdBodega, lConnection, lTransaction)
+
+            'clsLnTrans_inv_stock.Guarda_Copia_Stock(pBeInventarioEnc, lConnection, lTransaction)
+
 
             lTransaction.Commit()
 
@@ -3207,6 +3317,13 @@ Partial Public Class clsLnTrans_inv_enc
 
         Try
 
+            Try
+                Dim lReadModelTable As DataTable = Get_Comparacion_Inventario_ReadModel_DT(pIdInv, ConUbicacion, lConnection, ltransaction)
+                Return Map_Comparacion_Inventario(lReadModelTable, ConUbicacion)
+            Catch exReadModel As SqlException When exReadModel.Number = 2812 OrElse exReadModel.Number = 208 OrElse exReadModel.Number = 207
+                '#EJC20260523_INV_COMPARACION_READMODEL: fallback legacy si el SP aun no existe o esta desactualizado.
+            End Try
+
             Dim vSQL As String = ""
 
             If Not ConUbicacion Then
@@ -3234,7 +3351,7 @@ Partial Public Class clsLnTrans_inv_enc
 	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
 	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
                         talla.Codigo, color.Nombre, color.Codigo
-	                    UNION
+	                    UNION ALL
 	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
 	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
@@ -3288,7 +3405,7 @@ Partial Public Class clsLnTrans_inv_enc
 	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
 	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
                         trans_inv_detalle.IdUbicacion, talla.Codigo, color.Nombre, color.Codigo
-	                    UNION
+	                    UNION ALL
 	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
 	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
@@ -3330,94 +3447,7 @@ Partial Public Class clsLnTrans_inv_enc
                 Dim lDataTable As New DataTable()
                 lDataAdapter.Fill(lDataTable)
 
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        Dim Obj As New clsBeTrans_inv_enc()
-
-                        If lRow("IDINVENTARIO") IsNot DBNull.Value AndAlso lRow("IDINVENTARIO") IsNot Nothing Then
-                            Obj.Idinventarioenc = CType(lRow("IDINVENTARIO"), Integer)
-                        End If
-
-                        If lRow("IDTRAMO") IsNot DBNull.Value AndAlso lRow("IDTRAMO") IsNot Nothing Then
-                            Obj.IdTramo = CType(lRow("IDTRAMO"), Integer)
-                        End If
-
-                        If lRow("IDPRESENTACION") IsNot DBNull.Value AndAlso lRow("IDPRESENTACION") IsNot Nothing Then
-                            Obj.IdPresentacion = CType(lRow("IDPRESENTACION"), Integer)
-                        End If
-
-                        If lRow("TRAMO") IsNot DBNull.Value AndAlso lRow("TRAMO") IsNot Nothing Then
-                            Obj.Tramo = CType(lRow("TRAMO"), String)
-                        End If
-
-                        If lRow("DETALLE") IsNot DBNull.Value AndAlso lRow("DETALLE") IsNot Nothing Then
-                            Obj.Detalle = CType(lRow("DETALLE"), Double)
-                        End If
-
-                        If lRow("RESUMEN") IsNot DBNull.Value AndAlso lRow("RESUMEN") IsNot Nothing Then
-                            Obj.Resumen = CType(lRow("RESUMEN"), Double)
-                        End If
-
-                        If lRow("Codigo") IsNot DBNull.Value AndAlso lRow("Codigo") IsNot Nothing Then
-                            Obj.Codigo = CType(lRow("Codigo"), String)
-                        End If
-
-                        If lRow("IDPRODUCTO") IsNot DBNull.Value AndAlso lRow("IDPRODUCTO") IsNot Nothing Then
-                            Obj.IdProducto = CType(lRow("IDPRODUCTO"), Integer)
-                        End If
-
-                        If lRow("PRODUCTO") IsNot DBNull.Value AndAlso lRow("PRODUCTO") IsNot Nothing Then
-                            Obj.Producto = CType(lRow("PRODUCTO"), String)
-                        End If
-
-                        If lRow("PRESENTACION") IsNot DBNull.Value AndAlso lRow("PRESENTACION") IsNot Nothing Then
-                            Obj.Presentacion = CType(lRow("PRESENTACION"), String)
-                        End If
-
-                        If lRow("EstadoConteo") IsNot DBNull.Value AndAlso lRow("EstadoConteo") IsNot Nothing Then
-                            Obj.EstadoDetalle = CType(lRow("EstadoConteo"), String)
-                        End If
-
-                        If lRow("EstadoResumen") IsNot DBNull.Value AndAlso lRow("EstadoResumen") IsNot Nothing Then
-                            Obj.EstadoResumen = CType(lRow("EstadoResumen"), String)
-                        End If
-
-                        If lRow("IdPropietario") IsNot DBNull.Value AndAlso lRow("IdPropietario") IsNot Nothing Then
-                            Obj.Idpropietario = CType(lRow("IdPropietario"), Integer)
-                        End If
-
-                        If lRow("UMBas") IsNot DBNull.Value AndAlso lRow("UMBas") IsNot Nothing Then
-                            Obj.UMBas = CType(lRow("UMBas"), String)
-                        End If
-
-                        If lRow("Codigo_Talla") IsNot DBNull.Value AndAlso lRow("Codigo_Talla") IsNot Nothing Then
-                            Obj.Codigo_Talla = CType(lRow("Codigo_Talla"), String)
-                        End If
-
-                        If lRow("Codigo_Color") IsNot DBNull.Value AndAlso lRow("Codigo_Color") IsNot Nothing Then
-                            Obj.Codigo_Color = CType(lRow("Codigo_Color"), String)
-                        End If
-
-                        If ConUbicacion Then
-                            If lRow("Ubicacion_Conteo") IsNot DBNull.Value AndAlso lRow("Ubicacion_Conteo") IsNot Nothing Then
-                                Obj.UbicacionCompleta = CType(lRow("Ubicacion_Conteo"), String)
-                            End If
-
-                            If lRow("IdUbicacion") IsNot DBNull.Value AndAlso lRow("IdUbicacion") IsNot Nothing Then
-                                Dim ObjU As New clsBeBodega_ubicacion
-                                Obj.Ubicacion.IdUbicacion = CType(lRow("IdUbicacion"), Integer)
-                                clsLnBodega_ubicacion.ObtenerWithTramo(Obj.Ubicacion, lConnection, ltransaction)
-                            End If
-
-                        End If
-
-                        lReturnList.Add(Obj)
-
-                    Next
-
-                End If
+                lReturnList = Map_Comparacion_Inventario(lDataTable, ConUbicacion)
 
             End Using
 
@@ -3668,8 +3698,6 @@ Partial Public Class clsLnTrans_inv_enc
 
     End Function
 
-
-
     Public Shared Function Get_All_Pendientes_RFID_By_IdBodega_And_IdOperador(pIdBodega As Integer,
                                                                               pIdOperador As Integer,
                                                                               pIdTarea As Integer) As List(Of clsBeTrans_inv_enc)
@@ -3758,8 +3786,6 @@ Partial Public Class clsLnTrans_inv_enc
 
     End Function
 
-
-
     Public Shared Function Guardar_RFID(ByVal pBeInventarioEnc As clsBeTrans_inv_enc,
                                         ByVal pObjTareaHH As clsBeTarea_hh) As Boolean
 
@@ -3779,9 +3805,11 @@ Partial Public Class clsLnTrans_inv_enc
             pObjTareaHH.IdTransaccion = pBeInventarioEnc.Idinventarioenc
             clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
 
-            '#GT04052026: para RFID no se necesita guardar inventario congelado porque no hay stock
+            '#GT27052026: guardar inventario congelado de tipo rfid.
             'Crea copia de stock cuando es inventario ciclico. 
             'clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, lConnection, lTransaction)
+
+            clsLnTrans_inv_stock.Guarda_Copia_Stock_RFID(pBeInventarioEnc, lConnection, lTransaction)
 
             lTransaction.Commit()
 

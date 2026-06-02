@@ -20,7 +20,7 @@ Public Class clsBeTrans_inv_stock
     Public Property Serial() As String = ""
     Public Property Cantidad() As Double = 0.0
     Public Property Fecha_ingreso() As Date = Date.Now
-    Public Property Fecha_vence() As Date = Nothing
+    Public Property Fecha_vence() As Date = New Date(1901, 1, 1)
     Public Property Uds_lic_plate() As Double = 0.0
     Public Property No_bulto() As String = ""
     Public Property Fecha_manufactura() As Date = Date.Now

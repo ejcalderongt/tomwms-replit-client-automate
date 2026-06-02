@@ -106,3 +106,51 @@ rules:
   context_budget:
     - Do not load all brain files by default.
     - Prefer the listed entry points and only expand to source files required by the current hypothesis.
+
+codex_skills:
+  installed_path: C:/Users/yejc2/.codex/skills
+  backup_path: brain/skills
+  available:
+    wms-reserva-diagnostics:
+      installed: C:/Users/yejc2/.codex/skills/wms-reserva-diagnostics/SKILL.md
+      backup: brain/skills/wms-reserva-diagnostics/SKILL.md
+      primary_domains:
+        - reserva
+        - database
+        - webapi
+        - performance
+      triggers:
+        - reserva MI3
+        - no reserva
+        - stock_res
+        - EA-153304
+        - EA-153305
+        - BYB
+        - FEFO
+        - CJ
+    wms-webapi-debug:
+      installed: C:/Users/yejc2/.codex/skills/wms-webapi-debug/SKILL.md
+      backup: brain/skills/wms-webapi-debug/SKILL.md
+      primary_domains:
+        - webapi
+        - database
+      triggers:
+        - WebAPI
+        - endpoint
+        - payload
+        - curl
+        - timeout 120
+        - SyncSalidasService
+    wms-bof-hh-guardrails:
+      installed: C:/Users/yejc2/.codex/skills/wms-bof-hh-guardrails/SKILL.md
+      backup: brain/skills/wms-bof-hh-guardrails/SKILL.md
+      primary_domains:
+        - bof
+        - database
+      triggers:
+        - BOF
+        - WinForms
+        - HH
+        - Android
+        - Reference.vb
+        - WebMethod

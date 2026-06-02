@@ -1,9 +1,157 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_re_det
 
     Public Shared Property lProductosInMemory As New List(Of clsBeProducto)
+    '#EJC20260522_RECEPCION_DET_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmRecepcion.
+    Private Const SP_RECEPCION_DET_READMODEL As String = "dbo.usp_wms_recepcion_detalle_readmodel_v1"
+
+    Private Shared Function RecepcionReadModel_HasColumn(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        Return pRow IsNot Nothing AndAlso
+               pRow.Table IsNot Nothing AndAlso
+               pRow.Table.Columns.Contains(pColumnName)
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Int(ByVal pRow As DataRow, ByVal pColumnName As String) As Integer
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToInt32(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Double(ByVal pRow As DataRow, ByVal pColumnName As String) As Double
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return 0
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return 0
+        Return Convert.ToDouble(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_Bool(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return False
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return False
+        Return Convert.ToBoolean(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function RecepcionReadModel_String(ByVal pRow As DataRow, ByVal pColumnName As String) As String
+
+        If Not RecepcionReadModel_HasColumn(pRow, pColumnName) Then Return String.Empty
+        If pRow(pColumnName) Is DBNull.Value OrElse pRow(pColumnName) Is Nothing Then Return String.Empty
+        Return Convert.ToString(pRow(pColumnName))
+
+    End Function
+
+    Private Shared Function Get_Detalle_By_IdRecepcionEnc_ReadModel(ByVal pIdRecepcionEnc As Integer,
+                                                                    ByVal pIdBodega As Integer,
+                                                                    ByRef lConnection As SqlConnection,
+                                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_re_det)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_re_det)
+
+            Using lDTA As New SqlDataAdapter(SP_RECEPCION_DET_READMODEL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.StoredProcedure
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable Is Nothing Then Return lReturnList
+
+                For Each lRow As DataRow In lDataTable.Rows
+
+                    Dim BeTransReDet As New clsBeTrans_re_det
+                    Cargar(BeTransReDet, lRow)
+
+                    BeTransReDet.IdPropietarioBodega = RecepcionReadModel_Int(lRow, "IdPropietarioBodega")
+
+                    BeTransReDet.Producto.IdProducto = RecepcionReadModel_Int(lRow, "Producto_IdProducto")
+                    If BeTransReDet.Producto.IdProducto = 0 Then BeTransReDet.Producto.IdProducto = RecepcionReadModel_Int(lRow, "IdProducto")
+                    BeTransReDet.Producto.IdProductoBodega = BeTransReDet.IdProductoBodega
+                    BeTransReDet.Producto.IdPropietario = RecepcionReadModel_Int(lRow, "Producto_IdPropietario")
+                    BeTransReDet.Producto.IdClasificacion = RecepcionReadModel_Int(lRow, "Producto_IdClasificacion")
+                    BeTransReDet.Producto.IdUnidadMedidaBasica = RecepcionReadModel_Int(lRow, "Producto_IdUnidadMedidaBasica")
+                    BeTransReDet.Producto.Codigo = RecepcionReadModel_String(lRow, "Producto_Codigo")
+                    If String.IsNullOrEmpty(BeTransReDet.Producto.Codigo) Then BeTransReDet.Producto.Codigo = BeTransReDet.Codigo_Producto
+                    BeTransReDet.Producto.Nombre = RecepcionReadModel_String(lRow, "Producto_Nombre")
+                    If String.IsNullOrEmpty(BeTransReDet.Producto.Nombre) Then BeTransReDet.Producto.Nombre = BeTransReDet.Nombre_producto
+                    BeTransReDet.Producto.Control_vencimiento = RecepcionReadModel_Bool(lRow, "Producto_ControlVencimiento")
+                    BeTransReDet.Producto.Control_peso = RecepcionReadModel_Bool(lRow, "Producto_ControlPeso")
+                    BeTransReDet.Producto.Control_lote = RecepcionReadModel_Bool(lRow, "Producto_ControlLote")
+                    BeTransReDet.Producto.Peso_referencia = RecepcionReadModel_Double(lRow, "Producto_PesoReferencia")
+                    BeTransReDet.Producto.IdTipoManufactura = RecepcionReadModel_Int(lRow, "Producto_IdTipoManufactura")
+
+                    If BeTransReDet.IdPresentacion <> 0 Then
+                        BeTransReDet.Presentacion.IdPresentacion = RecepcionReadModel_Int(lRow, "Presentacion_IdPresentacion")
+                        If BeTransReDet.Presentacion.IdPresentacion = 0 Then BeTransReDet.Presentacion.IdPresentacion = BeTransReDet.IdPresentacion
+                        BeTransReDet.Presentacion.IdProducto = RecepcionReadModel_Int(lRow, "Presentacion_IdProducto")
+                        BeTransReDet.Presentacion.Codigo_barra = RecepcionReadModel_String(lRow, "Presentacion_CodigoBarra")
+                        BeTransReDet.Presentacion.Nombre = RecepcionReadModel_String(lRow, "Presentacion_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.Presentacion.Nombre) Then BeTransReDet.Presentacion.Nombre = BeTransReDet.Nombre_presentacion
+                        BeTransReDet.Presentacion.Peso = RecepcionReadModel_Double(lRow, "Presentacion_Peso")
+                        BeTransReDet.Presentacion.Factor = RecepcionReadModel_Double(lRow, "Presentacion_Factor")
+                        BeTransReDet.Presentacion.Activo = RecepcionReadModel_Bool(lRow, "Presentacion_Activo")
+                        BeTransReDet.Presentacion.EsPallet = RecepcionReadModel_Bool(lRow, "Presentacion_EsPallet")
+                        BeTransReDet.Presentacion.Costo = RecepcionReadModel_Double(lRow, "Presentacion_Costo")
+                        BeTransReDet.Presentacion.CamasPorTarima = RecepcionReadModel_Double(lRow, "Presentacion_CamasPorTarima")
+                        BeTransReDet.Presentacion.CajasPorCama = RecepcionReadModel_Double(lRow, "Presentacion_CajasPorCama")
+                        BeTransReDet.Presentacion.IdPresentacionPallet = RecepcionReadModel_Int(lRow, "Presentacion_IdPresentacionPallet")
+                        BeTransReDet.Presentacion.Codigo = RecepcionReadModel_String(lRow, "Presentacion_Codigo")
+                    End If
+
+                    If BeTransReDet.IdUnidadMedida <> 0 Then
+                        BeTransReDet.UnidadMedida.IdUnidadMedida = RecepcionReadModel_Int(lRow, "Unidad_IdUnidadMedida")
+                        If BeTransReDet.UnidadMedida.IdUnidadMedida = 0 Then BeTransReDet.UnidadMedida.IdUnidadMedida = BeTransReDet.IdUnidadMedida
+                        BeTransReDet.UnidadMedida.Codigo = RecepcionReadModel_String(lRow, "Unidad_Codigo")
+                        BeTransReDet.UnidadMedida.Nombre = RecepcionReadModel_String(lRow, "Unidad_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.UnidadMedida.Nombre) Then BeTransReDet.UnidadMedida.Nombre = BeTransReDet.Nombre_unidad_medida
+                        BeTransReDet.UnidadMedida.factor = RecepcionReadModel_Double(lRow, "Unidad_Factor")
+                    End If
+
+                    If BeTransReDet.IdProductoEstado <> 0 Then
+                        BeTransReDet.ProductoEstado.IdEstado = RecepcionReadModel_Int(lRow, "Estado_IdEstado")
+                        If BeTransReDet.ProductoEstado.IdEstado = 0 Then BeTransReDet.ProductoEstado.IdEstado = BeTransReDet.IdProductoEstado
+                        BeTransReDet.ProductoEstado.Nombre = RecepcionReadModel_String(lRow, "Estado_Nombre")
+                        If String.IsNullOrEmpty(BeTransReDet.ProductoEstado.Nombre) Then BeTransReDet.ProductoEstado.Nombre = BeTransReDet.Nombre_producto_estado
+                    End If
+
+                    If BeTransReDet.MotivoDevolucion.IdMotivoDevolucion <> 0 Then
+                        BeTransReDet.MotivoDevolucion.IdMotivoDevolucion = RecepcionReadModel_Int(lRow, "Motivo_IdMotivoDevolucion")
+                        BeTransReDet.MotivoDevolucion.Nombre = RecepcionReadModel_String(lRow, "Motivo_Nombre")
+                    End If
+
+                    If BeTransReDet.IdProductoTallaColor <> 0 Then
+                        BeTransReDet.Talla.IdTalla = RecepcionReadModel_Int(lRow, "IdTalla")
+                        BeTransReDet.Talla.Codigo = RecepcionReadModel_String(lRow, "codigo_talla")
+                        BeTransReDet.Color.IdColor = RecepcionReadModel_Int(lRow, "IdColor")
+                        BeTransReDet.Color.Codigo = RecepcionReadModel_String(lRow, "codigo_color")
+                        BeTransReDet.CodigoSKU = RecepcionReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
+                    End If
+
+                    BeTransReDet.IsNew = False
+                    lReturnList.Add(BeTransReDet)
+
+                Next
+
+            End Using
+
+            Return lReturnList
+
+        Catch
+            Return Nothing
+        End Try
+
+    End Function
 
     '#EJC20180113: Agregue transaccionalidad en GetByRecepcion en clase clsLnTrans_re_det
     Public Shared Function Get_Detalle_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer,
@@ -24,6 +172,15 @@ Partial Public Class clsLnTrans_re_det
                 lConnection.Open()
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vReadModelList As List(Of clsBeTrans_re_det) = Get_Detalle_By_IdRecepcionEnc_ReadModel(pIdRecepcionEnc,
+                                                                                                                pIdBodegaEnc,
+                                                                                                                lConnection,
+                                                                                                                lTransaction)
+                    If vReadModelList IsNot Nothing Then
+                        lTransaction.Commit()
+                        Return vReadModelList
+                    End If
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -149,6 +306,12 @@ Partial Public Class clsLnTrans_re_det
         Dim lReturnList As New List(Of clsBeTrans_re_det)
 
         Try
+
+            Dim vReadModelList As List(Of clsBeTrans_re_det) = Get_Detalle_By_IdRecepcionEnc_ReadModel(pIdRecepcionEnc,
+                                                                                                        pIdBodega,
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
+            If vReadModelList IsNot Nothing Then Return vReadModelList
 
             Dim vSQL As String = "SELECT * FROM VW_Get_Detalle_By_IdRecepcionEnc 
                                   WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdBodega = @IdBodega "
@@ -1025,6 +1188,18 @@ Partial Public Class clsLnTrans_re_det
                                                      pConection:=If(Es_Transaccion_Remota, pConnection, lConnection),
                                                      pTransaction:=If(Es_Transaccion_Remota, pTransaction, lTrans)
 )
+
+                '#EJC20260522_RECEPCION_OUT_ORFANOS: al eliminar un detalle tambien se limpia el outbound INGRESO para no dejar IdRecepcionDet huerfanos en i_nav_transacciones_out.
+                clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
+                                                                                           pIdRecepcionDet,
+                                                                                           0,
+                                                                                           0,
+                                                                                           "",
+                                                                                           "",
+                                                                                           "",
+                                                                                           Date.MinValue,
+                                                                                           IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                           IIf(Es_Transaccion_Remota, pTransaction, lTrans))
             End If
 
             Resultado += String.Format("Eliminé {0} detalles de la recepción ", FilasAfectadas)
@@ -1972,9 +2147,9 @@ Partial Public Class clsLnTrans_re_det
                     FROM trans_re_enc AS re INNER JOIN
                       trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
                       trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc LEFT JOIN
-					  producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
-					  talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
-					  color c on ptc.IdColor = c.IdColor
+                                          producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
+                                          talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
+                                          color c on ptc.IdColor = c.IdColor
                     WHERE (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc)
                     GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, 
                       det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
@@ -2550,53 +2725,53 @@ Partial Public Class clsLnTrans_re_det
     ''' <param name="pListaStockRec"></param>
     ''' <param name="lConnection"></param>
     ''' <param name="lTransaction"></param>
+    '#EJC20260527: Refactor — retorna Dictionary(idOrigen->idNuevo) para exponer de forma
+    'explicita los IDENTITY generados al caller. Elimina dependencia implicita de efectos
+    'secundarios y permite al caller verificar sincronizacion. Ambos branches (IsNew=True/False)
+    'hacen siempre INSERT porque este overload se invoca tras Eliminar_Detalle previo:
+    'un Actualizar seria inoperante (fila ya borrada) y dejaria pListaStockRec con IDs de HH.
     Public Shared Function Guarda_Trans_re_det(ByRef pListRecDet As List(Of clsBeTrans_re_det),
                                                ByRef pListaStockRec As List(Of clsBeStock_rec),
                                                ByRef lConnection As SqlConnection,
-                                               ByRef lTransaction As SqlTransaction) As Integer
+                                               ByRef lTransaction As SqlTransaction
+    ) As Dictionary(Of Integer, Integer)
 
-        Dim vFilas As Integer = 0
+        Dim mapaIds As New Dictionary(Of Integer, Integer)
 
         Try
 
-            Dim MaxIdRecepcionDet As Integer = 0
-
             For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
 
-                If BeTransReDet.IsNew Then
+                '#EJC20260527: capturar ID origen ANTES del INSERT (el valor calculado por la HH)
+                Dim idOrigen As Integer = BeTransReDet.IdRecepcionDet
 
-                    Dim IdRecepcionDetOrigen As Integer = BeTransReDet.IdRecepcionDet
+                BeTransReDet.Fecha_ingreso = Now
+                BeTransReDet.Fec_agr = Now
 
-                    BeTransReDet.Fecha_ingreso = Now
-                    BeTransReDet.Fec_agr = Now
-
-                    If BeTransReDet.IdPresentacion = -1 Then
-                        BeTransReDet.IdPresentacion = 0
-                    End If
-
-                    Insertar(BeTransReDet, lConnection, lTransaction)
-
-                    MaxIdRecepcionDet = BeTransReDet.IdRecepcionDet
-
-                    If MaxIdRecepcionDet <= 0 Then
-                        Throw New Exception("ERROR_202605201645: No se obtuvo IdRecepcionDet identity para la linea de recepcion.")
-                    End If
-
-                    '#EJCCKFK20260520: trans_re_det.IdRecepcionDet es identity; stock_rec debe quedar ligado al identity real.
-                    Asignar_IdRecepcionDet_StockRec(pListaStockRec,
-                                                    BeTransReDet,
-                                                    IdRecepcionDetOrigen,
-                                                    MaxIdRecepcionDet)
-
-                    vFilas += 1
-
-                Else
-                    vFilas += Actualizar(BeTransReDet, lConnection, lTransaction)
+                If BeTransReDet.IdPresentacion = -1 Then
+                    BeTransReDet.IdPresentacion = 0
                 End If
+
+                Insertar(BeTransReDet, lConnection, lTransaction)
+
+                '#EJC20260527: capturar SCOPE_IDENTITY real generado por SQL Server
+                Dim idNuevo As Integer = BeTransReDet.IdRecepcionDet
+
+                If idNuevo <= 0 Then
+                    Throw New Exception("ERROR_202605271800: No se obtuvo IdRecepcionDet identity para la linea origen " & idOrigen)
+                End If
+
+                '#EJC20260527: sincronizar pListaStockRec con el IDENTITY real
+                Asignar_IdRecepcionDet_StockRec(pListaStockRec,
+                                                BeTransReDet,
+                                                idOrigen,
+                                                idNuevo)
+
+                mapaIds(idOrigen) = idNuevo
 
             Next
 
-            Guarda_Trans_re_det = vFilas
+            Return mapaIds
 
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
@@ -2631,6 +2806,15 @@ Partial Public Class clsLnTrans_re_det
                                                       AndAlso x.IdProductoBodega = pBeTransReDet.IdProductoBodega _
                                                       AndAlso x.No_linea = pBeTransReDet.No_Linea _
                                                       AndAlso (String.IsNullOrEmpty(lLicPlate) OrElse If(x.Lic_plate, "") = lLicPlate))
+            '#EJC20260527-TRACE BUG-003B: log cuando fallback IdRecepcionDet=0 NO encuentra match
+            If lStockRec.Count = 0 Then
+                Dim vMsgError As String = "TRACE_BUG003B_FALLBACK_ID0_FAIL: RecEnc=" & pBeTransReDet.IdRecepcionEnc & " IdProdBod=" & pBeTransReDet.IdProductoBodega & " NoLinea=" & pBeTransReDet.No_Linea & " LP=" & lLicPlate & " idOrigen=" & pIdRecepcionDetOrigen & " idNuevo=" & pIdRecepcionDetNuevo
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                     pIdRecEnc:=pBeTransReDet.IdRecepcionEnc,
+                                                     pNumeroLinea:=pBeTransReDet.No_Linea,
+                                                     pVariantCode:=pBeTransReDet.Codigo_Producto,
+                                                     pCantidad:=pBeTransReDet.cantidad_recibida)
+            End If
         End If
 
         For Each BeStockRec As clsBeStock_rec In lStockRec
@@ -3106,40 +3290,37 @@ Partial Public Class clsLnTrans_re_det
 
                 Resultado += String.Format(" Eliminé {0} detalles de la recepción ", FilasAfectadas)
 
-                If pRecEnc.Habilitar_Stock Then
+                '#EJC20260522_RECEPCION_OUT_ORFANOS: la limpieza de i_nav_transacciones_out no debe depender de Habilitar_Stock; puede existir outbound aunque el detalle se borre sin tocar stock.
+                Dim pFilasAfectadas = clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
+                                                                                                            pIdRecepcionDet,
+                                                                                                            pRecEnc.IdBodega,
+                                                                                                            pRecDet.IdProductoBodega,
+                                                                                                            pRecDet.Lic_plate,
+                                                                                                            pRecDet.No_Linea,
+                                                                                                            pRecDet.Lote,
+                                                                                                            pRecDet.Fecha_vence,
+                                                                                                            lConnection,
+                                                                                                            lTrans)
 
-                    Dim pFilasAfectadas = clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
-                                                                                                                pIdRecepcionDet,
-                                                                                                                pRecEnc.IdBodega,
-                                                                                                                pRecDet.IdProductoBodega,
-                                                                                                                pRecDet.Lic_plate,
-                                                                                                                pRecDet.No_Linea,
-                                                                                                                pRecDet.Lote,
-                                                                                                                pRecDet.Fecha_vence,
-                                                                                                                lConnection,
-                                                                                                                lTrans)
+                If pFilasAfectadas = 0 Then
+                    '#MECR23092025: Se agrego nueva opcion de log para recepciones.
+                    '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
+                    Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No existe registro de i_nav_transacciones_out para eliminar, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
+                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
 
-                    If pFilasAfectadas = 0 Then
-                        '#MECR23092025: Se agrego nueva opcion de log para recepciones.
-                        '#EJC20260520_RECEPCION_OUT_IDEMPOTENTE: El registro outbound puede no existir si la recepcion se reconstruyo o si nunca alcanzo a generarse; no debe bloquear la eliminacion del detalle.
-                        Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No existe registro de i_nav_transacciones_out para eliminar, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
-                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
-                        clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                             pNumeroLinea:=pRecDet.No_Linea,
-                                                             pUMBas:=pRecDet.UnidadMedida.Nombre,
-                                                             pVariantCode:=pRecDet.Codigo_Producto,
-                                                             pCantidad:=pRecDet.cantidad_recibida,
-                                                             pReferenciaDocumento:=pIdHost.ToString(),
-                                                             pIdRecEnc:=pIdRecepcionEnc,
-                                                             pIdRecDet:=pIdRecepcionDet,
-                                                             pConection:=lConnection,
-                                                             pTransaction:=lTrans)
-
-                        Resultado += " No existia registro de i_nav_transacciones_out para eliminar "
-                    Else
-                        Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
-                    End If
-
+                    Resultado += " No existia registro de i_nav_transacciones_out para eliminar "
+                Else
+                    Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", pFilasAfectadas)
                 End If
 
                 FilasAfectadas = clsLnI_nav_barras_pallet.Actualizar_Barra_No_Recibida(pRecDet.IdOrdenCompraEnc,

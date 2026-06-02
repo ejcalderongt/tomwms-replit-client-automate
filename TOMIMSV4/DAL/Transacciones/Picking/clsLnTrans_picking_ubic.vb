@@ -1,4 +1,4 @@
-Imports System.Data.Common
+﻿Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -42,7 +42,12 @@ Public Class clsLnTrans_picking_ubic
                 .No_packing = IIf(IsDBNull(dr.Item("no_packing")), "", dr.Item("no_packing"))
                 .Fecha_picking = IIf(IsDBNull(dr.Item("fecha_picking")), Date.Now, dr.Item("fecha_picking"))
                 .Fecha_verificado = IIf(IsDBNull(dr.Item("fecha_verificado")), Date.Now, dr.Item("fecha_verificado"))
-                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), Date.Now, dr.Item("fecha_packing"))
+                '#EJC20260529 fix BUG-004: Date.Now→New Date(1900,1,1) para NULL.
+                '  Cargar defaulteaba NULL a Date.Now → Actualizar escribía hoy en BD
+                '  → filtro fecha_packing<'19010101' en Get_All_PickingUbic excluía el
+                '  producto de PENDIENTE justo después de la verificación. El sentinel
+                '  correcto es 1900-01-01 (= 'no empacado'), nunca Date.Now.
+                .Fecha_packing = IIf(IsDBNull(dr.Item("fecha_packing")), New Date(1900, 1, 1), dr.Item("fecha_packing"))
                 .Fecha_despachado = IIf(IsDBNull(dr.Item("fecha_despachado")), Date.Now, dr.Item("fecha_despachado"))
                 .Cantidad_despachada = IIf(IsDBNull(dr.Item("cantidad_despachada")), 0.0, dr.Item("cantidad_despachada"))
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
@@ -1233,13 +1238,36 @@ Public Class clsLnTrans_picking_ubic
             lConnection.Open()
             lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-            Const sp As String = "UPDATE trans_picking_ubic 
-                                 SET cantidad_verificada = cantidad_recibida 
-                                 WHERE IdPedidoEnc = @IdPedidoEnc 
-                                 And ISNULL(cantidad_verificada,0) = 0 
-                                 And ISNULL(dañado_verificacion,0) = 0 
-                                 And ISNULL(encontrado,0) = 1 
-                                 And IdStock In (Select IdStock FROM stock_res WHERE estado = 'VERIFICADO') "
+            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: Solo autocorregir verificaciones en cero si existe packing para la misma clave logistica.
+            Const sp As String = "UPDATE p " &
+                                 "SET cantidad_verificada = cantidad_recibida " &
+                                 "FROM trans_picking_ubic p " &
+                                 "WHERE p.IdPedidoEnc = @IdPedidoEnc " &
+                                 "  AND ISNULL(p.cantidad_verificada,0) = 0 " &
+                                 "  AND ISNULL(p.cantidad_recibida,0) > 0 " &
+                                 "  AND ISNULL(p.dañado_verificacion,0) = 0 " &
+                                 "  AND ISNULL(p.encontrado,0) = 1 " &
+                                 "  AND EXISTS ( " &
+                                 "      SELECT 1 " &
+                                 "      FROM stock_res sr " &
+                                 "      WHERE sr.estado = 'VERIFICADO' " &
+                                 "        AND sr.IdPedido = p.IdPedidoEnc " &
+                                 "        AND (sr.IdStockRes = p.IdStockRes OR (ISNULL(p.IdStockRes,0) = 0 AND sr.IdStock = p.IdStock)) " &
+                                 "  ) " &
+                                 "  AND EXISTS ( " &
+                                 "      SELECT 1 " &
+                                 "      FROM trans_packing_enc pk " &
+                                 "      WHERE pk.IdPedidoEnc = p.IdPedidoEnc " &
+                                 "        AND pk.IdPickingEnc = p.IdPickingEnc " &
+                                 "        AND pk.IdProductoBodega = p.IdProductoBodega " &
+                                 "        AND pk.IdProductoEstado = p.IdProductoEstado " &
+                                 "        AND ISNULL(pk.IdPresentacion,0) = ISNULL(p.IdPresentacion,0) " &
+                                 "        AND pk.IdUnidadMedida = p.IdUnidadMedida " &
+                                 "        AND ISNULL(pk.Lote,'') = ISNULL(p.Lote,'') " &
+                                 "        AND ISNULL(CONVERT(DATE, pk.fecha_vence),CONVERT(DATE, '19000101')) = ISNULL(CONVERT(DATE, p.fecha_vence),CONVERT(DATE, '19000101')) " &
+                                 "        AND ISNULL(pk.lic_plate,'') = ISNULL(p.lic_plate,'') " &
+                                 "        AND ISNULL(pk.cantidad_bultos_packing,0) > 0 " &
+                                 "  ) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.Add(New SqlParameter("@IdPedidoEnc", IdPedidoEnc))
@@ -1274,60 +1302,91 @@ Public Class clsLnTrans_picking_ubic
             lConnection.Open()
             lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Const sp As String = "SELECT " &
-                             "    p.cantidad_verificada, " &
-                             "    p.cantidad_recibida, " &
-                             "    p.cantidad_solicitada, " &
-                             "    p.IdPickingUbic, " &
-                             "    p.IdPickingEnc, " &
-                             "    p.IdStock, " &
-                             "    p.IdStockRes, " &
-                             "    p.IdProductoBodega, " &
-                             "    p.lote, " &
-                             "    p.lic_plate, " &
-                             "    ISNULL(pr.codigo,'') AS codigo, " &
-                             "    ISNULL(pr.nombre,'') AS producto, " &
-                             "    ISNULL(pk.cantidad_empacada, 0) AS cantidad_empacada " &
-                             "FROM trans_picking_ubic p " &
-                             "INNER JOIN stock_res sr " &
-                             "    ON sr.IdStock = p.IdStock " &
-                             "LEFT JOIN producto_bodega pb " &
-                             "    ON pb.IdProductoBodega = p.IdProductoBodega " &
-                             "LEFT JOIN producto pr " &
-                             "    ON pr.IdProducto = pb.IdProducto " &
-                             "INNER JOIN ( " &
+            '#EJC20260522_FIX_PACKING_VRS_VERIFICACION: Comparar por clave logistica y detectar parciales, no solo verificacion en cero.
+            Const sp As String = "WITH Picking AS ( " &
+                             "    SELECT " &
+                             "        p.IdPedidoEnc, " &
+                             "        p.IdPickingEnc, " &
+                             "        p.IdProductoBodega, " &
+                             "        p.IdProductoEstado, " &
+                             "        ISNULL(p.IdPresentacion,0) AS IdPresentacion, " &
+                             "        p.IdUnidadMedida, " &
+                             "        ISNULL(p.lote,'') AS lote, " &
+                             "        ISNULL(p.lic_plate,'') AS lic_plate, " &
+                             "        ISNULL(CONVERT(DATE, p.fecha_vence),CONVERT(DATE, '19000101')) AS fecha_vence, " &
+                             "        SUM(ISNULL(p.cantidad_recibida,0)) AS cantidad_recibida, " &
+                             "        SUM(ISNULL(p.cantidad_verificada,0)) AS cantidad_verificada, " &
+                             "        SUM(ISNULL(p.cantidad_solicitada,0)) AS cantidad_solicitada, " &
+                             "        MIN(p.IdPickingUbic) AS IdPickingUbic, " &
+                             "        MIN(p.IdStock) AS IdStock, " &
+                             "        MIN(p.IdStockRes) AS IdStockRes " &
+                             "    FROM trans_picking_ubic p " &
+                             "    WHERE p.IdPedidoEnc = @IdPedidoEnc " &
+                             "      AND ISNULL(p.cantidad_recibida,0) > 0 " &
+                             "      AND ISNULL(p.dañado_verificacion,0) = 0 " &
+                             "      AND EXISTS ( " &
+                             "          SELECT 1 " &
+                             "          FROM stock_res sr " &
+                             "          WHERE sr.estado = 'VERIFICADO' " &
+                             "            AND sr.IdPedido = p.IdPedidoEnc " &
+                             "            AND (sr.IdStockRes = p.IdStockRes OR (ISNULL(p.IdStockRes,0) = 0 AND sr.IdStock = p.IdStock)) " &
+                             "      ) " &
+                             "    GROUP BY p.IdPedidoEnc, p.IdPickingEnc, p.IdProductoBodega, p.IdProductoEstado, ISNULL(p.IdPresentacion,0), p.IdUnidadMedida, ISNULL(p.lote,''), ISNULL(p.lic_plate,''), ISNULL(CONVERT(DATE, p.fecha_vence),CONVERT(DATE, '19000101')) " &
+                             "), Packing AS ( " &
                              "    SELECT " &
                              "        tpe.IdPedidoEnc, " &
-                             "        tpe.idpickingenc, " &
-                             "        tpe.idproductobodega, " &
+                             "        tpe.IdPickingEnc, " &
+                             "        tpe.IdProductoBodega, " &
+                             "        tpe.IdProductoEstado, " &
+                             "        ISNULL(tpe.IdPresentacion,0) AS IdPresentacion, " &
+                             "        tpe.IdUnidadMedida, " &
                              "        ISNULL(tpe.lote,'') AS lote, " &
                              "        ISNULL(tpe.lic_plate,'') AS lic_plate, " &
+                             "        ISNULL(CONVERT(DATE, tpe.fecha_vence),CONVERT(DATE, '19000101')) AS fecha_vence, " &
                              "        SUM(ISNULL(tpe.cantidad_bultos_packing,0)) AS cantidad_empacada " &
                              "    FROM trans_packing_enc tpe " &
-                             "    GROUP BY " &
-                             "        tpe.IdPedidoEnc, " &
-                             "        tpe.idpickingenc, " &
-                             "        tpe.idproductobodega, " &
-                             "        ISNULL(tpe.lote,''), " &
-                             "        ISNULL(tpe.lic_plate,'') " &
-                             ") pk " &
+                             "    WHERE tpe.IdPedidoEnc = @IdPedidoEnc " &
+                             "    GROUP BY tpe.IdPedidoEnc, tpe.IdPickingEnc, tpe.IdProductoBodega, tpe.IdProductoEstado, ISNULL(tpe.IdPresentacion,0), tpe.IdUnidadMedida, ISNULL(tpe.lote,''), ISNULL(tpe.lic_plate,''), ISNULL(CONVERT(DATE, tpe.fecha_vence),CONVERT(DATE, '19000101')) " &
+                             ") " &
+                             "SELECT " &
+                             "    ISNULL(p.cantidad_verificada,0) AS cantidad_verificada, " &
+                             "    ISNULL(p.cantidad_recibida,0) AS cantidad_recibida, " &
+                             "    ISNULL(p.cantidad_solicitada,0) AS cantidad_solicitada, " &
+                             "    ISNULL(p.IdPickingUbic,0) AS IdPickingUbic, " &
+                             "    ISNULL(p.IdPickingEnc, pk.IdPickingEnc) AS IdPickingEnc, " &
+                             "    ISNULL(p.IdStock,0) AS IdStock, " &
+                             "    ISNULL(p.IdStockRes,0) AS IdStockRes, " &
+                             "    ISNULL(p.IdProductoBodega, pk.IdProductoBodega) AS IdProductoBodega, " &
+                             "    ISNULL(p.lote, pk.lote) AS lote, " &
+                             "    ISNULL(p.lic_plate, pk.lic_plate) AS lic_plate, " &
+                             "    ISNULL(pr.codigo,'') AS codigo, " &
+                             "    ISNULL(pr.nombre,'') AS producto, " &
+                             "    ISNULL(pk.cantidad_empacada,0) AS cantidad_empacada, " &
+                             "    CASE " &
+                             "        WHEN p.IdPickingEnc IS NULL AND ISNULL(pk.cantidad_empacada,0) > 0 THEN 'PACKING_SIN_PICKING_VERIFICADO' " &
+                             "        WHEN ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0 THEN 'VERIFICACION_EN_CERO' " &
+                             "        WHEN ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_recibida,0) - ISNULL(p.cantidad_verificada,0)) > 0.000001 THEN 'VERIFICACION_PARCIAL' " &
+                             "        WHEN ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_verificada,0) - ISNULL(pk.cantidad_empacada,0)) > 0.000001 THEN 'PACKING_NO_CUADRA' " &
+                             "        ELSE 'SIN_PICKING_VERIFICADO' " &
+                             "    END AS tipo_diferencia, " &
+                             "    CASE WHEN p.IdPickingEnc IS NOT NULL AND ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0 THEN 1 ELSE 0 END AS permite_correccion_auto " &
+                             "FROM Picking p " &
+                             "FULL OUTER JOIN Packing pk " &
                              "    ON pk.IdPedidoEnc = p.IdPedidoEnc " &
-                             "   AND pk.idpickingenc = p.IdPickingEnc " &
-                             "   AND pk.idproductobodega = p.IdProductoBodega " &
-                             "   AND pk.lote = ISNULL(p.lote,'') " &
-                             "   AND pk.lic_plate = ISNULL(p.lic_plate,'') " &
-                             "WHERE p.IdPedidoEnc = @IdPedidoEnc " &
-                             "  AND ISNULL(p.cantidad_recibida,0) > 0 " &
-                             "  AND ISNULL(p.cantidad_verificada,0) = 0 " &
-                             "  AND ISNULL(p.dañado_verificacion,0) = 0 " &
-                             "  AND ISNULL(pk.cantidad_empacada,0) > 0 " &
-                             "  AND p.IdStock IN ( " &
-                             "      SELECT IdStock " &
-                             "      FROM stock_res " &
-                             "      WHERE estado = 'VERIFICADO' " &
-                             "        AND stock_res.IdPedido = @IdPedidoEnc " &
-                             "  ) " &
-                             "ORDER BY p.IdPickingEnc, pr.codigo, p.lote, p.lic_plate "
+                             "   AND pk.IdPickingEnc = p.IdPickingEnc " &
+                             "   AND pk.IdProductoBodega = p.IdProductoBodega " &
+                             "   AND pk.IdProductoEstado = p.IdProductoEstado " &
+                             "   AND pk.IdPresentacion = p.IdPresentacion " &
+                             "   AND pk.IdUnidadMedida = p.IdUnidadMedida " &
+                             "   AND pk.lote = p.lote " &
+                             "   AND pk.lic_plate = p.lic_plate " &
+                             "   AND pk.fecha_vence = p.fecha_vence " &
+                             "LEFT JOIN producto_bodega pb ON pb.IdProductoBodega = ISNULL(p.IdProductoBodega, pk.IdProductoBodega) " &
+                             "LEFT JOIN producto pr ON pr.IdProducto = pb.IdProducto " &
+                             "WHERE (ISNULL(p.cantidad_verificada,0) = 0 AND ISNULL(pk.cantidad_empacada,0) > 0) " &
+                             "   OR (ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_recibida,0) - ISNULL(p.cantidad_verificada,0)) > 0.000001) " &
+                             "   OR (ISNULL(p.cantidad_verificada,0) > 0 AND ABS(ISNULL(p.cantidad_verificada,0) - ISNULL(pk.cantidad_empacada,0)) > 0.000001) " &
+                             "ORDER BY ISNULL(p.IdPickingEnc, pk.IdPickingEnc), pr.codigo, ISNULL(p.lote, pk.lote), ISNULL(p.lic_plate, pk.lic_plate) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)

@@ -508,7 +508,9 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
                         vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
                         vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
-                        vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
+                        If lRow.Table.Columns.Contains("Generar_Picking_Auto") Then
+                            vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
+                        End If
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))
@@ -5689,7 +5691,9 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.TipoPedido.Empaque_Tarima = IIf(IsDBNull(lRow("Empaque_Tarima")), False, lRow("Empaque_Tarima"))
                         vPedidoEnc.TipoPedido.Asignar_Todos_Operadores = IIf(IsDBNull(lRow("Asignar_Todos_Operadores")), False, lRow("Asignar_Todos_Operadores"))
                         vPedidoEnc.TipoPedido.Verificar = IIf(IsDBNull(lRow("Verificar")), False, lRow("Verificar"))
-                        vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
+                        If lRow.Table.Columns.Contains("Generar_Picking_Auto") Then
+                            vPedidoEnc.TipoPedido.Generar_Picking_Auto = IIf(IsDBNull(lRow("Generar_Picking_Auto")), False, lRow("Generar_Picking_Auto"))
+                        End If
                     End If
 
                     vPedidoEnc.RoadIdRuta = IIf(IsDBNull(lRow("RoadIdRuta")), 0, CType(lRow("RoadIdRuta"), Integer))

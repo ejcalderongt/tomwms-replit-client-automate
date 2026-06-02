@@ -1970,7 +1970,8 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, parcial solo aplica cuando cantidad_solicitada > 0.
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -1990,7 +1991,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
 
@@ -2283,7 +2284,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
                     '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -2345,7 +2346,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                     '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
@@ -2591,7 +2592,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2610,7 +2611,7 @@ Partial Public Class clsLnStock_res
                                                      lConnection,
                                                      lTransaction)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     bePickingUbicExistente.IdStockRes = lBeStockAReservar(0).IdStockRes
                     bePickingUbicExistente.Cantidad_Solicitada = CantSol
@@ -2820,7 +2821,7 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
                 End If
 
-                If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+                If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
 
                     bePickingUbicExistenteDañado.Cantidad_Solicitada = CantSol
 
@@ -2841,7 +2842,7 @@ Partial Public Class clsLnStock_res
                     'bePickingUbicExistenteDañado.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, ltransaction) + 1
                     clsLnTrans_picking_ubic.Insertar(bePickingUbicExistenteDañado)
 
-                ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+                ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                     '#EJC20190626: Si la Cantidad_Solicitada es igual a 0, quiere decir que fue reemplazada por completo por otro IdStock
                     'Por consiguiente la Cantidad_Solicitada de ese IdPickingUbic es 0, porque ya sé que no está.
@@ -3029,7 +3030,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             lTransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3053,6 +3055,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             lTransaction.Commit()
@@ -3172,7 +3176,8 @@ Partial Public Class clsLnStock_res
                                                             lConnection,
                                                             ltransaction)
 
-            If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                 Dim resultReemp As Boolean = False
 
@@ -3196,6 +3201,8 @@ Partial Public Class clsLnStock_res
                     Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
                 End If
 
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
             End If
 
             Return True
@@ -3265,13 +3272,24 @@ Partial Public Class clsLnStock_res
 
             If ListTransPickingUbic.Count > 0 Then
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: En verificación el disponible real es (cantidad_recibida - cantidad_verificada).
                 For Each tmp In ListTransPickingUbic
-                    CantSolicitada += tmp.Cantidad_Solicitada
-                    CantRecibida += tmp.Cantidad_Recibida
+
+                    Dim vDisponibleLinea As Double = 0
+
+                    If EsPicking Then
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
+                    Else
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += vDisponibleLinea
+                    End If
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3280,12 +3298,22 @@ Partial Public Class clsLnStock_res
 
                 For Each pu In ListTransPickingUbic
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    Dim DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación no se debe usar cantidad_solicitada porque reabre pendientes históricos.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = pu.Cantidad_Solicitada - pu.Cantidad_Recibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (pu.Cantidad_Solicitada - pu.Cantidad_Recibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
@@ -3399,19 +3427,24 @@ Partial Public Class clsLnStock_res
 
                 IdEmpresa = clsLnPropietario_bodega.GetIdEmpresa_By_IdPropietarioBodega(ListTransPickingUbic(0).IdPropietarioBodega, lConnection, lTransaction)
 
-                '#AT Suma cantidades solicitadas y recibidas para calcular la cantidad disponible 
+                '#AT Suma cantidades para calcular la cantidad disponible.
+                '#EJC20260526: Ignora líneas sin disponible real y en verificación usa recibido-verificado.
                 For Each tmp In ListTransPickingUbic
 
-                    CantSolicitada += tmp.Cantidad_Solicitada
+                    Dim vDisponibleLinea As Double = 0
                     If EsPicking Then
-                        CantRecibida += tmp.Cantidad_Recibida
+                        vDisponibleLinea = tmp.Cantidad_Solicitada - tmp.Cantidad_Recibida
                     Else
-                        CantRecibida += tmp.Cantidad_Verificada
+                        vDisponibleLinea = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    End If
+
+                    If vDisponibleLinea > 0 Then
+                        CantSolicitada += vDisponibleLinea
                     End If
 
                 Next
 
-                Dim CantDisponible = CantSolicitada - CantRecibida
+                Dim CantDisponible = CantSolicitada
 
                 '#AT Se valida si la cantidad a reemplazar es mayor a la disponible
                 If CantidadTotal > CantDisponible Then
@@ -3428,15 +3461,29 @@ Partial Public Class clsLnStock_res
                         CantRecibida = pu.Cantidad_Verificada
                     End If
 
-                    '#AT Se resta la cantidad recibida a la solicitada
-                    Dim DisponibleReem = CantSolicitada - CantRecibida
+                    '#AT Se obtiene el disponible por línea según el proceso.
+                    '#EJC20260526: En verificación usar recibido-verificado para no reabrir cantidad no pickeada.
+                    Dim DisponibleReem As Double = 0
+                    If EsPicking Then
+                        DisponibleReem = CantSolicitada - CantRecibida
+                    Else
+                        DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    End If
+
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If CantSol >= DisponibleReem Then
 
-                        tmpCantPend = CantSol - (CantSolicitada - CantRecibida)
+                        tmpCantPend = CantSol - DisponibleReem
                         CantSol = DisponibleReem
 
                     End If
+
+                    '#EJC20260526: Cantidad a aplicar por línea en unidad de trabajo de picking_ubic.
+                    '#EJC20260526: Evita sobre-restar CantOriginal en cada iteración y violar CK de cantidad_solicitada > 0.
+                    Dim vCantAplicar As Double = CantSol
 
                     Dim pHost As String = "1"
 
@@ -3447,7 +3494,7 @@ Partial Public Class clsLnStock_res
                                                                                              pu.IdStock,
                                                                                              pu.IdStockRes,
                                                                                              IdUsuarioHH,
-                                                                                             CantOriginal,
+                                                                                             vCantAplicar,
                                                                                              IdUbicDestino,
                                                                                              IdEstadoDestino,
                                                                                              pu.IdPropietarioBodega,
@@ -3493,7 +3540,7 @@ Partial Public Class clsLnStock_res
                     End If
 
 
-                    mResult = Modificar_PickingUbic_By_Reem(CantOriginal,
+                    mResult = Modificar_PickingUbic_By_Reem(vCantAplicar,
                                                             pu.IdPickingUbic,
                                                             EsPicking,
                                                             Tipo,
@@ -3503,10 +3550,10 @@ Partial Public Class clsLnStock_res
 
 
 
-                    CantTotal -= CantOriginal
+                    CantTotal -= vCantAplicar
 
                     If result = "" And mResult Then
-                        If CantTotal = 0 Then
+                        If CantTotal <= 0 Then
                             Exit For
                         Else
                             CantSol = tmpCantPend
@@ -3547,6 +3594,11 @@ Partial Public Class clsLnStock_res
 
             vCantSol = CantSol
 
+            '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, no se debe intentar actualizar con cantidad <= 0.
+            If CantSol <= 0 Then
+                Return True
+            End If
+
             '#CKFK 20180208 11:47PM Actualizar la cantidad solicitada en trans_picking_ubic
             Dim bePickingUbicExistente As New clsBeTrans_picking_ubic With {
                 .IdPickingUbic = IdPickingUbic
@@ -3560,9 +3612,14 @@ Partial Public Class clsLnStock_res
 
             If Not EsPicking Then
                 bePickingUbicExistente.Cantidad_Recibida -= CantSol
+                '#EJC20260526: En verificación, mantener consistencia Recibida/Verificada para evitar disponibles negativos.
+                bePickingUbicExistente.Cantidad_Verificada -= CantSol
+                If bePickingUbicExistente.Cantidad_Verificada < 0 Then
+                    bePickingUbicExistente.Cantidad_Verificada = 0
+                End If
             End If
 
-            If bePickingUbicExistente.Cantidad_Solicitada <> 0 Then
+            If bePickingUbicExistente.Cantidad_Solicitada > 0 Then
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es parcial 
 
                 '#AT 20210111 Se modifica el picking_ubic  original con la cantidad solicitada menos la cantidad dañada
@@ -3579,6 +3636,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 1
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 2
@@ -3593,6 +3651,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
 
                 End If
 
@@ -3603,7 +3665,7 @@ Partial Public Class clsLnStock_res
                 'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente, lConnection, lTransaction)
 
-            ElseIf bePickingUbicExistente.Cantidad_Solicitada = 0 Then
+            ElseIf bePickingUbicExistente.Cantidad_Solicitada <= 0 Then
 
                 '#AT 20210111 Aquí entra cuando la cantidad a reemplazar es completa 
                 '#AT 20210111 Se va insertar un nuevo picking_ubic con el dañado y el encontrado en true
@@ -3618,6 +3680,7 @@ Partial Public Class clsLnStock_res
                         'bePickingUbicExistente.No_packing = 4
                     Else
                         bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
                         bePickingUbicExistente.Dañado_picking = False
                         bePickingUbicExistente.Dañado_verificacion = True
                         'bePickingUbicExistente.No_packing = 5
@@ -3631,6 +3694,10 @@ Partial Public Class clsLnStock_res
                     bePickingUbicExistente.Dañado_verificacion = False
                     bePickingUbicExistente.Encontrado = 0
                     bePickingUbicExistente.No_encontrado = True
+                    If Not EsPicking Then
+                        bePickingUbicExistente.Cantidad_Recibida = CantSol
+                        bePickingUbicExistente.Cantidad_Verificada = CantSol
+                    End If
                     'bePickingUbicExistente.No_packing = 6
                 End If
 
@@ -3726,9 +3793,35 @@ Partial Public Class clsLnStock_res
 
                 End If
 
+                '#EJC20260526: Acotar por línea/picking_ubic objetivo para evitar mezclar reemplazo con otras sublíneas del mismo código.
+                If ListPickingUbic IsNot Nothing AndAlso ListPickingUbic.Count > 0 Then
+                    If plistPickingUbi.IdPickingUbic <> 0 Then
+                        Dim vByPickingUbic = ListPickingUbic.Where(Function(x) x.IdPickingUbic = plistPickingUbi.IdPickingUbic).ToList()
+                        If vByPickingUbic.Count > 0 Then
+                            ListPickingUbic = vByPickingUbic
+                        End If
+                    End If
+
+                    If plistPickingUbi.IdPedidoDet <> 0 Then
+                        Dim vByPedidoDet = ListPickingUbic.Where(Function(x) x.IdPedidoDet = plistPickingUbi.IdPedidoDet).ToList()
+                        If vByPedidoDet.Count > 0 Then
+                            ListPickingUbic = vByPedidoDet
+                        End If
+                    End If
+                End If
+
+                '#EJC20260526: Evita flujo con lista vacía que deriva en acceso por índice en reemplazo.
+                If ListPickingUbic Is Nothing OrElse ListPickingUbic.Count = 0 Then
+                    Throw New Exception("No se puede completar el proceso, no hay líneas disponibles para reemplazo en verificación.")
+                End If
+
+                '#EJC20260526: En verificación usar solo líneas con recibido > verificado.
                 For Each tmp In ListPickingUbic
-                    CantidadRecibida += tmp.Cantidad_Recibida
-                    CantidadVerificada += tmp.Cantidad_Verificada
+                    Dim vDisponibleLinea As Double = tmp.Cantidad_Recibida - tmp.Cantidad_Verificada
+                    If vDisponibleLinea > 0 Then
+                        CantidadRecibida += tmp.Cantidad_Recibida
+                        CantidadVerificada += tmp.Cantidad_Verificada
+                    End If
                 Next
 
                 Dim CantDisponible = CantidadRecibida - CantidadVerificada
@@ -3749,7 +3842,11 @@ Partial Public Class clsLnStock_res
                 End If
 
                 For Each pu In ListPickingUbic
+                    '#EJC20260526: Saltar líneas sin disponible de verificación.
                     Dim DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
+                    If DisponibleReem <= 0 Then
+                        Continue For
+                    End If
 
                     If pCantReemplazar >= DisponibleReem Then
 
@@ -3918,11 +4015,12 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 lTransaction)
 
-                    If StockResList IsNot Nothing Then
+            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
-                        Dim resultReemp As Boolean = False
+                Dim resultReemp As Boolean = False
 
-                        resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
+                resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
                                                                                     IdPickingEnc,
                                                                                     BeTransPickingUbic.IdPickingDet,
                                                                                     CantSolTotal,
@@ -4204,7 +4302,8 @@ Partial Public Class clsLnStock_res
                                                                 lConnection,
                                                                 ltransaction)
 
-                    If StockResList IsNot Nothing Then
+                    '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+                    If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
                         Dim resultReemp As Boolean = False
 
@@ -4224,11 +4323,13 @@ Partial Public Class clsLnStock_res
                                                                                     lConnection,
                                                                                     ltransaction,
                                                                                     Tipo)
-                        If Not resultReemp Then
-                            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
-                        End If
+                If Not resultReemp Then
+                    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
+                End If
 
-                    End If
+            Else
+                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
+            End If
 
                 Else
                     Throw New Exception("Licencia reservada por completo")
@@ -8263,7 +8364,7 @@ Partial Public Class clsLnStock_res
 
                                 BeMovimiento = New clsBeTrans_movimientos()
 
-                                BeMovimiento.IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+                                BeMovimiento.IdMovimiento = 0
                                 BeMovimiento.IdTransaccion = BeStockResAReubicar.IdPicking
                                 BeMovimiento.IdEmpresa = BeEmpresa.IdEmpresa
                                 BeMovimiento.IdBodegaOrigen = BeStockResAReubicar.IdBodega
@@ -19011,11 +19112,22 @@ Partial Public Class clsLnStock_res
             lBeStockExistenteZonasNoPicking = ListasStock.lBeStockExistenteZonasNoPicking
             lBeStockExistenteZonaPicking = ListasStock.lBeStockExistenteZonaPicking
 
+            '#CKFK20260523 Agregué estas variables porque no se estaba validando que la presentacion fuera 0
+            Dim vIdPresentacion As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vIdPresentacion = BePresentacionDefecto.IdPresentacion
+            End If
+
+            Dim vFactor As Integer = 0
+            If BePresentacionDefecto IsNot Nothing Then
+                vFactor = BePresentacionDefecto.Factor
+            End If
+
             clsReservaMi3DebugTrace.Evento(vReservaMi3Trace,
                                            "listas_stock_iniciales",
                                            "Producto_Codigo", BeProducto.Codigo,
-                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.IdPresentacion),
-                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(BePresentacionDefecto.Factor),
+                                           "PresentacionDefecto_Id", clsReservaMi3DebugTrace.Valor(vIdPresentacion),
+                                           "PresentacionDefecto_Factor", clsReservaMi3DebugTrace.Valor(vFactor),
                                            "PedidoDet_Cantidad", clsReservaMi3DebugTrace.Valor(BePedidoDet.Cantidad),
                                            "PedidoDet_IdPresentacion", clsReservaMi3DebugTrace.Valor(BePedidoDet.IdPresentacion),
                                            "StockExistente", clsReservaMi3DebugTrace.Valor(If(lBeStockExistente Is Nothing, 0, lBeStockExistente.Count)),

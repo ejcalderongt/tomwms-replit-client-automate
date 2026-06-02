@@ -13,7 +13,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 				.Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
 				.Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
 				.Estado = IIf(IsDBNull(dr.Item("Estado")), "", dr.Item("Estado"))
-				.Tipo = IIf(IsDBNull(dr.Item("Tipo")), "", dr.Item("Tipo"))
+				.Tipo = IIf(IsDBNull(dr.Item("Tipo")), 0, dr.Item("Tipo"))
 				.IdProveedor = IIf(IsDBNull(dr.Item("IdProveedor")), 0, dr.Item("IdProveedor"))
 				.IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
 				.IdPedidoEnc = IIf(IsDBNull(dr.Item("IdPedidoEnc")), 0, dr.Item("IdPedidoEnc"))
@@ -393,13 +393,14 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo.nombre Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
 										 left join Bodega bd on enc.IdBodega=bd.Idbodega
-										 where ISNULL(Tipo, '') ='ING' "
+										 left join i_nav_barras_rfid_tipo_mov Tipo on enc.Tipo = Tipo.Idrfidtipomov
+										 where Tipo.IdRfidTipoMov =1"
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -444,13 +445,14 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Try
 
-			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo,
+			Const sp As String = "SELECT IdRFIDEnc,IdOrdenCompraEnc,IdRecepcionEnc,isnull(bd.nombre,'ND') Bodega,enc.fec_agr,enc.fec_mod,Estado,Tipo.nombre Tipo,
 										 isnull(prov.nombre,'ND') proveedor,ISNULL(cl.nombre_comercial,'ND') cliente
 										 FROM I_nav_barras_rfid_enc enc 
 										 left join proveedor prov on enc.IdProveedor=prov.Idproveedor
 										 left join cliente cl on enc.IdCliente = cl.IdCliente
 									     left join Bodega bd on enc.IdBodega=bd.IdBodega
-										 where ISNULL(Tipo, '') ='SAL' "
+									     left join i_nav_barras_rfid_tipo_mov Tipo on enc.Tipo = Tipo.Idrfidtipomov
+										 where Tipo.IdRfidTipoMov =2 "
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -571,24 +573,66 @@ Public Class clsLnI_nav_barras_rfid_enc
 			lConnection.Open()
 			lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-			'#GT10042026: a futuro se podria asociar el doc de ingreso o salida
-			'If pEncabezado.Tipo = "ING" Then
-			'	pEncabezado.IdOrdenCompraEnc = 0
-			'Else
-			'	pEncabezado.IdPedidoEnc = 0
-			'End If
-
 			pEncabezado.IdRFIDEnc = Insertar(pEncabezado, lConnection, lTransaction)
 			pEncabezado.Detalle(0).IdRFIDEnc = pEncabezado.IdRFIDEnc
 
 			For Each detalle As clsBeI_nav_barras_rfid_det In pEncabezado.Detalle
 
 				If Not clsLnI_nav_barras_rfid_det.Exist_By_EPC(detalle.Barra_epc, pEncabezado.Tipo, lConnection, lTransaction) Then
-					'clsLnI_nav_barras_rfid_det.Insertar(detalle, lConnection, lTransaction)
-
 
 					If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
 
+						'#GT26052026: insertar el movimiento
+						Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
+						pMovimientoRFID.IdRFIDEnc = pEncabezado.IdRFIDEnc
+						pMovimientoRFID.IdRfidTipoMov = 1
+						'pMovimientoRFID.IdRfidStock = 0
+						pMovimientoRFID.Barra_epc = detalle.Barra_epc
+						pMovimientoRFID.Tagid = ""
+						pMovimientoRFID.IdBodega = pEncabezado.IdBodega
+						pMovimientoRFID.IdProductoBodega = 0
+						pMovimientoRFID.Lote = ""
+						pMovimientoRFID.Cantidad = 1
+						pMovimientoRFID.User_agr = 1
+
+						clsLnI_nav_barras_rfid_mov.Insertar(pMovimientoRFID, lConnection, lTransaction)
+
+						If pEncabezado.Tipo = 1 Then
+
+							'#GT26052026: insertar el stock
+							Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
+							pStockRFID.Barra_epc = detalle.Barra_epc
+							pStockRFID.IdBodega = pEncabezado.IdBodega
+							pStockRFID.IdProductoBodega = 0
+							pStockRFID.Cantidad = 1
+							pStockRFID.IdRFIDEncOrigen = pEncabezado.IdRFIDEnc
+							pStockRFID.User_agr = detalle.IdOperador
+							pStockRFID.Activo = 1
+
+							clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, lTransaction)
+
+						ElseIf pEncabezado.Tipo = 2 Then
+
+							'#GT26052026: borrar el stock
+							Dim pBorrarStockRFID As New clsBeI_nav_barras_rfid_stock
+							pBorrarStockRFID.Barra_epc = detalle.Barra_epc
+
+							clsLnI_nav_barras_rfid_stock.GetSingle_By_Barra_Epc(pBorrarStockRFID, lConnection, lTransaction)
+
+							If pBorrarStockRFID.IdRfidStock > 0 Then
+								clsLnI_nav_barras_rfid_stock.Eliminar_Stock_Salida(pBorrarStockRFID, lConnection, lTransaction)
+							Else
+								Throw New Exception("No se encontró el stock asociado a la barra_epc.")
+							End If
+
+						Else
+							Throw New Exception("El tipo de transacción no es consistente para un ingreso o una salida.")
+
+						End If
+
+
+
+						'#GT26052026: ultimo paso, actualizar la barra pallet como recibida.
 						Dim BeBarra_Pallet As New clsBeI_nav_barras_pallet
 						BeBarra_Pallet.Codigo_barra = detalle.Barra_epc
 						BeBarra_Pallet.Recibido = 1
@@ -627,13 +671,18 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
+		Dim pIdRfidEnc As Integer = 0
 		Agregar_Detalle_A_Encabezado_RFID = False
+
+
 
 		Try
 			lConnection.Open()
 			lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
 			If Existe_By_IDRFIDEnc(pEncabezado.IdRFIDEnc, lConnection, lTransaction) Then
+
+				pIdRfidEnc = pEncabezado.IdRFIDEnc
 
 				For Each detalle As clsBeI_nav_barras_rfid_det In pEncabezado.Detalle
 
@@ -642,6 +691,49 @@ Public Class clsLnI_nav_barras_rfid_enc
 					If Not clsLnI_nav_barras_rfid_det.Exist_By_EPC(detalle.Barra_epc, pEncabezado.Tipo, lConnection, lTransaction) Then
 
 						If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
+
+							'#GT26052026: insertar el movimiento
+							Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
+							pMovimientoRFID.IdRFIDEnc = pIdRfidEnc
+							pMovimientoRFID.IdRfidTipoMov = pEncabezado.Tipo
+							pMovimientoRFID.IdRfidStock = 0
+							pMovimientoRFID.Barra_epc = detalle.Barra_epc
+							pMovimientoRFID.Tagid = ""
+							pMovimientoRFID.IdBodega = pEncabezado.IdBodega
+							pMovimientoRFID.IdProductoBodega = 0
+							pMovimientoRFID.Lote = ""
+							pMovimientoRFID.Cantidad = 1
+							pMovimientoRFID.User_agr = detalle.IdOperador
+
+							clsLnI_nav_barras_rfid_mov.Insertar(pMovimientoRFID, lConnection, lTransaction)
+
+							If pEncabezado.Tipo = 1 Then
+
+								'#GT26052026: insertar el stock
+								Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
+								pStockRFID.Barra_epc = detalle.Barra_epc
+								pStockRFID.IdBodega = pEncabezado.IdBodega
+								pStockRFID.IdProductoBodega = 0
+								pStockRFID.Cantidad = 1
+								pStockRFID.IdRFIDEncOrigen = pIdRfidEnc
+								pStockRFID.User_agr = detalle.IdOperador
+								clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, lTransaction)
+
+							ElseIf pEncabezado.Tipo = 2 Then
+								'#GT26052026: borrar el stock
+								Dim pBorrarStockRFID As New clsBeI_nav_barras_rfid_stock
+								pBorrarStockRFID.Barra_epc = detalle.Barra_epc
+
+								clsLnI_nav_barras_rfid_stock.GetSingle_By_Barra_Epc(pBorrarStockRFID, lConnection, lTransaction)
+
+								If pBorrarStockRFID.IdRfidStock > 0 Then
+									clsLnI_nav_barras_rfid_stock.Eliminar_Stock_Salida(pBorrarStockRFID, lConnection, lTransaction)
+								Else
+									Throw New Exception("No se encontró el stock asociado a la barra_epc.")
+								End If
+							Else
+								Throw New Exception("El tipo de transacción no es consistente para un ingreso o una salida.")
+							End If
 
 							Dim BeBarra_Pallet As New clsBeI_nav_barras_pallet
 							BeBarra_Pallet.Codigo_barra = detalle.Barra_epc
@@ -972,32 +1064,32 @@ Public Class clsLnI_nav_barras_rfid_enc
 			Dim lBusquedaLike As String = "%" & pBusqueda.Trim() & "%"
 
 			Const spEnc As String =
-				"WITH EncabezadosStock AS
-		(
-			SELECT DISTINCT
-				   ing.IdRFIDEnc,
-				   ing.IdOrdenCompraEnc,
-				   ing.IdRecepcionEnc,
-				   ing.IdBodega,
-				   ing.fec_agr,
-				   ing.fec_mod,
-				   ing.Estado,
-				   ing.Tipo,
-				   ing.IdProveedor,
-				   ing.IdCliente,
-				   ing.IdPedidoEnc
+	"WITH EncabezadosStock AS
+(
+    SELECT DISTINCT
+           ing.IdRFIDEnc,
+           ing.IdOrdenCompraEnc,
+           ing.IdRecepcionEnc,
+           ing.IdBodega,
+           ing.fec_agr,
+           ing.fec_mod,
+           ing.Estado,
+           ing.Tipo,
+           ing.IdProveedor,
+           ing.IdCliente,
+           ing.IdPedidoEnc
 			FROM I_nav_barras_rfid_enc ing
 			INNER JOIN I_nav_barras_rfid_det detIng
 				ON detIng.IdRFIDEnc = ing.IdRFIDEnc
 			INNER JOIN i_nav_barras_pallet pal
 				ON ISNULL(detIng.Barra_epc, '') = ISNULL(pal.Codigo_barra, '')
-			WHERE ISNULL(ing.Tipo, '') = 'ING'
+			WHERE ISNULL(ing.Tipo, 0) = 1
 			  AND NOT EXISTS (
 					SELECT 1
 					FROM I_nav_barras_rfid_enc sal
 					INNER JOIN I_nav_barras_rfid_det detSal
 						ON detSal.IdRFIDEnc = sal.IdRFIDEnc
-					WHERE ISNULL(sal.Tipo, '') = 'SAL'
+					WHERE ISNULL(sal.Tipo, 0) = 2
 					  AND ISNULL(detSal.barra_epc, '') = ISNULL(detIng.barra_epc, '')
 			  )
 			  AND (
@@ -1005,11 +1097,12 @@ Public Class clsLnI_nav_barras_rfid_enc
 					OR (@pCriterioBusqueda = 'PR' AND ISNULL(pal.Codigo, '') LIKE @pBusqueda)
 					OR (@pCriterioBusqueda = 'SS' AND ISNULL(pal.Codigo_barra, '') LIKE @pBusqueda)
 				  )
-		)
-		SELECT *
-		FROM EncabezadosStock
-		ORDER BY IdRFIDEnc
-		OFFSET @Offset ROWS FETCH NEXT @TamanoPagina ROWS ONLY"
+				)
+				SELECT *
+				FROM EncabezadosStock
+				ORDER BY IdRFIDEnc
+				OFFSET @Offset ROWS FETCH NEXT @TamanoPagina ROWS ONLY"
+
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -1052,32 +1145,31 @@ Public Class clsLnI_nav_barras_rfid_enc
 					If lIds.Count > 0 Then
 
 						Dim lIdsSql As String = String.Join(",", lIds)
-
 						Dim spDet As String =
-							"SELECT
-						 detIng.*,
-						 encIng.IdRFIDEnc
-					 FROM I_nav_barras_rfid_det detIng
-					 INNER JOIN I_nav_barras_rfid_enc encIng
-						ON encIng.IdRFIDEnc = detIng.IdRFIDEnc
-					 INNER JOIN i_nav_barras_pallet pal
-						ON ISNULL(detIng.Barra_epc, '') = ISNULL(pal.Codigo_barra, '')
-					 WHERE encIng.IdRFIDEnc IN (" & lIdsSql & ")
-					   AND ISNULL(encIng.Tipo, '') = 'ING'
-					   AND NOT EXISTS (
-							SELECT 1
-							FROM I_nav_barras_rfid_det detSal
-							INNER JOIN I_nav_barras_rfid_enc encSal
-								ON encSal.IdRFIDEnc = detSal.IdRFIDEnc
-							WHERE ISNULL(encSal.Tipo, '') = 'SAL'
-							  AND ISNULL(detSal.barra_epc, '') = ISNULL(detIng.barra_epc, '')
-					   )
-					   AND (
-							@AplicarFiltro = 0
-							OR (@pCriterioBusqueda = 'PR' AND ISNULL(pal.Codigo, '') LIKE @pBusqueda)
-							OR (@pCriterioBusqueda = 'SS' AND ISNULL(pal.Codigo_barra, '') LIKE @pBusqueda)
-					   )
-					 ORDER BY encIng.IdRFIDEnc"
+											"SELECT
+											 detIng.*,
+												 encIng.IdRFIDEnc
+											 FROM I_nav_barras_rfid_det detIng
+											 INNER JOIN I_nav_barras_rfid_enc encIng
+												ON encIng.IdRFIDEnc = detIng.IdRFIDEnc
+											 INNER JOIN i_nav_barras_pallet pal
+												ON ISNULL(detIng.Barra_epc, '') = ISNULL(pal.Codigo_barra, '')
+											 WHERE encIng.IdRFIDEnc IN (" & lIdsSql & ")
+										   AND ISNULL(encIng.Tipo, 0) = 1
+										   AND NOT EXISTS (
+												SELECT 1
+												FROM I_nav_barras_rfid_det detSal
+												INNER JOIN I_nav_barras_rfid_enc encSal
+													ON encSal.IdRFIDEnc = detSal.IdRFIDEnc
+												WHERE ISNULL(encSal.Tipo, 0) = 2
+												  AND ISNULL(detSal.barra_epc, '') = ISNULL(detIng.barra_epc, '')
+												   )
+												   AND (
+														@AplicarFiltro = 0
+														OR (@pCriterioBusqueda = 'PR' AND ISNULL(pal.Codigo, '') LIKE @pBusqueda)
+														OR (@pCriterioBusqueda = 'SS' AND ISNULL(pal.Codigo_barra, '') LIKE @pBusqueda)
+												   )
+												 ORDER BY encIng.IdRFIDEnc"
 
 						Using lDTADet As New SqlDataAdapter(spDet, lConnection)
 

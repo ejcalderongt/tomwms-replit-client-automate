@@ -41,6 +41,16 @@ Public Class frmOrdenCompra
 
     Private IsClosing As Boolean = False
     Private IsLoading As Boolean = False
+    '#EJC20260522_OC_TRACE: traza local de carga de frmOrdenCompra sin sumar roundtrips a la BD.
+    Private Const TAG_OC_TRACE As String = "#EJC20260522_OC_TRACE"
+    Private Const TAG_OC_UI As String = "#EJC20260522_OC_UI"
+    Private Const TAG_OC_PRODUCT_LOOKUP_LAZY As String = "#EJC20260522_OC_PRODUCT_LOOKUP_LAZY"
+    Private mOCTraceTotal As System.Diagnostics.Stopwatch
+    Private mOCTracePaso As System.Diagnostics.Stopwatch
+    Private mOCTraceSesion As String = String.Empty
+    Private mOCCargandoDetalle As Boolean = False
+    Private ReadOnly mOCProductoLookupCache As New Dictionary(Of String, DataTable)
+    Public Property TraceCargaGetSingleMs As Long = 0
 
     Private BeBodega As New clsBeBodega
     Private BeConfigBodega As New clsBeI_nav_config_enc
@@ -78,6 +88,85 @@ Public Class frmOrdenCompra
 
     Public Sub New()
         InitializeComponent()
+    End Sub
+
+    Private Function OCTrace_Activo() As Boolean
+
+        Dim vConfig As String = Environment.GetEnvironmentVariable("TOMWMS_OC_TRACE")
+
+        If Not String.IsNullOrWhiteSpace(vConfig) Then
+            vConfig = vConfig.Trim().ToUpperInvariant()
+            If vConfig = "0" OrElse vConfig = "NO" OrElse vConfig = "FALSE" Then Return False
+        End If
+
+        Return True
+
+    End Function
+
+    Private Function OCTrace_Ruta() As String
+
+        Return Path.Combine(Path.GetTempPath(), "TOMWMS", "ordencompra-load-trace.log")
+
+    End Function
+
+    Private Sub OCTrace_Iniciar(ByVal pContexto As String)
+
+        If Not OCTrace_Activo() Then Return
+
+        mOCTraceSesion = Guid.NewGuid().ToString("N").Substring(0, 8)
+        mOCTraceTotal = System.Diagnostics.Stopwatch.StartNew()
+        mOCTracePaso = System.Diagnostics.Stopwatch.StartNew()
+
+        OCTrace_Escribir("START", 0, 0, pContexto)
+
+    End Sub
+
+    Private Sub OCTrace_Marca(ByVal pPaso As String, Optional ByVal pExtra As String = "")
+
+        If Not OCTrace_Activo() Then Return
+        If mOCTraceTotal Is Nothing OrElse Not mOCTraceTotal.IsRunning Then Return
+
+        Dim vTotalMs As Long = mOCTraceTotal.ElapsedMilliseconds
+        Dim vDeltaMs As Long = 0
+
+        If Not mOCTracePaso Is Nothing Then
+            vDeltaMs = mOCTracePaso.ElapsedMilliseconds
+            mOCTracePaso.Restart()
+        End If
+
+        OCTrace_Escribir(pPaso, vTotalMs, vDeltaMs, pExtra)
+
+    End Sub
+
+    Private Sub OCTrace_Finalizar(Optional ByVal pExtra As String = "")
+
+        If Not OCTrace_Activo() Then Return
+        If mOCTraceTotal Is Nothing OrElse Not mOCTraceTotal.IsRunning Then Return
+
+        OCTrace_Marca("END", pExtra)
+        mOCTraceTotal.Stop()
+
+    End Sub
+
+    Private Sub OCTrace_Escribir(ByVal pPaso As String, ByVal pTotalMs As Long, ByVal pDeltaMs As Long, ByVal pExtra As String)
+
+        Try
+            Dim vRuta As String = OCTrace_Ruta()
+            Dim vDir As String = Path.GetDirectoryName(vRuta)
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Format("{0:yyyy-MM-dd HH:mm:ss.fff}|session={1}|form=frmOrdenCompra|step={2}|totalMs={3}|deltaMs={4}|{5}{6}",
+                                                 Date.Now,
+                                                 mOCTraceSesion,
+                                                 pPaso,
+                                                 pTotalMs,
+                                                 pDeltaMs,
+                                                 pExtra,
+                                                 Environment.NewLine)
+            File.AppendAllText(vRuta, vLinea)
+        Catch
+        End Try
+
     End Sub
 
     Private Function Carga_Datos_PedidoERP() As Boolean
@@ -145,7 +234,13 @@ Public Class frmOrdenCompra
 
         Try
 
+            OCTrace_Iniciar("idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc &
+                            ";modo=" & Modo &
+                            ";getSingleMs=" & TraceCargaGetSingleMs)
+
+            Dim vTraceReloj As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
             Application.DoEvents()
+            OCTrace_Marca("doevents_inicio", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
             lblC.Text = gBeOrdenCompra.IdOrdenCompraEnc
 
@@ -175,7 +270,9 @@ Public Class frmOrdenCompra
             cmbTipoIngreso.EditValue = gBeOrdenCompra.IdTipoIngresoOC
             cmbTipoIngreso.Enabled = False
 
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Application.DoEvents()
+            OCTrace_Marca("doevents_encabezado", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
             'Pedido de transferencia para B&B
             If gBeOrdenCompra.IdTipoIngresoOC = 2 Then
@@ -244,15 +341,26 @@ Public Class frmOrdenCompra
 
             Set_Campaña()
 
+            OCTrace_Marca("antes_detalle", "lineas=" & If(gBeOrdenCompra.DetalleOC Is Nothing, 0, gBeOrdenCompra.DetalleOC.Count))
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_OC()
+            OCTrace_Marca("detalle_oc", "ms=" & vTraceReloj.ElapsedMilliseconds & ";rows=" & DTGridDetalleDocIngresos.Rows.Count)
 
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_Lotes_OC()
+            OCTrace_Marca("detalle_lotes", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Imagenes()
+            OCTrace_Marca("imagenes", "ms=" & vTraceReloj.ElapsedMilliseconds & ";imagenes=" & If(lOCImg Is Nothing, 0, lOCImg.Count))
 
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Poliza()
+            OCTrace_Marca("poliza", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
+            vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_Rec()
+            OCTrace_Marca("detalle_rec", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
             Set_Estado_Envio_A_ERP()
 
@@ -261,7 +369,9 @@ Public Class frmOrdenCompra
                 tabTallaColor.PageVisible = False
             Else
 
+                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                 Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                OCTrace_Marca("talla_color", "ms=" & vTraceReloj.ElapsedMilliseconds)
 
             End If
 
@@ -274,6 +384,8 @@ Public Class frmOrdenCompra
                 mnuTareaRecepcion.Enabled = False
                 txtIdRecepcion.Text = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
             End If
+
+            OCTrace_Finalizar("rows=" & DTGridDetalleDocIngresos.Rows.Count)
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -333,7 +445,17 @@ Public Class frmOrdenCompra
 
     Private Sub Cargar_Detalle_OC()
 
+        Dim vGridEnUpdate As Boolean = False
+        Dim vDataEnCarga As Boolean = False
+
         Try
+
+            '#EJC20260522_OC_UI: evita validaciones/repintado mientras se cargan filas programaticamente.
+            mOCCargandoDetalle = True
+            gvDetalleDocIngreso.BeginDataUpdate()
+            vGridEnUpdate = True
+            DTGridDetalleDocIngresos.BeginLoadData()
+            vDataEnCarga = True
 
             DTGridDetalleDocIngresos.Clear()
 
@@ -462,6 +584,10 @@ Public Class frmOrdenCompra
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
+        Finally
+            If vDataEnCarga Then DTGridDetalleDocIngresos.EndLoadData()
+            If vGridEnUpdate Then gvDetalleDocIngreso.EndDataUpdate()
+            mOCCargandoDetalle = False
         End Try
 
     End Sub
@@ -3261,7 +3387,8 @@ Public Class frmOrdenCompra
             ProductoGridLookUpEdit.NullText = "-> Producto"
             ProductoGridLookUpEdit.PopupFormWidth = 700
             ProductoGridLookUpEdit.ImmediatePopup = True
-            ProductoGridLookUpEdit.DataSource = clsLnProducto.Get_Lista_For_Grid_By_IdBodega(cmbBodega.EditValue)
+            '#EJC20260522_OC_PRODUCT_LOOKUP_LAZY: no cargar todos los productos al abrir; se asigna al editar IdProductoBodega.
+            ProductoGridLookUpEdit.DataSource = OCProductoLookup_DataSourceVacio()
             ProductoGridLookUpEdit.View.BestFitColumns()
 
             '#EJC20240326: Agregar esto + evento keydown para escanear en celda.
@@ -5555,6 +5682,88 @@ Public Class frmOrdenCompra
     Private TallaGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private ColorGridLookUpEdit As New RepositoryItemGridLookUpEdit
 
+    '#EJC20260522_OC_PRODUCT_LOOKUP_LAZY: evita cargar 39k productos al abrir la OC; se cargan al editar la columna.
+    Private Function OCProductoLookup_Key(ByVal pIdPropietarioBodega As Integer, ByVal pIdBodega As Integer) As String
+
+        Return pIdPropietarioBodega & "|" & pIdBodega
+
+    End Function
+
+    Private Function OCProductoLookup_DataSourceVacio() As DataTable
+
+        Dim vDT As New DataTable("ProductoLookupVacio")
+        vDT.Columns.Add("IdProductoBodega", GetType(Integer))
+        vDT.Columns.Add("Codigo", GetType(String))
+        vDT.Columns.Add("CodigoBarra", GetType(String))
+        vDT.Columns.Add("Nombre", GetType(String))
+        vDT.Columns.Add("UMBas", GetType(String))
+        vDT.Columns.Add("IdUmBas", GetType(Integer))
+        vDT.Columns.Add("Costo", GetType(Double))
+        vDT.Columns.Add("Kit", GetType(Boolean))
+        vDT.Columns.Add("IdProducto", GetType(Integer))
+        vDT.Columns.Add("ControlPeso", GetType(Boolean))
+        vDT.Columns.Add("Familia", GetType(String))
+        vDT.Columns.Add("Clasificacion", GetType(String))
+        vDT.Columns.Add("TipoProducto", GetType(String))
+        Return vDT
+
+    End Function
+
+    Private Function OCProductoLookup_Obtener(ByVal pIdPropietarioBodega As Integer,
+                                              ByVal pIdBodega As Integer,
+                                              Optional ByVal pForzarRefresh As Boolean = False) As DataTable
+
+        If pIdBodega = 0 Then Return OCProductoLookup_DataSourceVacio()
+
+        Dim vKey As String = OCProductoLookup_Key(pIdPropietarioBodega, pIdBodega)
+
+        If pForzarRefresh OrElse Not mOCProductoLookupCache.ContainsKey(vKey) Then
+            Dim vReloj As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
+            Dim vDT As DataTable
+
+            If pIdPropietarioBodega <> 0 Then
+                vDT = clsLnProducto.Get_Lista_For_Grid_By_IdPropietario_And_IdBodega(pIdPropietarioBodega, pIdBodega)
+            Else
+                vDT = clsLnProducto.Get_Lista_For_Grid_By_IdBodega(pIdBodega)
+            End If
+
+            If vDT Is Nothing Then vDT = OCProductoLookup_DataSourceVacio()
+            mOCProductoLookupCache(vKey) = vDT
+            OCTrace_Marca("producto_lookup_load",
+                          "idPropietarioBodega=" & pIdPropietarioBodega &
+                          ";idBodega=" & pIdBodega &
+                          ";rows=" & vDT.Rows.Count &
+                          ";ms=" & vReloj.ElapsedMilliseconds)
+        End If
+
+        Return mOCProductoLookupCache(vKey)
+
+    End Function
+
+    Private Sub OCProductoLookup_Asignar(ByVal pEditor As GridLookUpEdit,
+                                         ByVal pIdPropietarioBodega As Integer,
+                                         Optional ByVal pForzarRefresh As Boolean = False)
+
+        If pEditor Is Nothing Then Return
+        pEditor.Properties.DataSource = OCProductoLookup_Obtener(pIdPropietarioBodega,
+                                                                 Val(cmbBodega.EditValue),
+                                                                 pForzarRefresh)
+        If pEditor.Properties.DataSource IsNot Nothing Then pEditor.Properties.View.BestFitColumns()
+
+    End Sub
+
+    Private Sub OCProductoLookup_Asignar(ByVal pEditor As RepositoryItemGridLookUpEdit,
+                                         ByVal pIdPropietarioBodega As Integer,
+                                         Optional ByVal pForzarRefresh As Boolean = False)
+
+        If pEditor Is Nothing Then Return
+        pEditor.DataSource = OCProductoLookup_Obtener(pIdPropietarioBodega,
+                                                      Val(cmbBodega.EditValue),
+                                                      pForzarRefresh)
+        If pEditor.DataSource IsNot Nothing Then pEditor.View.BestFitColumns()
+
+    End Sub
+
     Private Sub ProductoGridLookUpEdit_Leave(ByVal sender As Object, ByVal e As EventArgs)
 
         Try
@@ -5637,7 +5846,7 @@ Public Class frmOrdenCompra
         Try
 
             'ProductoGridLookUpEdit.View.Columns.Clear()
-            ProductoGridLookUpEdit.DataSource = clsLnProducto.Get_Lista_For_Grid_By_IdPropietario_And_IdBodega(pIdPropietarioBodega, cmbBodega.EditValue)
+            OCProductoLookup_Asignar(ProductoGridLookUpEdit, pIdPropietarioBodega)
             'ProductoGridLookUpEdit.PopupFormWidth = 1000
             'ProductoGridLookUpEdit.View.BestFitColumns()
             'ProductoGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
@@ -5705,8 +5914,8 @@ Public Class frmOrdenCompra
                     frmProductomnt.IdBodegaNuevoProducto = cmbBodega.EditValue
 
                     If frmProductomnt.ShowDialog() = DialogResult.OK Then
-                        Llena_ProductosLookUp_Grid(IdPropietarioBodega)
-                        gridLookup.Properties.DataSource = clsLnProducto.Get_Lista_For_Grid_By_IdPropietario_And_IdBodega(IdPropietarioBodega, cmbBodega.EditValue)
+                        OCProductoLookup_Asignar(gridLookup, IdPropietarioBodega, True)
+                        OCProductoLookup_Asignar(ProductoGridLookUpEdit, IdPropietarioBodega)
                         gridLookup.EditValue = frmProductomnt.IdProductoBodegaReturn
                         ProductoGridLookUpEdit_Leave(sender, Nothing)
                         e.Handled = True
@@ -6738,6 +6947,12 @@ MessageBoxButtons.YesNo,
 
         Try
 
+            '#EJC20260522_OC_UI: la carga masiva no debe ejecutar validaciones de edicion por fila.
+            If mOCCargandoDetalle Then
+                e.Valid = True
+                Exit Sub
+            End If
+
             Dim View As GridView = CType(sender, GridView)
             Dim ColCantidad As GridColumn = View.Columns("Cantidad")
             Dim ColProducto As GridColumn = View.Columns("IdProductoBodega")
@@ -7338,7 +7553,9 @@ MessageBoxButtons.YesNo,
                 If pIdPropietarioBodega.Trim = String.Empty Then pIdPropietarioBodega = lcmbPropietario.EditValue
 
                 If Not Val(pIdPropietarioBodega) = 0 Then
-                    editor.Properties.DataSource = clsLnProducto.Get_Lista_For_Grid_By_IdPropietario_And_IdBodega(pIdPropietarioBodega, cmbBodega.EditValue)
+                    OCProductoLookup_Asignar(editor, Val(pIdPropietarioBodega))
+                Else
+                    OCProductoLookup_Asignar(editor, 0)
                 End If
 
             End If
