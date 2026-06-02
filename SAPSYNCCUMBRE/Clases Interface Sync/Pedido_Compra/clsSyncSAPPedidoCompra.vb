@@ -563,10 +563,12 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
         Dim BeBodegaUbicacion As New clsBeBodega_ubicacion
         Dim clsTrans As New clsTransaccion
         Dim BeOrdenCompra As New clsBeTrans_oc_enc
+        Dim vTransaccionSQLAbierta As Boolean = False
 
         Try
 
             clsTrans.Begin_Transaction()
+            vTransaccionSQLAbierta = True
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
                                                           clsTrans.lConnection,
@@ -627,6 +629,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                                                                BeTransOCEnc,
                                                                                vCodigoBodegaDestino,
                                                                                BeReOC.IdRecepcionEnc,
+                                                                               BeReOC,
                                                                                lblprg,
                                                                                prg) Then
 
@@ -726,9 +729,19 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                 clsPublic.Actualizar_Progreso(lblprg, "No hay registros de ingreso para envío a SAP.")
             End If
 
+            '#EJC20260602_SYNC_INGRESO_SAP: Cerramos la transaccion SQL de lectura/marcas del barrido.
+            ' Carol, aqui cerre explicitamente la transaccion porque la interface la abria para revisar ingresos,
+            ' pero el cierre no quedaba claro en este flujo. Asi evitamos locks largos y es mas facil auditar.
+            clsTrans.Commit_Transaction()
+            vTransaccionSQLAbierta = False
+
             clsPublic.Actualizar_Progreso(lblprg, "Fin de procesamiento.")
 
         Catch ex As Exception
+            If vTransaccionSQLAbierta Then
+                clsTrans.RollBack_Transaction()
+                vTransaccionSQLAbierta = False
+            End If
             Throw ex
         Finally
             prg.Value = 0
@@ -793,6 +806,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                                            ByVal BeTransOCEnc As clsBeTrans_oc_enc,
                                                            ByVal vCodigoBodegaDestino As String,
                                                            ByVal IdRecepcionEnc As Integer,
+                                                           ByVal BeTransReOC As clsBeTrans_re_oc,
                                                            ByRef lblprg As RichTextBox,
                                                            ByRef prg As Windows.Forms.ProgressBar) As Boolean
 
@@ -826,6 +840,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
         Dim EnvioEntradaBuenEstado As Boolean = False
         Dim EnvioEntradaMalEstado As Boolean = False
         Dim EnvioEntradaTeorico As Boolean = False
+        Dim clsTransSAP As clsSapTransaction = Nothing
 
         Try
 
@@ -843,11 +858,27 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
             Else
 
+                If Documento_Ingreso_Ya_Existe_En_SAP(BeTransReOC, BeTransOCEnc.TipoIngreso.IdTipoIngresoOC, lblprg) Then
+                    '#EJC20260602_SYNC_INGRESO_SAP: Carol, agregue esta salida porque a veces el problema no es crear,
+                    ' sino reconocer que SAP ya tiene el documento. Si la referencia real existe en SAP, no lo volvemos
+                    ' a crear; dejamos que WMS marque/reconcilie el envio con esa evidencia.
+                    Return True
+                End If
+
+                '#EJC20260602_SYNC_INGRESO_SAP: Killios ya protege este paquete con StartTransaction/EndTransaction.
+                ' Carol, agregue esto porque SAP podia crear la entrada y luego fallar una marca
+                ' local en TOMWMS; al siguiente sync, WMS la veia pendiente y la enviaba otra vez. Desde aqui
+                ' SAP queda "en espera" hasta que la entrada, el update/cierre de la OC y las marcas locales
+                ' pasen completas. Si falla algo, SAP hace rollback.
+                clsTransSAP = New clsSapTransaction(oCompany)
+                clsTransSAP.BeginTransaction()
+
                 EnvioEntradaBuenEstado = Enviar_Entrada_Mercancia_Sin_Estado_SAP_B1(BeINavConfigEnc,
                                                                                     _Docentry,
                                                                                     lINav_Transaccioens_Out,
                                                                                     BeTransOCEnc,
                                                                                     vCodigoBodegaDestino,
+                                                                                    BeTransReOC,
                                                                                     lblprg,
                                                                                     prg)
 
@@ -860,7 +891,8 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                                                                BeTransOCEnc,
                                                                                vCodigoBodegaDestino,
                                                                                lblprg,
-                                                                               prg)
+                                                                               prg,
+                                                                               True)
 
                 End If
 
@@ -932,13 +964,19 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                     End If
 
+                Else
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602: No se encontro en SAP la orden base DocEntry {0}.", _Docentry))
                 End If
 
             End If
 
+            clsTransSAP.CommitTransaction()
+
             Return True
 
         Catch ex As Exception
+
+            If clsTransSAP IsNot Nothing Then clsTransSAP.RollbackTransaction()
 
             clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al enviar entrada de mercancía a SAP: {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                                                           "",
@@ -959,7 +997,8 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                                                 ByVal BeTransOCEnc As clsBeTrans_oc_enc,
                                                                 ByVal vCodigoBodegaDestino As String,
                                                                 ByRef lblprg As RichTextBox,
-                                                                ByRef prg As Windows.Forms.ProgressBar) As Boolean
+                                                                ByRef prg As Windows.Forms.ProgressBar,
+                                                                Optional ByVal pUsarConexionSAPActual As Boolean = False) As Boolean
 
 
         prg.Maximum = lINav_Transaccioens_Out.Count
@@ -976,7 +1015,12 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
         Try
 
-            Conectar_A_SAP(oCompany, False, lRetCode, sErrMsg)
+            If Not pUsarConexionSAPActual Then
+                Conectar_A_SAP(oCompany, False, lRetCode, sErrMsg)
+            Else
+                lRetCode = 0
+                sErrMsg = ""
+            End If
 
             Application.DoEvents()
 
@@ -1191,7 +1235,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
             Throw ex
 
         Finally
-            Desconectar_SAP(oCompany)
+            If Not pUsarConexionSAPActual Then Desconectar_SAP(oCompany)
             clsTransaccion.Close_Conection()
         End Try
 
@@ -1213,6 +1257,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                                                       ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                                       ByVal beTransOCEnc As clsBeTrans_oc_enc,
                                                                       ByVal codigoBodegaDestino As String,
+                                                                      ByVal beTransReOC As clsBeTrans_re_oc,
                                                                       ByRef lblPrg As RichTextBox,
                                                                       ByRef prg As Windows.Forms.ProgressBar) As Boolean
 
@@ -1235,6 +1280,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                         result = Procesar_Detalle_Ingreso(oOrderPurchase,
                                                           beTransOCEnc.TipoIngreso.IdTipoIngresoOC,
                                                           lINavTransaccionesOut,
+                                                          beTransReOC,
                                                           lblPrg)
                     Else
                         clsPublic.Actualizar_Progreso(lblPrg, "ERROR_202311212019: No se pudo obtener el documento de devolución de sap para el _Docentry: " & _Docentry)
@@ -1310,6 +1356,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
         Dim vAgregarEntrega As Boolean = False
         Dim clsTransaccion As New clsTransaccion
         Dim BodegasByPedido As New Dictionary(Of Integer, clsBeInfoBodegaByIdPedidoEnc)
+        Dim clsTransSAP As clsSapTransaction = Nothing
 
         Try
 
@@ -1317,7 +1364,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
             Application.DoEvents()
 
-            If lRetCode <> 0 Then
+            If lErrCode <> 0 Then
 
                 If sErrMsg = " - The specified resource name cannot be found in the image file." Then
                     Throw New Exception("El servidor de SAP no respondió la solicitud de conexión: " & sErrMsg)
@@ -1335,6 +1382,8 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                 NoLineaTransfer = 0 : NoLineaTransferLote = 0
 
                 clsTransaccion.Open_Connection()
+                clsTransSAP = New clsSapTransaction(oCompany)
+                clsTransSAP.BeginTransaction()
 
                 Dim DistinctIdPedidoEncByTraslado = lINavTransaccionesOut.Where(Function(x) x.IdTipoDocumento = tTipoDocumentoIngreso.Transferencia_de_Ingreso AndAlso x.Enviado = False).
                                                                 GroupBy(Function(x) New With {Key x.Idpedidoenc, Key x.Codigo_producto, Key x.No_linea}).
@@ -1401,10 +1450,16 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                     End If
 
+                    If Lista_A_Actualizar Is Nothing OrElse Lista_A_Actualizar.Count = 0 Then
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_TRAS: La solicitud {0} no genero lineas para actualizar en WMS; se revierte SAP para no dejar traslado huerfano.", vTrasladoDocEntry))
+                    End If
+
                     'DistinctProductosLineas
 
                     vAgregarEntrega = True
 
+                Else
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_TRAS: No hay lineas pendientes de transferencia para la solicitud {0}.", vTrasladoDocEntry))
                 End If
 
                 Dim oResultado As Integer
@@ -1421,6 +1476,14 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                     If Not Integer.TryParse(newObjectCode, vTrasladoDocEntry) Then
                         Throw New Exception("No se pudo obtener el DocEntry del traslado generado.")
+                    End If
+
+                    '#EJC20260602_SYNC_INGRESO_SAP: Validacion de existencia real en SAP antes de marcar WMS.
+                    ' Carol, aqui valido el DocEntry porque no basta con que Add() diga ok; WMS solo debe marcar
+                    ' enviado si SAP puede volver a encontrar el traslado que acaba de crear.
+                    Dim oTransferCreado As StockTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oStockTransfer), StockTransfer)
+                    If Not oTransferCreado.GetByKey(vTrasladoDocEntry) Then
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_TRAS: SAP devolvio DocEntry {0}, pero no se pudo validar el traslado creado.", vTrasladoDocEntry))
                     End If
 
                     Dim vDocNumTraslado As String = Obtener_Doc_Num(oCompany, vTrasladoDocEntry)
@@ -1442,6 +1505,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                 End If
 
                 clsTransaccion.Commit_Transaction()
+                clsTransSAP.CommitTransaction()
 
                 clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_SOL_TRAS_ENV: Se envió correctamente el documento de traslado: {0}", vTrasladoDocEntry))
 
@@ -1452,6 +1516,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
         Catch errMsg As Exception
 
             clsTransaccion.RollBack_Transaction()
+            If clsTransSAP IsNot Nothing Then clsTransSAP.RollbackTransaction()
 
             clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al enviar traslado entre almacenes a SAP: {0} {1}", MethodBase.GetCurrentMethod.Name(), errMsg.Message),
                                                        "",
@@ -1687,9 +1752,59 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
         Return docNum
     End Function
 
+    Private Shared Function Documento_Ingreso_Ya_Existe_En_SAP(ByVal beTransReOC As clsBeTrans_re_oc,
+                                                               ByVal pTipoDocumento As clsDataContractDI.tTipoDocumentoIngreso,
+                                                               ByRef lblPrg As RichTextBox) As Boolean
+
+        Documento_Ingreso_Ya_Existe_En_SAP = False
+
+        Try
+
+            If beTransReOC Is Nothing Then Return False
+            If pTipoDocumento <> clsDataContractDI.tTipoDocumentoIngreso.Ingreso Then Return False
+            If String.IsNullOrWhiteSpace(beTransReOC.No_Erp_Docentry_Entrega) Then Return False
+
+            Dim vDocEntry As Integer = 0
+            If Not Integer.TryParse(beTransReOC.No_Erp_Docentry_Entrega, vDocEntry) Then
+                Throw New Exception(String.Format("#ERROR_SAP_20260602_RECON_ING: La referencia SAP guardada en WMS no es numerica: {0}", beTransReOC.No_Erp_Docentry_Entrega))
+            End If
+
+            Dim oEntrega As Documents = CType(oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes), Documents)
+
+            Try
+
+                If Not oEntrega.GetByKey(vDocEntry) Then
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602_RECON_ING: WMS tiene DocEntry SAP {0}, pero SAP no lo encontro. No se reenvia automatico para evitar duplicados.", vDocEntry))
+                End If
+
+                If Not String.IsNullOrWhiteSpace(beTransReOC.No_Erp_Docnum_Entrega) AndAlso
+                   beTransReOC.No_Erp_Docnum_Entrega <> oEntrega.DocNum.ToString() Then
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602_RECON_ING: WMS tiene DocEntry {0} con DocNum {1}, pero SAP responde DocNum {2}. Revisar antes de reenviar.",
+                                                      vDocEntry,
+                                                      beTransReOC.No_Erp_Docnum_Entrega,
+                                                      oEntrega.DocNum))
+                End If
+
+                clsPublic.Actualizar_Progreso(lblPrg, String.Format("Carol, SAP ya tiene la entrada DocEntry {0} DocNum {1}; no la vuelvo a crear, solo seguimos con la marca local.",
+                                                                     vDocEntry,
+                                                                     oEntrega.DocNum))
+
+                Return True
+
+            Finally
+                If oEntrega IsNot Nothing Then Marshal.ReleaseComObject(oEntrega)
+            End Try
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
     Private Shared Function Procesar_Detalle_Ingreso(ByVal oOrderPurchase As Documents,
                                                      ByVal pTipoDocumento As clsDataContractDI.tTipoDocumentoIngreso,
                                                      ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                                     ByVal beTransReOC As clsBeTrans_re_oc,
                                                      ByRef lblPrg As RichTextBox) As Boolean
 
         Dim oResultado As Integer = 0
@@ -1781,6 +1896,10 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
             If vAgregarEntrega Then
 
+                If Lista_A_Actualizar Is Nothing OrElse Lista_A_Actualizar.Count = 0 Then
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602_RECON_ING: La entrada SAP para OC {0} no tiene lineas WMS para marcar; se revierte para evitar una entrada huerfana.", oOrderPurchase.DocEntry))
+                End If
+
                 oResultado = oEntrega.Add()
 
                 If oResultado <> 0 Then
@@ -1793,8 +1912,19 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                     oCompany.GetNewObjectCode(newObjectCode)
 
                     If Not Integer.TryParse(newObjectCode, vTrasladoDocEntry) Then
-                        Throw New Exception("No se pudo obtener el DocEntry del traslado generado.")
+                        Throw New Exception("No se pudo obtener el DocEntry de la entrada generada.")
                     End If
+
+                    Dim oEntregaCreada As Documents = CType(oCompany.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes), Documents)
+                    Try
+                        '#EJC20260602_SYNC_INGRESO_SAP: Carol, guardamos y validamos el DocEntry real porque ese
+                        ' es el comprobante que nos permite reconocer la entrada si el proceso se corta despues.
+                        If Not oEntregaCreada.GetByKey(vTrasladoDocEntry) Then
+                            Throw New Exception(String.Format("#ERROR_SAP_20260602_RECON_ING: SAP devolvio DocEntry {0}, pero no se pudo validar la entrada creada.", vTrasladoDocEntry))
+                        End If
+                    Finally
+                        If oEntregaCreada IsNot Nothing Then Marshal.ReleaseComObject(oEntregaCreada)
+                    End Try
 
                     Dim vDocNum As String = ""
                     Try
@@ -1810,6 +1940,14 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                     End Try
 
                     vRegistroEntregaPorLote = True
+
+                    If beTransReOC IsNot Nothing Then
+                        beTransReOC.No_Erp_Docentry_Entrega = vTrasladoDocEntry.ToString()
+                        beTransReOC.No_Erp_Docnum_Entrega = vDocNum
+                        clsLnTrans_re_oc.Actualizar(beTransReOC,
+                                                    clsTransaccion.lConnection,
+                                                    clsTransaccion.lTransaction)
+                    End If
 
                     If Lista_A_Actualizar IsNot Nothing AndAlso Lista_A_Actualizar.Count > 0 Then
                         For Each T In Lista_A_Actualizar
@@ -1835,7 +1973,10 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
             End If
 
+            clsTransaccion.Commit_Transaction()
+
         Catch ex As Exception
+            clsTransaccion.RollBack_Transaction()
             Throw
         Finally
             If oEntrega IsNot Nothing Then

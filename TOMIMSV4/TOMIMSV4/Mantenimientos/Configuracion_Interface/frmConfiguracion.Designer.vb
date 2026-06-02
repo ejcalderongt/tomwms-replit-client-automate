@@ -53,11 +53,11 @@ Partial Class frmConfiguracion
         Dim Label32 As System.Windows.Forms.Label
         Dim Label33 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracion))
-        Dim EditorButtonImageOptions2 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
-        Dim SerializableAppearanceObject5 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim SerializableAppearanceObject6 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim SerializableAppearanceObject7 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim SerializableAppearanceObject8 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
+        Dim EditorButtonImageOptions1 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
+        Dim SerializableAppearanceObject1 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
+        Dim SerializableAppearanceObject2 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
+        Dim SerializableAppearanceObject3 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
+        Dim SerializableAppearanceObject4 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Me.lblCantidadPresentacionTransaccionesOut = New System.Windows.Forms.Label()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -168,6 +168,7 @@ Partial Class frmConfiguracion
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.HelpProvider1 = New System.Windows.Forms.HelpProvider()
+        Me.chkSapSyncEnviaIngresosAuto = New DevExpress.XtraEditors.CheckEdit()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_modLabel = New System.Windows.Forms.Label()
@@ -285,6 +286,7 @@ Partial Class frmConfiguracion
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
+        CType(Me.chkSapSyncEnviaIngresosAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_modLabel
@@ -836,7 +838,7 @@ Partial Class frmConfiguracion
         Me.pnlEncabezado.Location = New System.Drawing.Point(0, 0)
         Me.pnlEncabezado.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.pnlEncabezado.Name = "pnlEncabezado"
-        Me.pnlEncabezado.Size = New System.Drawing.Size(1884, 736)
+        Me.pnlEncabezado.Size = New System.Drawing.Size(1507, 589)
         Me.pnlEncabezado.TabIndex = 0
         '
         'chkRequerirCentroCostoObligatario
@@ -1248,7 +1250,7 @@ Partial Class frmConfiguracion
         Me.txtArchivo.Location = New System.Drawing.Point(300, 430)
         Me.txtArchivo.Margin = New System.Windows.Forms.Padding(4)
         Me.txtArchivo.Name = "txtArchivo"
-        Me.txtArchivo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Ellipsis, "", -1, True, True, True, EditorButtonImageOptions2, New DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), SerializableAppearanceObject5, SerializableAppearanceObject6, SerializableAppearanceObject7, SerializableAppearanceObject8, "", Nothing, Nothing, DevExpress.Utils.ToolTipAnchor.[Default])})
+        Me.txtArchivo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Ellipsis, "", -1, True, True, True, EditorButtonImageOptions1, New DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), SerializableAppearanceObject1, SerializableAppearanceObject2, SerializableAppearanceObject3, SerializableAppearanceObject4, "", Nothing, Nothing, DevExpress.Utils.ToolTipAnchor.[Default])})
         Me.txtArchivo.Properties.ButtonsStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat
         Me.txtArchivo.Size = New System.Drawing.Size(431, 22)
         Me.txtArchivo.TabIndex = 22
@@ -1445,10 +1447,10 @@ Partial Class frmConfiguracion
         Me.pnlEntidades.Controls.Add(Me.txtHoraInicio)
         Me.pnlEntidades.Controls.Add(Label3)
         Me.pnlEntidades.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlEntidades.Location = New System.Drawing.Point(0, 521)
+        Me.pnlEntidades.Location = New System.Drawing.Point(0, 374)
         Me.pnlEntidades.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.pnlEntidades.Name = "pnlEntidades"
-        Me.pnlEntidades.Size = New System.Drawing.Size(1884, 215)
+        Me.pnlEntidades.Size = New System.Drawing.Size(1507, 215)
         Me.pnlEntidades.TabIndex = 3
         '
         'txtHoraFin
@@ -1618,7 +1620,7 @@ Partial Class frmConfiguracion
         Me.txtdias_vida_defecto_perecederos.Properties.IsFloatValue = False
         Me.txtdias_vida_defecto_perecederos.Properties.MaskSettings.Set("mask", "N00")
         Me.txtdias_vida_defecto_perecederos.Properties.MaxValue = New Decimal(New Integer() {365, 0, 0, 0})
-        Me.txtdias_vida_defecto_perecederos.Size = New System.Drawing.Size(86, 19)
+        Me.txtdias_vida_defecto_perecederos.Size = New System.Drawing.Size(86, 24)
         Me.txtdias_vida_defecto_perecederos.TabIndex = 52
         '
         'Label22
@@ -1627,7 +1629,7 @@ Partial Class frmConfiguracion
         Me.Label22.Location = New System.Drawing.Point(33, 441)
         Me.Label22.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(224, 20)
+        Me.Label22.Size = New System.Drawing.Size(179, 16)
         Me.Label22.TabIndex = 51
         Me.Label22.Text = "Días vida defecto perecederos"
         '
@@ -1638,7 +1640,7 @@ Partial Class frmConfiguracion
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.MenuManager = Me.RibbonControl
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Name = "chkConsiderar_Disponibilidad_Ubicacion_Reabasto"
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Properties.Caption = ""
-        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(86, 19)
+        Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(86, 24)
         Me.chkConsiderar_Disponibilidad_Ubicacion_Reabasto.TabIndex = 50
         '
         'lblConsiderar_Disponibilidad_Ubicacion_Reabasto
@@ -1647,7 +1649,7 @@ Partial Class frmConfiguracion
         Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Location = New System.Drawing.Point(33, 389)
         Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Name = "lblConsiderar_Disponibilidad_Ubicacion_Reabasto"
-        Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(344, 20)
+        Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Size = New System.Drawing.Size(275, 16)
         Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.TabIndex = 49
         Me.lblConsiderar_Disponibilidad_Ubicacion_Reabasto.Text = "Considerar_Disponibilidad_Ubicacion_Reabasto"
         '
@@ -1661,7 +1663,7 @@ Partial Class frmConfiguracion
         Me.txtNivelMaximoExplosionAuto.Properties.IsFloatValue = False
         Me.txtNivelMaximoExplosionAuto.Properties.MaskSettings.Set("mask", "N00")
         Me.txtNivelMaximoExplosionAuto.Properties.MaxValue = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.txtNivelMaximoExplosionAuto.Size = New System.Drawing.Size(86, 19)
+        Me.txtNivelMaximoExplosionAuto.Size = New System.Drawing.Size(86, 24)
         Me.txtNivelMaximoExplosionAuto.TabIndex = 48
         '
         'Label21
@@ -1670,7 +1672,7 @@ Partial Class frmConfiguracion
         Me.Label21.Location = New System.Drawing.Point(33, 339)
         Me.Label21.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(259, 20)
+        Me.Label21.Size = New System.Drawing.Size(207, 16)
         Me.Label21.TabIndex = 47
         Me.Label21.Text = "Explosion Automática Nivel Máximo"
         '
@@ -1681,7 +1683,7 @@ Partial Class frmConfiguracion
         Me.chkExplosionAutomaticaUbicacionPicking.MenuManager = Me.RibbonControl
         Me.chkExplosionAutomaticaUbicacionPicking.Name = "chkExplosionAutomaticaUbicacionPicking"
         Me.chkExplosionAutomaticaUbicacionPicking.Properties.Caption = ""
-        Me.chkExplosionAutomaticaUbicacionPicking.Size = New System.Drawing.Size(86, 19)
+        Me.chkExplosionAutomaticaUbicacionPicking.Size = New System.Drawing.Size(86, 24)
         Me.chkExplosionAutomaticaUbicacionPicking.TabIndex = 46
         '
         'lblexplosion_automatica_desde_ubicacion_picking
@@ -1690,7 +1692,7 @@ Partial Class frmConfiguracion
         Me.lblexplosion_automatica_desde_ubicacion_picking.Location = New System.Drawing.Point(33, 288)
         Me.lblexplosion_automatica_desde_ubicacion_picking.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblexplosion_automatica_desde_ubicacion_picking.Name = "lblexplosion_automatica_desde_ubicacion_picking"
-        Me.lblexplosion_automatica_desde_ubicacion_picking.Size = New System.Drawing.Size(340, 20)
+        Me.lblexplosion_automatica_desde_ubicacion_picking.Size = New System.Drawing.Size(272, 16)
         Me.lblexplosion_automatica_desde_ubicacion_picking.TabIndex = 45
         Me.lblexplosion_automatica_desde_ubicacion_picking.Text = "Explosión Automatica Desde Ubicacion  Picking"
         '
@@ -1704,7 +1706,7 @@ Partial Class frmConfiguracion
         Me.seConvertirDecUMB.Properties.IsFloatValue = False
         Me.seConvertirDecUMB.Properties.Mask.EditMask = "N00"
         Me.seConvertirDecUMB.Properties.MaxValue = New Decimal(New Integer() {3, 0, 0, 0})
-        Me.seConvertirDecUMB.Size = New System.Drawing.Size(86, 19)
+        Me.seConvertirDecUMB.Size = New System.Drawing.Size(86, 24)
         Me.seConvertirDecUMB.TabIndex = 32
         '
         'seDespacharExiParc
@@ -1717,7 +1719,7 @@ Partial Class frmConfiguracion
         Me.seDespacharExiParc.Properties.IsFloatValue = False
         Me.seDespacharExiParc.Properties.MaskSettings.Set("mask", "N00")
         Me.seDespacharExiParc.Properties.MaxValue = New Decimal(New Integer() {3, 0, 0, 0})
-        Me.seDespacharExiParc.Size = New System.Drawing.Size(86, 19)
+        Me.seDespacharExiParc.Size = New System.Drawing.Size(86, 24)
         Me.seDespacharExiParc.TabIndex = 31
         '
         'Label17
@@ -1726,7 +1728,7 @@ Partial Class frmConfiguracion
         Me.Label17.Location = New System.Drawing.Point(33, 225)
         Me.Label17.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(256, 20)
+        Me.Label17.Size = New System.Drawing.Size(205, 16)
         Me.Label17.TabIndex = 28
         Me.Label17.Text = "Convertir decimales en UM básica:"
         '
@@ -1737,7 +1739,7 @@ Partial Class frmConfiguracion
         Me.chkRechazarPedidoIncompleto.MenuManager = Me.RibbonControl
         Me.chkRechazarPedidoIncompleto.Name = "chkRechazarPedidoIncompleto"
         Me.chkRechazarPedidoIncompleto.Properties.Caption = ""
-        Me.chkRechazarPedidoIncompleto.Size = New System.Drawing.Size(86, 19)
+        Me.chkRechazarPedidoIncompleto.Size = New System.Drawing.Size(86, 24)
         Me.chkRechazarPedidoIncompleto.TabIndex = 44
         '
         'Label16
@@ -1746,7 +1748,7 @@ Partial Class frmConfiguracion
         Me.Label16.Location = New System.Drawing.Point(33, 169)
         Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(218, 20)
+        Me.Label16.Size = New System.Drawing.Size(174, 16)
         Me.Label16.TabIndex = 27
         Me.Label16.Text = "Despachar existencia parcial:"
         '
@@ -1756,12 +1758,13 @@ Partial Class frmConfiguracion
         Me.Label15.Location = New System.Drawing.Point(33, 110)
         Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(210, 20)
+        Me.Label15.Size = New System.Drawing.Size(168, 16)
         Me.Label15.TabIndex = 26
         Me.Label15.Text = "Rechazar pedido incompleto"
         '
         'XtraTabPage4
         '
+        Me.XtraTabPage4.Controls.Add(Me.chkSapSyncEnviaIngresosAuto)
         Me.XtraTabPage4.Controls.Add(Me.chkSAP_Control_Draft_Traslados)
         Me.XtraTabPage4.Controls.Add(Me.chkSAP_Control_Draft_Ajustes)
         Me.XtraTabPage4.Controls.Add(Me.chkInterfaceSAP)
@@ -1777,7 +1780,7 @@ Partial Class frmConfiguracion
         Me.chkSAP_Control_Draft_Traslados.MenuManager = Me.RibbonControl
         Me.chkSAP_Control_Draft_Traslados.Name = "chkSAP_Control_Draft_Traslados"
         Me.chkSAP_Control_Draft_Traslados.Properties.Caption = "SAP_Control_Draft_Traslados"
-        Me.chkSAP_Control_Draft_Traslados.Size = New System.Drawing.Size(123, 19)
+        Me.chkSAP_Control_Draft_Traslados.Size = New System.Drawing.Size(236, 24)
         Me.chkSAP_Control_Draft_Traslados.TabIndex = 65
         '
         'chkSAP_Control_Draft_Ajustes
@@ -1787,7 +1790,7 @@ Partial Class frmConfiguracion
         Me.chkSAP_Control_Draft_Ajustes.MenuManager = Me.RibbonControl
         Me.chkSAP_Control_Draft_Ajustes.Name = "chkSAP_Control_Draft_Ajustes"
         Me.chkSAP_Control_Draft_Ajustes.Properties.Caption = "SAP_Control_Draft_Ajustes"
-        Me.chkSAP_Control_Draft_Ajustes.Size = New System.Drawing.Size(123, 19)
+        Me.chkSAP_Control_Draft_Ajustes.Size = New System.Drawing.Size(256, 24)
         Me.chkSAP_Control_Draft_Ajustes.TabIndex = 64
         '
         'chkInterfaceSAP
@@ -1797,7 +1800,7 @@ Partial Class frmConfiguracion
         Me.chkInterfaceSAP.MenuManager = Me.RibbonControl
         Me.chkInterfaceSAP.Name = "chkInterfaceSAP"
         Me.chkInterfaceSAP.Properties.Caption = "Interface SAP"
-        Me.chkInterfaceSAP.Size = New System.Drawing.Size(69, 19)
+        Me.chkInterfaceSAP.Size = New System.Drawing.Size(196, 24)
         Me.chkInterfaceSAP.TabIndex = 63
         '
         'docBitacora
@@ -1846,6 +1849,16 @@ Partial Class frmConfiguracion
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1501, 73)
         Me.DockPanel1_Container.TabIndex = 0
+        '
+        'chkSapSyncEnviaIngresosAuto
+        '
+        Me.chkSapSyncEnviaIngresosAuto.Location = New System.Drawing.Point(30, 102)
+        Me.chkSapSyncEnviaIngresosAuto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.chkSapSyncEnviaIngresosAuto.MenuManager = Me.RibbonControl
+        Me.chkSapSyncEnviaIngresosAuto.Name = "chkSapSyncEnviaIngresosAuto"
+        Me.chkSapSyncEnviaIngresosAuto.Properties.Caption = "SAPSYNC_Envia_Ingresos_Auto"
+        Me.chkSapSyncEnviaIngresosAuto.Size = New System.Drawing.Size(236, 24)
+        Me.chkSapSyncEnviaIngresosAuto.TabIndex = 66
         '
         'frmConfiguracion
         '
@@ -1952,6 +1965,7 @@ Partial Class frmConfiguracion
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
+        CType(Me.chkSapSyncEnviaIngresosAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2067,4 +2081,5 @@ Partial Class frmConfiguracion
     Friend WithEvents chkRequerirCentroCostoObligatario As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents chkCantidadPresentacionTransaccionesOut As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents lblCantidadPresentacionTransaccionesOut As Label
+    Friend WithEvents chkSapSyncEnviaIngresosAuto As DevExpress.XtraEditors.CheckEdit
 End Class

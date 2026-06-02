@@ -425,6 +425,7 @@
     <Compile Include="Interface\Producto\clsLnI_nav_producto.vb" />
     <Compile Include="Interface\Producto\clsLnI_nav_Producto_Partial.vb" />
     <Compile Include="Interface\Proveedor\clsLnI_nav_proveedor.vb" />
+    <Compile Include="Interface\SyncRequest\clsLnI_nav_sync_request.vb" />
     <Compile Include="Inventario\InvCiclico\clsLnTrans_inv_reconteo_partial.vb" />
     <Compile Include="Licencia\licencia_item\clsLnLicencia_item_partial.vb" />
     <Compile Include="Licencia\licencia_item\clsLnLicencia_item.vb" />
