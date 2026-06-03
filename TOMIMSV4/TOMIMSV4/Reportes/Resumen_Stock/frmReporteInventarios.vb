@@ -45,6 +45,7 @@ Public Class frmReporteInventarios
     End Sub
 
     Private Sub frmReporteInventarios_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Set_DataTable()
 
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
@@ -204,7 +205,8 @@ Public Class frmReporteInventarios
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdStock, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -245,7 +247,6 @@ Public Class frmReporteInventarios
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -284,3 +285,6 @@ Public Class frmReporteInventarios
         Cargar_Datos()
     End Sub
 End Class
+
+
+

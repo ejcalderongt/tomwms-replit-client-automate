@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
@@ -779,6 +779,9 @@ Public Class frmInventarioRFID
     End Sub
 
     Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 

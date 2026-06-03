@@ -145,7 +145,8 @@ Public Class frmReportMovimiento
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Grd, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -186,7 +187,6 @@ Public Class frmReportMovimiento
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -290,6 +290,7 @@ Public Class frmReportMovimiento
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
 
 
@@ -496,3 +497,6 @@ Public Class frmReportMovimiento
     End Sub
 
 End Class
+
+
+

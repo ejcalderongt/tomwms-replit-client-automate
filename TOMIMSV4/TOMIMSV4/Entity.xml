@@ -841,6 +841,91 @@ Entity
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
 </member>
+<member name="T:TOMWMS.clsBeI_nav_sync_request">
+ <summary>
+ #EJC20260602_SYNC_INGRESO_SAP: Solicitud liviana para que WMS ejecute la interface SAP sin bloquear HH/WS.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdSyncRequest">
+ <summary>
+ Ejemplo: 12345. Identificador identity de i_nav_sync_request.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdNavConfigEnc">
+ <summary>
+ Ejemplo: 7. Configuracion de interface que contiene bodega, empresa, propietario y ejecutable.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdEmpresa">
+ <summary>
+ Ejemplo: 1. Empresa WMS asociada a la recepcion.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdBodega">
+ <summary>
+ Ejemplo: 89. Bodega WMS que genero ingresos pendientes para SAP.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdUsuario">
+ <summary>
+ Ejemplo: 101. Usuario que cerro la recepcion o solicito el sync.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Tipo_Interface">
+ <summary>
+ Ejemplo: 5. Valor de pInterfaceAEjecutar.Enviar_Pedidos_Compra en SAPSYNCCUMBRE.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Origen">
+ <summary>
+ Ejemplo: HH, BOF o WS. Punto que solicito la sincronizacion.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Estado">
+ <summary>
+ Ejemplo: PENDIENTE, PROCESANDO, FINALIZADO, ERROR o IGNORADO.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Parametros">
+ <summary>
+ Ejemplo: {"interface":"SAPSYNCCUMBRE","tipoInterface":5,"idRecepcionEnc":123}. Contexto con el que el worker ejecutara la interface.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Solicitud">
+ <summary>
+ Ejemplo: 2026-06-02 09:25:00. Momento en que WS/BOF encolo la solicitud.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Inicio">
+ <summary>
+ Ejemplo: 2026-06-02 09:26:00. Momento en que el worker tomo la solicitud.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Fin">
+ <summary>
+ Ejemplo: 2026-06-02 09:28:00. Momento en que la interface termino.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Intento">
+ <summary>
+ Ejemplo: 1. Cantidad de intentos de procesamiento del worker WMS.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Mensaje">
+ <summary>
+ Ejemplo: Sync SAP solicitado, finalizado, sin pendientes o detalle de error controlado.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Host_Solicita">
+ <summary>
+ Ejemplo: HH-AND-01 o IIS-TOMHHWS. Host que solicito el sync.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Host_Procesa">
+ <summary>
+ Ejemplo: WMS-SRV-01. Host WMS que tomo y proceso la solicitud.
+ </summary>
+</member>
 <member name="P:TOMWMS.clsBeI_nav_transacciones_out.Auditar">
  <summary>
  #EJC20240917: Determinar que transacciones se enviaron o no correctamente a SAP (por lote)

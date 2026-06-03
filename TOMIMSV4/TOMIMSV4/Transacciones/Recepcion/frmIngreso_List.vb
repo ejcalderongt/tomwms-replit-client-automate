@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -231,6 +231,9 @@ Public Class frmIngreso_List
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         GridView1.OptionsBehavior.Editable = False
         GridView1.OptionsSelection.EnableAppearanceFocusedCell = False
         GridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
@@ -258,7 +261,8 @@ Public Class frmIngreso_List
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -291,7 +295,6 @@ Public Class frmIngreso_List
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -320,6 +323,7 @@ Public Class frmIngreso_List
     Private Sub frmIngreso_List_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             vNombreArchivoLayOutGrid = "frmIngreso_List.xml"
 
             Init_DataTable_Productos()
@@ -505,3 +509,6 @@ Public Class frmIngreso_List
     End Sub
 
 End Class
+
+
+

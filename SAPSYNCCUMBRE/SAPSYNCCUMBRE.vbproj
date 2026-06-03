@@ -210,6 +210,7 @@
     <Compile Include="Clases Interface Sync\Transferencia_Stock\clsSyncSAPTrasladoStock.vb" />
     <Compile Include="Clases\BaseDatos.vb" />
     <Compile Include="Clases\IMS.vb" />
+    <Compile Include="Clases\clsSAPTransaction.vb" />
     <Compile Include="Clases\ModuleMain.vb" />
     <Compile Include="Formas\frmTestCon.Designer.vb">
       <DependentUpon>frmTestCon.vb</DependentUpon>

@@ -1,4 +1,4 @@
-﻿Imports DevExpress.XtraEditors
+Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Base
@@ -208,6 +208,7 @@ Public Class frmRptMinimoxMaximos
     Private Sub frmRptMinimoxMaximos_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             Listar_Productos_Sin_Minimos_Y_Maximos()
         Catch ex As Exception
 
@@ -224,6 +225,9 @@ Public Class frmRptMinimoxMaximos
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 

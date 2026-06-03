@@ -39,6 +39,8 @@ Partial Class frmMov_Reporte
         Me.dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.grpFechas = New DevExpress.XtraEditors.GroupControl()
+        Me.lblLote = New System.Windows.Forms.Label()
+        Me.txtLote = New System.Windows.Forms.TextBox()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.lblPrg = New System.Windows.Forms.Label()
@@ -53,8 +55,7 @@ Partial Class frmMov_Reporte
         Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
         Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
         Me.sf = New System.Windows.Forms.SaveFileDialog()
-        Me.txtLote = New System.Windows.Forms.TextBox()
-        Me.lblLote = New System.Windows.Forms.Label()
+        Me.chkSoloProductosConStock = New DevExpress.XtraBars.BarToggleSwitchItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -72,10 +73,10 @@ Partial Class frmMov_Reporte
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdImprimir, Me.cmdActualizar, Me.BarButtonItem3, Me.lblRegs, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdImprimir, Me.cmdActualizar, Me.BarButtonItem3, Me.lblRegs, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid, Me.chkSoloProductosConStock})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 12
+        Me.RibbonControl.MaxItemId = 13
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.OpcionesLista})
         Me.RibbonControl.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemProgressBar1, Me.RepositoryItemProgressBar2, Me.RepositoryItemMarqueeProgressBar1, Me.RepositoryItemProgressBar3})
@@ -145,6 +146,7 @@ Partial Class frmMov_Reporte
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuGuardarLayoutGrid)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem3)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkSoloProductosConStock)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RepositoryItemProgressBar1
@@ -220,6 +222,24 @@ Partial Class frmMov_Reporte
         Me.grpFechas.Size = New System.Drawing.Size(304, 554)
         Me.grpFechas.TabIndex = 3
         Me.grpFechas.Text = "Filtros"
+        '
+        'lblLote
+        '
+        Me.lblLote.AutoSize = True
+        Me.lblLote.Location = New System.Drawing.Point(14, 216)
+        Me.lblLote.Name = "lblLote"
+        Me.lblLote.Size = New System.Drawing.Size(36, 16)
+        Me.lblLote.TabIndex = 11
+        Me.lblLote.Text = "Lote:"
+        '
+        'txtLote
+        '
+        Me.txtLote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtLote.Location = New System.Drawing.Point(14, 234)
+        Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtLote.Name = "txtLote"
+        Me.txtLote.Size = New System.Drawing.Size(283, 23)
+        Me.txtLote.TabIndex = 10
         '
         'cmbBodega
         '
@@ -348,23 +368,13 @@ Partial Class frmMov_Reporte
         '
         Me.sf.CheckFileExists = True
         '
-        'txtLote
+        'chkSoloProductosConStock
         '
-        Me.txtLote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtLote.Location = New System.Drawing.Point(14, 234)
-        Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtLote.Name = "txtLote"
-        Me.txtLote.Size = New System.Drawing.Size(283, 23)
-        Me.txtLote.TabIndex = 10
-        '
-        'lblLote
-        '
-        Me.lblLote.AutoSize = True
-        Me.lblLote.Location = New System.Drawing.Point(14, 216)
-        Me.lblLote.Name = "lblLote"
-        Me.lblLote.Size = New System.Drawing.Size(36, 16)
-        Me.lblLote.TabIndex = 11
-        Me.lblLote.Text = "Lote:"
+        Me.chkSoloProductosConStock.BindableChecked = True
+        Me.chkSoloProductosConStock.Caption = "Incluir solo artículos con stock actual"
+        Me.chkSoloProductosConStock.Checked = True
+        Me.chkSoloProductosConStock.Id = 12
+        Me.chkSoloProductosConStock.Name = "chkSoloProductosConStock"
         '
         'frmMov_Reporte
         '
@@ -435,4 +445,5 @@ End Sub
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents lblLote As Label
     Friend WithEvents txtLote As TextBox
+    Friend WithEvents chkSoloProductosConStock As DevExpress.XtraBars.BarToggleSwitchItem
 End Class
