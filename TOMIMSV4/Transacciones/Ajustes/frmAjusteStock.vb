@@ -39,6 +39,16 @@ Public Class frmAjusteStock
         Editar = 2
     End Enum
 
+    Private Sub Notificar_Lista_Ajustes_Actualizada()
+        Try
+            If Not InvokeListarAjustes Is Nothing Then
+                InvokeListarAjustes.Invoke()
+            End If
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Sub
+
     Public Sub New()
 
         InitializeComponent()
@@ -1329,6 +1339,7 @@ Public Class frmAjusteStock
             End If
 
             lblRegs.Caption = "Registros: " & dgrid.Rows.Count
+            Notificar_Lista_Ajustes_Actualizada()
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -1752,6 +1763,7 @@ Public Class frmAjusteStock
     Private Sub mnuGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuGuardar.ItemClick
 
         Try
+            Guardado = False
 
             If XtraMessageBox.Show("¿Guardar ajuste?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
@@ -1780,8 +1792,8 @@ Public Class frmAjusteStock
                     Guardar_Stock_por_Ajuste_Positivo()
                 End If
 
-                If Not InvokeListarAjustes Is Nothing Then
-                    InvokeListarAjustes.Invoke
+                If Guardado Then
+                    Notificar_Lista_Ajustes_Actualizada()
                 End If
 
             End If
@@ -2093,6 +2105,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 
@@ -2222,6 +2235,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 
@@ -2359,6 +2373,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 

@@ -4,7 +4,6 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnI_nav_ped_compra_enc
-
     Public Shared Function Exist(ByVal pNo As String)
 
         Exist = False
@@ -40,7 +39,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Exist(ByVal pNo As String, ByVal lConnection As SqlConnection, ByVal lTrans As SqlTransaction)
 
         Exist = False
@@ -66,7 +64,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function GetAll(ByRef lConnection As SqlConnection,
                                   ByRef lTrans As SqlTransaction,
                                   ByRef lblprg As RichTextBox,
@@ -120,7 +117,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Insert_Multiple_Pedido_Compra_From_ERP(ByVal lPedidosCompra As List(Of clsBeI_nav_ped_compra_enc)) As Boolean
 
         Insert_Multiple_Pedido_Compra_From_ERP = False
@@ -191,7 +187,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Update_Pedido_Compra_From_ERP(ByRef oBeI_nav_ped_compra_enc As clsBeI_nav_ped_compra_enc) As Integer
 
         Update_Pedido_Compra_From_ERP = 0
@@ -224,7 +219,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Insert_Single_Pedido_From_ERP(ByVal oBeI_nav_ped_compra_enc As clsBeI_nav_ped_compra_enc) As Integer
 
         Insert_Single_Pedido_From_ERP = 0
@@ -397,7 +391,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Insert_Single_Pedido_From_ERP(ByVal oBeI_nav_ped_compra_enc As clsBeI_nav_ped_compra_enc,
                                                          ByVal lConnection As SqlConnection,
                                                          ByVal lTransaction As SqlTransaction) As Boolean
@@ -600,1223 +593,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
-    '    Public Shared Function Procesar_Pedido_Compra_MI3(ByRef navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
-    '                                                      ByRef OutBeOrdenCompra As clsBeTrans_oc_enc,
-    '                                                      ByRef lblprg As String) As Boolean
-
-    '        Procesar_Pedido_Compra_MI3 = False
-
-    '        Dim CnnLog As New SqlConnection(ConfigurationManager.AppSettings("CST"))
-    '        Dim DifCant As Double = 0
-    '        Dim BeNavEjecucionRes As New clsBeI_nav_ejecucion_res
-    '        Dim BeNavEjecucionEnc As New clsBeI_nav_ejecucion_enc
-    '        Dim BeConfigEnc As New clsBeI_nav_config_enc
-    '        Dim IdNavConfigDet As Integer = 101 'Pedidos de compra
-    '        Dim VContadorBitacoraIntermedia As Integer = 0
-    '        Dim VContadorBitacoraTOMWMS As Integer = 0
-    '        Dim gBeOrdenCompraEnc As clsBeTrans_oc_enc = Nothing
-    '        Dim PedidoCompraExistente As clsBeTrans_oc_enc = Nothing
-    '        Dim vContador As Integer = 0
-    '        Dim vContadorLineasDet As Integer = 0
-    '        Dim IdBodegaOrigen As Integer = 0
-    '        Dim IdBodegaDestino As Integer = 0
-    '        Dim BeProveedorBodega As New clsBeProveedor_bodega
-    '        Dim BeProductoBodega As New clsBeProducto_bodega
-    '        Dim BePresentacionDefecto As New clsBeProducto_Presentacion
-    '        Dim vContadorLineasDetInsertadas As Integer = 0
-    '        Dim InsertoEncabezado As Boolean = False
-    '        Dim BeOcDetLote As New clsBeTrans_oc_det_lote()
-    '        Dim BeTipoDocumento As New clsBeTrans_oc_ti()
-    '        Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
-    '        Dim lTransInterface As SqlTransaction = Nothing
-    '        Dim LotesExistentes As New List(Of clsBeTrans_oc_det_lote)
-    '        Dim LoteExistente As New clsBeTrans_oc_det_lote
-    '        Dim vIdEmpresa As Integer = 0
-    '        Dim txtRich As New RichTextBox
-    '        Dim vCantidadDecimalUMBas As Double = 0
-    '        Dim vCantidadEnteraPres As Double = 0
-    '        Dim vCantidadSolicitadaPedido As Double = 0
-    '        Dim vProductoNoExiste As Integer = 0
-
-    '        Try
-
-    '            CnnLog.Open()
-
-    '            BeNavEjecucionEnc.IdNavConfigEnc = 1
-    '            BeNavEjecucionEnc.Fecha = Now
-
-    '            clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc)
-
-    '            BeNavEjecucionRes.IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc
-    '            BeNavEjecucionRes.IdNavConfigDet = IdNavConfigDet 'Pedidos de compra
-    '            BeNavEjecucionRes.Registros_ws = 0
-    '            BeNavEjecucionRes.Registros_ti = 0
-    '            BeNavEjecucionRes.Registros_WMS = 0
-    '            BeNavEjecucionRes.Exitosa = False
-
-    '            clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes)
-
-    '            lConnection.Open() : lTransInterface = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-    '            lblprg += (vbNewLine)
-
-    '            VContadorBitacoraTOMWMS = 0
-
-    '            Dim BeUnidadMedidaPedCompra As New clsBeUnidad_medida
-
-    '            If navPedidoCompraEnc.Status <> 0 Then
-
-    '                lblprg += (String.Format(vbNewLine & "Procesando Documento: {0} ", navPedidoCompraEnc.No, vbNewLine))
-    '                lblprg += (vbNewLine)
-
-    '                gBeOrdenCompraEnc = New clsBeTrans_oc_enc() With {.Referencia = navPedidoCompraEnc.No,
-    '                                                                  .IdTipoIngresoOC = navPedidoCompraEnc.Document_Type}
-
-    '                PedidoCompraExistente = clsLnTrans_oc_enc.Get_Single_By_Referencia(gBeOrdenCompraEnc,
-    '                                                                                   lConnection,
-    '                                                                                   lTransInterface)
-
-    '                vContador += 1
-    '                vContadorLineasDet = 0
-
-    '                If Not navPedidoCompraEnc.Is_Internal_Transfer Then
-
-    '                    IdBodegaDestino = clsLnCliente.Get_IdUbicacionVirtual_By_Codigo(navPedidoCompraEnc.Location_Code,
-    '                                                                                    lConnection,
-    '                                                                                    lTransInterface)
-
-    '                    If IdBodegaDestino = 0 Then
-
-    '                        IdBodegaDestino = clsLnBodega.Get_IdBodega_By_Codigo(navPedidoCompraEnc.Location_Code,
-    '                                                                             lConnection,
-    '                                                                             lTransInterface)
-
-    '                        If IdBodegaDestino = 0 Then
-
-    '                            Dim BeBodegaArea As New clsBeBodega_area
-    '                            BeBodegaArea = clsLnBodega_area.Get_Single_By_Codigo_Bodega(navPedidoCompraEnc.Location_Code,
-    '                                                                                        lConnection,
-    '                                                                                        lTransInterface)
-
-    '                            If Not BeBodegaArea Is Nothing Then
-    '                                IdBodegaDestino = BeBodegaArea.IdBodega
-    '                            Else
-    '                                If IsNumeric(navPedidoCompraEnc.Location_Code) Then
-    '                                    '#EJC202409042219: Por botón en pedido, se toma el IdBodega que se envía en el objeto.
-    '                                    If clsLnBodega.Exists_By_IdBodega(navPedidoCompraEnc.Location_Code, lConnection, lTransInterface) Then
-    '                                        IdBodegaDestino = navPedidoCompraEnc.Location_Code
-    '                                    End If
-    '                                End If
-    '                            End If
-
-    '                        End If
-
-    '                    End If
-
-    '                Else
-
-    '                    IdBodegaDestino = clsLnBodega.Get_IdBodega_By_Codigo(navPedidoCompraEnc.Location_Code,
-    '                                                                         lConnection,
-    '                                                                         lTransInterface)
-
-    '                    If IdBodegaDestino = 0 Then
-
-    '                        If IsNumeric(navPedidoCompraEnc.Location_Code) Then
-    '                            '#EJC202409042219: Por botón en pedido, se toma el IdBodega que se envía en el objeto.
-    '                            If clsLnBodega.Exists_By_IdBodega(navPedidoCompraEnc.Location_Code, lConnection, lTransInterface) Then
-    '                                IdBodegaDestino = navPedidoCompraEnc.Location_Code
-    '                            End If
-    '                        End If
-
-    '                    End If
-
-    '                End If
-
-    '                If (IdBodegaDestino = 0 AndAlso navPedidoCompraEnc.Is_Internal_Transfer) Then
-    '                    Dim vMensaje As String = String.Format("No se ha configurado la ubicación virtual para el cliente/bodega: {0} IsInternalTransfer: {1} ", navPedidoCompraEnc.Location_Code, navPedidoCompraEnc.Is_Internal_Transfer)
-    '                    Throw New Exception(vMensaje)
-    '                ElseIf (IdBodegaDestino = 0 AndAlso Not navPedidoCompraEnc.Is_Internal_Transfer) Then
-    '                    Dim vMensaje As String = String.Format("#ERROR_202309131539: No se ha configurado la ubicación virtual para la bodega destino: {0} IsInternalTransfer: {1}, revise que el material está asociado a la bodega.", navPedidoCompraEnc.Location_Code, navPedidoCompraEnc.Is_Internal_Transfer)
-    '                    Throw New Exception(vMensaje)
-    '                Else
-    '                    BeConfigEnc.Idbodega = IdBodegaDestino
-    '                    gBeOrdenCompraEnc.IdBodega = IdBodegaDestino
-    '                End If
-
-    '                vIdEmpresa = clsLnBodega.Get_IdEmpresa_By_IdBodega(gBeOrdenCompraEnc.IdBodega,
-    '                                                                   lConnection,
-    '                                                                   lTransInterface)
-
-    '                BeConfigEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(gBeOrdenCompraEnc.IdBodega,
-    '                                                                                         vIdEmpresa,
-    '                                                                                         lConnection,
-    '                                                                                         lTransInterface)
-
-    '                If BeConfigEnc Is Nothing Then
-    '                    Throw New Exception("La configuración de interface para la bodega no fue definida")
-    '                End If
-
-    '                If BeConfigEnc.IdPropietario = 0 Then
-    '                    Throw New Exception("No se pudo obtener el Identificador de propietario para: " & navPedidoCompraEnc.Product_Owner_Code)
-    '                Else
-    '                    gBeOrdenCompraEnc.PropietarioBodega = New clsBePropietario_bodega
-    '                    gBeOrdenCompraEnc.PropietarioBodega.IdPropietario = BeConfigEnc.IdPropietario
-    '                    gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(IdBodegaDestino,
-    '                                                                                                                                                     BeConfigEnc.IdPropietario,
-    '                                                                                                                                                     lConnection,
-    '                                                                                                                                                     lTransInterface)
-
-    '                    If gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega = 0 Then
-    '                        Throw New Exception("No se pudo obtener el IdPropietarioBodega, valide que el IdPropietario: " & BeConfigEnc.IdPropietario & " Esté asociado a la bodega destino: " & IdBodegaDestino)
-    '                    Else
-    '                        gBeOrdenCompraEnc.IdPropietarioBodega = gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega
-    '                    End If
-
-    '                End If
-
-    '                '#
-    '                If PedidoCompraExistente IsNot Nothing Then
-    '                    lblprg += ("El documento ya existe con el Documento de Ingreso WMS: " & PedidoCompraExistente.IdOrdenCompraEnc)
-    '                    Procesar_Pedido_Compra_MI3 = True
-    '                    Exit Function
-    '                End If
-
-    '                'El pedido de compra existe y debe ser actualizado.
-    '                If PedidoCompraExistente IsNot Nothing Then
-
-    '                    lblprg += ("El documento ya existe, se actualizará.")
-    '                    lblprg += (vbNewLine)
-
-    '                    gBeOrdenCompraEnc.Activo = True
-    '                    gBeOrdenCompraEnc.IdCampaña = Val(navPedidoCompraEnc.Campaign_No)
-
-    '                    If gBeOrdenCompraEnc.ProveedorBodega Is Nothing Then
-    '                        gBeOrdenCompraEnc.ProveedorBodega = New clsBeProveedor_bodega
-    '                    End If
-
-    '                    BeProveedorBodega = clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No,
-    '                                                                                               BeConfigEnc.Idbodega,
-    '                                                                                               lConnection,
-    '                                                                                               lTransInterface)
-
-    '                    If navPedidoCompraEnc.Is_Internal_Transfer Then
-    '                        '#EJC20181203: Aun no se utiliza, pero pronto, en un futuro cercano, llegaremos aquí, Yo, desde el pasado.
-    '                        IdBodegaOrigen = BeProveedorBodega.Proveedor.IdUbicacionVirtual
-    '                    End If
-
-    '                    gBeOrdenCompraEnc.IdProveedorBodega = BeProveedorBodega.IdAsignacion
-
-    '                    If navPedidoCompraEnc.Document_Type = 0 Then
-
-    '                        If navPedidoCompraEnc.Is_Internal_Transfer Then
-    '                            gBeOrdenCompraEnc.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Transferencia
-    '                            BeTipoDocumento.Genera_Tarea_Ingreso = True
-    '                        Else
-    '                            gBeOrdenCompraEnc.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso
-    '                        End If
-
-    '                    Else
-
-    '                        gBeOrdenCompraEnc.IdTipoIngresoOC = navPedidoCompraEnc.Document_Type
-
-    '                        '#EJC20210730: Obtener el tipo de documento de ingreso en i_nav_ped_compra_enc_partial.vb
-    '                        BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(gBeOrdenCompraEnc.IdTipoIngresoOC, lConnection, lTransInterface)
-    '                        If BeTipoDocumento Is Nothing Then
-    '                            BeTipoDocumento = New clsBeTrans_oc_ti()
-    '                            BeTipoDocumento.Genera_Tarea_Ingreso = False
-    '                        End If
-
-    '                    End If
-
-    '                    gBeOrdenCompraEnc.No_Documento = navPedidoCompraEnc.Vendor_Invoice_No
-
-    '                    'EJC202405090238AM:  no contenedor SAP.
-    '                    If BeConfigEnc.Interface_SAP Then
-    '                        gBeOrdenCompraEnc.No_Documento_Recepcion_ERP = navPedidoCompraEnc.Ship_To_Contact
-    '                    End If
-
-    '                    gBeOrdenCompraEnc.User_Mod = BeConfigEnc.IdUsuario
-    '                    gBeOrdenCompraEnc.Fec_Mod = Now
-
-    '                    If BeConfigEnc.Interface_SAP Then
-    '                        gBeOrdenCompraEnc.Procedencia = navPedidoCompraEnc.Buy_From_Vendor_No & " " & navPedidoCompraEnc.Buy_From_Vendor_Name
-    '                    Else
-    '                        gBeOrdenCompraEnc.Procedencia = navPedidoCompraEnc.Ship_To_Contact
-    '                    End If
-
-    '                    gBeOrdenCompraEnc.No_Marchamo = ""
-    '                    gBeOrdenCompraEnc.Referencia = navPedidoCompraEnc.No
-    '                    gBeOrdenCompraEnc.Observacion = navPedidoCompraEnc.Posting_Description
-    '                    gBeOrdenCompraEnc.Control_Poliza = False
-    '                    gBeOrdenCompraEnc.Codigo_Empresa_ERP = navPedidoCompraEnc.Company_Code
-
-    '                    If gBeOrdenCompraEnc.IsNew Then
-    '                        gBeOrdenCompraEnc.ObjPoliza = Nothing
-    '                    End If
-
-    '                    clsLnTrans_oc_enc.Actualizar(gBeOrdenCompraEnc, lConnection, lTransInterface)
-
-    '                    '#EJC20181122_0345PM: Para hacer rollback si no logra insertar el detalle.
-    '                    lTransInterface.Save("oc_enc")
-
-    '                    'lblprg += (String.Format("Procesando# : {0}{1}", navPedidoCompraEnc.No, vbNewLine))
-    '                    'lblprg += (vbNewLine)
-
-    '                    VContadorBitacoraTOMWMS += 1
-
-    '                    If navPedidoCompraEnc.Lineas_Detalle.Count > 0 Then
-
-    '                        Dim BePedidoCompraDet As New clsBeTrans_oc_det
-
-    '                        For Each navPedidoCompraDet As clsBeI_nav_ped_compra_det In navPedidoCompraEnc.Lineas_Detalle
-
-    '                            vContadorLineasDet += 1
-
-    '                            Try
-
-    '                                BePresentacionDefecto = New clsBeProducto_Presentacion()
-
-    '                                If BeConfigEnc.Equiparar_Productos Then
-
-    '                                    BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                      IdBodegaDestino,
-    '                                                                                                      lConnection,
-    '                                                                                                      lTransInterface)
-
-    '                                    If BeProductoBodega Is Nothing Then
-
-    '                                        BeProductoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                         IdBodegaDestino,
-    '                                                                                                         lConnection,
-    '                                                                                                         lTransInterface)
-    '                                        If BeProductoBodega Is Nothing Then
-
-    '                                            BeProductoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                             IdBodegaDestino,
-    '                                                                                                             lConnection,
-    '                                                                                                             lTransInterface)
-    '                                        End If
-
-    '                                    End If
-
-    '                                Else
-
-    '                                    BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                      IdBodegaDestino,
-    '                                                                                                      lConnection,
-    '                                                                                                      lTransInterface)
-
-    '                                End If
-
-
-    '                                'Existe el producto en el maestro?
-    '                                If BeProductoBodega IsNot Nothing Then
-
-    '                                    'Existe el producto en el detalle de la orden de compra en la tabla de TOMWMS ?
-    '                                    BePedidoCompraDet = clsLnTrans_oc_det.Exist(PedidoCompraExistente.IdOrdenCompraEnc,
-    '                                                                                navPedidoCompraDet.Line_No,
-    '                                                                                lConnection,
-    '                                                                                lTransInterface)
-
-    '                                    '#CKFK 20180725 17:45 coloqué esto en comentario, porque la instancia BeUnidadMedidaPedCompra era nothing y no se le podía asignar valor a la property Nombre
-    '                                    'BeUnidadMedidaPedCompra.Nombre = navPedidoCompraDet.Unit_of_Measure_Code
-    '                                    BeUnidadMedidaPedCompra = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(navPedidoCompraDet.Unit_of_Measure_Code,
-    '                                                                                                                    BeConfigEnc.IdPropietario,
-    '                                                                                                                    lConnection,
-    '                                                                                                                    lTransInterface)
-
-    '                                    'La unidad de medida existe?
-    '                                    If BeUnidadMedidaPedCompra Is Nothing Then
-
-    '                                        If BeProductoBodega.Producto.UnidadMedida Is Nothing Then
-    '                                            'unidad de medida no existe en tabla UNIDAD_MEDIDA
-    '                                            Throw New Exception(String.Format(" Producto: {0} UnidMedBas {1} No existe ",
-    '                                                                navPedidoCompraDet.No,
-    '                                                                BeProductoBodega.Producto.UnidadMedida.Nombre))
-    '                                        Else
-
-    '                                            '#EJC20190322: Validar si me están solicitando una presentación
-    '                                            BePresentacionDefecto = clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(BeProductoBodega.IdProducto,
-    '                                                                                                                              navPedidoCompraDet.Unit_of_Measure_Code,
-    '                                                                                                                              lConnection,
-    '                                                                                                                              lTransInterface)
-
-    '                                            If BePresentacionDefecto IsNot Nothing Then
-
-    '                                                'Igualar la unidad de medida de compra básica, con la U.M básica del producto.
-    '                                                BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
-
-    '                                                'Indicar que se va a recibir producto con presentación
-    '                                                navPedidoCompraDet.Variant_Code = navPedidoCompraDet.Variant_Code
-
-    '                                            Else
-    '                                                '#EJC20190530: Aun no se si sea lo mejor, pero debemos continuar.
-    '                                                Throw New Exception("ERROR_20220727_1228D: No se encontró la presentación asociada al código: " & navPedidoCompraDet.Unit_of_Measure_Code)
-    '                                            End If
-
-    '                                        End If
-
-    '                                    End If 'Fin sí: unidad de medida no existe.
-
-    '#Region "Cod_Variante_A_Presentacion"
-    '                                    If navPedidoCompraDet.Variant_Code <> "" Then
-
-    '                                        BePresentacionDefecto = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
-    '                                                                                                                  navPedidoCompraDet.Variant_Code,
-    '                                                                                                                  lConnection,
-    '                                                                                                                  lTransInterface)
-    '                                        If BePresentacionDefecto Is Nothing Then
-
-    '                                            '#EJC20220727: No insertar (siempre, parametrizar después) la presentación de forma automática.
-    '                                            Throw New Exception("ERROR_20220727_1228E: No se encontró la presentación asociada al código: " & navPedidoCompraDet.No & " Con código variante: " & navPedidoCompraDet.Variant_Code)
-
-    '                                        End If 'Fin sí: BePresentacion IsNothing (presentación no existe y se insertó)
-
-    '                                    End If 'Fin sí: Cod_Variante <> ""
-
-    '#End Region
-
-    '                                    'Producto No existe en la tabla de detalle de TOMWMS . trans_oc_det
-    '                                    If BePedidoCompraDet Is Nothing Then
-
-    '                                        Try
-
-    '                                            BePedidoCompraDet = New clsBeTrans_oc_det
-    '                                            BePedidoCompraDet.IdOrdenCompraEnc = PedidoCompraExistente.IdOrdenCompraEnc
-    '                                            BePedidoCompraDet.IdOrdenCompraDet = clsLnTrans_oc_det.MaxID(PedidoCompraExistente.IdOrdenCompraEnc, lConnection, lTransInterface) + 1
-    '                                            BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega
-
-    '                                            If Not BePresentacionDefecto Is Nothing Then
-    '                                                BePedidoCompraDet.IdPresentacion = BePresentacionDefecto.IdPresentacion
-    '                                                BePedidoCompraDet.Presentacion.IdPresentacion = BePresentacionDefecto.IdPresentacion
-    '                                            Else
-    '                                                BePedidoCompraDet.IdPresentacion = 0
-    '                                            End If
-
-    '                                            BePedidoCompraDet.Nombre_producto = navPedidoCompraDet.Description
-
-    '                                            '#EJC20190322_1622
-    '                                            'Si tiene presentación colocar como nombre de unidad de medida básica la UMBas del producto.
-    '                                            If navPedidoCompraDet.Variant_Code = "" Then
-    '                                                BePedidoCompraDet.Nombre_unidad_medida_basica = navPedidoCompraDet.Unit_of_Measure_Code
-    '                                            Else
-    '                                                BePedidoCompraDet.Nombre_unidad_medida_basica = BeProductoBodega.Producto.UnidadMedida.Nombre
-    '                                            End If
-
-    '                                            BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity
-    '                                            BePedidoCompraDet.Cantidad_recibida = navPedidoCompraDet.Quantity_Received
-    '                                            BePedidoCompraDet.Costo = navPedidoCompraDet.Direct_Unit_Cost
-    '                                            BePedidoCompraDet.Total_linea = navPedidoCompraDet.Line_Amount
-    '                                            BePedidoCompraDet.No_Linea = navPedidoCompraDet.Line_No
-    '                                            BePedidoCompraDet.Activo = True
-    '                                            BePedidoCompraDet.Porcentaje_arancel = 0
-    '                                            BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code
-
-    '                                            If Asigna_Unidad_De_Medida(BePedidoCompraDet,
-    '                                                                       navPedidoCompraDet,
-    '                                                                       BeUnidadMedidaPedCompra,
-    '                                                                       BeProductoBodega,
-    '                                                                       txtRich,
-    '                                                                       lConnection,
-    '                                                                       lTransInterface,
-    '                                                                       BeNavEjecucionRes.IdEjecucionEnc,
-    '                                                                       IdNavConfigDet,
-    '                                                                       BeConfigEnc.IdUsuario) Then
-
-    '                                                clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransInterface)
-
-    '                                                If Not navPedidoCompraEnc.Lineas_Detalle_Lotes Is Nothing Then
-
-    '                                                    If navPedidoCompraEnc.Lineas_Detalle_Lotes.Count > 0 Then
-
-    '                                                        For Each Lote In navPedidoCompraEnc.Lineas_Detalle_Lotes.Where(Function(x) x.NoEnc = navPedidoCompraDet.NoEnc _
-    '                                                                AndAlso x.Item_No = navPedidoCompraDet.No _
-    '                                                                AndAlso x.Source_Prod_Order_Line = navPedidoCompraDet.Line_No)
-
-    '                                                            LoteExistente = Nothing
-
-    '                                                            LoteExistente = LotesExistentes.Find(Function(x) x.No_linea = Lote.Source_Prod_Order_Line AndAlso x.Lote = Lote.Lot_No)
-
-    '                                                            BeOcDetLote = New clsBeTrans_oc_det_lote
-    '                                                            BeOcDetLote.IdOrdenCompraEnc = BePedidoCompraDet.IdOrdenCompraEnc
-    '                                                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-    '                                                            BeOcDetLote.Cantidad = Lote.Quantity_Base
-    '                                                            BeOcDetLote.No_linea = Lote.Source_Prod_Order_Line
-    '                                                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
-    '                                                            BeOcDetLote.Lote = Lote.Lot_No
-    '                                                            BeOcDetLote.Cantidad_recibida = 0
-    '                                                            BeOcDetLote.Codigo_producto = Lote.Item_No
-
-    '                                                            If LoteExistente Is Nothing Then
-    '                                                                BeOcDetLote.IdOrdenCompraDetLote = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1
-    '                                                                clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
-    '                                                            Else
-    '                                                                clsLnTrans_oc_det_lote.Actualizar(BeOcDetLote, lConnection, lTransInterface)
-    '                                                            End If
-
-    '                                                        Next
-
-    '                                                    End If
-
-    '                                                End If
-
-    '                                                VContadorBitacoraTOMWMS += 1
-
-    '                                            End If
-
-    '                                        Catch ex As Exception
-
-    '                                            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-    '                                                                                       BePedidoCompraDet.Nombre_producto,
-    '                                                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                                       IdNavConfigDet)
-
-    '                                            lblprg += (String.Format("Error al insertar Detalle en : {0}{1}", ex.Message, vbNewLine))
-    '                                            lblprg += (vbNewLine)
-
-    '                                        End Try
-
-    '                                    Else 'Producto sí existe en tabla trans_oc_det
-
-    '                                        Try
-
-    '                                            BePedidoCompraDet.IdOrdenCompraEnc = BePedidoCompraDet.IdOrdenCompraEnc
-    '                                            BePedidoCompraDet.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-    '                                            BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega
-    '                                            BePedidoCompraDet.Codigo_Producto = BeProductoBodega.Producto.Codigo
-
-    '                                            '#EJC20220622:Quitar caracteres no permitidos DI.
-    '                                            BePedidoCompraDet.Nombre_producto = clsPublic.Quitar_Caracteres_No_Permitidos(navPedidoCompraDet.Description)
-
-    '                                            '#EJC20190322_1622
-    '                                            'Si tiene presentación colocar como nombre de unidad de medida básica la UMBas del producto.
-    '                                            If navPedidoCompraDet.Variant_Code = "" Then
-    '                                                BePedidoCompraDet.Nombre_unidad_medida_basica = navPedidoCompraDet.Unit_of_Measure_Code
-    '                                            Else
-    '                                                BePedidoCompraDet.Nombre_unidad_medida_basica = BeProductoBodega.Producto.UnidadMedida.Nombre
-    '                                            End If
-
-    '                                            If BePedidoCompraDet.Cantidad = 0 Then
-    '                                                BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity
-    '                                            Else
-
-    '                                                DifCant = navPedidoCompraDet.Quantity - BePedidoCompraDet.Cantidad
-
-    '                                                lblprg += vbNewLine
-
-    '                                                Select Case DifCant
-
-    '                                                    Case 0
-    '                                                        lblprg += (String.Format("La cantidad no se modificó para pedido {0} producto {1} ", navPedidoCompraEnc.No, navPedidoCompraDet.No))
-    '                                                    Case Is > 0
-    '                                                        lblprg += (String.Format("La cantidad incrementó respecto a TOM para pedido {0} producto {1} ", navPedidoCompraEnc.No, navPedidoCompraDet.No))
-    '                                                    Case Is < 0
-    '                                                        lblprg += (String.Format("La cantidad disminuyó respecto al original en WMS  para pedido {0} producto {1} ", navPedidoCompraEnc.No, navPedidoCompraDet.No))
-    '                                                    Case Else
-    '                                                        Exit Select
-    '                                                End Select
-
-    '                                                BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity
-
-    '                                            End If
-
-    '                                            BePedidoCompraDet.Cantidad_recibida = navPedidoCompraDet.Quantity_Received
-    '                                            BePedidoCompraDet.Costo = navPedidoCompraDet.Direct_Unit_Cost
-    '                                            BePedidoCompraDet.Total_linea = navPedidoCompraDet.Line_Amount
-    '                                            BePedidoCompraDet.No_Linea = navPedidoCompraDet.Line_No
-    '                                            BePedidoCompraDet.Activo = True
-    '                                            BePedidoCompraDet.Porcentaje_arancel = 0
-    '                                            BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code
-
-    '                                            clsLnTrans_oc_det.Actualizar_Desde_Interface(BePedidoCompraDet, lConnection, lTransInterface)
-
-    '                                            LotesExistentes = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(PedidoCompraExistente.IdOrdenCompraEnc,
-    '                                                                                                             lConnection,
-    '                                                                                                             lTransInterface)
-
-    '                                            If Not navPedidoCompraEnc.Lineas_Detalle_Lotes Is Nothing Then
-
-    '                                                If navPedidoCompraEnc.Lineas_Detalle_Lotes.Count > 0 Then
-
-    '                                                    For Each Lote In navPedidoCompraEnc.Lineas_Detalle_Lotes.Where(Function(x) x.NoEnc = navPedidoCompraDet.NoEnc _
-    '                                                                AndAlso x.Item_No = navPedidoCompraDet.No _
-    '                                                                AndAlso x.Source_Prod_Order_Line = navPedidoCompraDet.Line_No)
-
-    '                                                        LoteExistente = Nothing
-
-    '                                                        LoteExistente = LotesExistentes.Find(Function(x) x.No_linea = Lote.Source_Prod_Order_Line AndAlso x.Lote = Lote.Lot_No)
-
-    '                                                        BeOcDetLote = New clsBeTrans_oc_det_lote
-    '                                                        BeOcDetLote.IdOrdenCompraEnc = BePedidoCompraDet.IdOrdenCompraEnc
-    '                                                        BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-    '                                                        BeOcDetLote.Cantidad = Lote.Quantity_Base
-    '                                                        BeOcDetLote.No_linea = Lote.Source_Prod_Order_Line
-    '                                                        BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
-    '                                                        BeOcDetLote.Lote = Lote.Lot_No
-    '                                                        BeOcDetLote.Cantidad_recibida = 0
-    '                                                        BeOcDetLote.Codigo_producto = Lote.Item_No
-    '                                                        BeOcDetLote.Fecha_vence = Lote.Expiration_Date
-
-    '                                                        If LoteExistente Is Nothing Then
-    '                                                            BeOcDetLote.IdOrdenCompraDetLote = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1
-    '                                                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
-    '                                                        Else
-    '                                                            BeOcDetLote.IdOrdenCompraDetLote = LoteExistente.IdOrdenCompraDetLote
-    '                                                            clsLnTrans_oc_det_lote.Actualizar(BeOcDetLote, lConnection, lTransInterface)
-    '                                                        End If
-
-    '                                                    Next
-
-    '                                                End If
-
-    '                                            End If
-
-    '                                            VContadorBitacoraTOMWMS += 1
-    '                                            vContadorLineasDetInsertadas += 1
-
-    '                                        Catch ex As Exception
-
-    '                                            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-    '                                                                                       BePedidoCompraDet.Nombre_producto,
-    '                                                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                                       IdNavConfigDet)
-
-    '                                            lblprg += (String.Format("Pedido Sin Detalle: {0}{1}", ex.Message, vbNewLine))
-    '                                            lblprg += (vbNewLine)
-
-    '                                        End Try
-
-    '                                    End If
-
-    '                                Else
-
-    '                                    '#EJC202407031325: No permitir crear OC, si producto no existe e interface SAP.
-    '                                    If BeConfigEnc.Interface_SAP Then
-    '                                        Dim vMensajeProductoNoExiste As String = String.Format("Producto no existe en WMS: {0}{1}", BePedidoCompraDet.Codigo_Producto, BePedidoCompraDet.Nombre_producto)
-    '                                        lblprg += vMensajeProductoNoExiste
-    '                                        '#CKFK20240705 Agregué una variable para ir contando los productos no existentes y al final hacer el rollback
-    '                                        vProductoNoExiste += 1
-    '                                        'Throw New Exception(vMensajeProductoNoExiste)
-    '                                    End If
-
-    '                                End If 'Fin sí: producto existe.
-
-    '                            Catch ex As Exception
-
-    '                                clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-    '                                                                            "Pedido Sin Detalle",
-    '                                                                             BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                             IdNavConfigDet)
-
-    '                                lblprg += (String.Format("Pedido sin detalle: {0}{1}", ex.Message, vbNewLine))
-    '                                lblprg += (vbNewLine)
-
-    '                            End Try
-
-    '                        Next
-
-    '                    End If
-
-    '                Else
-
-    '                    '#EJC20180108: Se agregó validación porque el detalle de la O.C. puede tener líneas no válidas a recibir en el WMS.
-    '                    'Si la O.C. tiene detalle en la tabla intermedia
-    '                    If navPedidoCompraEnc.Lineas_Detalle.Count = 0 Then
-
-    '                        lblprg += (String.Format("Pedido #:{0} Sin Detalle {1}", navPedidoCompraEnc.No, vbNewLine))
-    '                        lblprg += (vbNewLine)
-
-    '                    Else
-
-    '                        gBeOrdenCompraEnc.IdOrdenCompraEnc = clsLnTrans_oc_enc.MaxID(lConnection, lTransInterface) + 1
-    '                        gBeOrdenCompraEnc.PropietarioBodega = New clsBePropietario_bodega
-    '                        gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(BeConfigEnc.Idbodega,
-    '                                                                                                                                                          BeConfigEnc.IdPropietario,
-    '                                                                                                                                                          lConnection,
-    '                                                                                                                                                          lTransInterface)
-    '                        If gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega = 0 Then
-    '                            Throw New Exception("No se pudo obtener el IdPropietarioBodega")
-    '                        Else
-    '                            gBeOrdenCompraEnc.IdPropietarioBodega = gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA
-    '                        gBeOrdenCompraEnc.Hora_Creacion = Now
-    '                        gBeOrdenCompraEnc.User_Agr = BeConfigEnc.IdUsuario
-    '                        gBeOrdenCompraEnc.Fec_Agr = Now
-    '                        gBeOrdenCompraEnc.Fecha_Creacion = Now
-    '                        gBeOrdenCompraEnc.Activo = True
-    '                        gBeOrdenCompraEnc.IdCampaña = Val(navPedidoCompraEnc.Campaign_No)
-
-
-    '                        If Not navPedidoCompraEnc.Company_Code = "" AndAlso Not navPedidoCompraEnc.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Transferencia_de_Ingreso Then
-    '                            navPedidoCompraEnc.Buy_From_Vendor_No = navPedidoCompraEnc.Company_Code.Substring(0, 1) & navPedidoCompraEnc.Buy_From_Vendor_No
-    '                        End If
-
-    '                        BeProveedorBodega = clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No,
-    '                                                                                                   BeConfigEnc.Idbodega,
-    '                                                                                                   BeConfigEnc,
-    '                                                                                                   lConnection,
-    '                                                                                                   lTransInterface)
-
-
-    '                        If BeProveedorBodega Is Nothing Then
-
-    '                            If BeProveedorBodega Is Nothing Then
-
-    '                                clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("El proveedor: {0} no existe, no se puede importar el pedido de compra: {1}",
-    '                                                                          navPedidoCompraEnc.Buy_From_Vendor_No,
-    '                                                                          navPedidoCompraEnc.No),
-    '                                                                          navPedidoCompraEnc.Buy_From_Vendor_No,
-    '                                                                          BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                          IdNavConfigDet)
-
-    '                                lblprg += (String.Format("Error al insertar el pedido de compra: {0} El proveedor: {1} no existe o no está asociado a la bodega, Ya se actualizó maestro de proveedores?", navPedidoCompraEnc.Buy_From_Vendor_No, navPedidoCompraEnc.No, vbNewLine))
-    '                                lblprg += (vbNewLine)
-
-    '                                Throw New Exception("No logramos insertar el proveedor asociado a un pedido de compra, lamentamos el inconveniente")
-
-    '                            End If
-
-    '                        End If
-
-    '                        If gBeOrdenCompraEnc.ProveedorBodega Is Nothing Then
-    '                            gBeOrdenCompraEnc.ProveedorBodega = New clsBeProveedor_bodega
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.IdProveedorBodega = BeProveedorBodega.IdAsignacion
-
-    '                        If navPedidoCompraEnc.Document_Type = 0 Then
-
-    '                            lblprg += ("El tipo de documento no fue definido en la solicitud de creación del documento, El valor del flag Is_Internal_Transfer es: " & navPedidoCompraEnc.Is_Internal_Transfer)
-    '                            lblprg += (vbNewLine)
-
-    '                            If navPedidoCompraEnc.Is_Internal_Transfer Then
-
-    '                                gBeOrdenCompraEnc.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Transferencia 'Transferencia interbodegas
-    '                                BeTipoDocumento.Genera_Tarea_Ingreso = True
-
-    '                            Else
-
-    '                                gBeOrdenCompraEnc.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso 'Pedido de compra a proveedor.
-
-    '                            End If
-
-    '                        Else
-
-    '                            lblprg += vbNewLine & vbTab & "Creando nuevo documento de ingreso en WMS: " & navPedidoCompraEnc.Vendor_Invoice_No
-
-    '                            gBeOrdenCompraEnc.IdTipoIngresoOC = navPedidoCompraEnc.Document_Type
-
-    '                            '#EJC20210730: Obtener el tipo de documento de ingreso en i_nav_ped_compra_enc_partial.vb
-    '                            BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(gBeOrdenCompraEnc.IdTipoIngresoOC,
-    '                                                                         lConnection,
-    '                                                                         lTransInterface)
-    '                            If BeTipoDocumento Is Nothing Then
-    '                                BeTipoDocumento = New clsBeTrans_oc_ti()
-    '                                BeTipoDocumento.Genera_Tarea_Ingreso = False
-    '                            End If
-
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.No_Documento = navPedidoCompraEnc.Vendor_Invoice_No
-
-    '                        If gBeOrdenCompraEnc.No_Documento = "" Then
-    '                            Throw New Exception("No se definió el número de documento: Vendor_Invoice_No para la cabecera del documento.")
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.User_Mod = BeConfigEnc.IdUsuario
-    '                        gBeOrdenCompraEnc.Fec_Mod = Now
-
-    '                        If BeConfigEnc.Interface_SAP Then
-    '                            gBeOrdenCompraEnc.Procedencia = navPedidoCompraEnc.Buy_From_Vendor_No & " " & navPedidoCompraEnc.Buy_From_Vendor_Name
-    '                        Else
-    '                            gBeOrdenCompraEnc.Procedencia = navPedidoCompraEnc.Ship_To_Contact
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.No_Marchamo = ""
-    '                        gBeOrdenCompraEnc.Referencia = navPedidoCompraEnc.No
-    '                        'EJC202405090238AM:  DocNum
-    '                        gBeOrdenCompraEnc.No_Documento = navPedidoCompraEnc.Vendor_Invoice_No
-
-    '                        'EJC202405090238AM:  no contenedor SAP.
-    '                        If BeConfigEnc.Interface_SAP Then
-    '                            gBeOrdenCompraEnc.No_Documento_Recepcion_ERP = navPedidoCompraEnc.Ship_To_Contact
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.Observacion = navPedidoCompraEnc.Posting_Description
-    '                        gBeOrdenCompraEnc.Control_Poliza = False
-
-    '                        If gBeOrdenCompraEnc.IsNew Then
-    '                            gBeOrdenCompraEnc.ObjPoliza = Nothing
-    '                        End If
-
-    '                        gBeOrdenCompraEnc.Enviado_A_ERP = False
-    '                        gBeOrdenCompraEnc.Codigo_Empresa_ERP = navPedidoCompraEnc.Company_Code
-
-    '                        Try
-
-    '                            clsLnTrans_oc_enc.Insertar(gBeOrdenCompraEnc, lConnection, lTransInterface)
-
-    '                            '#EJC20181122_0345PM: Para hacer rollback si no logra insertar el detalle.
-    '                            lTransInterface.Save("oc_enc")
-
-    '                            InsertoEncabezado = True
-
-    '                            VContadorBitacoraTOMWMS += 1
-
-    '                            vContadorLineasDetInsertadas = 0
-
-    '                            If navPedidoCompraEnc.Lineas_Detalle.Count > 0 Then
-
-    '                                For Each navPedidoCompraDet As clsBeI_nav_ped_compra_det In navPedidoCompraEnc.Lineas_Detalle
-
-    '                                    vContadorLineasDet += 1
-
-    '                                    BePresentacionDefecto = Nothing
-
-    '                                    Dim BePedidoCompraDet As New clsBeTrans_oc_det() With {.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc,
-    '                                        .IdOrdenCompraDet = clsLnTrans_oc_det.MaxID(gBeOrdenCompraEnc.IdOrdenCompraEnc,
-    '                                                                                    lConnection,
-    '                                                                                    lTransInterface) + 1}
-
-    '                                    If BeConfigEnc.Equiparar_Productos Then
-
-    '                                        BeProductoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                          IdBodegaDestino,
-    '                                                                                                          lConnection,
-    '                                                                                                          lTransInterface)
-
-    '                                        If BeProductoBodega Is Nothing Then
-
-    '                                            BeProductoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                               IdBodegaDestino,
-    '                                                                                                               lConnection,
-    '                                                                                                               lTransInterface)
-    '                                        End If
-
-    '                                    Else
-
-    '                                        BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-    '                                                                                                          IdBodegaDestino,
-    '                                                                                                          lConnection,
-    '                                                                                                          lTransInterface)
-
-    '                                    End If
-
-    '                                    If BeProductoBodega IsNot Nothing Then
-
-    '                                        '#EJC20190327l: Se cambio a busqueda por codigo
-    '                                        BeUnidadMedidaPedCompra = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(navPedidoCompraDet.Unit_of_Measure_Code,
-    '                                                                                                                        BeConfigEnc.IdPropietario,
-    '                                                                                                                        lConnection,
-    '                                                                                                                        lTransInterface)
-
-    '                                        If navPedidoCompraDet.Unit_of_Measure_Code = "Unidad" AndAlso BeUnidadMedidaPedCompra Is Nothing Then
-
-    '                                            navPedidoCompraDet.Unit_of_Measure_Code = "UN"
-
-    '                                            BeUnidadMedidaPedCompra = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(navPedidoCompraDet.Unit_of_Measure_Code,
-    '                                                                                                                            BeConfigEnc.IdPropietario,
-    '                                                                                                                            lConnection,
-    '                                                                                                                            lTransInterface)
-    '                                        End If
-
-    '                                        If BeUnidadMedidaPedCompra Is Nothing Then
-
-    '                                            If BeUnidadMedidaPedCompra Is Nothing Then
-
-    '                                                '#EJC20190322: Validar si me están solicitando una presentación
-    '                                                BePresentacionDefecto = clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(BeProductoBodega.IdProducto,
-    '                                                                                                                          navPedidoCompraDet.Unit_of_Measure_Code,
-    '                                                                                                                          lConnection,
-    '                                                                                                                          lTransInterface)
-
-    '                                                If BePresentacionDefecto IsNot Nothing Then
-
-    '                                                    'Igualar la unidad de medida de compra básica, con la U.M básica del producto.
-    '                                                    BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
-
-    '                                                    'Indicar que se va a recibir producto con presentación
-    '                                                    navPedidoCompraDet.Variant_Code = navPedidoCompraDet.Variant_Code
-
-    '                                                Else
-
-    '                                                    Dim vMsgEx1 As String = String.Format("La unidad de medida: {1} no está definida para el código de producto:{0} en la tabla unidad_medida. {2}", navPedidoCompraDet.No, navPedidoCompraDet.Unit_of_Measure_Code, vbNewLine)
-
-    '                                                    clsLnI_nav_ejecucion_det_error.Inserta_Log(vMsgEx1,
-    '                                                                                           navPedidoCompraDet.No,
-    '                                                                                           BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                                           IdNavConfigDet)
-
-    '                                                    lblprg += (vMsgEx1)
-    '                                                    lblprg += (vbNewLine)
-    '                                                    Throw New Exception(vMsgEx1)
-
-    '                                                End If
-
-    '                                            End If
-
-    '                                        Else
-
-    '                                            '#CKFK20220729 Agregué esta validación sobre el variant code
-    '                                            If navPedidoCompraDet.Variant_Code <> "" Then
-
-    '                                                '#EJC20190322: Validar si me están solicitando una presentación
-    '                                                BePresentacionDefecto = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
-    '                                                                                                                          navPedidoCompraDet.Variant_Code,
-    '                                                                                                                          lConnection,
-    '                                                                                                                          lTransInterface)
-
-    '                                                If BePresentacionDefecto IsNot Nothing Then
-
-    '                                                    'Igualar la unidad de medida de compra básica, con la U.M básica del producto.
-    '                                                    BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
-
-    '                                                    'Indicar que se va a recibir producto con presentación
-    '                                                    navPedidoCompraDet.Variant_Code = navPedidoCompraDet.Variant_Code
-
-    '                                                Else
-
-    '                                                    '#CKFK20220729 Agregué la línea
-    '                                                    '#EJC20190530: Aun no se si sea lo mejor, pero debemos continuar.
-    '                                                    Throw New Exception("ERROR_20220727_1228A: No se encontró la presentación asociada 
-    '                                                                     al código: " & navPedidoCompraDet.No & " Con código de variante: " &
-    '                                                                     navPedidoCompraDet.Variant_Code & " para el IdProducto: " & BeProductoBodega.IdProducto &
-    '                                                                     " en la línea " & navPedidoCompraDet.Line_No)
-
-    '                                                End If
-
-    '                                            Else
-
-    '                                                '#CKFK20220729 Agregué esto porque es el producto viene en UMBas
-    '                                                'Igualar la unidad de medida de compra básica, con la U.M básica del producto.
-    '                                                BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
-
-    '                                                '#EJC202405101811> Conversion
-    '                                                vCantidadDecimalUMBas = 0 : vCantidadEnteraPres = 0
-
-    '                                                If (BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso BeConfigEnc.Interface_SAP) Then
-
-    '                                                    If (Not navPedidoCompraDet.Variant_Code Is Nothing AndAlso Not BeUnidadMedidaPedCompra.Codigo = "UN") Then
-
-    '                                                        BePresentacionDefecto = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(BeProductoBodega.IdProducto,
-    '                                                                                                                                              lConnection,
-    '                                                                                                                                              lTransInterface)
-
-    '                                                        If BePresentacionDefecto IsNot Nothing Then
-
-    '                                                            If BePresentacionDefecto.Factor > 0 Then
-
-    '                                                                clsPublic.Split_Decimal(navPedidoCompraDet.Quantity / BePresentacionDefecto.Factor, vCantidadEnteraPres, vCantidadDecimalUMBas)
-
-    '                                                                '#EJC20190602_0137AM: Multiplicar la parte decimal por el factor, para obtener la cantidad de unidades de medida básica.
-    '                                                                vCantidadDecimalUMBas = Math.Round(vCantidadDecimalUMBas * BePresentacionDefecto.Factor)
-    '                                                                vCantidadEnteraPres = vCantidadEnteraPres * BePresentacionDefecto.Factor
-
-    '                                                                If vCantidadEnteraPres > 0 Then
-    '                                                                    vCantidadSolicitadaPedido = vCantidadEnteraPres
-    '                                                                Else
-    '                                                                    vCantidadSolicitadaPedido = vCantidadDecimalUMBas
-    '                                                                End If
-
-    '                                                            Else
-    '                                                                Throw New Exception("ERROR_202210251745: El factor es 0 para la presentación NO se puede inferir la conversión.")
-    '                                                            End If
-
-    '                                                        Else
-    '                                                            vCantidadSolicitadaPedido = navPedidoCompraDet.Quantity
-    '                                                        End If
-
-    '                                                    Else
-    '                                                        vCantidadSolicitadaPedido = navPedidoCompraDet.Quantity
-    '                                                    End If
-
-    '                                                Else
-    '                                                    vCantidadSolicitadaPedido = navPedidoCompraDet.Quantity
-    '                                                End If
-
-    '                                            End If
-
-    '                                        End If
-
-    '#Region "COD_VARIANTE_A_PRESENTACION"
-
-    '                                        If (Not BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso Not BeConfigEnc.Interface_SAP) Then
-
-    '                                            If navPedidoCompraDet.Variant_Code <> "" Then
-
-    '                                                BePresentacionDefecto = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
-    '                                                                                                                          navPedidoCompraDet.Variant_Code,
-    '                                                                                                                          lConnection,
-    '                                                                                                                          lTransInterface)
-
-    '                                                If BePresentacionDefecto Is Nothing Then
-
-    '                                                    '#EJC20220727: No insertar (siempre, parametrizar después) la presentación de forma automática.
-    '                                                    Throw New Exception("ERROR_20220727_1228B: No se encontró la presentación asociada al código: " & navPedidoCompraDet.No & "Con código de variante: " & navPedidoCompraDet.Variant_Code & " para el IdProducto: " & BeProductoBodega.IdProducto)
-
-    '                                                End If
-    '                                            Else
-    '                                                '#EJC20220514: Viene en UMBAS, MERCOSAL.
-    '                                                BePresentacionDefecto = Nothing
-    '                                            End If
-
-    '                                        End If
-    '#End Region
-    '                                        Try
-
-    '                                            BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega
-    '                                            BePedidoCompraDet.Codigo_Producto = BeProductoBodega.Producto.Codigo
-    '                                            BePedidoCompraDet.Nombre_producto = navPedidoCompraDet.Description
-    '                                            BePedidoCompraDet.Nombre_unidad_medida_basica = navPedidoCompraDet.Unit_of_Measure_Code
-
-    '                                            If (Not BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso Not BeConfigEnc.Interface_SAP) Then
-    '                                                If vCantidadEnteraPres > 0 Then
-    '                                                    BePedidoCompraDet.Cantidad = Math.Round(vCantidadEnteraPres / BePresentacionDefecto.Factor, 6)
-    '                                                    BePedidoCompraDet.IdPresentacion = BePresentacionDefecto.IdPresentacion
-    '                                                Else
-    '                                                    BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity
-    '                                                End If
-    '                                            Else
-    '                                                BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity
-    '                                            End If
-
-    '                                            BePedidoCompraDet.Cantidad_recibida = navPedidoCompraDet.Quantity_Received
-    '                                            BePedidoCompraDet.Costo = navPedidoCompraDet.Direct_Unit_Cost
-    '                                            BePedidoCompraDet.Total_linea = navPedidoCompraDet.Line_Amount
-    '                                            BePedidoCompraDet.No_Linea = navPedidoCompraDet.Line_No
-    '                                            BePedidoCompraDet.Activo = True
-    '                                            BePedidoCompraDet.Porcentaje_arancel = 0
-    '                                            BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario
-    '                                            BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code
-
-    '                                            If Not BePresentacionDefecto Is Nothing Then
-    '                                                BePedidoCompraDet.IdPresentacion = BePresentacionDefecto.IdPresentacion
-    '                                                BePedidoCompraDet.Presentacion.IdPresentacion = BePresentacionDefecto.IdPresentacion
-    '                                            Else
-    '                                                BePedidoCompraDet.IdPresentacion = 0
-    '                                            End If
-
-    '                                            If Asigna_Unidad_De_Medida(BePedidoCompraDet,
-    '                                                                       navPedidoCompraDet,
-    '                                                                       BeUnidadMedidaPedCompra,
-    '                                                                       BeProductoBodega,
-    '                                                                       txtRich,
-    '                                                                       lConnection,
-    '                                                                       lTransInterface,
-    '                                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                       IdNavConfigDet,
-    '                                                                       BeConfigEnc.IdUsuario) Then
-
-    '                                                If (Not BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso Not BeConfigEnc.Interface_SAP) Then
-
-    '                                                    If vCantidadDecimalUMBas > 0 Then
-
-    '                                                        Dim BePedidoCompraDetUmBas As New clsBeTrans_oc_det()
-    '                                                        clsPublic.CopyObject(BePedidoCompraDet, BePedidoCompraDetUmBas)
-
-    '                                                        BePedidoCompraDetUmBas.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
-    '                                                        BePedidoCompraDetUmBas.IdOrdenCompraDet = clsLnTrans_oc_det.MaxID(gBeOrdenCompraEnc.IdOrdenCompraEnc,
-    '                                                                                                                 lConnection,
-    '                                                                                                                 lTransInterface) + 1
-
-    '                                                        BePedidoCompraDetUmBas.Cantidad = vCantidadDecimalUMBas
-    '                                                        BePedidoCompraDetUmBas.IdPresentacion = 0
-    '                                                        BePedidoCompraDetUmBas.Presentacion.IdPresentacion = 0
-    '                                                        clsLnTrans_oc_det.Insertar(BePedidoCompraDetUmBas, lConnection, lTransInterface)
-
-
-    '                                                    Else
-    '                                                        clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransInterface)
-    '                                                    End If
-
-    '                                                Else
-    '                                                    clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransInterface)
-    '                                                End If
-
-    '                                                If Not navPedidoCompraEnc.Lineas_Detalle_Lotes Is Nothing Then
-
-    '                                                    If navPedidoCompraEnc.Lineas_Detalle_Lotes.Count > 0 Then
-
-    '                                                        For Each Lote In navPedidoCompraEnc.Lineas_Detalle_Lotes.Where(Function(x) x.NoEnc = navPedidoCompraDet.NoEnc _
-    '                                                                                                                            AndAlso x.Item_No = navPedidoCompraDet.No _
-    '                                                                                                                            AndAlso x.Source_Prod_Order_Line = navPedidoCompraDet.Line_No)
-
-    '                                                            BeOcDetLote = New clsBeTrans_oc_det_lote
-    '                                                            BeOcDetLote.IdOrdenCompraEnc = BePedidoCompraDet.IdOrdenCompraEnc
-    '                                                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-    '                                                            BeOcDetLote.IdOrdenCompraDetLote = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1
-    '                                                            BeOcDetLote.Cantidad = Lote.Quantity_Base
-    '                                                            BeOcDetLote.No_linea = Lote.Source_Prod_Order_Line
-    '                                                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
-    '                                                            BeOcDetLote.Lote = Lote.Lot_No
-    '                                                            BeOcDetLote.Cantidad_recibida = 0
-    '                                                            BeOcDetLote.Codigo_producto = Lote.Item_No
-    '                                                            BeOcDetLote.Fecha_vence = Lote.Expiration_Date
-    '                                                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
-    '                                                        Next
-    '                                                    End If
-
-    '                                                End If
-
-    '                                                vContadorLineasDetInsertadas += 1
-
-    '                                            End If
-
-    '                                        Catch ex As Exception
-
-    '                                            Dim vMsgEx3 As String = String.Format("Error al insertar desde ws a intermedia: {0}{1}{2}", BePedidoCompraDet.Nombre_producto, ex.Message, vbNewLine)
-
-    '                                            clsLnI_nav_ejecucion_det_error.Inserta_Log(vMsgEx3,
-    '                                                                                      BePedidoCompraDet.Nombre_producto,
-    '                                                                                      BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                                      IdNavConfigDet)
-
-    '                                            lblprg += (vMsgEx3)
-    '                                            lblprg += (vbNewLine)
-
-    '                                            Throw New Exception(vMsgEx3)
-    '                                        End Try
-    '                                    Else
-
-    '                                        clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("El código de producto:{0} no existe o no está asociado a la bodega:{1}{2}", navPedidoCompraDet.No, navPedidoCompraDet.Location_Code, vbNewLine),
-    '                                                                                      navPedidoCompraDet.No,
-    '                                                                                      BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                                      IdNavConfigDet)
-
-    '                                        lblprg += vbNewLine & (String.Format("El código de producto:{0} no existe o no está asociado a la bodega:{1}{2}", navPedidoCompraDet.No, navPedidoCompraDet.Location_Code, vbNewLine))
-    '                                        lblprg += (vbNewLine)
-    '                                        '#CKFK20240705 Agregué una variable para ir contando los productos no existentes y al final hacer el rollback
-    '                                        vProductoNoExiste += 1
-
-    '                                    End If
-
-    '                                Next
-
-    '                            End If
-
-    '                        Catch ex As Exception
-
-    '                            Dim vMsgEx4 As String = String.Format(vbNewLine & "Error al insertar el documento de ingreso con Referencia: {0}{1}{2}", navPedidoCompraEnc.No, vbNewLine, ex.Message)
-
-    '                            clsLnI_nav_ejecucion_det_error.Inserta_Log(vMsgEx4,
-    '                                                                    navPedidoCompraEnc.No,
-    '                                                                    BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                    IdNavConfigDet)
-
-    '                            lblprg += (vMsgEx4)
-    '                            lblprg += (vbNewLine)
-
-    '                            Throw New Exception(vMsgEx4)
-
-    '                        End Try
-
-    '                        Application.DoEvents()
-
-    '                    End If
-
-    '                End If
-
-    '            Else
-
-    '                lblprg += vbNewLine + (String.Format("OC Inactiva {0} ", navPedidoCompraEnc.No, vbNewLine))
-    '                lblprg += (vbNewLine)
-
-    '            End If
-
-    '            If InsertoEncabezado Then
-
-    '                If vContadorLineasDetInsertadas > 0 AndAlso vProductoNoExiste = 0 Then
-
-    '                    If Not OutBeOrdenCompra Is Nothing Then
-
-    '                        '#EJC20210730: Agregar condición por tipo de documento o configuración de interface para determinar si se genera o no
-    '                        'tarea de recepción automáticamente luego de crear el documento de ingreso.
-    '                        If BeConfigEnc.Crear_Recepcion_De_Compra_NAV OrElse BeTipoDocumento.Genera_Tarea_Ingreso Then
-
-    '                            Dim OutBeRecepcionEnc As New clsBeTrans_re_enc
-    '                            clsLnTrans_re_enc.Generar_Tarea_Recepcion_By_OrdenCompraEnc(gBeOrdenCompraEnc,
-    '                                                                                        "",
-    '                                                                                        True,
-    '                                                                                        BeConfigEnc,
-    '                                                                                        OutBeRecepcionEnc,
-    '                                                                                        lConnection,
-    '                                                                                        lTransInterface)
-
-    '                            clsLnI_nav_ejecucion_det_error.Inserta_Log("Se creó la recepción de documento de ingreso: " & gBeOrdenCompraEnc.IdOrdenCompraEnc,
-    '                                                                        navPedidoCompraEnc.No,
-    '                                                                        BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                                                        0)
-
-    '                            lblprg += (vbNewLine & vbTab & String.Format("Se creó la tarea de recepción: {0} para el documento de ingreso: {1} {2}", OutBeRecepcionEnc.IdRecepcionEnc, navPedidoCompraEnc.No, vbNewLine))
-    '                            lblprg += (vbNewLine)
-
-    '                        End If
-
-    '                    End If
-
-    '                    Procesar_Pedido_Compra_MI3 = True
-
-    '                    lTransInterface.Commit()
-
-    '                    OutBeOrdenCompra = gBeOrdenCompraEnc.Clone()
-
-    '                    lblprg += (String.Format(vbNewLine & "Documento de ingreso procesado correctamente, DocumentoWMS: {0}", OutBeOrdenCompra.IdOrdenCompraEnc))
-    '                    lblprg += (vbNewLine)
-
-    '                Else
-    '                    lTransInterface.Rollback("oc_enc")
-    '                    If vProductoNoExiste > 0 Then
-    '                        lblprg += (String.Format("ERR20250609B: hay {1} producto(s) que no existen en WMS. {0}", vbNewLine, vProductoNoExiste))
-    '                    Else
-    '                        lblprg += (String.Format("REF20250609A: No se modificó el detalle del documento. {0}", vbNewLine))
-    '                    End If
-
-    '                End If
-    '            Else
-    '                lblprg += (String.Format("REF20250609: No se modificó el detalle del documento."))
-    '                lblprg += (vbNewLine)
-    '            End If
-
-    '            BeNavEjecucionRes.Registros_ti = VContadorBitacoraIntermedia
-    '            BeNavEjecucionRes.Registros_WMS = VContadorBitacoraTOMWMS
-
-    '            If VContadorBitacoraIntermedia = VContadorBitacoraTOMWMS Then
-    '                BeNavEjecucionRes.Exitosa = True
-    '            Else
-    '                BeNavEjecucionRes.Exitosa = False
-    '            End If
-
-    '            clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes)
-
-    '        Catch ex As Exception
-
-    '            If Not lTransInterface Is Nothing Then lTransInterface.Rollback()
-
-    '            '#EJC20171105_1259AM_REF01: Agregar excepción a log.
-    '            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-    '                                              "",
-    '                                              BeNavEjecucionEnc.IdEjecucionEnc,
-    '                                              IdNavConfigDet)
-
-    '            lblprg += (String.Format("Error al insertar documento de ingreso a WMS: {0} {1}", ex.Message, vbNewLine))
-
-    '            'Throw ex
-
-    '            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-    '            If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
-
-    '        End Try
-
-    '    End Function
-
     Private Shared Function Asigna_Unidad_De_Medida(ByRef BePedidoCompraDet As clsBeTrans_oc_det,
                                                     ByRef navPedidoCompraDet As clsBeI_nav_ped_compra_det,
                                                     ByRef BeUnidadMedidaPedCompra As clsBeUnidad_medida,
@@ -1949,7 +725,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Datos_Validos(ByRef BeINavPedCompraEnc As clsBeI_nav_ped_compra_enc,
                                          ByVal lConnection As SqlConnection,
                                          ByVal lTrans As SqlTransaction) As Boolean
@@ -1978,7 +753,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Datos_Validos(ByRef BeINavPedCompraEnc As clsBeI_nav_ped_compra_enc) As Boolean
 
         Datos_Validos = False
@@ -2003,7 +777,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Delete_By_NoEnc(ByVal NoEnc As String) As Boolean
 
         Delete_By_NoEnc = False
@@ -2033,7 +806,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Delete_By_NoEnc(ByVal NoEnc As String,
                                              ByVal pConection As SqlConnection,
                                              ByVal pTransaction As SqlTransaction) As Integer
@@ -2077,7 +849,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Get_Single(ByRef pBeI_nav_ped_compra_enc As clsBeI_nav_ped_compra_enc) As Boolean
 
         Dim lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
@@ -2119,7 +890,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Get_Detalle_Pedido_Traslado_By_Referencia(ByVal Ref As String) As DataTable
 
         Dim lTable As New DataTable("Result")
@@ -2163,7 +933,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function Procesar_Pedido_Compra_MI3(ByRef navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                       ByRef OutBeOrdenCompra As clsBeTrans_oc_enc,
                                                       ByRef lblprg As RichTextBox,
@@ -2955,7 +1724,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function ObtenerIdBodegaDestino(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                   ByRef BeConfigEnc As clsBeI_nav_config_enc,
                                                   ByRef gBeOrdenCompraEnc As clsBeTrans_oc_enc,
@@ -3007,7 +1775,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
-
     Public Shared Function ObtenerConfiguracionDeBodega(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                         ByRef BeConfigEnc As clsBeI_nav_config_enc,
                                                         ByRef gBeOrdenCompraEnc As clsBeTrans_oc_enc,
@@ -3171,7 +1938,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
         Return False
     End Function
-
     Public Shared Function ProcesarLotes(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                         navPedidoCompraDet As clsBeI_nav_ped_compra_det,
                                         ByRef BeOcDetLote As clsBeTrans_oc_det_lote,
@@ -3303,7 +2069,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             Throw
         End Try
     End Function
-
     Public Shared Sub Generar_Tarea_Recepcion(gBeOrdenCompraEnc As clsBeTrans_oc_enc,
                                                BeConfigEnc As clsBeI_nav_config_enc,
                                                BeTipoDocumento As clsBeTrans_oc_ti,
@@ -3479,7 +2244,6 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             Throw New Exception(vMsgError)
         End Try
     End Function
-
     Public Shared Function Procesar_Pedido_Compra_MI3(ByRef navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                       ByRef OutBeOrdenCompra As clsBeTrans_oc_enc,
                                                       ByRef lblprg As String,
