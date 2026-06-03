@@ -1,8 +1,6 @@
 ﻿Imports System.IO
 Imports System.Reflection
-Imports System.Linq
 Imports DevExpress.XtraEditors
-Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
@@ -15,28 +13,10 @@ Public Class frmProductividadPicking
 
     Private Sub Inicializar_Layout_Dashboard()
 
-        If lblKpiCumplimiento IsNot Nothing Then Return
+        If mDashboardLayoutInicializado Then Return
+        mDashboardLayoutInicializado = True
 
-        Dim pnlTop As New PanelControl With {
-            .Dock = DockStyle.Top,
-            .Height = 82
-        }
-        XtraTabPage1.Controls.Add(pnlTop)
-        pnlTop.BringToFront()
-
-        lblKpiCumplimiento = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(8, 8, 230, 30)}
-        lblKpiSolicitado = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(245, 8, 230, 30)}
-        lblKpiPickeado = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(482, 8, 230, 30)}
-        lblKpiBrecha = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(8, 42, 230, 30)}
-        lblKpiOperadores = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(245, 42, 230, 30)}
-        lblKpiPicksHora = New LabelControl With {.AutoSizeMode = LabelAutoSizeMode.None, .Bounds = New Rectangle(482, 42, 230, 30)}
-
-        pnlTop.Controls.Add(lblKpiCumplimiento)
-        pnlTop.Controls.Add(lblKpiSolicitado)
-        pnlTop.Controls.Add(lblKpiPickeado)
-        pnlTop.Controls.Add(lblKpiBrecha)
-        pnlTop.Controls.Add(lblKpiOperadores)
-        pnlTop.Controls.Add(lblKpiPicksHora)
+        Configurar_Identidad_Kpi_Resumen()
 
         Dim split As New SplitContainerControl With {
             .Dock = DockStyle.Fill,
@@ -77,6 +57,25 @@ Public Class frmProductividadPicking
         viewTipoDocumento.OptionsView.ShowFooter = True
         splitRight.Panel2.Controls.Add(grdTipoDocumento)
 
+    End Sub
+
+    ' #EJC20260603_KPI_LABELS: mapea labels del designer a nombres/lectura funcional para soporte y operación.
+    Private Sub Configurar_Identidad_Kpi_Resumen()
+        If Not Ensure_Kpi_Labels() Then Exit Sub
+
+        lblKpiCumplimiento.Name = "lblKpiCumplimiento"
+        lblKpiSolicitado.Name = "lblKpiSolicitado"
+        lblKpiPickeado.Name = "lblKpiPickeado"
+        lblKpiBrecha.Name = "lblKpiBrecha"
+        LabelControl5.Name = "lblKpiOperadores"
+        LabelControl6.Name = "lblKpiPicksHora"
+
+        lblKpiCumplimiento.Text = "KPI 1 - Cumplimiento (%): --"
+        lblKpiSolicitado.Text = "KPI 2 - Cantidad solicitada: --"
+        lblKpiPickeado.Text = "KPI 3 - Cantidad pickeada: --"
+        lblKpiBrecha.Text = "KPI 4 - Brecha (sol - pick): --"
+        LabelControl5.Text = "KPI 5 - Operadores activos: --"
+        LabelControl6.Text = "KPI 6 - Picks por hora: --"
     End Sub
 
     Private Sub Inicializar_Filtros_Dinamicos()
@@ -238,7 +237,24 @@ Public Class frmProductividadPicking
         Restore_LayOut()
     End Sub
 
+    ' #EJC20260603_KPI_GUARD: evita NullReference cuando eventos disparan Cargar antes de que el layout dinámico esté listo.
+    Private Function Ensure_Kpi_Labels() As Boolean
+        If lblKpiCumplimiento Is Nothing OrElse
+           lblKpiSolicitado Is Nothing OrElse
+           lblKpiPickeado Is Nothing OrElse
+           lblKpiBrecha Is Nothing OrElse
+           LabelControl5 Is Nothing OrElse
+           LabelControl6 Is Nothing Then
+            Return False
+        End If
+
+        Return True
+    End Function
+
     Private Sub Bind_Kpi(ByVal dtDetalle As DataTable)
+        If dtDetalle Is Nothing Then Exit Sub
+        If Not Ensure_Kpi_Labels() Then Exit Sub
+
         Dim totalSolicitado As Decimal = dtDetalle.AsEnumerable().Sum(Function(x) Convert.ToDecimal(If(IsDBNull(x("Cantidad_Solicitada")), 0D, x("Cantidad_Solicitada"))))
         Dim totalPickeado As Decimal = dtDetalle.AsEnumerable().Sum(Function(x) Convert.ToDecimal(If(IsDBNull(x("Cantidad_Pickeada")), 0D, x("Cantidad_Pickeada"))))
         Dim totalBrecha As Decimal = totalSolicitado - totalPickeado
@@ -257,12 +273,12 @@ Public Class frmProductividadPicking
         Dim horas As Decimal = Math.Max((dtpFechaAl.Value.Date.AddDays(1) - dtpFechaDel.Value.Date).TotalHours, 1)
         Dim picksHora As Decimal = Math.Round(totalPickeado / Convert.ToDecimal(horas), 2)
 
-        lblKpiCumplimiento.Text = String.Format("Cumplimiento: {0:n2}%", cumplimiento)
-        lblKpiSolicitado.Text = String.Format("Cantidad solicitada: {0:n2}", totalSolicitado)
-        lblKpiPickeado.Text = String.Format("Cantidad pickeada: {0:n2}", totalPickeado)
-        lblKpiBrecha.Text = String.Format("Brecha: {0:n2}", totalBrecha)
-        lblKpiOperadores.Text = String.Format("Operadores activos: {0:n0}", operadoresActivos)
-        lblKpiPicksHora.Text = String.Format("Picks / hora (rango): {0:n2}", picksHora)
+        lblKpiCumplimiento.Text = String.Format("KPI 1 - Cumplimiento (%): {0:n2}%", cumplimiento)
+        lblKpiSolicitado.Text = String.Format("KPI 2 - Cantidad solicitada: {0:n2}", totalSolicitado)
+        lblKpiPickeado.Text = String.Format("KPI 3 - Cantidad pickeada: {0:n2}", totalPickeado)
+        lblKpiBrecha.Text = String.Format("KPI 4 - Brecha (sol - pick): {0:n2}", totalBrecha)
+        LabelControl5.Text = String.Format("KPI 5 - Operadores activos: {0:n0}", operadoresActivos)
+        LabelControl6.Text = String.Format("KPI 6 - Picks por hora (rango): {0:n2}", picksHora)
     End Sub
 
     Private Sub Bind_Operadores(ByVal dtDetalle As DataTable)
@@ -341,12 +357,7 @@ Public Class frmProductividadPicking
     Private mDtDetalleBase As DataTable
     Private mIniciandoFiltros As Boolean = False
 
-    Private lblKpiCumplimiento As LabelControl
-    Private lblKpiSolicitado As LabelControl
-    Private lblKpiPickeado As LabelControl
-    Private lblKpiBrecha As LabelControl
-    Private lblKpiOperadores As LabelControl
-    Private lblKpiPicksHora As LabelControl
+    Private mDashboardLayoutInicializado As Boolean = False
 
     Private cmbOperadorFiltro As LookUpEdit
     Private cmbTipoDocumentoFiltro As LookUpEdit

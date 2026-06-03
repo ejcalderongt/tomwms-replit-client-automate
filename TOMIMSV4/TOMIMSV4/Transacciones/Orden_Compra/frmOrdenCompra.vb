@@ -479,6 +479,7 @@ Public Class frmOrdenCompra
                 Dim vTalla As String = ""
                 Dim vColor As String = ""
                 Dim vSKU As String = ""
+                Dim vCodigoProducto As String = BeTransOCDet.Codigo_Producto
 
                 If (BeTransOCDet.IdProductoTallaColor <> 0) Then
 
@@ -488,12 +489,17 @@ Public Class frmOrdenCompra
 
                 End If
 
+                ' #EJC20260602_OC_FIX_CODIGO: fallback para documentos viejos/mixtos donde el código no vino en detalle.
+                If String.IsNullOrWhiteSpace(vCodigoProducto) AndAlso BeTransOCDet.IdProductoBodega > 0 Then
+                    vCodigoProducto = clsLnProducto.Get_Codigo_By_IdProductoBodega(BeTransOCDet.IdProductoBodega)
+                End If
+
                 Dim commonData As Object() = {
                     BeTransOCDet.IdPropietarioBodega,
                 BeTransOCDet.Nombre_Propietario,
                 BeTransOCDet.No_Linea,
                 BeTransOCDet.IdProductoBodega,
-                BeTransOCDet.Codigo_Producto,
+                vCodigoProducto,
                 BeTransOCDet.Nombre_producto,
                 BeTransOCDet.Nombre_unidad_medida_basica,
                 BeTransOCDet.IdUnidadMedidaBasica,
@@ -542,12 +548,16 @@ Public Class frmOrdenCompra
                     For Each Hijo As clsBeTrans_oc_det In BeTransOCDet.lProductosHijosKit
 
                         vCantidadPendiente = Math.Round(Hijo.Cantidad_recibida - Hijo.Cantidad, 6)
+                        Dim vCodigoProductoHijo As String = Hijo.Codigo_Producto
+                        If String.IsNullOrWhiteSpace(vCodigoProductoHijo) AndAlso Hijo.IdProductoBodega > 0 Then
+                            vCodigoProductoHijo = clsLnProducto.Get_Codigo_By_IdProductoBodega(Hijo.IdProductoBodega)
+                        End If
 
                         DTGridDetalleDocIngresos.Rows.Add(Hijo.IdPropietarioBodega,
                                                           Hijo.Nombre_Propietario,
                                                           Hijo.No_Linea,
                                                           Hijo.IdProductoBodega,
-                                                          Hijo.Codigo_Producto,
+                                                          vCodigoProductoHijo,
                                                           Hijo.Nombre_producto,
                                                           Hijo.Nombre_unidad_medida_basica,
                                                           Hijo.IdUnidadMedidaBasica,
@@ -5728,6 +5738,12 @@ Public Class frmOrdenCompra
                                               ByVal pIdBodega As Integer,
                                               Optional ByVal pForzarRefresh As Boolean = False) As DataTable
 
+        If pIdBodega = 0 Then
+            pIdBodega = Val(cmbBodega.EditValue)
+            If pIdBodega = 0 AndAlso gBeOrdenCompra IsNot Nothing Then pIdBodega = gBeOrdenCompra.IdBodega
+            If pIdBodega = 0 Then pIdBodega = AP.IdBodega
+        End If
+
         If pIdBodega = 0 Then Return OCProductoLookup_DataSourceVacio()
 
         Dim vKey As String = OCProductoLookup_Key(pIdPropietarioBodega, pIdBodega)
@@ -5807,7 +5823,13 @@ Public Class frmOrdenCompra
                 drLineaGrid("CodigoProducto") = drArticulo("Codigo")
                 drLineaGrid("NombreProducto") = drArticulo("Nombre")
                 drLineaGrid("IdUmBas") = drArticulo("IdUmBas")
-                drLineaGrid("UMBas") = drArticulo("UmBas")
+                If drArticulo.Table.Columns.Contains("UMBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UMBas")
+                ElseIf drArticulo.Table.Columns.Contains("UmBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UmBas")
+                Else
+                    drLineaGrid("UMBas") = String.Empty
+                End If
                 drLineaGrid("Costo") = drArticulo("Costo")
                 drLineaGrid("EsKit") = drArticulo("Kit")
                 'drLineaGrid("IdProducto") = drArticulo("IdProducto")
@@ -7566,6 +7588,9 @@ MessageBoxButtons.YesNo,
                 Dim pIdPropietarioBodega As String = Convert.ToString(view.GetFocusedRowCellValue("IdPropietarioBodega"))
 
                 If pIdPropietarioBodega.Trim = String.Empty Then pIdPropietarioBodega = lcmbPropietario.EditValue
+                If Val(pIdPropietarioBodega) = 0 AndAlso gBeOrdenCompra IsNot Nothing Then
+                    pIdPropietarioBodega = gBeOrdenCompra.IdPropietarioBodega.ToString()
+                End If
 
                 If Not Val(pIdPropietarioBodega) = 0 Then
                     OCProductoLookup_Asignar(editor, Val(pIdPropietarioBodega))

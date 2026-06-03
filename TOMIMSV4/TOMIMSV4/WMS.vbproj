@@ -4552,7 +4552,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="Conn_Becofarma.ini" />
+    <None Include="Conn_Becofarma.ini" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
@@ -4564,8 +4564,8 @@
     <None Include="Configuracion_QADataSet.xss">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
-    <Content Include="Conn - Cumbre.ini" />
-    <Content Include="ConnMHS.ini" />
+    <None Include="Conn - Cumbre.ini" />
+    <None Include="ConnMHS.ini" />
     <None Include="ConnDev.ini" />
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
