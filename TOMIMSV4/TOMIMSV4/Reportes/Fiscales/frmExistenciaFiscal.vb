@@ -249,6 +249,7 @@ Public Class frmExistenciaFiscal
     End Sub
 
     Private Sub frmExistenciaFiscal_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Try
 
             mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
@@ -281,7 +282,8 @@ Public Class frmExistenciaFiscal
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgridStockFiscal, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -322,7 +324,6 @@ Public Class frmExistenciaFiscal
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -402,3 +403,6 @@ Public Class frmExistenciaFiscal
     End Sub
 
 End Class
+
+
+

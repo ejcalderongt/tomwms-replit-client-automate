@@ -7223,7 +7223,10 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Sub
 
-    Public Shared Function Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico, pIdResolucion As Integer) As Integer
+    Public Shared Function Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico,
+                                          pIdResolucion As Integer,
+                                          pTallaColor As clsBeProducto_talla_color,
+                                          pCrearTallaColor As Boolean) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -7234,6 +7237,19 @@ Partial Public Class clsLnTrans_inv_ciclico
             If Not pBeTransInvCiclico Is Nothing Then
 
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                '#AT20260529 Crear nueva combinacion de talla color si aplica
+                If pTallaColor IsNot Nothing AndAlso pCrearTallaColor Then
+                    pTallaColor.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+
+                    If clsLnProducto_talla_color.Insertar(pTallaColor) > 0 Then
+                        Dim PrdTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(pTallaColor.IdProducto,
+                                                                                                    pTallaColor.IdTalla,
+                                                                                                    pTallaColor.IdColor)
+
+                        pBeTransInvCiclico.IdProductoTallaColor_nuevo = PrdTallaColor.IdProductoTallaColor
+                    End If
+                End If
 
                 If Insertar(pBeTransInvCiclico, lConnection, lTransaction) > 0 Then
 

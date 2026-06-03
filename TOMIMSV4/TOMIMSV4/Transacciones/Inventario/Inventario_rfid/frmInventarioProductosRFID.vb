@@ -50,13 +50,14 @@ Public Class frmInventarioProductosRFID
             SplashScreenManager.Default.SetWaitFormDescription("Asignando productos...")
 
             '#EJC20220119: validar si se definieron previamente ubicaciones para conteo.
+
             Dim lTransInvUbic As New List(Of clsBeTrans_inv_ciclico_ubic)
             lTransInvUbic = clsLnTrans_inv_ciclico_ubic.Get_All_By_IdInventarioEnc(IdInventario, AP.IdBodega)
 
-            '#EJC20220119: si no se definieron, al agregar los productos se insertan todas las posiciones en las que se encuentra el producto.
+            '#GT27052026: actualmente no se manejan ubicaciones, se agrega todo el producto seleccionado.
             If lTransInvUbic.Count = 0 Then
 
-                Guardar_Productos = clsLnTrans_inv_stock.Insertar_Inventario_Congelado_RFID(DTProductos,
+                Guardar_Productos = clsLnTrans_inv_stock.Agregar_Producto_A_Inventario_Ciclico_RFID(DTProductos,
                                                                                             IdInventario,
                                                                                             AP.UsuarioAp.IdUsuario,
                                                                                             IdOperador,
@@ -123,6 +124,7 @@ Public Class frmInventarioProductosRFID
             '#EJC20180806: Evitar sobrecargar al inicio de lista en productos para inventario
             If IdInventario = 0 Then Exit Sub
 
+            '#GT28052026: listar productos sin barra_epc porque el mismo producto puede existir con varios SSCC
             DTProductos = clsLnProducto.Get_All_By_IdPropietario_And_Bodega_Para_Inventario_RFID(IdPropietario,
                                                                                                  IdBodega,
                                                                                                  IdInventario)
@@ -140,10 +142,12 @@ Public Class frmInventarioProductosRFID
                 MsgBox(ex.Message)
             End Try
 
+
+            'gvProductos.Columns("Barra_epc").Caption = "Etiqueta RFID"
+
             gvProductos.BestFitColumns(True)
 
             '#EJC20180806: Ocultar algunas columnas y mostrarlas en el columnchoser del grid para el enduser
-
             gvProductos.Columns("IndiceRotacion").Visible = False
             gvProductos.Columns("IndiceRotacion").OptionsColumn.ShowInCustomizationForm = True
 

@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+Imports System.ComponentModel
 Imports System.Data.SqlClient
 Imports System.Drawing.Drawing2D
 Imports System.IO
@@ -413,6 +413,8 @@ Public Class frmInventario
         DTInventarioConteo.Columns.Add("Código", GetType(String)) '4
         DTInventarioConteo.Columns.Add("Producto", GetType(String)) '5
         DTInventarioConteo.Columns.Add("Presentación", GetType(String)) '6
+        DTInventarioConteo.Columns.Add("Talla", GetType(String))
+        DTInventarioConteo.Columns.Add("Color", GetType(String))
         DTInventarioConteo.Columns.Add("Cantidad Conteo", GetType(Double)) '7
         DTInventarioConteo.Columns.Add("Estado Detalle", GetType(String)) '8
         DTInventarioConteo.Columns.Add("Operador", GetType(String)) '9
@@ -446,6 +448,8 @@ Public Class frmInventario
         DTInventarioVerifica.Columns.Add("Código", GetType(String))
         DTInventarioVerifica.Columns.Add("Producto", GetType(String))
         DTInventarioVerifica.Columns.Add("Presentación", GetType(String))
+        DTInventarioVerifica.Columns.Add("Talla", GetType(String))
+        DTInventarioVerifica.Columns.Add("Color", GetType(String))
         DTInventarioVerifica.Columns.Add("Cantidad Verifica", GetType(Double))
         DTInventarioVerifica.Columns.Add("Estado Verifica", GetType(String))
         DTInventarioVerifica.Columns.Add("Operador", GetType(String))
@@ -467,6 +471,8 @@ Public Class frmInventario
         DTC.Columns.Add("Código", GetType(String))
         DTC.Columns.Add("Producto", GetType(String))
         DTC.Columns.Add("Presentación", GetType(String))
+        DTC.Columns.Add("Talla", GetType(String))
+        DTC.Columns.Add("Color", GetType(String))
         DTC.Columns.Add("UM", GetType(String))
         DTC.Columns.Add("Conteo", GetType(Double))
         DTC.Columns.Add("Verifica", GetType(Double))
@@ -915,23 +921,45 @@ Public Class frmInventario
 
                 vCantidad = 0.0
 
-                gBeAgregar = New clsBeTrans_inv_enc()
-                gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
-                gBeAgregar.IdProducto = Ob.IdProducto
-                gBeAgregar.IdPresentacion = Ob.IdPresentacion
-                gBeAgregar.IdTramo = Ob.IdTramo
-                gBeAgregar.Tramo = Ob.Tramo
-                gBeAgregar.Presentacion = Ob.Presentacion
-                gBeAgregar.Detalle = Ob.Detalle
-                gBeAgregar.Resumen = Ob.Resumen
-                gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
-                gBeAgregar.EstadoResumen = Ob.EstadoResumen
-                gBeAgregar.OperadorConteo = Ob.OperadorConteo
-                gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
-                gBeAgregar.Producto = Ob.Producto
-                gBeAgregar.Codigo = Ob.Codigo
-                gBeAgregar.UMBas = Ob.UMBas
-                gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                If AP.Bodega.Control_Talla_Color Then
+                    gBeAgregar = New clsBeTrans_inv_enc()
+                    gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
+                    gBeAgregar.IdProducto = Ob.IdProducto
+                    gBeAgregar.IdPresentacion = Ob.IdPresentacion
+                    gBeAgregar.IdTramo = Ob.IdTramo
+                    gBeAgregar.Tramo = Ob.Tramo
+                    gBeAgregar.Presentacion = Ob.Presentacion
+                    gBeAgregar.Detalle = Ob.Detalle
+                    gBeAgregar.Resumen = Ob.Resumen
+                    gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
+                    gBeAgregar.EstadoResumen = Ob.EstadoResumen
+                    gBeAgregar.OperadorConteo = Ob.OperadorConteo
+                    gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
+                    gBeAgregar.Producto = Ob.Producto
+                    gBeAgregar.Codigo = Ob.Codigo
+                    gBeAgregar.Codigo_Talla = Ob.Codigo_Talla
+                    gBeAgregar.Codigo_Color = Ob.Codigo_Color
+                    gBeAgregar.UMBas = Ob.UMBas
+                    gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                Else
+                    gBeAgregar = New clsBeTrans_inv_enc()
+                    gBeAgregar.Idinventarioenc = Ob.Idinventarioenc
+                    gBeAgregar.IdProducto = Ob.IdProducto
+                    gBeAgregar.IdPresentacion = Ob.IdPresentacion
+                    gBeAgregar.IdTramo = Ob.IdTramo
+                    gBeAgregar.Tramo = Ob.Tramo
+                    gBeAgregar.Presentacion = Ob.Presentacion
+                    gBeAgregar.Detalle = Ob.Detalle
+                    gBeAgregar.Resumen = Ob.Resumen
+                    gBeAgregar.EstadoDetalle = Ob.EstadoDetalle
+                    gBeAgregar.EstadoResumen = Ob.EstadoResumen
+                    gBeAgregar.OperadorConteo = Ob.OperadorConteo
+                    gBeAgregar.OperadorVerifica = Ob.OperadorVerifica
+                    gBeAgregar.Producto = Ob.Producto
+                    gBeAgregar.Codigo = Ob.Codigo
+                    gBeAgregar.UMBas = Ob.UMBas
+                    gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                End If
                 'clsLnTrans_inv_enc.InsertarComparacionInventario(gBeAgregar)
                 glistaInv.Add(gBeAgregar)
 
@@ -990,6 +1018,8 @@ Public Class frmInventario
                                      BeTransInvEnc.Codigo,
                                      BeTransInvEnc.Producto,
                                      BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.Codigo_Talla,
+                                     BeTransInvEnc.Codigo_Color,
                                      BeTransInvEnc.UMBas,
                                      BeTransInvEnc.Detalle,
                                      BeTransInvEnc.Resumen,
@@ -1005,6 +1035,8 @@ Public Class frmInventario
                                      BeTransInvEnc.Codigo,
                                      BeTransInvEnc.Producto,
                                      BeTransInvEnc.Presentacion,
+                                     BeTransInvEnc.Codigo_Talla,
+                                     BeTransInvEnc.Codigo_Color,
                                      BeTransInvEnc.UMBas,
                                      BeTransInvEnc.Detalle,
                                      BeTransInvEnc.Resumen,
@@ -1025,6 +1057,11 @@ Public Class frmInventario
                 If gviewComparativo.RowCount > 0 Then
                     gviewComparativo.Columns("IdProducto").Visible = False
                     gviewComparativo.Columns("IdInventario").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewComparativo.Columns("Talla").Visible = False
+                        gviewComparativo.Columns("Colot").Visible = False
+                    End If
 
                     gviewComparativo.OptionsView.ShowFooter = True
 
@@ -1444,6 +1481,8 @@ Public Class frmInventario
                                                 BeConteoDetalle.Codigo,
                                                 BeConteoDetalle.Producto,
                                                 BeConteoDetalle.Presentacion,
+                                                BeConteoDetalle.Codigo_Talla,
+                                                BeConteoDetalle.Codigo_Color,
                                                 BeConteoDetalle.Detalle,
                                                 BeConteoDetalle.EstadoDetalle,
                                                 BeConteoDetalle.OperadorConteo,
@@ -1466,6 +1505,11 @@ Public Class frmInventario
                     gviewConteo.Columns("IdProducto").Visible = False
                     gviewConteo.Columns("IdInventario").Visible = False
                     gviewConteo.Columns("Idinventariodet").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewConteo.Columns("Talla").Visible = False
+                        gviewConteo.Columns("Color").Visible = False
+                    End If
 
                     gviewConteo.OptionsView.ShowFooter = True
 
@@ -1527,19 +1571,21 @@ Public Class frmInventario
                 For Each BeTrans_inv_enc As clsBeTrans_inv_enc In ListaConteos
 
                     DTInventarioVerifica.Rows.Add(BeTrans_inv_enc.Idinventarioenc,
-                                                  BeTrans_inv_enc.IdTramo,
-                                                  BeTrans_inv_enc.Tramo,
-                                                  BeTrans_inv_enc.Codigo,
-                                                  BeTrans_inv_enc.Producto,
-                                                  BeTrans_inv_enc.Presentacion,
-                                                  BeTrans_inv_enc.Resumen,
-                                                  BeTrans_inv_enc.EstadoResumen,
-                                                  BeTrans_inv_enc.OperadorVerifica,
-                                                  BeTrans_inv_enc.Fecha,
-                                                  BeTrans_inv_enc.IdProducto,
-                                                  BeTrans_inv_enc.IdInventarioRes,
-                                                  BeTrans_inv_enc.UbicacionCompleta,
-                                                  BeTrans_inv_enc.Licencia)
+                                                      BeTrans_inv_enc.IdTramo,
+                                                      BeTrans_inv_enc.Tramo,
+                                                      BeTrans_inv_enc.Codigo,
+                                                      BeTrans_inv_enc.Producto,
+                                                      BeTrans_inv_enc.Presentacion,
+                                                      BeTrans_inv_enc.Codigo_Talla,
+                                                      BeTrans_inv_enc.Codigo_Color,
+                                                      BeTrans_inv_enc.Resumen,
+                                                      BeTrans_inv_enc.EstadoResumen,
+                                                      BeTrans_inv_enc.OperadorVerifica,
+                                                      BeTrans_inv_enc.Fecha,
+                                                      BeTrans_inv_enc.IdProducto,
+                                                      BeTrans_inv_enc.IdInventarioRes,
+                                                      BeTrans_inv_enc.UbicacionCompleta,
+                                                      BeTrans_inv_enc.Licencia)
 
                 Next
 
@@ -1552,6 +1598,11 @@ Public Class frmInventario
                     gviewVerifica.Columns("IdProducto").Visible = False
                     gviewVerifica.Columns("IdInventario").Visible = False
                     gviewVerifica.Columns("IdInventarioRes").Visible = False
+
+                    If Not AP.Bodega.Control_Talla_Color Then
+                        gviewVerifica.Columns("Talla").Visible = False
+                        gviewVerifica.Columns("Color").Visible = False
+                    End If
 
                     gviewVerifica.OptionsView.ShowFooter = True
 
@@ -2825,6 +2876,9 @@ Public Class frmInventario
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gviewComparativo.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             Dim View As GridView = sender
@@ -3169,6 +3223,7 @@ Public Class frmInventario
                     .Peso = st.Peso
                     .Temperatura = 0
                     .Atributo_Variante_1 = st.Codigo_variante
+                    .IdProductoTallaColor = st.IdProductoTallaColor
 
                 End With
 
@@ -3213,6 +3268,7 @@ Public Class frmInventario
                 mov.Cantidad_hist = 0
                 mov.Peso = item.Peso
                 mov.Peso_hist = 0
+                mov.IdProductoTallaColor = item.IdProductoTallaColor
 
                 movs.Add(mov)
 
@@ -6713,6 +6769,9 @@ Public Class frmInventario
 
     Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             If e.Column.FieldName = "PesoConteo" Then
@@ -7609,6 +7668,9 @@ Public Class frmInventario
     End Sub
 
     Private Sub GridView8_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView8.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         If e.Column.FieldName = "Cantidad" Then
 

@@ -163,7 +163,8 @@ Public Class frmRptStock
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdSeries, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -207,7 +208,6 @@ Public Class frmRptStock
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -389,6 +389,7 @@ Public Class frmRptStock
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en stockParametro.            
             'vNombreArchivoLayOutGrid = CurDir() & "\" & grdSeries.Name & ".xml"
             vNombreArchivoLayOutGrid = "frmRptSeries.xml"
@@ -428,3 +429,6 @@ Public Class frmRptStock
     End Sub
 
 End Class
+
+
+

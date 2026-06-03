@@ -1556,8 +1556,10 @@ Partial Public Class clsLnTrans_inv_enc
             clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
 
             'Crea copia de stock cuando es inventario ciclico. 
-            'clsLnTrans_inv_stock.Guarda_Copia_Stock(pBeInventarioEnc, lConnection, lTransaction)
             clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, pBeInventarioEnc.IdBodega, lConnection, lTransaction)
+
+            'clsLnTrans_inv_stock.Guarda_Copia_Stock(pBeInventarioEnc, lConnection, lTransaction)
+
 
             lTransaction.Commit()
 
@@ -3803,9 +3805,11 @@ Partial Public Class clsLnTrans_inv_enc
             pObjTareaHH.IdTransaccion = pBeInventarioEnc.Idinventarioenc
             clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH, lConnection, lTransaction)
 
-            '#GT04052026: para RFID no se necesita guardar inventario congelado porque no hay stock
+            '#GT27052026: guardar inventario congelado de tipo rfid.
             'Crea copia de stock cuando es inventario ciclico. 
             'clsLnTrans_inv_stock.Generar_Invenatario_Congelado(pBeInventarioEnc.Idinventarioenc, lConnection, lTransaction)
+
+            clsLnTrans_inv_stock.Guarda_Copia_Stock_RFID(pBeInventarioEnc, lConnection, lTransaction)
 
             lTransaction.Commit()
 

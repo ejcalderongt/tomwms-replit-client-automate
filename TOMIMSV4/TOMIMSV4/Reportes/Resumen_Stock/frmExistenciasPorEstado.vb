@@ -148,6 +148,7 @@ Public Class frmExistenciasPorEstado
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en frmstock_especifico_list.vb
             vNombreArchivoLayOutGrid = "frmExistenciasPorEstado.xml"
 
@@ -178,7 +179,8 @@ Public Class frmExistenciasPorEstado
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistenciasEstado, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -222,7 +224,6 @@ Public Class frmExistenciasPorEstado
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -519,3 +520,6 @@ Public Class frmExistenciasPorEstado
     End Sub
 
 End Class
+
+
+

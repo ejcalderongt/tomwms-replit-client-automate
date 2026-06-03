@@ -172,6 +172,7 @@ Public Class frmCantidadreemplazo
 
     Private Sub frmCantidadreemplazo_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Set_Columnas_DT_StockRes()
 
         dgridPickingUbic.DataSource = DTStockRes

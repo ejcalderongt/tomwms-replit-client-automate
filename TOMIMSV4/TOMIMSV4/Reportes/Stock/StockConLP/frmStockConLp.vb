@@ -210,7 +210,8 @@ Public Class frmStockConLp
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistenciasConLp, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -254,7 +255,6 @@ Public Class frmStockConLp
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -292,6 +292,7 @@ Public Class frmStockConLp
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
 
 
@@ -480,3 +481,6 @@ Public Class frmStockConLp
 
 
 End Class
+
+
+

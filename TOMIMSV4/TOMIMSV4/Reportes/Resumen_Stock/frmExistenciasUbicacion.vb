@@ -527,7 +527,8 @@ Public Class frmExistenciasUbicacion
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(DGrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -560,7 +561,6 @@ Public Class frmExistenciasUbicacion
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -579,6 +579,7 @@ Public Class frmExistenciasUbicacion
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#GT29032022: para evitar el multitreading 
             CheckForIllegalCrossThreadCalls = False
 
@@ -900,3 +901,6 @@ Public Class frmExistenciasUbicacion
     End Sub
 
 End Class
+
+
+

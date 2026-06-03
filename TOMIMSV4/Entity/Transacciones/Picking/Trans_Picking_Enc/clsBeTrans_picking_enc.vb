@@ -88,4 +88,6 @@ Public Class clsBeTrans_picking_enc
         Return MyBase.MemberwiseClone()
     End Function
 
+    Public Property PorcentajePacking As Integer = 0 '#EJC20260529 — % ubics empacadas/verificadas
+
 End Class

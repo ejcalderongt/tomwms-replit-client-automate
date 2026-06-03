@@ -28,6 +28,7 @@ Public Class frmMovimiento_Reporte
 
     Private Sub frmMovimiento_Reporte_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         'AP.Listar_Bodegas_By_Usuario(cmbBodega)
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
         cmbBodega.EditValue = Integer.Parse(AP.IdBodega)

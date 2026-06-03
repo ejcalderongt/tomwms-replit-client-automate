@@ -25,7 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,7 +35,7 @@
     <OutputPath>bin\</OutputPath>
     <DocumentationFile>WSHHRN.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -132,6 +132,7 @@
     <Content Include="DataSets\NN.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="My Project\PublishProfiles\WCFTOM4_DEV.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_MAMPA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_mio.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_PRD.pubxml" />
@@ -234,6 +235,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="WmsTraceWS.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -509,10 +511,6 @@
       <Project>{69ea4ff6-c886-49c1-b9d1-f011bc18d0d2}</Project>
       <Name>SAPSYNCMAMPA</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
-      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
-      <Name>DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
       <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
       <Name>Entity</Name>
@@ -542,7 +540,7 @@
     <DocumentationFile>WSHHRN.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>

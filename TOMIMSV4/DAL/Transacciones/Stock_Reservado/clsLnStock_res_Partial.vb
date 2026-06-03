@@ -3027,8 +3027,10 @@ Partial Public Class clsLnStock_res
                                                             IdPropietarioBodega,
                                                             IdPickingEnc,
                                                             IdPedidoEnc,
-                                                            lConnection,
-                                                            lTransaction)
+                                                            pConnection:=lConnection,
+                                                            pTransaction:=lTransaction,
+                                                            pUserAgr:=IdUsuarioHH,
+                                                            pHost:=MaquinaQueSolicita)
 
             '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
             If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -3173,8 +3175,10 @@ Partial Public Class clsLnStock_res
                                                             IdPropietarioBodega,
                                                             IdPickingEnc,
                                                             IdPedidoEnc,
-                                                            lConnection,
-                                                            ltransaction)
+                                                            pConnection:=lConnection,
+                                                            pTransaction:=ltransaction,
+                                                            pUserAgr:=IdUsuarioHH,
+                                                            pHost:=MaquinaQueSolicita)
 
             '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
             If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -3264,6 +3268,14 @@ Partial Public Class clsLnStock_res
 
             If BePickingUbic.IdPickingEnc = 0 Then
                 BePickingUbic.IdPickingEnc = IdPickingEnc
+            End If
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, aquí no basta con que la lista venga filtrada; se valida de nuevo al confirmar.
+            If Not clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(pBeStock_res.IdStock,
+                                                                               IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
             End If
 
             ListTransPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_PickingUbic(BePickingUbic,
@@ -3661,6 +3673,14 @@ Partial Public Class clsLnStock_res
                 bePickingUbicExistente.Acepto = 0
                 bePickingUbicExistente.Cantidad_Solicitada = CantSol
 
+                '#EJC20260603_REEMPLAZO_QTY_GUARD: La línea dañada/no-encontrada nunca debe quedar con verificado > recibido/solicitado.
+                If bePickingUbicExistente.Cantidad_Verificada > bePickingUbicExistente.Cantidad_Recibida Then
+                    bePickingUbicExistente.Cantidad_Verificada = bePickingUbicExistente.Cantidad_Recibida
+                End If
+                If bePickingUbicExistente.Cantidad_Verificada > bePickingUbicExistente.Cantidad_Solicitada Then
+                    bePickingUbicExistente.Cantidad_Verificada = bePickingUbicExistente.Cantidad_Solicitada
+                End If
+
                 '#EJC20260226: Se utilizará identity.
                 'bePickingUbicExistente.IdPickingUbic = clsLnTrans_picking_ubic.MaxID(lConnection, lTransaction) + 1
                 clsLnTrans_picking_ubic.Insertar(bePickingUbicExistente, lConnection, lTransaction)
@@ -3699,6 +3719,14 @@ Partial Public Class clsLnStock_res
                         bePickingUbicExistente.Cantidad_Verificada = CantSol
                     End If
                     'bePickingUbicExistente.No_packing = 6
+                End If
+
+                '#EJC20260603_REEMPLAZO_QTY_GUARD: La línea dañada/no-encontrada nunca debe quedar con verificado > recibido/solicitado.
+                If bePickingUbicExistente.Cantidad_Verificada > bePickingUbicExistente.Cantidad_Recibida Then
+                    bePickingUbicExistente.Cantidad_Verificada = bePickingUbicExistente.Cantidad_Recibida
+                End If
+                If bePickingUbicExistente.Cantidad_Verificada > bePickingUbicExistente.Cantidad_Solicitada Then
+                    bePickingUbicExistente.Cantidad_Verificada = bePickingUbicExistente.Cantidad_Solicitada
                 End If
 
                 bePickingUbicExistente.Acepto = 0
@@ -3771,6 +3799,14 @@ Partial Public Class clsLnStock_res
 
             BeBodega = New clsBeBodega With {.IdBodega = pIdBodega}
             clsLnBodega.GetSingle(BeBodega, lConnection, lTransaction)
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: mismo candado para verificación, porque comparte la pantalla de stock candidato con picking.
+            If Not clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(pBeStockRes.IdStock,
+                                                                               plistPickingUbi.IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
+            End If
 
             If tmpBePickingUbic.Count > 0 Then
 
@@ -3846,6 +3882,12 @@ Partial Public Class clsLnStock_res
                     Dim DisponibleReem = pu.Cantidad_Recibida - pu.Cantidad_Verificada
                     If DisponibleReem <= 0 Then
                         Continue For
+                    End If
+
+                    '#EJC20260603_KILLIOS_REEMPLAZO_VERIF_OWNER:
+                    'propagar propietario de la línea de picking al stock objetivo de reserva.
+                    If pBeStockRes IsNot Nothing AndAlso pu IsNot Nothing AndAlso pu.IdPropietarioBodega > 0 Then
+                        pBeStockRes.IdPropietarioBodega = pu.IdPropietarioBodega
                     End If
 
                     If pCantReemplazar >= DisponibleReem Then
@@ -4012,15 +4054,17 @@ Partial Public Class clsLnStock_res
                                                                 IdPropietarioBodega,
                                                                 IdPickingEnc,
                                                                 IdPedidoEnc,
-                                                                lConnection,
-                                                                lTransaction)
+                                                                pConnection:=lConnection,
+                                                                pTransaction:=lTransaction,
+                                                                pUserAgr:=IdUsuarioHH,
+                                                                pHost:=MaquinaQueSolicita)
 
-            '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
-            If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
+                    '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
+                    If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
 
-                Dim resultReemp As Boolean = False
+                        Dim resultReemp As Boolean = False
 
-                resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
+                        resultReemp = clsLnTrans_picking_ubic.Reemplazo_Producto_En_Picking(BeTransPickingUbic.IdStock,
                                                                                     IdPickingEnc,
                                                                                     BeTransPickingUbic.IdPickingDet,
                                                                                     CantSolTotal,
@@ -4299,8 +4343,10 @@ Partial Public Class clsLnStock_res
                                                                 IdPropietarioBodega,
                                                                 IdPickingEnc,
                                                                 IdPedidoEnc,
-                                                                lConnection,
-                                                                ltransaction)
+                                                                pConnection:=lConnection,
+                                                                pTransaction:=ltransaction,
+                                                                pUserAgr:=IdUsuarioHH,
+                                                                pHost:=MaquinaQueSolicita)
 
                     '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
                     If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -4323,13 +4369,13 @@ Partial Public Class clsLnStock_res
                                                                                     lConnection,
                                                                                     ltransaction,
                                                                                     Tipo)
-                If Not resultReemp Then
-                    Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
-                End If
+                        If Not resultReemp Then
+                            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, "No se logró reemplazar el IdStock"))
+                        End If
 
-            Else
-                Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
-            End If
+                    Else
+                        Throw New Exception("No se puede completar el proceso, no se generó stock reservado para el reemplazo.")
+                    End If
 
                 Else
                     Throw New Exception("Licencia reservada por completo")
@@ -4377,6 +4423,14 @@ Partial Public Class clsLnStock_res
             Dim BeStockRes As New clsBeStock_res
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: valida el stock recibido por IdStock antes de reservar/reemplazar.
+            If Not TOMWMS.clsLnStock.Stock_Cumple_Regla_Lote_Cliente_Reemplazo(IdStockReservarDesde,
+                                                                               IdPedidoEnc,
+                                                                               lConnection,
+                                                                               lTransaction) Then
+                Throw New Exception("No se puede completar el reemplazo: el lote seleccionado no está permitido para el cliente del pedido.")
+            End If
 
             If Reservar_Stock_By_IdStock(IdStockReservarDesde,
                                          CantSol,
@@ -4521,7 +4575,9 @@ Partial Public Class clsLnStock_res
                                                             ByVal pIdPickingEnc As Integer,
                                                             ByVal pIdPedidoEnc As Integer,
                                                             Optional ByRef pConnection As SqlConnection = Nothing,
-                                                            Optional ByRef pTransaction As SqlTransaction = Nothing) As List(Of clsBeStock_res)
+                                                            Optional ByRef pTransaction As SqlTransaction = Nothing,
+                                                            Optional ByVal pUserAgr As Integer = 0,
+                                                            Optional ByVal pHost As String = "") As List(Of clsBeStock_res)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -4537,6 +4593,7 @@ Partial Public Class clsLnStock_res
 
             Dim lReturnList As New List(Of clsBeStock_res)
 
+            '#EJC20260603_REEMPLAZO_SCOPE: limitar al contexto del request HH para no reusar reservas históricas de la misma línea.
             Const sp As String = "SELECT IdStockRes, IdTransaccion, Indicador, IdPedidoDet,IdBodega, IdStock, 
                                   IdPropietarioBodega, IdProductoBodega, IdProductoEstado, IdPresentacion, IdUnidadMedida, 
                                   IdUbicacion, ubicacion_ant, IdRecepcion, lote, lic_plate, serial, cantidad, peso, estado, 
@@ -4546,7 +4603,9 @@ Partial Public Class clsLnStock_res
                                   FROM stock_res
                                   WHERE (IdPedidoDet = @IdPedidoDet) AND (IdPropietarioBodega = @IdPropietarioBodega) 
                                   AND (IdPicking = @IdPickingEnc) AND (IdPedido = @IdPedidoEnc) 
-                                  AND (Indicador = 'PED') AND (estado = 'UNCOMMITED HH') "
+                                  AND (@UserAgr = 0 OR user_agr = @UserAgr)
+                                  AND (@Host = '' OR host = @Host)
+                                  AND (Indicador = 'PED') AND (estado IN ('UNCOMMITED HH','UNCOMMITED')) "
 
             Dim cmd As New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
                                      With {.CommandType = CommandType.Text}
@@ -4556,6 +4615,8 @@ Partial Public Class clsLnStock_res
             dad.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
             dad.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
             dad.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+            dad.SelectCommand.Parameters.AddWithValue("@UserAgr", pUserAgr)
+            dad.SelectCommand.Parameters.AddWithValue("@Host", pHost)
 
             Dim dt As New DataTable
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using WMS.StockReservation.Core.Domain;
 using WMS.StockReservation.Core.Interfaces;
+using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -96,7 +97,7 @@ namespace WMS.StockReservation.Core.Services
             return new ReservationResult
             {
                 Success = !context.HasError && context.IsQuantityFullyReserved(),
-                Reservations = context.CreatedReservations,
+                Reservations = context.CreatedReservations ?? new List<clsBeStock_res>(),
                 RemainingQuantity = context.PendingQuantity,
                 Messages = _logger.GetMessages()
             };

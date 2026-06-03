@@ -1,7 +1,11 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_config_enc
+
+    Private Shared Function DataRow_Has_Column(ByVal dr As DataRow, ByVal pColumnName As String) As Boolean
+        Return dr IsNot Nothing AndAlso dr.Table IsNot Nothing AndAlso dr.Table.Columns.Contains(pColumnName)
+    End Function
 
     Public Shared Sub Cargar(ByRef oBeI_nav_config_enc As clsBeI_nav_config_enc, ByRef dr As DataRow)
 
@@ -42,6 +46,8 @@ Public Class clsLnI_nav_config_enc
                 .IdTipoEtiqueta = IIf(IsDBNull(dr.Item("IdTipoEtiqueta")), 0, dr.Item("IdTipoEtiqueta"))
                 .equiparar_cliente_con_propietario_en_doc_salida = IIf(IsDBNull(dr.Item("equiparar_cliente_con_propietario_en_doc_salida")), False, dr.Item("equiparar_cliente_con_propietario_en_doc_salida"))
                 .Push_Ingreso_NAV_Desde_HH = IIf(IsDBNull(dr.Item("push_ingreso_nav_desde_hh")), False, dr.Item("push_ingreso_nav_desde_hh"))
+                '#EJC20260602_SYNC_INGRESO_SAP: Lectura tolerante para despliegue por fases; default False hasta aplicar ALTER TABLE en i_nav_config_enc.
+                .Enviar_Ingreso_SAP_Via_WS = DataRow_Has_Column(dr, "enviar_ingreso_sap_via_ws") AndAlso Not IsDBNull(dr.Item("enviar_ingreso_sap_via_ws")) AndAlso CBool(dr.Item("enviar_ingreso_sap_via_ws"))
                 .Reservar_UMBas_Primero = IIf(IsDBNull(dr.Item("Reservar_UMBas_Primero")), False, dr.Item("Reservar_UMBas_Primero"))
                 .Implosion_Automatica = IIf(IsDBNull(dr.Item("Implosion_Automatica")), False, dr.Item("Implosion_Automatica"))
                 .Explosion_Automatica = IIf(IsDBNull(dr.Item("Explosion_Automatica")), False, dr.Item("Explosion_Automatica"))
@@ -130,6 +136,8 @@ Public Class clsLnI_nav_config_enc
             Ins.Add("IdTipoEtiqueta", "@IdTipoEtiqueta", DataType.Parametro)
             Ins.Add("equiparar_cliente_con_propietario_en_doc_salida", "@equiparar_cliente_con_propietario_en_doc_salida", DataType.Parametro)
             Ins.Add("push_ingreso_nav_desde_hh", "@push_ingreso_nav_desde_hh", DataType.Parametro)
+            '#EJC20260602_SYNC_INGRESO_SAP: Persistencia del flag que habilita solicitud al worker WMS para ejecutar la interface SAP de ingresos.
+            Ins.Add("enviar_ingreso_sap_via_ws", "@enviar_ingreso_sap_via_ws", DataType.Parametro)
             Ins.Add("reservar_umbas_primero", "@reservar_umbas_primero", DataType.Parametro)
             Ins.Add("implosion_automatica", "@implosion_automatica", DataType.Parametro)
             Ins.Add("explosion_automatica", "@explosion_automatica", DataType.Parametro)
@@ -212,6 +220,7 @@ Public Class clsLnI_nav_config_enc
             'equiparar_cliente_con_propietario_en_doc_salida
             cmd.Parameters.Add(New SqlParameter("@EQUIPARAR_CLIENTE_CON_PROPIETARIO_EN_DOC_SALIDA", oBeI_nav_config_enc.equiparar_cliente_con_propietario_en_doc_salida))
             cmd.Parameters.Add(New SqlParameter("@PUSH_INGRESO_NAV_DESDE_HH", oBeI_nav_config_enc.Push_Ingreso_NAV_Desde_HH))
+            cmd.Parameters.Add(New SqlParameter("@ENVIAR_INGRESO_SAP_VIA_WS", oBeI_nav_config_enc.Enviar_Ingreso_SAP_Via_WS))
             cmd.Parameters.Add(New SqlParameter("@RESERVAR_UMBAS_PRIMERO", oBeI_nav_config_enc.Reservar_UMBas_Primero))
             cmd.Parameters.Add(New SqlParameter("@IMPLOSION_AUTOMATICA", oBeI_nav_config_enc.Implosion_Automatica))
             cmd.Parameters.Add(New SqlParameter("@EXPLOSION_AUTOMATICA", oBeI_nav_config_enc.Explosion_Automatica))
@@ -309,6 +318,8 @@ Public Class clsLnI_nav_config_enc
             Upd.Add("idtipoetiqueta", "@idtipoetiqueta", DataType.Parametro)
             Upd.Add("equiparar_cliente_con_propietario_en_doc_salida", "@equiparar_cliente_con_propietario_en_doc_salida", DataType.Parametro)
             Upd.Add("push_ingreso_nav_desde_hh", "@push_ingreso_nav_desde_hh", DataType.Parametro)
+            '#EJC20260602_SYNC_INGRESO_SAP: Persistencia del flag que habilita solicitud al worker WMS para ejecutar la interface SAP de ingresos.
+            Upd.Add("enviar_ingreso_sap_via_ws", "@enviar_ingreso_sap_via_ws", DataType.Parametro)
             Upd.Add("reservar_umbas_primero", "@reservar_umbas_primero", DataType.Parametro)
             Upd.Add("implosion_automatica", "@implosion_automatica", DataType.Parametro)
             Upd.Add("explosion_automatica", "@explosion_automatica", DataType.Parametro)
@@ -392,6 +403,7 @@ Public Class clsLnI_nav_config_enc
             cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETA", oBeI_nav_config_enc.IdTipoEtiqueta))
             cmd.Parameters.Add(New SqlParameter("@equiparar_cliente_con_propietario_en_doc_salida", oBeI_nav_config_enc.equiparar_cliente_con_propietario_en_doc_salida))
             cmd.Parameters.Add(New SqlParameter("@PUSH_INGRESO_NAV_DESDE_HH", oBeI_nav_config_enc.Push_Ingreso_NAV_Desde_HH))
+            cmd.Parameters.Add(New SqlParameter("@ENVIAR_INGRESO_SAP_VIA_WS", oBeI_nav_config_enc.Enviar_Ingreso_SAP_Via_WS))
             cmd.Parameters.Add(New SqlParameter("@RESERVAR_UMBAS_PRIMERO", oBeI_nav_config_enc.Reservar_UMBas_Primero))
             cmd.Parameters.Add(New SqlParameter("@IMPLOSION_AUTOMATICA", oBeI_nav_config_enc.Implosion_Automatica))
             cmd.Parameters.Add(New SqlParameter("@EXPLOSION_AUTOMATICA", oBeI_nav_config_enc.Explosion_Automatica))

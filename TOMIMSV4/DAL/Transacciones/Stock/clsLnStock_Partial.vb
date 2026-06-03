@@ -498,7 +498,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report(ByVal pIdBodega As Integer,
                                                                ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -598,7 +597,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_Consolidado_DT_Report_Clasificacion(ByVal pIdBodega As Integer,
                                                                              ByVal pIdPropietarioBodega As Integer) As DataTable
 
@@ -760,7 +758,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega_And_IdPropietario(ByVal DelSubUpdLbl As ChangeLabelDelegate,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByVal pIdPropietarioBodega As Integer,
@@ -824,7 +821,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal IdBodega As Integer,
                                                      ByVal IdRe As Integer,
                                                      ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -890,7 +886,6 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
-
 
     '#GT16032022_0837: para el inventario en linea cealsa
     Public Shared Function Get_All_Stock_By_IdBodega(ByVal DelSubUpdLbl As ChangeLabelDelegate,
@@ -2972,9 +2967,12 @@ Partial Public Class clsLnStock
             Else
 
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
-                SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
+                '#EJC20260602_STOCK_FECHA: Para stock en una fecha se puede incluir despacho cuando así se requiera.
+                If Not pProducto.IncluirUbicacionesDespacho Then
+                    SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
 							                        FROM  bodega_ubicacion AS bodega_ubicacion 
 								                    WHERE (ubicacion_despacho = 1 and IdBodega=@IdBodega))"
+                End If
             End If
 
             If pIdUbicacion = 0 Then
@@ -6083,7 +6081,8 @@ Partial Public Class clsLnStock
                                      ByRef lConnection As SqlConnection,
                                      ByRef ltransaction As SqlTransaction,
                                      Optional ByVal pExcluirUbicacionPicking As Boolean = False,
-                                     Optional ByVal pRestringir As Boolean = False) As DataTable
+                                     Optional ByVal pRestringir As Boolean = False,
+                                     Optional ByVal pIdClienteReglaLote As Integer = 0) As DataTable
 
         lStock_DT = Nothing
 
@@ -6178,6 +6177,42 @@ Partial Public Class clsLnStock
                       AND producto_bodega.idproductobodega=@idproductobodega                     
 					  AND stock.idunidadmedida =@idunidadmedida 
 					  AND stock.idproductoestado=@idproductoestado "
+
+            If pIdClienteReglaLote > 0 Then
+                '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, aquí filtro los lotes de reemplazo con la misma regla de cliente_lotes.
+                'Si el cliente tiene lotes permitidos para producto/estado, solo se listan esos; si tiene bloqueados, se excluyen.
+                vSQL += " AND NOT EXISTS (
+                              SELECT 1
+                              FROM cliente_lotes cl
+                              WHERE cl.IdCliente = @IdClienteReglaLote
+                                AND ISNULL(cl.activo, 0) = 1
+                                AND ISNULL(cl.bloquear, 0) = 1
+                                AND cl.IdProducto = producto.IdProducto
+                                AND ISNULL(cl.IdProductoEstado, 0) = stock.IdProductoEstado
+                                AND ISNULL(cl.Lote, '') = ISNULL(stock.lote, '')
+                          )
+                          AND (
+                              NOT EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                              )
+                              OR EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                                    AND ISNULL(clp.Lote, '') = ISNULL(stock.lote, '')
+                              )
+                          ) "
+            End If
 
             If Not BeBodega Is Nothing Then
                 '#EJC202302231735: Parametricé, Permitir_Reemplazo_Picking_Misma_Licencia 
@@ -6330,6 +6365,10 @@ Partial Public Class clsLnStock
 
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pBeStockRes.IdUnidadMedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pBeStockRes.IdProductoEstado)
+
+                If pIdClienteReglaLote > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdClienteReglaLote", pIdClienteReglaLote)
+                End If
 
                 If DiasVencimiento <> 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@DiasVencimientoCliente", DiasVencimiento)
@@ -6587,7 +6626,8 @@ Partial Public Class clsLnStock
                                                     ByVal pBeConfigEnc As clsBeI_nav_config_enc,
                                                     ByRef lConnection As SqlConnection,
                                                     ByRef ltransaction As SqlTransaction,
-                                                    Optional ByVal pExcluirUbicacionPicking As Boolean = False) As DataTable
+                                                    Optional ByVal pExcluirUbicacionPicking As Boolean = False,
+                                                    Optional ByVal pIdClienteReglaLote As Integer = 0) As DataTable
         Try
             Dim DTDatos As DataTable
             Dim RDatos As DataTable = New DataTable
@@ -6601,7 +6641,8 @@ Partial Public Class clsLnStock
                                 lConnection,
                                 ltransaction,
                                 False,
-                                True)
+                                True,
+                                pIdClienteReglaLote)
 
             '#CKFK20220722 Agregué esto para 
             If DTDatos.Rows.Count = 0 Then
@@ -6614,7 +6655,9 @@ Partial Public Class clsLnStock
                                     pBeConfigEnc,
                                     lConnection,
                                     ltransaction,
-                                    False)
+                                    False,
+                                    False,
+                                    pIdClienteReglaLote)
 
             End If
 
@@ -6787,6 +6830,81 @@ Partial Public Class clsLnStock
         End Try
     End Function
 
+    Public Shared Function Stock_Cumple_Regla_Lote_Cliente_Reemplazo(ByVal pIdStock As Integer,
+                                                                     ByVal pIdPedidoEnc As Integer,
+                                                                     ByRef lConnection As SqlConnection,
+                                                                     ByRef ltransaction As SqlTransaction) As Boolean
+        Try
+            If pIdStock <= 0 OrElse pIdPedidoEnc <= 0 Then
+                Return True
+            End If
+
+            Dim vIdCliente As Integer = clsLnTrans_pe_enc.GetIdCliente(pIdPedidoEnc, lConnection, ltransaction)
+            If vIdCliente <= 0 Then
+                Return True
+            End If
+
+            '#EJC20260602_KILLIOS_REEMPLAZO_LOTE_CLIENTE: Carol, esto es el candado de confirmación.
+            'Aunque una HH vieja o una carrera de datos mande el IdStock, el reemplazo no continúa si el lote ya no aplica al cliente.
+            Const vSQL As String = "
+                SELECT CASE
+                    WHEN NOT EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes cl ON cl.IdCliente = @IdCliente
+                            AND ISNULL(cl.activo, 0) = 1
+                            AND ISNULL(cl.bloquear, 0) = 1
+                            AND cl.IdProducto = p.IdProducto
+                            AND ISNULL(cl.IdProductoEstado, 0) = s.IdProductoEstado
+                            AND ISNULL(cl.Lote, '') = ISNULL(s.lote, '')
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes clp ON clp.IdCliente = @IdCliente
+                            AND ISNULL(clp.activo, 0) = 1
+                            AND ISNULL(clp.bloquear, 0) = 0
+                            AND clp.IdProducto = p.IdProducto
+                            AND ISNULL(clp.IdProductoEstado, 0) = s.IdProductoEstado
+                        WHERE s.IdStock = @IdStock
+                    )
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM stock s
+                        INNER JOIN producto_bodega pb ON pb.IdProductoBodega = s.IdProductoBodega
+                        INNER JOIN producto p ON p.IdProducto = pb.IdProducto
+                        INNER JOIN cliente_lotes clp ON clp.IdCliente = @IdCliente
+                            AND ISNULL(clp.activo, 0) = 1
+                            AND ISNULL(clp.bloquear, 0) = 0
+                            AND clp.IdProducto = p.IdProducto
+                            AND ISNULL(clp.IdProductoEstado, 0) = s.IdProductoEstado
+                            AND ISNULL(clp.Lote, '') = ISNULL(s.lote, '')
+                        WHERE s.IdStock = @IdStock
+                    ) THEN 0
+                    ELSE 1
+                END"
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, ltransaction) With {.CommandType = CommandType.Text}
+                lCommand.Parameters.AddWithValue("@IdStock", pIdStock)
+                lCommand.Parameters.AddWithValue("@IdCliente", vIdCliente)
+                Return Convert.ToBoolean(lCommand.ExecuteScalar())
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Function
+
     ' #AT 20220103 Devuelve el stock sin agrupar en dependencia a los parametros enviados desde la hh
     Public Shared Function Get_Stock_Para_Reserva(ByRef pBeStockRes As clsBeStock_res,
                                                  ByRef lConnection As SqlConnection,
@@ -6830,6 +6948,12 @@ Partial Public Class clsLnStock
                     and stock.idubicacion=@idubicacion 
                     and cast(stock.fecha_vence as date) = @fechavence "
 
+            '#EJC20260603_KILLIOS_REEMPLAZO_VERIF_OWNER: cuando viene propietario de contexto,
+            'filtrar stock por propietario para evitar mezcla cross-owner en reemplazo.
+            If pBeStockRes.IdPropietarioBodega > 0 Then
+                vSql += " and stock.IdPropietarioBodega = @IdPropietarioBodega "
+            End If
+
             If pBeStockRes.Lic_plate.Equals("-") Then
                 vSql += " and (stock.lic_plate is null or stock.lic_plate = '')"
             Else
@@ -6862,6 +6986,9 @@ Partial Public Class clsLnStock
                 lCommand.Parameters.AddWithValue("@fechavence", pBeStockRes.Fecha_vence.Date)
                 lCommand.Parameters.AddWithValue("@Lote", pBeStockRes.Lote)
                 lCommand.Parameters.AddWithValue("@LicPlate", pBeStockRes.Lic_plate)
+                If pBeStockRes.IdPropietarioBodega > 0 Then
+                    lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pBeStockRes.IdPropietarioBodega)
+                End If
 
                 If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                     If pBeStockRes.IdPresentacion <> 0 Then
@@ -13040,7 +13167,8 @@ Por favor reportar este problema a DevOps."
                                                        pBeConfigEnc,
                                                        lConnection,
                                                        lTransaction,
-                                                       False)
+                                                       False,
+                                                       vIdCliente)
                 pasos = 9
                 lTransaction.Commit()
                 pasos = 10
@@ -16152,9 +16280,50 @@ Por favor reportar este problema a DevOps."
 
     End Function
 
+    ''' <summary>
+    ''' #EJC20260602_STOCK_POR_LOTE_DATASET
+    ''' Obtiene en un solo roundtrip: detalle, riesgo de vencimiento, top SKU y utilizable/no utilizable.
+    ''' </summary>
+    Public Shared Function Get_Reporte_Stock_Dataset(ByVal pIdBodega As Integer,
+                                                     ByVal pIdPropietarioBodega As Integer,
+                                                     ByVal ExcluirSinExistencia As Boolean) As DataSet
+
+        Get_Reporte_Stock_Dataset = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lCommand As New SqlCommand("sp_reporte_stock_por_lote_dataset", lConnection)
+                    lCommand.CommandType = CommandType.StoredProcedure
+                    lCommand.CommandTimeout = 0
+                    lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                    lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                    lCommand.Parameters.AddWithValue("@ExcluirSinExistencia", ExcluirSinExistencia)
+
+                    Using lDataAdapter As New SqlDataAdapter(lCommand)
+                        Dim lDataSet As New DataSet()
+                        lDataAdapter.Fill(lDataSet)
+                        If lDataSet IsNot Nothing AndAlso lDataSet.Tables.Count > 0 Then
+                            Return lDataSet
+                        End If
+                    End Using
+
+                End Using
+
+                lConnection.Close()
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Get_Reporte_Stock_By_IdBodega_And_IdUbicacion(ByVal pIdBodega As Integer,
-                                                                         ByVal pIdUbicacion As Integer,
-                                                                         ByVal ExcluirSinExistencia As Boolean) As DataTable
+                                                                          ByVal pIdUbicacion As Integer,
+                                                                          ByVal ExcluirSinExistencia As Boolean) As DataTable
 
         Get_Reporte_Stock_By_IdBodega_And_IdUbicacion = Nothing
 
@@ -16399,7 +16568,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function Guardar_Stock_Ajuste_Positivo(ByVal pObjStock As clsBeStock,
                                                          ByRef lConnection As SqlConnection,
                                                          ByRef lTransaction As SqlTransaction) As Boolean
@@ -16416,7 +16584,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer) As clsBeStock
 
         GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet = Nothing
@@ -16467,7 +16634,6 @@ Por favor reportar este problema a DevOps."
         End Try
 
     End Function
-
     Public Shared Function GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal IdRecepcionEnc As Integer, ByVal IdRecepcionDet As Integer,
                                                                           Optional ByVal pConnection As SqlConnection = Nothing,
                                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeStock
