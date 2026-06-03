@@ -644,6 +644,7 @@ Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
+
     Public Shared Function InsertarDetalleOrdenCompra(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                       navPedidoCompraDet As clsBeI_nav_ped_compra_det,
                                                       BeProductoBodega As clsBeProducto_bodega,
@@ -730,68 +731,72 @@ Public Class clsLnI_nav_ped_compra_enc
                         Dim BeStock As New clsBeStock
                         Dim loteDouble As Double = 0
                         Dim loteEntero As Integer = 0
+                        Dim lFiltroPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
 
-                        Dim vCodigoProducto As String = If(navPedidoCompraDet.No, "").Trim().ToUpperInvariant()
-                        Dim vCodigoTalla As String = If(navPedidoCompraDet.Size, "").Trim().ToUpperInvariant()
-                        Dim vCodigoColor As String = If(navPedidoCompraDet.Color, "").Trim().ToUpperInvariant()
+                        'talla_color
+                        If BeConfigEnc.Control_lote Then
 
-                        Dim lFiltroPickingUbic As List(Of clsBeTrans_picking_ubic)
+                            Dim vCodigoProducto As String = If(navPedidoCompraDet.No, "").Trim().ToUpperInvariant()
+                            Dim vCodigoTalla As String = If(navPedidoCompraDet.Size, "").Trim().ToUpperInvariant()
+                            Dim vCodigoColor As String = If(navPedidoCompraDet.Color, "").Trim().ToUpperInvariant()
 
-                        If pControlTallaColor Then
-                            '#EJC20260603_FIX_REC_TRASLADO_TC: filtro por bodega con control talla/color.
-                            'Incluye fallback para historial con No_Linea=0.
-                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
+                            Dim lFiltroPickingUbic As List(Of clsBeTrans_picking_ubic)
+
+                            If pControlTallaColor Then
+                                '#EJC20260603_FIX_REC_TRASLADO_TC: filtro por bodega con control talla/color.
+                                'Incluye fallback para historial con No_Linea=0.
+                                lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
                                                                                 If(x.CodigoProducto, "").Trim().ToUpperInvariant() = vCodigoProducto AndAlso
                                                                                 If(x.Codigo_Talla, "").Trim().ToUpperInvariant() = vCodigoTalla AndAlso
                                                                                 If(x.Codigo_Color, "").Trim().ToUpperInvariant() = vCodigoColor AndAlso
                                                                                 (x.No_Linea = navPedidoCompraDet.Line_No OrElse x.No_Linea = 0))).ToList()
-                        Else
-                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
+                            Else
+                                lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
                                                                                 If(x.CodigoProducto, "").Trim().ToUpperInvariant() = vCodigoProducto AndAlso
                                                                                 (x.No_Linea = navPedidoCompraDet.Line_No OrElse x.No_Linea = 0))).ToList()
+                            End If
+
+                            For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
+
+                                BeOcDetLote = New clsBeTrans_oc_det_lote
+                                BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet
+                                BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
+                                BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
+                                BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada
+                                BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea
+                                BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
+                                BeOcDetLote.Lote = BePickingUbic.Lote
+                                BeOcDetLote.Lic_Plate = BePickingUbic.Lic_plate
+                                BeOcDetLote.Cantidad_recibida = 0
+                                BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_Producto
+                                BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_Vence
+                                BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion
+                                BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
+                                BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
+                                BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
+                                BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
+                                BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
+                                BeOcDetLote.Color = BePickingUbic.Codigo_Color
+                                BeOcDetLote.Activo = True
+                                BeOcDetLote.User_agr = BePedidoCompraDet.User_agr
+                                BeOcDetLote.User_mod = BePedidoCompraDet.User_mod
+                                clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
+
+                                lMaxIdLoteDet += 1
+
+                            Next
+
                         End If
-
-                        For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
-
-                            BeOcDetLote = New clsBeTrans_oc_det_lote
-                            BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet
-                            BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
-                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-                            BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada
-                            BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea
-                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
-                            BeOcDetLote.Lote = BePickingUbic.Lote
-                            BeOcDetLote.Lic_Plate = BePickingUbic.Lic_plate
-                            BeOcDetLote.Cantidad_recibida = 0
-                            BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_Producto
-                            BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_Vence
-                            BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion
-                            BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
-                            BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
-                            BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
-                            BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
-                            BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
-                            BeOcDetLote.Color = BePickingUbic.Codigo_Color
-                            BeOcDetLote.Activo = True
-                            BeOcDetLote.User_agr = BePedidoCompraDet.User_agr
-                            BeOcDetLote.User_mod = BePedidoCompraDet.User_mod
-                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
-
-                            lMaxIdLoteDet += 1
-
-                        Next
 
                     End If
 
+                    vContadorLineasDetInsertadas += 1
+
+                    Return True
+
                 End If
 
-                vContadorLineasDetInsertadas += 1
-
-                Return True
-
-            End If
-
-            Return False
+                Return False
 
         Catch ex As Exception
             Dim vMsgEx3 As String = String.Format("Error al insertar desde ws a intermedia: {0}{1}{2}", ex.Message, ex.Source, vbNewLine)
