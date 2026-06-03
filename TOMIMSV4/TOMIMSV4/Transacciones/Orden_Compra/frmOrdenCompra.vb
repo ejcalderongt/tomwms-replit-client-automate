@@ -33,6 +33,16 @@ Public Class frmOrdenCompra
     Public Property InvokeListarPedidosCompra As Listar_Pedidos_Compra
     Private lProductoKitComposicion As New List(Of clsBeProducto_kit_composicion)
     Public Property InvokeCargarPedidoCompra As Action(Of Integer)
+    '#EJC20260602_DELEGADOS_OC_RECEPCION: puente seguro para refrescar listado OC desde recepción hija.
+    Private Sub Refrescar_Lista_OC_Desde_Recepcion()
+        Try
+            If InvokeListarPedidosCompra IsNot Nothing Then
+                InvokeListarPedidosCompra.Invoke()
+            End If
+        Catch ex As Exception
+            ' #EJC20260602_DELEGADOS_OC_RECEPCION: best-effort, no bloquear recepcion.
+        End Try
+    End Sub
 
     'GT 26012021 gestión del IdTicket para cargar Duca desde TMS_TICKET
     Public gBeTmsTicket_pol As New clsBeTms_ticket_pol
@@ -1059,7 +1069,8 @@ Public Class frmOrdenCompra
                 .pIdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc,
                 .IdBodega = cmbBodega.EditValue,
                 .pIdPropietarioBodega = lcmbPropietario.EditValue,
-                .IdOperadorBodegaDefecto = IdOperadorDefecto}
+                .IdOperadorBodegaDefecto = IdOperadorDefecto,
+                .Listar = AddressOf Refrescar_Lista_OC_Desde_Recepcion}
 
             '#EJC20210613: Compartir el objeto a priori.
             Rec.gBeOrdenCompra = gBeOrdenCompra.Clone()
@@ -3116,7 +3127,8 @@ Public Class frmOrdenCompra
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdEncRec, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView6.OptionsPrint.ExpandAllDetails = True
             GridView6.OptionsPrint.PrintDetails = True
 
@@ -3163,7 +3175,6 @@ Public Class frmOrdenCompra
             clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -4997,6 +5008,7 @@ Public Class frmOrdenCompra
     End Sub
     Private Sub frmOrdenCompra2_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Dim watch As Stopwatch = Stopwatch.StartNew()
 
         Try
@@ -5626,6 +5638,9 @@ Public Class frmOrdenCompra
     End Sub
 
     Private Sub GridView5_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView5.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -8317,6 +8332,7 @@ MessageBoxButtons.YesNo,
                     .Modo = frmRecepcion.TipoTrans.Editar
                     .MdiParent = MdiParent
                     .gBeRecepcionEnc = gBeRecepcion
+                    .Listar = AddressOf Refrescar_Lista_OC_Desde_Recepcion
 
                     If OpcionesMenu IsNot Nothing Then
                         .OpcionesMenu = OpcionesMenu
@@ -9039,3 +9055,7 @@ MessageBoxButtons.YesNo,
     End Sub
 
 End Class
+
+
+
+

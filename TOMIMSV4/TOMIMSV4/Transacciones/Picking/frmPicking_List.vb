@@ -205,7 +205,8 @@ Public Class frmPicking_List
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -238,7 +239,6 @@ Public Class frmPicking_List
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -476,6 +476,7 @@ Public Class frmPicking_List
 
     Private Sub frmPicking_List_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         If AP.Bodega.Rango_Dias_Documentos > 0 Then
             dtpFechaDel.Value = Now.Date.AddDays(-(AP.Bodega.Rango_Dias_Documentos))
             dtpFechaAl.Value = Now.Date.AddDays(AP.Bodega.Rango_Dias_Documentos)
@@ -483,3 +484,6 @@ Public Class frmPicking_List
 
     End Sub
 End Class
+
+
+

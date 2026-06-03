@@ -45,7 +45,7 @@ namespace WMS.StockReservation.Strategies
 
             _logger.LogCheckpoint("#CASO_2_START");
 
-            var incompleteStock = context.StockListNonPickingZones
+            var incompleteStock = (context.StockListNonPickingZones ?? Enumerable.Empty<clsBeStock>())
                 .Where(s => !s.Pallet_Completo &&
                            !s.UbicacionPicking &&
                            s.UbicacionNivel > 0 &&

@@ -136,6 +136,7 @@ Public Class frmEstacionalidadProducto
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20191205: Un año debería ser el máximo
             'Pensar si hace sentido conocer vencimientos a mas de un año.
             'Att Erik del pasado.
@@ -176,7 +177,8 @@ Public Class frmEstacionalidadProducto
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -220,7 +222,6 @@ Public Class frmEstacionalidadProducto
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -236,3 +237,7 @@ Public Class frmEstacionalidadProducto
     End Sub
 
 End Class
+
+
+
+

@@ -1,4 +1,4 @@
-﻿Imports System.Threading.Tasks
+Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -98,6 +98,7 @@ Public Class frmPendientesRequisicion
     End Sub
 
     Private Sub frmPendientesRequisicion_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Listar_Productos_Pendientes_Requisicion()
     End Sub
 
@@ -112,7 +113,8 @@ Public Class frmPendientesRequisicion
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(DgridProdPendRequi, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             grdvProductosPendientesRequi.OptionsPrint.ExpandAllDetails = True
             grdvProductosPendientesRequi.OptionsPrint.PrintDetails = True
 
@@ -156,7 +158,6 @@ Public Class frmPendientesRequisicion
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -176,6 +177,9 @@ Public Class frmPendientesRequisicion
     End Sub
 
     Private Sub grdvProductosPendientesRequi_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles grdvProductosPendientesRequi.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -218,3 +222,6 @@ Public Class frmPendientesRequisicion
 
     End Sub
 End Class
+
+
+

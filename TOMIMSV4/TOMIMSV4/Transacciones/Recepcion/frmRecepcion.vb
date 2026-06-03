@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+Imports System.ComponentModel
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
@@ -7031,6 +7031,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     End Class
     Private Sub GrdOperadorBobega_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GrdOperadorBobega.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             Dim View1 As GridView = sender
@@ -8077,6 +8080,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     Private Sub frmRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Cargando = True
         Cargar_Recepcion(False)
         Cargando = False
@@ -12532,6 +12536,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     Private Sub gvDetalleRec2_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gvDetalleRec2.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             '#EJC202402130656: Deshabilitar la fila si ya fue creada.
@@ -13031,3 +13038,4 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     End Sub
 
 End Class
+

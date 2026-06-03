@@ -2967,9 +2967,12 @@ Partial Public Class clsLnStock
             Else
 
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
-                SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
+                '#EJC20260602_STOCK_FECHA: Para stock en una fecha se puede incluir despacho cuando así se requiera.
+                If Not pProducto.IncluirUbicacionesDespacho Then
+                    SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
 							                        FROM  bodega_ubicacion AS bodega_ubicacion 
 								                    WHERE (ubicacion_despacho = 1 and IdBodega=@IdBodega))"
+                End If
             End If
 
             If pIdUbicacion = 0 Then
@@ -16268,9 +16271,50 @@ Por favor reportar este problema a DevOps."
 
     End Function
 
+    ''' <summary>
+    ''' #EJC20260602_STOCK_POR_LOTE_DATASET
+    ''' Obtiene en un solo roundtrip: detalle, riesgo de vencimiento, top SKU y utilizable/no utilizable.
+    ''' </summary>
+    Public Shared Function Get_Reporte_Stock_Dataset(ByVal pIdBodega As Integer,
+                                                     ByVal pIdPropietarioBodega As Integer,
+                                                     ByVal ExcluirSinExistencia As Boolean) As DataSet
+
+        Get_Reporte_Stock_Dataset = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lCommand As New SqlCommand("sp_reporte_stock_por_lote_dataset", lConnection)
+                    lCommand.CommandType = CommandType.StoredProcedure
+                    lCommand.CommandTimeout = 0
+                    lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                    lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                    lCommand.Parameters.AddWithValue("@ExcluirSinExistencia", ExcluirSinExistencia)
+
+                    Using lDataAdapter As New SqlDataAdapter(lCommand)
+                        Dim lDataSet As New DataSet()
+                        lDataAdapter.Fill(lDataSet)
+                        If lDataSet IsNot Nothing AndAlso lDataSet.Tables.Count > 0 Then
+                            Return lDataSet
+                        End If
+                    End Using
+
+                End Using
+
+                lConnection.Close()
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Get_Reporte_Stock_By_IdBodega_And_IdUbicacion(ByVal pIdBodega As Integer,
-                                                                         ByVal pIdUbicacion As Integer,
-                                                                         ByVal ExcluirSinExistencia As Boolean) As DataTable
+                                                                          ByVal pIdUbicacion As Integer,
+                                                                          ByVal ExcluirSinExistencia As Boolean) As DataTable
 
         Get_Reporte_Stock_By_IdBodega_And_IdUbicacion = Nothing
 

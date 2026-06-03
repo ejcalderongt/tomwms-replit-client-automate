@@ -30,8 +30,10 @@ Public Class frmDespacho
 
     Public Delegate Sub Cargar_Despacho_Pedido()
     Public Delegate Sub Actualizar_Stock_Reservado_En_Pedido()
+    Public Delegate Sub ListarPedidos()
     Public Property InvokeGetDespachoEnPedido As Cargar_Despacho_Pedido
     Public Property InvokeActualizarStockReservadoEnPedido As Actualizar_Stock_Reservado_En_Pedido
+    Public Property InvokeListarPedidos As ListarPedidos
 
     Private DTVehiculos As New DataTable
     Private pNuevoVehiculo As New clsBeEmpresa_transporte_vehiculos
@@ -60,6 +62,59 @@ Public Class frmDespacho
 
     Public Property Modo As TipoTrans
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
+
+    '#EJC20260602_DELEGADOS_DESPACHO: notificación central para refrescar pedido/listados desde una sola ruta segura.
+    Private Sub Notificar_Cambios_Despacho(Optional ByVal pRefrescarListaDespacho As Boolean = True,
+                                           Optional ByVal pRefrescarPedido As Boolean = True,
+                                           Optional ByVal pRefrescarListaPedidos As Boolean = True,
+                                           Optional ByVal pRefrescarDespachoEnPedido As Boolean = True,
+                                           Optional ByVal pRefrescarStockReservadoPedido As Boolean = True)
+
+        Try
+
+            If pRefrescarListaDespacho AndAlso InvokeListarDespacho IsNot Nothing Then
+                InvokeListarDespacho.Invoke()
+            End If
+
+            If pRefrescarDespachoEnPedido AndAlso InvokeGetDespachoEnPedido IsNot Nothing Then
+                InvokeGetDespachoEnPedido.Invoke()
+            End If
+
+            If pRefrescarStockReservadoPedido AndAlso InvokeActualizarStockReservadoEnPedido IsNot Nothing Then
+                InvokeActualizarStockReservadoEnPedido.Invoke()
+            End If
+
+            If pRefrescarPedido Then
+
+                If InvokeCargarObjetoPedido IsNot Nothing Then
+                    InvokeCargarObjetoPedido.Invoke()
+                End If
+
+                If InvokeCargarPedido IsNot Nothing Then
+
+                    Dim clsTrans As New clsTransaccion
+
+                    Try
+                        clsTrans.Begin_Transaction()
+                        InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
+                        clsTrans.Commit_Transaction()
+                    Catch ex As Exception
+                        clsTrans.RollBack_Transaction()
+                    End Try
+
+                End If
+
+            End If
+
+            If pRefrescarListaPedidos AndAlso InvokeListarPedidos IsNot Nothing Then
+                InvokeListarPedidos.Invoke()
+            End If
+
+        Catch ex As Exception
+            ' #EJC20260602_DELEGADOS_DESPACHO: notify best-effort para no interrumpir cierres de despacho.
+        End Try
+
+    End Sub
 
     Public Sub New(ByVal pModo As TipoTrans)
         InitializeComponent()
@@ -433,42 +488,11 @@ Public Class frmDespacho
 
                             SplashScreenManager.CloseForm(False)
 
-                            '#EJC20220726: Actualiza el listado de despacho.
-                            If Not InvokeListarDespacho Is Nothing Then
-                                InvokeListarDespacho.Invoke()
-                            End If
-
-                            '#EJC20210912: Actualiza el número de despacho en el pedido.
-                            If Not InvokeGetDespachoEnPedido Is Nothing Then
-                                InvokeGetDespachoEnPedido.Invoke()
-                            End If
-
-                            '#EJC20220726: Actualizar el stock reservado en el pedido, si el despacho se invocó 
-                            'desde la pantalla de pedido.
-                            If Not InvokeActualizarStockReservadoEnPedido Is Nothing Then
-                                InvokeActualizarStockReservadoEnPedido.Invoke()
-                            End If
-
-                            If Not InvokeCargarObjetoPedido Is Nothing Then
-                                InvokeCargarObjetoPedido.Invoke()
-                            End If
-
-                            If Not InvokeCargarPedido Is Nothing Then
-
-                                Dim clsTrans As New clsTransaccion
-
-                                Try
-
-                                    clsTrans.Begin_Transaction()
-                                    InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
-                                    clsTrans.Commit_Transaction()
-
-                                Catch ex As Exception
-                                    clsTrans.RollBack_Transaction()
-                                    'ejc, ambiente controlado, no disparar fuegos artificiales.
-                                End Try
-
-                            End If
+                            Notificar_Cambios_Despacho(pRefrescarListaDespacho:=True,
+                                                       pRefrescarPedido:=True,
+                                                       pRefrescarListaPedidos:=True,
+                                                       pRefrescarDespachoEnPedido:=True,
+                                                       pRefrescarStockReservadoPedido:=True)
 
                             Close()
 
@@ -1105,7 +1129,11 @@ Public Class frmDespacho
 
                 XtraMessageBox.Show("Se actualizó el Despacho.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                If Not InvokeListarDespacho Is Nothing Then InvokeListarDespacho.Invoke
+                Notificar_Cambios_Despacho(pRefrescarListaDespacho:=True,
+                                           pRefrescarPedido:=True,
+                                           pRefrescarListaPedidos:=True,
+                                           pRefrescarDespachoEnPedido:=True,
+                                           pRefrescarStockReservadoPedido:=True)
 
                 Close()
 
@@ -1132,7 +1160,11 @@ Public Class frmDespacho
                 If clsLnTrans_despacho_enc.Anular_Despacho(BeDespachoEnc.IdDespachoEnc) Then
                     SplashScreenManager.CloseForm(False)
                     XtraMessageBox.Show("Se anuló el Despacho", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    InvokeListarDespacho.Invoke
+                    Notificar_Cambios_Despacho(pRefrescarListaDespacho:=True,
+                                               pRefrescarPedido:=True,
+                                               pRefrescarListaPedidos:=True,
+                                               pRefrescarDespachoEnPedido:=True,
+                                               pRefrescarStockReservadoPedido:=True)
                     Close()
                 Else
                     SplashScreenManager.CloseForm(False)
@@ -2598,6 +2630,9 @@ Public Class frmDespacho
 
     Private Sub grdvPickingUbic_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles grdvPickingUbic.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         If e.Column.FieldName = "Cant_Pendiente" Then
 
             Dim View As GridView = sender
@@ -2896,6 +2931,7 @@ Public Class frmDespacho
 
     Private Sub frmDespacho_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Dim hora_server As DateTime
         grdListaDespacho.Rows.Clear()
         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
@@ -3332,35 +3368,11 @@ Public Class frmDespacho
                         Generar_Reporte_Packing()
                     End If
 
-                    If Not InvokeListarDespacho Is Nothing Then
-                        InvokeListarDespacho.Invoke
-                    End If
-
-                    '#EJC20210912: Actualiza el número de despacho en el pedido.
-                    If Not InvokeGetDespachoEnPedido Is Nothing Then
-                        InvokeGetDespachoEnPedido.Invoke
-                    End If
-
-                    If Not InvokeCargarObjetoPedido Is Nothing Then
-                        InvokeCargarObjetoPedido.Invoke()
-                    End If
-
-                    If Not InvokeCargarPedido Is Nothing Then
-
-                        Dim clsTrans As New clsTransaccion
-
-                        Try
-
-                            clsTrans.Begin_Transaction()
-                            InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
-                            clsTrans.Commit_Transaction()
-
-                        Catch ex As Exception
-                            clsTrans.RollBack_Transaction()
-                            'ejc, ambiente controlado, no disparar fuegos artificiales.
-                        End Try
-
-                    End If
+                    Notificar_Cambios_Despacho(pRefrescarListaDespacho:=True,
+                                               pRefrescarPedido:=True,
+                                               pRefrescarListaPedidos:=True,
+                                               pRefrescarDespachoEnPedido:=True,
+                                               pRefrescarStockReservadoPedido:=True)
 
                     Close()
 
@@ -4239,3 +4251,4 @@ Public Class frmDespacho
     End Function
 
 End Class
+

@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.IO
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -847,13 +847,12 @@ Public Class frmRegularizarInventario
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
 
-        Dim reportHeader As String = vbNewLine & "Reporte de Invetario Cíclico"
-
-        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Center)
-        e.Graph.Font = New Font("Tahoma", 12, FontStyle.Bold)
-
-        Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 70)
-        e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+        '#EJC20260602_PRINT_HELPER:
+        'Cabecera base homologada para reportes de vista.
+        clsUiPrintHelper.DrawStandardHeader(e,
+                                            "Reporte de Inventario Ciclico",
+                                            String.Format("Inventario: {0}", gBeInventario.Idinventarioenc),
+                                            AP.NomBodega)
 
     End Sub
 
@@ -866,6 +865,9 @@ Public Class frmRegularizarInventario
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
         Try
 
             Dim View As GridView = sender
@@ -953,6 +955,12 @@ Public Class frmRegularizarInventario
                 Case TipoTrans.Editar
 
             End Select
+
+            '#EJC20260602_GRID_COPY_HELPER:
+            'Habilita menu contextual para copiar valores en grids de consulta.
+            clsUiGridCopyHelper.Attach(GridView1, "Copiar")
+            clsUiGridCopyHelper.Attach(GridView2, "Copiar")
+            clsUiGridCopyHelper.Attach(GridViewRegularizado, "Copiar")
 
         Catch ex As Exception
 

@@ -147,7 +147,8 @@ Public Class frmValorizacionStock
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdValorizacionStock, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -191,7 +192,6 @@ Public Class frmValorizacionStock
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -285,6 +285,7 @@ Public Class frmValorizacionStock
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             'GT15032022_1709: se omite porque al cargar, lanza una consulta no útil a la primera bodega con el primer
             'propietario seteado
             'Cargar_Datos()
@@ -507,3 +508,6 @@ Public Class frmValorizacionStock
     End Sub
 
 End Class
+
+
+

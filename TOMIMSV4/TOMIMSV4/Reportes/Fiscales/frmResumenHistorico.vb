@@ -41,6 +41,7 @@ Public Class frmResumenHistorico
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             IsLoading = True
             IMS.ListarRegimen(cmbRegimen)
             AP.Listar_Bodegas_By_Usuario(cmbBodega)
@@ -292,7 +293,8 @@ Public Class frmResumenHistorico
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistenciasConLp, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -333,7 +335,6 @@ Public Class frmResumenHistorico
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -412,3 +413,6 @@ Public Class frmResumenHistorico
 
     End Sub
 End Class
+
+
+

@@ -73,6 +73,7 @@ Public Class frmStockResJornadaMerca
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             IMS.ListarRegimen(cmbRegimen)
             SetDatataTable2()
 
