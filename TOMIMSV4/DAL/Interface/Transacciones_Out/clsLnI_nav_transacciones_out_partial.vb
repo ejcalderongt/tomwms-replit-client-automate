@@ -509,7 +509,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                     '#EJC20240924: La cumbre, interface SAP, despachos parciales.
                     If BeConfigEnc.Interface_SAP Then
                         '#EJC20250609: Validar si no afecta esta condición en la cumbre.
-                        vEnviado = BePedidoEnc.Enviado_A_ERP
+                        '#CKFK20260602 En el caso de MAMPA vimos que para los parciales esta variable debe 
+                        'quedar en falso y la validación la hacemos arriba.
+                        'vEnviado = BePedidoEnc.Enviado_A_ERP
 
                         '#EJC20251010: Si ya tiene no_picking_erp = transferencia_sap (para Killios), entonces actualizo el no_picking_erp vacío.
                         'para que se pueda enviar nuevamente por la interface.
