@@ -34,18 +34,37 @@ Public Class clsLnTrans_ajuste_det
                 .lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), "", dr.Item("lic_plate"))
                 .referencia_ajuste_erp = IIf(IsDBNull(dr.Item("referencia_ajuste_erp")), "", dr.Item("referencia_ajuste_erp"))
                 .estado_ajuste_erp = IIf(IsDBNull(dr.Item("estado_ajuste_erp")), False, dr.Item("estado_ajuste_erp"))
-                .IdProductoTallaColor_origen = IIf(IsDBNull(dr.Item("IdProductoTallaColor_origen")), 0, dr.Item("IdProductoTallaColor_origen"))
-                .Talla_origen = IIf(IsDBNull(dr.Item("Talla_origen")), "", dr.Item("Talla_origen"))
-                .Color_origen = IIf(IsDBNull(dr.Item("Color_origen")), "", dr.Item("Color_origen"))
+                ' #EJC20260603_FIX_AJUSTE_GRID_CARGA: tolerar esquemas sin columnas nuevas para evitar que falle la carga del grid.
+                If dr.Table.Columns.Contains("IdProductoTallaColor_origen") Then
+                    .IdProductoTallaColor_origen = IIf(IsDBNull(dr.Item("IdProductoTallaColor_origen")), 0, dr.Item("IdProductoTallaColor_origen"))
+                End If
+                If dr.Table.Columns.Contains("Talla_origen") Then
+                    .Talla_origen = IIf(IsDBNull(dr.Item("Talla_origen")), "", dr.Item("Talla_origen"))
+                End If
+                If dr.Table.Columns.Contains("Color_origen") Then
+                    .Color_origen = IIf(IsDBNull(dr.Item("Color_origen")), "", dr.Item("Color_origen"))
+                End If
 
-                .IdProductoTallaColor_destino = IIf(IsDBNull(dr.Item("IdProductoTallaColor_destino")), 0, dr.Item("IdProductoTallaColor_destino"))
-                .Talla_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
-                .Color_destino = IIf(IsDBNull(dr.Item("Color_destino")), "", dr.Item("Color_destino"))
+                If dr.Table.Columns.Contains("IdProductoTallaColor_destino") Then
+                    .IdProductoTallaColor_destino = IIf(IsDBNull(dr.Item("IdProductoTallaColor_destino")), 0, dr.Item("IdProductoTallaColor_destino"))
+                End If
+                If dr.Table.Columns.Contains("Talla_destino") Then
+                    .Talla_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
+                End If
+                If dr.Table.Columns.Contains("Color_destino") Then
+                    .Color_destino = IIf(IsDBNull(dr.Item("Color_destino")), "", dr.Item("Color_destino"))
+                End If
 
                 '#FIX_v20_PROVEEDOR_PERSIST_2026-04-25
-                .IdProveedor = IIf(IsDBNull(dr.Item("idproveedor")), 0, dr.Item("idproveedor"))
-                .Codigo_Proveedor = IIf(IsDBNull(dr.Item("codigo_proveedor")), "", dr.Item("codigo_proveedor"))
-                .Nombre_Proveedor = IIf(IsDBNull(dr.Item("nombre_proveedor")), "", dr.Item("nombre_proveedor"))
+                If dr.Table.Columns.Contains("idproveedor") Then
+                    .IdProveedor = IIf(IsDBNull(dr.Item("idproveedor")), 0, dr.Item("idproveedor"))
+                End If
+                If dr.Table.Columns.Contains("codigo_proveedor") Then
+                    .Codigo_Proveedor = IIf(IsDBNull(dr.Item("codigo_proveedor")), "", dr.Item("codigo_proveedor"))
+                End If
+                If dr.Table.Columns.Contains("nombre_proveedor") Then
+                    .Nombre_Proveedor = IIf(IsDBNull(dr.Item("nombre_proveedor")), "", dr.Item("nombre_proveedor"))
+                End If
 
             End With
         Catch ex As Exception
@@ -237,7 +256,7 @@ Public Class clsLnTrans_ajuste_det
             If oBeTrans_ajuste_det.IdProductoTallaColor_destino > 0 Then
                 Upd.Add("IdProductoTallaColor_destino", "@IdProductoTallaColor_destino", DataType.Parametro)
                 Upd.Add("talla_destino", "@talla_destino", DataType.Parametro)
-                Upd.Add("color_destion", "@color_destion", DataType.Parametro)
+                Upd.Add("color_destino", "@color_destino", DataType.Parametro)
             End If
 
             Upd.Where("idajustedet = @idajustedet")
