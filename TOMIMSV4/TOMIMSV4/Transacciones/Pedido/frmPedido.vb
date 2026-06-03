@@ -13290,7 +13290,6 @@ Public Class frmPedido
                                                              Text,
                                                              MessageBoxButtons.YesNo,
                                                              MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-
                                         Nuevo_Despacho()
                                         Exit Sub
 

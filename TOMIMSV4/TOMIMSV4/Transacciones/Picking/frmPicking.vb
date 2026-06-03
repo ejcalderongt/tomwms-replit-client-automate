@@ -3401,6 +3401,29 @@ Public Class frmPicking
                                                   pRefrescarIdPickingEnPedido:=True,
                                                   pRefrescarListaPedidos:=True)
 
+                        '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                        If InvokeCargarObjetoPedido IsNot Nothing Then
+                            InvokeCargarObjetoPedido.Invoke
+                        End If
+
+                        '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                        If Not InvokeCargarPedido Is Nothing Then
+
+                            Dim clsTrans As New clsTransaccion
+
+                            Try
+
+                                clsTrans.Begin_Transaction()
+                                InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
+                                clsTrans.Commit_Transaction()
+
+                            Catch ex As Exception
+                                clsTrans.RollBack_Transaction()
+                                'ejc, ambiente controlado, no disparar fuegos artificiales.
+                            End Try
+
+                        End If
+
                         Close()
 
                     End If
@@ -5457,6 +5480,29 @@ Public Class frmPicking
                                               pRefrescarIdPickingEnPedido:=True,
                                               pRefrescarListaPedidos:=True)
 
+                    '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                    If InvokeCargarObjetoPedido IsNot Nothing Then
+                        InvokeCargarObjetoPedido.Invoke
+                    End If
+
+                    '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                    If Not InvokeCargarPedido Is Nothing Then
+
+                        Dim clsTrans As New clsTransaccion
+
+                        Try
+
+                            clsTrans.Begin_Transaction()
+                            InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
+                            clsTrans.Commit_Transaction()
+
+                        Catch ex As Exception
+                            clsTrans.RollBack_Transaction()
+                            'ejc, ambiente controlado, no disparar fuegos artificiales.
+                        End Try
+
+                    End If
+
                     If Modal Then
                         DialogResult = DialogResult.OK '#EJC20171021_0437PM: Cerrar forma después de procesar
                     Else
@@ -5475,6 +5521,29 @@ Public Class frmPicking
                                               pRefrescarPedido:=True,
                                               pRefrescarIdPickingEnPedido:=False,
                                               pRefrescarListaPedidos:=True)
+
+                    '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                    If InvokeCargarObjetoPedido IsNot Nothing Then
+                        InvokeCargarObjetoPedido.Invoke()
+                    End If
+
+                    '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
+                    If Not InvokeCargarPedido Is Nothing Then
+
+                        Dim clsTrans As New clsTransaccion
+
+                        Try
+
+                            clsTrans.Begin_Transaction()
+                            InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
+                            clsTrans.Commit_Transaction()
+
+                        Catch ex As Exception
+                            clsTrans.RollBack_Transaction()
+                            'ejc, ambiente controlado, no disparar fuegos artificiales.
+                        End Try
+
+                    End If
 
                     If Modal Then
                         DialogResult = DialogResult.OK '#EJC20171021_0437PM: Cerrar forma después de procesar
