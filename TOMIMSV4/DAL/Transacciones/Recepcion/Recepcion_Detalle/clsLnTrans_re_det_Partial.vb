@@ -2718,13 +2718,6 @@ Partial Public Class clsLnTrans_re_det
 
     End Function
 
-    ''' <summary>
-    ''' #EJC202209211314: Concurrencia y copias de stock.
-    ''' </summary>
-    ''' <param name="pListRecDet"></param>
-    ''' <param name="pListaStockRec"></param>
-    ''' <param name="lConnection"></param>
-    ''' <param name="lTransaction"></param>
     '#EJC20260527: Refactor — retorna Dictionary(idOrigen->idNuevo) para exponer de forma
     'explicita los IDENTITY generados al caller. Elimina dependencia implicita de efectos
     'secundarios y permite al caller verificar sincronizacion. Ambos branches (IsNew=True/False)

@@ -1714,7 +1714,7 @@ Partial Public Class clsLnTrans_picking_ubic
             If BeBodega.Control_Talla_Color Then
                 vSQL += " AND IdProductoTallaColor = @IdProductoTallaColor "
             Else
-                vSQL + = " AND (Lote = @Lote OR Lote IS NULL)   
+                vSQL += " AND (Lote = @Lote OR Lote IS NULL)   
                            AND ISNULL(CONVERT(DATE, fecha_vence), CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) "
             End If
 
@@ -4373,6 +4373,17 @@ Partial Public Class clsLnTrans_picking_ubic
         Try
 
             If Not Es_Transaccion_Remota Then lConnection.Open() : ltransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            '#EJC20260602: Releer dentro de transacción para blindar contra estado stale HH/BOF.
+            pBePickingUbic = Get_Single_By_IdStockRes_And_IdPickingEnc(pBePickingUbic.IdStockRes,
+                                                                       pBePickingUbic.IdPickingEnc,
+                                                                       pBePickingUbic.IdBodega,
+                                                                       IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
+                                                                       IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
+
+            If pBePickingUbic Is Nothing Then
+                Throw New Exception("ERROR_20260602_Marcar_Linea_No_Verificada: No se encontró la línea de picking con estado vigente.")
+            End If
 
             If (pBePickingUbic.Cantidad_despachada > 0) Then
                 pBePickingUbic.Cantidad_Verificada = pBePickingUbic.Cantidad_despachada

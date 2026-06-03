@@ -1,4 +1,120 @@
 notas:
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - incluir stock en despacho"
+    detalle: >
+      Ajuste en TOMIMSV4 para que el reporte Stock en una fecha pueda calcular
+      existencia actual considerando todo el stock (incluyendo ubicaciones
+      marcadas como despacho). Se agregó en clsBeStock el flag
+      IncluirUbicacionesDespacho (tag EJC20260602_STOCK_FECHA), se respeta en
+      clsLnStock.Get_Lista_Existencias_By_IdProductoBodega_And_DiasVencimiento
+      para no excluir ubicacion_despacho cuando aplica, y se activa en
+      frmStockEnUnaFecha/frmAnaliticaA.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - TRAS como salida"
+    detalle: >
+      Fix puntual en frmStockEnUnaFecha y frmAnaliticaA: el tipo de tarea TRAS
+      ahora suma a Salidas (igual que DESP) para la reconstrucción teórica de
+      la bodega origen. Corrige casos como bodega fiscal donde había RECE+TRAS
+      y la existencia teórica quedaba inflada (81 en vez de 0).
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - optimización de rendimiento"
+    detalle: >
+      Se aplicó optimización en 3 frentes: (1) se eliminó el patrón N+1 de
+      existencias en frmStockEnUnaFecha/frmAnaliticaA usando snapshot único de
+      VW_Stock_Res y diccionarios en memoria (con y sin estado), (2) en
+      clsLnTrans_movimientos se cambió el filtro por fecha a sargable
+      Fecha >= @FechaDel AND Fecha < @FechaAlExclusiva para métodos usados por
+      el reporte, y (3) se agregó script
+      tools/stock-en-fecha/001_optimize_stock_en_fecha.sql con índices de soporte
+      y SPs sugeridos para snapshot/movimientos del reporte.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - trazas de performance"
+    detalle: >
+      Se instrumentó frmStockEnUnaFecha.Generar_Reporte y Llena_Grid con
+      trazas por etapa (Get_Lista_Movimientos, consolidación, snapshot,
+      procesamiento de filas y cierre). Las trazas salen por Debug.Print y,
+      con modo depuración activo (Ctrl+D), también se guardan en
+      Application.StartupPath/Logs/StockEnFecha_Perf_yyyyMMdd.log para análisis
+      de cuellos de botella en ambiente operativo.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - mapper rápido movimientos"
+    detalle: >
+      Se creó clsLnVW_Movimientos.Cargar_StockEnFecha (sin Columns.Contains
+      por campo en columnas base del query) y se conectó en los dos overloads
+      de clsLnTrans_movimientos.Get_All_Movimientos_By_IdProducto usados por
+      Stock en una fecha, para reducir costo por fila en el llenado de la lista.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - consolidación O(n)"
+    detalle: >
+      En frmStockEnUnaFecha.Generar_Reporte se reemplazó la consolidación por
+      FindIndex repetido sobre RepMovEnUnaFecha (patrón O(n²)) por acumulación
+      en Dictionary claveado por codigo/estado/presentacion/um/lote/vence
+      (patrón O(n)). Se mantiene lista final para el flujo existente del grid.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE blindaje transaccional ingresos SAP"
+    detalle: >
+      Se aplico blindaje en SAPSYNCCUMBRE tomando como referencia el patron de
+      Killios: nuevo helper Clases/clsSAPTransaction.vb con tag
+      EJC20260602_SYNC_INGRESO_SAP, incluido en SAPSYNCCUMBRE.vbproj. En
+      Pedido_Compra/clsSyncSAPPedidoCompra.vb, Enviar_Entrada_Mercancia_OC_SAP
+      ahora abre transaccion SAP antes de crear entrada/actualizar-cerrar OC y
+      confirma solo al final; en error hace rollback SAP para evitar que SAP
+      quede con documento creado y TOMWMS como no enviado. En transferencia de
+      ingreso, Enviar_Solicitud_Traslado_SAP valida lineas WMS, valida DocEntry
+      creado con GetByKey antes de marcar i_nav_transacciones_out y usa la misma
+      transaccion SAP. Se documento humanamente en
+      brain/handoffs/2026-06-02-sapsynccumbre/SAPSYNCCUMBRE-FINE-TRACE-2026-06-02.md,
+      seccion 16. Se amplio la idempotencia de entrada: si
+      trans_re_oc.No_Erp_Docentry_Entrega ya tiene referencia, la interface hace
+      GetByKey en SAP y no vuelve a crear la entrada; al crear una entrada nueva
+      guarda No_Erp_Docentry_Entrega/No_Erp_Docnum_Entrega para futuros reintentos.
+      Para punto 3, en Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb se
+      blindo el caso 05 -> bodega destino: si vBodega_Destino tiene valor,
+      Enviar_Solicitud_Traslado_SAP es obligatorio, debe devolver DocEntry > 0
+      y debe quedar No_Pase en WMS; si no, se lanza error y rollback SAP/SQL.
+      El metodo destino tambien falla si no hay lineas, si SAP no valida
+      GetByKey o si no logra guardar DocNum/No_Pase. Pendiente: reconciliacion
+      historica cuando no exista DocEntry guardado y prueba en Visual Studio con
+      SAP DI API/DevExpress instalados.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE sync ingresos SAP via worker WMS"
+    detalle: >
+      Fase 1 aplicada localmente para parametrizar i_nav_config_enc.enviar_ingreso_sap_via_ws:
+      Entity clsBeI_nav_config_enc agrega Enviar_Ingreso_SAP_Via_WS, DAL clsLnI_nav_config_enc
+      lo carga/guarda con tag EJC20260602_SYNC_INGRESO_SAP, y frmConfiguracion queda
+      mapeado sin tocar Designer mediante CheckEdit futuro chkSapSyncEnviaIngresosAuto.
+      Script DDL canonico en repo DBA ejcalderongt/DBA: i_nav_config_enc agrega
+      enviar_ingreso_sap_via_ws e i_nav_sync_request crea tabla/indices para cola.
+      Fase 2 acordada: WS/BOF solo encola i_nav_sync_request y el worker WMS del servidor
+      ejecuta SAPSYNCCUMBRE/MI3_Sync tipo 5; HH no requiere cambio obligatorio.
+      Se agregaron Entity/DAL minimos para i_nav_sync_request bajo Interface/SyncRequest:
+      encolar si no hay activa, tomar siguiente pendiente, marcar procesando/finalizado/error/ignorado.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE fine-trace"
+    detalle: >
+      Se documento el workflow operativo de SAPSYNCCUMBRE en
+      brain/handoffs/2026-06-02-sapsynccumbre/SAPSYNCCUMBRE-FINE-TRACE-2026-06-02.md.
+      Hallazgo central: la interface WinForms/DI API no opera aislada; compila
+      hacia TOMIMSV4 y reutiliza Entity/DAL compartidos. SAP -> WMS usa campos
+      U_EnviadoWMS/U_Enviado_WMS=2 como pendientes, mapea documentos a i_nav_*
+      y consolida a trans_oc/trans_pe. WMS -> SAP sale desde i_nav_transacciones_out
+      agrupando ingresos, salidas, traslados, devoluciones y ajustes; al exito
+      marca enviados y guarda referencias externas. No exponer valores de Conn.ini.
+  - fecha: "2026-06-01"
+    area: "HH progress/cancel WS concurrency"
+    detalle: >
+      En TOMHH2025 se analizo el patron de progress.show/cancel/dismiss en
+      pantallas Java HH. El helper com.dts.base.ProgressDialog ya redirige
+      show/cancel/dismiss al hilo UI; el riesgo comun no es el dialog en si,
+      sino execws solapado con ws.callback mutable por pantalla y callbacks
+      tardios que cierran o reabren progress contra un estado mas nuevo. Areas
+      mas expuestas por volumen y entradas rapidas: Recepcion frm_recepcion_datos
+      y frm_list_rec_prod, CambioUbicacion frm_cambio_ubicacion_ciega,
+      Packing frm_Packing/frm_preparacion_packing, Picking frm_picking_datos/
+      frm_detalle_tareas_picking, Verificacion frm_detalle_tareas_verificacion/
+      frm_verificacion_datos. Mitigacion recomendada por pantalla: inFlight,
+      requestToken incremental, deshabilitar trigger durante WS y cerrar
+      progress en finally/catch solo si el token sigue vigente.
   - fecha: "2026-05-27"
     area: "RFID inventario fisico ILP"
     detalle: >
@@ -1073,3 +1189,13 @@ notas:
       el comportamiento por defecto y solo difiere asignar DataSource cuando
       Cargar_Datos procesa varios pedidos para asignarlo una vez al final.
       Toggle de traza: TOMWMS_PICKING_TRACE=0.
+  - fecha: "2026-06-02"
+    area: "BOF Stock en una fecha regularizacion inventario"
+    detalle: >
+      Fase 2 del reporte de stock en fecha para contemplar regularizaciones
+      intermedias de inventario ciclico. Se ajusto
+      dbo.usp_Reporte_StockEnFecha_Consolidado para incluir tipos de tarea de
+      reclasificacion por lote/vencimiento/estado (AJLOTE*/AJVENC*/CEST*), y se
+      robustecio el mapper clsLnVW_Movimientos.Cargar_StockEnFecha para mapear
+      Presentacion con/sin tilde y guardar TTarea desde TipoTarea. Se documento
+      la traza en tools/stock-en-fecha/STOCK_EN_FECHA_REGULARIZACION_TRACE_20260602.md.

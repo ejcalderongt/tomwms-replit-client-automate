@@ -1313,6 +1313,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         Dim BaseLine As Integer = 0
         Dim vTrasladoDocEntry1 As Double = 0
         Dim vTrasladoDocEntry2 As Double = 0
+        Dim clsTransSAP As clsSapTransaction = Nothing
 
         Try
 
@@ -1320,7 +1321,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
             Application.DoEvents()
 
-            If lRetCode <> 0 Then
+            If lErrCode <> 0 Then
 
                 If sErrMsg = " - The specified resource name cannot be found in the image file." Then
                     Throw New Exception("El servidor de SAP no respondió la solicitud de conexión: " & sErrMsg)
@@ -1344,6 +1345,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     NoLineaTransferLote = 0
 
                     clsTransaccion.Open_Connection() ': oCompany.StartTransaction()
+                    clsTransSAP = New clsSapTransaction(oCompany)
+                    clsTransSAP.BeginTransaction()
 
                     Dim vBodega_Destino As String = ""
                     Dim BePedidoEnc As New clsBeTrans_pe_enc
@@ -1359,16 +1362,14 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     If BePedidoEnc.Bodega_Destino <> "" Then
                         vBodega_Destino = BePedidoEnc.Bodega_Destino.Substring(0, 2)
                     Else
-                        clsPublic.Actualizar_Progreso(lblprg, String.Format("No está definida la bodega destino para el traslado: {0} ", BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino))
-                        Return False
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: No esta definida la bodega destino para el traslado: {0}.", BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino))
                     End If
 
                     '#EJC202412061544: EndPoint validación Mario Tabora.
                     Dim result As String = Validata_Productos_EndPointCumbre(lProductoAValidarEnSAP, vBodega_Destino)
 
                     If result.Contains("Error") Then
-                        clsPublic.Actualizar_Progreso(lblprg, String.Format("No se puede enviar el traslado: {0} ", result))
-                        Return False
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: No se puede enviar el traslado: {0}.", result))
                     End If
 
                     For j As Integer = 0 To oTransferRequest.Lines.Count - 1
@@ -1534,6 +1535,21 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                                                   oCompany,
                                                                                   lblprg,
                                                                                   prg)
+
+                                '#EJC20260602_SYNC_INGRESO_SAP: Carol, aqui la solicitud destino ya no es opcional.
+                                ' Cuando el pedido sale de 05 hacia otra bodega, el traslado fiscal no alcanza:
+                                ' necesitamos la solicitud a la bodega destino. Si no existe, se revierte el paquete.
+                                If vTrasladoDocEntry2 <= 0 Then
+                                    Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: No se genero la solicitud hacia bodega destino {0} para el despacho {1}.", vBodega_Destino, BeDespacho.IdDespachoEnc))
+                                End If
+
+                                Dim vNoPaseDestino As Integer = clsLnTrans_despacho_enc.Get_No_Pase_By_IdDespachoEnc(BeDespacho.IdDespachoEnc,
+                                                                                                                       clsTransaccion.lConnection,
+                                                                                                                       clsTransaccion.lTransaction)
+
+                                If vNoPaseDestino <= 0 Then
+                                    Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: Se genero DocEntry {0}, pero WMS no guardo No_Pase para el despacho {1}.", vTrasladoDocEntry2, BeDespacho.IdDespachoEnc))
+                                End If
                             End If
 
                             Dim IResult As Integer = clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(Lista_A_Actualizar)
@@ -1546,7 +1562,12 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     End If
 
+                    If Not vAgregarEntrega OrElse NoLineaTransfer <= 0 Then
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: No se generaron lineas para el traslado desde la solicitud SAP {0}.", _DocEntry))
+                    End If
+
                     clsTransaccion.Commit_Transaction()
+                    If clsTransSAP IsNot Nothing Then clsTransSAP.CommitTransaction()
 
                 End If
 
@@ -1557,6 +1578,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
         Catch errMsg As Exception
 
             clsTransaccion.RollBack_Transaction()
+            If clsTransSAP IsNot Nothing Then clsTransSAP.RollbackTransaction()
 
             clsPublic.Actualizar_Progreso(lblprg, errMsg.Message)
 
@@ -1667,6 +1689,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     vAgregarEntrega = True
 
+                Else
+                    Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: No hay lineas pendientes para generar la solicitud de traslado destino. Solicitud base: {0}", vTrasladoDocEntry))
                 End If
 
                 '#EJC20240629: DocEntry en solicitud intermedia.
@@ -1688,6 +1712,11 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                         Throw New Exception("No se pudo obtener el DocEntry del traslado generado.")
                     End If
 
+                    Dim oSolicitudCreada As StockTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oInventoryTransferRequest), StockTransfer)
+                    If Not oSolicitudCreada.GetByKey(vTrasladoDocEntry) Then
+                        Throw New Exception(String.Format("#ERROR_SAP_20260602_SOL_DEST: SAP devolvio DocEntry {0}, pero no se pudo validar la solicitud destino.", vTrasladoDocEntry))
+                    End If
+
                     Enviar_Solicitud_Traslado_SAP = vTrasladoDocEntry
 
                     Dim vMensaje As String = ""
@@ -1707,6 +1736,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     Catch ex As Exception
                         clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                        Throw
                     End Try
 
                 End If

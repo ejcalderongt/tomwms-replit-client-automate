@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+Imports System.ComponentModel
 Imports System.Data.SqlClient
 Imports System.Drawing.Drawing2D
 Imports System.IO
@@ -2617,6 +2617,9 @@ Public Class frmInventario
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gviewComparativo.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -6479,6 +6482,9 @@ Public Class frmInventario
 
     Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             If e.Column.FieldName = "PesoConteo" Then
@@ -7375,6 +7381,9 @@ Public Class frmInventario
     End Sub
 
     Private Sub GridView8_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView8.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         If e.Column.FieldName = "Cantidad" Then
 

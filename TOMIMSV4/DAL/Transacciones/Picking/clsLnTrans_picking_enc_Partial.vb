@@ -2993,6 +2993,47 @@ Partial Public Class clsLnTrans_picking_enc
         End Try
     End Function
 
+    ''' <summary>
+    ''' #EJC20260602_PRODUCTIVIDAD_PICKING_DASHBOARD:
+    ''' Dashboard de productividad de picking por bodega/rango en un solo roundtrip SQL.
+    ''' Tablas esperadas:
+    ''' 0=KPI, 1=Operador, 2=Tendencia, 3=TipoDocumento, 4=Detalle.
+    ''' </summary>
+    Public Shared Function Get_Rpt_Productividad_Picking_Dashboard_By_IdBodega(ByVal pFechaDel As Date,
+                                                                                ByVal pFechaAl As Date,
+                                                                                ByVal pIdBodega As Integer) As DataSet
+
+        Get_Rpt_Productividad_Picking_Dashboard_By_IdBodega = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                    Using lDataAdapter As New SqlDataAdapter("dbo.usp_wms_productividad_picking_dashboard_v1", lConnection)
+                        Dim lDs As New DataSet("DsProductividadPicking")
+                        lDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaAl", pFechaAl.Date)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDataAdapter.Fill(lDs)
+                        Get_Rpt_Productividad_Picking_Dashboard_By_IdBodega = lDs
+                    End Using
+
+                    lTransaction.Commit()
+                End Using
+
+                lConnection.Close()
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name, ex.Message))
+        End Try
+
+    End Function
+
     Public Shared Function Actualizar_Estado_Pendiente(ByVal IdPickingEnc As Integer, Optional ByRef pConection As SqlConnection = Nothing, Optional ByRef pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

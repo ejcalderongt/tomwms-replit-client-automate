@@ -327,6 +327,7 @@ Public Class frmMovimientosKardex
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210719:Restaurar LayoutGrid en grdExistDoc.
             vNombreArchivoLayOutGrid = "frmMovimientosCardex.xml"
 
@@ -383,7 +384,8 @@ Public Class frmMovimientosKardex
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdKardex, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -424,7 +426,6 @@ Public Class frmMovimientosKardex
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -449,28 +450,33 @@ Public Class frmMovimientosKardex
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD:
+        ' Durante CreateDocument de impresión, evitar recalcular estilos por celda
+        ' porque dispara miles de evaluaciones y degrada/cuelga la UI.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
+        If e.RowHandle < 0 Then Exit Sub
+
         If e.Column.FieldName = "Cantidad U.M.Bas" Then
 
             Dim View As GridView = sender
-            Dim TipoT As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("Tipo Tarea"))
+            Dim colTipoTarea = View.Columns("Tipo Tarea")
+            If colTipoTarea Is Nothing Then Exit Sub
+            Dim TipoT As Object = View.GetRowCellDisplayText(e.RowHandle, colTipoTarea)
 
             If TipoT = "DESP" OrElse TipoT = "TRAS" Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
                 e.Appearance.BackColor = Color.Salmon
                 e.Appearance.BackColor2 = Color.SeaShell
             ElseIf TipoT = "AJCANTN" OrElse TipoT = "AJCANTNI" OrElse
                 TipoT = "AJLOTNI" OrElse TipoT = "AJVENCENI" Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
                 e.Appearance.BackColor = Color.Salmon
                 e.Appearance.BackColor2 = Color.SeaShell
             ElseIf TipoT = "AJCANTP" Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
                 e.Appearance.BackColor = Color.Green
                 e.Appearance.BackColor2 = Color.White
             ElseIf TipoT = "RECE" OrElse TipoT = "INVE" OrElse
                 TipoT = "AJLOTPI" OrElse TipoT = "AJVENCEPI" OrElse
                 TipoT = "AJCANTPI" OrElse TipoT = "CESTI" OrElse TipoT = "CUBII" Then
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
                 e.Appearance.BackColor = Color.Green
                 e.Appearance.BackColor2 = Color.White
             End If
@@ -666,3 +672,6 @@ Public Class frmMovimientosKardex
     End Sub
 
 End Class
+
+
+

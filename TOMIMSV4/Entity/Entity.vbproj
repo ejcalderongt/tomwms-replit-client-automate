@@ -371,6 +371,7 @@
     <Compile Include="Interface\Configuracion\ConfiguracionEntidad\clsBeI_nav_config_ent.vb" />
     <Compile Include="Interface\Configuracion\Entidad\clsBeI_nav_ent.vb" />
     <Compile Include="Interface\Filtros\clsBeI_nav_ent_filtros.vb" />
+    <Compile Include="Interface\SyncRequest\clsBeI_nav_sync_request.vb" />
     <Compile Include="Interface\Transacciones_Out\clsBeI_nav_transacciones_out.vb" />
     <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico.vb" />
     <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico_partial.vb" />

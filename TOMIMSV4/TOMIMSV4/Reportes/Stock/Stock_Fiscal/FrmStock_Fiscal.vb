@@ -162,7 +162,8 @@ Public Class FrmStock_Fiscal
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -203,7 +204,6 @@ Public Class FrmStock_Fiscal
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -583,6 +583,7 @@ Public Class FrmStock_Fiscal
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en stockParametro.
             'vNombreArchivoLayOutGrid = dgrid.Name & ".xml"
             vNombreArchivoLayOutGrid = "FrmStock_Fiscal.xml"
@@ -672,3 +673,6 @@ Public Class FrmStock_Fiscal
     End Sub
 
 End Class
+
+
+
