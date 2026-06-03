@@ -134,10 +134,10 @@ Public Class frmMenu
 
     Private Sub frmMenu_Resize(sender As Object, e As EventArgs) Handles Me.Resize
 
-        If Me.WindowState = FormWindowState.Minimized Then
-            NotifyIcon1.Visible = True
-            Me.Hide()
-        End If
+        'If Me.WindowState = FormWindowState.Minimized Then
+        '    NotifyIcon1.Visible = True
+        '    Me.Hide()
+        'End If
 
     End Sub
 

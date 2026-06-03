@@ -277,7 +277,8 @@ Public Class frmPedidoDetalleBuscador
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -318,7 +319,6 @@ Public Class frmPedidoDetalleBuscador
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -584,6 +584,7 @@ Public Class frmPedidoDetalleBuscador
 
     Private Sub frmPedidoDetalleBuscador_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         If AP.Bodega.Rango_Dias_Documentos > 0 Then
             dtpFechaDel.Value = Now.Date.AddDays(-(AP.Bodega.Rango_Dias_Documentos))
             dtpFechaAl.Value = Now.Date.AddDays(AP.Bodega.Rango_Dias_Documentos)
@@ -591,3 +592,6 @@ Public Class frmPedidoDetalleBuscador
 
     End Sub
 End Class
+
+
+

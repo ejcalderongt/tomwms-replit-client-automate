@@ -72,6 +72,7 @@ Public Class frmBarrasInter_list
     End Sub
 
     Private Sub frmBarrasInter_list_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Cargar_Datos()
     End Sub
 
@@ -133,7 +134,8 @@ Public Class frmBarrasInter_list
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdListBarras, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -165,7 +167,6 @@ Public Class frmBarrasInter_list
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -192,3 +193,6 @@ Public Class frmBarrasInter_list
         Cargar_Datos()
     End Sub
 End Class
+
+
+

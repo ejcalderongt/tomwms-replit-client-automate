@@ -150,7 +150,8 @@ Public Class frmSalidaFiscal
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdDetalleSalidas, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -194,7 +195,6 @@ Public Class frmSalidaFiscal
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -315,6 +315,7 @@ Public Class frmSalidaFiscal
 
 
     Private Sub frmSalidaFiscal_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Try
 
             mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
@@ -431,3 +432,7 @@ Public Class frmSalidaFiscal
 
     End Sub
 End Class
+
+
+
+

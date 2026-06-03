@@ -79,6 +79,7 @@ Public Class frmStockResJornada
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             IMS.ListarRegimen(cmbRegimen)
             SetDatataTable()
             SetDatataTable3()
@@ -481,7 +482,8 @@ Public Class frmStockResJornada
     Private Sub Imprimir_Vista(ByVal pGrid As GridControl)
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(pGrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -525,7 +527,6 @@ Public Class frmStockResJornada
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Public Property TituloReporte As String = ""
@@ -565,3 +566,6 @@ Public Class frmStockResJornada
 
     End Sub
 End Class
+
+
+

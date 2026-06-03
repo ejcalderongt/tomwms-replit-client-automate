@@ -100,13 +100,13 @@ Public Class frmImpresionRecepcion_OC
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
                 txtCantidadLicencias.Enabled = True
-                txtCantidadBarras.Enabled = False
+                'txtCantidadBarras.Enabled = False
                 txtCopias.Enabled = True
 
             Case TipoProcesoLicencia.LicenciaBulto
                 txtCantidadLicencias.Value = 1
                 txtCantidadLicencias.Enabled = False
-                txtCantidadBarras.Enabled = True
+                'txtCantidadBarras.Enabled = True
                 txtCopias.Enabled = True
         End Select
 
@@ -284,46 +284,55 @@ Public Class frmImpresionRecepcion_OC
     End Function
 
     Private Function ConstruirZplProducto(ByVal pReDet As clsBeTrans_oc_det) As String
+
         Dim vFechaVence As Date = ObtenerFechaVence()
         Dim vEmpresa As String = AP.Empresa.Nombre
         Dim vCodigoProducto As String = pReDet.Codigo_Producto
         Dim vNombreProducto As String = ObtenerNombreProductoCorto()
         Dim vLote As String = Convert.ToString(cmbLote.Text)
 
-        Dim pBeProducto = clsLnProducto.Get_Single_By_IdProductoBodega(pReDet.IdProductoBodega)
-        Dim pTipoEtiqueta = pBeProducto.IdTipoEtiqueta
-        Dim pTipoSimbologia = pBeProducto.IdSimbologia
-        Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, 1)
+        If pBeProductoPresentacion Is Nothing OrElse pBeProductoPresentacion.IdTipoEtiqueta <= 0 Then
+            Throw New Exception("No está definido el tipo de etiqueta para la presentación del producto.")
+        End If
+
+        Dim pTipoEtiqueta As Integer = pBeProductoPresentacion.IdTipoEtiqueta
+
+        Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta)
 
         If Tipo_Etiqueta Is Nothing Then
             Throw New Exception("No se cargaron las propiedades de la etiqueta.")
         End If
 
         Dim tmpZPLString As String = Convert.ToString(Tipo_Etiqueta.codigo_zpl)
+
         If String.IsNullOrWhiteSpace(tmpZPLString) Then
             Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} No está definido el formato de etiqueta")
         End If
 
         Return String.Format(tmpZPLString,
-                             AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
-                             vEmpresa,
-                             vCodigoProducto & " - " & vNombreProducto,
-                             txtLicencia.Text,
-                             AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                             vLote,
-                             vFechaVence.ToString("dd/MM/yy"),
-                             pPresentacion,
-                             1)
+                         AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
+                         vEmpresa,
+                         vCodigoProducto & " - " & vNombreProducto,
+                         txtLicencia.Text,
+                         AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                         vLote,
+                         vFechaVence.ToString("dd/MM/yy"),
+                         pPresentacion,
+                         1)
+
     End Function
 
     Private Function ConstruirZplLicencia(ByVal pReDet As clsBeTrans_oc_det,
-                                          ByVal licenciaActual As String,
-                                          ByVal cantidadPresentacion As Integer,
-                                          ByVal clsTransaccion As clsTransaccion) As String
+                                      ByVal licenciaActual As String,
+                                      ByVal cantidadPresentacion As Integer,
+                                      ByVal clsTransaccion As clsTransaccion) As String
 
         Dim vEmpresa As String = AP.Empresa.Nombre
         Dim vCodigoProducto As String = pReDet.Codigo_Producto
-        Dim vNombreProducto As String = If(String.IsNullOrWhiteSpace(pReDet.Nombre_producto), "", pReDet.Nombre_producto.Substring(0, Math.Min(pReDet.Nombre_producto.Length, 44)))
+        Dim vNombreProducto As String = If(String.IsNullOrWhiteSpace(pReDet.Nombre_producto),
+                                       "",
+                                       pReDet.Nombre_producto.Substring(0, Math.Min(pReDet.Nombre_producto.Length, 44)))
+
         Dim vLote As String = cmbLote.Text
         Dim vFechaVence As Date = ObtenerFechaVence()
 
@@ -332,10 +341,10 @@ Public Class frmImpresionRecepcion_OC
         Dim pClasificacion As Integer = 2
 
         Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta,
-                                                                            pTipoSimbologia,
-                                                                            pClasificacion,
-                                                                            clsTransaccion.lConnection,
-                                                                            clsTransaccion.lTransaction)
+                                                                        pTipoSimbologia,
+                                                                        pClasificacion,
+                                                                        clsTransaccion.lConnection,
+                                                                        clsTransaccion.lTransaction)
 
         If Tipo_Etiqueta Is Nothing OrElse String.IsNullOrWhiteSpace(Tipo_Etiqueta.codigo_zpl) Then
             Throw New Exception("GT21012026: No está definido el formato de etiqueta")
@@ -343,35 +352,46 @@ Public Class frmImpresionRecepcion_OC
 
         Dim tmpZPLString As String = Tipo_Etiqueta.codigo_zpl
 
-        ' Contar placeholders en el template
-        Dim regex As New Text.RegularExpressions.Regex("\{\d+\}")
-        Dim placeholdersCount As Integer = regex.Matches(tmpZPLString).Count
+        Dim vLicenciaQr As String = "$" & licenciaActual
+        Dim vPesoOLicencia As String = ""
 
-        ' Contar argumentos enviados
-        Dim args() As Object = {
-            AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
-            vEmpresa,
-            vCodigoProducto & " - " & vNombreProducto.Trim(),
-            "$" & licenciaActual,
-            AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
-            vLote,
-            vFechaVence.ToString("dd/MM/yy"),
-            pPresentacion,
-            cantidadPresentacion,
-            If(txtPesoTarima.Value > 0, "Peso: " & txtPesoTarima.Value, "")
-        }
-
-        Dim argsCount As Integer = args.Length
-
-        ' Validación elegante
-        If placeholdersCount <> argsCount Then
-            Throw New InvalidOperationException(
-                $"El diseño de la etiqueta no coincide con la cantidad de parámetros. " &
-                $"Parámetros en etiqueta: {placeholdersCount}, parámetros enviados: {argsCount}. " &
-                $"Revise la configuración de la etiqueta.")
+        If txtPesoTarima.Value > 0 Then
+            vPesoOLicencia = "PESO:" & txtPesoTarima.Value
+        Else
+            vPesoOLicencia = "LIC:" & vLicenciaQr
         End If
 
-        ' Si todo está correcto, aplicar el formato
+        Dim args() As Object = {
+        AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,                                                   ' {0}
+        vEmpresa,                                                                                      ' {1}
+        vCodigoProducto & " - " & vNombreProducto.Trim(),                                              ' {2}
+        vLicenciaQr,                                                                                   ' {3}
+        AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"), ' {4}
+        vLote,                                                                                         ' {5}
+        vFechaVence.ToString("dd/MM/yy"),                                                              ' {6}
+        pPresentacion,                                                                                 ' {7}
+        cantidadPresentacion,                                                                          ' {8}
+        If(txtPesoTarima.Value > 0, "PESO:" & txtPesoTarima.Value, ""),                                ' {9}
+        vPesoOLicencia                                                                                 ' {10}
+    }
+
+        Dim regex As New Text.RegularExpressions.Regex("\{(\d+)\}")
+        Dim matches = regex.Matches(tmpZPLString)
+
+        If matches.Count > 0 Then
+            Dim maxPlaceholderIndex As Integer = matches.Cast(Of Text.RegularExpressions.Match)().
+            Select(Function(m) CInt(m.Groups(1).Value)).
+            Max()
+
+            If maxPlaceholderIndex >= args.Length Then
+                Throw New InvalidOperationException(
+                "El diseño de la etiqueta no coincide con la cantidad de parámetros. " &
+                "Mayor índice en etiqueta: {" & maxPlaceholderIndex & "}, " &
+                "parámetros enviados: " & args.Length & ". " &
+                "Revise la configuración de la etiqueta.")
+            End If
+        End If
+
         Return String.Format(tmpZPLString, args)
 
     End Function
@@ -522,7 +542,7 @@ Public Class frmImpresionRecepcion_OC
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
-            cmdImpresionLicencia.Enabled = False
+            cmdImpresionLicencia.Enabled = True
         End Try
 
     End Sub
@@ -540,6 +560,11 @@ Public Class frmImpresionRecepcion_OC
             End If
 
             If Not PuedeImprimirBultos(cantidadSolicitada) Then Exit Sub
+
+            If XtraMessageBox.Show("Está por imprimir " & cantidadSolicitada & " etiquetas. ¿Continuar?",
+                           Text,
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Warning) = DialogResult.No Then Exit Sub
 
             Imprimir_Producto(pBeTransOcDet,
                               Convert.ToString(cmbPrinterBarra.EditValue),

@@ -48,6 +48,7 @@ Public Class frmDocPeConDiferencias
 
     Private Sub frmDocPeconDiferencias_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
         cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
         IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue)
@@ -260,7 +261,8 @@ Public Class frmDocPeConDiferencias
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -301,7 +303,6 @@ Public Class frmDocPeConDiferencias
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -519,3 +520,6 @@ Public Class frmDocPeConDiferencias
     End Sub
 
 End Class
+
+
+

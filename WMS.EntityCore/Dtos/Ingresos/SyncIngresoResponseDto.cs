@@ -1,5 +1,3 @@
-﻿using System.IO.Pipelines;
-
 namespace WMS.EntityCore.Dtos.Ingresos
 {
     public class IngresoAsociacionResponseDto

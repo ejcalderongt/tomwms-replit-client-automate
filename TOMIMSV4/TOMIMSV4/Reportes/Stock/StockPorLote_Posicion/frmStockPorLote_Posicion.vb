@@ -168,7 +168,8 @@ Public Class frmStockPorLote_Posicion
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdStockPorLote, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -212,7 +213,6 @@ Public Class frmStockPorLote_Posicion
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -490,6 +490,7 @@ Public Class frmStockPorLote_Posicion
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en frmstock_especifico_list.vb
             vNombreArchivoLayOutGrid = "frmStockPorLote_Posicion.xml"
 
@@ -608,3 +609,6 @@ Public Class frmStockPorLote_Posicion
     End Sub
 
 End Class
+
+
+

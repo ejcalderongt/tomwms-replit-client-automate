@@ -164,6 +164,7 @@ Public Class frmRegistrosInterface
     End Sub
 
     Private Sub frmRegistrosInterface_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         SetDatataTable()
         Cargar_Datos_RegistrosInterface()
     End Sub
@@ -313,7 +314,8 @@ Public Class frmRegistrosInterface
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdRegistroInt, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -345,7 +347,6 @@ Public Class frmRegistrosInterface
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -361,3 +362,6 @@ Public Class frmRegistrosInterface
     End Sub
 
 End Class
+
+
+

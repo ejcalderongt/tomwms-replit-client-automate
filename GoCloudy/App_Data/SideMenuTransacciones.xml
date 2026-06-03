@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<menu>  
-  <group Text="Transacciones">
-    <item Text="Pedidos de Ingreso" />
-    <item Text="Pedidos de Salida" />    
-  </group>  
-</menu>

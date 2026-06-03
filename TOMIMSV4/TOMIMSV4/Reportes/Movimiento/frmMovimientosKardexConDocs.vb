@@ -244,6 +244,7 @@ Public Class frmMovimientosKardexConDocs
 
     Private Sub frmMovimientosCardex_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         '#CKFK 20190129 Agregué que se inicie en la bodega con la que se entró a la aplicación
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
         cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
@@ -260,7 +261,8 @@ Public Class frmMovimientosKardexConDocs
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdCardex, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -301,7 +303,6 @@ Public Class frmMovimientosKardexConDocs
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -325,6 +326,9 @@ Public Class frmMovimientosKardexConDocs
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         If e.Column.FieldName = "Cantidad U.M.Bas" Then
 
@@ -359,3 +363,6 @@ Public Class frmMovimientosKardexConDocs
     End Sub
 
 End Class
+
+
+

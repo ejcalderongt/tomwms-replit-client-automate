@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports DevExpress.XtraCharts
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -147,6 +147,7 @@ Public Class frmDistribucionPorTramo
     End Sub
 
     Private Sub frmDistribucionPorTramo_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         'TODO: This line of code loads data into the 'DsetAnalitica.VW_Stock_Rep_20200112' table. You can move, or remove it, as needed.
         ' Me.VW_Stock_Rep_20200112TableAdapter.Fill(Me.DsetAnalitica.VW_Stock_Rep_20200112)
 
@@ -229,7 +230,6 @@ Public Class frmDistribucionPorTramo
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -319,3 +319,6 @@ Public Class frmDistribucionPorTramo
     End Sub
 
 End Class
+
+
+
