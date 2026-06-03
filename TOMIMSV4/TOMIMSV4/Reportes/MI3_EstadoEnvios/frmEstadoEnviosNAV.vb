@@ -177,6 +177,7 @@ Public Class frmEstadoEnviosNAV
     End Sub
 
     Private Sub frmMovimientosCardex_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Cargar()
     End Sub
 
@@ -187,7 +188,8 @@ Public Class frmEstadoEnviosNAV
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdEnviosNAV, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -228,7 +230,6 @@ Public Class frmEstadoEnviosNAV
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -256,3 +257,6 @@ Public Class frmEstadoEnviosNAV
         Imprimir_Vista()
     End Sub
 End Class
+
+
+

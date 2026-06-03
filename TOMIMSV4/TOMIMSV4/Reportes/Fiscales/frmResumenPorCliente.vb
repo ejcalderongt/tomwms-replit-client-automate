@@ -25,6 +25,7 @@ Public Class frmResumenPorCliente
 
 
     Private Sub frmResumenPorCliente_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Try
 
             AP.Listar_Bodegas_By_Usuario(cmbBodega)

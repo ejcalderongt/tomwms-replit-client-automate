@@ -1,6 +1,9 @@
 ﻿Imports System.Drawing.Printing
 Imports System.IO
+Imports System.Diagnostics
 Imports System.Reflection
+Imports System.Linq
+Imports System.Collections.Generic
 Imports DevExpress.Data
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraCharts
@@ -25,164 +28,103 @@ Public Class frmStockPorLote
     End Enum
 
     Private Comunicacion_NAV As Boolean = False
+    Private _layoutApplied As Boolean = False
+    Private _chartsLoadedForKey As String = String.Empty
+    Private _pendingChartsRefresh As Boolean = False
+    Private _dtChartRiesgoVence As DataTable = Nothing
+    Private _dtChartTopSku As DataTable = Nothing
+    Private _dtChartUtilizable As DataTable = Nothing
 
     Private Sub Cargar_Datos()
 
         IsLoading = True
 
+        Dim swTotal As Stopwatch = Stopwatch.StartNew()
+
         Try
 
+            Debug.WriteLine(String.Format("[StockPorLote] Cargar_Datos inicio {0:yyyy-MM-dd HH:mm:ss.fff}", Now))
+
             Dim DT As New DataTable
-
             DT.Clear()
-
-            grdStockPorLote.DataSource = Nothing
 
             If cmbBodega.EditValue Is Nothing Then Return
 
             Dim vIdBodega = Integer.Parse(cmbBodega.EditValue)
             Dim vIdPropietarioBodega = Integer.Parse(cmbPropietarioBodega.EditValue)
 
-            DT = clsLnStock.Get_Reporte_Stock(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
+            Dim swQuery As Stopwatch = Stopwatch.StartNew()
+            Dim dsReporte As DataSet = Nothing
 
-            If Not DT Is Nothing Then
+            Try
+                ' #EJC20260602_STOCK_POR_LOTE_DATASET: Carga todo el reporte en un único roundtrip SQL.
+                dsReporte = clsLnStock.Get_Reporte_Stock_Dataset(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
+            Catch exDs As Exception
+                Debug.WriteLine(String.Format("[StockPorLote] Fallback DataSet->Legacy por error: {0}", exDs.Message))
+            End Try
 
-                If Comunicacion_NAV Then
+            If dsReporte IsNot Nothing AndAlso dsReporte.Tables.Count > 0 Then
+                DT = dsReporte.Tables(0)
+                _dtChartRiesgoVence = If(dsReporte.Tables.Count > 1, dsReporte.Tables(1), Nothing)
+                _dtChartTopSku = If(dsReporte.Tables.Count > 2, dsReporte.Tables(2), Nothing)
+                _dtChartUtilizable = If(dsReporte.Tables.Count > 3, dsReporte.Tables(3), Nothing)
+            Else
+                DT = clsLnStock.Get_Reporte_Stock(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
+                _dtChartRiesgoVence = Nothing
+                _dtChartTopSku = Nothing
+                _dtChartUtilizable = Nothing
+            End If
+
+            swQuery.Stop()
+            Debug.WriteLine(String.Format("[StockPorLote] Query principal ms={0}, rows={1}, dataset={2}", swQuery.ElapsedMilliseconds, If(DT Is Nothing, 0, DT.Rows.Count), If(dsReporte Is Nothing, "No", "Si")))
+
+            grdStockPorLote.DataSource = Nothing
+
+            If DT IsNot Nothing Then
+
+                If Comunicacion_NAV AndAlso Not DT.Columns.Contains("Existencia_NAV") Then
                     DT.Columns.Add("Existencia_NAV", GetType(Decimal))
                 End If
 
                 If DT.Rows.Count > 0 Then
+                    Dim swRender As Stopwatch = Stopwatch.StartNew()
+                    GridView1.BeginDataUpdate()
+                    GridView1.BeginUpdate()
+                    Try
+                        grdStockPorLote.DataSource = DT
+                        lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
+                        ApplyGridFormattingAndSummaries()
 
-                    grdStockPorLote.DataSource = DT
+                        If GridView1.GroupCount > 0 AndAlso GridView1.RowCount <= 15000 Then
+                            GridView1.ExpandAllGroups()
+                        End If
 
-                    lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
-
-                    GridView1.OptionsView.ShowFooter = True
-
-                    GridView1.Columns("Cantidad_Reservada_UMBas").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Cantidad_Reservada_UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Cantidad_Reservada_UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Cantidad_Reservada_UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Cantidad_Reservada_Pres").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Cantidad_Reservada_Pres").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Cantidad_Reservada_Pres").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Peso").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Peso").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Peso").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Peso").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("CantidadUMBas").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("CantidadUMBas").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("CantidadUMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("CantidadUMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("CantidadPresentacion").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("CantidadPresentacion").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("CantidadPresentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("CantidadPresentacion").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Disponible_UMBas").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Disponible_UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Disponible_UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Disponible_UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Disponible_Presentación").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Disponible_Presentación").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Disponible_Presentación").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Disponible_Presentación").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Cant_Pickeada_Presentacion").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Cant_Pickeada_Presentacion").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Cant_Pickeada_Presentacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Cant_Pickeada_Presentacion").DisplayFormat.FormatString = "{0:n6}"
-
-                    GridView1.Columns("Cant_No_Pickeada_UMBas").SummaryItem.SummaryType = SummaryItemType.Sum
-                    GridView1.Columns("Cant_No_Pickeada_UMBas").SummaryItem.DisplayFormat = "{0:n6}"
-                    GridView1.Columns("Cant_No_Pickeada_UMBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Cant_No_Pickeada_UMBas").DisplayFormat.FormatString = "{0:n6}"
-
-                    If Comunicacion_NAV Then
-                        GridView1.Columns("Existencia_NAV").SummaryItem.SummaryType = SummaryItemType.Sum
-                        GridView1.Columns("Existencia_NAV").SummaryItem.DisplayFormat = "{0:n6}"
-                        GridView1.Columns("Existencia_NAV").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                        GridView1.Columns("Existencia_NAV").DisplayFormat.FormatString = "{0:n6}"
-                    End If
-
-                    GridView1.Columns("Producto").SummaryItem.SummaryType = SummaryItemType.Count
-                    GridView1.Columns("Producto").SummaryItem.DisplayFormat = "{0:n0}"
-                    GridView1.Columns("Producto").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                    GridView1.Columns("Producto").DisplayFormat.FormatString = "{0:n0}"
-
-                    GridView1.Columns("Fecha_Ingreso").DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
-                    GridView1.Columns("Fecha_Ingreso").DisplayFormat.FormatString = "G"
-
-                    Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Cantidad_Reservada_UMBas", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Cantidad_Reservada")}
-                    GridView1.GroupSummary.Add(item)
-
-                    Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Cantidad_UMBas", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Cantidad_UMBas")}
-                    GridView1.GroupSummary.Add(item1)
-
-                    Dim item2 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Cantidad_Presentacion", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Cantidad_Presentacion")}
-                    GridView1.GroupSummary.Add(item2)
-
-                    Dim item3 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Disponible_UMBas", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Disponible_UMBas")}
-                    GridView1.GroupSummary.Add(item3)
-
-
-                    Dim item4 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Disponible_Presentación", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Disponible_Presentación")}
-                    GridView1.GroupSummary.Add(item4)
-
-                    If Comunicacion_NAV Then
-
-                        Dim item5 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Existencia_NAV", .SummaryType = SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}", .ShowInGroupColumnFooter = GridView1.Columns("Existencia_NAV")}
-                        GridView1.GroupSummary.Add(item5)
-
-                    End If
-
-                    Dim item6 As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "Producto", .SummaryType = SummaryItemType.Count,
-                        .DisplayFormat = "{0:n0}", .ShowInGroupColumnFooter = GridView1.Columns("Producto")}
-                    GridView1.GroupSummary.Add(item6)
-
-                    GridView1.Columns("IdPresentacion").Visible = False
-
-                    GridView1.ExpandAllGroups()
-
-                    GridView1.BestFitColumns()
-
+                        If GridView1.RowCount <= 5000 Then
+                            GridView1.BestFitColumns()
+                        End If
+                    Finally
+                        GridView1.EndUpdate()
+                        GridView1.EndDataUpdate()
+                    End Try
+                    swRender.Stop()
+                    Debug.WriteLine(String.Format("[StockPorLote] Render grid ms={0}", swRender.ElapsedMilliseconds))
                 End If
 
             End If
 
-            Set_LayOut_Grid()
-
-            If chkObtenerExistenciaNAV.Checked Then
-                Get_Existencias_NAV(DT)
+            If Not _layoutApplied Then
+                Set_LayOut_Grid()
             End If
 
-            Dim DT1 As New DataTable
-            DT1 = clsLnStock.Get_Reporte_Stock_Grafico(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
-            ConfigureVencimientoScatterChart(chartDispersionVence, DT1)
-            ConfigureExistenciasChart(chartProducto, DT1)
+            If chkObtenerExistenciaNAV.Checked Then
+                Dim swNav As Stopwatch = Stopwatch.StartNew()
+                Get_Existencias_NAV(DT)
+                swNav.Stop()
+                Debug.WriteLine(String.Format("[StockPorLote] NAV reconcile ms={0}", swNav.ElapsedMilliseconds))
+            End If
 
-            Dim DT2 As New DataTable
-            DT2 = clsLnStock.Get_Reporte_Stock_Grafico_Familia_And_Clasificacion(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
-            ConfigureExistenciasChartFam(chartFamilia, DT2)
+            _pendingChartsRefresh = True
+            LoadChartsIfNeeded(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
 
         Catch ex As Exception
 
@@ -195,9 +137,135 @@ Public Class frmStockPorLote
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         Finally
+            swTotal.Stop()
+            Debug.WriteLine(String.Format("[StockPorLote] Cargar_Datos fin ms={0}", swTotal.ElapsedMilliseconds))
             IsLoading = False
         End Try
 
+    End Sub
+
+    Private Sub ApplyGridFormattingAndSummaries()
+
+        GridView1.OptionsView.ShowFooter = True
+        GridView1.GroupSummary.Clear()
+
+        ApplyNumericSummary("Cantidad_Reservada_UMBas")
+        ApplyNumericSummary("Cantidad_Reservada_Pres")
+        ApplyNumericSummary("Peso")
+        ApplyNumericSummary("CantidadUMBas")
+        ApplyNumericSummary("CantidadPresentacion")
+        ApplyNumericSummary("Disponible_UMBas")
+        ApplyNumericSummary("Disponible_Presentación")
+        ApplyNumericSummary("Cant_Pickeada_Presentacion")
+        ApplyNumericSummary("Cant_No_Pickeada_UMBas")
+
+        If Comunicacion_NAV Then
+            ApplyNumericSummary("Existencia_NAV")
+        End If
+
+        Dim colProducto = GridView1.Columns.ColumnByFieldName("Producto")
+        If colProducto IsNot Nothing Then
+            colProducto.SummaryItem.SummaryType = SummaryItemType.Count
+            colProducto.SummaryItem.DisplayFormat = "{0:n0}"
+            colProducto.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+            colProducto.DisplayFormat.FormatString = "{0:n0}"
+        End If
+
+        Dim colFechaIngreso = GridView1.Columns.ColumnByFieldName("Fecha_Ingreso")
+        If colFechaIngreso IsNot Nothing Then
+            colFechaIngreso.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime
+            colFechaIngreso.DisplayFormat.FormatString = "G"
+        End If
+
+        AddGroupSummary("Cantidad_Reservada_UMBas", "Cantidad_Reservada_UMBas")
+        AddGroupSummary("CantidadUMBas", "CantidadUMBas")
+        AddGroupSummary("CantidadPresentacion", "CantidadPresentacion")
+        AddGroupSummary("Disponible_UMBas", "Disponible_UMBas")
+        AddGroupSummary("Disponible_Presentación", "Disponible_Presentación")
+
+        If Comunicacion_NAV Then
+            AddGroupSummary("Existencia_NAV", "Existencia_NAV")
+        End If
+
+        AddGroupSummary("Producto", "Producto", SummaryItemType.Count, "{0:n0}")
+
+        Dim colIdPresentacion = GridView1.Columns.ColumnByFieldName("IdPresentacion")
+        If colIdPresentacion IsNot Nothing Then
+            colIdPresentacion.Visible = False
+        End If
+
+    End Sub
+
+    Private Sub ApplyNumericSummary(ByVal fieldName As String)
+        Dim col = GridView1.Columns.ColumnByFieldName(fieldName)
+        If col Is Nothing Then Exit Sub
+
+        col.SummaryItem.SummaryType = SummaryItemType.Sum
+        col.SummaryItem.DisplayFormat = "{0:n6}"
+        col.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+        col.DisplayFormat.FormatString = "{0:n6}"
+    End Sub
+
+    Private Sub AddGroupSummary(ByVal fieldName As String,
+                                ByVal showInFieldName As String,
+                                Optional ByVal summaryType As SummaryItemType = SummaryItemType.Sum,
+                                Optional ByVal displayFormat As String = "{0:n6}")
+        Dim showCol = GridView1.Columns.ColumnByFieldName(showInFieldName)
+        If showCol Is Nothing Then Exit Sub
+
+        Dim item As New GridGroupSummaryItem() With {
+            .FieldName = fieldName,
+            .SummaryType = summaryType,
+            .DisplayFormat = displayFormat,
+            .ShowInGroupColumnFooter = showCol
+        }
+
+        GridView1.GroupSummary.Add(item)
+    End Sub
+
+    Private Function BuildChartsKey(ByVal pIdBodega As Integer,
+                                    ByVal pIdPropietarioBodega As Integer,
+                                    ByVal pExcluirSinExistencia As Boolean) As String
+        Return String.Format("{0}|{1}|{2}", pIdBodega, pIdPropietarioBodega, pExcluirSinExistencia)
+    End Function
+
+    Private Sub LoadChartsIfNeeded(ByVal pIdBodega As Integer,
+                                   ByVal pIdPropietarioBodega As Integer,
+                                   ByVal pExcluirSinExistencia As Boolean)
+
+        Dim selected = XtraTabControl1.SelectedTabPage
+        If selected Is tabDatos AndAlso Not _pendingChartsRefresh Then Exit Sub
+
+        Dim key = BuildChartsKey(pIdBodega, pIdPropietarioBodega, pExcluirSinExistencia)
+        If Not _pendingChartsRefresh AndAlso _chartsLoadedForKey = key Then Exit Sub
+
+        Dim swCharts As Stopwatch = Stopwatch.StartNew()
+
+        Dim dtRiesgo As DataTable = _dtChartRiesgoVence
+        Dim dtTopSku As DataTable = _dtChartTopSku
+        Dim dtUtilizable As DataTable = _dtChartUtilizable
+
+        If dtRiesgo Is Nothing OrElse dtTopSku Is Nothing Then
+            Dim DT1 As DataTable = clsLnStock.Get_Reporte_Stock_Grafico(pIdBodega, pIdPropietarioBodega, pExcluirSinExistencia)
+            dtRiesgo = DT1
+            dtTopSku = DT1
+        End If
+
+        If dtUtilizable Is Nothing Then
+            Dim DTStock As DataTable = TryCast(grdStockPorLote.DataSource, DataTable)
+            ConfigureEstadoUtilizableChart(chartFamilia, DTStock)
+        Else
+            ConfigureEstadoUtilizableChartDirect(chartFamilia, dtUtilizable)
+        End If
+
+        ConfigureVencimientoBucketsChart(chartDispersionVence, dtRiesgo)
+        ConfigureTopProductosChart(chartProducto, dtTopSku)
+
+        swCharts.Stop()
+        Debug.WriteLine(String.Format("[StockPorLote] Charts ms={0}", swCharts.ElapsedMilliseconds))
+
+        _chartsLoadedForKey = key
+        _pendingChartsRefresh = False
     End Sub
 
     Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
@@ -211,14 +279,13 @@ Public Class frmStockPorLote
     Private Sub Imprimir_Vista()
 
         Try
-
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
-            AddHandler printLink.CreateReportHeaderArea, AddressOf PrintableComponentLink_CreateReportHeaderArea
+            AddHandler printLink.CreateMarginalHeaderArea, AddressOf PrintableComponentLink_CreateReportHeaderArea
 
             Const leftColumnFoot As String = "Páginas: [Page # of Pages #] "
             Dim leftColumnHead As String = "Usuario: [User Name] - " & AP.UsuarioAp.Nombres
@@ -237,10 +304,17 @@ Public Class frmStockPorLote
             phf.Header.Content.AddRange(New String() {leftColumnHead, "", rightColumn})
             phf.Header.LineAlignment = DevExpress.XtraPrinting.BrickAlignment.Far
 
+            printLink.Margins = New System.Drawing.Printing.Margins(40, 40, 130, 60)
+            printLink.PaperKind = System.Drawing.Printing.PaperKind.Letter
             printingSystem1.PageSettings.Landscape = True
             printLink.Component = grdStockPorLote
             printLink.Landscape = True
-            printLink.CreateDocument(printingSystem1)
+            Dim colScope As IDisposable = clsUiPrintHelper.BeginRelevantColumnsScope(grdStockPorLote, 12)
+            Try
+                printLink.CreateDocument(printingSystem1)
+            Finally
+                colScope.Dispose()
+            End Try
             printingSystem1.PreviewFormEx.ShowDialog()
             printingSystem1.Dispose()
 
@@ -255,18 +329,43 @@ Public Class frmStockPorLote
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
 
-        Dim reportHeader As String = vbNewLine & "Detalle de existencias por estado de producto"
+        Dim vTitulo As String = "EXISTENCIAS POR LOTE - RESUMEN"
+        Dim vBodega As String = If(cmbBodega.Text, AP.NomBodega)
+        Dim vPropietario As String = If(cmbPropietarioBodega.Text, "")
+        Dim vUsuario As String = If(AP.UsuarioAp.Nombres, "")
+        Dim vFiltroStock As String = If(mnuSinExistencia.Checked, "Solo con existencia", "Incluye sin existencia")
 
-        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Center)
-        e.Graph.Font = New Font("Tahoma", 12, FontStyle.Bold)
+        Dim vWidth As Single = e.Graph.ClientPageSize.Width
+        Dim vBlue As Color = Color.FromArgb(24, 69, 117)
 
-        Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 70)
-        e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Near)
+        e.Graph.Font = New Font("Segoe UI Semibold", 16, FontStyle.Bold)
+        e.Graph.DrawString(vTitulo,
+                           vBlue,
+                           New RectangleF(0, 0, vWidth, 34),
+                           DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.DrawLine(New PointF(0, 34), New PointF(vWidth, 34), vBlue, 1)
+
+        e.Graph.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        e.Graph.DrawString("Bodega:", Color.Black, New RectangleF(0, 40, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Propietario:", Color.Black, New RectangleF(0, 58, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Filtro:", Color.Black, New RectangleF(0, 76, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Usuario:", Color.Black, New RectangleF(vWidth - 250, 40, 70, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Fecha impresión:", Color.Black, New RectangleF(vWidth - 250, 58, 110, 18), DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.Font = New Font("Segoe UI", 10, FontStyle.Regular)
+        e.Graph.DrawString(vBodega, Color.Black, New RectangleF(95, 40, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vPropietario, Color.Black, New RectangleF(95, 58, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vFiltroStock, Color.Black, New RectangleF(95, 76, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vUsuario, Color.Black, New RectangleF(vWidth - 175, 40, 170, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(Format(Now, "dd/MM/yyyy HH:mm"), Color.Black, New RectangleF(vWidth - 135, 58, 130, 18), DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.DrawLine(New PointF(0, 102), New PointF(vWidth, 102), Color.Gainsboro, 1)
 
     End Sub
 
@@ -501,6 +600,7 @@ Public Class frmStockPorLote
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Inicializando estructuras...")
 
@@ -538,6 +638,11 @@ Public Class frmStockPorLote
 
             Set_LayOut_Grid()
 
+            ' #EJC20260602: Tabs con nombre operativo para lectura rápida.
+            tabGraficoDispersion.Text = "Riesgo Vencimiento"
+            tabGraficoProducto.Text = "Top SKU"
+            tabGraficoPorFamilia.Text = "Utilizable / No utilizable"
+
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -571,6 +676,8 @@ Public Class frmStockPorLote
             Else
                 mnuEliminarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
             End If
+
+            _layoutApplied = True
 
         Catch ex As Exception
 
@@ -712,6 +819,18 @@ Public Class frmStockPorLote
         Cargar_Datos()
     End Sub
 
+    Private Sub XtraTabControl1_SelectedPageChanged(sender As Object, e As DevExpress.XtraTab.TabPageChangedEventArgs) Handles XtraTabControl1.SelectedPageChanged
+        Try
+            If cmbBodega.EditValue Is Nothing OrElse cmbPropietarioBodega.EditValue Is Nothing Then Exit Sub
+
+            Dim vIdBodega = Integer.Parse(cmbBodega.EditValue)
+            Dim vIdPropietarioBodega = Integer.Parse(cmbPropietarioBodega.EditValue)
+            LoadChartsIfNeeded(vIdBodega, vIdPropietarioBodega, mnuSinExistencia.Checked)
+        Catch ex As Exception
+            Debug.WriteLine(String.Format("[StockPorLote] Error al cargar gráficos por tab: {0}", ex.Message))
+        End Try
+    End Sub
+
     Private Sub GridView1_RowStyle(sender As Object, e As RowStyleEventArgs) Handles GridView1.RowStyle
 
         Try
@@ -802,6 +921,113 @@ Public Class frmStockPorLote
 
     End Sub
 
+    Private Sub ConfigureVencimientoBucketsChart(chartControl As ChartControl, dataTable As DataTable)
+        Try
+            chartControl.Series.Clear()
+            chartControl.Titles.Clear()
+
+            Dim dtBuckets As DataTable = BuildVencimientoBucketsData(dataTable)
+
+            Dim series As New DevExpress.XtraCharts.Series("Stock por riesgo de vencimiento", ViewType.Bar)
+            series.ArgumentDataMember = "Rango"
+            series.ValueDataMembers.AddRange("Stock")
+            series.DataSource = dtBuckets
+            chartControl.Series.Add(series)
+
+            Dim diagram As XYDiagram = CType(chartControl.Diagram, XYDiagram)
+            diagram.AxisX.Title.Text = "Rango de vencimiento"
+            diagram.AxisX.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+            diagram.AxisY.Title.Text = "Stock"
+            diagram.AxisY.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+
+            Dim title As New ChartTitle()
+            title.Text = "Riesgo de vencimiento"
+            chartControl.Titles.Add(title)
+        Catch ex As Exception
+            MessageBox.Show("Se ha producido un error al configurar el gráfico: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function BuildVencimientoBucketsData(ByVal dataTable As DataTable) As DataTable
+        Dim dt As New DataTable()
+        dt.Columns.Add("Rango", GetType(String))
+        dt.Columns.Add("Orden", GetType(Integer))
+        dt.Columns.Add("Stock", GetType(Decimal))
+
+        dt.Rows.Add("0-15 días", 1, 0D)
+        dt.Rows.Add("16-30 días", 2, 0D)
+        dt.Rows.Add("31-60 días", 3, 0D)
+        dt.Rows.Add("61-90 días", 4, 0D)
+        dt.Rows.Add(">90 días", 5, 0D)
+        dt.Rows.Add("Sin vencimiento", 6, 0D)
+
+        If dataTable Is Nothing Then Return dt
+
+        ' #EJC20260602_CHART_SCHEMA_GUARD:
+        ' El origen puede venir detallado (Fecha_Vence + Stock) o ya agregado (Rango + Stock).
+        ' Se soportan ambos para evitar error por columna faltante al cambiar el SP/dataset.
+        Dim hasFechaVence As Boolean = dataTable.Columns.Contains("Fecha_Vence")
+        Dim hasStock As Boolean = dataTable.Columns.Contains("Stock")
+        Dim hasRango As Boolean = dataTable.Columns.Contains("Rango")
+
+        If hasRango AndAlso hasStock AndAlso Not hasFechaVence Then
+            For Each row As DataRow In dataTable.Rows
+                Dim rango As String = If(IsDBNull(row("Rango")), "", Convert.ToString(row("Rango")).Trim())
+                If rango = "" Then Continue For
+
+                Dim stock As Decimal = 0D
+                If Not IsDBNull(row("Stock")) Then stock = Convert.ToDecimal(row("Stock"))
+
+                For i As Integer = 0 To dt.Rows.Count - 1
+                    If String.Equals(Convert.ToString(dt.Rows(i)("Rango")), rango, StringComparison.OrdinalIgnoreCase) Then
+                        dt.Rows(i)("Stock") = Convert.ToDecimal(dt.Rows(i)("Stock")) + stock
+                        Exit For
+                    End If
+                Next
+            Next
+
+            Dim viewFromRango As DataView = dt.DefaultView
+            viewFromRango.Sort = "Orden ASC"
+            Return viewFromRango.ToTable()
+        End If
+
+        If Not hasFechaVence OrElse Not hasStock Then
+            Debug.WriteLine("[StockPorLote] BuildVencimientoBucketsData: esquema no compatible para riesgo de vencimiento.")
+            Return dt
+        End If
+
+        For Each row As DataRow In dataTable.Rows
+            Dim stock As Decimal = 0D
+            If Not IsDBNull(row("Stock")) Then stock = Convert.ToDecimal(row("Stock"))
+
+            If IsDBNull(row("Fecha_Vence")) Then
+                dt.Rows(5)("Stock") = Convert.ToDecimal(dt.Rows(5)("Stock")) + stock
+            Else
+                Dim vence As Date = Convert.ToDateTime(row("Fecha_Vence"))
+                If vence = New Date(1900, 1, 1) Then
+                    dt.Rows(5)("Stock") = Convert.ToDecimal(dt.Rows(5)("Stock")) + stock
+                Else
+                    Dim dias As Integer = CInt((vence.Date - Today.Date).TotalDays)
+                    If dias <= 15 Then
+                        dt.Rows(0)("Stock") = Convert.ToDecimal(dt.Rows(0)("Stock")) + stock
+                    ElseIf dias <= 30 Then
+                        dt.Rows(1)("Stock") = Convert.ToDecimal(dt.Rows(1)("Stock")) + stock
+                    ElseIf dias <= 60 Then
+                        dt.Rows(2)("Stock") = Convert.ToDecimal(dt.Rows(2)("Stock")) + stock
+                    ElseIf dias <= 90 Then
+                        dt.Rows(3)("Stock") = Convert.ToDecimal(dt.Rows(3)("Stock")) + stock
+                    Else
+                        dt.Rows(4)("Stock") = Convert.ToDecimal(dt.Rows(4)("Stock")) + stock
+                    End If
+                End If
+            End If
+        Next
+
+        Dim view As DataView = dt.DefaultView
+        view.Sort = "Orden ASC"
+        Return view.ToTable()
+    End Function
+
     Private Sub ConfigureExistenciasChart(chartControl As ChartControl, dataTable As DataTable)
         Try
             ' Limpiar cualquier serie o título existente en el control de gráfico
@@ -833,6 +1059,63 @@ Public Class frmStockPorLote
             MessageBox.Show("Se ha producido un error al configurar el gráfico: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub ConfigureTopProductosChart(chartControl As ChartControl, dataTable As DataTable)
+        Try
+            chartControl.Series.Clear()
+            chartControl.Titles.Clear()
+
+            Dim dtTop As DataTable = BuildTopProductosData(dataTable, 20)
+
+            Dim series As New DevExpress.XtraCharts.Series("Top SKU por stock", ViewType.Bar)
+            series.ArgumentDataMember = "Codigo"
+            series.ValueDataMembers.AddRange("Stock")
+            series.DataSource = dtTop
+            chartControl.Series.Add(series)
+
+            Dim diagram As XYDiagram = CType(chartControl.Diagram, XYDiagram)
+            diagram.AxisX.Title.Text = "SKU"
+            diagram.AxisX.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+            diagram.AxisY.Title.Text = "Stock"
+            diagram.AxisY.Title.Visibility = DevExpress.Utils.DefaultBoolean.True
+
+            Dim title As New ChartTitle()
+            title.Text = "Top productos por stock actual"
+            chartControl.Titles.Add(title)
+        Catch ex As Exception
+            MessageBox.Show("Se ha producido un error al configurar el gráfico: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function BuildTopProductosData(ByVal dataTable As DataTable, ByVal topN As Integer) As DataTable
+        Dim dt As New DataTable()
+        dt.Columns.Add("Codigo", GetType(String))
+        dt.Columns.Add("Stock", GetType(Decimal))
+
+        If dataTable Is Nothing Then Return dt
+
+        Dim stockByCodigo As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+
+        For Each row As DataRow In dataTable.Rows
+            Dim codigo As String = If(IsDBNull(row("Codigo")), "", Convert.ToString(row("Codigo")).Trim())
+            If codigo = "" Then Continue For
+
+            Dim stock As Decimal = 0D
+            If Not IsDBNull(row("Stock")) Then stock = Convert.ToDecimal(row("Stock"))
+
+            If stockByCodigo.ContainsKey(codigo) Then
+                stockByCodigo(codigo) += stock
+            Else
+                stockByCodigo.Add(codigo, stock)
+            End If
+        Next
+
+        For Each item In stockByCodigo.OrderByDescending(Function(x) x.Value).Take(topN)
+            dt.Rows.Add(item.Key, item.Value)
+        Next
+
+        Return dt
+    End Function
 
     Private Sub ConfigureExistenciasChartFamClas(chartControl As ChartControl, dataTable As DataTable)
         Try
@@ -907,5 +1190,81 @@ Public Class frmStockPorLote
         End Try
     End Sub
 
+    Private Sub ConfigureEstadoUtilizableChart(chartControl As ChartControl, dataTable As DataTable)
+        Try
+            chartControl.Series.Clear()
+            chartControl.Titles.Clear()
+
+            Dim dtEstado As DataTable = BuildEstadoUtilizableData(dataTable)
+
+            Dim series As New DevExpress.XtraCharts.Series("Estado", ViewType.Pie)
+            series.ArgumentDataMember = "Categoria"
+            series.ValueDataMembers.AddRange("Stock")
+            series.DataSource = dtEstado
+            chartControl.Series.Add(series)
+
+            Dim title As New ChartTitle()
+            title.Text = "Stock utilizable vs no utilizable"
+            chartControl.Titles.Add(title)
+        Catch ex As Exception
+            MessageBox.Show("Se ha producido un error al configurar el gráfico: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ConfigureEstadoUtilizableChartDirect(chartControl As ChartControl, dataTable As DataTable)
+        Try
+            chartControl.Series.Clear()
+            chartControl.Titles.Clear()
+
+            Dim series As New DevExpress.XtraCharts.Series("Estado", ViewType.Pie)
+            series.ArgumentDataMember = "Categoria"
+            series.ValueDataMembers.AddRange("Stock")
+            series.DataSource = dataTable
+            chartControl.Series.Add(series)
+
+            Dim title As New ChartTitle()
+            title.Text = "Stock utilizable vs no utilizable"
+            chartControl.Titles.Add(title)
+        Catch ex As Exception
+            MessageBox.Show("Se ha producido un error al configurar el gráfico: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function BuildEstadoUtilizableData(ByVal dataTable As DataTable) As DataTable
+        Dim dt As New DataTable()
+        dt.Columns.Add("Categoria", GetType(String))
+        dt.Columns.Add("Stock", GetType(Decimal))
+
+        Dim utilizable As Decimal = 0D
+        Dim noUtilizable As Decimal = 0D
+
+        If dataTable IsNot Nothing Then
+            For Each row As DataRow In dataTable.Rows
+                Dim estado As String = ""
+                If dataTable.Columns.Contains("Estado") AndAlso Not IsDBNull(row("Estado")) Then
+                    estado = Convert.ToString(row("Estado")).Trim().ToUpperInvariant()
+                End If
+
+                Dim stock As Decimal = 0D
+                If dataTable.Columns.Contains("Disponible_UMBas") AndAlso Not IsDBNull(row("Disponible_UMBas")) Then
+                    stock = Convert.ToDecimal(row("Disponible_UMBas"))
+                End If
+
+                If estado.Contains("BUEN") OrElse estado.Contains("UTILIZABLE") Then
+                    utilizable += stock
+                Else
+                    noUtilizable += stock
+                End If
+            Next
+        End If
+
+        dt.Rows.Add("Utilizable", utilizable)
+        dt.Rows.Add("No utilizable", noUtilizable)
+        Return dt
+    End Function
+
 
 End Class
+
+
+

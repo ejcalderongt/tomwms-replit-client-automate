@@ -6,7 +6,7 @@ Imports Newtonsoft.Json
 
 Public Class ChatGPTService
 
-    Private ReadOnly apiKey As String = "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"
+    Private ReadOnly apiKey As String = Environment.GetEnvironmentVariable("OPENAI_API_KEY")
 
     Dim vprontEJC20231014 As String = "#EJC20231014" & vbCrLf &
                        "analizar estos datos y dime cuál está próximo a vencer, retorna la respuesta en un formato" & vbCrLf &

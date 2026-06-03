@@ -507,7 +507,8 @@ Public Class frmInventarioEnLinea
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdvStock, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -540,7 +541,6 @@ Public Class frmInventarioEnLinea
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -559,6 +559,7 @@ Public Class frmInventarioEnLinea
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
 
             vNombreArchivoLayOutGrid = "frmInventarioEnLinea.xml"
@@ -806,3 +807,6 @@ Public Class frmInventarioEnLinea
     End Sub
 
 End Class
+
+
+

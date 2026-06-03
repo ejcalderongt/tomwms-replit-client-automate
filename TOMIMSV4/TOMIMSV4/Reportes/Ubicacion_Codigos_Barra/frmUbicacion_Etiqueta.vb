@@ -743,6 +743,7 @@ Public Class frmUbicacion_Etiqueta
 
     Private Sub frmUbicacion_Etiqueta_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
         SplashScreenManager.Default.SetWaitFormDescription("Listando ubicaciones...")
 

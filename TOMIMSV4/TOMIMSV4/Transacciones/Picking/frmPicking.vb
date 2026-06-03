@@ -84,6 +84,63 @@ Public Class frmPicking
     Private ReadOnly mPickingManufacturaCache As New Dictionary(Of String, Boolean)
     Private ReadOnly mPickingStockResPorPedidoCache As New Dictionary(Of Integer, List(Of clsBeVW_stock_res))
 
+    Private Sub Refrescar_Lista_Pedidos_Desde_Hijo()
+        Try
+            If InvokeListarPedidos IsNot Nothing Then
+                InvokeListarPedidos.Invoke()
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    '#EJC20260602_DELEGADOS_PICKING: centraliza refresh entre picking/pedido/lista para evitar rutas parciales.
+    Private Sub Notificar_Cambios_Picking(Optional ByVal pRefrescarListaPicking As Boolean = True,
+                                          Optional ByVal pRefrescarPedido As Boolean = True,
+                                          Optional ByVal pRefrescarIdPickingEnPedido As Boolean = False,
+                                          Optional ByVal pRefrescarListaPedidos As Boolean = True)
+
+        Try
+
+            If pRefrescarListaPicking AndAlso InvokeListarPicking IsNot Nothing Then
+                InvokeListarPicking.Invoke()
+            End If
+
+            If pRefrescarPedido Then
+
+                If InvokeCargarObjetoPedido IsNot Nothing Then
+                    InvokeCargarObjetoPedido.Invoke()
+                End If
+
+                If InvokeCargarPedido IsNot Nothing Then
+
+                    Dim clsTrans As New clsTransaccion
+
+                    Try
+                        clsTrans.Begin_Transaction()
+                        InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
+                        clsTrans.Commit_Transaction()
+                    Catch ex As Exception
+                        clsTrans.RollBack_Transaction()
+                    End Try
+
+                End If
+
+            End If
+
+            If pRefrescarIdPickingEnPedido AndAlso InvokeActualizarIdPicking IsNot Nothing Then
+                InvokeActualizarIdPicking.Invoke()
+            End If
+
+            If pRefrescarListaPedidos AndAlso InvokeListarPedidos IsNot Nothing Then
+                InvokeListarPedidos.Invoke()
+            End If
+
+        Catch ex As Exception
+            ' #EJC20260602_DELEGADOS_PICKING: notify best-effort, no interrumpir flujo transaccional ya aplicado.
+        End Try
+
+    End Sub
+
     '#EJC20260522_PICKING_CACHE: los caches viven solo durante una carga completa del picking.
     Private Sub PickingCache_Limpiar()
         mPickingOperadoresBodegaCache.Clear()
@@ -3096,30 +3153,10 @@ Public Class frmPicking
                                     Text, MessageBoxButtons.OK,
                                     MessageBoxIcon.Information)
 
-                If Not InvokeListarPicking Is Nothing Then
-                    InvokeListarPicking.Invoke 'Actualizar lista de picking
-                End If
-
-                If Not InvokeCargarObjetoPedido Is Nothing Then
-                    InvokeCargarObjetoPedido.Invoke()
-                End If
-
-                If Not InvokeCargarPedido Is Nothing Then
-
-                    Dim clsTrans As New clsTransaccion
-
-                    Try
-
-                        clsTrans.Begin_Transaction()
-                        InvokeCargarPedido.Invoke(clsTrans.lConnection, clsTrans.lTransaction)
-                        clsTrans.Commit_Transaction()
-
-                    Catch ex As Exception
-                        clsTrans.RollBack_Transaction()
-                        'ejc, ambiente controlado, no disparar fuegos artificiales.
-                    End Try
-
-                End If
+                Notificar_Cambios_Picking(pRefrescarListaPicking:=True,
+                                          pRefrescarPedido:=True,
+                                          pRefrescarIdPickingEnPedido:=True,
+                                          pRefrescarListaPedidos:=True)
 
                 If Modal Then
 
@@ -3192,13 +3229,42 @@ Public Class frmPicking
                 Dim vBePickingEnc As New clsBeTrans_picking_enc
                 vBePickingEnc = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc)
 
-                Dim vCantidadPickeadaBD As Double = vBePickingEnc.ListaPickingUbic.Sum(Function(b) b.Cantidad_Recibida)
-                Dim vCantidadPickeadaMemoria As Double = BePickingEnc.ListaPickingUbic.Sum(Function(b) b.Cantidad_Recibida)
+                Dim vListaBD As List(Of clsBeTrans_picking_ubic) = If(vBePickingEnc.ListaPickingUbic, New List(Of clsBeTrans_picking_ubic))
+                Dim vListaMem As List(Of clsBeTrans_picking_ubic) = If(BePickingEnc.ListaPickingUbic, New List(Of clsBeTrans_picking_ubic))
 
-                If vCantidadPickeadaBD <> vCantidadPickeadaMemoria Then
+                Dim vCantidadPickeadaBD As Double = Math.Round(vListaBD.Sum(Function(b) b.Cantidad_Recibida), 6)
+                Dim vCantidadPickeadaMemoria As Double = Math.Round(vListaMem.Sum(Function(b) b.Cantidad_Recibida), 6)
+
+                Dim vCantidadVerificadaBD As Double = Math.Round(vListaBD.Sum(Function(b) b.Cantidad_Verificada), 6)
+                Dim vCantidadVerificadaMemoria As Double = Math.Round(vListaMem.Sum(Function(b) b.Cantidad_Verificada), 6)
+
+                Dim vCantidadLineasBD As Integer = vListaBD.Count
+                Dim vCantidadLineasMemoria As Integer = vListaMem.Count
+
+                Dim vFirmaLineasBD As String = String.Join("|",
+                    vListaBD.OrderBy(Function(x) x.IdPickingUbic).
+                            ThenBy(Function(x) x.IdStockRes).
+                            Select(Function(x) String.Format("{0}:{1}", x.IdPickingUbic, x.IdStockRes)))
+
+                Dim vFirmaLineasMem As String = String.Join("|",
+                    vListaMem.OrderBy(Function(x) x.IdPickingUbic).
+                             ThenBy(Function(x) x.IdStockRes).
+                             Select(Function(x) String.Format("{0}:{1}", x.IdPickingUbic, x.IdStockRes)))
+
+                Dim vEstadoBD As String = If(vBePickingEnc.Estado, "")
+                Dim vEstadoMem As String = If(BePickingEnc.Estado, "")
+
+                Dim vTieneDrift As Boolean =
+                    (vCantidadPickeadaBD <> vCantidadPickeadaMemoria) OrElse
+                    (vCantidadVerificadaBD <> vCantidadVerificadaMemoria) OrElse
+                    (vCantidadLineasBD <> vCantidadLineasMemoria) OrElse
+                    (vFirmaLineasBD <> vFirmaLineasMem) OrElse
+                    (vEstadoBD <> vEstadoMem)
+
+                If vTieneDrift Then
 
                     If XtraMessageBox.Show("El picking fue modificado (probablemente se procesaron líneas en la HH),
-                                            para guardarlo es necesario recargar y aplicar nuevamente los cambios realizados, 
+                                            para continuar debe recargar y aplicar nuevamente los cambios realizados, 
                                             ¿Recargar picking?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
                         Cargar_Datos()
@@ -3330,9 +3396,10 @@ Public Class frmPicking
 
                         XtraMessageBox.Show("Se actualizó el picking a estado pendiente", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                        If Not InvokeListarPicking Is Nothing Then
-                            InvokeListarPicking.Invoke()
-                        End If
+                        Notificar_Cambios_Picking(pRefrescarListaPicking:=True,
+                                                  pRefrescarPedido:=True,
+                                                  pRefrescarIdPickingEnPedido:=True,
+                                                  pRefrescarListaPedidos:=True)
 
                         '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
                         If InvokeCargarObjetoPedido IsNot Nothing Then
@@ -3398,7 +3465,8 @@ Public Class frmPicking
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgridPickingUbic, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -3431,7 +3499,6 @@ Public Class frmPicking
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -3625,6 +3692,7 @@ Public Class frmPicking
     Dim vListasOperadorTramoZonaPickingPorBodega As New List(Of clsBeOperador_zona_picking_tramo)
     Private Sub frmPicking_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         CheckForIllegalCrossThreadCalls = False
 
         '#EJC20210716:Restaurar LayoutGrid en LotesPorUbi.
@@ -4665,6 +4733,9 @@ Public Class frmPicking
 
     Private Sub grdPickingUbic_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles grdvPickingUbic.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             Dim View1 As GridView = sender
@@ -5404,9 +5475,10 @@ Public Class frmPicking
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information)
 
-                    If Not InvokeListarPicking Is Nothing Then
-                        InvokeListarPicking.Invoke 'Actualizar lista de picking
-                    End If
+                    Notificar_Cambios_Picking(pRefrescarListaPicking:=True,
+                                              pRefrescarPedido:=True,
+                                              pRefrescarIdPickingEnPedido:=True,
+                                              pRefrescarListaPedidos:=True)
 
                     '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
                     If InvokeCargarObjetoPedido IsNot Nothing Then
@@ -5445,9 +5517,10 @@ Public Class frmPicking
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information)
 
-                    If Not InvokeListarPicking Is Nothing Then
-                        InvokeListarPicking.Invoke()
-                    End If
+                    Notificar_Cambios_Picking(pRefrescarListaPicking:=True,
+                                              pRefrescarPedido:=True,
+                                              pRefrescarIdPickingEnPedido:=False,
+                                              pRefrescarListaPedidos:=True)
 
                     '#CKFK20260602 Se actualizó el pedido después de verificar pickeados
                     If InvokeCargarObjetoPedido IsNot Nothing Then
@@ -5516,6 +5589,9 @@ Public Class frmPicking
 
     End Class
     Private Sub DgridOperadorBodega_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles DgridOperadorBodega.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -6081,6 +6157,7 @@ Public Class frmPicking
             With frmDespacho
                 .Modo = frmDespacho.TipoTrans.Nuevo
                 .WindowState = FormWindowState.Maximized
+                .InvokeListarPedidos = AddressOf Refrescar_Lista_Pedidos_Desde_Hijo
                 .InvokeCargarPedido = AddressOf Cargar_Datos
                 .Despacho_Cargado_Desde_Picking = True
                 .Activate()
@@ -6146,3 +6223,7 @@ Public Class frmPicking
         chkverifica_auto.Enabled = estado
     End Sub
 End Class
+
+
+
+

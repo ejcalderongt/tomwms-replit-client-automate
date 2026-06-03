@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.Utils
@@ -2531,7 +2531,12 @@ Public Class frmPedido_List
             printingSystem1.PageSettings.Landscape = True
             printLink.Component = DgridPedido
             printLink.Landscape = True
-            printLink.CreateDocument(printingSystem1)
+            Dim colScope As IDisposable = clsUiPrintHelper.BeginRelevantColumnsScope(DgridPedido, 12)
+            Try
+                printLink.CreateDocument(printingSystem1)
+            Finally
+                colScope.Dispose()
+            End Try
             printingSystem1.PreviewFormEx.ShowDialog()
             printingSystem1.Dispose()
 
@@ -2624,6 +2629,9 @@ Public Class frmPedido_List
     End Sub
 
     Private Sub gviewEncabezadoPedido_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gviewEncabezadoPedido.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 

@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports DevExpress.XtraCharts
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -87,6 +87,7 @@ Public Class frmAnalitica1
     End Sub
 
     Private Sub frmAnalita1_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         'TODO: This line of code loads data into the 'DsetAnalitica.VW_Stock_Rep_20200112' table. You can move, or remove it, as needed.
         ' Me.VW_Stock_Rep_20200112TableAdapter.Fill(Me.DsetAnalitica.VW_Stock_Rep_20200112)
 
@@ -118,8 +119,6 @@ Public Class frmAnalitica1
 
         Try
 
-            'GridView1.OptionsPrint.ExpandAllDetails = True
-            'GridView1.OptionsPrint.PrintDetails = True
 
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
@@ -153,7 +152,6 @@ Public Class frmAnalitica1
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -242,3 +240,6 @@ Public Class frmAnalitica1
     End Sub
 
 End Class
+
+
+

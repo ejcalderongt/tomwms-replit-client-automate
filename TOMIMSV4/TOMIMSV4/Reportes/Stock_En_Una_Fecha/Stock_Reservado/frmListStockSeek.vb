@@ -106,6 +106,7 @@ Public Class frmListStockSeek
     End Sub
 
     Private Sub frmListStockSeek_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         SetDatataTable()
         Cargar_Datos()
     End Sub

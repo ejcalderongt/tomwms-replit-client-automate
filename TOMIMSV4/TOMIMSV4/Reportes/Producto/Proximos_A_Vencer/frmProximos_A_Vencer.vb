@@ -139,6 +139,7 @@ Public Class frmProximos_A_Vencer
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20191205: Un año debería ser el máximo
             'Pensar si hace sentido conocer vencimientos a mas de un año.
             'Att Erik del pasado.
@@ -179,7 +180,8 @@ Public Class frmProximos_A_Vencer
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -223,7 +225,6 @@ Public Class frmProximos_A_Vencer
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -349,3 +350,7 @@ Public Class frmProximos_A_Vencer
     End Function
 
 End Class
+
+
+
+

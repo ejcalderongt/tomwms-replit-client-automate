@@ -390,7 +390,7 @@ namespace WMSWebAPI.Services.Salidas
                 Console.WriteLine($"[INFO] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_START | Documento={noDocumento}");
 
                 var stageWatch = Stopwatch.StartNew();
-                if (!Datos_Validos(_configuration, BeInavPedSalida))
+                if (BeInavPedSalida == null || !Datos_Validos(_configuration, BeInavPedSalida))
                 {
                     result.Exito = false;
                     result.Mensaje = "Datos no válidos";
@@ -455,7 +455,7 @@ namespace WMSWebAPI.Services.Salidas
                 Console.WriteLine($"[ERROR] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} - #MI3_PERF_SERVICE_ERROR | Documento={noDocumento} | Ms={totalWatch.ElapsedMilliseconds} | Error={ex.Message}");
                 result.Exito = false;
                 result.Mensaje = ex.Message;
-                result.LineasFallo = BuildLineasFallo(BeInavPedSalida, ex.Message);
+                result.LineasFallo = BuildLineasFallo(BeInavPedSalida!, ex.Message);
             }
 
             return result;

@@ -1202,6 +1202,14 @@ Row event argument class
  <param name="pIdBodega"></param>
  <returns></returns>
 </member>
+<member name="M:TOMWMS.clsLnTrans_picking_enc.Get_Rpt_Productividad_Picking_Dashboard_By_IdBodega(System.DateTime,System.DateTime,System.Int32)">
+ <summary>
+ #EJC20260602_PRODUCTIVIDAD_PICKING_DASHBOARD:
+ Dashboard de productividad de picking por bodega/rango en un solo roundtrip SQL.
+ Tablas esperadas:
+ 0=KPI, 1=Operador, 2=Tendencia, 3=TipoDocumento, 4=Detalle.
+ </summary>
+</member>
 <member name="M:TOMWMS.clsLnTrans_picking_ubic.Get_Single_By_IdStock(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC20220330: Obtener el registro de picking por IdStock y Bodega asociado para actualizar el IdUbicacionVirtual
@@ -1467,6 +1475,12 @@ Row event argument class
  <param name="pIdPropietarioBodega"></param>
  <param name="ExcluirSinExistencia"></param>
  <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock_Dataset(System.Int32,System.Int32,System.Boolean)">
+ <summary>
+ #EJC20260602_STOCK_POR_LOTE_DATASET
+ Obtiene en un solo roundtrip: detalle, riesgo de vencimiento, top SKU y utilizable/no utilizable.
+ </summary>
 </member>
 <member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock_For_SAP_Sin_Lote(System.Int32)">
  <summary>

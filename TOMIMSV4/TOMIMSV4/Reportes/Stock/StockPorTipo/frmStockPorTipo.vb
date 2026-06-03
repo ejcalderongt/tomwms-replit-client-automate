@@ -108,6 +108,7 @@ Public Class frmStockPorTipo
     '#EJC20210716:Guardar LayoutGrid en frmstockConLP.
     Private vNombreArchivoLayOutGrid As String = ""
     Private Sub frmStockPorLote_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         'SetDatataTable()
         '#EJC20210716:Restaurar LayoutGrid en frmstock_especifico_list.vb
         vNombreArchivoLayOutGrid = "frmStockPorTipo.xml"
@@ -125,7 +126,8 @@ Public Class frmStockPorTipo
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdStockPorLote, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -169,7 +171,6 @@ Public Class frmStockPorTipo
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -392,6 +393,10 @@ Public Class frmStockPorTipo
     End Sub
 
     Private Sub frmStockPorTipo_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
     End Sub
 End Class
+
+
+

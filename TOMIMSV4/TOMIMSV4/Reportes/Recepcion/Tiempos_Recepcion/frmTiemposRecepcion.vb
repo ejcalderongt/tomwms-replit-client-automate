@@ -141,6 +141,7 @@ Public Class frmTiemposRecepcion
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             AP.Listar_Bodegas_By_Usuario(cmbBodega)
 
             cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
@@ -168,7 +169,8 @@ Public Class frmTiemposRecepcion
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -212,7 +214,6 @@ Public Class frmTiemposRecepcion
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -307,3 +308,7 @@ Public Class frmTiemposRecepcion
     End Function
 
 End Class
+
+
+
+

@@ -3,6 +3,55 @@ Imports System.Reflection
 
 Public Class clsLnVW_Movimientos
 
+    'EJC20260602_STOCK_FECHA: Mapper rápido para query de Stock en una fecha (columnas fijas, sin Contains por fila).
+    Public Shared Sub Cargar_StockEnFecha(ByRef oBeVW_movimientos As clsBeVW_Movimientos, ByRef dr As DataRow)
+
+        Try
+
+            With oBeVW_movimientos
+                .Codigo = IIf(IsDBNull(dr.Item("Codigo")), "", dr.Item("Codigo"))
+                .Producto = IIf(IsDBNull(dr.Item("Producto")), "", dr.Item("Producto"))
+                .Cantidad = IIf(IsDBNull(dr.Item("Cantidad")), 0, dr.Item("Cantidad"))
+                .EstadoOrigen = IIf(IsDBNull(dr.Item("EstadoOrigen")), "", dr.Item("EstadoOrigen"))
+                .EstadoDestino = IIf(IsDBNull(dr.Item("EstadoDestino")), "", dr.Item("EstadoDestino"))
+                .TipoTarea = IIf(IsDBNull(dr.Item("IdTipoTarea")), 0, dr.Item("IdTipoTarea"))
+                .TTarea = IIf(IsDBNull(dr.Item("TipoTarea")), "", dr.Item("TipoTarea"))
+                .Lote = IIf(IsDBNull(dr.Item("lote")), "", dr.Item("lote"))
+                .Fecha_Vence = IIf(IsDBNull(dr.Item("Fecha_Vence")), New Date(1900, 1, 1), dr.Item("Fecha_Vence"))
+                .IdTipoTarea = IIf(IsDBNull(dr.Item("IdTipoTarea")), 0, dr.Item("IdTipoTarea"))
+                .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
+                .IdUnidadMedida = IIf(IsDBNull(dr.Item("IdUnidadMedida")), 0, dr.Item("IdUnidadMedida"))
+                .IdEstadoOrigen = IIf(IsDBNull(dr.Item("IdEstadoOrigen")), 0, dr.Item("IdEstadoOrigen"))
+                .IdProductoBodega = IIf(IsDBNull(dr.Item("IdProductoBodega")), 0, dr.Item("IdProductoBodega"))
+                .Fecha = IIf(IsDBNull(dr.Item("Fecha")), New Date(1900, 1, 1), dr.Item("Fecha"))
+                .UMBas = IIf(IsDBNull(dr.Item("UMBas")), "", dr.Item("UMBas"))
+                'EJC20260602_STOCK_FECHA_FASE2: la salida puede venir como "Presentación" o "Presentacion" según query/fuente.
+                If dr.Table.Columns.Contains("Presentación") Then
+                    .Presentacion = IIf(IsDBNull(dr.Item("Presentación")), "", dr.Item("Presentación"))
+                ElseIf dr.Table.Columns.Contains("Presentacion") Then
+                    .Presentacion = IIf(IsDBNull(dr.Item("Presentacion")), "", dr.Item("Presentacion"))
+                Else
+                    .Presentacion = ""
+                End If
+                .Operador = IIf(IsDBNull(dr.Item("Operador")), "", dr.Item("Operador"))
+
+                If dr.Table.Columns.Contains("barra_pallet") Then
+                    .Lic_Plate = IIf(IsDBNull(dr.Item("barra_pallet")), "", dr.Item("barra_pallet"))
+                End If
+                If dr.Table.Columns.Contains("Clasificacion") Then
+                    .Clasificacion = IIf(IsDBNull(dr.Item("Clasificacion")), "", dr.Item("Clasificacion"))
+                End If
+                If dr.Table.Columns.Contains("Area_Origen") Then
+                    .Area_Origen = IIf(IsDBNull(dr.Item("Area_Origen")), "", dr.Item("Area_Origen"))
+                End If
+            End With
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Sub
+
     Public Shared Sub Cargar(ByRef oBeVW_movimientos As clsBeVW_Movimientos, ByRef dr As DataRow)
 
         Try
