@@ -1,4 +1,4 @@
-Imports System.Configuration
+ÔªøImports System.Configuration
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -570,7 +570,7 @@ Public Class clsLnI_nav_ped_compra_enc
                                                  lTransInterface As SqlTransaction) As Boolean
 
         Try
-            ' Buscar UM b·sica por cÛdigo y propietario
+            ' Buscar UM b√°sica por c√≥digo y propietario
             BeUnidadMedidaPedCompra = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(navPedidoCompraDet.Unit_of_Measure_Code,
                                                                                             BeConfigEnc.IdPropietario,
                                                                                             lConnection,
@@ -579,7 +579,7 @@ Public Class clsLnI_nav_ped_compra_enc
             If BeUnidadMedidaPedCompra IsNot Nothing Then
                 ' Confirmar que el producto existe con la unidad medida
                 If Not clsLnProducto.Existe(navPedidoCompraDet.No, BeUnidadMedidaPedCompra.IdUnidadMedida, lConnection, lTransInterface) Then
-                    ' Buscar presentaciÛn por cÛdigo variante si existe
+                    ' Buscar presentaci√≥n por c√≥digo variante si existe
                     If navPedidoCompraDet.Variant_Code <> "" Then
                         BePresentacion = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
                                                                                                   navPedidoCompraDet.Variant_Code,
@@ -588,9 +588,9 @@ Public Class clsLnI_nav_ped_compra_enc
                         If BePresentacion IsNot Nothing Then
                             BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
                         Else
-                            Throw New Exception("ERROR_20220727_1228A: No se encontrÛ la presentaciÛn asociada al cÛdigo: " & navPedidoCompraDet.No &
-                                            " Con cÛdigo de variante: " & navPedidoCompraDet.Variant_Code & " para el IdProducto: " &
-                                            BeProductoBodega.IdProducto & " en la lÌnea " & navPedidoCompraDet.Line_No)
+                            Throw New Exception("ERROR_20220727_1228A: No se encontr√≥ la presentaci√≥n asociada al c√≥digo: " & navPedidoCompraDet.No &
+                                            " Con c√≥digo de variante: " & navPedidoCompraDet.Variant_Code & " para el IdProducto: " &
+                                            BeProductoBodega.IdProducto & " en la l√≠nea " & navPedidoCompraDet.Line_No)
                         End If
                     End If
                 End If
@@ -599,7 +599,7 @@ Public Class clsLnI_nav_ped_compra_enc
                     Throw New Exception($"Producto: {navPedidoCompraDet.No} UnidMedBas No definida")
                 End If
 
-                ' Buscar presentaciÛn por nombre
+                ' Buscar presentaci√≥n por nombre
                 BePresentacion = clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(BeProductoBodega.IdProducto,
                                                                                        navPedidoCompraDet.Unit_of_Measure_Code,
                                                                                        lConnection,
@@ -608,11 +608,11 @@ Public Class clsLnI_nav_ped_compra_enc
                 If BePresentacion IsNot Nothing Then
                     BeUnidadMedidaPedCompra = BeProductoBodega.Producto.UnidadMedida
                 Else
-                    Throw New Exception($"La unidad de medida: {navPedidoCompraDet.Unit_of_Measure_Code} no est· definida para el cÛdigo de producto:{navPedidoCompraDet.No} en la tabla unidad_medida.")
+                    Throw New Exception($"La unidad de medida: {navPedidoCompraDet.Unit_of_Measure_Code} no est√° definida para el c√≥digo de producto:{navPedidoCompraDet.No} en la tabla unidad_medida.")
                 End If
             End If
 
-            ' Evaluar si se requiere conversiÛn a UM b·sica
+            ' Evaluar si se requiere conversi√≥n a UM b√°sica
             If BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso BeConfigEnc.Interface_SAP Then
                 BePresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(BeProductoBodega.IdProducto,
                                                                                                    lConnection,
@@ -620,7 +620,7 @@ Public Class clsLnI_nav_ped_compra_enc
 
                 If BePresentacion IsNot Nothing Then
                     If BePresentacion.Factor <= 0 Then
-                        Throw New Exception("ERROR_202210251745: El factor es 0 para la presentaciÛn NO se puede inferir la conversiÛn.")
+                        Throw New Exception("ERROR_202210251745: El factor es 0 para la presentaci√≥n NO se puede inferir la conversi√≥n.")
                     End If
 
                     clsPublic.Split_Decimal(navPedidoCompraDet.Quantity / BePresentacion.Factor,
@@ -659,6 +659,7 @@ Public Class clsLnI_nav_ped_compra_enc
                                                       ByRef LotesExistentes As List(Of clsBeTrans_oc_det_lote),
                                                       ByVal gBeOrdenCompraEnc As clsBeTrans_oc_enc,
                                                       ByVal pDetallePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                                      ByVal pControlTallaColor As Boolean,
                                                       lConnection As SqlConnection,
                                                       lTransInterface As SqlTransaction) As Boolean
         Try
@@ -698,7 +699,7 @@ Public Class clsLnI_nav_ped_compra_enc
                 If BeProductoTallaColor IsNot Nothing Then
                     BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
                 Else
-                    lblprg += "No existe la Talla/Color definidas para el cÛdigo " & navPedidoCompraDet.No & vbNewLine
+                    lblprg += "No existe la Talla/Color definidas para el c√≥digo " & navPedidoCompraDet.No & vbNewLine
                     Return False
                 End If
             End If
@@ -735,63 +736,67 @@ Public Class clsLnI_nav_ped_compra_enc
                         'talla_color
                         If BeConfigEnc.Control_lote Then
 
-                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
-                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
-                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
+                            Dim vCodigoProducto As String = If(navPedidoCompraDet.No, "").Trim().ToUpperInvariant()
+                            Dim vCodigoTalla As String = If(navPedidoCompraDet.Size, "").Trim().ToUpperInvariant()
+                            Dim vCodigoColor As String = If(navPedidoCompraDet.Color, "").Trim().ToUpperInvariant()
 
-                        Else
-                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
-                                                                               x.No_Linea = navPedidoCompraDet.Line_No AndAlso
-                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
-                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
+                            Dim lFiltroPickingUbic As List(Of clsBeTrans_picking_ubic)
+
+                            If pControlTallaColor Then
+                                '#EJC20260603_FIX_REC_TRASLADO_TC: filtro por bodega con control talla/color.
+                                'Incluye fallback para historial con No_Linea=0.
+                                lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
+                                                                                If(x.CodigoProducto, "").Trim().ToUpperInvariant() = vCodigoProducto AndAlso
+                                                                                If(x.Codigo_Talla, "").Trim().ToUpperInvariant() = vCodigoTalla AndAlso
+                                                                                If(x.Codigo_Color, "").Trim().ToUpperInvariant() = vCodigoColor AndAlso
+                                                                                (x.No_Linea = navPedidoCompraDet.Line_No OrElse x.No_Linea = 0))).ToList()
+                            Else
+                                lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) If(x Is Nothing, False,
+                                                                                If(x.CodigoProducto, "").Trim().ToUpperInvariant() = vCodigoProducto AndAlso
+                                                                                (x.No_Linea = navPedidoCompraDet.Line_No OrElse x.No_Linea = 0))).ToList()
+                            End If
+
+                            For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
+
+                                BeOcDetLote = New clsBeTrans_oc_det_lote
+                                BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet
+                                BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
+                                BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
+                                BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada
+                                BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea
+                                BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
+                                BeOcDetLote.Lote = BePickingUbic.Lote
+                                BeOcDetLote.Lic_Plate = BePickingUbic.Lic_plate
+                                BeOcDetLote.Cantidad_recibida = 0
+                                BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_Producto
+                                BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_Vence
+                                BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion
+                                BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
+                                BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
+                                BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
+                                BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
+                                BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
+                                BeOcDetLote.Color = BePickingUbic.Codigo_Color
+                                BeOcDetLote.Activo = True
+                                BeOcDetLote.User_agr = BePedidoCompraDet.User_agr
+                                BeOcDetLote.User_mod = BePedidoCompraDet.User_mod
+                                clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
+
+                                lMaxIdLoteDet += 1
+
+                            Next
+
                         End If
-
-                        lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
-                                                                               x.No_Linea = navPedidoCompraDet.Line_No AndAlso
-                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
-                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
-
-                        For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
-
-                            BeOcDetLote = New clsBeTrans_oc_det_lote
-                            BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet
-                            BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
-                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
-                            BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada
-                            BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea
-                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
-                            BeOcDetLote.Lote = BePickingUbic.Lote
-                            BeOcDetLote.Lic_Plate = BePickingUbic.Lic_plate
-                            BeOcDetLote.Cantidad_recibida = 0
-                            BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_Producto
-                            BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_Vence
-                            BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion
-                            BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
-                            BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
-                            BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
-                            BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
-                            BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
-                            BeOcDetLote.Color = BePickingUbic.Codigo_Color
-                            BeOcDetLote.Activo = True
-                            BeOcDetLote.User_agr = BePedidoCompraDet.User_agr
-                            BeOcDetLote.User_mod = BePedidoCompraDet.User_mod
-                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
-
-                            lMaxIdLoteDet += 1
-
-                        Next
 
                     End If
 
+                    vContadorLineasDetInsertadas += 1
+
+                    Return True
+
                 End If
 
-                vContadorLineasDetInsertadas += 1
-
-                Return True
-
-            End If
-
-            Return False
+                Return False
 
         Catch ex As Exception
             Dim vMsgEx3 As String = String.Format("Error al insertar desde ws a intermedia: {0}{1}{2}", ex.Message, ex.Source, vbNewLine)
@@ -807,13 +812,13 @@ Public Class clsLnI_nav_ped_compra_enc
                                             lConnection As SqlConnection,
                                             lTransInterface As SqlTransaction)
         Try
-            ' ValidaciÛn por cÛdigo de unidad de medida (nombre)
+            ' Validaci√≥n por c√≥digo de unidad de medida (nombre)
             BePresentacion = clsLnProducto_presentacion.Existe_Presentacion_By_Nombre(BeProductoBodega.IdProducto,
                                                                                        navPedidoCompraDet.Unit_of_Measure_Code,
                                                                                        lConnection,
                                                                                        lTransInterface)
 
-            ' ValidaciÛn por variant_code si aplica
+            ' Validaci√≥n por variant_code si aplica
             If Not String.IsNullOrWhiteSpace(navPedidoCompraDet.Variant_Code) Then
                 BePresentacion = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
                                                                                            navPedidoCompraDet.Variant_Code,
@@ -821,8 +826,8 @@ Public Class clsLnI_nav_ped_compra_enc
                                                                                            lTransInterface)
 
                 If BePresentacion Is Nothing Then
-                    Throw New Exception("ERROR_20220727_1228E: No se encontrÛ la presentaciÛn asociada al cÛdigo: " &
-                                    navPedidoCompraDet.No & " Con cÛdigo variante: " & navPedidoCompraDet.Variant_Code)
+                    Throw New Exception("ERROR_20220727_1228E: No se encontr√≥ la presentaci√≥n asociada al c√≥digo: " &
+                                    navPedidoCompraDet.No & " Con c√≥digo variante: " & navPedidoCompraDet.Variant_Code)
                 End If
             End If
         Catch ex As Exception
@@ -856,10 +861,10 @@ Public Class clsLnI_nav_ped_compra_enc
             If BePedidoCompraDet.Cantidad <> 0 Then
                 lblprg += vbNewLine
                 lblprg += String.Format(If(DifCant = 0,
-                                           "La cantidad no se modificÛ para pedido {0} producto {1} ",
+                                           "La cantidad no se modific√≥ para pedido {0} producto {1} ",
                                            If(DifCant > 0,
-                                              "La cantidad incrementÛ respecto a TOM para pedido {0} producto {1} ",
-                                              "La cantidad disminuyÛ respecto al original en WMS  para pedido {0} producto {1} ")),
+                                              "La cantidad increment√≥ respecto a TOM para pedido {0} producto {1} ",
+                                              "La cantidad disminuy√≥ respecto al original en WMS  para pedido {0} producto {1} ")),
                                         navPedidoCompraEnc.No,
                                         navPedidoCompraDet.No)
             End If
