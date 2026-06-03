@@ -644,6 +644,7 @@ Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
+
     Public Shared Function InsertarDetalleOrdenCompra(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                                       navPedidoCompraDet As clsBeI_nav_ped_compra_det,
                                                       BeProductoBodega As clsBeProducto_bodega,
@@ -729,8 +730,26 @@ Public Class clsLnI_nav_ped_compra_enc
                         Dim BeStock As New clsBeStock
                         Dim loteDouble As Double = 0
                         Dim loteEntero As Integer = 0
+                        Dim lFiltroPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
 
-                        Dim lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso x.No_Linea = navPedidoCompraDet.Line_No).ToList()
+                        'talla_color
+                        If BeConfigEnc.Control_lote Then
+
+                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
+                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
+                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
+
+                        Else
+                            lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
+                                                                               x.No_Linea = navPedidoCompraDet.Line_No AndAlso
+                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
+                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
+                        End If
+
+                        lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso
+                                                                               x.No_Linea = navPedidoCompraDet.Line_No AndAlso
+                                                                               x.Codigo_Talla = navPedidoCompraDet.Size AndAlso
+                                                                               x.Codigo_Color = navPedidoCompraDet.Color).ToList()
 
                         For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
 
