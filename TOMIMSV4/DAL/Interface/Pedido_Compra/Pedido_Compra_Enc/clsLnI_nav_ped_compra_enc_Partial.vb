@@ -3582,6 +3582,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                     Try
 
                         Dim DetallePickingUbic As New List(Of clsBeTrans_picking_ubic)
+                        Dim lControlTallaColor As Boolean = False
 
                         Dim creada = InicializarEncabezadoNuevaOC(navPedidoCompraEnc,
                                                                   BeConfigEnc,
@@ -3604,6 +3605,10 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
                             '#CKFK20251013 Si la orden de compra viene de un traslado interno en NAV, se copian las ubicaciones de picking a los lotes de la orden de compra
                             DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_NoDocExterno(Val(navPedidoCompraEnc.Internal_Transfer_Document_No), lConnection, lTransInterface)
+                            Dim lBeBodegaDestino = clsLnBodega.GetSingle_By_Idbodega(IdBodegaDestino, lConnection, lTransInterface)
+                            If lBeBodegaDestino IsNot Nothing Then
+                                lControlTallaColor = lBeBodegaDestino.Control_Talla_Color
+                            End If
 
                         End If
 
@@ -3611,7 +3616,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                             Dim BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet, IdBodegaDestino, BeConfigEnc, lConnection, lTransInterface)
                             If BeProductoBodega IsNot Nothing Then
                                 ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
-                                InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lConnection, lTransInterface)
+                                InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lControlTallaColor, lConnection, lTransInterface)
                             Else
                                 Dim beProducto As New clsBeProducto
                                 beProducto = clsLnProducto.Get_Single_By_Codigo(navPedidoCompraDet.No, lConnection, lTransInterface)
@@ -3631,7 +3636,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
                                     lblprg += $"El código de producto:{navPedidoCompraDet.No} no estaba asociado a la bodega y ya lo asociamos:{navPedidoCompraDet.Location_Code}" & vbNewLine
                                     ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
-                                    InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lConnection, lTransInterface)
+                                    InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lControlTallaColor, lConnection, lTransInterface)
 
                                 Else
 
