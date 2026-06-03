@@ -784,11 +784,20 @@ Public Class frmAjusteStock
             DgCombo.DisplayMember = "Nombre"
 
             If pidmotivo <> -1 Then
-                DgCombo.Value = pidmotivo
+                If ComboCellContainsValue(DgCombo, pidmotivo) Then
+                    DgCombo.Value = pidmotivo
+                Else
+                    ' #EJC20260603_FIX_AJUSTE_MOTIVO_COMBO: el motivo guardado no existe en catálogo actual.
+                    DgCombo.Value = Nothing
+                End If
             Else
                 If dt.Rows.Count = 1 Then
                     pidmotivo = 1
-                    DgCombo.Value = 1
+                    If ComboCellContainsValue(DgCombo, pidmotivo) Then
+                        DgCombo.Value = pidmotivo
+                    Else
+                        DgCombo.Value = Nothing
+                    End If
                 End If
             End If
 
@@ -873,7 +882,11 @@ Public Class frmAjusteStock
 
                 If pidtipo <> -1 Then
                     dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
-                    DgComboTipo.Value = pidtipo
+                    If ComboCellContainsValue(DgComboTipo, pidtipo) Then
+                        DgComboTipo.Value = pidtipo
+                    Else
+                        DgComboTipo.Value = Nothing
+                    End If
                     IdTipoAjuste = pidtipo
                     Valor_Tipo_Ajuste(pIndex)
                 End If
@@ -2449,7 +2462,11 @@ Public Class frmAjusteStock
             If pIdBodegaERP <> 0 Then
                 If DgComboBodega.Items.Count > 0 Then
                     If Not pIdBodegaERP = -1 Then
-                        DgComboBodega.Value = pIdBodegaERP
+                        If ComboCellContainsValue(DgComboBodega, pIdBodegaERP) Then
+                            DgComboBodega.Value = pIdBodegaERP
+                        Else
+                            DgComboBodega.Value = Nothing
+                        End If
                     Else
                         DgComboBodega.Value = Nothing
                     End If
@@ -3693,11 +3710,64 @@ Public Class frmAjusteStock
     Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
 
         Try
+            e.ThrowException = False
+
+            If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
+                Dim colName As String = dgrid.Columns(e.ColumnIndex).Name
+
+                If colName = "motivoajuste" OrElse colName = "tipoajuste" OrElse colName = "ColBodega" Then
+                    dgrid.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = Nothing
+                    clsLnLog_error_wms.Agregar_Error("#EJC20260603_FIX_AJUSTE_MOTIVO_COMBO DataError: valor no válido en combo " & colName)
+                End If
+            End If
 
         Catch ex As Exception
             Debug.Print(ex.Message)
         End Try
     End Sub
+
+    Private Function ComboCellContainsValue(ByVal pCell As DataGridViewComboBoxCell, ByVal pValue As Object) As Boolean
+
+        Try
+            If pCell Is Nothing OrElse pValue Is Nothing OrElse IsDBNull(pValue) Then Return False
+
+            Dim pValueText As String = pValue.ToString().Trim()
+            If pValueText = "" Then Return False
+
+            Dim dt As DataTable = TryCast(pCell.DataSource, DataTable)
+            If dt IsNot Nothing Then
+                If String.IsNullOrWhiteSpace(pCell.ValueMember) Then
+                    For Each r As DataRow In dt.Rows
+                        If String.Equals(Convert.ToString(r(0)).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                            Return True
+                        End If
+                    Next
+                    Return False
+                End If
+
+                For Each r As DataRow In dt.Rows
+                    If String.Equals(Convert.ToString(r(pCell.ValueMember)).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                Next
+                Return False
+            End If
+
+            If pCell.Items IsNot Nothing AndAlso pCell.Items.Count > 0 Then
+                For Each i As Object In pCell.Items
+                    If String.Equals(Convert.ToString(i).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                Next
+                Return False
+            End If
+
+            Return False
+        Catch
+            Return False
+        End Try
+
+    End Function
 
     Private Sub cmbTipoAjuste_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoAjuste.EditValueChanged
         Try
