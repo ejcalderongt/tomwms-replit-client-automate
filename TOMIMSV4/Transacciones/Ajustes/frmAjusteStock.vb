@@ -1599,6 +1599,7 @@ Public Class frmAjusteStock
         Dim DgCombo As New DataGridViewComboBoxCell()
         Dim sr As Integer
         Dim vNombreMotivo As String = ""
+        Dim vIdMotivo As Integer = 0
 
         Try
 
@@ -1610,16 +1611,23 @@ Public Class frmAjusteStock
 
                 DgCombo = TryCast(dgrid.Rows(sr).Cells("motivoajuste"), DataGridViewComboBoxCell)
 
-                vNombreMotivo = DgCombo.EditedFormattedValue
+                '#EJC20260603_FIX_AJUSTE_MOTIVO_MAP: mapear por Value(ID) del combo para evitar pérdida por nombre.
+                vIdMotivo = Get_IdMotivo_From_Grid_Row(sr)
 
-                If vNombreMotivo.Trim <> "" AndAlso vNombreMotivo <> "System.Data.DataRowView" Then
+                If vIdMotivo > 0 Then
+                    lBeTransAjusteDet(sr).IdMotivoAjuste = vIdMotivo
+                Else
+                    vNombreMotivo = DgCombo.EditedFormattedValue
 
-                    Get_IdMotivo_By_Nombre(vNombreMotivo)
+                    If vNombreMotivo.Trim <> "" AndAlso vNombreMotivo <> "System.Data.DataRowView" Then
 
-                    If IdMotivoAjuste > 0 Then
-                        lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        Get_IdMotivo_By_Nombre(vNombreMotivo)
+
+                        If IdMotivoAjuste > 0 Then
+                            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        End If
+
                     End If
-
                 End If
 
             End If
@@ -1673,9 +1681,9 @@ Public Class frmAjusteStock
 
                 IdMotivoAjuste = -1
 
-                dr = dtm.Select("Nombre='" & NombreMotivo & "'")
+                dr = dtm.Select("Nombre='" & NombreMotivo.Replace("'", "''") & "'")
 
-                If dr(0).Item("Idmotivoajuste") > 0 Then
+                If dr IsNot Nothing AndAlso dr.Length > 0 AndAlso dr(0).Item("Idmotivoajuste") > 0 Then
                     IdMotivoAjuste = IIf(IsDBNull(dr(0).Item("Idmotivoajuste")), "-1", dr(0).Item("Idmotivoajuste"))
                 End If
 
@@ -1808,8 +1816,12 @@ Public Class frmAjusteStock
                 Return False
             End If
 
-            vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
-            Get_IdMotivo_By_Nombre(vNomMotivo)
+            IdMotivoAjuste = Get_IdMotivo_From_Grid_Row(sr)
+
+            If IdMotivoAjuste < 1 Then
+                vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
+                Get_IdMotivo_By_Nombre(vNomMotivo)
+            End If
 
             If IdMotivoAjuste < 1 Then
                 dgrid.Rows(sr).Cells(0).Selected = True
@@ -3725,6 +3737,26 @@ Public Class frmAjusteStock
             Debug.Print(ex.Message)
         End Try
     End Sub
+
+    Private Function Get_IdMotivo_From_Grid_Row(ByVal pRowIndex As Integer) As Integer
+
+        Try
+            If pRowIndex < 0 OrElse pRowIndex >= dgrid.Rows.Count Then Return 0
+
+            Dim vValue As Object = dgrid.Rows(pRowIndex).Cells("motivoajuste").Value
+            If vValue Is Nothing OrElse IsDBNull(vValue) Then Return 0
+
+            Dim vId As Integer = 0
+            If Integer.TryParse(vValue.ToString(), vId) Then
+                Return vId
+            End If
+
+            Return 0
+        Catch
+            Return 0
+        End Try
+
+    End Function
 
     Private Function ComboCellContainsValue(ByVal pCell As DataGridViewComboBoxCell, ByVal pValue As Object) As Boolean
 
