@@ -324,6 +324,16 @@
     <Folder Include="Models\" />
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppGlobal\AppGlobal.vbproj">
+      <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
+      <Name>AppGlobal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
+      <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

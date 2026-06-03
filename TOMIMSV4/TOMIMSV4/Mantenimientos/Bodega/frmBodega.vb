@@ -5540,4 +5540,7 @@ Public Class frmBodega
         End Try
     End Sub
 
+    Private Sub XtraScrollableControl_Click(sender As Object, e As EventArgs) Handles XtraScrollableControl.Click
+
+    End Sub
 End Class
