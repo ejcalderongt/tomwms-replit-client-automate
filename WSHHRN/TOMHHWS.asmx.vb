@@ -3397,10 +3397,6 @@ Public Class TOMHHWS
         Guardar_Recepcion = ""
 
         Try
-            '#EJC20260603_FIX_REC_WS_NULL: blindaje de request para evitar NullReference opaco en recepción.
-            If pRecEnc Is Nothing Then Throw New Exception("Guardar_Recepcion: pRecEnc vacío.")
-            If pRecEnc.Detalle Is Nothing Then pRecEnc.Detalle = New clsBeTrans_re_detList
-            If pRecEnc.DetalleParametros Is Nothing Then pRecEnc.DetalleParametros = New clsBeTrans_re_det_parametrosList
 
             '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
             'no dimensiono si siempre sera necesario enviarlo o no.
