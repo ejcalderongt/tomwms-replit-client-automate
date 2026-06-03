@@ -89,7 +89,7 @@ Public Class TOMHHWS
                 cache.Insert(pKey,
                              value,
                              Nothing,
-                             DateTime.UtcNow.AddSeconds(pSegundos),
+                             Date.UtcNow.AddSeconds(pSegundos),
                              Cache.NoSlidingExpiration)
             End If
 
@@ -535,8 +535,7 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name, ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             Dim Mensaje As String = ex.Message
@@ -5344,6 +5343,12 @@ Public Class TOMHHWS
         Reemplazar_ListPickingUbic_Verificacion = False
 
         Try
+
+            '#EJC20260603_REEMPLAZO_OWNER_STRICT:
+            'Contrato estricto HH->WS: IdPropietarioBodega debe venir informado por HH.
+            If pBeStockRes Is Nothing OrElse pBeStockRes.IdPropietarioBodega <= 0 Then
+                Throw New Exception("Reemplazar_ListPickingUbic_Verificacion: IdPropietarioBodega inválido en request HH.")
+            End If
 
             If ConExistencia Then
 
