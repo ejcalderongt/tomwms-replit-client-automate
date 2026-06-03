@@ -903,8 +903,8 @@ Public Class frmAjusteStock
 
                         If pProductoTallaColor IsNot Nothing Then
                             dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
-                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdTalla")), "", pProductoTallaColor.Rows(0).Item("IdTalla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdColor")), "", pProductoTallaColor.Rows(0).Item("IdColor"))
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
                         End If
@@ -3361,6 +3361,7 @@ Public Class frmAjusteStock
                 If lBeTransAjusteDet(i).Fecha_vence_original <> lBeTransAjusteDet(i).Fecha_vence_nueva Then ic += 1
                 If lBeTransAjusteDet(i).Cantidad_original <> lBeTransAjusteDet(i).Cantidad_nueva Then ic += 1
                 If lBeTransAjusteDet(i).Peso_original <> lBeTransAjusteDet(i).Peso_nuevo Then ic += 1
+
                 If ic > 0 Then cc += 1
 
                 '#EJC20180924: Asignación de bodega de ERP.
@@ -3390,15 +3391,6 @@ Public Class frmAjusteStock
                                                 AndAlso x.Lote_nuevo = Lote _
                                                 AndAlso x.IdAjusteDet = IdAjusteDet)
 
-                ''#GT28112024: al ser ajuste positivo, el idstock se obtiene hasta que se presiona guardar
-                'If Es_Ajuste_Positivo_Sin_Stock Then
-                '    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
-                'End If
-
-                'If Es_Ajuste_Positivo_Sin_Stock AndAlso Not BeAjusteDet Is Nothing Then
-                '    BeAjusteDet.IdStock = pStock_Sin_Existencia_Previa.IdStock
-                'End If
-
                 If Not BeAjusteDet Is Nothing Then
                     BeAjusteDet.Enviado = Enviar
                     If Enviar Then
@@ -3409,6 +3401,7 @@ Public Class frmAjusteStock
             Next
 
             Validar_Talla_Color()
+
             If EsBorrador Then
 
                 clsLnTrans_ajuste_enc.Guardar_Borrador_Ajuste(pBeTransAjustEnc,

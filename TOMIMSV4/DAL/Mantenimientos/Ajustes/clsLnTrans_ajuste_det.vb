@@ -2,6 +2,9 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnTrans_ajuste_det
+    Public Sub New()
+
+    End Sub
 
     Public Shared Sub Cargar(ByRef oBeTrans_ajuste_det As clsBeTrans_ajuste_det, ByRef dr As DataRow)
         Try
