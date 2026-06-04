@@ -35,6 +35,8 @@ Public Class frmImpresionRecepcion_OC
     Private pCorrelativoTarimaActual As Integer = 0
     Private pTarimasImpresasAcumuladas As Integer = 0
     Private pModoReimpresion As Boolean = False
+    ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: ancla de licencia madre para fardos (evita saltos accidentales).
+    Private pLicenciaMadreBulto As String = ""
 
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -123,8 +125,23 @@ Public Class frmImpresionRecepcion_OC
         RecalcularCapacidadLicenciaActual()
         pBultosPendientesLicenciaActual = pCapacidadObjetivoLicenciaActual
         pLicenciaActualCerrada = False
+        ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: al abrir nueva licencia de trabajo, queda anclada como licencia madre de fardos.
+        pLicenciaMadreBulto = Convert.ToString(txtLicencia.Text).Trim()
         ActualizarEstadoPantalla()
     End Sub
+
+    Private Function ObtenerLicenciaMadreActiva() As String
+        If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then
+            Return Convert.ToString(txtLicencia.Text).Trim()
+        End If
+
+        If String.IsNullOrWhiteSpace(pLicenciaMadreBulto) Then
+            ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: fallback defensivo si el estado fue reiniciado por flujo de UI.
+            pLicenciaMadreBulto = Convert.ToString(txtLicencia.Text).Trim()
+        End If
+
+        Return pLicenciaMadreBulto
+    End Function
 
     Private Sub RecalcularCapacidadLicenciaActual()
         pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
@@ -283,7 +300,8 @@ Public Class frmImpresionRecepcion_OC
         Return vCopias
     End Function
 
-    Private Function ConstruirZplProducto(ByVal pReDet As clsBeTrans_oc_det) As String
+    Private Function ConstruirZplProducto(ByVal pReDet As clsBeTrans_oc_det,
+                                          Optional ByVal licenciaForzada As String = "") As String
 
         Dim vFechaVence As Date = ObtenerFechaVence()
         Dim vEmpresa As String = AP.Empresa.Nombre
@@ -309,11 +327,15 @@ Public Class frmImpresionRecepcion_OC
             Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} No está definido el formato de etiqueta")
         End If
 
+        Dim licenciaImpresion As String = If(String.IsNullOrWhiteSpace(licenciaForzada),
+                                             Convert.ToString(txtLicencia.Text).Trim(),
+                                             licenciaForzada.Trim())
+
         Return String.Format(tmpZPLString,
                          AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
                          vEmpresa,
                          vCodigoProducto & " - " & vNombreProducto,
-                         txtLicencia.Text,
+                         licenciaImpresion,
                          AP.UsuarioAp.Nombres & " " & AP.UsuarioAp.Apellidos & " / " & Now.ToString("yyyy-MM-dd HH:mm:ss"),
                          vLote,
                          vFechaVence.ToString("dd/MM/yy"),
@@ -553,6 +575,28 @@ Public Class frmImpresionRecepcion_OC
             If Not ValidarImpresora(cmbPrinterBarra, Convert.ToString(cmbPrinterBarra.EditValue), "Seleccione impresora") Then Exit Sub
 
             Dim cantidadSolicitada As Integer = Convert.ToInt32(txtCantidadBarras.Value)
+            Dim licenciaMadre As String = Convert.ToString(txtLicencia.Text).Trim()
+
+            If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+                ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: reimpresión de licencia no puede mezclarse con impresión de fardos.
+                If pModoReimpresion Then
+                    XtraMessageBox.Show("No puede imprimir fardos en modo reimpresión de licencia. Finalice la reimpresión o seleccione una licencia activa.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End If
+
+                licenciaMadre = ObtenerLicenciaMadreActiva()
+                Dim licenciaPantalla As String = Convert.ToString(txtLicencia.Text).Trim()
+
+                ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: evita salto de licencia por cambios visuales/selección accidental.
+                If Not String.IsNullOrWhiteSpace(licenciaMadre) AndAlso
+                   Not String.IsNullOrWhiteSpace(licenciaPantalla) AndAlso
+                   Not String.Equals(licenciaMadre, licenciaPantalla, StringComparison.OrdinalIgnoreCase) Then
+
+                    txtLicencia.Text = licenciaMadre
+                    XtraMessageBox.Show("Se detectó cambio de licencia durante el proceso de fardos. Se restauró la licencia madre para evitar mezcla de bultos.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Exit Sub
+                End If
+            End If
 
             If DebeForzarCierreLicenciaAntesDeSeguir() Then
                 XtraMessageBox.Show("Ya completó la capacidad de esta licencia. Debe imprimir/cerrar la licencia antes de continuar con otra impresión de fardos.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -566,9 +610,11 @@ Public Class frmImpresionRecepcion_OC
                            MessageBoxButtons.YesNo,
                            MessageBoxIcon.Warning) = DialogResult.No Then Exit Sub
 
+            ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: imprime fardos con licencia explícita (madre), no dependiente del control UI.
             Imprimir_Producto(pBeTransOcDet,
                               Convert.ToString(cmbPrinterBarra.EditValue),
-                              cantidadSolicitada)
+                              cantidadSolicitada,
+                              licenciaMadre)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -581,11 +627,13 @@ Public Class frmImpresionRecepcion_OC
 
     Private Sub Imprimir_Producto(ByVal pReDet As clsBeTrans_oc_det,
                                   ByVal PrinterName As String,
-                                  ByVal pImpresiones As Integer)
+                                  ByVal pImpresiones As Integer,
+                                  Optional ByVal licenciaForzada As String = "")
         Try
             If pImpresiones <= 0 Then Exit Sub
 
-            Dim zplString As String = ConstruirZplProducto(pReDet)
+            ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: licencia forzada en ZPL para mantener trazabilidad madre->fardos.
+            Dim zplString As String = ConstruirZplProducto(pReDet, licenciaForzada)
             Dim vCopias As Integer = ObtenerCopiasSolicitadas()
 
             For i As Integer = 1 To pImpresiones
