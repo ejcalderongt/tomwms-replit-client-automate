@@ -1,4 +1,14 @@
 notas:
+  - fecha: "2026-06-04"
+    area: "Brain atlas/handoffs automation-safe"
+    detalle: >
+      Se implemento estructura operativa para eficiencia de contexto sin romper
+      flujos: brain/atlas/index.yml como discovery master, brain/handoffs/_index.yml
+      como inventario reusable por sintomas/tags/dominios, y script local
+      brain/tools/lint_brain_indexes.ps1 para validar rutas/metadatos/staleness.
+      Se documento backlog de tercerizacion segura en
+      brain/atlas/AUTOMATION-BACKLOG-2026-06-04.md y guia operativa en
+      brain/atlas/README.md.
   - fecha: "2026-06-03"
     area: "BOF graficador bodega V2 forma separada"
     detalle: >
