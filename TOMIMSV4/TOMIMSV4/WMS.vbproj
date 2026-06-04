@@ -1721,9 +1721,6 @@
     <Compile Include="Mantenimientos\Bodega_Graficador\frmDiseñoB.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Mantenimientos\Bodega_Graficador\frmDisenoB_V2.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Mantenimientos\Bodega_Monitor_Parametro\frmBodegaMonitor_List.Designer.vb">
       <DependentUpon>frmBodegaMonitor_List.vb</DependentUpon>
     </Compile>
