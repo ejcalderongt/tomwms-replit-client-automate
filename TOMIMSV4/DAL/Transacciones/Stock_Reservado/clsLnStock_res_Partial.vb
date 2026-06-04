@@ -2109,7 +2109,8 @@ Partial Public Class clsLnStock_res
                                                         ByVal Tipo As Integer,
                                                         ByRef CantidadPendiente As Double,
                                                         ByRef lConnection As SqlConnection,
-                                                        ByRef lTransaction As SqlTransaction) As Boolean
+                                                        ByRef lTransaction As SqlTransaction,
+                                                        Optional ByRef pIdsStockResGenerados As List(Of Integer) = Nothing) As Boolean
 
         Reservar_Stock_By_Stock_Reem = False
 
@@ -2251,6 +2252,13 @@ Partial Public Class clsLnStock_res
 
                     '#CKFK 20201129 Inserto el nuevo stock reservado
                     If Inserta_Stock_Reservado(lBeStockAReservar, lConnection, lTransaction) Then
+                        If pIdsStockResGenerados IsNot Nothing Then
+                            For Each vStockRes In lBeStockAReservar
+                                If vStockRes IsNot Nothing AndAlso vStockRes.IdStockRes > 0 AndAlso Not pIdsStockResGenerados.Contains(vStockRes.IdStockRes) Then
+                                    pIdsStockResGenerados.Add(vStockRes.IdStockRes)
+                                End If
+                            Next
+                        End If
                         Reservar_Stock_By_Stock_Reem = True
                     Else
                         Throw New Exception(String.Format("{0} IdProductoBodegaSol: {1}", clsDalEx.ErrorS0006, Stock.IdProductoBodega))
@@ -2936,6 +2944,7 @@ Partial Public Class clsLnStock_res
             Dim CantidadCompletada As Boolean = False
             Dim CantidadPendiente As Double
             Dim IdPropietarioBodega As Integer = 0
+            Dim lIdsStockResGenerados As New List(Of Integer)
 
             CantSolTotal = CantSol
 
@@ -2990,7 +2999,8 @@ Partial Public Class clsLnStock_res
                                                                         Tipo,
                                                                         CantidadPendiente,
                                                                         lConnection,
-                                                                        lTransaction)
+                                                                        lTransaction,
+                                                                        lIdsStockResGenerados)
 
                 Dim listaPicking = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(IdPedidoDet,
                                                                                               IdPedidoEnc,
@@ -3023,14 +3033,9 @@ Partial Public Class clsLnStock_res
             Dim vIdEmpresa As Integer = clsLnEmpresa.GetIdEmpresa_By_IdBodega(BeTransPickingUbic.IdBodega, lConnection, lTransaction)
             IdPropietarioBodega = clsLnTrans_pe_enc.GetIdPropietarioBodega(IdPedidoEnc, lConnection, lTransaction)
 
-            StockResList = Get_All_Reemplazo_By_IdPedidoDet(IdPedidoDet,
-                                                            IdPropietarioBodega,
-                                                            IdPickingEnc,
-                                                            IdPedidoEnc,
+            StockResList = Get_All_Reemplazo_By_IdsStockRes(lIdsStockResGenerados,
                                                             pConnection:=lConnection,
-                                                            pTransaction:=lTransaction,
-                                                            pUserAgr:=IdUsuarioHH,
-                                                            pHost:=MaquinaQueSolicita)
+                                                            pTransaction:=lTransaction)
 
             '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
             If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -3104,6 +3109,7 @@ Partial Public Class clsLnStock_res
             Dim CantidadCompletada As Boolean = False
             Dim CantidadPendiente, CantSolTotal As Double
             Dim IdPropietarioBodega As Integer = 0
+            Dim lIdsStockResGenerados As New List(Of Integer)
 
             CantSolTotal = CantSol
 
@@ -3150,7 +3156,8 @@ Partial Public Class clsLnStock_res
                                                                         Tipo,
                                                                         CantidadPendiente,
                                                                         lConnection,
-                                                                        ltransaction)
+                                                                        ltransaction,
+                                                                        lIdsStockResGenerados)
 
                 If resultRes Then
                     CantidadCompletada = (CantidadPendiente = 0)
@@ -3171,14 +3178,9 @@ Partial Public Class clsLnStock_res
                 IdPropietarioBodega = BeTransPeEnc.IdPropietarioBodega
             End If
 
-            StockResList = Get_All_Reemplazo_By_IdPedidoDet(IdPedidoDet,
-                                                            IdPropietarioBodega,
-                                                            IdPickingEnc,
-                                                            IdPedidoEnc,
+            StockResList = Get_All_Reemplazo_By_IdsStockRes(lIdsStockResGenerados,
                                                             pConnection:=lConnection,
-                                                            pTransaction:=ltransaction,
-                                                            pUserAgr:=IdUsuarioHH,
-                                                            pHost:=MaquinaQueSolicita)
+                                                            pTransaction:=ltransaction)
 
             '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
             If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -3979,6 +3981,7 @@ Partial Public Class clsLnStock_res
             Dim CantidadCompletada As Boolean = False
             Dim CantidadPendiente As Double
             Dim IdPropietarioBodega As Integer = 0
+            Dim lIdsStockResGenerados As New List(Of Integer)
 
             CantSolTotal = CantSol
 
@@ -4025,7 +4028,8 @@ Partial Public Class clsLnStock_res
                                                                             Tipo,
                                                                             CantidadPendiente,
                                                                             lConnection,
-                                                                            lTransaction)
+                                                                            lTransaction,
+                                                                            lIdsStockResGenerados)
 
                             If resultRes Then
                                 CantidadCompletada = (CantidadPendiente = 0)
@@ -4050,14 +4054,9 @@ Partial Public Class clsLnStock_res
                         IdPropietarioBodega = BeTransPeEnc.IdPropietarioBodega
                     End If
 
-                    StockResList = Get_All_Reemplazo_By_IdPedidoDet(IdPedidoDet,
-                                                                IdPropietarioBodega,
-                                                                IdPickingEnc,
-                                                                IdPedidoEnc,
+                    StockResList = Get_All_Reemplazo_By_IdsStockRes(lIdsStockResGenerados,
                                                                 pConnection:=lConnection,
-                                                                pTransaction:=lTransaction,
-                                                                pUserAgr:=IdUsuarioHH,
-                                                                pHost:=MaquinaQueSolicita)
+                                                                pTransaction:=lTransaction)
 
                     '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
                     If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -4274,6 +4273,7 @@ Partial Public Class clsLnStock_res
             Dim CantidadCompletada As Boolean = False
             Dim CantidadPendiente, CantSolTotal As Double
             Dim IdPropietarioBodega As Integer = 0
+            Dim lIdsStockResGenerados As New List(Of Integer)
 
             CantSolTotal = CantSol
 
@@ -4318,7 +4318,8 @@ Partial Public Class clsLnStock_res
                                                                             Tipo,
                                                                             CantidadPendiente,
                                                                             lConnection,
-                                                                            ltransaction)
+                                                                            ltransaction,
+                                                                            lIdsStockResGenerados)
 
                         If resultRes Then
                             CantidadCompletada = (CantidadPendiente = 0)
@@ -4339,14 +4340,9 @@ Partial Public Class clsLnStock_res
                         IdPropietarioBodega = BeTransPeEnc.IdPropietarioBodega
                     End If
 
-                    StockResList = Get_All_Reemplazo_By_IdPedidoDet(IdPedidoDet,
-                                                                IdPropietarioBodega,
-                                                                IdPickingEnc,
-                                                                IdPedidoEnc,
+                    StockResList = Get_All_Reemplazo_By_IdsStockRes(lIdsStockResGenerados,
                                                                 pConnection:=lConnection,
-                                                                pTransaction:=ltransaction,
-                                                                pUserAgr:=IdUsuarioHH,
-                                                                pHost:=MaquinaQueSolicita)
+                                                                pTransaction:=ltransaction)
 
                     '#EJC20260526: Evita enviar lista vacía a Reemplazo_Producto_En_Picking (usa elementos índice 0).
                     If StockResList IsNot Nothing AndAlso StockResList.Count > 0 Then
@@ -4564,6 +4560,88 @@ Partial Public Class clsLnStock_res
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    '#EJC20260604_REEMPLAZO_INTEGRIDAD_STRONG:
+    'Recupera únicamente las reservas recién generadas en la misma transacción (por IdStockRes),
+    'evitando depender de filtros frágiles por host/user/estado para relectura.
+    Public Shared Function Get_All_Reemplazo_By_IdsStockRes(ByVal pIdsStockRes As List(Of Integer),
+                                                            Optional ByRef pConnection As SqlConnection = Nothing,
+                                                            Optional ByRef pTransaction As SqlTransaction = Nothing) As List(Of clsBeStock_res)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeStock_res)
+
+            If pIdsStockRes Is Nothing OrElse pIdsStockRes.Count = 0 Then
+                Return lReturnList
+            End If
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction
+            End If
+
+            Dim lIdsNormalizados As List(Of Integer) = pIdsStockRes.Where(Function(x) x > 0).Distinct().ToList()
+            If lIdsNormalizados.Count = 0 Then
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                Return lReturnList
+            End If
+
+            Dim lParamNames As New List(Of String)
+            Dim cmd As New SqlCommand() With {
+                .Connection = If(Es_Transaccion_Remota, pConnection, lConnection),
+                .Transaction = If(Es_Transaccion_Remota, pTransaction, lTransaction),
+                .CommandType = CommandType.Text
+            }
+
+            For i As Integer = 0 To lIdsNormalizados.Count - 1
+                Dim pName As String = "@IdStockRes" & i.ToString()
+                lParamNames.Add(pName)
+                cmd.Parameters.AddWithValue(pName, lIdsNormalizados(i))
+            Next
+
+            cmd.CommandText = "SELECT IdStockRes, IdTransaccion, Indicador, IdPedidoDet,IdBodega, IdStock, " &
+                              "IdPropietarioBodega, IdProductoBodega, IdProductoEstado, IdPresentacion, IdUnidadMedida, " &
+                              "IdUbicacion, ubicacion_ant, IdRecepcion, lote, lic_plate, serial, cantidad, peso, estado, " &
+                              "fecha_ingreso, fecha_vence, uds_lic_plate, no_bulto, IdPicking, IdPedido, " &
+                              "IdDespacho, user_agr, fec_agr, user_mod, fec_mod, host, añada, fecha_manufactura, pallet_no_estandar, " &
+                              "talla, color, IdProductoTallaColor " &
+                              "FROM stock_res " &
+                              "WHERE IdStockRes IN (" & String.Join(",", lParamNames) & ") " &
+                              "AND Indicador = 'PED' " &
+                              "AND estado IN ('UNCOMMITED HH','UNCOMMITED') " &
+                              "ORDER BY IdStockRes"
+
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            For Each dr As DataRow In dt.Rows
+                Dim vBeStock_res As New clsBeStock_res
+                Cargar(vBeStock_res, dr)
+                lReturnList.Add(vBeStock_res)
+            Next
+
+            If Not Es_Transaccion_Remota Then
+                lTransaction.Commit()
+            End If
+
+            Return lReturnList
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
         End Try
 
     End Function

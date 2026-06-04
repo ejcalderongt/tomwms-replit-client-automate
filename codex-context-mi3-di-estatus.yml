@@ -1283,3 +1283,16 @@ notas:
       robustecio el mapper clsLnVW_Movimientos.Cargar_StockEnFecha para mapear
       Presentacion con/sin tilde y guardar TTarea desde TipoTarea. Se documento
       la traza en tools/stock-en-fecha/STOCK_EN_FECHA_REGULARIZACION_TRACE_20260602.md.
+  - fecha: "2026-06-04"
+    area: "DAL reemplazo verificacion integridad stock_res"
+    detalle: >
+      Se elimino la dependencia de relectura por filtros fragiles
+      (IdPedidoDet/IdPicking/IdPedido + host/user/estado) en los flujos de
+      reemplazo que lanzaban "no se genero stock reservado". Ahora
+      Reservar_Stock_By_Stock_Reem captura los IdStockRes realmente insertados
+      dentro de la misma transaccion y Reemplazar_IdStock_By_Stock,
+      Reemplazo_Verificacion_By_ListPickingUbic y
+      ReemplazarAuto_IdStock_By_Stock recuperan con
+      Get_All_Reemplazo_By_IdsStockRes. Esto fuerza integridad fuerte:
+      si se inserto, se recupera por clave tecnica; si no existe IdStockRes
+      insertado, se considera falla real de datos/flujo.

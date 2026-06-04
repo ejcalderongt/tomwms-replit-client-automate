@@ -9095,14 +9095,14 @@ MessageBoxButtons.YesNo,
 
         Dim rutaImagen As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
         If rutaImagen IsNot Nothing AndAlso File.Exists(rutaImagen.ToString()) Then
-            Dim previewForm As New DevExpress.XtraEditors.XtraForm()
+            Dim previewForm As New XtraForm()
             previewForm.Text = "Vista previa de imagen"
             previewForm.StartPosition = FormStartPosition.CenterParent
             previewForm.Size = New Size(700, 700)
 
-            Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
+            Dim pictureEdit As New PictureEdit()
             pictureEdit.Dock = DockStyle.Fill
-            pictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+            pictureEdit.Properties.SizeMode = PictureSizeMode.Zoom
             pictureEdit.Image = Image.FromFile(rutaImagen.ToString())
 
             previewForm.Controls.Add(pictureEdit)
