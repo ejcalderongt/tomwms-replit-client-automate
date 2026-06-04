@@ -7883,7 +7883,9 @@ Partial Public Class clsLnTrans_picking_ubic
                                                               cantidad_verificada > 0 AND
                                   (Fecha_packing IS NULL OR Fecha_packing < '19010101') AND
                                   IdPickingEnc=@IdPickingEnc AND
+                                  IdPedidoEnc=@IdPedidoEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
+                                  lic_plate=@lic_plate AND
                                   ISNULL(IdPresentacion,0) = @IdPresentacion AND
                                   (Lote = @Lote OR Lote IS NULL)  AND 
                                   ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
@@ -7897,11 +7899,14 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.CommandType = CommandType.Text
 
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pPackingEnc.Idpickingenc)
+                '#EJC20260604 FIX_PACKING_CRUCE_PEDIDOS: aislar lookup por pedido y licencia para evitar
+                'que un empaque de cantidad 1 termine sellando más de un trans_picking_ubic entre pedidos.
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pPackingEnc.IdPedidoEnc)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pPackingEnc.Idpresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPackingEnc.Idunidadmedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPackingEnc.Lote)
                 lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPackingEnc.Fecha_vence)
-                '#EJCRP fix(packing): @lic_plate param eliminado junto con filtro SQL #EJC20260528
+                lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPackingEnc.Lic_plate)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPackingEnc.Idproductoestado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPackingEnc.Idproductobodega)
 

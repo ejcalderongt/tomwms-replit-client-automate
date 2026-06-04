@@ -172,6 +172,7 @@ Partial Public Class clsLnTrans_packing_enc
                               FROM trans_packing_enc 
                               WHERE IdProductoBodega = @IdProductoBodega AND
                                 IdPickingEnc=@IdPickingEnc AND
+                                IdPedidoEnc=@IdPedidoEnc AND
                                 IdUnidadMedida=@IdUnidadMedida AND
                                 lic_plate = @lic_plate AND 
                                 ISNULL(IdPresentacion,0) = @IdPresentacion AND
@@ -191,6 +192,9 @@ Partial Public Class clsLnTrans_packing_enc
                 lCommand.Parameters.AddWithValue("@Fecha_Vence", pitem.Fecha_vence)
                 lCommand.Parameters.AddWithValue("@IdPresentacion", pitem.Idpresentacion)
                 lCommand.Parameters.AddWithValue("@IdPickingEnc", pitem.Idpickingenc)
+                '#EJC20260604 FIX_PACKING_CRUCE_PEDIDOS: sumar empacado por pedido para no contaminar
+                'cantidades entre pedidos que comparten LP/producto/fecha/estado.
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pitem.IdPedidoEnc)
                 lCommand.Parameters.AddWithValue("@IdUnidadMedida", pitem.Idunidadmedida)
                 lCommand.Parameters.AddWithValue("@lic_plate", pitem.Lic_plate)
                 lCommand.Parameters.AddWithValue("@IdProductoEstado", pitem.Idproductoestado)

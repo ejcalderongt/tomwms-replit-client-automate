@@ -6468,7 +6468,34 @@ Partial Public Class clsLnTrans_re_enc
 
                         If Not pListaRecDet Is Nothing Then
 
+                            '#EJC20260604 FIX_REC_CM_RULES_SERVER: en Caja Master también revalidar reglas de recepción
+                            'por línea de OC en servidor (como GuardarHH_BOF) para evitar sobre-recepción por reintento/concurrencia.
+                            Dim lBeTransOCEnc As clsBeTrans_oc_enc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+                            If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.DetalleOC Is Nothing Then
+                                lBeTransOCEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                          lConnection,
+                                                                                                          lTransaction)
+                            End If
+
+                            Dim lIdPropietario As Integer = 0
+                            If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.IdPropietarioBodega > 0 Then
+                                lIdPropietario = clsLnPropietarios.Get_IdPropietario(pIdBodega,
+                                                                                      lBeTransOCEnc.IdPropietarioBodega)
+                            End If
+
                             For Each BeTransReDet In pListaRecDet
+                                If lIdPropietario > 0 AndAlso lBeTransOCEnc IsNot Nothing Then
+                                    If Not Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC(lBeTransOCEnc,
+                                                                                            lIdPropietario,
+                                                                                            BeTransReDet,
+                                                                                            lConnection,
+                                                                                            lTransaction) Then
+                                        Throw New Exception("Cantidad no válida por regla de recepción (Caja Master).")
+                                    End If
+                                End If
+
                                 vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
                                                                                     BeTransReDet,
                                                                                     lConnection,
@@ -6508,7 +6535,10 @@ Partial Public Class clsLnTrans_re_enc
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
 
                                 Dim Obj As clsBeTrans_oc_det_lote = pListaDetLote.
-                                        FirstOrDefault(Function(x) x.IdOrdenCompraDet = BeTransReDet.IdOrdenCompraDet And x.IdProductoBodega = BeTransReDet.IdProductoBodega)
+                                        FirstOrDefault(Function(x) x.IdOrdenCompraDet = BeTransReDet.IdOrdenCompraDet AndAlso
+                                                                   x.IdProductoBodega = BeTransReDet.IdProductoBodega AndAlso
+                                                                   x.No_linea = BeTransReDet.No_Linea AndAlso
+                                                                   (x.Lic_Plate = BeTransReDet.Lic_plate OrElse String.IsNullOrEmpty(x.Lic_Plate)))
 
                                 If Obj IsNot Nothing Then
                                     vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(Obj,
