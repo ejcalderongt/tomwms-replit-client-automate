@@ -1,5 +1,47 @@
 notas:
   - fecha: "2026-06-03"
+    area: "BOF graficador bodega V2 forma separada"
+    detalle: >
+      Se agrego baseline de nueva forma aislada frmDisenoB_V2 para evolucion UX
+      del graficador sin romper frmDiseñoB legacy. V2 carga empresa/bodega con
+      IMS/AP, materializa estructura via clsLnBodega.Get_Estructura_By_IdBodega
+      y dibuja usando clsGraficadorBodega. Incluye Debug.WriteLine de trazas
+      finas con tiempos (data/render) y conteos de sectores/tramos/ubicaciones.
+      Archivo: Mantenimientos/Bodega_Graficador/frmDisenoB_V2.vb.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra lookup producto pierde codigo al tab"
+    detalle: >
+      Se detecto caso en OC nueva donde el producto se seleccionaba/escaneaba,
+      pero al salir de la celda Codigo el texto visible se vaciaba. Causa:
+      en ShownEditor de IdProductoBodega se cargaba datasource solo al editor
+      activo (GridLookUpEdit) y no al RepositoryItem del grid, por lo que al
+      cerrar editor el DisplayMember no tenia mapa IdProductoBodega->Codigo.
+      Fix: sincronizar ambos datasources (editor + ProductoGridLookUpEdit) y
+      trazar producto_lookup_sync para diagnostico.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra reglas de bloqueo en modo edicion"
+    detalle: >
+      Se valido que el bloqueo global del grid en frmOrdenCompra NO depende
+      directamente de Enviado_A_ERP. La regla principal en ModoTrans.Editar es:
+      estado ANULADA/CERRADA => gvDetalleDocIngreso.OptionsBehavior.Editable=False,
+      Bloquea_Objetos y botones de agregar/eliminar fila deshabilitados.
+      Para estados abiertos/backorder se mantiene editable=True con validaciones
+      por columna/fila y restricciones de negocio (ej: IdProductoBodega no editable
+      en editar, filas hijas kit no editables por ShowingEditor). Se agrego traza
+      OC_EDIT_RULES (Debug.WriteLine + OCTrace_Marca step=oc_edit_rules) en puntos
+      de decision para diagnostico futuro.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra codigo producto/lookup en grid"
+    detalle: >
+      Se corrigio regresion visual en frmOrdenCompra al editar OC existente:
+      el lookup de producto quedaba lazy/vacio por performance y la columna
+      Codigo (IdProductoBodega con DisplayMember=Codigo) no resolvia texto.
+      Fix: despues de Cargar_Detalle_OC se hidrata ProductoGridLookUpEdit con
+      un datasource liviano construido desde DTGridDetalleDocIngresos
+      (solo productos presentes en el documento), manteniendo carga masiva lazy.
+      Se agrego traza Debug.WriteLine/OCTrace_Marca
+      producto_lookup_display_detalle para diagnostico.
+  - fecha: "2026-06-03"
     area: "HH recepción doble envío tras NO imprimir"
     detalle: >
       En frm_recepcion_datos se blindo el flujo de guardado de recepción para
