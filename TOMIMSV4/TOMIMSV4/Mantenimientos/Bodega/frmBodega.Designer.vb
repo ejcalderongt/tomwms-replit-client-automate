@@ -433,6 +433,8 @@ Partial Class frmBodega
         Me.chkinferir_origen_en_cambio_ubic = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidarDisponibilidadEnUbicacionDestino = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.Label96 = New System.Windows.Forms.Label()
+        Me.chkUbicImplosionAuto = New DevExpress.XtraEditors.CheckEdit()
         Me.chkBodegaClienteAjusteByB = New DevExpress.XtraEditors.CheckEdit()
         Me.lblBodegaClienteAjusteByB = New System.Windows.Forms.Label()
         Me.chkreemplazoOpcional = New DevExpress.XtraEditors.CheckEdit()
@@ -552,8 +554,6 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.Label96 = New System.Windows.Forms.Label()
-        Me.chkUbicImplosionAuto = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -905,6 +905,7 @@ Partial Class frmBodega
         CType(Me.chkinferir_origen_en_cambio_ubic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
+        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkBodegaClienteAjusteByB.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -993,7 +994,6 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -5187,6 +5187,23 @@ Partial Class frmBodega
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
         '
+        'Label96
+        '
+        Me.Label96.AutoSize = True
+        Me.Label96.Location = New System.Drawing.Point(381, 280)
+        Me.Label96.Name = "Label96"
+        Me.Label96.Size = New System.Drawing.Size(148, 16)
+        Me.Label96.TabIndex = 136
+        Me.Label96.Text = "Ubicación implosión auto"
+        '
+        'chkUbicImplosionAuto
+        '
+        Me.chkUbicImplosionAuto.Location = New System.Drawing.Point(686, 276)
+        Me.chkUbicImplosionAuto.Name = "chkUbicImplosionAuto"
+        Me.chkUbicImplosionAuto.Properties.Caption = ""
+        Me.chkUbicImplosionAuto.Size = New System.Drawing.Size(23, 24)
+        Me.chkUbicImplosionAuto.TabIndex = 135
+        '
         'chkBodegaClienteAjusteByB
         '
         Me.chkBodegaClienteAjusteByB.Location = New System.Drawing.Point(686, 159)
@@ -6487,23 +6504,6 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'Label96
-        '
-        Me.Label96.AutoSize = True
-        Me.Label96.Location = New System.Drawing.Point(381, 280)
-        Me.Label96.Name = "Label96"
-        Me.Label96.Size = New System.Drawing.Size(148, 16)
-        Me.Label96.TabIndex = 136
-        Me.Label96.Text = "Ubicación implosión auto"
-        '
-        'chkUbicImplosionAuto
-        '
-        Me.chkUbicImplosionAuto.Location = New System.Drawing.Point(686, 276)
-        Me.chkUbicImplosionAuto.Name = "chkUbicImplosionAuto"
-        Me.chkUbicImplosionAuto.Properties.Caption = ""
-        Me.chkUbicImplosionAuto.Size = New System.Drawing.Size(23, 24)
-        Me.chkUbicImplosionAuto.TabIndex = 135
-        '
         'frmBodega
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -6770,6 +6770,7 @@ Partial Class frmBodega
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
+        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkBodegaClienteAjusteByB.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkreemplazoOpcional.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6863,7 +6864,6 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkUbicImplosionAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

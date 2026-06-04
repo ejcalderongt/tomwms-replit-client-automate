@@ -89,7 +89,7 @@ Public Class TOMHHWS
                 cache.Insert(pKey,
                              value,
                              Nothing,
-                             DateTime.UtcNow.AddSeconds(pSegundos),
+                             Date.UtcNow.AddSeconds(pSegundos),
                              Cache.NoSlidingExpiration)
             End If
 
@@ -535,8 +535,7 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name, ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             Dim Mensaje As String = ex.Message
@@ -3426,7 +3425,9 @@ Public Class TOMHHWS
             '#MECR01102025: Se agrego bitacora de logs para recepciones.
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pRecEnc.IdRecepcionEnc)
+            Dim vIdRecepcionEnc As Integer = 0
+            If pRecEnc IsNot Nothing Then vIdRecepcionEnc = pRecEnc.IdRecepcionEnc
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, vIdRecepcionEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -3562,7 +3563,9 @@ Public Class TOMHHWS
             '#MECR01102025: Se agrego bitacora de logs para recepciones.
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pRecEnc.IdRecepcionEnc)
+            Dim vIdRecepcionEnc As Integer = 0
+            If pRecEnc IsNot Nothing Then vIdRecepcionEnc = pRecEnc.IdRecepcionEnc
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, vIdRecepcionEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5344,6 +5347,12 @@ Public Class TOMHHWS
         Reemplazar_ListPickingUbic_Verificacion = False
 
         Try
+
+            '#EJC20260603_REEMPLAZO_OWNER_STRICT:
+            'Contrato estricto HH->WS: IdPropietarioBodega debe venir informado por HH.
+            If pBeStockRes Is Nothing OrElse pBeStockRes.IdPropietarioBodega <= 0 Then
+                Throw New Exception("Reemplazar_ListPickingUbic_Verificacion: IdPropietarioBodega inválido en request HH.")
+            End If
 
             If ConExistencia Then
 
@@ -16734,6 +16743,13 @@ Public Class TOMHHWS
         Guardar_Recepcion_S = ""
 
         Try
+            '#EJC20260603_FIX_REC_WS_NULL: valida request mínimo para recepción simple.
+            If pIdRecpecionEnc <= 0 Then Throw New Exception("Guardar_Recepcion_S: pIdRecpecionEnc inválido.")
+            If BeRecDet Is Nothing Then Throw New Exception("Guardar_Recepcion_S: BeRecDet vacío.")
+            If pListRecDetParam Is Nothing Then pListRecDetParam = New List(Of clsBeTrans_re_det_parametros)
+            If pListStockRecSer Is Nothing Then pListStockRecSer = New List(Of clsBeStock_se_rec)
+            If pListStockRec Is Nothing Then pListStockRec = New List(Of clsBeStock_rec)
+            If pListProductoPallet Is Nothing Then pListProductoPallet = New List(Of clsBeProducto_pallet)
 
             '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
             'no dimensiono si siempre sera necesario enviarlo o no.
@@ -19167,6 +19183,13 @@ Public Class TOMHHWS
         Guardar_Recepcion_Caja_Master = ""
 
         Try
+            '#EJC20260603_FIX_REC_WS_NULL: valida request mínimo para caja master.
+            If pIdRecpecionEnc <= 0 Then Throw New Exception("Guardar_Recepcion_Caja_Master: pIdRecpecionEnc inválido.")
+            If pIdOrdenCompra <= 0 Then Throw New Exception("Guardar_Recepcion_Caja_Master: pIdOrdenCompra inválido.")
+            If pListaStockRec Is Nothing Then pListaStockRec = New List(Of clsBeStock_rec)
+            If pListaDetLote Is Nothing Then pListaDetLote = New List(Of clsBeTrans_oc_det_lote)
+            If pListaRecDet Is Nothing Then pListaRecDet = New List(Of clsBeTrans_re_det)
+
             Dim vResult As String = ""
 
             vResult = clsLnTrans_re_enc.GuardarHH_CM(pIdRecpecionEnc,

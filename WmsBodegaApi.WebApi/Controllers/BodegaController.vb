@@ -49,7 +49,7 @@ Namespace Controllers
         <HttpGet, Route("{idBodega:int}")>
         Public Function Obtener(idBodega As Integer) As ApiResponse(Of BodegaDto)
             VerifyApiKey()
-            Dim be As New clsBeBodega With {.IdBodega = idBodega}
+            Dim be As New clsBeBodega With {.idBodega = idBodega}
             Dim encontrado As Boolean = clsLnBodega.Obtener(be)
             If Not encontrado Then
                 Return ApiResponse(Of BodegaDto).Fail("NOT_FOUND",
