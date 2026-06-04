@@ -764,9 +764,6 @@ Public Class frmAjusteStock
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
                         End If
 
-                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
-                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
-
                     End If
 
                 Else
@@ -907,9 +904,6 @@ Public Class frmAjusteStock
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
                         End If
-
-                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
-                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
 
                     End If
 
@@ -6053,8 +6047,6 @@ Public Class frmAjusteStock
                             dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = det.IdProductoTallaColor_origen
                             dgrid.Rows(rc).Cells("colTalla").Value = det.Talla_origen
                             dgrid.Rows(rc).Cells("colColor").Value = det.Color_origen
-                            dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
-                            dgrid.Rows(rc).Cells("colColor").ReadOnly = True
                         Catch ex As Exception
                             ' No bloquea la importación si el lookup falla.
                             clsLnLog_error_wms.Agregar_Error(
