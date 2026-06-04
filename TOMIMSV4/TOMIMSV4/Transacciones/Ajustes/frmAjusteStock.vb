@@ -87,11 +87,17 @@ Public Class frmAjusteStock
                     Col.Visible = True
                 ElseIf (Col.Name = "ColBodega") AndAlso Not pBeTransAjustEnc.Ajuste_Por_Inventario > 0 Then
                     Col.Visible = False
+                ElseIf Es_Talla_Color_Solo_Despliegue() AndAlso
+                       (String.Equals(Col.Name, "ColTalla", StringComparison.OrdinalIgnoreCase) OrElse
+                        String.Equals(Col.Name, "ColColor", StringComparison.OrdinalIgnoreCase)) Then
+                    Col.ReadOnly = True
                 Else
                     Col.ReadOnly = False
                 End If
 
             Next
+
+            Aplicar_Bloqueo_Talla_Color_Grid()
 
         Catch ex As Exception
 
@@ -105,6 +111,34 @@ Public Class frmAjusteStock
 
         End Try
 
+    End Sub
+
+    Private Function Es_Talla_Color_Solo_Despliegue() As Boolean
+        Return BeBodega IsNot Nothing AndAlso BeBodega.Control_Talla_Color
+    End Function
+
+    Private Sub Aplicar_Bloqueo_Talla_Color_Grid()
+        Try
+            If Not Es_Talla_Color_Solo_Despliegue() Then Return
+
+            If dgrid.Columns.Contains("ColTalla") Then
+                dgrid.Columns("ColTalla").ReadOnly = True
+                Dim colTalla = TryCast(dgrid.Columns("ColTalla"), DataGridViewComboBoxColumn)
+                If colTalla IsNot Nothing Then
+                    colTalla.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+                End If
+            End If
+
+            If dgrid.Columns.Contains("ColColor") Then
+                dgrid.Columns("ColColor").ReadOnly = True
+                Dim colColor = TryCast(dgrid.Columns("ColColor"), DataGridViewComboBoxColumn)
+                If colColor IsNot Nothing Then
+                    colColor.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+                End If
+            End If
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
     End Sub
 
     Private BeConfig As New clsBeI_nav_config_enc
@@ -2680,6 +2714,15 @@ Public Class frmAjusteStock
     End Sub
 
     Private Sub grdData_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgrid.CellBeginEdit
+
+        If Es_Talla_Color_Solo_Despliegue() AndAlso e.RowIndex >= 0 Then
+            Dim vColName As String = dgrid.Columns(e.ColumnIndex).Name
+            If String.Equals(vColName, "ColTalla", StringComparison.OrdinalIgnoreCase) OrElse
+               String.Equals(vColName, "ColColor", StringComparison.OrdinalIgnoreCase) Then
+                e.Cancel = True
+                Exit Sub
+            End If
+        End If
 
         If dgrid.Focused AndAlso dgrid.CurrentCell.ColumnIndex = 7 Then
 
@@ -5666,6 +5709,7 @@ Public Class frmAjusteStock
 
             '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
+            Aplicar_Bloqueo_Talla_Color_Grid()
 
             Application.DoEvents()
 
@@ -5752,9 +5796,11 @@ Public Class frmAjusteStock
 
             If vPermitirEdicion Then
                 dgrid.ReadOnly = False
+                Aplicar_Bloqueo_Talla_Color_Grid()
             Else
                 Deshabilita_Grid()
                 dgrid.ReadOnly = True
+                Aplicar_Bloqueo_Talla_Color_Grid()
             End If
 
             Try
