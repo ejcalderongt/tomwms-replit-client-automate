@@ -355,6 +355,7 @@ Public Class frmOrdenCompra
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_OC()
             OCTrace_Marca("detalle_oc", "ms=" & vTraceReloj.ElapsedMilliseconds & ";rows=" & DTGridDetalleDocIngresos.Rows.Count)
+            OCProductoLookup_ResolverDisplayDesdeDetalle()
 
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_Lotes_OC()
@@ -479,6 +480,7 @@ Public Class frmOrdenCompra
                 Dim vTalla As String = ""
                 Dim vColor As String = ""
                 Dim vSKU As String = ""
+                Dim vCodigoProducto As String = BeTransOCDet.Codigo_Producto
 
                 If (BeTransOCDet.IdProductoTallaColor <> 0) Then
 
@@ -488,12 +490,17 @@ Public Class frmOrdenCompra
 
                 End If
 
+                ' #EJC20260602_OC_FIX_CODIGO: fallback para documentos viejos/mixtos donde el código no vino en detalle.
+                If String.IsNullOrWhiteSpace(vCodigoProducto) AndAlso BeTransOCDet.IdProductoBodega > 0 Then
+                    vCodigoProducto = clsLnProducto.Get_Codigo_By_IdProductoBodega(BeTransOCDet.IdProductoBodega)
+                End If
+
                 Dim commonData As Object() = {
                     BeTransOCDet.IdPropietarioBodega,
                 BeTransOCDet.Nombre_Propietario,
                 BeTransOCDet.No_Linea,
                 BeTransOCDet.IdProductoBodega,
-                BeTransOCDet.Codigo_Producto,
+                vCodigoProducto,
                 BeTransOCDet.Nombre_producto,
                 BeTransOCDet.Nombre_unidad_medida_basica,
                 BeTransOCDet.IdUnidadMedidaBasica,
@@ -542,12 +549,16 @@ Public Class frmOrdenCompra
                     For Each Hijo As clsBeTrans_oc_det In BeTransOCDet.lProductosHijosKit
 
                         vCantidadPendiente = Math.Round(Hijo.Cantidad_recibida - Hijo.Cantidad, 6)
+                        Dim vCodigoProductoHijo As String = Hijo.Codigo_Producto
+                        If String.IsNullOrWhiteSpace(vCodigoProductoHijo) AndAlso Hijo.IdProductoBodega > 0 Then
+                            vCodigoProductoHijo = clsLnProducto.Get_Codigo_By_IdProductoBodega(Hijo.IdProductoBodega)
+                        End If
 
                         DTGridDetalleDocIngresos.Rows.Add(Hijo.IdPropietarioBodega,
                                                           Hijo.Nombre_Propietario,
                                                           Hijo.No_Linea,
                                                           Hijo.IdProductoBodega,
-                                                          Hijo.Codigo_Producto,
+                                                          vCodigoProductoHijo,
                                                           Hijo.Nombre_producto,
                                                           Hijo.Nombre_unidad_medida_basica,
                                                           Hijo.IdUnidadMedidaBasica,
@@ -5215,6 +5226,7 @@ Public Class frmOrdenCompra
                         '#GT27052024: grid con detalle no debe permitir agregar o eliminar mas lineas.
                         cmdEliminarFila.Enabled = False
                         cmdAgregarProducto.Enabled = False
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_cerrada_anulada")
 
                     Else
                         GrpEnc.Enabled = True
@@ -5234,6 +5246,7 @@ Public Class frmOrdenCompra
                             mnuTareaRecepcion.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                             grpUltRec.Visible = True
                         End If
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_abierta_o_backorder")
 
                     End If
 
@@ -5728,6 +5741,12 @@ Public Class frmOrdenCompra
                                               ByVal pIdBodega As Integer,
                                               Optional ByVal pForzarRefresh As Boolean = False) As DataTable
 
+        If pIdBodega = 0 Then
+            pIdBodega = Val(cmbBodega.EditValue)
+            If pIdBodega = 0 AndAlso gBeOrdenCompra IsNot Nothing Then pIdBodega = gBeOrdenCompra.IdBodega
+            If pIdBodega = 0 Then pIdBodega = AP.IdBodega
+        End If
+
         If pIdBodega = 0 Then Return OCProductoLookup_DataSourceVacio()
 
         Dim vKey As String = OCProductoLookup_Key(pIdPropietarioBodega, pIdBodega)
@@ -5754,6 +5773,124 @@ Public Class frmOrdenCompra
         Return mOCProductoLookupCache(vKey)
 
     End Function
+
+    '#EJC20260603_OC_LOOKUP_DISPLAY: en edición, mantener lookup liviano para que la columna Código resuelva DisplayMember sin cargar todo el catálogo.
+    Private Sub OCProductoLookup_ResolverDisplayDesdeDetalle()
+
+        Try
+
+            If Modo <> ModoTrans.Editar Then Return
+            If DTGridDetalleDocIngresos Is Nothing OrElse DTGridDetalleDocIngresos.Rows.Count = 0 Then Return
+
+            Dim vDT As DataTable = OCProductoLookup_DataSourceVacio()
+            Dim vKeys As New HashSet(Of Integer)
+
+            For Each vRow As DataRow In DTGridDetalleDocIngresos.Rows
+
+                If vRow Is Nothing Then Continue For
+                If vRow.RowState = DataRowState.Deleted Then Continue For
+
+                Dim vIdProductoBodega As Integer = 0
+                If Not IsDBNull(vRow("IdProductoBodega")) Then vIdProductoBodega = CInt(vRow("IdProductoBodega"))
+                If vIdProductoBodega <= 0 Then Continue For
+                If vKeys.Contains(vIdProductoBodega) Then Continue For
+
+                Dim vCodigo As String = String.Empty
+                If Not IsDBNull(vRow("CodigoProducto")) Then vCodigo = CStr(vRow("CodigoProducto"))
+
+                Dim vNombre As String = String.Empty
+                If Not IsDBNull(vRow("NombreProducto")) Then vNombre = CStr(vRow("NombreProducto"))
+
+                Dim vUMBas As String = String.Empty
+                If Not IsDBNull(vRow("UMBas")) Then vUMBas = CStr(vRow("UMBas"))
+
+                Dim vIdUmBas As Integer = 0
+                If Not IsDBNull(vRow("IdUmBas")) Then vIdUmBas = CInt(vRow("IdUmBas"))
+
+                Dim vCosto As Double = 0
+                If vRow.Table.Columns.Contains("Costo") AndAlso Not IsDBNull(vRow("Costo")) Then
+                    vCosto = CDbl(vRow("Costo"))
+                End If
+
+                Dim vKit As Boolean = False
+                If vRow.Table.Columns.Contains("EsKit") AndAlso Not IsDBNull(vRow("EsKit")) Then
+                    vKit = CBool(vRow("EsKit"))
+                End If
+
+                Dim vControlPeso As Boolean = False
+                If vRow.Table.Columns.Contains("ControlPeso") AndAlso Not IsDBNull(vRow("ControlPeso")) Then
+                    vControlPeso = CBool(vRow("ControlPeso"))
+                End If
+
+                vDT.Rows.Add(vIdProductoBodega,
+                             vCodigo,
+                             String.Empty,
+                             vNombre,
+                             vUMBas,
+                             vIdUmBas,
+                             vCosto,
+                             vKit,
+                             0,
+                             vControlPeso,
+                             String.Empty,
+                             String.Empty,
+                             String.Empty)
+                vKeys.Add(vIdProductoBodega)
+
+            Next
+
+            If vDT.Rows.Count > 0 Then
+                ProductoGridLookUpEdit.DataSource = vDT
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=" & vDT.Rows.Count &
+                                ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=" & vDT.Rows.Count &
+                              ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            Else
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            End If
+
+        Catch ex As Exception
+            Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE error=" & ex.Message)
+            OCTrace_Marca("producto_lookup_display_detalle_error", ex.Message)
+        End Try
+
+    End Sub
+
+    '#EJC20260603_OC_EDIT_RULES: traza centralizada para entender por qué el grid queda editable/bloqueado.
+    Private Sub OCTrace_EstadoEdicionGrid(ByVal pContexto As String)
+
+        Try
+            Dim vEstado As Integer = 0
+            Dim vEnviadoErp As Boolean = False
+            Dim vPushToNav As Boolean = False
+
+            If gBeOrdenCompra IsNot Nothing Then
+                vEstado = gBeOrdenCompra.IdEstadoOC
+                vEnviadoErp = gBeOrdenCompra.Enviado_A_ERP
+                vPushToNav = gBeOrdenCompra.Push_To_NAV
+            End If
+
+            Dim vMsg As String = "OC_EDIT_RULES contexto=" & pContexto &
+                                 ";modo=" & Modo &
+                                 ";estadoOC=" & vEstado &
+                                 ";editable=" & gvDetalleDocIngreso.OptionsBehavior.Editable &
+                                 ";readOnly=" & gvDetalleDocIngreso.OptionsBehavior.ReadOnly &
+                                 ";cmdAgregarProducto=" & cmdAgregarProducto.Enabled &
+                                 ";cmdEliminarFila=" & cmdEliminarFila.Enabled &
+                                 ";cmdActualizar=" & cmdActualizar.Enabled &
+                                 ";enviadoERP=" & vEnviadoErp &
+                                 ";pushToNAV=" & vPushToNav
+
+            Debug.WriteLine(vMsg)
+            OCTrace_Marca("oc_edit_rules", vMsg)
+        Catch ex As Exception
+            Debug.WriteLine("OC_EDIT_RULES error=" & ex.Message)
+        End Try
+
+    End Sub
 
     Private Sub OCProductoLookup_Asignar(ByVal pEditor As GridLookUpEdit,
                                          ByVal pIdPropietarioBodega As Integer,
@@ -5807,7 +5944,13 @@ Public Class frmOrdenCompra
                 drLineaGrid("CodigoProducto") = drArticulo("Codigo")
                 drLineaGrid("NombreProducto") = drArticulo("Nombre")
                 drLineaGrid("IdUmBas") = drArticulo("IdUmBas")
-                drLineaGrid("UMBas") = drArticulo("UmBas")
+                If drArticulo.Table.Columns.Contains("UMBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UMBas")
+                ElseIf drArticulo.Table.Columns.Contains("UmBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UmBas")
+                Else
+                    drLineaGrid("UMBas") = String.Empty
+                End If
                 drLineaGrid("Costo") = drArticulo("Costo")
                 drLineaGrid("EsKit") = drArticulo("Kit")
                 'drLineaGrid("IdProducto") = drArticulo("IdProducto")
@@ -6515,6 +6658,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = False
                         cmdEliminar.Enabled = False
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_cerrada_anulada")
                     Else
                         mnuGuardar.Enabled = False
                         GrpEnc.Enabled = True
@@ -6523,6 +6667,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = True
                         cmdEliminar.Enabled = True
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_abierta")
                     End If
 
                 Else
@@ -7566,12 +7711,24 @@ MessageBoxButtons.YesNo,
                 Dim pIdPropietarioBodega As String = Convert.ToString(view.GetFocusedRowCellValue("IdPropietarioBodega"))
 
                 If pIdPropietarioBodega.Trim = String.Empty Then pIdPropietarioBodega = lcmbPropietario.EditValue
+                If Val(pIdPropietarioBodega) = 0 AndAlso gBeOrdenCompra IsNot Nothing Then
+                    pIdPropietarioBodega = gBeOrdenCompra.IdPropietarioBodega.ToString()
+                End If
 
                 If Not Val(pIdPropietarioBodega) = 0 Then
                     OCProductoLookup_Asignar(editor, Val(pIdPropietarioBodega))
+                    '#EJC20260603_OC_LOOKUP_SYNC: sincronizar también el repository para que DisplayMember no se pierda al salir del editor.
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, Val(pIdPropietarioBodega))
                 Else
                     OCProductoLookup_Asignar(editor, 0)
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, 0)
                 End If
+
+                Debug.WriteLine("OC_LOOKUP_SYNC shownEditor;idPropietarioBodega=" & pIdPropietarioBodega &
+                                ";editorRows=" & If(editor.Properties.DataSource Is Nothing, -1, CType(editor.Properties.DataSource, DataTable).Rows.Count) &
+                                ";repoRows=" & If(ProductoGridLookUpEdit.DataSource Is Nothing, -1, CType(ProductoGridLookUpEdit.DataSource, DataTable).Rows.Count))
+                OCTrace_Marca("producto_lookup_sync",
+                              "idPropietarioBodega=" & pIdPropietarioBodega)
 
             End If
 
