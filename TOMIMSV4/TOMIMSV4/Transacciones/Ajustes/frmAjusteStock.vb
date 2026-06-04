@@ -370,6 +370,7 @@ Public Class frmAjusteStock
                     Llenar_Motivo(rc, vBeAjustDet.IdMotivoAjuste, clsTrans.lConnection, clsTrans.lTransaction)
                     Llenar_Tipo(rc, vBeAjustDet.Idtipoajuste, clsTrans.lConnection, clsTrans.lTransaction)
                     Llena_Bodegas_ERP_Grid(rc, vBeAjustDet.IdBodegaERP, clsTrans.lConnection, clsTrans.lTransaction)
+
                     Llenar_Talla(rc, -1)
                     Llenar_Color(rc, -1)
 
@@ -421,15 +422,13 @@ Public Class frmAjusteStock
 
                     If BeBodega.Control_Talla_Color Then
 
-                        Dim tmpProductoTallaColor = clsLnProducto_talla_color.GetSingle(vBeAjustDet.IdProductoTallaColor_origen)
+                        Dim tmpProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(vBeAjustDet.IdProductoTallaColor_origen)
 
                         If tmpProductoTallaColor IsNot Nothing Then
 
-                            Dim tmpTalla = clsLnTalla.GetSingle_By_IdTalla(tmpProductoTallaColor.IdTalla)
-                            Dim tmpColor = clsLnColor.GetSingle_By_IdColor(tmpProductoTallaColor.IdColor)
-                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = tmpProductoTallaColor.IdProductoTallaColor
-                            dgrid.Rows(rc).Cells("colTalla").Value = tmpTalla.Codigo
-                            dgrid.Rows(rc).Cells("colColor").Value = tmpColor.Codigo
+                            dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor_origen
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(tmpProductoTallaColor.Rows(0).Item("IdTalla")), 0, tmpProductoTallaColor.Rows(0).Item("IdTalla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(tmpProductoTallaColor.Rows(0).Item("IdColor")), 0, tmpProductoTallaColor.Rows(0).Item("IdColor"))
 
                         End If
 
@@ -710,8 +709,8 @@ Public Class frmAjusteStock
                         pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDetBorrador.IdProductoTallaColor_origen)
 
                         If pProductoTallaColor IsNot Nothing Then
-                            BeAjusteDetBorrador.Talla_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                            BeAjusteDetBorrador.Color_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                            BeAjusteDetBorrador.Talla_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdTalla")), "", pProductoTallaColor.Rows(0).Item("IdTalla"))
+                            BeAjusteDetBorrador.Color_origen = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdColor")), "", pProductoTallaColor.Rows(0).Item("IdColor"))
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
                         End If
@@ -793,8 +792,8 @@ Public Class frmAjusteStock
 
                         If pProductoTallaColor IsNot Nothing Then
                             dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDetBorrador.IdProductoTallaColor_origen
-                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                            dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdTalla")), "", pProductoTallaColor.Rows(0).Item("IdTalla"))
+                            dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("IdColor")), "", pProductoTallaColor.Rows(0).Item("IdColor"))
                         Else
                             Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDetBorrador.IdProductoBodega)
                         End If

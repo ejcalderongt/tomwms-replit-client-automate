@@ -915,10 +915,6 @@ Partial Public Class clsLnTrans_ajuste_enc
                     .IdProductoTallaColor_origen = BeAjusteDet.IdProductoTallaColor_origen
                     .Talla_origen = BeAjusteDet.Talla_origen
                     .Color_origen = BeAjusteDet.Color_origen
-                    '#FIX_v34_BORRADOR_TALLA_COLOR_DESTINO_2026-06-03
-                    .IdProductoTallaColor_destino = BeAjusteDet.IdProductoTallaColor_destino
-                    .Talla_destino = BeAjusteDet.Talla_destino
-                    .Color_destino = BeAjusteDet.Color_destino
 
                     .estado_borrador = "BORRADOR"
                     .confirmado = False
