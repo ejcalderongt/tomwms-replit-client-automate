@@ -84,7 +84,7 @@ Public Class frmDisenoB_V2
 
         AddHandler btnActualizar.Click, AddressOf BtnActualizar_Click
         AddHandler btnRedibujar.Click, AddressOf BtnRedibujar_Click
-        AddHandler cmbBodegas.SelectedIndexChanged, AddressOf CmbBodegas_SelectedIndexChanged
+        ''AddHandler cmbBodegas.SelectedIndexChanged, AddressOf CmbBodegas_SelectedIndexChanged
 
         pnlLeft.Controls.Add(lblEmpresa)
         pnlLeft.Controls.Add(cmbEmpresa)
