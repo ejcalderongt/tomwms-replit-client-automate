@@ -17,10 +17,10 @@ function New-SeedConnectionString {
   $server = $env:WMS_KILLIOS_DB_HOST
   $db = $env:WMS_KILLIOS_DB_NAME
   $user = $env:WMS_KILLIOS_DB_USER
-  $pwd = $env:WMS_KILLIOS_DB_PASSWORD
+  $pwd = if ($env:WMS_EC2_DB_PASSWORD) { $env:WMS_EC2_DB_PASSWORD } else { $env:WMS_KILLIOS_DB_PASSWORD }
 
   if ([string]::IsNullOrWhiteSpace($server) -or [string]::IsNullOrWhiteSpace($db) -or [string]::IsNullOrWhiteSpace($user) -or [string]::IsNullOrWhiteSpace($pwd)) {
-    throw "Faltan variables de entorno DB. Requiere: WMS_KILLIOS_DB_HOST, WMS_KILLIOS_DB_NAME, WMS_KILLIOS_DB_USER, WMS_KILLIOS_DB_PASSWORD"
+    throw "Faltan variables de entorno DB. Requiere: WMS_KILLIOS_DB_HOST, WMS_KILLIOS_DB_NAME, WMS_KILLIOS_DB_USER, WMS_EC2_DB_PASSWORD (alias legacy: WMS_KILLIOS_DB_PASSWORD)"
   }
 
   return "Server=$server;Database=$db;User ID=$user;Password=$pwd;Encrypt=False;TrustServerCertificate=True;"
@@ -133,3 +133,4 @@ Write-Host "Carpeta: $seedDir"
 Write-Host "ZIP:     $zipPath"
 Write-Host ""
 Write-Host "Siguiente paso: subir el ZIP a Replit/chat junto al CASE_INTAKE_TEMPLATE lleno."
+

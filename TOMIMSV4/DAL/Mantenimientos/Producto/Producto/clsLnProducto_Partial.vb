@@ -8226,6 +8226,7 @@ Partial Public Class clsLnProducto
 
         Try
             '#CKFK20241012 Modifiqué este query por el error detectado en Killios donde el producto tiene más de una presentación
+            '#EJC20260604_FIX_REC_SKU_OC_LOOKUP agrega búsqueda por trans_oc_det.codigo_producto (SKU OC) con trim seguro
             Dim vSQL As String = "SELECT DISTINCT IdBodega, IdProductoBodega, IdProducto, IdPropietario, IdClasificacion, IdFamilia, IdMarca, 
                                          IdTipoProducto, IdUnidadMedidaBasica, IdCamara, IdTipoRotacion, IdPerfilSerializado, IdIndiceRotacion, 
                                          IdSimbologia, IdArancel, codigo, nombre, codigo_barra, precio, existencia_min, existencia_max, costo, 
@@ -8237,16 +8238,29 @@ Partial Public Class clsLnProducto
                                          alto, genera_lp_old, IdUnidadMedidaCobro, IdTipoEtiqueta, dias_inventario_promedio, IdProductoParametroA, 
                                          IdProductoParametroB, IdTipoManufactura, Margen_Impresion
                                   FROM VW_ProductoSI v
-                                  WHERE (IdBodega = @IdBodega) and 
-                                        (codigo_barra_pcb = @CodigoBarra or 
-                                         codigo_barra_presentacion = @CodigoBarra or 
-                                         codigo_barra = @CodigoBarra or 
-                                         codigo = @CodigoBarra) AND
-                                         EXISTS (SELECT * 
-                                                FROM trans_oc_det d
-                                                WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
-                                                      d.IdProductoBodega = v.IdProductoBodega AND 
-                                                      d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica)"
+                                 WHERE (IdBodega = @IdBodega) and 
+                                       (
+                                         (
+                                           codigo_barra_pcb = @CodigoBarra or 
+                                           codigo_barra_presentacion = @CodigoBarra or 
+                                           codigo_barra = @CodigoBarra or 
+                                           codigo = @CodigoBarra
+                                         ) OR
+                                         (
+                                           EXISTS (SELECT * 
+                                                   FROM trans_oc_det d
+                                                   WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                                         d.IdProductoBodega = v.IdProductoBodega AND 
+                                                         d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica AND
+                                                         LTRIM(RTRIM(ISNULL(d.codigo_producto, ''))) = LTRIM(RTRIM(@CodigoBarra))
+                                           )
+                                         )
+                                       ) AND
+                                       EXISTS (SELECT * 
+                                              FROM trans_oc_det d
+                                              WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                                    d.IdProductoBodega = v.IdProductoBodega AND 
+                                                    d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica)"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
