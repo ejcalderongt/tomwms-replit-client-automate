@@ -502,6 +502,23 @@ Partial Public Class clsLnTrans_packing_enc
 
             cmd.Dispose()
 
+            '#EJC20260604 FIX_PACKING_HUERFANO: al borrar packing masivo también hay que
+            'resetear fecha_packing en trans_picking_ubic; de lo contrario quedan líneas
+            'ocultas en HH (filtro por fecha_packing) sin respaldo en trans_packing_enc.
+            Dim resetSql As String = "UPDATE trans_picking_ubic " &
+                                     "SET Fecha_packing = '19000101' " &
+                                     "WHERE IdPickingEnc = @IdPickingEnc " &
+                                     "  AND Fecha_packing > '19010101'"
+            Dim cmdReset As SqlCommand
+            If Es_Transaccion_Remota Then
+                cmdReset = New SqlCommand(resetSql, pConection, pTransaction)
+            Else
+                cmdReset = New SqlCommand(resetSql, lConnection, lTransaction)
+            End If
+            cmdReset.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
+            cmdReset.ExecuteNonQuery()
+            cmdReset.Dispose()
+
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return rowsAffected

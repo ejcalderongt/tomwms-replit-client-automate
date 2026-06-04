@@ -1968,6 +1968,12 @@ Partial Public Class clsLnStock_res
 
                 If Not EsPicking Then
                     bePickingUbicExistente.Cantidad_Recibida -= CantSol
+                    '#EJC20260604_REEMPL_VERIF_INTEGRIDAD_VERIFICADA:
+                    'En verificación, al extraer cantidad para dañados/no-encontrados se debe restar también verificada.
+                    bePickingUbicExistente.Cantidad_Verificada -= CantSol
+                    If bePickingUbicExistente.Cantidad_Verificada < 0 Then
+                        bePickingUbicExistente.Cantidad_Verificada = 0
+                    End If
                 End If
 
                 '#EJC20260526: Con CK Stock_NonNegative_20250228_CKFK, parcial solo aplica cuando cantidad_solicitada > 0.
@@ -2326,6 +2332,7 @@ Partial Public Class clsLnStock_res
                             bePickingUbicExistente.Dañado_verificacion = False
                         Else
                             bePickingUbicExistente.Cantidad_Recibida = CantSol
+                            bePickingUbicExistente.Cantidad_Verificada = 0
                             bePickingUbicExistente.Dañado_picking = False
                             bePickingUbicExistente.Dañado_verificacion = True
                         End If
@@ -2368,6 +2375,7 @@ Partial Public Class clsLnStock_res
                             bePickingUbicExistente.Dañado_verificacion = False
                         Else
                             bePickingUbicExistente.Cantidad_Recibida = CantSol
+                            bePickingUbicExistente.Cantidad_Verificada = 0
                             bePickingUbicExistente.Dañado_picking = False
                             bePickingUbicExistente.Dañado_verificacion = True
                         End If

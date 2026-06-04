@@ -6809,7 +6809,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
                                             pu.cantidad_verificada<>pu.cantidad_despachada AND
-                                            (pu.fecha_packing IS NULL OR pu.fecha_packing < '19010101'))
+                                            (
+                                                pu.fecha_packing IS NULL OR
+                                                pu.fecha_packing < '19010101' OR
+                                                NOT EXISTS (
+                                                    SELECT 1
+                                                    FROM dbo.trans_packing_enc pe2
+                                                    WHERE pe2.IdPickingEnc = pu.IdPickingEnc
+                                                      AND pe2.IdPedidoEnc = pu.IdPedidoEnc
+                                                      AND pe2.IdProductoBodega = pu.IdProductoBodega
+                                                      AND ISNULL(pe2.lic_plate, '') = ISNULL(pu.lic_plate, '')
+                                                      AND ISNULL(pe2.lote, '') = ISNULL(pu.lote, '')
+                                                      AND CONVERT(DATE, ISNULL(pe2.fecha_vence, '19000101')) = CONVERT(DATE, ISNULL(pu.fecha_vence, '19000101'))
+                                                      AND pe2.IdProductoEstado = pu.IdProductoEstado
+                                                      AND pe2.IdDespachoEnc = 0
+                                                )
+                                            ))
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
                                             pu.lic_plate, 
