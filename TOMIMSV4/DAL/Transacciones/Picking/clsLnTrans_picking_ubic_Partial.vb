@@ -6816,7 +6816,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
                                             pu.cantidad_verificada<>pu.cantidad_despachada AND
-                                            (pu.fecha_packing IS NULL OR pu.fecha_packing < '19010101'))
+                                            (
+                                                pu.fecha_packing IS NULL OR
+                                                pu.fecha_packing < '19010101' OR
+                                                NOT EXISTS (
+                                                    SELECT 1
+                                                    FROM dbo.trans_packing_enc pe2
+                                                    WHERE pe2.IdPickingEnc = pu.IdPickingEnc
+                                                      AND pe2.IdPedidoEnc = pu.IdPedidoEnc
+                                                      AND pe2.IdProductoBodega = pu.IdProductoBodega
+                                                      AND ISNULL(pe2.lic_plate, '') = ISNULL(pu.lic_plate, '')
+                                                      AND ISNULL(pe2.lote, '') = ISNULL(pu.lote, '')
+                                                      AND CONVERT(DATE, ISNULL(pe2.fecha_vence, '19000101')) = CONVERT(DATE, ISNULL(pu.fecha_vence, '19000101'))
+                                                      AND pe2.IdProductoEstado = pu.IdProductoEstado
+                                                      AND pe2.IdDespachoEnc = 0
+                                                )
+                                            ))
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
                                             pu.lic_plate, 
@@ -7875,7 +7890,9 @@ Partial Public Class clsLnTrans_picking_ubic
                                                               cantidad_verificada > 0 AND
                                   (Fecha_packing IS NULL OR Fecha_packing < '19010101') AND
                                   IdPickingEnc=@IdPickingEnc AND
+                                  IdPedidoEnc=@IdPedidoEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
+                                  lic_plate=@lic_plate AND
                                   ISNULL(IdPresentacion,0) = @IdPresentacion AND
                                   (Lote = @Lote OR Lote IS NULL)  AND 
                                   ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
@@ -7889,11 +7906,14 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.CommandType = CommandType.Text
 
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pPackingEnc.Idpickingenc)
+                '#EJC20260604 FIX_PACKING_CRUCE_PEDIDOS: aislar lookup por pedido y licencia para evitar
+                'que un empaque de cantidad 1 termine sellando más de un trans_picking_ubic entre pedidos.
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pPackingEnc.IdPedidoEnc)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pPackingEnc.Idpresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPackingEnc.Idunidadmedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPackingEnc.Lote)
                 lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPackingEnc.Fecha_vence)
-                '#EJCRP fix(packing): @lic_plate param eliminado junto con filtro SQL #EJC20260528
+                lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPackingEnc.Lic_plate)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPackingEnc.Idproductoestado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPackingEnc.Idproductobodega)
 
