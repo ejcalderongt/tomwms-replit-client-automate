@@ -1007,6 +1007,27 @@ Public Class frmRegularizarInventario
                                                                             clsTrans.lConnection,
                                                                             clsTrans.lTransaction)
 
+            '#AG27052026: Bloquea regularización si existe conteo menor a la cantidad reservada.
+            Dim dtReservadoMenorConteo As DataTable =
+            clsLnTrans_inv_ciclico.Get_Conteos_Menores_A_Reservado(gBeInventario.Idinventarioenc,
+                                                           gBeInventario.IdBodega,
+                                                           clsTrans.lConnection,
+                                                           clsTrans.lTransaction)
+
+            If dtReservadoMenorConteo IsNot Nothing AndAlso dtReservadoMenorConteo.Rows.Count > 0 Then
+
+                Dim dr As DataRow = dtReservadoMenorConteo.Rows(0)
+
+                Throw New Exception("No se puede regularizar. Existen productos con cantidad contada menor a la cantidad reservada." &
+                        vbCrLf & vbCrLf &
+                        String.Format("IdStock: {0} | Ubicación: {1} | Reservado: {2:n6} | Contado: {3:n6}",
+                                      dr("IdStock"),
+                                      dr("Ubicacion"),
+                                      Convert.ToDouble(dr("CantidadReservada")),
+                                      Convert.ToDouble(dr("CantidadContada"))))
+
+            End If
+
             Actualizar_Progreso_Regularizacion("Clasificando ajustes", 0, Math.Max(ListCiclico.Count, 1), True)
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(gBeInventario.IdBodega,

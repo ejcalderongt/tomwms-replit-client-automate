@@ -1,1 +1,1 @@
-<%@ Application Codebehind="Global.asax.vb" Inherits="TOMWMS.Global" Language="VB" %>
+<%@ Application Codebehind="Global.asax.vb" Inherits="TOMWMS.GlobalApplication" Language="VB" %>
