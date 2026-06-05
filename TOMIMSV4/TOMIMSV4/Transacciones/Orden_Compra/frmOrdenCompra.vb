@@ -620,7 +620,6 @@ Public Class frmOrdenCompra
             DTGridDetalleDocIngresos.Clear()
             gBeOrdenCompra.DetalleOC.Clear()
 
-
             gBeOrdenCompra.DetalleOC = clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
             lOCDet = gBeOrdenCompra.DetalleOC
 
@@ -666,7 +665,10 @@ Public Class frmOrdenCompra
                                                    BeTransOcDet.Producto.Control_peso,
                                                    BeTransOcDet.Producto.Peso_referencia,
                                                    BeTransOcDet.Nombre_Embarcador,
-                                                   BeTransOcDet.Producto.Clasificacion.Nombre)
+                                                   BeTransOcDet.Producto.Clasificacion.Nombre,
+                                                   BeTransOcDet.IdProductoTallaColor,
+                                                   BeTransOcDet.Talla.Codigo,
+                                                   BeTransOcDet.Color.Codigo)
 
                 'GT0903: agregue embarcador y clasificacion
 
@@ -725,8 +727,6 @@ Public Class frmOrdenCompra
             MessageBoxIcon.Error)
         End Try
 
-
-
     End Sub
 
     Private Sub Cargar_Detalle_Lotes_OC()
@@ -755,9 +755,10 @@ Public Class frmOrdenCompra
                                                                    datos.IdOrdenCompraEnc,
                                                                    datos.IdOrdenCompraDet,
                                                                    datos.IdOrdenCompraDetLote,
-                                                                   datos.IdProductoBodega).ToList()
-
-
+                                                                   datos.IdProductoBodega,
+                                                                   datos.IdProductoTallaColor,
+                                                                   datos.Talla,
+                                                                   datos.Color).ToList()
 
             DgridLotes.DataSource = DT
 
@@ -802,6 +803,7 @@ Public Class frmOrdenCompra
                 End If
             End If
 
+            gridviewLotes.BestFitColumns()
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -5647,6 +5649,7 @@ Public Class frmOrdenCompra
         'Cargar_Detalle_OC()
         'GT 02062021 Se recarga el detalle OC desde la bd, porque se esta actualizando para mostrar el conteo desde la HH.
         Cargar_Detalle_OC_HH()
+        Cargar_Detalle_Lotes_OC()
         cmdActualizarDetalle.Enabled = True
     End Sub
 

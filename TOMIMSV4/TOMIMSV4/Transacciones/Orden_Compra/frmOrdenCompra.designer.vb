@@ -80,8 +80,8 @@ Partial Class frmOrdenCompra
         Dim lblTotalValorAduana As System.Windows.Forms.Label
         Dim Label36 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmOrdenCompra))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpEncRec = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -1087,7 +1087,7 @@ Partial Class frmOrdenCompra
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
         '
@@ -1969,7 +1969,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -4511)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -4930)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -1991,7 +1991,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -4559)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -4978)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -2012,7 +2012,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -4559)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -4978)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2033,7 +2033,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -4560)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -4979)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
@@ -3432,6 +3432,7 @@ Partial Class frmOrdenCompra
         Me.gridviewLotes.DetailHeight = 437
         Me.gridviewLotes.GridControl = Me.DgridLotes
         Me.gridviewLotes.Name = "gridviewLotes"
+        Me.gridviewLotes.OptionsView.ColumnAutoWidth = False
         '
         'tabDetERP
         '
@@ -3514,14 +3515,14 @@ Partial Class frmOrdenCompra
         Me.dgridPedidos.AllowUserToResizeRows = False
         Me.dgridPedidos.BackgroundColor = System.Drawing.Color.PaleTurquoise
         Me.dgridPedidos.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.dgridPedidos.ColumnHeadersHeight = 40
         Me.dgridPedidos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IdPedido, Me.Referencia, Me.Bodega, Me.Cliente, Me.Propietario, Me.FechaPedido, Me.EstadoP})
         Me.dgridPedidos.Dock = System.Windows.Forms.DockStyle.Fill
@@ -3532,14 +3533,14 @@ Partial Class frmOrdenCompra
         Me.dgridPedidos.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridPedidos.MultiSelect = False
         Me.dgridPedidos.Name = "dgridPedidos"
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.dgridPedidos.RowHeadersVisible = False
         Me.dgridPedidos.RowHeadersWidth = 40
         Me.dgridPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -3685,8 +3686,8 @@ Partial Class frmOrdenCompra
         Me.ClientSize = New System.Drawing.Size(1632, 994)
         Me.Controls.Add(Me.xtraOrdenCompra)
         Me.Controls.Add(Me.hideContainerBottom)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.grpEncRec)
+        Me.Controls.Add(Me.RibbonStatusBar)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmOrdenCompra"
