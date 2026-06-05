@@ -287,17 +287,6 @@ Public Class frmConteo
             IdProducto
         )
 
-                XtraMessageBox.Show(
-    "IdProducto: " & IdProducto.ToString() & vbCrLf &
-    "cmbTalla.EditValue: " & cmbTalla.EditValue.ToString() & vbCrLf &
-    "cmbColor.EditValue: " & cmbColor.EditValue.ToString() & vbCrLf &
-    "IdProductoTallaColorOriginal: " & IdProductoTallaColorOriginal.ToString() & vbCrLf &
-    "IdProductoTallaColorTemp: " & IdProductoTallaColorTemp.ToString(),
-    "Debug talla/color",
-    MessageBoxButtons.OK,
-    MessageBoxIcon.Information
-)
-
                 If IdProductoTallaColorTemp <> 0 Then
 
                     IdProductoTallaColorDestino = IdProductoTallaColorTemp
@@ -373,17 +362,6 @@ Public Class frmConteo
                                         cambioEstado OrElse
                                         cambioUbicacion OrElse
                                         cambioTallaColor
-            XtraMessageBox.Show(
-    "cambioFecha: " & cambioFecha.ToString() & vbCrLf &
-    "cambioEstado: " & cambioEstado.ToString() & vbCrLf &
-    "cambioLote: " & cambioLote.ToString() & vbCrLf &
-    "cambioUbicacion: " & cambioUbicacion.ToString() & vbCrLf &
-    "cambioTallaColor: " & cambioTallaColor.ToString() & vbCrLf &
-    "debeCrearNuevoRegistro: " & debeCrearNuevoRegistro.ToString(),
-    "Debug cambios",
-    MessageBoxButtons.OK,
-    MessageBoxIcon.Information
-)
 
             If EsInvOriginal AndAlso debeCrearNuevoRegistro Then
 

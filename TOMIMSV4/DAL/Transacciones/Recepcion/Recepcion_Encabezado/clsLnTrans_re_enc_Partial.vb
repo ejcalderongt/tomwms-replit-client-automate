@@ -3003,6 +3003,26 @@ Partial Public Class clsLnTrans_re_enc
 
                                 If pListRecDet.Count > 0 Then
 
+                                    '#EJC20260604 FIX_REC_CM_RULES_SERVER_EXT: cuando Guardar_Recepcion entra
+                                    'por pRecepcionCajaMaster=True, revalidar por línea OC en servidor para
+                                    'evitar sobre-recepción/reintentos que no deben pasar.
+                                    Dim lBeTransOCEnc As clsBeTrans_oc_enc = Nothing
+                                    Dim lIdPropietarioRecCm As Integer = 0
+                                    If pRecepcionCajaMaster AndAlso pIdOrdenCompraEnc > 0 Then
+                                        lBeTransOCEnc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                                                    lConnection,
+                                                                                    lTransaction)
+                                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.DetalleOC Is Nothing Then
+                                            lBeTransOCEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                                      lConnection,
+                                                                                                                      lTransaction)
+                                        End If
+                                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.IdPropietarioBodega > 0 Then
+                                            lIdPropietarioRecCm = clsLnPropietarios.Get_IdPropietario(pIdBodega,
+                                                                                                       lBeTransOCEnc.IdPropietarioBodega)
+                                        End If
+                                    End If
+
                                     vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
                                                                                             pListRecDet,
                                                                                             lConnection,
@@ -3016,6 +3036,16 @@ Partial Public Class clsLnTrans_re_enc
 
                                     '#GT05012024:validar AQUI que la lp si la tuviera en eliminar detalle, no exista antes de hacer la nueva inserción
                                     For Each pRecepcionDet In pListRecDet
+                                        If pRecepcionCajaMaster AndAlso lBeTransOCEnc IsNot Nothing AndAlso lIdPropietarioRecCm > 0 Then
+                                            If Not Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC(lBeTransOCEnc,
+                                                                                                    lIdPropietarioRecCm,
+                                                                                                    pRecepcionDet,
+                                                                                                    lConnection,
+                                                                                                    lTransaction) Then
+                                                Throw New Exception("Cantidad no válida por regla de recepción (Caja Master / Guardar_Recepcion).")
+                                            End If
+                                        End If
+
                                         If clsLnTrans_re_det.Existe_By_BeRecepcionDet(pRecepcionDet, lConnection, lTransaction) Then
 
                                             '#MECR23092025: Se agrego nueva opcion de log para recepciones.

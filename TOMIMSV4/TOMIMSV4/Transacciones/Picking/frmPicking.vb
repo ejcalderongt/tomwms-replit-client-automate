@@ -1889,7 +1889,11 @@ Public Class frmPicking
                                         Obj.Encontrado,
                                         Obj.Acepto,
                                         "01/01/1900",
-                                         vTieneManufactura)
+                                        Obj.IdStockRes,
+                                        Obj.IdOperadorBodega_Pickeo,
+                                         vTieneManufactura,
+                                         Obj.Codigo_Talla,
+                                         Obj.Codigo_Color)
 
                 Next
 

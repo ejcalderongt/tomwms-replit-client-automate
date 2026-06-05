@@ -58,7 +58,7 @@ Public Class TOMHHWS
     '#EJC20260529 versión del servicio WS TOMHHWS — alinear con versionName HH en cada release
     Public Const WS_VERSION As String = "8.9.0"
 
-    '#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA: Estados SAP HANA SL para el flujo operativo MAMAPA.
+    '#  : Estados SAP HANA SL para el flujo operativo MAMAPA.
     ' 1=Nueva / disponible para reasignar picking; 2=Asignado al crear picking; 3=Pickeando al guardar el primer pickeo.
     ' 4=Pickeado al finalizar picking; 5=Verificando al guardar la primera verificación; 6=Verificado al finalizar verificación.
     ' 8=Cerrada/entregada; 11=Anulada; 12=Back order. Las llamadas se hacen después del commit WMS para no romper la operación local.

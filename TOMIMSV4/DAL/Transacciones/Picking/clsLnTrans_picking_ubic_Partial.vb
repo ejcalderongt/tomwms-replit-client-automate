@@ -58,6 +58,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 .Dañado_picking = IIf(IsDBNull(dr.Item("dañado_picking")), False, dr.Item("dañado_picking"))
                 .IdUbicacionTemporal = IIf(IsDBNull(dr.Item("IdUbicacionTemporal")), 0, dr.Item("IdUbicacionTemporal"))
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Codigo_Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Codigo_Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
             End With
 
         Catch ex1 As SqlException
@@ -88,12 +90,17 @@ Partial Public Class clsLnTrans_picking_ubic
                        pdet.nombre_producto AS nombre,
                        pdet.nom_presentacion AS Presentacion,
                        pdet.nom_unid_med AS UnidadMedida,
-                       pdet.nom_estado AS NomEstado
+                       pdet.nom_estado AS NomEstado,
+                       t.Codigo as Talla,
+                       c.Codigo as Color
                 FROM trans_picking_ubic pu
                 INNER JOIN trans_picking_det pkdet ON pkdet.IdPickingEnc = pu.IdPickingEnc
                                                    AND pkdet.IdPickingDet = pu.IdPickingDet
                 INNER JOIN trans_pe_det pdet ON pdet.IdPedidoEnc = pu.IdPedidoEnc
-                                             AND pdet.IdPedidoDet = pu.IdPedidoDet "
+                                             AND pdet.IdPedidoDet = pu.IdPedidoDet 
+                LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor =  pu.IdProductoTallaColor 
+                LEFT OUTER JOIN talla t ON ptc.IdTalla = t.IdTalla 
+                LEFT OUTER JOIN color c ON ptc.IdColor = c.IdColor "
 
     End Function
 
