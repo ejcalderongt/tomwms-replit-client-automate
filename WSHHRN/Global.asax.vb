@@ -5,7 +5,7 @@
 
 Imports System.Web
 
-Public Class Global
+Public Class GlobalApplication
     Inherits HttpApplication
 
     Sub Application_Start(sender As Object, e As EventArgs)

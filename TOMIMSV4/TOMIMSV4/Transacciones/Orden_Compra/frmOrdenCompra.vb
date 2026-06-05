@@ -355,6 +355,7 @@ Public Class frmOrdenCompra
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_OC()
             OCTrace_Marca("detalle_oc", "ms=" & vTraceReloj.ElapsedMilliseconds & ";rows=" & DTGridDetalleDocIngresos.Rows.Count)
+            OCProductoLookup_ResolverDisplayDesdeDetalle()
 
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_Lotes_OC()
@@ -5225,6 +5226,7 @@ Public Class frmOrdenCompra
                         '#GT27052024: grid con detalle no debe permitir agregar o eliminar mas lineas.
                         cmdEliminarFila.Enabled = False
                         cmdAgregarProducto.Enabled = False
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_cerrada_anulada")
 
                     Else
                         GrpEnc.Enabled = True
@@ -5244,6 +5246,7 @@ Public Class frmOrdenCompra
                             mnuTareaRecepcion.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                             grpUltRec.Visible = True
                         End If
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_abierta_o_backorder")
 
                     End If
 
@@ -5770,6 +5773,124 @@ Public Class frmOrdenCompra
         Return mOCProductoLookupCache(vKey)
 
     End Function
+
+    '#EJC20260603_OC_LOOKUP_DISPLAY: en edición, mantener lookup liviano para que la columna Código resuelva DisplayMember sin cargar todo el catálogo.
+    Private Sub OCProductoLookup_ResolverDisplayDesdeDetalle()
+
+        Try
+
+            If Modo <> ModoTrans.Editar Then Return
+            If DTGridDetalleDocIngresos Is Nothing OrElse DTGridDetalleDocIngresos.Rows.Count = 0 Then Return
+
+            Dim vDT As DataTable = OCProductoLookup_DataSourceVacio()
+            Dim vKeys As New HashSet(Of Integer)
+
+            For Each vRow As DataRow In DTGridDetalleDocIngresos.Rows
+
+                If vRow Is Nothing Then Continue For
+                If vRow.RowState = DataRowState.Deleted Then Continue For
+
+                Dim vIdProductoBodega As Integer = 0
+                If Not IsDBNull(vRow("IdProductoBodega")) Then vIdProductoBodega = CInt(vRow("IdProductoBodega"))
+                If vIdProductoBodega <= 0 Then Continue For
+                If vKeys.Contains(vIdProductoBodega) Then Continue For
+
+                Dim vCodigo As String = String.Empty
+                If Not IsDBNull(vRow("CodigoProducto")) Then vCodigo = CStr(vRow("CodigoProducto"))
+
+                Dim vNombre As String = String.Empty
+                If Not IsDBNull(vRow("NombreProducto")) Then vNombre = CStr(vRow("NombreProducto"))
+
+                Dim vUMBas As String = String.Empty
+                If Not IsDBNull(vRow("UMBas")) Then vUMBas = CStr(vRow("UMBas"))
+
+                Dim vIdUmBas As Integer = 0
+                If Not IsDBNull(vRow("IdUmBas")) Then vIdUmBas = CInt(vRow("IdUmBas"))
+
+                Dim vCosto As Double = 0
+                If vRow.Table.Columns.Contains("Costo") AndAlso Not IsDBNull(vRow("Costo")) Then
+                    vCosto = CDbl(vRow("Costo"))
+                End If
+
+                Dim vKit As Boolean = False
+                If vRow.Table.Columns.Contains("EsKit") AndAlso Not IsDBNull(vRow("EsKit")) Then
+                    vKit = CBool(vRow("EsKit"))
+                End If
+
+                Dim vControlPeso As Boolean = False
+                If vRow.Table.Columns.Contains("ControlPeso") AndAlso Not IsDBNull(vRow("ControlPeso")) Then
+                    vControlPeso = CBool(vRow("ControlPeso"))
+                End If
+
+                vDT.Rows.Add(vIdProductoBodega,
+                             vCodigo,
+                             String.Empty,
+                             vNombre,
+                             vUMBas,
+                             vIdUmBas,
+                             vCosto,
+                             vKit,
+                             0,
+                             vControlPeso,
+                             String.Empty,
+                             String.Empty,
+                             String.Empty)
+                vKeys.Add(vIdProductoBodega)
+
+            Next
+
+            If vDT.Rows.Count > 0 Then
+                ProductoGridLookUpEdit.DataSource = vDT
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=" & vDT.Rows.Count &
+                                ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=" & vDT.Rows.Count &
+                              ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            Else
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            End If
+
+        Catch ex As Exception
+            Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE error=" & ex.Message)
+            OCTrace_Marca("producto_lookup_display_detalle_error", ex.Message)
+        End Try
+
+    End Sub
+
+    '#EJC20260603_OC_EDIT_RULES: traza centralizada para entender por qué el grid queda editable/bloqueado.
+    Private Sub OCTrace_EstadoEdicionGrid(ByVal pContexto As String)
+
+        Try
+            Dim vEstado As Integer = 0
+            Dim vEnviadoErp As Boolean = False
+            Dim vPushToNav As Boolean = False
+
+            If gBeOrdenCompra IsNot Nothing Then
+                vEstado = gBeOrdenCompra.IdEstadoOC
+                vEnviadoErp = gBeOrdenCompra.Enviado_A_ERP
+                vPushToNav = gBeOrdenCompra.Push_To_NAV
+            End If
+
+            Dim vMsg As String = "OC_EDIT_RULES contexto=" & pContexto &
+                                 ";modo=" & Modo &
+                                 ";estadoOC=" & vEstado &
+                                 ";editable=" & gvDetalleDocIngreso.OptionsBehavior.Editable &
+                                 ";readOnly=" & gvDetalleDocIngreso.OptionsBehavior.ReadOnly &
+                                 ";cmdAgregarProducto=" & cmdAgregarProducto.Enabled &
+                                 ";cmdEliminarFila=" & cmdEliminarFila.Enabled &
+                                 ";cmdActualizar=" & cmdActualizar.Enabled &
+                                 ";enviadoERP=" & vEnviadoErp &
+                                 ";pushToNAV=" & vPushToNav
+
+            Debug.WriteLine(vMsg)
+            OCTrace_Marca("oc_edit_rules", vMsg)
+        Catch ex As Exception
+            Debug.WriteLine("OC_EDIT_RULES error=" & ex.Message)
+        End Try
+
+    End Sub
 
     Private Sub OCProductoLookup_Asignar(ByVal pEditor As GridLookUpEdit,
                                          ByVal pIdPropietarioBodega As Integer,
@@ -6537,6 +6658,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = False
                         cmdEliminar.Enabled = False
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_cerrada_anulada")
                     Else
                         mnuGuardar.Enabled = False
                         GrpEnc.Enabled = True
@@ -6545,6 +6667,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = True
                         cmdEliminar.Enabled = True
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_abierta")
                     End If
 
                 Else
@@ -7594,9 +7717,18 @@ MessageBoxButtons.YesNo,
 
                 If Not Val(pIdPropietarioBodega) = 0 Then
                     OCProductoLookup_Asignar(editor, Val(pIdPropietarioBodega))
+                    '#EJC20260603_OC_LOOKUP_SYNC: sincronizar también el repository para que DisplayMember no se pierda al salir del editor.
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, Val(pIdPropietarioBodega))
                 Else
                     OCProductoLookup_Asignar(editor, 0)
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, 0)
                 End If
+
+                Debug.WriteLine("OC_LOOKUP_SYNC shownEditor;idPropietarioBodega=" & pIdPropietarioBodega &
+                                ";editorRows=" & If(editor.Properties.DataSource Is Nothing, -1, CType(editor.Properties.DataSource, DataTable).Rows.Count) &
+                                ";repoRows=" & If(ProductoGridLookUpEdit.DataSource Is Nothing, -1, CType(ProductoGridLookUpEdit.DataSource, DataTable).Rows.Count))
+                OCTrace_Marca("producto_lookup_sync",
+                              "idPropietarioBodega=" & pIdPropietarioBodega)
 
             End If
 
@@ -8963,14 +9095,14 @@ MessageBoxButtons.YesNo,
 
         Dim rutaImagen As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
         If rutaImagen IsNot Nothing AndAlso File.Exists(rutaImagen.ToString()) Then
-            Dim previewForm As New DevExpress.XtraEditors.XtraForm()
+            Dim previewForm As New XtraForm()
             previewForm.Text = "Vista previa de imagen"
             previewForm.StartPosition = FormStartPosition.CenterParent
             previewForm.Size = New Size(700, 700)
 
-            Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
+            Dim pictureEdit As New PictureEdit()
             pictureEdit.Dock = DockStyle.Fill
-            pictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+            pictureEdit.Properties.SizeMode = PictureSizeMode.Zoom
             pictureEdit.Image = Image.FromFile(rutaImagen.ToString())
 
             previewForm.Controls.Add(pictureEdit)

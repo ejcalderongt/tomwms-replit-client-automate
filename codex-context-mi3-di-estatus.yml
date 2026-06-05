@@ -1,4 +1,56 @@
 notas:
+  - fecha: "2026-06-04"
+    area: "Brain atlas/handoffs automation-safe"
+    detalle: >
+      Se implemento estructura operativa para eficiencia de contexto sin romper
+      flujos: brain/atlas/index.yml como discovery master, brain/handoffs/_index.yml
+      como inventario reusable por sintomas/tags/dominios, y script local
+      brain/tools/lint_brain_indexes.ps1 para validar rutas/metadatos/staleness.
+      Se documento backlog de tercerizacion segura en
+      brain/atlas/AUTOMATION-BACKLOG-2026-06-04.md y guia operativa en
+      brain/atlas/README.md.
+  - fecha: "2026-06-03"
+    area: "BOF graficador bodega V2 forma separada"
+    detalle: >
+      Se agrego baseline de nueva forma aislada frmDisenoB_V2 para evolucion UX
+      del graficador sin romper frmDiseñoB legacy. V2 carga empresa/bodega con
+      IMS/AP, materializa estructura via clsLnBodega.Get_Estructura_By_IdBodega
+      y dibuja usando clsGraficadorBodega. Incluye Debug.WriteLine de trazas
+      finas con tiempos (data/render) y conteos de sectores/tramos/ubicaciones.
+      Archivo: Mantenimientos/Bodega_Graficador/frmDisenoB_V2.vb.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra lookup producto pierde codigo al tab"
+    detalle: >
+      Se detecto caso en OC nueva donde el producto se seleccionaba/escaneaba,
+      pero al salir de la celda Codigo el texto visible se vaciaba. Causa:
+      en ShownEditor de IdProductoBodega se cargaba datasource solo al editor
+      activo (GridLookUpEdit) y no al RepositoryItem del grid, por lo que al
+      cerrar editor el DisplayMember no tenia mapa IdProductoBodega->Codigo.
+      Fix: sincronizar ambos datasources (editor + ProductoGridLookUpEdit) y
+      trazar producto_lookup_sync para diagnostico.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra reglas de bloqueo en modo edicion"
+    detalle: >
+      Se valido que el bloqueo global del grid en frmOrdenCompra NO depende
+      directamente de Enviado_A_ERP. La regla principal en ModoTrans.Editar es:
+      estado ANULADA/CERRADA => gvDetalleDocIngreso.OptionsBehavior.Editable=False,
+      Bloquea_Objetos y botones de agregar/eliminar fila deshabilitados.
+      Para estados abiertos/backorder se mantiene editable=True con validaciones
+      por columna/fila y restricciones de negocio (ej: IdProductoBodega no editable
+      en editar, filas hijas kit no editables por ShowingEditor). Se agrego traza
+      OC_EDIT_RULES (Debug.WriteLine + OCTrace_Marca step=oc_edit_rules) en puntos
+      de decision para diagnostico futuro.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra codigo producto/lookup en grid"
+    detalle: >
+      Se corrigio regresion visual en frmOrdenCompra al editar OC existente:
+      el lookup de producto quedaba lazy/vacio por performance y la columna
+      Codigo (IdProductoBodega con DisplayMember=Codigo) no resolvia texto.
+      Fix: despues de Cargar_Detalle_OC se hidrata ProductoGridLookUpEdit con
+      un datasource liviano construido desde DTGridDetalleDocIngresos
+      (solo productos presentes en el documento), manteniendo carga masiva lazy.
+      Se agrego traza Debug.WriteLine/OCTrace_Marca
+      producto_lookup_display_detalle para diagnostico.
   - fecha: "2026-06-03"
     area: "HH recepción doble envío tras NO imprimir"
     detalle: >
@@ -1231,3 +1283,27 @@ notas:
       robustecio el mapper clsLnVW_Movimientos.Cargar_StockEnFecha para mapear
       Presentacion con/sin tilde y guardar TTarea desde TipoTarea. Se documento
       la traza en tools/stock-en-fecha/STOCK_EN_FECHA_REGULARIZACION_TRACE_20260602.md.
+  - fecha: "2026-06-04"
+    area: "DAL reemplazo verificacion integridad stock_res"
+    detalle: >
+      Se elimino la dependencia de relectura por filtros fragiles
+      (IdPedidoDet/IdPicking/IdPedido + host/user/estado) en los flujos de
+      reemplazo que lanzaban "no se genero stock reservado". Ahora
+      Reservar_Stock_By_Stock_Reem captura los IdStockRes realmente insertados
+      dentro de la misma transaccion y Reemplazar_IdStock_By_Stock,
+      Reemplazo_Verificacion_By_ListPickingUbic y
+      ReemplazarAuto_IdStock_By_Stock recuperan con
+      Get_All_Reemplazo_By_IdsStockRes. Esto fuerza integridad fuerte:
+      si se inserto, se recupera por clave tecnica; si no existe IdStockRes
+      insertado, se considera falla real de datos/flujo.
+  - fecha: "2026-06-04"
+    area: "RCA reemplazo verificacion LA_CUMBRE_QA (pedido 7618)"
+    detalle: >
+      En EC2/Amazon (TOMWMS_LA_CUMBRE_QA), IdPedidoDet 462795 tiene
+      trans_pe_det.Cantidad=48 y stock_res acumulado=48 en estado PICKEADO
+      (sin UNCOMMITED). El tope defensivo Ajustar_Cantidad_Maxima_PedidoDet
+      sumaba todo stock_res por IdPedidoDet, por lo que una nueva reserva de
+      reemplazo quedaba en 0 y disparaba "no se genero stock reservado".
+      Se ajusto el tope para contar solo reservas abiertas
+      ('UNCOMMITED HH','UNCOMMITED') y se normaliza Lote en WS
+      ('-' => '') para evitar divergencia HH vs BD.

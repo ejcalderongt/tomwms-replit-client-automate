@@ -172,6 +172,7 @@ Partial Public Class clsLnTrans_packing_enc
                               FROM trans_packing_enc 
                               WHERE IdProductoBodega = @IdProductoBodega AND
                                 IdPickingEnc=@IdPickingEnc AND
+                                IdPedidoEnc=@IdPedidoEnc AND
                                 IdUnidadMedida=@IdUnidadMedida AND
                                 lic_plate = @lic_plate AND 
                                 ISNULL(IdPresentacion,0) = @IdPresentacion AND
@@ -191,6 +192,9 @@ Partial Public Class clsLnTrans_packing_enc
                 lCommand.Parameters.AddWithValue("@Fecha_Vence", pitem.Fecha_vence)
                 lCommand.Parameters.AddWithValue("@IdPresentacion", pitem.Idpresentacion)
                 lCommand.Parameters.AddWithValue("@IdPickingEnc", pitem.Idpickingenc)
+                '#EJC20260604 FIX_PACKING_CRUCE_PEDIDOS: sumar empacado por pedido para no contaminar
+                'cantidades entre pedidos que comparten LP/producto/fecha/estado.
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pitem.IdPedidoEnc)
                 lCommand.Parameters.AddWithValue("@IdUnidadMedida", pitem.Idunidadmedida)
                 lCommand.Parameters.AddWithValue("@lic_plate", pitem.Lic_plate)
                 lCommand.Parameters.AddWithValue("@IdProductoEstado", pitem.Idproductoestado)
@@ -501,6 +505,23 @@ Partial Public Class clsLnTrans_packing_enc
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
+
+            '#EJC20260604 FIX_PACKING_HUERFANO: al borrar packing masivo también hay que
+            'resetear fecha_packing en trans_picking_ubic; de lo contrario quedan líneas
+            'ocultas en HH (filtro por fecha_packing) sin respaldo en trans_packing_enc.
+            Dim resetSql As String = "UPDATE trans_picking_ubic " &
+                                     "SET Fecha_packing = '19000101' " &
+                                     "WHERE IdPickingEnc = @IdPickingEnc " &
+                                     "  AND Fecha_packing > '19010101'"
+            Dim cmdReset As SqlCommand
+            If Es_Transaccion_Remota Then
+                cmdReset = New SqlCommand(resetSql, pConection, pTransaction)
+            Else
+                cmdReset = New SqlCommand(resetSql, lConnection, lTransaction)
+            End If
+            cmdReset.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
+            cmdReset.ExecuteNonQuery()
+            cmdReset.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
