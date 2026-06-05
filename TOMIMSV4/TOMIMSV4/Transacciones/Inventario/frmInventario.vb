@@ -3139,6 +3139,88 @@ Public Class frmInventario
 
     End Sub
 
+    '#AG27052026: Valida si existen productos contados por debajo de la cantidad reservada antes de regularizar.
+    Private Function Validar_Conteo_Menor_A_Reservado_Regularizacion() As Boolean
+
+        Dim lConnectionValida As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransactionValida As SqlTransaction = Nothing
+
+        Try
+
+            lConnectionValida.Open()
+            lTransactionValida = lConnectionValida.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim vIdBodega As Integer = gBeTransInvEnc.IdBodega
+
+            If vIdBodega <= 0 Then
+                vIdBodega = AP.IdBodega
+            End If
+
+            Dim dtReservadoMenorConteo As DataTable =
+            clsLnTrans_inv_ciclico.Get_Conteos_Menores_A_Reservado(gBeTransInvEnc.Idinventarioenc,
+                                                                   vIdBodega,
+                                                                   lConnectionValida,
+                                                                   lTransactionValida)
+
+            lTransactionValida.Commit()
+
+            If dtReservadoMenorConteo IsNot Nothing AndAlso dtReservadoMenorConteo.Rows.Count > 0 Then
+
+                Dim vDetalle As String = ""
+
+                For i As Integer = 0 To Math.Min(dtReservadoMenorConteo.Rows.Count - 1, 4)
+
+                    Dim dr As DataRow = dtReservadoMenorConteo.Rows(i)
+
+                    vDetalle &= String.Format("IdStock: {0} | Ubicación: {1} | Reservado: {2:n6} | Contado: {3:n6}{4}",
+                                          dr("IdStock"),
+                                          dr("Ubicacion"),
+                                          Convert.ToDouble(dr("CantidadReservada")),
+                                          Convert.ToDouble(dr("CantidadContada")),
+                                          vbCrLf)
+
+                Next
+
+                XtraMessageBox.Show("No se puede regularizar. Existen productos con cantidad contada menor a la cantidad reservada." &
+                                vbCrLf & vbCrLf &
+                                vDetalle,
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+
+                Return False
+
+            End If
+
+            Return True
+
+        Catch ex As Exception
+
+            If lTransactionValida IsNot Nothing Then
+                Try
+                    lTransactionValida.Rollback()
+                Catch
+                End Try
+            End If
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+            Return False
+
+        Finally
+
+            If lConnectionValida.State = ConnectionState.Open Then lConnectionValida.Close()
+            lConnectionValida.Dispose()
+
+            If lTransactionValida IsNot Nothing Then lTransactionValida.Dispose()
+
+        End Try
+
+    End Function
+
     Private Sub Regularizar_Inventario()
 
         Dim stock As New List(Of clsBeTrans_inv_detalle)
@@ -3168,6 +3250,7 @@ Public Class frmInventario
             vIdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
             stock = clsLnTrans_inv_detalle.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc)
             If stock Is Nothing Then stock = New List(Of clsBeTrans_inv_detalle)
+
 
             Dim vTotal As Integer = If(stock Is Nothing, 0, stock.Count)
             Dim vProcesado As Integer = 0

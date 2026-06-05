@@ -1340,4 +1340,73 @@ Public Class clsLnTrans_inv_ciclico
 
     End Function
 
+    '#AG27052026: Obtiene productos cuyo conteo es menor a la cantidad reservada.
+    'Se usa para bloquear la regularización cuando el conteo no cubre lo reservado.
+    Public Shared Function Get_Conteos_Menores_A_Reservado(ByVal pIdInventarioEnc As Integer,
+                                                           ByVal pIdBodega As Integer,
+                                                           ByVal lConnection As SqlConnection,
+                                                           ByVal lTransaction As SqlTransaction) As DataTable
+
+        Dim lDataTable As New DataTable
+
+        Try
+
+            Dim vSQL As String =
+                "WITH ConteoBase AS ( " &
+                "    SELECT " &
+                "        c.idinvciclico, " &
+                "        c.IdStock, " &
+                "        c.IdProductoBodega, " &
+                "        c.IdUbicacion, " &
+                "        c.IdBodega, " &
+                "        dbo.Nombre_Completo_Ubicacion(c.IdUbicacion, c.IdBodega) AS Ubicacion, " &
+                "        c.lic_plate AS Licencia, " &
+                "        ISNULL(c.cantidad_reservada_umbas, 0) AS CantidadReservada, " &
+                "        ISNULL(c.cantidad, 0) AS CantidadContada, " &
+                "        ROW_NUMBER() OVER ( " &
+                "            PARTITION BY c.IdStock, c.IdProductoBodega, c.IdUbicacion, c.IdBodega, ISNULL(c.lic_plate, '') " &
+                "            ORDER BY c.fec_mod DESC, c.idinvciclico DESC " &
+                "        ) AS rn " &
+                "    FROM trans_inv_ciclico c " &
+                "    WHERE c.idinventarioenc = @idinventarioenc " &
+                "      AND c.IdBodega = @IdBodega " &
+                "      AND ISNULL(c.contado, 0) = 1 " &
+                ") " &
+                "SELECT " &
+                "    idinvciclico, " &
+                "    IdStock, " &
+                "    IdProductoBodega, " &
+                "    IdUbicacion, " &
+                "    Ubicacion, " &
+                "    Licencia, " &
+                "    CantidadReservada, " &
+                "    CantidadContada, " &
+                "    CantidadContada - CantidadReservada AS Diferencia " &
+                "FROM ConteoBase " &
+                "WHERE rn = 1 " &
+                "  AND CantidadReservada > 0 " &
+                "  AND CantidadContada < CantidadReservada " &
+                "ORDER BY Ubicacion, IdStock "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                lDTA.Fill(lDataTable)
+
+            End Using
+
+            Return lDataTable
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

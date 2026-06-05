@@ -4224,7 +4224,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                                   And x.Lote = Temp.LoteDestino _
                                                                   And x.Fecha_Vence = Temp.FechaVence _
                                                                   And x.Lic_Plate = Temp.Licencia _
-                                                                  And x.Fecha <= Temp.Fec_Mod _
                                                                   And (((x.IdUbicacionOrigen = Temp.IdUbicacion) And
                                                                          x.IdTipoTarea <> clsDataContractDI.tTipoTarea.PIK And
                                                                          x.IdTipoTarea <> clsDataContractDI.tTipoTarea.DESP) _
