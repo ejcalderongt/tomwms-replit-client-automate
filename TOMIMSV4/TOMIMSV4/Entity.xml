@@ -24,7 +24,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeI_nav_barras_pallet.Cantidad_UMP">
  <summary>
- Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estándar de estiba.
+ Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estandar de estiba.
  </summary>
  <returns></returns>
 </member>

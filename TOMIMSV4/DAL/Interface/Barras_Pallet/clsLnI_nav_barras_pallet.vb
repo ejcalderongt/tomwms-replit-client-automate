@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_barras_pallet
@@ -36,6 +36,7 @@ Public Class clsLnI_nav_barras_pallet
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
                 .Peso = IIf(IsDBNull(dr.Item("Peso")), 0, dr.Item("Peso"))
+                .cant_etiquetas_presentacion_impresas = IIf(IsDBNull(dr.Item("cant_etiquetas_presentacion_impresas")), 0, dr.Item("cant_etiquetas_presentacion_impresas"))
 
             End With
 
