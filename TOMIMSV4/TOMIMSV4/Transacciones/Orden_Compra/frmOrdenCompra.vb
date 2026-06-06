@@ -734,6 +734,8 @@ Public Class frmOrdenCompra
         Try
 
             Dim DT As New Object
+            Dim resumenImpresionPorLote As Dictionary(Of Integer, Tuple(Of Integer, Integer)) =
+                ObtenerResumenImpresionPorLote(gBeOrdenCompra.IdOrdenCompraEnc, gBeOrdenCompra.DetalleLotes)
             'GT21022022: agrego el tolist() porque el objeto en si no setea al datasource
             DT = (From datos In gBeOrdenCompra.DetalleLotes Select datos.No_linea,
                                                                    datos.Codigo_producto,
@@ -757,6 +759,12 @@ Public Class frmOrdenCompra
                                                                    datos.IdOrdenCompraDetLote,
                                                                    datos.IdProductoBodega,
                                                                    datos.IdProductoTallaColor,
+                                                                   EtiquetasImpresas = ObtenerEtiquetasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   LicenciasImpresas = ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   EstadoImpresionLote = ObtenerEstadoImpresionLote(
+                                                                       ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                       datos.Cantidad_recibida,
+                                                                       datos.Cantidad),
                                                                    datos.Talla,
                                                                    datos.Color).ToList()
 
@@ -801,6 +809,27 @@ Public Class frmOrdenCompra
                     gridviewLotes.Columns("peso_licencia").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gridviewLotes.Columns("peso_licencia").SummaryItem.DisplayFormat = "Total: {0:n2}"
                 End If
+
+                ' #EJC20260606_FIX_OC_LOTES_TRAZA_IMPRESION:
+                ' Columnas de trazabilidad de impresión por lote.
+                If gridviewLotes.Columns.ColumnByFieldName("EtiquetasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("EtiquetasImpresas").Caption = "Etiquetas Impresas"
+                    gridviewLotes.Columns("EtiquetasImpresas").Visible = True
+                    gridviewLotes.Columns("EtiquetasImpresas").DisplayFormat.FormatType = FormatType.Numeric
+                    gridviewLotes.Columns("EtiquetasImpresas").DisplayFormat.FormatString = "{0:n0}"
+                End If
+
+                If gridviewLotes.Columns.ColumnByFieldName("LicenciasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("LicenciasImpresas").Caption = "Licencias Impresas"
+                    gridviewLotes.Columns("LicenciasImpresas").Visible = True
+                    gridviewLotes.Columns("LicenciasImpresas").DisplayFormat.FormatType = FormatType.Numeric
+                    gridviewLotes.Columns("LicenciasImpresas").DisplayFormat.FormatString = "{0:n0}"
+                End If
+
+                If gridviewLotes.Columns.ColumnByFieldName("EstadoImpresionLote") IsNot Nothing Then
+                    gridviewLotes.Columns("EstadoImpresionLote").Caption = "Estado Impresión Lote"
+                    gridviewLotes.Columns("EstadoImpresionLote").Visible = True
+                End If
             End If
 
             gridviewLotes.BestFitColumns()
@@ -814,6 +843,66 @@ Public Class frmOrdenCompra
         End Try
 
     End Sub
+
+    ' #EJC20260606_FIX_OC_LOTES_TRAZA_UI_TRANSITORIA:
+    ' Resumen transitorio por lote para UI sin agregar propiedades a entidad compartida.
+    Private Function ObtenerResumenImpresionPorLote(ByVal idOrdenCompraEnc As Integer,
+                                                    ByVal lotes As List(Of clsBeTrans_oc_det_lote)) As Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Dim result As New Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Try
+            If lotes Is Nothing OrElse lotes.Count = 0 Then Return result
+
+            Dim idDetalles = (From l In lotes
+                              Select l.IdOrdenCompraDet Distinct).ToList()
+
+            For Each idDet In idDetalles
+                Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(idOrdenCompraEnc, idDet)
+                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                Dim porLote = From r In dt.AsEnumerable()
+                              Let idLote = If(IsDBNull(r("IdOrdenCompraDetLote")), 0, Convert.ToInt32(r("IdOrdenCompraDetLote")))
+                              Let etiquetas = If(IsDBNull(r("cant_etiquetas_presentacion_impresas")), 0, Convert.ToInt32(r("cant_etiquetas_presentacion_impresas")))
+                              Let impreso = If(IsDBNull(r("Impreso")), 0, Convert.ToInt32(r("Impreso")))
+                              Group New With {Key .etiquetas = etiquetas, Key .impreso = impreso} By idLote Into grp = Group
+                              Select New With {
+                                  .IdLote = idLote,
+                                  .Etiquetas = grp.Sum(Function(x) x.etiquetas),
+                                  .Licencias = grp.Count(Function(x) x.impreso = 1)
+                              }
+
+                For Each item In porLote
+                    result(item.IdLote) = Tuple.Create(item.Etiquetas, item.Licencias)
+                Next
+            Next
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace, idOrdenCompraEnc)
+        End Try
+        Return result
+    End Function
+
+    Private Function ObtenerEtiquetasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item1
+    End Function
+
+    Private Function ObtenerLicenciasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item2
+    End Function
+
+    Private Function ObtenerEstadoImpresionLote(ByVal licenciasImpresas As Integer,
+                                                ByVal cantidadRecibida As Double,
+                                                ByVal cantidad As Double) As String
+        If licenciasImpresas <= 0 Then Return "PENDIENTE"
+        If cantidad > 0 AndAlso cantidadRecibida >= cantidad Then Return "COMPLETO"
+        Return "IMPRESO_PENDIENTE"
+    End Function
 
     Private Sub Cargar_Poliza()
 
@@ -5690,6 +5779,77 @@ Public Class frmOrdenCompra
 
     End Sub
 
+    '#EJC20260605_FIX_OC_LOTES_COLOR_ESTADO:
+    'Semáforo visual en pestaña Lotes (MHS/OC):
+    '- Amarillo: lote sin licencia/barra impresa.
+    '- Naranja: licencia impresa pero recepción parcial (pendiente).
+    '- Verde: licencia impresa y recepción completa.
+    '#EJC20260606_FIX_OC_LOTES_COLOR_VISIBLE:
+    'Refuerzo visual:
+    '- Aplica color aunque la fila esté seleccionada/focus.
+    '- Soporta cálculo por UMBAS y por Presentación (según columnas visibles del grid).
+    Private Sub gridviewLotes_RowStyle(sender As Object, e As RowStyleEventArgs) Handles gridviewLotes.RowStyle
+
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+        If e.RowHandle < 0 Then Exit Sub
+
+        Try
+            Dim view As GridView = CType(sender, GridView)
+
+            Dim licencia As String = ""
+            Dim cantidad As Decimal = 0D
+            Dim cantidadRecibida As Decimal = 0D
+
+            If view.Columns.ColumnByFieldName("Licencia") IsNot Nothing Then
+                licencia = Convert.ToString(view.GetRowCellValue(e.RowHandle, "Licencia")).Trim()
+            End If
+
+            If view.Columns.ColumnByFieldName("Cantidad_UMBAS") IsNot Nothing Then
+                cantidad = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_UMBAS"))
+            ElseIf view.Columns.ColumnByFieldName("Cantidad_Presentacion") IsNot Nothing Then
+                cantidad = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Presentacion"))
+            End If
+
+            If view.Columns.ColumnByFieldName("Cantidad_Recibida_UMBAS") IsNot Nothing Then
+                cantidadRecibida = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Recibida_UMBAS"))
+            ElseIf view.Columns.ColumnByFieldName("Cantidad_Recibida_Presentacion") IsNot Nothing Then
+                cantidadRecibida = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Recibida_Presentacion"))
+            End If
+
+            Dim tieneLicenciaImpresa As Boolean = Not String.IsNullOrWhiteSpace(licencia)
+            Dim recepcionCompleta As Boolean = (cantidad > 0D AndAlso cantidadRecibida >= cantidad)
+
+            If Not tieneLicenciaImpresa Then
+                e.Appearance.BackColor = Color.FromArgb(255, 245, 157) 'Amarillo suave
+                e.Appearance.ForeColor = Color.Black
+            ElseIf recepcionCompleta Then
+                e.Appearance.BackColor = Color.FromArgb(200, 230, 201) 'Verde suave
+                e.Appearance.ForeColor = Color.Black
+            Else
+                e.Appearance.BackColor = Color.FromArgb(255, 224, 178) 'Naranja suave (pendiente con barra)
+                e.Appearance.ForeColor = Color.Black
+            End If
+
+            e.Appearance.Options.UseBackColor = True
+            e.Appearance.Options.UseForeColor = True
+            e.HighPriority = True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+        End Try
+
+    End Sub
+
+    Private Function SafeToDecimal(ByVal value As Object) As Decimal
+        Try
+            If value Is Nothing OrElse IsDBNull(value) Then Return 0D
+            Return Convert.ToDecimal(value)
+        Catch
+            Return 0D
+        End Try
+    End Function
+
     Private ProductoGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private PropietarioGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private PropietarioGridServiciosLookUpEdit As New RepositoryItemGridLookUpEdit
@@ -9194,11 +9354,22 @@ MessageBoxButtons.YesNo,
         Try
             With frmImpresionRecepcion_OC
                 .pTransOC_Enc = gBeOrdenCompra
+                RemoveHandler .NotificarActualizacionLotesOC, AddressOf RecargarLotesOCDesdeImpresion
+                AddHandler .NotificarActualizacionLotesOC, AddressOf RecargarLotesOCDesdeImpresion
                 .Show()
                 .Focus()
             End With
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    '#EJC20260605_FIX_OC_REFRESH_DESDE_IMPRESION:
+    'Refresca lotes al recibir notificación de la forma de impresión OC.
+    Private Sub RecargarLotesOCDesdeImpresion()
+        Try
+            Cargar_Detalle_Lotes_OC()
+        Catch
         End Try
     End Sub
 

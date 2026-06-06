@@ -33,10 +33,10 @@ Partial Class frmImpresionRecepcion_OC
         Dim Label7 As System.Windows.Forms.Label
         Dim Label8 As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmImpresionRecepcion_OC))
         Dim lblUltimaLicenciaImpresa As System.Windows.Forms.Label
         Dim lblFardosImpresos As System.Windows.Forms.Label
         Dim lblFechaUltimaLicencia As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmImpresionRecepcion_OC))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -48,6 +48,10 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
         Me.tabImp = New System.Windows.Forms.TabControl()
         Me.tabImpresion = New System.Windows.Forms.TabPage()
+        Me.grpinfoultimaetiqueta = New DevExpress.XtraEditors.GroupControl()
+        Me.txtFechaUltimaImpresion = New DevExpress.XtraEditors.TextEdit()
+        Me.txtUltimaLicencia = New DevExpress.XtraEditors.TextEdit()
+        Me.TextEdit2 = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdPallet = New DevExpress.XtraEditors.TextEdit()
         Me.lblIdPallet = New DevExpress.XtraEditors.LabelControl()
         Me.chkLicenciaBulto = New System.Windows.Forms.RadioButton()
@@ -83,10 +87,6 @@ Partial Class frmImpresionRecepcion_OC
         Me.gviewlicencias = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.DxErrorProvider1 = New DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(Me.components)
         Me.Cliente_direccionTableAdapter1 = New TOMWMS.cliente_direccion_dsetTableAdapters.cliente_direccionTableAdapter()
-        Me.grpinfoultimaetiqueta = New DevExpress.XtraEditors.GroupControl()
-        Me.txtUltimaLicencia = New DevExpress.XtraEditors.TextEdit()
-        Me.TextEdit2 = New DevExpress.XtraEditors.TextEdit()
-        Me.txtFechaUltimaImpresion = New DevExpress.XtraEditors.TextEdit()
         Label5 = New System.Windows.Forms.Label()
         lblLicenciaCnt = New System.Windows.Forms.Label()
         lblProducto = New System.Windows.Forms.Label()
@@ -110,6 +110,11 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl4.SuspendLayout()
         Me.tabImp.SuspendLayout()
         Me.tabImpresion.SuspendLayout()
+        CType(Me.grpinfoultimaetiqueta, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpinfoultimaetiqueta.SuspendLayout()
+        CType(Me.txtFechaUltimaImpresion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtUltimaLicencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdPallet.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -134,11 +139,6 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.dgridBarrasPallet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gviewlicencias, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.grpinfoultimaetiqueta, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpinfoultimaetiqueta.SuspendLayout()
-        CType(Me.txtUltimaLicencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtFechaUltimaImpresion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label5
@@ -287,6 +287,42 @@ Partial Class frmImpresionRecepcion_OC
         Label9.TabIndex = 45
         Label9.Text = "Copias:"
         '
+        'lblUltimaLicenciaImpresa
+        '
+        lblUltimaLicenciaImpresa.AutoSize = True
+        lblUltimaLicenciaImpresa.BackColor = System.Drawing.Color.Transparent
+        lblUltimaLicenciaImpresa.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblUltimaLicenciaImpresa.Location = New System.Drawing.Point(15, 42)
+        lblUltimaLicenciaImpresa.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lblUltimaLicenciaImpresa.Name = "lblUltimaLicenciaImpresa"
+        lblUltimaLicenciaImpresa.Size = New System.Drawing.Size(128, 21)
+        lblUltimaLicenciaImpresa.TabIndex = 38
+        lblUltimaLicenciaImpresa.Text = "Última Licencia:"
+        '
+        'lblFardosImpresos
+        '
+        lblFardosImpresos.AutoSize = True
+        lblFardosImpresos.BackColor = System.Drawing.Color.Transparent
+        lblFardosImpresos.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblFardosImpresos.Location = New System.Drawing.Point(15, 79)
+        lblFardosImpresos.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lblFardosImpresos.Name = "lblFardosImpresos"
+        lblFardosImpresos.Size = New System.Drawing.Size(177, 21)
+        lblFardosImpresos.TabIndex = 41
+        lblFardosImpresos.Text = "Presentacion Impresa:"
+        '
+        'lblFechaUltimaLicencia
+        '
+        lblFechaUltimaLicencia.AutoSize = True
+        lblFechaUltimaLicencia.BackColor = System.Drawing.Color.Transparent
+        lblFechaUltimaLicencia.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblFechaUltimaLicencia.Location = New System.Drawing.Point(15, 117)
+        lblFechaUltimaLicencia.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lblFechaUltimaLicencia.Name = "lblFechaUltimaLicencia"
+        lblFechaUltimaLicencia.Size = New System.Drawing.Size(164, 21)
+        lblFechaUltimaLicencia.TabIndex = 43
+        lblFechaUltimaLicencia.Text = "Fecha Ult. Impresión"
+        '
         'RibbonControl
         '
         Me.RibbonControl.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar
@@ -312,7 +348,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 879)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 753)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
@@ -359,7 +395,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.XtraScrollableControl.Location = New System.Drawing.Point(0, 40)
         Me.XtraScrollableControl.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.XtraScrollableControl.Name = "XtraScrollableControl"
-        Me.XtraScrollableControl.Size = New System.Drawing.Size(1184, 839)
+        Me.XtraScrollableControl.Size = New System.Drawing.Size(1184, 713)
         Me.XtraScrollableControl.TabIndex = 5
         '
         'GroupControl4
@@ -369,7 +405,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl4.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1184, 839)
+        Me.GroupControl4.Size = New System.Drawing.Size(1184, 713)
         Me.GroupControl4.TabIndex = 2
         Me.GroupControl4.Text = "Datos para impresión"
         '
@@ -382,7 +418,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.tabImp.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabImp.Name = "tabImp"
         Me.tabImp.SelectedIndex = 0
-        Me.tabImp.Size = New System.Drawing.Size(1180, 809)
+        Me.tabImp.Size = New System.Drawing.Size(1180, 683)
         Me.tabImp.TabIndex = 53
         '
         'tabImpresion
@@ -422,10 +458,69 @@ Partial Class frmImpresionRecepcion_OC
         Me.tabImpresion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabImpresion.Name = "tabImpresion"
         Me.tabImpresion.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.tabImpresion.Size = New System.Drawing.Size(1172, 780)
+        Me.tabImpresion.Size = New System.Drawing.Size(1172, 654)
         Me.tabImpresion.TabIndex = 0
         Me.tabImpresion.Text = "Impresión"
         Me.tabImpresion.UseVisualStyleBackColor = True
+        '
+        'grpinfoultimaetiqueta
+        '
+        Me.grpinfoultimaetiqueta.Appearance.BackColor = System.Drawing.SystemColors.Info
+        Me.grpinfoultimaetiqueta.Appearance.Options.UseBackColor = True
+        Me.grpinfoultimaetiqueta.Controls.Add(lblFechaUltimaLicencia)
+        Me.grpinfoultimaetiqueta.Controls.Add(Me.txtFechaUltimaImpresion)
+        Me.grpinfoultimaetiqueta.Controls.Add(lblUltimaLicenciaImpresa)
+        Me.grpinfoultimaetiqueta.Controls.Add(lblFardosImpresos)
+        Me.grpinfoultimaetiqueta.Controls.Add(Me.txtUltimaLicencia)
+        Me.grpinfoultimaetiqueta.Controls.Add(Me.TextEdit2)
+        Me.grpinfoultimaetiqueta.Location = New System.Drawing.Point(696, 442)
+        Me.grpinfoultimaetiqueta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.grpinfoultimaetiqueta.Name = "grpinfoultimaetiqueta"
+        Me.grpinfoultimaetiqueta.Size = New System.Drawing.Size(436, 187)
+        Me.grpinfoultimaetiqueta.TabIndex = 57
+        Me.grpinfoultimaetiqueta.Text = "Info. Última Etiqueta"
+        '
+        'txtFechaUltimaImpresion
+        '
+        Me.txtFechaUltimaImpresion.Location = New System.Drawing.Point(200, 112)
+        Me.txtFechaUltimaImpresion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtFechaUltimaImpresion.Name = "txtFechaUltimaImpresion"
+        Me.txtFechaUltimaImpresion.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.txtFechaUltimaImpresion.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtFechaUltimaImpresion.Properties.Appearance.Options.UseBackColor = True
+        Me.txtFechaUltimaImpresion.Properties.Appearance.Options.UseFont = True
+        Me.txtFechaUltimaImpresion.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtFechaUltimaImpresion.Properties.MaxLength = 50
+        Me.txtFechaUltimaImpresion.Size = New System.Drawing.Size(203, 28)
+        Me.txtFechaUltimaImpresion.TabIndex = 42
+        '
+        'txtUltimaLicencia
+        '
+        Me.txtUltimaLicencia.Location = New System.Drawing.Point(200, 39)
+        Me.txtUltimaLicencia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtUltimaLicencia.Name = "txtUltimaLicencia"
+        Me.txtUltimaLicencia.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.txtUltimaLicencia.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtUltimaLicencia.Properties.Appearance.Options.UseBackColor = True
+        Me.txtUltimaLicencia.Properties.Appearance.Options.UseFont = True
+        Me.txtUltimaLicencia.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtUltimaLicencia.Properties.MaxLength = 50
+        Me.txtUltimaLicencia.Size = New System.Drawing.Size(203, 28)
+        Me.txtUltimaLicencia.TabIndex = 39
+        '
+        'TextEdit2
+        '
+        Me.TextEdit2.Location = New System.Drawing.Point(200, 74)
+        Me.TextEdit2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.TextEdit2.Name = "TextEdit2"
+        Me.TextEdit2.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.TextEdit2.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextEdit2.Properties.Appearance.Options.UseBackColor = True
+        Me.TextEdit2.Properties.Appearance.Options.UseFont = True
+        Me.TextEdit2.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.TextEdit2.Properties.MaxLength = 50
+        Me.TextEdit2.Size = New System.Drawing.Size(203, 28)
+        Me.TextEdit2.TabIndex = 40
         '
         'txtIdPallet
         '
@@ -626,7 +721,7 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.lblEtiquetas.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!)
         Me.lblEtiquetas.Appearance.Options.UseFont = True
-        Me.lblEtiquetas.Location = New System.Drawing.Point(696, 398)
+        Me.lblEtiquetas.Location = New System.Drawing.Point(696, 401)
         Me.lblEtiquetas.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblEtiquetas.Name = "lblEtiquetas"
         Me.lblEtiquetas.Size = New System.Drawing.Size(170, 21)
@@ -666,7 +761,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.GroupControl1.Location = New System.Drawing.Point(635, 26)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(436, 295)
+        Me.GroupControl1.Size = New System.Drawing.Size(436, 269)
         Me.GroupControl1.TabIndex = 42
         Me.GroupControl1.Text = "Atributos de producto"
         '
@@ -836,7 +931,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.tabLicencias.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabLicencias.Name = "tabLicencias"
         Me.tabLicencias.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.tabLicencias.Size = New System.Drawing.Size(1113, 607)
+        Me.tabLicencias.Size = New System.Drawing.Size(1172, 780)
         Me.tabLicencias.TabIndex = 1
         Me.tabLicencias.Text = "Licencias"
         Me.tabLicencias.UseVisualStyleBackColor = True
@@ -849,7 +944,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.dgridBarrasPallet.MainView = Me.gviewlicencias
         Me.dgridBarrasPallet.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.dgridBarrasPallet.Name = "dgridBarrasPallet"
-        Me.dgridBarrasPallet.Size = New System.Drawing.Size(1105, 603)
+        Me.dgridBarrasPallet.Size = New System.Drawing.Size(1164, 776)
         Me.dgridBarrasPallet.TabIndex = 1
         Me.dgridBarrasPallet.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewlicencias})
         '
@@ -875,106 +970,11 @@ Partial Class frmImpresionRecepcion_OC
         '
         Me.Cliente_direccionTableAdapter1.ClearBeforeFill = True
         '
-        'grpinfoultimaetiqueta
-        '
-        Me.grpinfoultimaetiqueta.Appearance.BackColor = System.Drawing.SystemColors.Info
-        Me.grpinfoultimaetiqueta.Appearance.Options.UseBackColor = True
-        Me.grpinfoultimaetiqueta.Controls.Add(lblFechaUltimaLicencia)
-        Me.grpinfoultimaetiqueta.Controls.Add(Me.txtFechaUltimaImpresion)
-        Me.grpinfoultimaetiqueta.Controls.Add(lblUltimaLicenciaImpresa)
-        Me.grpinfoultimaetiqueta.Controls.Add(lblFardosImpresos)
-        Me.grpinfoultimaetiqueta.Controls.Add(Me.txtUltimaLicencia)
-        Me.grpinfoultimaetiqueta.Controls.Add(Me.TextEdit2)
-        Me.grpinfoultimaetiqueta.Location = New System.Drawing.Point(277, 570)
-        Me.grpinfoultimaetiqueta.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.grpinfoultimaetiqueta.Name = "grpinfoultimaetiqueta"
-        Me.grpinfoultimaetiqueta.Size = New System.Drawing.Size(436, 187)
-        Me.grpinfoultimaetiqueta.TabIndex = 57
-        Me.grpinfoultimaetiqueta.Text = "Atributos de producto"
-        '
-        'lblUltimaLicenciaImpresa
-        '
-        lblUltimaLicenciaImpresa.AutoSize = True
-        lblUltimaLicenciaImpresa.BackColor = System.Drawing.Color.Transparent
-        lblUltimaLicenciaImpresa.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblUltimaLicenciaImpresa.Location = New System.Drawing.Point(15, 42)
-        lblUltimaLicenciaImpresa.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblUltimaLicenciaImpresa.Name = "lblUltimaLicenciaImpresa"
-        lblUltimaLicenciaImpresa.Size = New System.Drawing.Size(128, 21)
-        lblUltimaLicenciaImpresa.TabIndex = 38
-        lblUltimaLicenciaImpresa.Text = "Última Licencia:"
-        '
-        'lblFardosImpresos
-        '
-        lblFardosImpresos.AutoSize = True
-        lblFardosImpresos.BackColor = System.Drawing.Color.Transparent
-        lblFardosImpresos.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblFardosImpresos.Location = New System.Drawing.Point(15, 79)
-        lblFardosImpresos.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblFardosImpresos.Name = "lblFardosImpresos"
-        lblFardosImpresos.Size = New System.Drawing.Size(177, 21)
-        lblFardosImpresos.TabIndex = 41
-        lblFardosImpresos.Text = "Presentacion Impresa:"
-        '
-        'txtUltimaLicencia
-        '
-        Me.txtUltimaLicencia.Location = New System.Drawing.Point(200, 39)
-        Me.txtUltimaLicencia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtUltimaLicencia.Name = "txtUltimaLicencia"
-        Me.txtUltimaLicencia.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.txtUltimaLicencia.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtUltimaLicencia.Properties.Appearance.Options.UseBackColor = True
-        Me.txtUltimaLicencia.Properties.Appearance.Options.UseFont = True
-        Me.txtUltimaLicencia.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtUltimaLicencia.Properties.MaxLength = 50
-        Me.txtUltimaLicencia.Size = New System.Drawing.Size(203, 28)
-        Me.txtUltimaLicencia.TabIndex = 39
-        '
-        'TextEdit2
-        '
-        Me.TextEdit2.Location = New System.Drawing.Point(200, 74)
-        Me.TextEdit2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.TextEdit2.Name = "TextEdit2"
-        Me.TextEdit2.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.TextEdit2.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextEdit2.Properties.Appearance.Options.UseBackColor = True
-        Me.TextEdit2.Properties.Appearance.Options.UseFont = True
-        Me.TextEdit2.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.TextEdit2.Properties.MaxLength = 50
-        Me.TextEdit2.Size = New System.Drawing.Size(203, 28)
-        Me.TextEdit2.TabIndex = 40
-        '
-        'lblFechaUltimaLicencia
-        '
-        lblFechaUltimaLicencia.AutoSize = True
-        lblFechaUltimaLicencia.BackColor = System.Drawing.Color.Transparent
-        lblFechaUltimaLicencia.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblFechaUltimaLicencia.Location = New System.Drawing.Point(15, 117)
-        lblFechaUltimaLicencia.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblFechaUltimaLicencia.Name = "lblFechaUltimaLicencia"
-        lblFechaUltimaLicencia.Size = New System.Drawing.Size(164, 21)
-        lblFechaUltimaLicencia.TabIndex = 43
-        lblFechaUltimaLicencia.Text = "Fecha Ult. Impresión"
-        '
-        'txtFechaUltimaImpresion
-        '
-        Me.txtFechaUltimaImpresion.Location = New System.Drawing.Point(200, 112)
-        Me.txtFechaUltimaImpresion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtFechaUltimaImpresion.Name = "txtFechaUltimaImpresion"
-        Me.txtFechaUltimaImpresion.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.txtFechaUltimaImpresion.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtFechaUltimaImpresion.Properties.Appearance.Options.UseBackColor = True
-        Me.txtFechaUltimaImpresion.Properties.Appearance.Options.UseFont = True
-        Me.txtFechaUltimaImpresion.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtFechaUltimaImpresion.Properties.MaxLength = 50
-        Me.txtFechaUltimaImpresion.Size = New System.Drawing.Size(203, 28)
-        Me.txtFechaUltimaImpresion.TabIndex = 42
-        '
         'frmImpresionRecepcion_OC
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1184, 909)
+        Me.ClientSize = New System.Drawing.Size(1184, 783)
         Me.Controls.Add(Me.XtraScrollableControl)
         Me.Controls.Add(Me.RibbonControl)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -985,7 +985,7 @@ Partial Class frmImpresionRecepcion_OC
         Me.RibbonVisibility = DevExpress.XtraBars.Ribbon.RibbonVisibility.Hidden
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "Impresión BOF OC"
+        Me.Text = "Impresión etiquetas - Documento de inreso"
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtTiempoActualizacionP, System.ComponentModel.ISupportInitialize).EndInit()
         Me.XtraScrollableControl.ResumeLayout(False)
@@ -994,6 +994,12 @@ Partial Class frmImpresionRecepcion_OC
         Me.tabImp.ResumeLayout(False)
         Me.tabImpresion.ResumeLayout(False)
         Me.tabImpresion.PerformLayout()
+        CType(Me.grpinfoultimaetiqueta, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpinfoultimaetiqueta.ResumeLayout(False)
+        Me.grpinfoultimaetiqueta.PerformLayout()
+        CType(Me.txtFechaUltimaImpresion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtUltimaLicencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdPallet.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadBarras, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadLicencias, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1019,12 +1025,6 @@ Partial Class frmImpresionRecepcion_OC
         CType(Me.dgridBarrasPallet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gviewlicencias, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DxErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.grpinfoultimaetiqueta, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.grpinfoultimaetiqueta.ResumeLayout(False)
-        Me.grpinfoultimaetiqueta.PerformLayout()
-        CType(Me.txtUltimaLicencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TextEdit2.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtFechaUltimaImpresion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

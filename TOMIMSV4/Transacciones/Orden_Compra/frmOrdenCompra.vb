@@ -574,6 +574,8 @@ Public Class frmOrdenCompra
         Try
 
             Dim DT As New Object
+            Dim resumenImpresionPorLote As Dictionary(Of Integer, Tuple(Of Integer, Integer)) =
+                ObtenerResumenImpresionPorLote(gBeOrdenCompra.IdOrdenCompraEnc, gBeOrdenCompra.DetalleLotes)
             'GT21022022: agrego el tolist() porque el objeto en si no setea al datasource
             DT = (From datos In gBeOrdenCompra.DetalleLotes Select datos.No_linea,
                                                                    datos.Codigo_producto,
@@ -594,7 +596,13 @@ Public Class frmOrdenCompra
                                                                    datos.IdOrdenCompraEnc,
                                                                    datos.IdOrdenCompraDet,
                                                                    datos.IdOrdenCompraDetLote,
-                                                                   datos.IdProductoBodega).ToList()
+                                                                   datos.IdProductoBodega,
+                                                                   EtiquetasImpresas = ObtenerEtiquetasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   LicenciasImpresas = ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   EstadoImpresionLote = ObtenerEstadoImpresionLote(
+                                                                       ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                       datos.Cantidad_recibida,
+                                                                       datos.Cantidad)).ToList()
 
 
 
@@ -615,6 +623,21 @@ Public Class frmOrdenCompra
                 gridviewLotes.Columns("Cantidad_Recibida_Presentacion").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_Recibida_Presentacion").DisplayFormat.FormatString = "{0:n6}"
                 gridviewLotes.Columns("Factor").DisplayFormat.FormatType = FormatType.Numeric
+                If gridviewLotes.Columns.ColumnByFieldName("EtiquetasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("EtiquetasImpresas").Caption = "Etiquetas Impresas"
+                    gridviewLotes.Columns("EtiquetasImpresas").Visible = True
+                    gridviewLotes.Columns("EtiquetasImpresas").VisibleIndex = 9
+                End If
+                If gridviewLotes.Columns.ColumnByFieldName("LicenciasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("LicenciasImpresas").Caption = "Licencias Impresas"
+                    gridviewLotes.Columns("LicenciasImpresas").Visible = True
+                    gridviewLotes.Columns("LicenciasImpresas").VisibleIndex = 10
+                End If
+                If gridviewLotes.Columns.ColumnByFieldName("EstadoImpresionLote") IsNot Nothing Then
+                    gridviewLotes.Columns("EstadoImpresionLote").Caption = "Estado Impresión Lote"
+                    gridviewLotes.Columns("EstadoImpresionLote").Visible = True
+                    gridviewLotes.Columns("EstadoImpresionLote").VisibleIndex = 11
+                End If
             End If
 
         Catch ex As Exception
@@ -626,6 +649,66 @@ Public Class frmOrdenCompra
         End Try
 
     End Sub
+
+    ' #EJC20260606_FIX_OC_LOTES_TRAZA_UI_TRANSITORIA:
+    ' Resumen transitorio por lote para UI sin agregar propiedades a entidad compartida.
+    Private Function ObtenerResumenImpresionPorLote(ByVal idOrdenCompraEnc As Integer,
+                                                    ByVal lotes As List(Of clsBeTrans_oc_det_lote)) As Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Dim result As New Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Try
+            If lotes Is Nothing OrElse lotes.Count = 0 Then Return result
+
+            Dim idDetalles = (From l In lotes
+                              Select l.IdOrdenCompraDet Distinct).ToList()
+
+            For Each idDet In idDetalles
+                Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(idOrdenCompraEnc, idDet)
+                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                Dim porLote = From r In dt.AsEnumerable()
+                              Let idLote = If(IsDBNull(r("IdOrdenCompraDetLote")), 0, Convert.ToInt32(r("IdOrdenCompraDetLote")))
+                              Let etiquetas = If(IsDBNull(r("cant_etiquetas_presentacion_impresas")), 0, Convert.ToInt32(r("cant_etiquetas_presentacion_impresas")))
+                              Let impreso = If(IsDBNull(r("Impreso")), 0, Convert.ToInt32(r("Impreso")))
+                              Group New With {Key .etiquetas = etiquetas, Key .impreso = impreso} By idLote Into grp = Group
+                              Select New With {
+                                  .IdLote = idLote,
+                                  .Etiquetas = grp.Sum(Function(x) x.etiquetas),
+                                  .Licencias = grp.Count(Function(x) x.impreso = 1)
+                              }
+
+                For Each item In porLote
+                    result(item.IdLote) = Tuple.Create(item.Etiquetas, item.Licencias)
+                Next
+            Next
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace, idOrdenCompraEnc)
+        End Try
+        Return result
+    End Function
+
+    Private Function ObtenerEtiquetasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item1
+    End Function
+
+    Private Function ObtenerLicenciasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item2
+    End Function
+
+    Private Function ObtenerEstadoImpresionLote(ByVal licenciasImpresas As Integer,
+                                                ByVal cantidadRecibida As Double,
+                                                ByVal cantidad As Double) As String
+        If licenciasImpresas <= 0 Then Return "PENDIENTE"
+        If cantidad > 0 AndAlso cantidadRecibida >= cantidad Then Return "COMPLETO"
+        Return "IMPRESO_PENDIENTE"
+    End Function
 
     Private Sub Cargar_Poliza()
 
