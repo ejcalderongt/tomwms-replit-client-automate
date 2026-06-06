@@ -613,6 +613,9 @@ Public Class frmOrdenCompra
                 gridviewLotes.Columns("IdOrdenCompraDet").Visible = False
                 gridviewLotes.Columns("IdOrdenCompraDetLote").Visible = False
                 gridviewLotes.Columns("IdProductoBodega").Visible = False
+                gridviewLotes.Columns("IdProductoTallaColor").Visible = False
+                gridviewLotes.Columns("IdUnidadMedidaBasica").Visible = False
+                gridviewLotes.Columns("IdPresentacion").Visible = False
                 gridviewLotes.Columns("Cantidad_Recibida_UMBAS").Visible = True
                 gridviewLotes.Columns("Cantidad_UMBAS").DisplayFormat.FormatType = FormatType.Numeric
                 gridviewLotes.Columns("Cantidad_UMBAS").DisplayFormat.FormatString = "{0:n6}"
