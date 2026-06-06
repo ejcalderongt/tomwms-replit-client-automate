@@ -36,7 +36,7 @@
     'FK persistente hacia trans_oc_det_lote para trazar la barra impresa al lote origen.
     Public Property IdOrdenCompraDetLote As Integer = 0
     Public Property Peso As Double = 0
-    Public Property cant_etiquetas_presentacion_impresas As Integer = 0
+    Public Property Cant_Etiquetas_Presentacion_Impresas As Integer = 0
 
     Sub New()
     End Sub
