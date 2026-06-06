@@ -6109,8 +6109,8 @@ Partial Public Class clsLnStock
 		                            stock.cantidad as Cant,
                                     stock.IdUbicacion,
 		                            fecha_vence as FechaVence,
-		                            IIF(lic_plate = '' or lic_plate is null, '-', lic_plate) as LicPlate,
-		                            IIF(lote = '' or lote is null, '-', lote) as lote,
+		                            ISNULL(lic_plate, '') as LicPlate,
+		                            ISNULL(lote, '') as lote,
 		                            stock.Peso Peso,
 		                            producto_estado.nombre as Estado,
 		                            'No' as Despachar,
@@ -6437,8 +6437,8 @@ Partial Public Class clsLnStock
 		                            stock.cantidad as Cant_UMBas,
                                     stock.IdUbicacion,
 		                            fecha_vence as FechaVence,
-		                            IIF(lic_plate = '' or lic_plate is null, '-', lic_plate) as Licencia,
-		                            IIF(lote = '' or lote is null, '-', lote) as Lote,
+		                            ISNULL(lic_plate, '') as Licencia,
+		                            ISNULL(lote, '') as Lote,
 		                            stock.Peso Peso,
 		                            producto_estado.nombre as EstadoProducto,
 		                            'No' as Despachar,
@@ -6948,6 +6948,12 @@ Partial Public Class clsLnStock
                     and stock.idubicacion=@idubicacion 
                     and cast(stock.fecha_vence as date) = @fechavence "
 
+            '#EJC20260603_KILLIOS_REEMPLAZO_VERIF_OWNER: cuando viene propietario de contexto,
+            'filtrar stock por propietario para evitar mezcla cross-owner en reemplazo.
+            If pBeStockRes.IdPropietarioBodega > 0 Then
+                vSql += " and stock.IdPropietarioBodega = @IdPropietarioBodega "
+            End If
+
             If pBeStockRes.Lic_plate.Equals("-") Then
                 vSql += " and (stock.lic_plate is null or stock.lic_plate = '')"
             Else
@@ -6980,6 +6986,9 @@ Partial Public Class clsLnStock
                 lCommand.Parameters.AddWithValue("@fechavence", pBeStockRes.Fecha_vence.Date)
                 lCommand.Parameters.AddWithValue("@Lote", pBeStockRes.Lote)
                 lCommand.Parameters.AddWithValue("@LicPlate", pBeStockRes.Lic_plate)
+                If pBeStockRes.IdPropietarioBodega > 0 Then
+                    lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pBeStockRes.IdPropietarioBodega)
+                End If
 
                 If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
                     If pBeStockRes.IdPresentacion <> 0 Then

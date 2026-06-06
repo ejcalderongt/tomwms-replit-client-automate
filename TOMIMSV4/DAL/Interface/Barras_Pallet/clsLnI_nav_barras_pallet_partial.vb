@@ -291,4 +291,111 @@ Partial Public Class clsLnI_nav_barras_pallet
         End Try
     End Function
 
+    '#EJC20260605_FIX_IMP_OC_CONTADOR_ETIQUETAS_PRESENTACION:
+    'Persistir contador real de etiquetas de presentación impresas por licencia.
+    Public Shared Function Actualizar_Cant_Etiquetas_Presentacion_Impresas(ByVal pIdOrdenCompraEnc As Integer,
+                                                                            ByVal pIdOrdenCompraDet As Integer,
+                                                                            ByVal pCodigoBarra As String,
+                                                                            ByVal pCantidadEtiquetas As Integer,
+                                                                            Optional ByVal pConection As SqlConnection = Nothing,
+                                                                            Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            Const sp As String = "UPDATE i_nav_barras_pallet
+                                  SET cant_etiquetas_presentacion_impresas = @cant_etiquetas_presentacion_impresas
+                                  WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+                                    AND IdOrdenCompraDet = @IdOrdenCompraDet
+                                    AND Codigo_Barra = @Codigo_Barra"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@cant_etiquetas_presentacion_impresas", pCantidadEtiquetas))
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraEnc", pIdOrdenCompraEnc))
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraDet", pIdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@Codigo_Barra", pCodigoBarra))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    '#EJC20260605_FIX_IMP_OC_VALIDA_LIC_MADRE_PREVIA:
+    'Valida que la licencia madre exista e impresa antes de permitir impresión de fardos/presentación.
+    Public Shared Function Existe_Licencia_Madre_Impresa(ByVal pIdOrdenCompraEnc As Integer,
+                                                          ByVal pIdOrdenCompraDet As Integer,
+                                                          ByVal pLicenciaMadre As String,
+                                                          Optional ByVal pConection As SqlConnection = Nothing,
+                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Boolean
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+            Const sp As String = "SELECT TOP 1 1
+                                  FROM i_nav_barras_pallet
+                                  WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
+                                    AND IdOrdenCompraDet = @IdOrdenCompraDet
+                                    AND Codigo_Barra = @Codigo_Barra
+                                    AND ISNULL(Impreso, 0) = 1"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraEnc", pIdOrdenCompraEnc))
+            cmd.Parameters.Add(New SqlParameter("@IdOrdenCompraDet", pIdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@Codigo_Barra", pLicenciaMadre))
+
+            Dim existe As Boolean = (cmd.ExecuteScalar() IsNot Nothing)
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return existe
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
 End Class

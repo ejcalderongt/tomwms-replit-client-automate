@@ -847,8 +847,10 @@ Public Class clsLnProducto_talla_color
 						SELECT 
 							ptc.IdProductoTallaColor AS Codigo, 
 							t.Codigo AS Talla,
-							c.Codigo AS Color,									
-							ptc.CodigoSKU AS SKU
+							c.Codigo AS Color, 
+							ptc.CodigoSKU AS SKU, 
+						    t.IdTalla,
+							c.IdColor									
 						FROM producto_talla_color AS ptc
 						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
 						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor

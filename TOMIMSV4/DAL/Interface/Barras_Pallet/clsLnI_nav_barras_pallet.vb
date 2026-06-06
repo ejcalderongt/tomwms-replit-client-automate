@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_barras_pallet
@@ -35,7 +35,13 @@ Public Class clsLnI_nav_barras_pallet
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
+                If dr.Table.Columns.Contains("IdOrdenCompraDetLote") Then
+                    .IdOrdenCompraDetLote = IIf(IsDBNull(dr.Item("IdOrdenCompraDetLote")), 0, dr.Item("IdOrdenCompraDetLote"))
+                Else
+                    .IdOrdenCompraDetLote = 0
+                End If
                 .Peso = IIf(IsDBNull(dr.Item("Peso")), 0, dr.Item("Peso"))
+                .cant_etiquetas_presentacion_impresas = IIf(IsDBNull(dr.Item("cant_etiquetas_presentacion_impresas")), 0, dr.Item("cant_etiquetas_presentacion_impresas"))
 
             End With
 
@@ -78,6 +84,7 @@ Public Class clsLnI_nav_barras_pallet
             Ins.Add("impreso", "@impreso", DataType.Parametro)
             Ins.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
             Ins.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
+            Ins.Add("idordencompradetlote", "@idordencompradetlote", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -115,6 +122,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETLOTE", oBeI_nav_barras_pallet.IdOrdenCompraDetLote))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -166,6 +174,7 @@ Public Class clsLnI_nav_barras_pallet
             Upd.Add("impreso", "@impreso", DataType.Parametro)
             Upd.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
             Upd.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
+            Upd.Add("idordencompradetlote", "@idordencompradetlote", DataType.Parametro)
             Upd.Where("IdPallet = @IdPallet")
 
             Dim sp As String = Upd.SQL()
@@ -204,6 +213,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETLOTE", oBeI_nav_barras_pallet.IdOrdenCompraDetLote))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

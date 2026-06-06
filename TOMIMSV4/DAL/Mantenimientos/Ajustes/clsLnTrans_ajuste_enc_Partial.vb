@@ -912,6 +912,10 @@ Partial Public Class clsLnTrans_ajuste_enc
                     .referencia_ajuste_erp = ""
                     .estado_ajuste_erp = False
 
+                    .IdProductoTallaColor_origen = BeAjusteDet.IdProductoTallaColor_origen
+                    .Talla_origen = BeAjusteDet.Talla_origen
+                    .Color_origen = BeAjusteDet.Color_origen
+
                     .estado_borrador = "BORRADOR"
                     .confirmado = False
                     .procesado = False

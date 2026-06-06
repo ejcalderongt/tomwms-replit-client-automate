@@ -2725,6 +2725,7 @@ Partial Public Class clsLnTrans_oc_det
                                                                      ByVal pIdOperadorBodega As String) As DataTable
 
         Dim ListaOC As New DataTable()
+        Dim pCodigoNormalizado As String = If(pCodigo, "").Trim().Replace("$", "")
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -2733,19 +2734,39 @@ Partial Public Class clsLnTrans_oc_det
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Const sp As String = "SELECT distinct d.IdOrdenCompraEnc
+            '#EJC20260605_FIX_REC_OC_UNIFICA_SKU_LP:
+            'Unificar en una sola consulta la resolución de OC por:
+            '1) SKU/código producto y 2) licencia de i_nav_barras_pallet.
+            'Objetivo: reducir roundtrip HH (sin llamada adicional a Get_All_Pallet_Ingreso_By_Barra).
+            '#EJC20260605_FIX_REC_MHS_LP_SIN_DOLAR:
+            'Normalizar licencia con/sin "$" para evitar que el Enter no haga nada cuando
+            'el escaneo viene sin prefijo pero la barra está almacenada con prefijo (o viceversa).
+            Const sp As String = "SELECT DISTINCT d.IdOrdenCompraEnc
                                   FROM trans_oc_det d INNER JOIN 
                                        trans_re_oc r ON r.IdOrdenCompraEnc = d.IdOrdenCompraEnc INNER JOIN 
                                        trans_re_op o ON o.IdRecepcionEnc = r.IdRecepcionEnc INNER JOIN
 									   trans_oc_enc e ON e.IdOrdenCompraEnc = d.IdOrdenCompraEnc
                                   WHERE (o.IdOperadorBodega = @IdOperadorBodega) 
                                         AND e.IdEstadoOC NOT IN (4,5,6) AND 
-                                        ((d.codigo_producto = @Codigo_Producto) OR
-                                         (d.IdProductoBodega IN (SELECT IdProductoBodega FROM VW_ProductoSI WHERE codigo_barra_pcb = @Codigo_Producto)))"
+                                        (
+                                            (d.codigo_producto = @Codigo_Producto) OR
+                                            (d.IdProductoBodega IN (SELECT IdProductoBodega
+                                                                    FROM VW_ProductoSI
+                                                                    WHERE codigo_barra_pcb = @Codigo_Producto)) OR
+                                            EXISTS (
+                                                SELECT 1
+                                                FROM i_nav_barras_pallet p
+                                                WHERE (p.Codigo_Barra = @Codigo_Producto
+                                                       OR REPLACE(ISNULL(p.Codigo_Barra, ''), '$', '') = @Codigo_Producto_Normalizado)
+                                                  AND ISNULL(p.IdOrdenCompraEnc, 0) = d.IdOrdenCompraEnc
+                                                  AND ISNULL(p.Recibido, 0) = 0
+                                            )
+                                        )"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@Codigo_Producto", pCodigo))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Codigo_Producto_Normalizado", pCodigoNormalizado))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IdOperadorBodega", pIdOperadorBodega))
 
             Dim dt As New DataTable("ListaOC")

@@ -355,6 +355,7 @@ Public Class frmOrdenCompra
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_OC()
             OCTrace_Marca("detalle_oc", "ms=" & vTraceReloj.ElapsedMilliseconds & ";rows=" & DTGridDetalleDocIngresos.Rows.Count)
+            OCProductoLookup_ResolverDisplayDesdeDetalle()
 
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
             Cargar_Detalle_Lotes_OC()
@@ -479,6 +480,7 @@ Public Class frmOrdenCompra
                 Dim vTalla As String = ""
                 Dim vColor As String = ""
                 Dim vSKU As String = ""
+                Dim vCodigoProducto As String = BeTransOCDet.Codigo_Producto
 
                 If (BeTransOCDet.IdProductoTallaColor <> 0) Then
 
@@ -488,12 +490,17 @@ Public Class frmOrdenCompra
 
                 End If
 
+                ' #EJC20260602_OC_FIX_CODIGO: fallback para documentos viejos/mixtos donde el código no vino en detalle.
+                If String.IsNullOrWhiteSpace(vCodigoProducto) AndAlso BeTransOCDet.IdProductoBodega > 0 Then
+                    vCodigoProducto = clsLnProducto.Get_Codigo_By_IdProductoBodega(BeTransOCDet.IdProductoBodega)
+                End If
+
                 Dim commonData As Object() = {
                     BeTransOCDet.IdPropietarioBodega,
                 BeTransOCDet.Nombre_Propietario,
                 BeTransOCDet.No_Linea,
                 BeTransOCDet.IdProductoBodega,
-                BeTransOCDet.Codigo_Producto,
+                vCodigoProducto,
                 BeTransOCDet.Nombre_producto,
                 BeTransOCDet.Nombre_unidad_medida_basica,
                 BeTransOCDet.IdUnidadMedidaBasica,
@@ -542,12 +549,16 @@ Public Class frmOrdenCompra
                     For Each Hijo As clsBeTrans_oc_det In BeTransOCDet.lProductosHijosKit
 
                         vCantidadPendiente = Math.Round(Hijo.Cantidad_recibida - Hijo.Cantidad, 6)
+                        Dim vCodigoProductoHijo As String = Hijo.Codigo_Producto
+                        If String.IsNullOrWhiteSpace(vCodigoProductoHijo) AndAlso Hijo.IdProductoBodega > 0 Then
+                            vCodigoProductoHijo = clsLnProducto.Get_Codigo_By_IdProductoBodega(Hijo.IdProductoBodega)
+                        End If
 
                         DTGridDetalleDocIngresos.Rows.Add(Hijo.IdPropietarioBodega,
                                                           Hijo.Nombre_Propietario,
                                                           Hijo.No_Linea,
                                                           Hijo.IdProductoBodega,
-                                                          Hijo.Codigo_Producto,
+                                                          vCodigoProductoHijo,
                                                           Hijo.Nombre_producto,
                                                           Hijo.Nombre_unidad_medida_basica,
                                                           Hijo.IdUnidadMedidaBasica,
@@ -609,7 +620,6 @@ Public Class frmOrdenCompra
             DTGridDetalleDocIngresos.Clear()
             gBeOrdenCompra.DetalleOC.Clear()
 
-
             gBeOrdenCompra.DetalleOC = clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
             lOCDet = gBeOrdenCompra.DetalleOC
 
@@ -655,7 +665,10 @@ Public Class frmOrdenCompra
                                                    BeTransOcDet.Producto.Control_peso,
                                                    BeTransOcDet.Producto.Peso_referencia,
                                                    BeTransOcDet.Nombre_Embarcador,
-                                                   BeTransOcDet.Producto.Clasificacion.Nombre)
+                                                   BeTransOcDet.Producto.Clasificacion.Nombre,
+                                                   BeTransOcDet.IdProductoTallaColor,
+                                                   BeTransOcDet.Talla.Codigo,
+                                                   BeTransOcDet.Color.Codigo)
 
                 'GT0903: agregue embarcador y clasificacion
 
@@ -714,8 +727,6 @@ Public Class frmOrdenCompra
             MessageBoxIcon.Error)
         End Try
 
-
-
     End Sub
 
     Private Sub Cargar_Detalle_Lotes_OC()
@@ -723,6 +734,8 @@ Public Class frmOrdenCompra
         Try
 
             Dim DT As New Object
+            Dim resumenImpresionPorLote As Dictionary(Of Integer, Tuple(Of Integer, Integer)) =
+                ObtenerResumenImpresionPorLote(gBeOrdenCompra.IdOrdenCompraEnc, gBeOrdenCompra.DetalleLotes)
             'GT21022022: agrego el tolist() porque el objeto en si no setea al datasource
             DT = (From datos In gBeOrdenCompra.DetalleLotes Select datos.No_linea,
                                                                    datos.Codigo_producto,
@@ -744,9 +757,16 @@ Public Class frmOrdenCompra
                                                                    datos.IdOrdenCompraEnc,
                                                                    datos.IdOrdenCompraDet,
                                                                    datos.IdOrdenCompraDetLote,
-                                                                   datos.IdProductoBodega).ToList()
-
-
+                                                                   datos.IdProductoBodega,
+                                                                   datos.IdProductoTallaColor,
+                                                                   EtiquetasImpresas = ObtenerEtiquetasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   LicenciasImpresas = ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                   EstadoImpresionLote = ObtenerEstadoImpresionLote(
+                                                                       ObtenerLicenciasImpresas(resumenImpresionPorLote, datos.IdOrdenCompraDetLote),
+                                                                       datos.Cantidad_recibida,
+                                                                       datos.Cantidad),
+                                                                   datos.Talla,
+                                                                   datos.Color).ToList()
 
             DgridLotes.DataSource = DT
 
@@ -755,6 +775,9 @@ Public Class frmOrdenCompra
                 gridviewLotes.Columns("IdOrdenCompraDet").Visible = False
                 gridviewLotes.Columns("IdOrdenCompraDetLote").Visible = False
                 gridviewLotes.Columns("IdProductoBodega").Visible = False
+                gridviewLotes.Columns("IdProductoTallaColor").Visible = False
+                gridviewLotes.Columns("IdUnidadMedidaBasica").Visible = False
+                gridviewLotes.Columns("IdPresentacion").Visible = False
 
                 ' Cantidades
                 gridviewLotes.Columns("Cantidad_UMBAS").DisplayFormat.FormatType = FormatType.Numeric
@@ -789,8 +812,30 @@ Public Class frmOrdenCompra
                     gridviewLotes.Columns("peso_licencia").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                     gridviewLotes.Columns("peso_licencia").SummaryItem.DisplayFormat = "Total: {0:n2}"
                 End If
+
+                ' #EJC20260606_FIX_OC_LOTES_TRAZA_IMPRESION:
+                ' Columnas de trazabilidad de impresión por lote.
+                If gridviewLotes.Columns.ColumnByFieldName("EtiquetasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("EtiquetasImpresas").Caption = "Etiquetas Impresas"
+                    gridviewLotes.Columns("EtiquetasImpresas").Visible = True
+                    gridviewLotes.Columns("EtiquetasImpresas").DisplayFormat.FormatType = FormatType.Numeric
+                    gridviewLotes.Columns("EtiquetasImpresas").DisplayFormat.FormatString = "{0:n0}"
+                End If
+
+                If gridviewLotes.Columns.ColumnByFieldName("LicenciasImpresas") IsNot Nothing Then
+                    gridviewLotes.Columns("LicenciasImpresas").Caption = "Licencias Impresas"
+                    gridviewLotes.Columns("LicenciasImpresas").Visible = True
+                    gridviewLotes.Columns("LicenciasImpresas").DisplayFormat.FormatType = FormatType.Numeric
+                    gridviewLotes.Columns("LicenciasImpresas").DisplayFormat.FormatString = "{0:n0}"
+                End If
+
+                If gridviewLotes.Columns.ColumnByFieldName("EstadoImpresionLote") IsNot Nothing Then
+                    gridviewLotes.Columns("EstadoImpresionLote").Caption = "Estado Impresión Lote"
+                    gridviewLotes.Columns("EstadoImpresionLote").Visible = True
+                End If
             End If
 
+            gridviewLotes.BestFitColumns()
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -801,6 +846,66 @@ Public Class frmOrdenCompra
         End Try
 
     End Sub
+
+    ' #EJC20260606_FIX_OC_LOTES_TRAZA_UI_TRANSITORIA:
+    ' Resumen transitorio por lote para UI sin agregar propiedades a entidad compartida.
+    Private Function ObtenerResumenImpresionPorLote(ByVal idOrdenCompraEnc As Integer,
+                                                    ByVal lotes As List(Of clsBeTrans_oc_det_lote)) As Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Dim result As New Dictionary(Of Integer, Tuple(Of Integer, Integer))
+        Try
+            If lotes Is Nothing OrElse lotes.Count = 0 Then Return result
+
+            Dim idDetalles = (From l In lotes
+                              Select l.IdOrdenCompraDet Distinct).ToList()
+
+            For Each idDet In idDetalles
+                Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(idOrdenCompraEnc, idDet)
+                If dt Is Nothing OrElse dt.Rows.Count = 0 Then Continue For
+
+                Dim porLote = From r In dt.AsEnumerable()
+                              Let idLote = If(IsDBNull(r("IdOrdenCompraDetLote")), 0, Convert.ToInt32(r("IdOrdenCompraDetLote")))
+                              Let etiquetas = If(IsDBNull(r("cant_etiquetas_presentacion_impresas")), 0, Convert.ToInt32(r("cant_etiquetas_presentacion_impresas")))
+                              Let impreso = If(IsDBNull(r("Impreso")), 0, Convert.ToInt32(r("Impreso")))
+                              Group New With {Key .etiquetas = etiquetas, Key .impreso = impreso} By idLote Into grp = Group
+                              Select New With {
+                                  .IdLote = idLote,
+                                  .Etiquetas = grp.Sum(Function(x) x.etiquetas),
+                                  .Licencias = grp.Count(Function(x) x.impreso = 1)
+                              }
+
+                For Each item In porLote
+                    result(item.IdLote) = Tuple.Create(item.Etiquetas, item.Licencias)
+                Next
+            Next
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace, idOrdenCompraEnc)
+        End Try
+        Return result
+    End Function
+
+    Private Function ObtenerEtiquetasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item1
+    End Function
+
+    Private Function ObtenerLicenciasImpresas(ByVal resumen As Dictionary(Of Integer, Tuple(Of Integer, Integer)),
+                                              ByVal idOrdenCompraDetLote As Integer) As Integer
+        If resumen Is Nothing Then Return 0
+        If Not resumen.ContainsKey(idOrdenCompraDetLote) Then Return 0
+        Return resumen(idOrdenCompraDetLote).Item2
+    End Function
+
+    Private Function ObtenerEstadoImpresionLote(ByVal licenciasImpresas As Integer,
+                                                ByVal cantidadRecibida As Double,
+                                                ByVal cantidad As Double) As String
+        If licenciasImpresas <= 0 Then Return "PENDIENTE"
+        If cantidad > 0 AndAlso cantidadRecibida >= cantidad Then Return "COMPLETO"
+        Return "IMPRESO_PENDIENTE"
+    End Function
 
     Private Sub Cargar_Poliza()
 
@@ -5215,6 +5320,7 @@ Public Class frmOrdenCompra
                         '#GT27052024: grid con detalle no debe permitir agregar o eliminar mas lineas.
                         cmdEliminarFila.Enabled = False
                         cmdAgregarProducto.Enabled = False
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_cerrada_anulada")
 
                     Else
                         GrpEnc.Enabled = True
@@ -5234,6 +5340,7 @@ Public Class frmOrdenCompra
                             mnuTareaRecepcion.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                             grpUltRec.Visible = True
                         End If
+                        OCTrace_EstadoEdicionGrid("modo_editar_estado_abierta_o_backorder")
 
                     End If
 
@@ -5634,6 +5741,7 @@ Public Class frmOrdenCompra
         'Cargar_Detalle_OC()
         'GT 02062021 Se recarga el detalle OC desde la bd, porque se esta actualizando para mostrar el conteo desde la HH.
         Cargar_Detalle_OC_HH()
+        Cargar_Detalle_Lotes_OC()
         cmdActualizarDetalle.Enabled = True
     End Sub
 
@@ -5673,6 +5781,77 @@ Public Class frmOrdenCompra
         End Try
 
     End Sub
+
+    '#EJC20260605_FIX_OC_LOTES_COLOR_ESTADO:
+    'Semáforo visual en pestaña Lotes (MHS/OC):
+    '- Amarillo: lote sin licencia/barra impresa.
+    '- Naranja: licencia impresa pero recepción parcial (pendiente).
+    '- Verde: licencia impresa y recepción completa.
+    '#EJC20260606_FIX_OC_LOTES_COLOR_VISIBLE:
+    'Refuerzo visual:
+    '- Aplica color aunque la fila esté seleccionada/focus.
+    '- Soporta cálculo por UMBAS y por Presentación (según columnas visibles del grid).
+    Private Sub gridviewLotes_RowStyle(sender As Object, e As RowStyleEventArgs) Handles gridviewLotes.RowStyle
+
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+        If e.RowHandle < 0 Then Exit Sub
+
+        Try
+            Dim view As GridView = CType(sender, GridView)
+
+            Dim licencia As String = ""
+            Dim cantidad As Decimal = 0D
+            Dim cantidadRecibida As Decimal = 0D
+
+            If view.Columns.ColumnByFieldName("Licencia") IsNot Nothing Then
+                licencia = Convert.ToString(view.GetRowCellValue(e.RowHandle, "Licencia")).Trim()
+            End If
+
+            If view.Columns.ColumnByFieldName("Cantidad_UMBAS") IsNot Nothing Then
+                cantidad = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_UMBAS"))
+            ElseIf view.Columns.ColumnByFieldName("Cantidad_Presentacion") IsNot Nothing Then
+                cantidad = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Presentacion"))
+            End If
+
+            If view.Columns.ColumnByFieldName("Cantidad_Recibida_UMBAS") IsNot Nothing Then
+                cantidadRecibida = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Recibida_UMBAS"))
+            ElseIf view.Columns.ColumnByFieldName("Cantidad_Recibida_Presentacion") IsNot Nothing Then
+                cantidadRecibida = SafeToDecimal(view.GetRowCellValue(e.RowHandle, "Cantidad_Recibida_Presentacion"))
+            End If
+
+            Dim tieneLicenciaImpresa As Boolean = Not String.IsNullOrWhiteSpace(licencia)
+            Dim recepcionCompleta As Boolean = (cantidad > 0D AndAlso cantidadRecibida >= cantidad)
+
+            If Not tieneLicenciaImpresa Then
+                e.Appearance.BackColor = Color.FromArgb(255, 245, 157) 'Amarillo suave
+                e.Appearance.ForeColor = Color.Black
+            ElseIf recepcionCompleta Then
+                e.Appearance.BackColor = Color.FromArgb(200, 230, 201) 'Verde suave
+                e.Appearance.ForeColor = Color.Black
+            Else
+                e.Appearance.BackColor = Color.FromArgb(255, 224, 178) 'Naranja suave (pendiente con barra)
+                e.Appearance.ForeColor = Color.Black
+            End If
+
+            e.Appearance.Options.UseBackColor = True
+            e.Appearance.Options.UseForeColor = True
+            e.HighPriority = True
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            clsLnLog_error_wms_oc.Agregar_Error(vMsgError, AP.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, ex.StackTrace)
+        End Try
+
+    End Sub
+
+    Private Function SafeToDecimal(ByVal value As Object) As Decimal
+        Try
+            If value Is Nothing OrElse IsDBNull(value) Then Return 0D
+            Return Convert.ToDecimal(value)
+        Catch
+            Return 0D
+        End Try
+    End Function
 
     Private ProductoGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private PropietarioGridLookUpEdit As New RepositoryItemGridLookUpEdit
@@ -5728,6 +5907,12 @@ Public Class frmOrdenCompra
                                               ByVal pIdBodega As Integer,
                                               Optional ByVal pForzarRefresh As Boolean = False) As DataTable
 
+        If pIdBodega = 0 Then
+            pIdBodega = Val(cmbBodega.EditValue)
+            If pIdBodega = 0 AndAlso gBeOrdenCompra IsNot Nothing Then pIdBodega = gBeOrdenCompra.IdBodega
+            If pIdBodega = 0 Then pIdBodega = AP.IdBodega
+        End If
+
         If pIdBodega = 0 Then Return OCProductoLookup_DataSourceVacio()
 
         Dim vKey As String = OCProductoLookup_Key(pIdPropietarioBodega, pIdBodega)
@@ -5754,6 +5939,124 @@ Public Class frmOrdenCompra
         Return mOCProductoLookupCache(vKey)
 
     End Function
+
+    '#EJC20260603_OC_LOOKUP_DISPLAY: en edición, mantener lookup liviano para que la columna Código resuelva DisplayMember sin cargar todo el catálogo.
+    Private Sub OCProductoLookup_ResolverDisplayDesdeDetalle()
+
+        Try
+
+            If Modo <> ModoTrans.Editar Then Return
+            If DTGridDetalleDocIngresos Is Nothing OrElse DTGridDetalleDocIngresos.Rows.Count = 0 Then Return
+
+            Dim vDT As DataTable = OCProductoLookup_DataSourceVacio()
+            Dim vKeys As New HashSet(Of Integer)
+
+            For Each vRow As DataRow In DTGridDetalleDocIngresos.Rows
+
+                If vRow Is Nothing Then Continue For
+                If vRow.RowState = DataRowState.Deleted Then Continue For
+
+                Dim vIdProductoBodega As Integer = 0
+                If Not IsDBNull(vRow("IdProductoBodega")) Then vIdProductoBodega = CInt(vRow("IdProductoBodega"))
+                If vIdProductoBodega <= 0 Then Continue For
+                If vKeys.Contains(vIdProductoBodega) Then Continue For
+
+                Dim vCodigo As String = String.Empty
+                If Not IsDBNull(vRow("CodigoProducto")) Then vCodigo = CStr(vRow("CodigoProducto"))
+
+                Dim vNombre As String = String.Empty
+                If Not IsDBNull(vRow("NombreProducto")) Then vNombre = CStr(vRow("NombreProducto"))
+
+                Dim vUMBas As String = String.Empty
+                If Not IsDBNull(vRow("UMBas")) Then vUMBas = CStr(vRow("UMBas"))
+
+                Dim vIdUmBas As Integer = 0
+                If Not IsDBNull(vRow("IdUmBas")) Then vIdUmBas = CInt(vRow("IdUmBas"))
+
+                Dim vCosto As Double = 0
+                If vRow.Table.Columns.Contains("Costo") AndAlso Not IsDBNull(vRow("Costo")) Then
+                    vCosto = CDbl(vRow("Costo"))
+                End If
+
+                Dim vKit As Boolean = False
+                If vRow.Table.Columns.Contains("EsKit") AndAlso Not IsDBNull(vRow("EsKit")) Then
+                    vKit = CBool(vRow("EsKit"))
+                End If
+
+                Dim vControlPeso As Boolean = False
+                If vRow.Table.Columns.Contains("ControlPeso") AndAlso Not IsDBNull(vRow("ControlPeso")) Then
+                    vControlPeso = CBool(vRow("ControlPeso"))
+                End If
+
+                vDT.Rows.Add(vIdProductoBodega,
+                             vCodigo,
+                             String.Empty,
+                             vNombre,
+                             vUMBas,
+                             vIdUmBas,
+                             vCosto,
+                             vKit,
+                             0,
+                             vControlPeso,
+                             String.Empty,
+                             String.Empty,
+                             String.Empty)
+                vKeys.Add(vIdProductoBodega)
+
+            Next
+
+            If vDT.Rows.Count > 0 Then
+                ProductoGridLookUpEdit.DataSource = vDT
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=" & vDT.Rows.Count &
+                                ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=" & vDT.Rows.Count &
+                              ";idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            Else
+                Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+                OCTrace_Marca("producto_lookup_display_detalle",
+                              "rows=0;idOrdenCompraEnc=" & gBeOrdenCompra.IdOrdenCompraEnc)
+            End If
+
+        Catch ex As Exception
+            Debug.WriteLine("OC_LOOKUP_DISPLAY_DETALLE error=" & ex.Message)
+            OCTrace_Marca("producto_lookup_display_detalle_error", ex.Message)
+        End Try
+
+    End Sub
+
+    '#EJC20260603_OC_EDIT_RULES: traza centralizada para entender por qué el grid queda editable/bloqueado.
+    Private Sub OCTrace_EstadoEdicionGrid(ByVal pContexto As String)
+
+        Try
+            Dim vEstado As Integer = 0
+            Dim vEnviadoErp As Boolean = False
+            Dim vPushToNav As Boolean = False
+
+            If gBeOrdenCompra IsNot Nothing Then
+                vEstado = gBeOrdenCompra.IdEstadoOC
+                vEnviadoErp = gBeOrdenCompra.Enviado_A_ERP
+                vPushToNav = gBeOrdenCompra.Push_To_NAV
+            End If
+
+            Dim vMsg As String = "OC_EDIT_RULES contexto=" & pContexto &
+                                 ";modo=" & Modo &
+                                 ";estadoOC=" & vEstado &
+                                 ";editable=" & gvDetalleDocIngreso.OptionsBehavior.Editable &
+                                 ";readOnly=" & gvDetalleDocIngreso.OptionsBehavior.ReadOnly &
+                                 ";cmdAgregarProducto=" & cmdAgregarProducto.Enabled &
+                                 ";cmdEliminarFila=" & cmdEliminarFila.Enabled &
+                                 ";cmdActualizar=" & cmdActualizar.Enabled &
+                                 ";enviadoERP=" & vEnviadoErp &
+                                 ";pushToNAV=" & vPushToNav
+
+            Debug.WriteLine(vMsg)
+            OCTrace_Marca("oc_edit_rules", vMsg)
+        Catch ex As Exception
+            Debug.WriteLine("OC_EDIT_RULES error=" & ex.Message)
+        End Try
+
+    End Sub
 
     Private Sub OCProductoLookup_Asignar(ByVal pEditor As GridLookUpEdit,
                                          ByVal pIdPropietarioBodega As Integer,
@@ -5807,7 +6110,13 @@ Public Class frmOrdenCompra
                 drLineaGrid("CodigoProducto") = drArticulo("Codigo")
                 drLineaGrid("NombreProducto") = drArticulo("Nombre")
                 drLineaGrid("IdUmBas") = drArticulo("IdUmBas")
-                drLineaGrid("UMBas") = drArticulo("UmBas")
+                If drArticulo.Table.Columns.Contains("UMBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UMBas")
+                ElseIf drArticulo.Table.Columns.Contains("UmBas") Then
+                    drLineaGrid("UMBas") = drArticulo("UmBas")
+                Else
+                    drLineaGrid("UMBas") = String.Empty
+                End If
                 drLineaGrid("Costo") = drArticulo("Costo")
                 drLineaGrid("EsKit") = drArticulo("Kit")
                 'drLineaGrid("IdProducto") = drArticulo("IdProducto")
@@ -6515,6 +6824,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = False
                         cmdEliminar.Enabled = False
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_cerrada_anulada")
                     Else
                         mnuGuardar.Enabled = False
                         GrpEnc.Enabled = True
@@ -6523,6 +6833,7 @@ MessageBoxButtons.YesNo,
                         cmdActualizar.Enabled = True
                         cmdEliminar.Enabled = True
                         cmdDuplicar.Enabled = True
+                        OCTrace_EstadoEdicionGrid("import_excel_post_guardado_estado_abierta")
                     End If
 
                 Else
@@ -7566,12 +7877,24 @@ MessageBoxButtons.YesNo,
                 Dim pIdPropietarioBodega As String = Convert.ToString(view.GetFocusedRowCellValue("IdPropietarioBodega"))
 
                 If pIdPropietarioBodega.Trim = String.Empty Then pIdPropietarioBodega = lcmbPropietario.EditValue
+                If Val(pIdPropietarioBodega) = 0 AndAlso gBeOrdenCompra IsNot Nothing Then
+                    pIdPropietarioBodega = gBeOrdenCompra.IdPropietarioBodega.ToString()
+                End If
 
                 If Not Val(pIdPropietarioBodega) = 0 Then
                     OCProductoLookup_Asignar(editor, Val(pIdPropietarioBodega))
+                    '#EJC20260603_OC_LOOKUP_SYNC: sincronizar también el repository para que DisplayMember no se pierda al salir del editor.
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, Val(pIdPropietarioBodega))
                 Else
                     OCProductoLookup_Asignar(editor, 0)
+                    OCProductoLookup_Asignar(ProductoGridLookUpEdit, 0)
                 End If
+
+                Debug.WriteLine("OC_LOOKUP_SYNC shownEditor;idPropietarioBodega=" & pIdPropietarioBodega &
+                                ";editorRows=" & If(editor.Properties.DataSource Is Nothing, -1, CType(editor.Properties.DataSource, DataTable).Rows.Count) &
+                                ";repoRows=" & If(ProductoGridLookUpEdit.DataSource Is Nothing, -1, CType(ProductoGridLookUpEdit.DataSource, DataTable).Rows.Count))
+                OCTrace_Marca("producto_lookup_sync",
+                              "idPropietarioBodega=" & pIdPropietarioBodega)
 
             End If
 
@@ -8938,14 +9261,14 @@ MessageBoxButtons.YesNo,
 
         Dim rutaImagen As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
         If rutaImagen IsNot Nothing AndAlso File.Exists(rutaImagen.ToString()) Then
-            Dim previewForm As New DevExpress.XtraEditors.XtraForm()
+            Dim previewForm As New XtraForm()
             previewForm.Text = "Vista previa de imagen"
             previewForm.StartPosition = FormStartPosition.CenterParent
             previewForm.Size = New Size(700, 700)
 
-            Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
+            Dim pictureEdit As New PictureEdit()
             pictureEdit.Dock = DockStyle.Fill
-            pictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+            pictureEdit.Properties.SizeMode = PictureSizeMode.Zoom
             pictureEdit.Image = Image.FromFile(rutaImagen.ToString())
 
             previewForm.Controls.Add(pictureEdit)
@@ -9034,11 +9357,22 @@ MessageBoxButtons.YesNo,
         Try
             With frmImpresionRecepcion_OC
                 .pTransOC_Enc = gBeOrdenCompra
+                RemoveHandler .NotificarActualizacionLotesOC, AddressOf RecargarLotesOCDesdeImpresion
+                AddHandler .NotificarActualizacionLotesOC, AddressOf RecargarLotesOCDesdeImpresion
                 .Show()
                 .Focus()
             End With
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    '#EJC20260605_FIX_OC_REFRESH_DESDE_IMPRESION:
+    'Refresca lotes al recibir notificación de la forma de impresión OC.
+    Private Sub RecargarLotesOCDesdeImpresion()
+        Try
+            Cargar_Detalle_Lotes_OC()
+        Catch
         End Try
     End Sub
 

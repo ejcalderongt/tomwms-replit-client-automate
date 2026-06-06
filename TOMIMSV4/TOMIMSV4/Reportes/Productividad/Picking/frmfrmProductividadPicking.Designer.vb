@@ -34,6 +34,13 @@ Partial Class frmProductividadPicking
         Me.DgridProductividadPicking = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.grpInfoResumenPick = New DevExpress.XtraEditors.GroupControl()
+        Me.LabelControl6 = New DevExpress.XtraEditors.LabelControl()
+        Me.LabelControl5 = New DevExpress.XtraEditors.LabelControl()
+        Me.lblKpiBrecha = New DevExpress.XtraEditors.LabelControl()
+        Me.lblKpiPickeado = New DevExpress.XtraEditors.LabelControl()
+        Me.lblKpiSolicitado = New DevExpress.XtraEditors.LabelControl()
+        Me.lblKpiCumplimiento = New DevExpress.XtraEditors.LabelControl()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDel = New System.Windows.Forms.DateTimePicker()
@@ -49,6 +56,8 @@ Partial Class frmProductividadPicking
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
+        CType(Me.grpInfoResumenPick, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpInfoResumenPick.SuspendLayout()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -152,7 +161,7 @@ Partial Class frmProductividadPicking
         Me.DgridProductividadPicking.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DgridProductividadPicking.MenuManager = Me.RibbonControl
         Me.DgridProductividadPicking.Name = "DgridProductividadPicking"
-        Me.DgridProductividadPicking.Size = New System.Drawing.Size(859, 626)
+        Me.DgridProductividadPicking.Size = New System.Drawing.Size(816, 626)
         Me.DgridProductividadPicking.TabIndex = 0
         Me.DgridProductividadPicking.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -167,6 +176,7 @@ Partial Class frmProductividadPicking
         '
         'GroupControl1
         '
+        Me.GroupControl1.Controls.Add(Me.grpInfoResumenPick)
         Me.GroupControl1.Controls.Add(Me.GroupControl2)
         Me.GroupControl1.Controls.Add(Me.cmbBodega)
         Me.GroupControl1.Controls.Add(Me.lblBodega)
@@ -174,8 +184,91 @@ Partial Class frmProductividadPicking
         Me.GroupControl1.Location = New System.Drawing.Point(0, 193)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(365, 656)
+        Me.GroupControl1.Size = New System.Drawing.Size(408, 656)
         Me.GroupControl1.TabIndex = 7
+        '
+        'grpInfoResumenPick
+        '
+        Me.grpInfoResumenPick.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.grpInfoResumenPick.Controls.Add(Me.LabelControl6)
+        Me.grpInfoResumenPick.Controls.Add(Me.LabelControl5)
+        Me.grpInfoResumenPick.Controls.Add(Me.lblKpiBrecha)
+        Me.grpInfoResumenPick.Controls.Add(Me.lblKpiPickeado)
+        Me.grpInfoResumenPick.Controls.Add(Me.lblKpiSolicitado)
+        Me.grpInfoResumenPick.Controls.Add(Me.lblKpiCumplimiento)
+        Me.grpInfoResumenPick.Location = New System.Drawing.Point(6, 248)
+        Me.grpInfoResumenPick.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.grpInfoResumenPick.Name = "grpInfoResumenPick"
+        Me.grpInfoResumenPick.Size = New System.Drawing.Size(397, 219)
+        Me.grpInfoResumenPick.TabIndex = 5
+        Me.grpInfoResumenPick.Text = "Resumen"
+        '
+        'LabelControl6
+        '
+        Me.LabelControl6.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelControl6.Appearance.Options.UseFont = True
+        Me.LabelControl6.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.LabelControl6.Location = New System.Drawing.Point(10, 173)
+        Me.LabelControl6.Name = "LabelControl6"
+        Me.LabelControl6.Size = New System.Drawing.Size(369, 25)
+        Me.LabelControl6.TabIndex = 18
+        Me.LabelControl6.Text = "KPI 6 - Picks por hora: --"
+        '
+        'LabelControl5
+        '
+        Me.LabelControl5.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelControl5.Appearance.Options.UseFont = True
+        Me.LabelControl5.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.LabelControl5.Location = New System.Drawing.Point(10, 148)
+        Me.LabelControl5.Name = "LabelControl5"
+        Me.LabelControl5.Size = New System.Drawing.Size(369, 25)
+        Me.LabelControl5.TabIndex = 17
+        Me.LabelControl5.Text = "KPI 5 - Operadores activos: --"
+        '
+        'lblKpiBrecha
+        '
+        Me.lblKpiBrecha.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblKpiBrecha.Appearance.Options.UseFont = True
+        Me.lblKpiBrecha.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.lblKpiBrecha.Location = New System.Drawing.Point(10, 123)
+        Me.lblKpiBrecha.Name = "lblKpiBrecha"
+        Me.lblKpiBrecha.Size = New System.Drawing.Size(369, 25)
+        Me.lblKpiBrecha.TabIndex = 16
+        Me.lblKpiBrecha.Text = "KPI 4 - Brecha (sol - pick): --"
+        '
+        'lblKpiPickeado
+        '
+        Me.lblKpiPickeado.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblKpiPickeado.Appearance.Options.UseFont = True
+        Me.lblKpiPickeado.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.lblKpiPickeado.Location = New System.Drawing.Point(10, 98)
+        Me.lblKpiPickeado.Name = "lblKpiPickeado"
+        Me.lblKpiPickeado.Size = New System.Drawing.Size(369, 25)
+        Me.lblKpiPickeado.TabIndex = 15
+        Me.lblKpiPickeado.Text = "KPI 3 - Cantidad pickeada: --"
+        '
+        'lblKpiSolicitado
+        '
+        Me.lblKpiSolicitado.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblKpiSolicitado.Appearance.Options.UseFont = True
+        Me.lblKpiSolicitado.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.lblKpiSolicitado.Location = New System.Drawing.Point(10, 73)
+        Me.lblKpiSolicitado.Name = "lblKpiSolicitado"
+        Me.lblKpiSolicitado.Size = New System.Drawing.Size(369, 25)
+        Me.lblKpiSolicitado.TabIndex = 14
+        Me.lblKpiSolicitado.Text = "KPI 2 - Cantidad solicitada: --"
+        '
+        'lblKpiCumplimiento
+        '
+        Me.lblKpiCumplimiento.Appearance.Font = New System.Drawing.Font("Consolas", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblKpiCumplimiento.Appearance.Options.UseFont = True
+        Me.lblKpiCumplimiento.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.lblKpiCumplimiento.Location = New System.Drawing.Point(10, 48)
+        Me.lblKpiCumplimiento.Name = "lblKpiCumplimiento"
+        Me.lblKpiCumplimiento.Size = New System.Drawing.Size(369, 25)
+        Me.lblKpiCumplimiento.TabIndex = 13
+        Me.lblKpiCumplimiento.Text = "KPI 1 - Cumplimiento (%): -"
         '
         'GroupControl2
         '
@@ -185,10 +278,10 @@ Partial Class frmProductividadPicking
         Me.GroupControl2.Controls.Add(Me.dtpFechaDel)
         Me.GroupControl2.Controls.Add(Me.lblAl)
         Me.GroupControl2.Controls.Add(Me.lblDel)
-        Me.GroupControl2.Location = New System.Drawing.Point(6, 95)
+        Me.GroupControl2.Location = New System.Drawing.Point(5, 104)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(354, 124)
+        Me.GroupControl2.Size = New System.Drawing.Size(397, 124)
         Me.GroupControl2.TabIndex = 4
         Me.GroupControl2.Text = "Rango de Fechas"
         '
@@ -200,7 +293,7 @@ Partial Class frmProductividadPicking
         Me.dtpFechaAl.Location = New System.Drawing.Point(37, 86)
         Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dtpFechaAl.Name = "dtpFechaAl"
-        Me.dtpFechaAl.Size = New System.Drawing.Size(312, 23)
+        Me.dtpFechaAl.Size = New System.Drawing.Size(355, 23)
         Me.dtpFechaAl.TabIndex = 4
         '
         'dtpFechaDel
@@ -211,7 +304,7 @@ Partial Class frmProductividadPicking
         Me.dtpFechaDel.Location = New System.Drawing.Point(37, 42)
         Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dtpFechaDel.Name = "dtpFechaDel"
-        Me.dtpFechaDel.Size = New System.Drawing.Size(312, 23)
+        Me.dtpFechaDel.Size = New System.Drawing.Size(355, 23)
         Me.dtpFechaDel.TabIndex = 4
         '
         'lblAl
@@ -242,7 +335,7 @@ Partial Class frmProductividadPicking
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(354, 22)
+        Me.cmbBodega.Size = New System.Drawing.Size(397, 22)
         Me.cmbBodega.TabIndex = 4
         '
         'lblBodega
@@ -257,10 +350,10 @@ Partial Class frmProductividadPicking
         'XtraTabControl1
         '
         Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(365, 193)
+        Me.XtraTabControl1.Location = New System.Drawing.Point(408, 193)
         Me.XtraTabControl1.Name = "XtraTabControl1"
         Me.XtraTabControl1.SelectedTabPage = Me.XtraTabPage1
-        Me.XtraTabControl1.Size = New System.Drawing.Size(861, 656)
+        Me.XtraTabControl1.Size = New System.Drawing.Size(818, 656)
         Me.XtraTabControl1.TabIndex = 10
         Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtraTabPage1, Me.XtraTabPage2})
         '
@@ -268,13 +361,13 @@ Partial Class frmProductividadPicking
         '
         Me.XtraTabPage1.Controls.Add(Me.DgridProductividadPicking)
         Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(859, 626)
+        Me.XtraTabPage1.Size = New System.Drawing.Size(816, 626)
         Me.XtraTabPage1.Text = "Productividad Picking"
         '
         'XtraTabPage2
         '
         Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(859, 626)
+        Me.XtraTabPage2.Size = New System.Drawing.Size(843, 626)
         Me.XtraTabPage2.Text = "Eficiencia Operadores"
         '
         'frmProductividadPicking
@@ -284,8 +377,8 @@ Partial Class frmProductividadPicking
         Me.ClientSize = New System.Drawing.Size(1226, 879)
         Me.Controls.Add(Me.XtraTabControl1)
         Me.Controls.Add(Me.GroupControl1)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmProductividadPicking"
         Me.Ribbon = Me.RibbonControl
@@ -297,6 +390,8 @@ Partial Class frmProductividadPicking
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout()
+        CType(Me.grpInfoResumenPick, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpInfoResumenPick.ResumeLayout(False)
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
@@ -305,9 +400,9 @@ Partial Class frmProductividadPicking
         Me.XtraTabControl1.ResumeLayout(False)
         Me.XtraTabPage1.ResumeLayout(False)
         Me.ResumeLayout(False)
-        Me.PerformLayout
+        Me.PerformLayout()
 
-End Sub
+    End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage
@@ -333,4 +428,11 @@ End Sub
     Friend WithEvents XtraTabControl1 As DevExpress.XtraTab.XtraTabControl
     Friend WithEvents XtraTabPage1 As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents XtraTabPage2 As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents grpInfoResumenPick As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents LabelControl6 As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents LabelControl5 As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblKpiBrecha As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblKpiPickeado As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblKpiSolicitado As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblKpiCumplimiento As DevExpress.XtraEditors.LabelControl
 End Class

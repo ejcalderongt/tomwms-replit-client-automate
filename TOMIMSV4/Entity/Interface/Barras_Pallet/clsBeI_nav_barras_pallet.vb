@@ -1,4 +1,4 @@
-Public Class clsBeI_nav_barras_pallet
+ï»¿Public Class clsBeI_nav_barras_pallet
     Implements ICloneable
 
     Public Property IdPallet() As Integer = 0
@@ -9,7 +9,7 @@ Public Class clsBeI_nav_barras_pallet
     Public Property Cantidad_Presentacion() As Double = 0
 
     ''' <summary>
-    ''' Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estándar de estiba.
+    ''' Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estandar de estiba.
     ''' </summary>
     ''' <returns></returns>
     Public Property Cantidad_UMP() As Double = 0
@@ -32,7 +32,11 @@ Public Class clsBeI_nav_barras_pallet
     Public Property GTIN() As String = ""
     Public Property IdOrdenCompraEnc As Integer = 0
     Public Property IdOrdenCompraDet As Integer = 0
+    '#EJC20260605_FIX_MHS_FK_LOTE_BARRA:
+    'FK persistente hacia trans_oc_det_lote para trazar la barra impresa al lote origen.
+    Public Property IdOrdenCompraDetLote As Integer = 0
     Public Property Peso As Double = 0
+    Public Property Cant_Etiquetas_Presentacion_Impresas As Integer = 0
 
     Sub New()
     End Sub
