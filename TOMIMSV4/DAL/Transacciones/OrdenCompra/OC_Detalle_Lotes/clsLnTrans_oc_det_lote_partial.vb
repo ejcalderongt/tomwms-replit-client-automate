@@ -1258,6 +1258,7 @@ Partial Public Class clsLnTrans_oc_det_lote
             Dim vSQL As String = "
             SELECT 
                 IdPallet,
+                ISNULL(IdOrdenCompraDetLote, 0) AS IdOrdenCompraDetLote,
                 Codigo_Barra AS Licencia,
                 Fecha_Agregado,
                 Fecha_Vence,

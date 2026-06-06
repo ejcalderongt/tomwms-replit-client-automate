@@ -465,7 +465,10 @@ Public Class frmImpresionRecepcion_OC
                                              ByVal cantidadPresentacion As Integer) As clsBeI_nav_barras_pallet
 
         Dim vFechaVence As Date = ObtenerFechaVence()
+        Dim idOrdenCompraDetLote As Integer = ObtenerIdOrdenCompraDetLoteSeleccionado()
 
+        '#EJC20260605_FIX_MHS_FK_LOTE_BARRA:
+        'Persistir vínculo fuerte barra->lote para trazabilidad robusta (evita inferencia por texto de lote).
         Return New clsBeI_nav_barras_pallet With {
             .IdPallet = 0,
             .Codigo = BeTransOcDetLote.Codigo_Producto,
@@ -489,8 +492,19 @@ Public Class frmImpresionRecepcion_OC
             .Lote_Numerico = Nothing,
             .IdOrdenCompraEnc = BeTransOcDetLote.IdOrdenCompraEnc,
             .IdOrdenCompraDet = BeTransOcDetLote.IdOrdenCompraDet,
+            .IdOrdenCompraDetLote = idOrdenCompraDetLote,
             .Impreso = True
         }
+    End Function
+
+    Private Function ObtenerIdOrdenCompraDetLoteSeleccionado() As Integer
+        Try
+            If cmbLote Is Nothing OrElse cmbLote.EditValue Is Nothing Then Return 0
+            If IsDBNull(cmbLote.EditValue) Then Return 0
+            Return Convert.ToInt32(cmbLote.EditValue)
+        Catch
+            Return 0
+        End Try
     End Function
 
     Private Sub ActualizarEstadoPantalla()

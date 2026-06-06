@@ -32,6 +32,9 @@
     Public Property GTIN() As String = ""
     Public Property IdOrdenCompraEnc As Integer = 0
     Public Property IdOrdenCompraDet As Integer = 0
+    '#EJC20260605_FIX_MHS_FK_LOTE_BARRA:
+    'FK persistente hacia trans_oc_det_lote para trazar la barra impresa al lote origen.
+    Public Property IdOrdenCompraDetLote As Integer = 0
     Public Property Peso As Double = 0
     Public Property cant_etiquetas_presentacion_impresas As Integer = 0
 
