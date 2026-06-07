@@ -5,6 +5,8 @@ Imports DevExpress.XtraGrid.Views.Grid
 
 Public Class frmImpresionRecepcion_OC
 
+    Public Event NotificarActualizacionLotesOC()
+
     Private Enum TipoProcesoLicencia
         SoloLicencia = 1
         LicenciaBulto = 2
@@ -76,11 +78,14 @@ Public Class frmImpresionRecepcion_OC
         End Try
     End Sub
 
-    Private Sub ListarBarrasPallet()
+    Private Sub ListarBarrasPallet(Optional ByVal pNotificar As Boolean = False)
         Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc, pBeTransOcDet.IdOrdenCompraDet)
         dgridBarrasPallet.DataSource = dt
         ConfigurarGridLicencias()
         ActualizarPanelUltimaEtiqueta(dt)
+        If pNotificar Then
+            RaiseEvent NotificarActualizacionLotesOC()
+        End If
     End Sub
 
     Private Sub chkSoloLicencia_CheckedChanged(sender As Object, e As EventArgs) Handles chkSoloLicencia.CheckedChanged
@@ -615,7 +620,7 @@ Public Class frmImpresionRecepcion_OC
                                                  Convert.ToString(cmbPrinterLicencia.EditValue))
             End Select
 
-            ListarBarrasPallet()
+            ListarBarrasPallet(True)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -800,7 +805,7 @@ Public Class frmImpresionRecepcion_OC
                                                                   clsTransaccion.lConnection,
                                                                   clsTransaccion.lTransaction) Then
 
-                    ListarBarrasPallet()
+                    ListarBarrasPallet(True)
 
                     Throw New Exception($"La licencia [{licenciaActual}] ya existe.")
 
@@ -822,7 +827,7 @@ Public Class frmImpresionRecepcion_OC
             clsTransaccion.Commit_Transaction()
 
             ActualizarEstadoPantalla()
-            ListarBarrasPallet()
+            ListarBarrasPallet(True)
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
@@ -880,7 +885,7 @@ Public Class frmImpresionRecepcion_OC
                                                                   clsTransaccion.lConnection,
                                                                   clsTransaccion.lTransaction) Then
 
-                ListarBarrasPallet()
+                ListarBarrasPallet(True)
                 Throw New Exception($"La licencia [{licenciaActual}] ya existe. (Verifique concurrencia)")
 
             End If
