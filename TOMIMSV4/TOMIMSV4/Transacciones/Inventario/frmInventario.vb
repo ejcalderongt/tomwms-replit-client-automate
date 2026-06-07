@@ -67,6 +67,7 @@ Public Class frmInventario
     Private mInvLazyTeoricoERPCargado As Boolean = False
     Private mInvLazyComparativoTeoricosCargado As Boolean = False
     Private mInvLazyTiemposTramoCargado As Boolean = False
+    Private mInvLazyCargaEnCurso As Boolean = False
 
     '#EJC20260606_INV_LISTAR_TRACE: traza fina para separar costo SQL, armado de DataTable y refresh/layout de grids.
     Private Function InvListarTrace_Activo() As Boolean
@@ -1295,6 +1296,7 @@ Public Class frmInventario
         Try
             InvListarTrace_Iniciar("Listar_Datos_De_Inventario")
             Dim vDiferirCargaPesada As Boolean = InvListarDebeDiferirCargaInicial(pCargaDiferidaInicial)
+            Dim vDiferirDetalleInicial As Boolean = False
             mInvCargaDiferidaInicialActiva = vDiferirCargaPesada
 
             SplashScreenManager.CloseForm(False)
@@ -1309,7 +1311,7 @@ Public Class frmInventario
                                   Sub() Listar_Productos_Asignados(dgridAsignacionProductos, clsTrans.lConnection, clsTrans.lTransaction),
                                   Function() "RowsAsignacion=" & If(dgridAsignacionProductos Is Nothing OrElse dgridAsignacionProductos.DataSource Is Nothing, 0, dgridAsignacionProductos.Nodes.Count))
 
-            If vDiferirCargaPesada Then
+            If vDiferirCargaPesada AndAlso vDiferirDetalleInicial Then
                 InvListarMarcarCargaDiferida("VERIFICACION")
             Else
                 InvListarEjecutarPaso("VERIFICACION", "Actualizando verificación",
@@ -1317,7 +1319,7 @@ Public Class frmInventario
                                       Function() "Rows=" & If(gviewVerifica Is Nothing, 0, gviewVerifica.RowCount))
             End If
 
-            If vDiferirCargaPesada Then
+            If vDiferirCargaPesada AndAlso vDiferirDetalleInicial Then
                 InvListarMarcarCargaDiferida("CONTEO")
             Else
                 InvListarEjecutarPaso("CONTEO", "Actualizando conteo",
@@ -1372,7 +1374,7 @@ Public Class frmInventario
                                   Sub() Cargar_Reconteo(clsTrans.lConnection, clsTrans.lTransaction),
                                   Function() "Rows=" & If(GridView8 Is Nothing, 0, GridView8.RowCount))
 
-            If vDiferirCargaPesada Then
+            If vDiferirCargaPesada AndAlso vDiferirDetalleInicial Then
                 InvListarMarcarCargaDiferida("COMPARATIVO")
             Else
                 InvListarEjecutarPaso("COMPARATIVO", "Actualizando comparativo",
@@ -1448,6 +1450,9 @@ Public Class frmInventario
             If Not mInvCargaDiferidaInicialActiva Then Return
             If gBeTransInvEnc Is Nothing OrElse Not gBeTransInvEnc.Inicial Then Return
             If e.Page Is Nothing Then Return
+            If mInvLazyCargaEnCurso Then Return
+
+            mInvLazyCargaEnCurso = True
 
             If e.Page Is tabDetalle AndAlso Not mInvLazyDetalleCargado Then
                 InvListarEjecutarPasoConTransaccion("LAZY_DETALLE_INICIAL", "Cargando detalle del inventario inicial...",
@@ -1488,6 +1493,8 @@ Public Class frmInventario
             End If
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Finally
+            mInvLazyCargaEnCurso = False
         End Try
     End Sub
 
