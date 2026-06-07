@@ -58,6 +58,118 @@ Public Class frmInventario
     Public IdInventario As Integer
     Private DTOri As New DataTable
     Private gConnection As SqlConnection
+
+    Private mInvListarTraceSesion As String = ""
+    Private mInvListarTracePaso As Stopwatch
+    Private mInvCargaDiferidaInicialActiva As Boolean = False
+    Private mInvLazyDetalleCargado As Boolean = False
+    Private mInvLazyTeoricoWMSCargado As Boolean = False
+    Private mInvLazyTeoricoERPCargado As Boolean = False
+    Private mInvLazyComparativoTeoricosCargado As Boolean = False
+    Private mInvLazyTiemposTramoCargado As Boolean = False
+
+    '#EJC20260606_INV_LISTAR_TRACE: traza fina para separar costo SQL, armado de DataTable y refresh/layout de grids.
+    Private Function InvListarTrace_Activo() As Boolean
+        Try
+            Dim vValor As String = If(Environment.GetEnvironmentVariable("TOMWMS_INV_LISTAR_TRACE"), "").ToUpperInvariant()
+            Return Not (vValor = "0" OrElse vValor = "NO" OrElse vValor = "FALSE")
+        Catch
+            Return True
+        End Try
+    End Function
+
+    Private Sub InvListarTrace_Iniciar(ByVal pOrigen As String)
+        If Not InvListarTrace_Activo() Then Return
+
+        mInvListarTraceSesion = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        mInvListarTracePaso = Stopwatch.StartNew()
+        InvListarTrace_Marca("START", "Origen=" & pOrigen)
+    End Sub
+
+    Private Sub InvListarTrace_Marca(ByVal pPaso As String, Optional ByVal pExtra As String = "")
+        If Not InvListarTrace_Activo() Then Return
+
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vDeltaMs As Long = If(mInvListarTracePaso Is Nothing, 0, mInvListarTracePaso.ElapsedMilliseconds)
+            If mInvListarTracePaso IsNot Nothing Then mInvListarTracePaso.Restart()
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260606_INV_LISTAR_TRACE",
+                "frmInventario",
+                mInvListarTraceSesion,
+                pPaso,
+                "IdInventario=" & If(gBeTransInvEnc Is Nothing, 0, gBeTransInvEnc.Idinventarioenc),
+                "IdBodega=" & If(gBeTransInvEnc Is Nothing, 0, gBeTransInvEnc.IdBodega),
+                "Inicial=" & If(gBeTransInvEnc Is Nothing, False, gBeTransInvEnc.Inicial),
+                "DeltaMs=" & vDeltaMs,
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "inventario-listar-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
+
+    Private Sub InvListarEjecutarPaso(ByVal pPaso As String,
+                                      ByVal pDescripcion As String,
+                                      ByVal pAccion As Action,
+                                      Optional ByVal pExtraFin As Func(Of String) = Nothing)
+        Try
+            If SplashScreenManager.Default IsNot Nothing AndAlso pDescripcion <> "" Then
+                SplashScreenManager.Default.SetWaitFormDescription(pDescripcion)
+            End If
+        Catch
+        End Try
+
+        InvListarTrace_Marca(pPaso & "_START")
+        pAccion.Invoke()
+        InvListarTrace_Marca(pPaso & "_END", If(pExtraFin Is Nothing, "", pExtraFin.Invoke()))
+    End Sub
+
+    '#EJC20260606_INV_LAZYLOAD: carga secciones pesadas bajo demanda para no bloquear la apertura del inventario inicial.
+    Private Function InvListarDebeDiferirCargaInicial(ByVal pCargaDiferidaInicial As Boolean) As Boolean
+        Return pCargaDiferidaInicial AndAlso gBeTransInvEnc IsNot Nothing AndAlso gBeTransInvEnc.Inicial
+    End Function
+
+    Private Sub InvListarMarcarCargaDiferida(ByVal pPaso As String)
+        InvListarTrace_Marca(pPaso & "_DIFERIDO", "Carga diferida hasta que el usuario abra la pestaña correspondiente.")
+    End Sub
+
+    Private Sub InvListarEjecutarPasoConTransaccion(ByVal pPaso As String,
+                                                    ByVal pDescripcion As String,
+                                                    ByVal pAccion As Action(Of SqlConnection, SqlTransaction),
+                                                    Optional ByVal pExtraFin As Func(Of String) = Nothing)
+        Dim clsTrans As New clsTransaccion
+
+        Try
+            SplashScreenManager.CloseForm(False)
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+
+            InvListarTrace_Iniciar("LazyLoad_" & pPaso)
+            InvListarTrace_Marca(pPaso & "_TX_BEGIN_START")
+            clsTrans.Begin_Transaction()
+            InvListarTrace_Marca(pPaso & "_TX_BEGIN_END")
+
+            InvListarEjecutarPaso(pPaso, pDescripcion,
+                                  Sub() pAccion.Invoke(clsTrans.lConnection, clsTrans.lTransaction),
+                                  pExtraFin)
+
+            InvListarTrace_Marca(pPaso & "_TX_COMMIT_START")
+            clsTrans.Commit_Transaction()
+            InvListarTrace_Marca(pPaso & "_TX_COMMIT_END")
+        Catch ex As Exception
+            InvListarTrace_Marca(pPaso & "_ERROR", ex.Message)
+            If clsTrans.lTransaction IsNot Nothing Then clsTrans.RollBack_Transaction()
+            Throw
+        Finally
+            SplashScreenManager.CloseForm(False)
+            clsTrans.Close_Conection()
+        End Try
+    End Sub
     Private gTransaction As SqlTransaction
 
 
@@ -99,8 +211,17 @@ Public Class frmInventario
         Dim clsTrans As New clsTransaccion
 
         Try
+            InvListarTrace_Iniciar("Cargar_Forma")
+            mInvCargaDiferidaInicialActiva = False
+            mInvLazyDetalleCargado = False
+            mInvLazyTeoricoWMSCargado = False
+            mInvLazyTeoricoERPCargado = False
+            mInvLazyComparativoTeoricosCargado = False
+            mInvLazyTiemposTramoCargado = False
 
+            InvListarTrace_Marca("CARGAR_FORMA_TX_BEGIN_START", "Modo=" & Modo.ToString())
             clsTrans.Begin_Transaction()
+            InvListarTrace_Marca("CARGAR_FORMA_TX_BEGIN_END")
 
             IsLoading = True
 
@@ -113,38 +234,61 @@ Public Class frmInventario
             Dim ritem As RepositoryItemCheckEdit = TryCast(GridViewTramos.Columns("Seleccionar").RealColumnEdit, RepositoryItemCheckEdit)
             AddHandler ritem.CheckedChanged, AddressOf ritemPropietario_CheckedChanged
 
-            If Not AP.Listar_Bodegas_By_Usuario(cmbBodega, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay bodegas definidas para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_BODEGAS_USUARIO", "Cargando bodegas",
+                                  Sub()
+                                      If Not AP.Listar_Bodegas_By_Usuario(cmbBodega, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay bodegas definidas para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
             cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
 
-            If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_PROPIETARIOS", "Cargando propietarios",
+                                  Sub()
+                                      If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
-            If Not IMS.Listar_TipoInventario(cmbTipoInventario, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay tipos de inventarios definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_TIPO_INVENTARIO", "Cargando tipos de inventario",
+                                  Sub()
+                                      If Not IMS.Listar_TipoInventario(cmbTipoInventario, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay tipos de inventarios definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
-            If Not IMS.Listar_TipoConteo(cmbTipoConteo, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay tipos de conteos definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_TIPO_CONTEO", "Cargando tipos de conteo",
+                                  Sub()
+                                      If Not IMS.Listar_TipoConteo(cmbTipoConteo, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay tipos de conteos definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
-            If Not IMS.Listar_Operadores(cmbOperador, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay Operadores definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_OPERADORES", "Cargando operadores",
+                                  Sub()
+                                      If Not IMS.Listar_Operadores(cmbOperador, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay Operadores definidos para la aplicación", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
-            If Not IMS.Listar_Operadores_By_Rol_Inventario(cmbOperadorProd, clsTrans.lConnection, clsTrans.lTransaction) Then
-                XtraMessageBox.Show("No hay Operadores definidos para toma de inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            InvListarEjecutarPaso("FORMA_OPERADORES_INV", "Cargando operadores inventario",
+                                  Sub()
+                                      If Not IMS.Listar_Operadores_By_Rol_Inventario(cmbOperadorProd, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                          XtraMessageBox.Show("No hay Operadores definidos para toma de inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                      End If
+                                  End Sub)
 
-            IMS.Listar_ClientesByEmpresaSistema(cmbCliente, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("FORMA_CLIENTES", "Cargando clientes",
+                                  Sub() IMS.Listar_ClientesByEmpresaSistema(cmbCliente, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction))
 
-            IMS.Listar_Producto_Familia(cmbProductoFamilia, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("FORMA_FAMILIAS", "Cargando familias",
+                                  Sub() IMS.Listar_Producto_Familia(cmbProductoFamilia, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction))
 
-            gBeBodegaTramos = clsLnBodega_tramo.Get_All_For_Seleccion(AP.IdBodega, clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("FORMA_TRAMOS_BASE", "Cargando tramos base",
+                                  Sub() gBeBodegaTramos = clsLnBodega_tramo.Get_All_For_Seleccion(AP.IdBodega, clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Tramos=" & If(gBeBodegaTramos Is Nothing, 0, gBeBodegaTramos.Count))
 
+            InvListarTrace_Marca("FORMA_DATATABLES_START")
             SetDatataTableConteo()
             SetDatataTableVerifica()
             SetDatataTableCompara()
@@ -152,16 +296,21 @@ Public Class frmInventario
             SetDatataTableCiclico()
             SetDatataTableCongelado()
             SetDatataTableDiferenciaCiclico()
+            InvListarTrace_Marca("FORMA_DATATABLES_END")
 
+            InvListarTrace_Marca("FORMA_TREELISTS_START")
             Crea_TreeList_Bodega(dgridAsignacionUbicaciones)
             Crea_TreeList_BodegaOperador(dgridAsignacionOperadores)
             Crea_TreeList_AsignaProductos(dgridAsignacionProductos)
+            InvListarTrace_Marca("FORMA_TREELISTS_END")
 
             rgrpRegularizar.Visible = False
             rgprImportar.Visible = False
 
-            IMS.Listar_Centro_Costo_Inv_By_IdEmpresa(cmbCentroCosto, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("FORMA_CENTRO_COSTO", "Cargando centro de costo",
+                                  Sub() IMS.Listar_Centro_Costo_Inv_By_IdEmpresa(cmbCentroCosto, AP.IdEmpresa, clsTrans.lConnection, clsTrans.lTransaction))
 
+            InvListarTrace_Marca("FORMA_MODO_START", "Modo=" & Modo.ToString())
             Select Case Modo
 
                 Case TipoTrans.Nuevo
@@ -239,6 +388,7 @@ Public Class frmInventario
                     Listar_Tramos()
 
                     cmbCliente.EditValue = clsLnCliente.Get_IdBodega_By_Codigo(AP.Bodega.Codigo, clsTrans.lConnection, clsTrans.lTransaction)
+                    InvListarTrace_Marca("FORMA_MODO_NUEVO_END")
 
                 Case TipoTrans.Editar
 
@@ -334,61 +484,83 @@ Public Class frmInventario
 
                     End If
 
-                    cmbPropietario.EditValue = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(gBeTransInvEnc.Idpropietario,
-                                                                                                                     gBeTransInvEnc.IdBodega,
-                                                                                                                     clsTrans.lConnection,
-                                                                                                                     clsTrans.lTransaction)
+                    InvListarEjecutarPaso("FORMA_PROP_BODEGA", "Cargando propietario bodega",
+                                          Sub()
+                                              cmbPropietario.EditValue = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(gBeTransInvEnc.Idpropietario,
+                                                                                                                                                         gBeTransInvEnc.IdBodega,
+                                                                                                                                                         clsTrans.lConnection,
+                                                                                                                                                         clsTrans.lTransaction)
+                                          End Sub)
 
                     SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                    SplashScreenManager.Default.SetWaitFormDescription("Listando datos del encabezado...")
-                    Cargar_Datos_Encabezado()
+                    InvListarEjecutarPaso("FORMA_ENCABEZADO", "Listando datos del encabezado...",
+                                          Sub() Cargar_Datos_Encabezado())
 
                     'SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                    SplashScreenManager.Default.SetWaitFormDescription("Listando inventario congelado...")
-                    Carga_Inventario_Congelado(clsTrans.lConnection, clsTrans.lTransaction)
+                    InvListarEjecutarPaso("FORMA_CONGELADO", "Listando inventario congelado...",
+                                          Sub() Carga_Inventario_Congelado(clsTrans.lConnection, clsTrans.lTransaction),
+                                          Function() "Rows=" & If(GridView9 Is Nothing, 0, GridView9.RowCount))
                     'SplashScreenManager.CloseForm(False)
 
-                    SplashScreenManager.Default.SetWaitFormDescription("Listando productos no existentes...")
-                    Cargar_Productos_No_Existentes(clsTrans.lConnection, clsTrans.lTransaction)
+                    InvListarEjecutarPaso("FORMA_NO_EXISTENTES", "Listando productos no existentes...",
+                                          Sub() Cargar_Productos_No_Existentes(clsTrans.lConnection, clsTrans.lTransaction),
+                                          Function() "Rows=" & If(GridView10 Is Nothing, 0, GridView10.RowCount))
 
-                    SplashScreenManager.Default.SetWaitFormDescription("Listando datos del inventario...")
-                    chkComparativoConUbicacion.Checked = True
-                    Listar_Datos_De_Inventario()
+                    InvListarEjecutarPaso("FORMA_LISTAR_DATOS", "Listando datos del inventario...",
+                                          Sub()
+                                              chkComparativoConUbicacion.Checked = True
+                                              Listar_Datos_De_Inventario(True)
+                                          End Sub)
 
-                    gBeBodegaTramosAsignados = clsLnBodega_tramo.Get_All_Tramos_For_Seleccion_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc,
-                                                                                                                 clsTrans.lConnection,
-                                                                                                                 clsTrans.lTransaction)
+                    InvListarEjecutarPaso("FORMA_TRAMOS_ASIGNADOS", "Listando tramos asignados",
+                                          Sub()
+                                              gBeBodegaTramosAsignados = clsLnBodega_tramo.Get_All_Tramos_For_Seleccion_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc,
+                                                                                                                                             clsTrans.lConnection,
+                                                                                                                                             clsTrans.lTransaction)
+                                          End Sub,
+                                          Function() "TramosAsignados=" & If(gBeBodegaTramosAsignados Is Nothing, 0, gBeBodegaTramosAsignados.Count))
 
-                    Listar_Tramos()
+                    InvListarEjecutarPaso("FORMA_LISTAR_TRAMOS_UI", "Listando tramos",
+                                          Sub() Listar_Tramos())
 
                     If gBeTransInvEnc.Inicial = False Then
 
                         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                        SplashScreenManager.Default.SetWaitFormDescription("Listando bodegas")
-
-                        Listar_Bodega(clsTrans.lConnection, clsTrans.lTransaction)
+                        InvListarEjecutarPaso("FORMA_LISTAR_BODEGA", "Listando bodegas",
+                                              Sub() Listar_Bodega(clsTrans.lConnection, clsTrans.lTransaction))
 
                     End If
 
                     'SplashScreenManager.Default.SetWaitFormDescription("Listando productos")
 
-                    Listar_Productos(clsTrans.lConnection, clsTrans.lTransaction)
+                    InvListarEjecutarPaso("FORMA_LISTAR_PRODUCTOS", "Listando productos",
+                                          Sub() Listar_Productos(clsTrans.lConnection, clsTrans.lTransaction))
 
+                    InvListarTrace_Marca("FORMA_DUP_CICLICO_START", "Posible duplicado: Listar_Datos_De_Inventario ya ejecuto CICLICO.")
                     Carga_Detalle_Ciclico()
+                    InvListarTrace_Marca("FORMA_DUP_CICLICO_END", "Rows=" & If(gdviewTeorico Is Nothing, 0, gdviewTeorico.RowCount))
                     '#AG27052026: Carga progreso por ubicacion y tramo/rack al abrir inventario ciclico.
                     If Not gBeTransInvEnc.Inicial Then
+                        InvListarTrace_Marca("FORMA_DUP_PROGRESO_CICLICO_START", "Posible duplicado: Listar_Datos_De_Inventario ya ejecuto PROGRESO_CICLICO.")
                         Cargar_Progreso_Conteo_Ciclico(clsTrans.lConnection, clsTrans.lTransaction)
+                        InvListarTrace_Marca("FORMA_DUP_PROGRESO_CICLICO_END")
                     End If
 
+                    InvListarTrace_Marca("FORMA_DUP_REGULARIZACION_START", "Posible duplicado: Listar_Datos_De_Inventario ya ejecuto REGULARIZACION.")
                     Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
+                    InvListarTrace_Marca("FORMA_DUP_REGULARIZACION_END", "Rows=" & If(GridView1 Is Nothing, 0, GridView1.RowCount))
                     'Timer1.Enabled = True
 
             End Select
+            InvListarTrace_Marca("FORMA_MODO_END", "Modo=" & Modo.ToString())
 
+            InvListarTrace_Marca("CARGAR_FORMA_TX_COMMIT_START")
             clsTrans.Commit_Transaction()
+            InvListarTrace_Marca("CARGAR_FORMA_TX_COMMIT_END")
         Catch ex As Exception
+            InvListarTrace_Marca("CARGAR_FORMA_ERROR", ex.Message)
 
-            clsTrans.Rollback_Transaction()
+            clsTrans.RollBack_Transaction()
 
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
@@ -399,6 +571,7 @@ Public Class frmInventario
 
             SplashScreenManager.CloseForm(False)
             IsLoading = False
+            InvListarTrace_Marca("CARGAR_FORMA_FIN")
 
         End Try
 
@@ -1115,131 +1288,207 @@ Public Class frmInventario
 
     End Sub
 
-    Private Sub Listar_Datos_De_Inventario()
+    Private Sub Listar_Datos_De_Inventario(Optional ByVal pCargaDiferidaInicial As Boolean = False)
 
         Dim clsTrans As New clsTransaccion
 
         Try
+            InvListarTrace_Iniciar("Listar_Datos_De_Inventario")
+            Dim vDiferirCargaPesada As Boolean = InvListarDebeDiferirCargaInicial(pCargaDiferidaInicial)
+            mInvCargaDiferidaInicialActiva = vDiferirCargaPesada
 
             SplashScreenManager.CloseForm(False)
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            SplashScreenManager.Default.SetWaitFormDescription("Actualizando productos asignados")
+            SplashScreenManager.Default.SetWaitFormDescription(If(vDiferirCargaPesada, "Abriendo inventario. El detalle se cargará al abrir cada pestaña.", "Actualizando productos asignados"))
 
+            InvListarTrace_Marca("TX_BEGIN_START")
             clsTrans.Begin_Transaction()
+            InvListarTrace_Marca("TX_BEGIN_END")
 
-            Listar_Productos_Asignados(dgridAsignacionProductos, clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("PRODUCTOS_ASIGNADOS", "Actualizando productos asignados",
+                                  Sub() Listar_Productos_Asignados(dgridAsignacionProductos, clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "RowsAsignacion=" & If(dgridAsignacionProductos Is Nothing OrElse dgridAsignacionProductos.DataSource Is Nothing, 0, dgridAsignacionProductos.Nodes.Count))
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando verificación")
-            Catch ex As Exception
-            End Try
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("VERIFICACION")
+            Else
+                InvListarEjecutarPaso("VERIFICACION", "Actualizando verificación",
+                                      Sub() Cargar_Verificacion_Inventario(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gviewVerifica Is Nothing, 0, gviewVerifica.RowCount))
+            End If
 
-            Cargar_Verificacion_Inventario(clsTrans.lConnection, clsTrans.lTransaction)
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("CONTEO")
+            Else
+                InvListarEjecutarPaso("CONTEO", "Actualizando conteo",
+                                      Sub() Cargar_Conteo_Inventario(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gviewConteo Is Nothing, 0, gviewConteo.RowCount))
+            End If
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando conteo")
-            Catch ex As Exception
-            End Try
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("TEORICO_WMS")
+            Else
+                InvListarEjecutarPaso("TEORICO_WMS", "Actualizando teórico WMS",
+                                      Sub() Calcular_Inventario_Teorico_WMS(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gvInvTeoricoWMS Is Nothing, 0, gvInvTeoricoWMS.RowCount))
+            End If
 
-            Cargar_Conteo_Inventario(clsTrans.lConnection, clsTrans.lTransaction)
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("TEORICO_ERP")
+            Else
+                InvListarEjecutarPaso("TEORICO_ERP", "Actualizando teórico ERP",
+                                      Sub() Calcular_Inventario_Teorico_ERP(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gvInvTeoricoERP Is Nothing, 0, gvInvTeoricoERP.RowCount))
+            End If
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando teórico WMS")
-            Catch ex As Exception
-            End Try
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("COMPARATIVO_TEORICOS")
+            Else
+                InvListarEjecutarPaso("COMPARATIVO_TEORICOS", "Actualizando comparativo teóricos",
+                                      Sub() Calcular_Comparativo_Teoricos(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gvComparativoTeoricos Is Nothing, 0, gvComparativoTeoricos.RowCount))
+            End If
 
-            Calcular_Inventario_Teorico_WMS(clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("TEORICO_COSTOS", "Actualizando teórico con costos",
+                                  Sub() Calcula_Inventario_Teorico_Costos(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Rows=" & If(GridView7 Is Nothing, 0, GridView7.RowCount))
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando teórico ERP")
-            Catch ex As Exception
-            End Try
-
-            Calcular_Inventario_Teorico_ERP(clsTrans.lConnection, clsTrans.lTransaction)
-
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando teórico con costos")
-            Catch ex As Exception
-            End Try
-
-            Calcular_Comparativo_Teoricos(clsTrans.lConnection, clsTrans.lTransaction)
-
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando comparativo teóricos")
-            Catch ex As Exception
-            End Try
-
-            Calcula_Inventario_Teorico_Costos(clsTrans.lConnection, clsTrans.lTransaction)
-
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando ciclico")
-            Catch ex As Exception
-            End Try
-
-            Carga_Detalle_Ciclico(clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("CICLICO", "Actualizando ciclico",
+                                  Sub() Carga_Detalle_Ciclico(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Rows=" & If(gdviewTeorico Is Nothing, 0, gdviewTeorico.RowCount))
             '#AG27052026: Actualiza progreso por ubicacion y tramo/rack para inventario ciclico.
             If Not gBeTransInvEnc.Inicial Then
-                Cargar_Progreso_Conteo_Ciclico(clsTrans.lConnection, clsTrans.lTransaction)
+                InvListarEjecutarPaso("PROGRESO_CICLICO", "Actualizando progreso ciclico",
+                                      Sub() Cargar_Progreso_Conteo_Ciclico(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "RowsUbicacion=" & If(gvProgresoUbicacion Is Nothing, 0, gvProgresoUbicacion.RowCount) &
+                                                  ";RowsTramo=" & If(gvProgresoTramo Is Nothing, 0, gvProgresoTramo.RowCount))
             End If
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando Diferencias")
-            Catch ex As Exception
-            End Try
+            InvListarEjecutarPaso("DIFERENCIAS_CICLICO", "Actualizando Diferencias",
+                                  Sub() Carga_Detalle_Diferencias_Ciclico(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Rows=" & If(gvDiferenciasCiclico Is Nothing, 0, gvDiferenciasCiclico.RowCount))
 
-            Carga_Detalle_Diferencias_Ciclico(clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("RECONTEOS", "Actualizando reconteos",
+                                  Sub() Cargar_Reconteo(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Rows=" & If(GridView8 Is Nothing, 0, GridView8.RowCount))
 
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando reconteos")
-            Catch ex As Exception
-            End Try
-
-            Cargar_Reconteo(clsTrans.lConnection, clsTrans.lTransaction)
-
-            Try
-                SplashScreenManager.Default.SetWaitFormDescription("Actualizando comparativo")
-            Catch ex As Exception
-            End Try
-
-            Cargar_Datos_Comparativos(clsTrans.lConnection, clsTrans.lTransaction)
+            If vDiferirCargaPesada Then
+                InvListarMarcarCargaDiferida("COMPARATIVO")
+            Else
+                InvListarEjecutarPaso("COMPARATIVO", "Actualizando comparativo",
+                                      Sub() Cargar_Datos_Comparativos(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(gviewComparativo Is Nothing, 0, gviewComparativo.RowCount))
+            End If
 
             If Not gBeTransInvEnc.Inicial Then
-                Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction)
+                InvListarEjecutarPaso("CONTEOS_OPERADOR", "Actualizando conteos operador",
+                                      Sub() Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Rows=" & If(dgridConteoOperador Is Nothing OrElse TryCast(dgridConteoOperador.MainView, GridView) Is Nothing, 0, CType(dgridConteoOperador.MainView, GridView).RowCount))
             End If
 
-            Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("REGULARIZACION", "Actualizando regularización",
+                                  Sub() Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Rows=" & If(GridView1 Is Nothing, 0, GridView1.RowCount))
 
-            Cargar_KPI_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
+            InvListarEjecutarPaso("KPI_UBICACIONES", "Actualizando KPI ubicaciones",
+                                  Sub() Cargar_KPI_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction),
+                                  Function() "Pendientes=" & UbicacionesPendientes & ";Total=" & TotalUbicaciones)
 
             If gBeTransInvEnc.Inicial Then
-                Me.BeginInvoke(New Action(Sub()
-                                              Actualizar_Gauge_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
-                                          End Sub))
+                InvListarTrace_Marca("GAUGE_BEGININVOKE_OMITIDO", "Se evita usar BeginInvoke con transaccion/conexion que se cierran al salir del metodo.")
 
-                Listar_Ubicaciones_Contadas(clsTrans.lConnection, clsTrans.lTransaction)
+                InvListarEjecutarPaso("GAUGE_UBICACIONES", "Actualizando gauge ubicaciones",
+                                      Sub() Actualizar_Gauge_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction),
+                                      Function() "Pendientes=" & UbicacionesPendientes & ";Total=" & TotalUbicaciones)
 
-                Try
-                    SplashScreenManager.Default.SetWaitFormDescription("Actualizando ubicaciones contadas")
-                Catch ex As Exception
-                End Try
+                If vDiferirCargaPesada Then
+                    InvListarMarcarCargaDiferida("UBICACIONES_CONTADAS")
+                Else
+                    InvListarEjecutarPaso("UBICACIONES_CONTADAS", "Actualizando ubicaciones contadas",
+                                          Sub() Listar_Ubicaciones_Contadas(clsTrans.lConnection, clsTrans.lTransaction),
+                                          Function() "Rows=" & If(gvUbicacionesContadas Is Nothing, 0, gvUbicacionesContadas.RowCount))
+                End If
 
-                Listar_Tiempos_Por_Tramos(clsTrans.lConnection, clsTrans.lTransaction)
-                Try
-                    SplashScreenManager.Default.SetWaitFormDescription("Actualizando tiempos tramos")
-                Catch ex As Exception
-                End Try
+                If vDiferirCargaPesada Then
+                    InvListarMarcarCargaDiferida("TIEMPOS_TRAMOS")
+                Else
+                    InvListarEjecutarPaso("TIEMPOS_TRAMOS", "Actualizando tiempos tramos",
+                                          Sub() Listar_Tiempos_Por_Tramos(clsTrans.lConnection, clsTrans.lTransaction),
+                                          Function() "RowsConteo=" & If(gvTiempoConteos Is Nothing, 0, gvTiempoConteos.RowCount) &
+                                                      ";RowsVerif=" & If(gvTiempoVerif Is Nothing, 0, gvTiempoVerif.RowCount))
+                End If
             End If
 
+            InvListarTrace_Marca("TX_COMMIT_START")
             clsTrans.Commit_Transaction()
+            InvListarTrace_Marca("TX_COMMIT_END")
+
+            If Not vDiferirCargaPesada AndAlso gBeTransInvEnc IsNot Nothing AndAlso gBeTransInvEnc.Inicial Then
+                mInvLazyDetalleCargado = True
+                mInvLazyTeoricoWMSCargado = True
+                mInvLazyTeoricoERPCargado = True
+                mInvLazyComparativoTeoricosCargado = True
+                mInvLazyTiemposTramoCargado = True
+            End If
 
         Catch ex As Exception
+            InvListarTrace_Marca("ERROR", ex.Message)
             If Not clsTrans.lTransaction Is Nothing Then clsTrans.RollBack_Transaction()
             Throw
         Finally
             SplashScreenManager.CloseForm(False)
             clsTrans.Close_Conection()
+            InvListarTrace_Marca("FIN")
         End Try
 
+    End Sub
+
+    Private Sub xtraTabInv_SelectedPageChanged(sender As Object, e As DevExpress.XtraTab.TabPageChangedEventArgs) Handles xtraTabInv.SelectedPageChanged
+        Try
+            If Not mInvCargaDiferidaInicialActiva Then Return
+            If gBeTransInvEnc Is Nothing OrElse Not gBeTransInvEnc.Inicial Then Return
+            If e.Page Is Nothing Then Return
+
+            If e.Page Is tabDetalle AndAlso Not mInvLazyDetalleCargado Then
+                InvListarEjecutarPasoConTransaccion("LAZY_DETALLE_INICIAL", "Cargando detalle del inventario inicial...",
+                                                    Sub(lConnection, lTransaction)
+                                                        Cargar_Verificacion_Inventario(lConnection, lTransaction)
+                                                        Cargar_Conteo_Inventario(lConnection, lTransaction)
+                                                        Cargar_Datos_Comparativos(lConnection, lTransaction)
+                                                    End Sub,
+                                                    Function() "RowsVerificacion=" & If(gviewVerifica Is Nothing, 0, gviewVerifica.RowCount) &
+                                                                ";RowsConteo=" & If(gviewConteo Is Nothing, 0, gviewConteo.RowCount) &
+                                                                ";RowsComparativo=" & If(gviewComparativo Is Nothing, 0, gviewComparativo.RowCount))
+                mInvLazyDetalleCargado = True
+            ElseIf e.Page Is tabInvTeorico AndAlso Not mInvLazyTeoricoWMSCargado Then
+                InvListarEjecutarPasoConTransaccion("LAZY_TEORICO_WMS", "Cargando teórico WMS...",
+                                                    Sub(lConnection, lTransaction) Calcular_Inventario_Teorico_WMS(lConnection, lTransaction),
+                                                    Function() "Rows=" & If(gvInvTeoricoWMS Is Nothing, 0, gvInvTeoricoWMS.RowCount))
+                mInvLazyTeoricoWMSCargado = True
+            ElseIf e.Page Is tabComparativoERPFisicoWMS AndAlso Not mInvLazyTeoricoERPCargado Then
+                InvListarEjecutarPasoConTransaccion("LAZY_TEORICO_ERP", "Cargando teórico ERP...",
+                                                    Sub(lConnection, lTransaction) Calcular_Inventario_Teorico_ERP(lConnection, lTransaction),
+                                                    Function() "Rows=" & If(gvInvTeoricoERP Is Nothing, 0, gvInvTeoricoERP.RowCount))
+                mInvLazyTeoricoERPCargado = True
+            ElseIf e.Page Is tabCompativoTeoricos AndAlso Not mInvLazyComparativoTeoricosCargado Then
+                InvListarEjecutarPasoConTransaccion("LAZY_COMPARATIVO_TEORICOS", "Cargando comparativo teóricos...",
+                                                    Sub(lConnection, lTransaction) Calcular_Comparativo_Teoricos(lConnection, lTransaction),
+                                                    Function() "Rows=" & If(gvComparativoTeoricos Is Nothing, 0, gvComparativoTeoricos.RowCount))
+                mInvLazyComparativoTeoricosCargado = True
+            ElseIf e.Page Is tabTiemposPorTramo AndAlso Not mInvLazyTiemposTramoCargado Then
+                InvListarEjecutarPasoConTransaccion("LAZY_TIEMPOS_TRAMOS", "Cargando tiempos por tramo...",
+                                                    Sub(lConnection, lTransaction) Listar_Tiempos_Por_Tramos(lConnection, lTransaction),
+                                                    Function() "RowsConteo=" & If(gvTiempoConteos Is Nothing, 0, gvTiempoConteos.RowCount) &
+                                                                ";RowsVerif=" & If(gvTiempoVerif Is Nothing, 0, gvTiempoVerif.RowCount))
+                mInvLazyTiemposTramoCargado = True
+            ElseIf e.Page Is tabUbicacionesContadas AndAlso gvUbicacionesContadas IsNot Nothing AndAlso gvUbicacionesContadas.RowCount = 0 Then
+                InvListarEjecutarPasoConTransaccion("LAZY_UBICACIONES_CONTADAS", "Cargando ubicaciones contadas...",
+                                                    Sub(lConnection, lTransaction) Listar_Ubicaciones_Contadas(lConnection, lTransaction),
+                                                    Function() "Rows=" & If(gvUbicacionesContadas Is Nothing, 0, gvUbicacionesContadas.RowCount))
+            End If
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
     End Sub
 
     Private Sub Cargar_Conteos_Operador(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
@@ -10614,9 +10863,9 @@ Public Class frmInventario
 
         If ArcScaleComponent2.Value = ValorObjetivoGauge Then Timer1.Stop()
 
-        gaugeUbicaciones.Update()
-        gaugeUbicaciones.Refresh()
-        Application.DoEvents()
+        '#EJC20260606_INV_GAUGE_UI: evitar reentrada/repaint forzado desde el Tick; el timer solo invalida y deja pintar al message loop.
+        gaugeUbicaciones.Invalidate()
+
     End Sub
 
     Private Sub frmInventario_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing

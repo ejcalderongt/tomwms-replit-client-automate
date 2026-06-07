@@ -42,6 +42,10 @@ Public Class frmInventarioImport
     Private WithEvents bwImportarTeorico As New System.ComponentModel.BackgroundWorker()
     Private mInvImportCancelado As Boolean = False
     Private mInvImportEnProceso As Boolean = False
+    Private mInvImportDiferirPintadoErrores As Boolean = False
+    Private mInvImportErroresPorFila As New Dictionary(Of Integer, String)()
+    Private mInvImportErroresCelda As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+    Private mInvImportData As DataTable
 
     <System.Runtime.InteropServices.DllImport("user32.dll")>
     Private Shared Function SendMessage(ByVal hWnd As IntPtr,
@@ -65,6 +69,7 @@ Public Class frmInventarioImport
         Public Property Actual As Integer
         Public Property Total As Integer
         Public Property Mensaje As String
+        Public Property MsTranscurridos As Long
     End Class
 
     Private Function InvImportTrace_Activo() As Boolean
@@ -124,7 +129,7 @@ Public Class frmInventarioImport
                 InvImportTrace_Limpiar(pPaso),
                 "IdInventario=" & IdInventario,
                 "IdBodega=" & AP.IdBodega,
-                "RowsGrid=" & If(grdData Is Nothing, 0, grdData.Rows.Count),
+                "RowsGrid=" & InvImportRowCount(),
                 "TotalMs=" & vTotalMs,
                 "DeltaMs=" & vDeltaMs,
                 InvImportTrace_Limpiar(pExtra)
@@ -171,7 +176,24 @@ Public Class frmInventarioImport
             prg.Value = Math.Min(Math.Max(pActual, 0), prg.Maximum)
         End If
 
-        lblPrg.Text = pMensaje & " " & pActual & " de " & pTotal
+        InvImportSetLblProgreso(pMensaje, pActual, pTotal, errc)
+    End Sub
+
+    Private Sub InvImportSetLblProgreso(ByVal pTexto As String,
+                                        Optional ByVal pProcesados As Integer = -1,
+                                        Optional ByVal pTotal As Integer = -1,
+                                        Optional ByVal pErrores As Integer = -1,
+                                        Optional ByVal pExtra As String = "")
+        Dim vTexto As String = pTexto
+        If pProcesados >= 0 AndAlso pTotal >= 0 Then
+            Dim vErrores As Integer = Math.Max(If(pErrores < 0, errc, pErrores), 0)
+            Dim vOk As Integer = Math.Max(pProcesados - vErrores, 0)
+            vTexto &= " " & pProcesados & " de " & pTotal & " | +" & vOk & " válidos | -" & vErrores & " errores"
+        End If
+        If pExtra <> "" Then vTexto &= " | " & pExtra
+
+        lblPrg.ForeColor = If(If(pErrores < 0, errc, pErrores) > 0, Color.Firebrick, Color.ForestGreen)
+        lblPrg.Text = vTexto
         lblPrg.Refresh()
     End Sub
 
@@ -191,6 +213,73 @@ Public Class frmInventarioImport
         Return mInvImportCancelado OrElse (bwImportarTeorico IsNot Nothing AndAlso bwImportarTeorico.CancellationPending)
     End Function
 
+    Private Function InvImportRowCount() As Integer
+        If mInvImportData IsNot Nothing Then Return mInvImportData.Rows.Count
+        If grdData IsNot Nothing Then Return grdData.Rows.Count
+        Return 0
+    End Function
+
+    Private Function InvImportCrearTabla() As DataTable
+        Dim vTabla As New DataTable("InventarioImport")
+        For Each vCol As DataGridViewColumn In grdData.Columns
+            If Not vTabla.Columns.Contains(vCol.Name) Then
+                vTabla.Columns.Add(vCol.Name, GetType(Object))
+                vTabla.Columns(vCol.Name).Caption = vCol.HeaderText
+            End If
+        Next
+        Return vTabla
+    End Function
+
+    Private Sub InvImportBindTabla(ByVal pTabla As DataTable)
+        mInvImportData = pTabla
+        If dgridInventario Is Nothing OrElse GridView7 Is Nothing Then Return
+
+        GridView7.BeginDataUpdate()
+        Try
+            dgridInventario.DataSource = mInvImportData
+            GridView7.PopulateColumns()
+            GridView7.OptionsView.ColumnAutoWidth = False
+            GridView7.OptionsBehavior.Editable = True
+
+            For Each vCol As DataGridViewColumn In grdData.Columns
+                Dim vGridCol = GridView7.Columns.ColumnByFieldName(vCol.Name)
+                If vGridCol IsNot Nothing Then
+                    vGridCol.Caption = vCol.HeaderText
+                    vGridCol.Visible = vCol.Visible
+                    vGridCol.Width = Math.Max(vCol.Width, 60)
+                End If
+            Next
+        Finally
+            GridView7.EndDataUpdate()
+        End Try
+    End Sub
+
+    Private Function InvImportValor(ByVal pFila As Integer, ByVal pColumna As String) As Object
+        Try
+            If mInvImportData IsNot Nothing AndAlso
+               pFila >= 0 AndAlso pFila < mInvImportData.Rows.Count AndAlso
+               mInvImportData.Columns.Contains(pColumna) Then
+                Return mInvImportData.Rows(pFila)(pColumna)
+            End If
+
+            If grdData IsNot Nothing AndAlso
+               pFila >= 0 AndAlso pFila < grdData.Rows.Count AndAlso
+               grdData.Columns.Contains(pColumna) Then
+                Return grdData.Rows(pFila).Cells(pColumna).Value
+            End If
+        Catch
+        End Try
+        Return DBNull.Value
+    End Function
+
+    Private Sub InvImportSetValor(ByVal pFila As Integer, ByVal pColumna As String, ByVal pValor As Object)
+        If mInvImportData Is Nothing OrElse
+           pFila < 0 OrElse pFila >= mInvImportData.Rows.Count OrElse
+           Not mInvImportData.Columns.Contains(pColumna) Then Return
+
+        mInvImportData.Rows(pFila)(pColumna) = If(pValor Is Nothing, DBNull.Value, pValor)
+    End Sub
+
     '#EJC20260523_INV_IMPORT_GRID_REDRAW: evita repintado por celda durante validaciones largas.
     Private Sub InvImportSetGridRedraw(ByVal pEnabled As Boolean)
         If grdData Is Nothing OrElse grdData.IsDisposed OrElse Not grdData.IsHandleCreated Then Return
@@ -204,10 +293,96 @@ Public Class frmInventarioImport
         End If
     End Sub
 
+    Private Sub InvImportIniciarErroresDiferidos()
+        mInvImportDiferirPintadoErrores = True
+        mInvImportErroresPorFila.Clear()
+        mInvImportErroresCelda.Clear()
+    End Sub
+
+    Private Sub InvImportAplicarErroresDiferidos()
+        mInvImportDiferirPintadoErrores = False
+        For Each vItem As KeyValuePair(Of Integer, String) In mInvImportErroresPorFila
+            InvImportSetValor(vItem.Key, "ColEstado", "ERROR")
+            InvImportSetValor(vItem.Key, "ColError", vItem.Value)
+        Next
+
+        If dgridInventario IsNot Nothing Then dgridInventario.RefreshDataSource()
+    End Sub
+
+    Private Function InvImportGetColumnIndex(ByVal pAlternativas As String(), ByVal pFallback As Integer) As Integer
+        If grdData Is Nothing OrElse grdData.Columns Is Nothing Then Return pFallback
+        For Each vNombre As String In pAlternativas
+            If grdData.Columns.Contains(vNombre) Then
+                Return grdData.Columns(vNombre).Index
+            End If
+        Next
+        Return pFallback
+    End Function
+
+    Private Sub InvImportSetValorPendiente(ByRef pPendientes As Dictionary(Of Integer, Dictionary(Of String, Object)),
+                                           ByVal pFila As Integer,
+                                           ByVal pColumna As String,
+                                           ByVal pValor As Object)
+        If Not pPendientes.ContainsKey(pFila) Then
+            pPendientes.Add(pFila, New Dictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase))
+        End If
+        pPendientes(pFila)(pColumna) = pValor
+    End Sub
+
+    Private Sub InvImportAplicarPendientes(ByVal pPendientes As Dictionary(Of Integer, Dictionary(Of String, Object)))
+        If pPendientes Is Nothing OrElse pPendientes.Count = 0 Then Return
+        Dim vAplicados As Integer = 0
+        Dim vUiChunk As Integer = 1000
+        Dim vUltimoUiTick As Integer = Environment.TickCount
+        Dim vReloj As Stopwatch = Stopwatch.StartNew()
+
+        Try
+            InvImportTrace_Marca("VALIDAR_DATOS_PENDIENTES_START", "FilasPendientes=" & pPendientes.Count)
+            If GridView7 IsNot Nothing Then GridView7.BeginDataUpdate()
+
+            For Each vFilaKv As KeyValuePair(Of Integer, Dictionary(Of String, Object)) In pPendientes
+
+                Dim vFila As Integer = vFilaKv.Key
+                If vFila < 0 OrElse vFila >= InvImportRowCount() Then Continue For
+
+                For Each vColKv As KeyValuePair(Of String, Object) In vFilaKv.Value
+                    InvImportSetValor(vFila, vColKv.Key, vColKv.Value)
+                    vAplicados += 1
+                Next
+
+                If vAplicados > 0 AndAlso (vAplicados Mod vUiChunk = 0) Then
+                    Dim vAhoraTick As Integer = Environment.TickCount
+                    If Math.Abs(vAhoraTick - vUltimoUiTick) >= 120 Then
+                        InvImportSetLblProgreso("Aplicando cambios en grid...", vAplicados, Math.Max(pPendientes.Count, vAplicados))
+                        Application.DoEvents()
+                        vUltimoUiTick = vAhoraTick
+                    End If
+                End If
+
+            Next
+
+        Finally
+            If GridView7 IsNot Nothing Then GridView7.EndDataUpdate()
+            If dgridInventario IsNot Nothing Then dgridInventario.RefreshDataSource()
+            InvImportTrace_Marca("VALIDAR_DATOS_PENDIENTES_END", "Aplicados=" & vAplicados & ";Ms=" & vReloj.ElapsedMilliseconds)
+        End Try
+    End Sub
+
+    Private Function InvImportEtaTexto(ByVal pProcesado As Integer, ByVal pTotal As Integer, ByVal pMsTranscurridos As Long) As String
+        If pProcesado <= 0 OrElse pTotal <= 0 Then Return "ETA calculando..."
+        If pProcesado >= pTotal Then Return "ETA 00:00"
+        'Evita ETA exagerado en el arranque (muestra insuficiente y costos de calentamiento).
+        If pProcesado < 300 OrElse pMsTranscurridos < 5000 Then Return "ETA calculando..."
+        Dim vMsPorFila As Double = CDbl(pMsTranscurridos) / CDbl(pProcesado)
+        Dim vMsRestantes As Long = CLng(Math.Max(0, (pTotal - pProcesado) * vMsPorFila))
+        Dim vTs As TimeSpan = TimeSpan.FromMilliseconds(vMsRestantes)
+        Return "ETA " & vTs.ToString("mm\:ss")
+    End Function
+
     '#EJC20260522_INV_IMPORT_VALIDACION_CACHE: soporte liviano para evitar consultas por fila durante Validar_Datos.
     Private Function InvImportValorCelda(ByVal pFila As Integer, ByVal pColumna As String) As String
         Try
-            Dim vValor As Object = grdData.Rows(pFila).Cells(pColumna).Value
+            Dim vValor As Object = InvImportValor(pFila, pColumna)
             If vValor Is Nothing OrElse IsDBNull(vValor) Then Return ""
             Return vValor.ToString().Trim()
         Catch
@@ -217,7 +392,7 @@ Public Class frmInventarioImport
 
     Private Function InvImportEnteroCelda(ByVal pFila As Integer, ByVal pColumna As String) As Integer
         Try
-            Dim vValor As Object = grdData.Rows(pFila).Cells(pColumna).Value
+            Dim vValor As Object = InvImportValor(pFila, pColumna)
             If vValor Is Nothing OrElse IsDBNull(vValor) OrElse vValor.ToString().Trim() = "" Then Return 0
             Return CInt(vValor)
         Catch
@@ -356,7 +531,7 @@ Public Class frmInventarioImport
         Dim vColores As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         Dim vUbicaciones As New HashSet(Of Integer)()
 
-        For ii As Integer = 0 To grdData.Rows.Count - 1
+        For ii As Integer = 0 To InvImportRowCount() - 1
             Dim vCodigo As String = InvImportValorCelda(ii, "ColCodigo")
             If vCodigo <> "" Then vCodigos.Add(vCodigo)
             Dim vTalla As String = InvImportValorCelda(ii, "ColTalla")
@@ -437,68 +612,152 @@ Public Class frmInventarioImport
         Return True
     End Function
 
+    Private Class InvImportValidacionFilaTvp
+        Public Property IdProducto As Integer
+        Public Property IdPresentacion As Integer
+        Public Property IdUnidadMedida As Integer
+        Public Property UbicacionExiste As Boolean
+    End Class
+
+    Private Function InvImportValidarFilasMasivoTvp(ByVal pConnection As SqlConnection,
+                                                    ByVal pTransaction As SqlTransaction,
+                                                    ByRef pResultado As Dictionary(Of Integer, InvImportValidacionFilaTvp)) As Boolean
+        pResultado = New Dictionary(Of Integer, InvImportValidacionFilaTvp)()
+
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("RowId", GetType(Integer))
+        vTabla.Columns.Add("Codigo", GetType(String))
+        vTabla.Columns.Add("Presentacion", GetType(String))
+        vTabla.Columns.Add("UnidadMedida", GetType(String))
+        vTabla.Columns.Add("Ubicacion", GetType(Integer))
+
+        For ii As Integer = 0 To InvImportRowCount() - 1
+            Dim vCodigo As String = InvImportValorCelda(ii, "ColCodigo")
+            If vCodigo = "" Then Continue For
+            Dim vPresentacion As String = InvImportValorCelda(ii, "ColPresentacion")
+            Dim vUnidad As String = InvImportValorCelda(ii, "ColUnidadMedida")
+            Dim vUbicacion As Integer = InvImportEnteroCelda(ii, "ColUbicacion")
+            vTabla.Rows.Add(ii, vCodigo, vPresentacion, vUnidad, vUbicacion)
+        Next
+
+        If vTabla.Rows.Count = 0 Then Return True
+
+        Using vCmd As New SqlCommand("dbo.usp_wms_inventario_import_validacion_tvp_v1", pConnection, pTransaction)
+            vCmd.CommandType = CommandType.StoredProcedure
+            vCmd.CommandTimeout = 0
+            vCmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = AP.IdBodega
+            vCmd.Parameters.Add("@IdPropietarioBodega", SqlDbType.Int).Value = IdPropietarioBodega
+
+            Dim vParamFilas As SqlParameter = vCmd.Parameters.Add("@Filas", SqlDbType.Structured)
+            vParamFilas.TypeName = "dbo.tvp_wms_inventario_import_validacion_v1"
+            vParamFilas.Value = vTabla
+
+            SplashScreenManager.Default.SetWaitFormCaption("Validando inventario")
+            SplashScreenManager.Default.SetWaitFormDescription("Ejecutando validación en base de datos, por favor espere...")
+            InvImportSetLblProgreso("Validando datos en base de datos...", 0, vTabla.Rows.Count)
+            Application.DoEvents()
+
+            Dim vMsExecReader As Long = 0
+            Dim vReader As SqlDataReader = Nothing
+            Dim vRelojExec As Stopwatch = Stopwatch.StartNew()
+            vReader = vCmd.ExecuteReader()
+            vMsExecReader = vRelojExec.ElapsedMilliseconds
+            InvImportTrace_Marca("VALIDAR_DATOS_TVP_EXEC_OK", "Rows=" & vTabla.Rows.Count & ";MsExec=" & vMsExecReader)
+
+            Using vReader
+                Dim vTotalEsperado As Integer = vTabla.Rows.Count
+                Dim vLeidos As Integer = 0
+                Dim vUiChunk As Integer = 250
+                Dim vUltimoUiTick As Integer = Environment.TickCount
+                Dim vRelojRead As Stopwatch = Stopwatch.StartNew()
+
+                While vReader.Read()
+                    Dim vRowId As Integer = CInt(vReader("RowId"))
+                    Dim vFila As New InvImportValidacionFilaTvp() With {
+                        .IdProducto = If(IsDBNull(vReader("IdProducto")), 0, CInt(vReader("IdProducto"))),
+                        .IdPresentacion = If(IsDBNull(vReader("IdPresentacion")), 0, CInt(vReader("IdPresentacion"))),
+                        .IdUnidadMedida = If(IsDBNull(vReader("IdUnidadMedida")), 0, CInt(vReader("IdUnidadMedida"))),
+                        .UbicacionExiste = If(IsDBNull(vReader("UbicacionExiste")), False, CBool(vReader("UbicacionExiste")))
+                    }
+                    pResultado(vRowId) = vFila
+                    vLeidos += 1
+
+                    If vLeidos = 1 OrElse (vLeidos Mod vUiChunk = 0) OrElse vLeidos = vTotalEsperado Then
+                        Dim vEtaReader As String = InvImportEtaTexto(vLeidos, vTotalEsperado, vRelojRead.ElapsedMilliseconds)
+                        SplashScreenManager.Default.SetWaitFormDescription("Aplicando resultados de validación: " & vLeidos & " de " & vTotalEsperado & " (" & vEtaReader & ")")
+                        InvImportSetLblProgreso("Validación BD:", vLeidos, vTotalEsperado, errc, vEtaReader)
+
+                        Dim vAhoraUiTick As Integer = Environment.TickCount
+                        If Math.Abs(vAhoraUiTick - vUltimoUiTick) >= 120 Then
+                            Application.DoEvents()
+                            vUltimoUiTick = vAhoraUiTick
+                        End If
+                    End If
+                End While
+                InvImportTrace_Marca("VALIDAR_DATOS_TVP_READ_OK", "Rows=" & vLeidos & ";MsRead=" & vRelojRead.ElapsedMilliseconds)
+            End Using
+
+            SplashScreenManager.Default.SetWaitFormDescription("Validación en base de datos finalizada, aplicando resultados...")
+            InvImportSetLblProgreso("Validación finalizada, aplicando resultados...", vTabla.Rows.Count, vTabla.Rows.Count, errc)
+            Application.DoEvents()
+        End Using
+
+        InvImportTrace_Marca("VALIDAR_DATOS_TVP_OK", "Rows=" & vTabla.Rows.Count & ";Resueltos=" & pResultado.Count)
+        Return True
+    End Function
+
 #Region " Metodos principales "
 
     Private Sub Paste()
 
         Dim vArr() As String
         Dim vRow() As String
-        Dim vIdxFilaExcel, vIdxColExcel, vIdxColGrid, vR, vRL, vRows As Integer
+        Dim vIdxFilaExcel As Integer
 
         lblPrg.Text = ""
-
-        grdData.SuspendLayout()
-        grdData.Rows.Clear()
 
         Try
 
             vArr = Clipboard.GetText().Split(Environment.NewLine)
-
-            vR = grdData.Rows.Count
-
-            vRows = vArr.Length
-            vRow = vArr(0).Split(vbTab)
-            grdData.Rows.Add(vRows)
+            Dim vTabla As DataTable = InvImportCrearTabla()
 
             prg.Maximum = vArr.Length - 1
             prg.Visible = True
 
-            lblPrg.Text = "Pegando datos desde portapapeles"
-            lblPrg.Refresh()
+            InvImportSetLblProgreso("Pegando datos desde portapapeles", 0, vArr.Length - 1, 0)
             lblPrg.Visible = True
 
             For vIdxFilaExcel = 0 To vArr.Length - 1
 
                 If vArr(vIdxFilaExcel) <> "" Then
 
-                    lblPrg.Text = "Procesando fila: " & vIdxFilaExcel & " de: " & vArr.Length - 1
-                    lblPrg.Refresh()
-
-                    grdData.Item(0, vR).Value = "ERR"
+                    InvImportSetLblProgreso("Procesando portapapeles", vIdxFilaExcel, vArr.Length - 1, errc)
 
                     Try
 
                         vRow = vArr(vIdxFilaExcel).Split(vbTab)
-                        vIdxColGrid = 1 'Iniciar en columna Estado. 
-                        vRL = vRow.Length  'If vRL > 5 Then vRL = 5
 
                         '#EJC20180528: Utilizar nombres de columnas no índices!!!
-                        If vRow(vIdxColExcel).TrimStart <> "" Then
-                            grdData.Item("ColId", vR).Value = vIdxFilaExcel + 1
-                            grdData.Item("ColEstado", vR).Value = "PROCESANDO"
-                            If vRow.Length > 1 Then grdData.Item("ColCodigo", vR).Value = vRow(0).TrimStart
-                            If vRow.Length > 2 Then grdData.Item("ColPresentacion", vR).Value = vRow(1).TrimStart
-                            If vRow.Length > 3 Then grdData.Item("ColCantidad", vR).Value = vRow(2).TrimStart
-                            If vRow.Length > 4 Then grdData.Item("ColPeso", vR).Value = vRow(3).TrimStart
-                            If vRow.Length > 5 Then grdData.Item("ColUnidadMedida", vR).Value = vRow(4).TrimStart
-                            If vRow.Length > 6 Then grdData.Item("ColLote", vR).Value = vRow(5).TrimStart
-                            If vRow.Length > 7 Then grdData.Item("colFechaVence", vR).Value = vRow(6).TrimStart
-                            If vRow.Length >= 8 Then grdData.Item("ColUbicacion", vR).Value = vRow(7).TrimStart
-                            vR = vR + 1
+                        If vRow.Length > 0 AndAlso vRow(0).TrimStart <> "" Then
+                            Dim vFila As DataRow = vTabla.NewRow()
+                            vFila("ColId") = vIdxFilaExcel + 1
+                            vFila("ColEstado") = "PROCESANDO"
+                            If vRow.Length > 0 Then vFila("ColCodigo") = vRow(0).TrimStart
+                            If vRow.Length > 1 Then vFila("ColPresentacion") = vRow(1).TrimStart
+                            If vRow.Length > 2 Then vFila("ColCantidad") = vRow(2).TrimStart
+                            If vRow.Length > 3 Then vFila("ColPeso") = vRow(3).TrimStart
+                            If vRow.Length > 4 Then vFila("ColUnidadMedida") = vRow(4).TrimStart
+                            If vRow.Length > 5 Then vFila("ColLote") = vRow(5).TrimStart
+                            If vRow.Length > 6 Then vFila("colFechaVence") = vRow(6).TrimStart
+                            If vRow.Length >= 8 Then vFila("ColUbicacion") = vRow(7).TrimStart
+                            vTabla.Rows.Add(vFila)
                         End If
 
                     Catch ex As Exception
-                        grdData.Item(0, vR).Value = ex.Message
+                        Dim vFila As DataRow = vTabla.NewRow()
+                        vFila("ColEstado") = "ERROR"
+                        vFila("ColError") = ex.Message
+                        vTabla.Rows.Add(vFila)
                     End Try
 
                 End If
@@ -509,12 +768,11 @@ Public Class frmInventarioImport
 
             Next
 
-            grdData.Rows.RemoveAt(grdData.Rows.Count - 1)
-
             prg.Value = 0
             prg.Visible = False
 
-            lblRegs.Caption = "Registros: " & grdData.Rows.Count()
+            InvImportBindTabla(vTabla)
+            lblRegs.Caption = "Registros: " & InvImportRowCount()
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -523,8 +781,6 @@ Public Class frmInventarioImport
                         MessageBoxIcon.Error)
         End Try
 
-        grdData.ResumeLayout()
-
     End Sub
 
     Private Sub Validar_Datos()
@@ -532,7 +788,7 @@ Public Class frmInventarioImport
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
-        Dim rc, ii, cc, vprod, vpres, vuni, vIdPropietarioBodega As Integer
+        Dim rc, ii, vprod, vpres, vuni, vIdPropietarioBodega As Integer
         Dim cod, pres, UM, vPeso, vLote, vEstado As String
         Dim vCantidad As String = ""
         Dim Cantidad, Peso As Double
@@ -567,6 +823,10 @@ Public Class frmInventarioImport
         Dim vTraceMsTalla As Long = 0
         Dim vTraceMsReadModel As Long = 0
         Dim vTraceMsUi As Long = 0
+        Dim vTraceMsLoopRow As Long = 0
+        Dim vTraceMsLoopResetColor As Long = 0
+        Dim vTraceMsLoopCellRead As Long = 0
+        Dim vTraceMsLoopCurrentCell As Long = 0
         Dim vProductoPorCodigo As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
         Dim vColorPorCodigo As New Dictionary(Of String, clsBeColor)(StringComparer.OrdinalIgnoreCase)
         Dim vTallaPorCodigo As New Dictionary(Of String, clsBeTalla)(StringComparer.OrdinalIgnoreCase)
@@ -577,12 +837,24 @@ Public Class frmInventarioImport
         Dim vReadModelDisponible As Boolean = False
         Dim vGridLayoutSuspendido As Boolean = False
         Dim vGridRedrawSuspendido As Boolean = False
+        Dim vSiguienteParametroA As Integer = 0
+        Dim vSiguienteParametroB As Integer = 0
+        Dim vValidacionMasivaPorFila As New Dictionary(Of Integer, InvImportValidacionFilaTvp)()
+        Dim vValidacionMasivaActiva As Boolean = False
+        Dim vErroresCodigoNoExiste As Integer = 0
+        Dim vPendientesGrid As New Dictionary(Of Integer, Dictionary(Of String, Object))()
 
-        rc = grdData.Rows.Count  'If rc > 3 Then rc = 3
+        rc = InvImportRowCount()  'If rc > 3 Then rc = 3
 
         lblPrg.Text = ""
-        grdData.EndEdit()
-        grdData.SuspendLayout()
+        If GridView7 IsNot Nothing Then
+            GridView7.PostEditor()
+            GridView7.UpdateCurrentRow()
+        ElseIf grdData IsNot Nothing Then
+            grdData.EndEdit()
+        End If
+        InvImportIniciarErroresDiferidos()
+        If grdData IsNot Nothing Then grdData.SuspendLayout()
         vGridLayoutSuspendido = True
         InvImportSetGridRedraw(False)
         vGridRedrawSuspendido = True
@@ -604,6 +876,9 @@ Public Class frmInventarioImport
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
             InvImportTrace_Marca("VALIDAR_DATOS_TX_OPEN")
+            '#EJC20260606_INV_IMPORT_PARAM_CACHE: evita MaxID por fila durante validacion.
+            vSiguienteParametroA = clsLnProducto_parametro_a.MaxID(lConnection, lTransaction)
+            vSiguienteParametroB = clsLnProducto_parametro_b.MaxID(lConnection, lTransaction)
 
             InvImportCrearDiccionariosCatalogo(vProductoIdPorCodigo,
                                                vPresentacionPorClave,
@@ -623,25 +898,35 @@ Public Class frmInventarioImport
                 InvImportTrace_Marca("VALIDAR_DATOS_READMODEL_FALLBACK", exReadModel.Message)
             End Try
 
+            Try
+                vValidacionMasivaActiva = InvImportValidarFilasMasivoTvp(lConnection, lTransaction, vValidacionMasivaPorFila)
+            Catch exTvp As Exception
+                vValidacionMasivaActiva = False
+                InvImportTrace_Marca("VALIDAR_DATOS_TVP_FALLBACK", exTvp.Message)
+            End Try
+
             prg.Maximum = rc
             prg.Visible = True
 
-            lblPrg.Text = "Validando datos..."
-            lblPrg.Refresh()
+            InvImportSetLblProgreso("Validando datos...", 0, rc, 0)
 
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Procesando archivo...")
 
+            Dim vUiChunkValidacion As Integer = 10
+            Dim vRelojValidacionLoop As Stopwatch = Stopwatch.StartNew()
+
             For ii = 0 To rc - 1
+                Dim vRelojFila As Stopwatch = Stopwatch.StartNew()
 
                 correlativo_a = 0
                 correlativo_b = 0
 
-                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                If ii = 0 OrElse (ii + 1) Mod vUiChunkValidacion = 0 OrElse ii = rc - 1 Then
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                    SplashScreenManager.Default.SetWaitFormDescription("Validando fila: " & ii + 1 & " de: " & rc - 1)
-                    lblPrg.Text = "Validando fila: " & ii + 1 & " de: " & rc - 1
-                    lblPrg.Refresh()
+                    Dim vEtaValidacion As String = InvImportEtaTexto(ii + 1, rc, vRelojValidacionLoop.ElapsedMilliseconds)
+                    SplashScreenManager.Default.SetWaitFormDescription("Validando fila: " & (ii + 1) & " de: " & rc & " (" & vEtaValidacion & ")")
+                    InvImportSetLblProgreso("Validando fila:", ii + 1, rc, errc, vEtaValidacion)
                     vTraceMsUi += vTraceReloj.ElapsedMilliseconds
                 End If
 
@@ -651,26 +936,27 @@ Public Class frmInventarioImport
 
                 Debug.WriteLine("procesando: " & ii)
 
-                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                prg.Value = Math.Min(ii + 1, prg.Maximum)
+                If ii = 0 OrElse (ii + 1) Mod vUiChunkValidacion = 0 OrElse ii = rc - 1 Then
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                    prg.Value = ii : prg.Refresh() : Application.DoEvents()
+                    prg.Refresh() : Application.DoEvents()
                     vTraceMsUi += vTraceReloj.ElapsedMilliseconds
-                Else
-                    prg.Value = ii
                 End If
 
-                For cc = 0 To grdData.ColumnCount - 4
-                    grdData.Rows(ii).Cells(cc).Style.BackColor = Color.White
-                Next
+                vTraceReloj = Stopwatch.StartNew()
+                'Los colores de error se resuelven en RowCellStyle del GridView DevExpress.
+                vTraceMsLoopResetColor += vTraceReloj.ElapsedMilliseconds
 
                 vprod = 0 : vpres = 0 : vuni = 0 : cantval = False : pesoval = False : costo = False : precio = False
 
-                vEstado = IIf(IsDBNull(grdData.Rows(ii).Cells("ColEstado").Value), "", grdData.Rows(ii).Cells("ColEstado").Value)
-                cod = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodigo").Value), "", grdData.Rows(ii).Cells("ColCodigo").Value)
-                pres = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPresentacion").Value), "", grdData.Rows(ii).Cells("ColPresentacion").Value)
+                vTraceReloj = Stopwatch.StartNew()
+                vEstado = InvImportValorCelda(ii, "ColEstado")
+                cod = InvImportValorCelda(ii, "ColCodigo")
+                pres = InvImportValorCelda(ii, "ColPresentacion")
 
-                vLicensePlate = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLp").Value), "", grdData.Rows(ii).Cells("ColLp").Value)
-                vCodVariante = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodVariante").Value), "", grdData.Rows(ii).Cells("ColCodVariante").Value)
+                vLicensePlate = InvImportValorCelda(ii, "ColLp")
+                vCodVariante = InvImportValorCelda(ii, "ColCodVariante")
+                vTraceMsLoopCellRead += vTraceReloj.ElapsedMilliseconds
 
                 '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: evita carga completa y Obtener(...) anidados por fila.
                 vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
@@ -684,6 +970,10 @@ Public Class frmInventarioImport
                 vTraceMsProducto += vTraceReloj.ElapsedMilliseconds
 
                 If Not BeProducto Is Nothing Then
+                    Dim vFilaMasiva As InvImportValidacionFilaTvp = Nothing
+                    If vValidacionMasivaActiva AndAlso vValidacionMasivaPorFila.ContainsKey(ii) Then
+                        vFilaMasiva = vValidacionMasivaPorFila(ii)
+                    End If
 
                     'EFREN10052021 Se obtiene el nombre comercial y el id propietario
                     'Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeProducto.Propietario.IdPropietario)
@@ -700,34 +990,34 @@ Public Class frmInventarioImport
                     End If
 
                     Try
-                        vCantidad = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCantidad").Value), "0", grdData.Rows(ii).Cells("ColCantidad").Value)
+                        vCantidad = If(InvImportValorCelda(ii, "ColCantidad") = "", "0", InvImportValorCelda(ii, "ColCantidad"))
                     Catch ex As Exception
                         Marcar_Error(ii, "ColCantidad", ex.Message)
                     End Try
 
-                    vPeso = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPeso").Value), "0", grdData.Rows(ii).Cells("ColPeso").Value)
-                    UM = IIf(IsDBNull(grdData.Rows(ii).Cells("ColUnidadMedida").Value), "", grdData.Rows(ii).Cells("ColUnidadMedida").Value)
-                    vUbicacion = IIf(IsDBNull(grdData.Rows(ii).Cells("ColUbicacion").Value), 0, grdData.Rows(ii).Cells("ColUbicacion").Value)
+                    vPeso = If(InvImportValorCelda(ii, "ColPeso") = "", "0", InvImportValorCelda(ii, "ColPeso"))
+                    UM = InvImportValorCelda(ii, "ColUnidadMedida")
+                    vUbicacion = InvImportEnteroCelda(ii, "ColUbicacion")
                     '#GT24112022_0900: campos DyD
-                    vCosto = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCosto").Value), 0, grdData.Rows(ii).Cells("ColCosto").Value)
-                    vPrecio = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPrecio").Value), 0, grdData.Rows(ii).Cells("ColPrecio").Value)
-                    vParametro_a = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_a").Value), "", grdData.Rows(ii).Cells("ColParametro_a").Value)
-                    vParametro_b = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_b").Value), "", grdData.Rows(ii).Cells("ColParametro_b").Value)
-                    vTalla = IIf(IsDBNull(grdData.Rows(ii).Cells("ColTalla").Value), "", grdData.Rows(ii).Cells("ColTalla").Value)
-                    vColor = IIf(IsDBNull(grdData.Rows(ii).Cells("ColColor").Value), "", grdData.Rows(ii).Cells("ColColor").Value)
+                    vCosto = Val(InvImportValorCelda(ii, "ColCosto"))
+                    vPrecio = Val(InvImportValorCelda(ii, "ColPrecio"))
+                    vParametro_a = InvImportValorCelda(ii, "ColParametro_a")
+                    vParametro_b = InvImportValorCelda(ii, "ColParametro_b")
+                    vTalla = InvImportValorCelda(ii, "ColTalla")
+                    vColor = InvImportValorCelda(ii, "ColColor")
 
                     If BeProducto.Control_lote Then
-                        vLote = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLote").Value), "", grdData.Rows(ii).Cells("ColLote").Value)
+                        vLote = InvImportValorCelda(ii, "ColLote")
                     Else
                         vLote = ""
                     End If
 
-                    grdData.Rows(ii).Cells("ColLote").Value = vLote
+                    InvImportSetValorPendiente(vPendientesGrid, ii, "ColLote", vLote)
 
                     If BeProducto.Control_vencimiento Then
 
                         Try
-                            vFecha_Vence = IIf(IsDBNull(grdData.Rows(ii).Cells("colFechaVence").Value), "01/01/1900", grdData.Rows(ii).Cells("colFechaVence").Value)
+                            vFecha_Vence = If(InvImportValorCelda(ii, "colFechaVence") = "", "01/01/1900", InvImportValorCelda(ii, "colFechaVence"))
                         Catch ex As Exception
                             Marcar_Error(ii, "ColFechaVence", ex.Message)
                         End Try
@@ -736,11 +1026,11 @@ Public Class frmInventarioImport
                         vFecha_Vence = New Date(1900, 1, 1)
                     End If
 
-                    grdData.Rows(ii).Cells("colFechaVence").Value = vFecha_Vence
+                    InvImportSetValorPendiente(vPendientesGrid, ii, "colFechaVence", vFecha_Vence)
 
                     If cod <> "" Then
 
-                        grdData.Rows(ii).Cells("ColEstado").Value = "VALIDADO"
+                        InvImportSetValorPendiente(vPendientesGrid, ii, "ColEstado", "VALIDADO")
 
                         If pres <> "" Then vpres = True
                         If vCantidad <> "" Then cantval = True
@@ -751,14 +1041,17 @@ Public Class frmInventarioImport
                         If (vCantidad = "") Then vCantidad = "0" : If (vPeso = "") Then vPeso = "0"
 
                         'EFREN07052021 si es multi propietario, el producto se busca en toda la lista
-                        If vProductoIdPorCodigo.ContainsKey(cod) Then
+                        If Not vFilaMasiva Is Nothing AndAlso vFilaMasiva.IdProducto > 0 Then
+                            vprod = vFilaMasiva.IdProducto
+                            InvImportSetValorPendiente(vPendientesGrid, ii, "colIdProducto", vprod)
+                        ElseIf vProductoIdPorCodigo.ContainsKey(cod) Then
                             vprod = vProductoIdPorCodigo(cod)
-                            grdData.Rows(ii).Cells("colIdProducto").Value = vprod
+                            InvImportSetValorPendiente(vPendientesGrid, ii, "colIdProducto", vprod)
                         ElseIf Not BeProducto Is Nothing AndAlso BeProducto.IdProducto <> 0 Then
                             vprod = BeProducto.IdProducto
-                            grdData.Rows(ii).Cells("colIdProducto").Value = vprod
+                            InvImportSetValorPendiente(vPendientesGrid, ii, "colIdProducto", vprod)
                         Else
-                            MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
+                            vErroresCodigoNoExiste += 1
                             Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
                             'cod = ""
                         End If
@@ -767,16 +1060,19 @@ Public Class frmInventarioImport
                         ' Presentacion
                         If pres <> "" Then
 
-                            If vPresentacionPorClave.ContainsKey(vprod & "|" & pres) Then
+                            If Not vFilaMasiva Is Nothing AndAlso vFilaMasiva.IdPresentacion > 0 Then
+                                vpres = vFilaMasiva.IdPresentacion
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdPresentacion", vpres)
+                            ElseIf vPresentacionPorClave.ContainsKey(vprod & "|" & pres) Then
                                 vpres = vPresentacionPorClave(vprod & "|" & pres)
-                                grdData.Rows(ii).Cells("ColIdPresentacion").Value = vpres
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdPresentacion", vpres)
                             Else
 
                                 Dim vNomPresSinCNP As String = clsPublic.Quitar_Caracteres_No_Permitidos(pres)
 
                                 If vPresentacionPorClave.ContainsKey(vprod & "|" & vNomPresSinCNP) Then
                                     vpres = vPresentacionPorClave(vprod & "|" & vNomPresSinCNP)
-                                    grdData.Rows(ii).Cells("ColIdPresentacion").Value = vpres
+                                    InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdPresentacion", vpres)
                                 Else
                                     '#EJC20180528: No se obtuvo la presentación con el nombre.
                                     Marcar_Error(ii, "ColPresentacion", " Nombre de presentación incorrecto")
@@ -785,7 +1081,7 @@ Public Class frmInventarioImport
                             End If
                         Else
                             '#EJC20211116: Se va a recibir en UMBAS
-                            grdData.Rows(ii).Cells("ColIdPresentacion").Value = 0
+                            InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdPresentacion", 0)
                         End If
 
                         ' Cantidad
@@ -794,15 +1090,18 @@ Public Class frmInventarioImport
 
                         ' Unidad medida
                         If UM <> "" Then
-                            If vUnidadPorNombre.ContainsKey(UM) Then
+                            If Not vFilaMasiva Is Nothing AndAlso vFilaMasiva.IdUnidadMedida > 0 Then
+                                vuni = vFilaMasiva.IdUnidadMedida
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdUnidadMedida", vuni)
+                            ElseIf vUnidadPorNombre.ContainsKey(UM) Then
                                 vuni = vUnidadPorNombre(UM)
-                                grdData.Rows(ii).Cells("ColIdUnidadMedida").Value = vuni
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdUnidadMedida", vuni)
                             Else
                                 If UM = "UN" OrElse UM = "UNI" OrElse UM = "UNIDAD" Then
                                     If Not BeProducto.UnidadMedida Is Nothing Then
                                         If BeProducto.UnidadMedida.Nombre.StartsWith(UM) Then
                                             vuni = BeProducto.UnidadMedida.IdUnidadMedida
-                                            grdData.Rows(ii).Cells("ColIdUnidadMedida").Value = vuni
+                                            InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdUnidadMedida", vuni)
                                         Else
                                             Marcar_Error(ii, "ColUnidadMedida", "Unidad de medida incorrecta")
                                         End If
@@ -822,9 +1121,9 @@ Public Class frmInventarioImport
                                 Marcar_Error(ii, "ColUnidadMedida", "El producto requiere una unidad de medida")
                             Else
                                 vuni = vIdUnidadMedida
-                                grdData.Rows(ii).Cells("ColIdUnidadMedida").Value = vuni
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColIdUnidadMedida", vuni)
                                 If Not BeProducto.UnidadMedida Is Nothing Then
-                                    grdData.Rows(ii).Cells("ColUnidadMedida").Value = BeProducto.UnidadMedida.Nombre
+                                    InvImportSetValorPendiente(vPendientesGrid, ii, "ColUnidadMedida", BeProducto.UnidadMedida.Nombre)
                                 End If
                             End If
                         End If
@@ -834,7 +1133,9 @@ Public Class frmInventarioImport
 
                             vTraceReloj.Restart()
                             Dim vUbicacionExiste As Boolean = False
-                            If vReadModelDisponible Then
+                            If Not vFilaMasiva Is Nothing Then
+                                vUbicacionExiste = vFilaMasiva.UbicacionExiste
+                            ElseIf vReadModelDisponible Then
                                 vUbicacionExiste = vUbicacionesValidas.Contains(vUbicacion)
                             Else
                                 Dim BeBodegaUbicacion = New clsBeBodega_ubicacion()
@@ -846,7 +1147,7 @@ Public Class frmInventarioImport
                             vTraceMsUbicacion += vTraceReloj.ElapsedMilliseconds
 
                             If vUbicacionExiste Then
-                                grdData.Rows(ii).Cells("ColUbicacion").Value = vUbicacion
+                                InvImportSetValorPendiente(vPendientesGrid, ii, "ColUbicacion", vUbicacion)
                             Else
                                 Marcar_Error(ii, "ColUbicacion", "Ubicación no existe en WMS")
                             End If
@@ -866,13 +1167,13 @@ Public Class frmInventarioImport
                                     If BeProducto.ParametroA.IdProductoParametroA <> vParametro_a Then
                                         Marcar_Error(ii, "ColParametro_a", "El valor en la columna ParametroA no corresponde con el registrado para el producto")
                                     Else
-                                        grdData.Rows(ii).Cells("ColParametro_a").Value = BeProducto.ParametroA.IdProductoParametroA
+                                        InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_a", BeProducto.ParametroA.IdProductoParametroA)
                                     End If
                                 Else
                                     If BeProducto.ParametroA.Nombre <> vParametro_a Then
                                         Marcar_Error(ii, "ColParametro_a", "El valor en la columna ParametroA no corresponde con el registrado para el producto")
                                     Else
-                                        grdData.Rows(ii).Cells("ColParametro_a").Value = BeProducto.ParametroA.IdProductoParametroA
+                                        InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_a", BeProducto.ParametroA.IdProductoParametroA)
                                     End If
                                 End If
 
@@ -881,7 +1182,8 @@ Public Class frmInventarioImport
                                 If IsNumeric(vParametro_a) = False Then
                                     Dim parametro_a As New clsBeProducto_parametro_a()
                                     vTraceReloj.Restart()
-                                    correlativo_a = clsLnProducto_parametro_a.MaxID(lConnection, lTransaction) + 1
+                                    vSiguienteParametroA += 1
+                                    correlativo_a = vSiguienteParametroA
                                     parametro_a.IdProductoParametroA = correlativo_a
                                     parametro_a.Codigo = correlativo_a.ToString
                                     parametro_a.Nombre = vParametro_a.Trim
@@ -892,7 +1194,7 @@ Public Class frmInventarioImport
                                     parametro_a.Activo = 1
                                     clsLnProducto_parametro_a.Insertar(parametro_a, lConnection, lTransaction)
                                     vTraceMsParametroA += vTraceReloj.ElapsedMilliseconds
-                                    grdData.Rows(ii).Cells("ColParametro_a").Value = correlativo_a
+                                    InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_a", correlativo_a)
                                     'BeProducto.IdProductoParametroA = correlativo_a
                                     'clsLnProducto.Actualizar(BeProducto, lConnection, lTransaction)
 
@@ -910,13 +1212,13 @@ Public Class frmInventarioImport
                                     If BeProducto.ParametroB.IdProductoParametroB <> vParametro_b Then
                                         Marcar_Error(ii, "ColParametro_b", "El valor en la columna ParametroB no corresponde con el registrado para el producto")
                                     Else
-                                        grdData.Rows(ii).Cells("ColParametro_b").Value = BeProducto.ParametroB.IdProductoParametroB
+                                        InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_b", BeProducto.ParametroB.IdProductoParametroB)
                                     End If
                                 Else
                                     If BeProducto.ParametroB.Nombre <> vParametro_b Then
                                         Marcar_Error(ii, "ColParametro_b", "El valor en la columna ParametroB no corresponde con el registrado para el producto")
                                     Else
-                                        grdData.Rows(ii).Cells("ColParametro_b").Value = BeProducto.ParametroB.IdProductoParametroB
+                                        InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_b", BeProducto.ParametroB.IdProductoParametroB)
                                     End If
                                 End If
 
@@ -925,7 +1227,8 @@ Public Class frmInventarioImport
                                 If IsNumeric(vParametro_b) = False Then
                                     Dim parametro_b As New clsBeProducto_parametro_b()
                                     vTraceReloj.Restart()
-                                    correlativo_b = clsLnProducto_parametro_b.MaxID(lConnection, lTransaction) + 1
+                                    vSiguienteParametroB += 1
+                                    correlativo_b = vSiguienteParametroB
                                     parametro_b.IdProductoParametroB = correlativo_b
                                     parametro_b.Codigo = correlativo_b.ToString
                                     parametro_b.Nombre = vParametro_b.Trim
@@ -936,7 +1239,7 @@ Public Class frmInventarioImport
                                     parametro_b.Activo = 1
                                     clsLnProducto_parametro_b.Insertar(parametro_b, lConnection, lTransaction)
                                     vTraceMsParametroB += vTraceReloj.ElapsedMilliseconds
-                                    grdData.Rows(ii).Cells("ColParametro_a").Value = correlativo_b
+                                    InvImportSetValorPendiente(vPendientesGrid, ii, "ColParametro_b", correlativo_b)
 
                                     'BeProducto.IdProductoParametroB = correlativo_b
                                     'clsLnProducto.Actualizar(BeProducto, lConnection, lTransaction)
@@ -999,15 +1302,17 @@ Public Class frmInventarioImport
                     End If
 
                 Else
-                    MsgBox("El código de producto: " & cod & " No existe.", MsgBoxStyle.Exclamation, Text)
+                    vErroresCodigoNoExiste += 1
                     Marcar_Error(ii, "ColCodigo", "El código no existe en maestro")
                 End If
 
-                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
-                    grdData.CurrentCell = grdData.Rows(ii).Cells(0)
+                If ii = 0 OrElse (ii + 1) Mod vUiChunkValidacion = 0 OrElse ii = rc - 1 Then
+                    vTraceReloj = Stopwatch.StartNew()
+                    If GridView7 IsNot Nothing Then GridView7.FocusedRowHandle = ii
+                    vTraceMsLoopCurrentCell += vTraceReloj.ElapsedMilliseconds
                 End If
 
-                If ii = 0 OrElse (ii + 1) Mod 25 = 0 OrElse ii = rc - 1 Then
+                If ii = 0 OrElse (ii + 1) Mod vUiChunkValidacion = 0 OrElse ii = rc - 1 Then
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
                     Application.DoEvents()
                     vTraceMsUi += vTraceReloj.ElapsedMilliseconds
@@ -1026,8 +1331,14 @@ Public Class frmInventarioImport
                                          ";MsColor=" & vTraceMsColor &
                                          ";MsTalla=" & vTraceMsTalla &
                                          ";MsReadModel=" & vTraceMsReadModel &
-                                         ";MsUI=" & vTraceMsUi)
+                                         ";MsUI=" & vTraceMsUi &
+                                         ";MsLoopRow=" & vTraceMsLoopRow &
+                                         ";MsLoopResetColor=" & vTraceMsLoopResetColor &
+                                         ";MsLoopCellRead=" & vTraceMsLoopCellRead &
+                                         ";MsLoopCurrentCell=" & vTraceMsLoopCurrentCell)
                 End If
+
+                vTraceMsLoopRow += vRelojFila.ElapsedMilliseconds
 
             Next
 
@@ -1035,8 +1346,7 @@ Public Class frmInventarioImport
             lTransaction.Commit()
             InvImportTrace_Marca("VALIDAR_DATOS_COMMIT_END")
 
-            lblPrg.Text = "Validación finalizada"
-            lblPrg.Refresh()
+            InvImportSetLblProgreso("Validación finalizada", rc, rc, errc)
 
         Catch ex As Exception
             errc = errc + 1
@@ -1058,6 +1368,10 @@ Public Class frmInventarioImport
                                  ";MsTalla=" & vTraceMsTalla &
                                  ";MsReadModel=" & vTraceMsReadModel &
                                  ";MsUI=" & vTraceMsUi &
+                                 ";MsLoopRow=" & vTraceMsLoopRow &
+                                 ";MsLoopResetColor=" & vTraceMsLoopResetColor &
+                                 ";MsLoopCellRead=" & vTraceMsLoopCellRead &
+                                 ";MsLoopCurrentCell=" & vTraceMsLoopCurrentCell &
                                  ";ReadModel=" & vReadModelDisponible)
             prg.Value = 0
             prg.Visible = False
@@ -1065,22 +1379,36 @@ Public Class frmInventarioImport
             If Not lConnection Is Nothing Then lConnection.Dispose()
             If Not lTransaction Is Nothing Then lTransaction.Dispose()
             If vGridLayoutSuspendido Then
-                grdData.ResumeLayout()
+                If grdData IsNot Nothing Then grdData.ResumeLayout()
                 vGridLayoutSuspendido = False
             End If
+            InvImportAplicarPendientes(vPendientesGrid)
+            InvImportAplicarErroresDiferidos()
             If vGridRedrawSuspendido Then
                 InvImportSetGridRedraw(True)
                 vGridRedrawSuspendido = False
             End If
+            Try
+                SplashScreenManager.CloseForm(False)
+            Catch
+            End Try
+            Application.DoEvents()
         End Try
 
         lblPrg.Text = ""
 
-        grdData.ClearSelection()
+        If GridView7 IsNot Nothing Then GridView7.ClearSelection()
 
         If errc > 0 Then
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(String.Format("Error al procesar fila {0}: ", ii + 1) & " " & vErrorDescription, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Try
+                SplashScreenManager.CloseForm(False)
+            Catch
+            End Try
+            Dim vResumen As String = String.Format("Error al procesar fila {0}: ", ii + 1) & " " & vErrorDescription
+            If vErroresCodigoNoExiste > 0 Then
+                vResumen &= vbCrLf & "Códigos no existentes detectados: " & vErroresCodigoNoExiste
+            End If
+            XtraMessageBox.Show(vResumen, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
 
     End Sub
@@ -1125,14 +1453,13 @@ Public Class frmInventarioImport
 
         Try
 
-            rc = grdData.Rows.Count
+            rc = InvImportRowCount()
             InvImportTrace_Marca("IMPORTAR_DATOS_START", "Rows=" & rc & ";InsertaInv=" & InsertaInv & ";TipoTeorico=" & TipoTeoricoImportacion)
 
             prg.Maximum = rc
 
             InvImportSetProceso(True, "Preparando lista")
-            lblPrg.Text = "Preparando lista"
-            lblPrg.Refresh()
+            InvImportSetLblProgreso("Preparando lista", 0, rc, errc)
 
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Aplicando inventario...")
@@ -1141,31 +1468,29 @@ Public Class frmInventarioImport
                 If InvImportDebeCancelar() Then Throw New OperationCanceledException("#EJC20260523_INV_IMPORT_BG_CANCEL: importación cancelada durante preparación de lista.")
 
                 If ii = 0 OrElse (ii + 1) Mod 100 = 0 OrElse ii = rc - 1 Then
-                    lblPrg.Text = "Preparando fila: " & ii + 1 & " de: " & rc
-                    lblPrg.Refresh()
+                    InvImportSetLblProgreso("Preparando fila:", ii + 1, rc, errc)
                     SplashScreenManager.Default.SetWaitFormDescription("Preparando fila: " & ii + 1 & " de: " & rc)
                 End If
 
                 Try
-                    Cantidad = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCantidad").Value), 0, CDbl(grdData.Rows(ii).Cells("ColCantidad").Value))
+                    Cantidad = CDbl(Val(InvImportValorCelda(ii, "ColCantidad")))
                 Catch ex As Exception
                     Cantidad = 0
                 End Try
 
                 Try
-                    Peso = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPeso").Value), 0, Val(grdData.Rows(ii).Cells("ColPeso").Value))
+                    Peso = Val(InvImportValorCelda(ii, "ColPeso"))
                 Catch ex As Exception
                     Peso = 0
                 End Try
 
-                vIdProducto = grdData.Rows(ii).Cells("ColIdProducto").Value
-                vIdPresentacion = grdData.Rows(ii).Cells("ColIdPresentacion").Value
-                vCodigoProducto = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodigo").Value), "", grdData.Rows(ii).Cells("ColCodigo").Value)
+                vIdProducto = InvImportEnteroCelda(ii, "ColIdProducto")
+                vIdPresentacion = InvImportEnteroCelda(ii, "ColIdPresentacion")
+                vCodigoProducto = InvImportValorCelda(ii, "ColCodigo")
                 vIdUnidadMedida = 0
                 Try
-                    If Not IsDBNull(grdData.Rows(ii).Cells("ColIdUnidadMedida").Value) AndAlso
-                       grdData.Rows(ii).Cells("ColIdUnidadMedida").Value.ToString().Trim() <> "" Then
-                        vIdUnidadMedida = CInt(grdData.Rows(ii).Cells("ColIdUnidadMedida").Value)
+                    If InvImportValorCelda(ii, "ColIdUnidadMedida") <> "" Then
+                        vIdUnidadMedida = InvImportEnteroCelda(ii, "ColIdUnidadMedida")
                     End If
                 Catch ex As Exception
                     vIdUnidadMedida = 0
@@ -1181,20 +1506,20 @@ Public Class frmInventarioImport
                     End If
                     vIdUnidadMedida = vIdUnidadMedidaCache
                 End If
-                vLote = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLote").Value), "", grdData.Rows(ii).Cells("ColLote").Value)
-                sFechaVence = IIf(IsDBNull(grdData.Rows(ii).Cells("ColFechaVence").Value), "01/01/1900", grdData.Rows(ii).Cells("ColFechaVence").Value)
-                vUbicacion = grdData.Rows(ii).Cells("ColUbicacion").Value
-                vLicense_plate = IIf(IsDBNull(grdData.Rows(ii).Cells("ColLp").Value), "", grdData.Rows(ii).Cells("ColLp").Value)
-                vCodigo_Variante = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodVariante").Value), "", grdData.Rows(ii).Cells("ColCodVariante").Value)
+                vLote = InvImportValorCelda(ii, "ColLote")
+                sFechaVence = If(InvImportValorCelda(ii, "ColFechaVence") = "", "01/01/1900", InvImportValorCelda(ii, "ColFechaVence"))
+                vUbicacion = InvImportEnteroCelda(ii, "ColUbicacion")
+                vLicense_plate = InvImportValorCelda(ii, "ColLp")
+                vCodigo_Variante = InvImportValorCelda(ii, "ColCodVariante")
                 '#GT24112022_1500: campos DyD
-                vCosto = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCosto").Value), 0, grdData.Rows(ii).Cells("ColCosto").Value)
-                vPrecio = IIf(IsDBNull(grdData.Rows(ii).Cells("ColPrecio").Value), 0, grdData.Rows(ii).Cells("ColPrecio").Value)
-                vParametro_a = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_a").Value), "", grdData.Rows(ii).Cells("ColParametro_a").Value)
-                vParametro_b = IIf(IsDBNull(grdData.Rows(ii).Cells("ColParametro_b").Value), "", grdData.Rows(ii).Cells("ColParametro_b").Value)
-                vCodigo_Area_SAP = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodigo_Area").Value), "", grdData.Rows(ii).Cells("ColCodigo_Area").Value)
-                Color = IIf(IsDBNull(grdData.Rows(ii).Cells("ColColor").Value), "", grdData.Rows(ii).Cells("ColColor").Value)
-                Talla = IIf(IsDBNull(grdData.Rows(ii).Cells("ColTalla").Value), "", grdData.Rows(ii).Cells("ColTalla").Value)
-                IdProductoTallaColor = IIf(IsDBNull(grdData.Rows(ii).Cells("ColIdProductoTallaColor").Value), "", grdData.Rows(ii).Cells("ColIdProductoTallaColor").Value)
+                vCosto = Val(InvImportValorCelda(ii, "ColCosto"))
+                vPrecio = Val(InvImportValorCelda(ii, "ColPrecio"))
+                vParametro_a = InvImportValorCelda(ii, "ColParametro_a")
+                vParametro_b = InvImportValorCelda(ii, "ColParametro_b")
+                vCodigo_Area_SAP = InvImportValorCelda(ii, "ColCodigo_Area")
+                Color = InvImportValorCelda(ii, "ColColor")
+                Talla = InvImportValorCelda(ii, "ColTalla")
+                IdProductoTallaColor = InvImportEnteroCelda(ii, "ColIdProductoTallaColor")
 
                 If sFechaVence <> "" Then
                     vFechaVence = CDate(sFechaVence)
@@ -1255,8 +1580,7 @@ Public Class frmInventarioImport
 
             Next
 
-            lblPrg.Text = "Insertando registros..."
-            lblPrg.Refresh()
+            InvImportSetLblProgreso("Insertando registros...", rc, rc, errc)
 
             InvImportTrace_Marca("IMPORTAR_DATOS_LISTA_END", "Lista=" & lInventarioTeorico.Count & ";MsUnidad=" & vTraceMsUnidad & ";UnidadCache=" & vUnidadMedidaPorCodigo.Count)
             vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
@@ -1343,7 +1667,8 @@ Public Class frmInventarioImport
                                                                                               New InvImportProgressInfo With {
                                                                                                   .Actual = pActual,
                                                                                                   .Total = pTotal,
-                                                                                                  .Mensaje = pMensaje
+                                                                                                  .Mensaje = pMensaje,
+                                                                                                  .MsTranscurridos = vReloj.ElapsedMilliseconds
                                                                                               })
                                                          End Sub)
 
@@ -1360,12 +1685,16 @@ Public Class frmInventarioImport
         Dim vInfo As InvImportProgressInfo = TryCast(e.UserState, InvImportProgressInfo)
         If vInfo Is Nothing Then Return
 
-        InvImportReportarProgreso(vInfo.Actual, vInfo.Total, vInfo.Mensaje)
-        If vInfo.Actual = 0 OrElse vInfo.Actual Mod 5000 = 0 OrElse vInfo.Actual = vInfo.Total Then
+        Dim vEta As String = InvImportEtaTexto(vInfo.Actual, vInfo.Total, vInfo.MsTranscurridos)
+        InvImportSetLblProgreso(vInfo.Mensaje & ":", vInfo.Actual, vInfo.Total, errc, vEta)
+
+        If vInfo.Actual = 0 OrElse vInfo.Actual Mod 1000 = 0 OrElse vInfo.Actual = vInfo.Total Then
             InvImportTrace_Marca("IMPORTAR_DATOS_BG_PROGRESS",
                                  "Paso=" & vInfo.Mensaje &
                                  ";Actual=" & vInfo.Actual &
-                                 ";Total=" & vInfo.Total)
+                                 ";Total=" & vInfo.Total &
+                                 ";Ms=" & vInfo.MsTranscurridos &
+                                 ";Eta=" & vEta)
         End If
     End Sub
 
@@ -1412,7 +1741,7 @@ Public Class frmInventarioImport
     End Sub
 
     Private Sub mnuValidar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuValidar.ItemClick
-        If grdData.Rows.Count > 0 Then Validar_Datos()
+        If InvImportRowCount() > 0 Then Validar_Datos()
     End Sub
 
     Private Sub mnuAplicar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuAplicar.ItemClick
@@ -1429,7 +1758,7 @@ Public Class frmInventarioImport
 
         Try
 
-            If grdData.Rows.Count = 0 Then
+            If InvImportRowCount() = 0 Then
                 MsgBox("El inventario esta vacío.") : Return
             End If
 
@@ -1449,7 +1778,7 @@ Public Class frmInventarioImport
                 MsgBox("No se puede completar la importacion, primero debe corregir los errores.") : Return
             End If
 
-            lblPrg.Text = "Importando datos ...  "
+            InvImportSetLblProgreso("Importando datos ...", InvImportRowCount(), InvImportRowCount(), errc)
 
             Importar_Datos()
 
@@ -1465,14 +1794,24 @@ Public Class frmInventarioImport
     End Sub
 
     Private Sub cmdAdd_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdAdd.ItemClick
-        grdData.Rows.Add(1)
-        grdData.FirstDisplayedScrollingRowIndex = grdData.Rows.Count - 1
-        grdData.Rows(grdData.Rows.Count - 1).Cells(0).Selected = True
+        If mInvImportData Is Nothing Then InvImportBindTabla(InvImportCrearTabla())
+        Dim vFila As DataRow = mInvImportData.NewRow()
+        vFila("ColEstado") = "PROCESANDO"
+        vFila("ColId") = mInvImportData.Rows.Count + 1
+        mInvImportData.Rows.Add(vFila)
+        dgridInventario.RefreshDataSource()
+        If GridView7 IsNot Nothing Then GridView7.FocusedRowHandle = mInvImportData.Rows.Count - 1
     End Sub
 
     Private Sub cmdDel_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdDel.ItemClick
         Try
-            grdData.Rows.Remove(grdData.CurrentRow)
+            If mInvImportData Is Nothing OrElse GridView7 Is Nothing Then Return
+            Dim vHandle As Integer = GridView7.FocusedRowHandle
+            Dim vRow As DataRow = TryCast(GridView7.GetDataRow(vHandle), DataRow)
+            If vRow IsNot Nothing Then
+                mInvImportData.Rows.Remove(vRow)
+                dgridInventario.RefreshDataSource()
+            End If
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1481,7 +1820,10 @@ Public Class frmInventarioImport
 
     Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem1.ItemClick
         Try
-            grdData.Rows.Clear()
+            If mInvImportData IsNot Nothing Then mInvImportData.Rows.Clear()
+            mInvImportErroresPorFila.Clear()
+            mInvImportErroresCelda.Clear()
+            If dgridInventario IsNot Nothing Then dgridInventario.RefreshDataSource()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -1494,13 +1836,26 @@ Public Class frmInventarioImport
 
     Private Sub Marcar_Error(ri As Integer, NombreColumna As String, ByVal Mensaje As String)
         errc += 1
-        grdData.Rows(ri).Cells(0).Style.BackColor = Color.Salmon
-        grdData.Rows(ri).Cells(0).Value = "ERROR"
-        grdData.Rows(ri).Cells("ColError").Value = Mensaje
-        grdData.Rows(ri).Cells(NombreColumna).Style.BackColor = Color.Salmon
+        If mInvImportDiferirPintadoErrores Then
+            mInvImportErroresPorFila(ri) = Mensaje
+            mInvImportErroresCelda.Add(ri & "|" & NombreColumna)
+            Return
+        End If
+        mInvImportErroresPorFila(ri) = Mensaje
+        mInvImportErroresCelda.Add(ri & "|" & NombreColumna)
+        InvImportSetValor(ri, "ColEstado", "ERROR")
+        InvImportSetValor(ri, "ColError", Mensaje)
+        If dgridInventario IsNot Nothing Then dgridInventario.RefreshDataSource()
     End Sub
 
     Private Sub Importar_Excel()
+
+        Dim vGridRedrawSuspendido As Boolean = False
+        Dim vGridLayoutSuspendido As Boolean = False
+        Dim vAutoSizeColumnsOriginal As DataGridViewAutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+        Dim vAutoSizeRowsOriginal As DataGridViewAutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        Dim vColumnHeadersSizeOriginal As DataGridViewColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+        Dim vColumnAutoSizeModes As New Dictionary(Of String, DataGridViewAutoSizeColumnMode)(StringComparer.OrdinalIgnoreCase)
 
         Try
             InvImportTrace_Iniciar("IMPORTAR_EXCEL_START", "TipoInventario=" & TipoInventario & ";TipoTeorico=" & TipoTeoricoImportacion)
@@ -1513,7 +1868,6 @@ Public Class frmInventarioImport
             If Carga.ShowDialog() = DialogResult.OK Then
                 InvImportTrace_Marca("IMPORTAR_EXCEL_DIALOG_OK", "RowsCarga=" & Carga.lInvenarioTeorico.Rows.Count)
 
-                Dim i As Integer = 0
                 Dim vContador As Integer = 1
 
                 prg.Visible = True
@@ -1523,8 +1877,7 @@ Public Class frmInventarioImport
 
                 RibbonControl.Enabled = False
 
-                grdData.SuspendLayout()
-                grdData.Rows.Clear()
+                Dim vTabla As DataTable = InvImportCrearTabla()
 
                 lblRegs.Caption = "Registros: " & Carga.lInvenarioTeorico.Rows.Count()
 
@@ -1540,50 +1893,48 @@ Public Class frmInventarioImport
                 Dim vCantRegistros As Integer = Carga.lInvenarioTeorico.Rows().Count()
 
                 For Each ProdInv As DataRow In Carga.lInvenarioTeorico.Rows()
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Código: " & ProdInv("Codigo") & " " & i & " de " & vCantRegistros)
-
-                    lblPrg.Text = "Llenando datos para: " & ProdInv("Codigo")
-                    lblPrg.Refresh()
-
-                    i = grdData.Rows.Add(ProdInv("EstadoProcesamiento"),
-                               ProdInv("Contador"))
-
-                    grdData.Item("ColCodigo", i).Value = ProdInv("Codigo")
-                    grdData.Item("ColPresentacion", i).Value = ProdInv("Presentacion")
-                    grdData.Item("ColCantidad", i).Value = ProdInv("Cantidad")
-                    grdData.Item("ColPeso", i).Value = ProdInv("Peso")
-                    grdData.Item("ColUnidadMedida", i).Value = ProdInv("UM")
-                    grdData.Item("ColLote", i).Value = ProdInv("Lote")
-                    grdData.Item("colFechaVence", i).Value = ProdInv("Vence")
-                    grdData.Item("ColUbicacion", i).Value = ProdInv("Ubicacion")
+                    Dim vFila As DataRow = vTabla.NewRow()
+                    vFila("ColEstado") = ProdInv("EstadoProcesamiento")
+                    vFila("ColId") = ProdInv("Contador")
+                    vFila("ColCodigo") = ProdInv("Codigo")
+                    vFila("ColPresentacion") = ProdInv("Presentacion")
+                    vFila("ColCantidad") = ProdInv("Cantidad")
+                    vFila("ColPeso") = ProdInv("Peso")
+                    vFila("ColUnidadMedida") = ProdInv("UM")
+                    vFila("ColLote") = ProdInv("Lote")
+                    vFila("colFechaVence") = ProdInv("Vence")
+                    vFila("ColUbicacion") = ProdInv("Ubicacion")
                     'GT01122021: se agrega LP y cod_variante
-                    grdData.Item("ColLp", i).Value = ProdInv("LP")
-                    grdData.Item("ColCodVariante", i).Value = ProdInv("CodVariante")
+                    vFila("ColLp") = ProdInv("LP")
+                    vFila("ColCodVariante") = ProdInv("CodVariante")
                     '#GT24112022_0800: campos DyD
-                    grdData.Item("ColCosto", i).Value = ProdInv("Costo")
-                    grdData.Item("ColPrecio", i).Value = ProdInv("Precio")
-                    grdData.Item("ColParametro_a", i).Value = ProdInv("Parametro_a")
-                    grdData.Item("ColParametro_b", i).Value = ProdInv("Parametro_b")
-                    grdData.Item("ColCodigo_Area", i).Value = ProdInv("Codigo_Area")
-                    grdData.Item("ColTalla", i).Value = ProdInv("Talla")
-                    grdData.Item("ColColor", i).Value = ProdInv("Color")
-                    grdData.Item("ColIdProductoTallaColor", i).Value = ProdInv("IdProductoTallaColor")
-
-                    prg.Value = i
+                    vFila("ColCosto") = ProdInv("Costo")
+                    vFila("ColPrecio") = ProdInv("Precio")
+                    vFila("ColParametro_a") = ProdInv("Parametro_a")
+                    vFila("ColParametro_b") = ProdInv("Parametro_b")
+                    vFila("ColCodigo_Area") = ProdInv("Codigo_Area")
+                    vFila("ColTalla") = ProdInv("Talla")
+                    vFila("ColColor") = ProdInv("Color")
+                    vFila("ColIdProductoTallaColor") = ProdInv("IdProductoTallaColor")
+                    vTabla.Rows.Add(vFila)
 
                     vContador += 1
 
-                    Application.DoEvents()
+                    If vContador = 1 OrElse vContador Mod 100 = 0 OrElse vContador = vCantRegistros Then
+                        SplashScreenManager.Default.SetWaitFormDescription("Código: " & ProdInv("Codigo") & " " & vContador & " de " & vCantRegistros)
+                        InvImportSetLblProgreso("Llenando datos para: " & ProdInv("Codigo"), vContador, vCantRegistros, errc)
+                        prg.Value = Math.Min(vContador, prg.Maximum)
+                        Application.DoEvents()
+                    End If
 
                     If vContador Mod 500 = 0 Then
-                        InvImportTrace_Marca("IMPORTAR_EXCEL_GRID_PROGRESS", "Fila=" & vContador & ";RowsGrid=" & grdData.Rows.Count)
+                        InvImportTrace_Marca("IMPORTAR_EXCEL_GRID_PROGRESS", "Fila=" & vContador & ";RowsGrid=" & vTabla.Rows.Count)
                     End If
 
                 Next
 
-                grdData.ResumeLayout()
-                InvImportTrace_Marca("IMPORTAR_EXCEL_GRID_END", "RowsGrid=" & grdData.Rows.Count)
+                InvImportBindTabla(vTabla)
+                InvImportTrace_Marca("IMPORTAR_EXCEL_GRID_END", "RowsGrid=" & InvImportRowCount())
 
                 InvImportTrace_Marca("IMPORTAR_EXCEL_APLICAR_TEORICO_START")
                 Aplicar_Teorico(False, False)
@@ -1601,7 +1952,21 @@ Public Class frmInventarioImport
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error)
         Finally
-            InvImportTrace_Marca("IMPORTAR_EXCEL_FIN", "RowsGrid=" & If(grdData Is Nothing, 0, grdData.Rows.Count) & ";Err=" & errc)
+            InvImportTrace_Marca("IMPORTAR_EXCEL_FIN", "RowsGrid=" & InvImportRowCount() & ";Err=" & errc)
+            If vGridRedrawSuspendido Then
+                InvImportSetGridRedraw(True)
+            End If
+            If vGridLayoutSuspendido Then
+                grdData.ResumeLayout()
+            End If
+            grdData.AutoSizeColumnsMode = vAutoSizeColumnsOriginal
+            grdData.AutoSizeRowsMode = vAutoSizeRowsOriginal
+            grdData.ColumnHeadersHeightSizeMode = vColumnHeadersSizeOriginal
+            For Each vCol As DataGridViewColumn In grdData.Columns
+                If vColumnAutoSizeModes.ContainsKey(vCol.Name) Then
+                    vCol.AutoSizeMode = vColumnAutoSizeModes(vCol.Name)
+                End If
+            Next
             SplashScreenManager.CloseForm(False)
             RibbonControl.Enabled = True
         End Try
@@ -1611,6 +1976,32 @@ Public Class frmInventarioImport
     Private Sub frmInventarioImport_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         bwImportarTeorico.WorkerReportsProgress = True
         bwImportarTeorico.WorkerSupportsCancellation = True
+        If grdData IsNot Nothing Then grdData.Visible = False
+        If dgridInventario IsNot Nothing Then
+            dgridInventario.Dock = DockStyle.Fill
+            dgridInventario.BringToFront()
+        End If
+    End Sub
+
+    Private Sub GridView7_RowCellStyle(sender As Object, e As DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs) Handles GridView7.RowCellStyle
+        If e.RowHandle < 0 OrElse e.Column Is Nothing Then Return
+
+        Dim vIndiceFila As Integer = e.RowHandle
+        If mInvImportData IsNot Nothing Then
+            Dim vRow As DataRow = GridView7.GetDataRow(e.RowHandle)
+            If vRow IsNot Nothing Then vIndiceFila = mInvImportData.Rows.IndexOf(vRow)
+        End If
+
+        Dim vColumna As String = e.Column.FieldName
+        If mInvImportErroresPorFila.ContainsKey(vIndiceFila) AndAlso
+           String.Equals(vColumna, "ColEstado", StringComparison.OrdinalIgnoreCase) Then
+            e.Appearance.BackColor = Color.Salmon
+            Return
+        End If
+
+        If mInvImportErroresCelda.Contains(vIndiceFila & "|" & vColumna) Then
+            e.Appearance.BackColor = Color.Salmon
+        End If
     End Sub
 
     Private Sub mnuImportarExcel_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuImportarExcel.ItemClick

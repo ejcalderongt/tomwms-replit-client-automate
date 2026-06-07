@@ -1,4 +1,15 @@
-notas:
+﻿notas:
+  - fecha: "2026-06-06"
+    area: "BOF inventario inicial performance TVP producto lite"
+    detalle: >
+      Se documento handoff brain/handoffs/2026-06-06-inventario-inicial-import-performance/README.md.
+      Hallazgo central: en importacion de inventario inicial, el costo fuerte despues
+      de optimizar UI/grid fue DAL_DETALLE_LOOP con MsProductoDetalle=766649ms para
+      9,833 filas. Se agrego dbo.tvp_wms_codigo_producto_v1 y
+      dbo.usp_wms_producto_lite_por_codigos_tvp_v1 en repo DBA para precargar productos
+      lite por codigos via TVP. BOF usa clsLnProducto.Get_All_By_Codigos_For_InventarioImport
+      con fallback legacy por codigo si el SP/TVP no existe. Trazas nuevas:
+      DAL_PRODUCTO_CACHE_START/END y MsProductoCacheBulk.
   - fecha: "2026-06-04"
     area: "Brain atlas/handoffs automation-safe"
     detalle: >
@@ -1307,3 +1318,4 @@ notas:
       Se ajusto el tope para contar solo reservas abiertas
       ('UNCOMMITED HH','UNCOMMITED') y se normaliza Lote en WS
       ('-' => '') para evitar divergencia HH vs BD.
+
