@@ -3572,13 +3572,15 @@ Public Class frmInventario
                                    ";PresentacionCache=" & mRegularizacionPresentacionCache.Count)
 
             vPasoTrace = Date.Now
+            Dim vRelojArmado As System.Diagnostics.Stopwatch = System.Diagnostics.Stopwatch.StartNew()
 
             For Each st As clsBeTrans_inv_detalle In stock
 
                 vProcesado += 1
                 item = New clsBeStock
 
-                Actualizar_Progreso_Regularizacion("Procesando producto: " & st.Idproducto, vProcesado, vTotal)
+                Dim vEtaArmado As String = RegularizacionEtaTexto(vProcesado, vTotal, vRelojArmado.ElapsedMilliseconds)
+                Actualizar_Progreso_Regularizacion("Procesando producto: " & st.Idproducto, vProcesado, vTotal, False, vEtaArmado)
 
                 With item
 
@@ -3689,17 +3691,17 @@ Public Class frmInventario
                                    ";Movs=" & movs.Count &
                                    ";MsArmarListas=" & vMsArmarListas)
 
-            Actualizar_Progreso_Regularizacion("Preparando inserción en base de datos", vTotal, vTotal, True)
+            Actualizar_Progreso_Regularizacion("Preparando inserción en base de datos", vTotal, vTotal, True, "ETA 00:00")
 
             vPasoTrace = Date.Now
             Dim vStyleOriginal As ProgressBarStyle = prg.Style
             Try
                 If SplashScreenManager.Default IsNot Nothing Then
                     SplashScreenManager.Default.SetWaitFormCaption("Regularizando inventario")
-                    SplashScreenManager.Default.SetWaitFormDescription("Ejecutando regularización en base de datos, por favor espere...")
+                    SplashScreenManager.Default.SetWaitFormDescription("Ejecutando regularización en base de datos, por favor espere... (ETA estimando...)")
                 End If
                 lblPrg.ForeColor = Color.DarkOrange
-                lblPrg.Text = "Ejecutando regularización en base de datos, por favor espere..."
+                lblPrg.Text = "Ejecutando regularización en base de datos, por favor espere... | ETA estimando..."
                 lblPrg.BringToFront()
                 prg.Style = ProgressBarStyle.Marquee
                 prg.MarqueeAnimationSpeed = 30
