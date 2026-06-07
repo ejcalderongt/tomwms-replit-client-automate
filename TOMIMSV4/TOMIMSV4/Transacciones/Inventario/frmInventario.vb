@@ -1263,7 +1263,6 @@ Public Class frmInventario
                     viewConteoOperador.Columns("Color").Visible = False
                 End If
 
-
                 If viewConteoOperador.Columns.ColumnByFieldName("Teorico_Pres") IsNot Nothing Then
                     viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                     viewConteoOperador.Columns("Teorico_Pres").DisplayFormat.FormatString = "{0:n6}"
