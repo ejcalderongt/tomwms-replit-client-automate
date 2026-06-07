@@ -192,8 +192,16 @@ Public Class frmInventarioImport
         End If
         If pExtra <> "" Then vTexto &= " | " & pExtra
 
+        If SplashScreenManager.Default IsNot Nothing Then
+            SplashScreenManager.Default.SetWaitFormCaption("Importación de inventario")
+            SplashScreenManager.Default.SetWaitFormDescription(vTexto)
+        End If
+
         lblPrg.ForeColor = If(If(pErrores < 0, errc, pErrores) > 0, Color.Firebrick, Color.ForestGreen)
+        lblPrg.Visible = True
         lblPrg.Text = vTexto
+        lblPrg.BringToFront()
+        If prg IsNot Nothing Then prg.Refresh()
         lblPrg.Refresh()
     End Sub
 

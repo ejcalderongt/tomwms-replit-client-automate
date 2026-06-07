@@ -3200,6 +3200,31 @@ Public Class frmInventario
     Private ReadOnly mRegularizacionPresentacionCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
     Private mRegularizacionUltimoTick As Integer = 0
 
+    Private Sub InvRegularizacionTrace(ByVal pSesion As String,
+                                       ByVal pPaso As String,
+                                       ByVal pInicio As DateTime,
+                                       Optional ByVal pExtra As String = "")
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260607_INV_REG_TRACE",
+                "frmInventario",
+                pSesion,
+                pPaso,
+                "IdInventario=" & If(gBeTransInvEnc Is Nothing, 0, gBeTransInvEnc.Idinventarioenc),
+                "IdBodega=" & If(gBeTransInvEnc Is Nothing, 0, gBeTransInvEnc.IdBodega),
+                "DeltaMs=" & CLng((Date.Now - pInicio).TotalMilliseconds),
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "inventario-regularizacion-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
+
     Private Sub Precargar_Caches_Regularizacion(ByVal pStock As List(Of clsBeTrans_inv_detalle))
 
         If pStock Is Nothing OrElse pStock.Count = 0 Then Return
@@ -3351,10 +3376,24 @@ Public Class frmInventario
 
     End Function
 
+    Private Function RegularizacionEtaTexto(ByVal pProcesado As Integer,
+                                            ByVal pTotal As Integer,
+                                            ByVal pMsTranscurridos As Long) As String
+        If pProcesado <= 0 OrElse pTotal <= 0 Then Return "ETA calculando..."
+        If pProcesado >= pTotal Then Return "ETA 00:00"
+        If pProcesado < 100 OrElse pMsTranscurridos < 3000 Then Return "ETA calculando..."
+
+        Dim vMsPorFila As Double = CDbl(pMsTranscurridos) / CDbl(pProcesado)
+        Dim vMsRestantes As Long = CLng(Math.Max(0, (pTotal - pProcesado) * vMsPorFila))
+        Dim vTs As TimeSpan = TimeSpan.FromMilliseconds(vMsRestantes)
+        Return "ETA " & vTs.ToString("mm\:ss")
+    End Function
+
     Private Sub Actualizar_Progreso_Regularizacion(ByVal pMensaje As String,
                                                    ByVal pActual As Integer,
                                                    ByVal pTotal As Integer,
-                                                   Optional ByVal pForzar As Boolean = False)
+                                                   Optional ByVal pForzar As Boolean = False,
+                                                   Optional ByVal pExtra As String = "")
 
         Dim vAhora As Integer = Environment.TickCount
 
@@ -3368,17 +3407,22 @@ Public Class frmInventario
             Dim vTotal As Integer = Math.Max(pTotal, 1)
             Dim vActual As Integer = Math.Min(Math.Max(pActual, 0), vTotal)
             Dim vTexto As String = String.Format("{0} ({1}/{2})", pMensaje, vActual, vTotal)
+            If pExtra <> "" Then vTexto &= " | " & pExtra
 
             If SplashScreenManager.Default IsNot Nothing Then
+                SplashScreenManager.Default.SetWaitFormCaption("Regularizando inventario")
                 SplashScreenManager.Default.SetWaitFormDescription(vTexto)
             End If
 
             lblPrg.Visible = True
             lblPrg.Text = vTexto
+            lblPrg.BringToFront()
             prg.Visible = True
             prg.Minimum = 0
             prg.Maximum = vTotal
             prg.Value = vActual
+            prg.Refresh()
+            lblPrg.Refresh()
 
             Application.DoEvents()
 
@@ -3480,11 +3524,19 @@ Public Class frmInventario
         Dim BePresentacion As New clsBeProducto_Presentacion
         Dim IdxPres As Integer = 0
         Dim vIdPropietarioBodega As Integer = 0
+        Dim vSesionTrace As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        Dim vInicioTrace As DateTime = Date.Now
+        Dim vPasoTrace As DateTime = vInicioTrace
+        Dim vMsGetStock As Long = 0
+        Dim vMsPrecargaCache As Long = 0
+        Dim vMsArmarListas As Long = 0
+        Dim vMsImportar As Long = 0
 
         If XtraMessageBox.Show("¿Iniciar proceso de regularizacion?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
         If XtraMessageBox.Show("¡Este proceso no se puede revertir !" & vbCrLf & "¿Está seguro de continuar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Return
 
         Try
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_START", vInicioTrace)
 
             lPresentaciones.Clear()
             mRegularizacionProductoBodegaCache.Clear()
@@ -3496,15 +3548,30 @@ Public Class frmInventario
             SplashScreenManager.Default.SetWaitFormDescription("Obteniendo inventario")
 
             vIdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(AP.IdBodega, gBeTransInvEnc.Idpropietario)
+            vPasoTrace = Date.Now
             stock = clsLnTrans_inv_detalle.Get_All_By_IdInventarioEnc(gBeTransInvEnc.Idinventarioenc)
+            vMsGetStock = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
             If stock Is Nothing Then stock = New List(Of clsBeTrans_inv_detalle)
 
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_GET_STOCK_END", vInicioTrace,
+                                   "Rows=" & stock.Count &
+                                   ";MsGetStock=" & vMsGetStock)
 
             Dim vTotal As Integer = If(stock Is Nothing, 0, stock.Count)
             Dim vProcesado As Integer = 0
 
             Actualizar_Progreso_Regularizacion("Preparando inventario", 0, vTotal, True)
+            vPasoTrace = Date.Now
             Precargar_Caches_Regularizacion(stock)
+            vMsPrecargaCache = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_CACHE_END", vInicioTrace,
+                                   "MsPrecargaCache=" & vMsPrecargaCache &
+                                   ";ProductoBodegaCache=" & mRegularizacionProductoBodegaCache.Count &
+                                   ";PropietarioBodegaCache=" & mRegularizacionPropietarioBodegaCache.Count &
+                                   ";PresentacionCache=" & mRegularizacionPresentacionCache.Count)
+
+            vPasoTrace = Date.Now
 
             For Each st As clsBeTrans_inv_detalle In stock
 
@@ -3605,11 +3672,51 @@ Public Class frmInventario
 
                 Application.DoEvents()
 
+                If vProcesado Mod 500 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "UI_REG_ARMADO_PROGRESS", vInicioTrace,
+                                           "Procesados=" & vProcesado &
+                                           ";Items=" & items.Count &
+                                           ";Movs=" & movs.Count)
+                End If
+
             Next
 
-            Actualizar_Progreso_Regularizacion("Insertando inventario", vTotal, vTotal, True)
+            vMsArmarListas = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
-            clsLnStock.Importar_Inventario(gBeTransInvEnc, items, movs)
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_ARMADO_END", vInicioTrace,
+                                   "Rows=" & vTotal &
+                                   ";Items=" & items.Count &
+                                   ";Movs=" & movs.Count &
+                                   ";MsArmarListas=" & vMsArmarListas)
+
+            Actualizar_Progreso_Regularizacion("Preparando inserción en base de datos", vTotal, vTotal, True)
+
+            vPasoTrace = Date.Now
+            Dim vStyleOriginal As ProgressBarStyle = prg.Style
+            Try
+                If SplashScreenManager.Default IsNot Nothing Then
+                    SplashScreenManager.Default.SetWaitFormCaption("Regularizando inventario")
+                    SplashScreenManager.Default.SetWaitFormDescription("Ejecutando regularización en base de datos, por favor espere...")
+                End If
+                lblPrg.ForeColor = Color.DarkOrange
+                lblPrg.Text = "Ejecutando regularización en base de datos, por favor espere..."
+                lblPrg.BringToFront()
+                prg.Style = ProgressBarStyle.Marquee
+                prg.MarqueeAnimationSpeed = 30
+                prg.Refresh()
+                lblPrg.Refresh()
+                Application.DoEvents()
+
+                clsLnStock.Importar_Inventario(gBeTransInvEnc, items, movs)
+            Finally
+                prg.Style = vStyleOriginal
+                prg.MarqueeAnimationSpeed = 0
+                lblPrg.ForeColor = Color.ForestGreen
+            End Try
+            vMsImportar = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_IMPORTAR_END", vInicioTrace,
+                                   "MsImportar=" & vMsImportar)
 
             Actualizar_Progreso_Regularizacion("Finalizando", vTotal, vTotal, True)
 
@@ -3624,7 +3731,15 @@ Public Class frmInventario
 
             DialogResult = DialogResult.OK
 
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_FIN", vInicioTrace,
+                                   "Rows=" & vTotal &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsPrecargaCache=" & vMsPrecargaCache &
+                                   ";MsArmarListas=" & vMsArmarListas &
+                                   ";MsImportar=" & vMsImportar)
+
         Catch ex As Exception
+            InvRegularizacionTrace(vSesionTrace, "UI_REG_ERROR", vInicioTrace, ex.Message)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
             prg.Value = 0
