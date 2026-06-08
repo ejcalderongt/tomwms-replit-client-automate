@@ -202,9 +202,12 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             If Not lTransaccionesSalida Is Nothing AndAlso lTransaccionesSalida.Count > 0 Then
 
+                '#EJC20260608: Blindaje Killios.
+                'Procesar por llave fuerte (No_pedido + IdPedidoEnc + IdDespachoEnc)
+                'para evitar cruces cuando hay despachos parciales/reproceso.
                 Dim ListaPedidosTransf = (From i In lTransaccionesSalida
-                                          Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc} Into Group
-                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc})
+                                          Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc, Key i.Iddespachoenc} Into Group
+                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc, Key Keys.Iddespachoenc})
 
                 Dim Enviado_A_Erp As Boolean = False
 
@@ -228,23 +231,22 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                     If Not Enviado_A_Erp Then
 
-                        lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido)
-
                         Dim vvEmpresa As pEmpresa = [Enum].Parse(GetType(pEmpresa), vCodEmpresaPed)
 
                         Dim vNoPedidoSap As String = If(PT.No_pedido.StartsWith("K") OrElse PT.No_pedido.StartsWith("G"), PT.No_pedido.Substring(1), PT.No_pedido)
 
                         lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x)
                                                                                       Dim pedido = If(x.No_pedido.StartsWith("K") OrElse x.No_pedido.StartsWith("G"), x.No_pedido.Substring(1), x.No_pedido)
-                                                                                      Return pedido.Trim() = vNoPedidoSap.Trim()
+                                                                                      Return x.Idpedidoenc = PT.Idpedidoenc AndAlso
+                                                                                             x.Iddespachoenc = PT.Iddespachoenc AndAlso
+                                                                                             pedido.Trim() = vNoPedidoSap.Trim()
                                                                                   End Function)
 
-
-                        lTransaccionesSalidaSingle.ForEach(Sub(t)
-                                                               If t.No_pedido.StartsWith("K") OrElse t.No_pedido.StartsWith("G") Then
-                                                                   t.No_pedido = t.No_pedido.Substring(1)
-                                                               End If
-                                                           End Sub)
+                        If lTransaccionesSalidaSingle.Count = 0 Then
+                            clsPublic.Actualizar_Progreso(lblprg, "No se encontraron líneas para envío con llave fuerte. Pedido: " & PT.No_pedido &
+                                                           " IdPedidoEnc: " & PT.Idpedidoenc & " IdDespachoEnc: " & PT.Iddespachoenc)
+                            Continue For
+                        End If
 
                         If Enviar_Entrega_Mercancia_OV_SAP3(vNoPedidoSap, lTransaccionesSalidaSingle, vvEmpresa, lblprg, prg) Then
 
@@ -425,12 +427,22 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Dim BeConfigEnc As clsBeI_nav_config_enc = Nothing
 
         Dim vGeneroTransferencia As Boolean = False
+        Dim vIdDespachoEnc As Integer = 0
 
         Enviar_Entrega_Mercancia_OV_SAP3 = False
 
         Try
             ' Inicia transacción local
             clsTransaccion.Begin_Transaction()
+
+            '#EJC20260608: Blindaje Killios.
+            'Si viene más de un despacho en la misma corrida, detener para evitar cruce.
+            Dim vDespachos = lINavTransaccionesOut.Select(Function(x) x.Iddespachoenc).Distinct().ToList()
+            If vDespachos.Count <> 1 Then
+                Throw New Exception("Se detectaron múltiples IdDespachoEnc en un mismo envío. PedidoSAP: " & _Docentry &
+                                    ". Despachos: " & String.Join(",", vDespachos))
+            End If
+            vIdDespachoEnc = vDespachos(0)
 
             ' Obtiene datos del pedido WMS
             BePedido = clsLnTrans_pe_enc.GetSingle(lINavTransaccionesOut.FirstOrDefault.Idpedidoenc,
@@ -494,11 +506,12 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             ' Genera la entrega si fue exitosa la transferencia
             If lResultProductosTransferSap IsNot Nothing AndAlso vGeneroTransferencia Then
 
-                Dim entrega As String = clsLnTrans_pe_enc.Existe_Entrega_By_IdDespachoEnc(BePedido.No_despacho)
+                Dim entrega As String = clsLnTrans_pe_enc.Existe_Entrega_By_IdDespachoEnc(vIdDespachoEnc)
                 Dim generoentregaOV As Boolean = False
 
                 generoentregaOV = Generar_Entrega_OV(_Docentry,
                                    BePedido,
+                                   vIdDespachoEnc,
                                    clsTransaccion,
                                    lblprg,
                                    lINavTransaccionesOut,
@@ -536,6 +549,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
     End Function
     Public Shared Function Generar_Entrega_OV(ByVal _DocEntry As Integer,
                                               ByVal BePedido As clsBeTrans_pe_enc,
+                                              ByVal pIdDespachoEnc As Integer,
                                               ByVal clsTrans As clsTransaccion,
                                               ByVal lblprg As RichTextBox,
                                               ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -573,7 +587,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Dim res As Integer = oEntrega.Add()
                 If res <> 0 Then Throw New Exception($"#ERROR_SAP_{res}: {oCompany.GetLastErrorDescription()}")
 
-                FinalizarEntregaSAP(oCompany, BePedido, clsTrans, lblprg, listaActualizar)
+                FinalizarEntregaSAP(oCompany, BePedido, pIdDespachoEnc, clsTrans, lblprg, listaActualizar)
 
                 Generar_Entrega_OV = True
 
@@ -775,6 +789,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
     End Function
     Private Shared Sub FinalizarEntregaSAP(oCompany As Company,
                                            BePedido As clsBeTrans_pe_enc,
+                                           pIdDespachoEnc As Integer,
                                            clsTrans As clsTransaccion,
                                            lblprg As RichTextBox,
                                            listaActualizar As List(Of clsBeI_nav_transacciones_out))
@@ -789,7 +804,13 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Throw New Exception("No se pudo obtener el DocEntry de la entrega.")
             End If
 
-            Dim BeDespachoEnc = clsLnTrans_despacho_enc.Get_Single_By_IdPedidoEnc(BePedido.IdPedidoEnc, clsTrans.lConnection, clsTrans.lTransaction)
+            '#EJC20260608: Blindaje Killios.
+            'Antes se tomaba "single por IdPedidoEnc" y podía cruzar parciales.
+            'Ahora se actualiza el despacho exacto de la corrida.
+            Dim BeDespachoEnc = clsLnTrans_despacho_enc.GetSingle(pIdDespachoEnc, clsTrans.lConnection, clsTrans.lTransaction)
+            If BeDespachoEnc Is Nothing Then
+                Throw New Exception("No se encontró trans_despacho_enc por IdDespachoEnc=" & pIdDespachoEnc & " para IdPedidoEnc=" & BePedido.IdPedidoEnc)
+            End If
             Dim oEntrega As Documents = CType(oCompany.GetBusinessObject(BoObjectTypes.oDeliveryNotes), Documents)
             If oEntrega.GetByKey(vDocEntryEntrega) Then
                 BeDespachoEnc.No_pase = oEntrega.DocNum
