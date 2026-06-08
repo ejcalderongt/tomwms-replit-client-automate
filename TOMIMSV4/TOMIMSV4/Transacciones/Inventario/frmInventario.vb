@@ -3264,6 +3264,7 @@ Public Class frmInventario
         If pProductos Is Nothing OrElse pProductos.Count = 0 Then Return
 
         Const vTamanoBloque As Integer = 500
+        Dim vTotal As Integer = pProductos.Count
 
         For vInicio As Integer = 0 To pProductos.Count - 1 Step vTamanoBloque
             Dim vBloque As List(Of Integer) = pProductos.Skip(vInicio).Take(vTamanoBloque).ToList()
@@ -3296,6 +3297,12 @@ Public Class frmInventario
                     End While
                 End Using
             End Using
+
+            Dim vProcesados As Integer = Math.Min(vInicio + vBloque.Count, vTotal)
+            Dim vMsg As String = "Precargando productos para regularización: " & vProcesados & " de " & vTotal
+            lblPrg.Text = vMsg
+            If SplashScreenManager.Default IsNot Nothing Then SplashScreenManager.Default.SetWaitFormDescription(vMsg)
+            Application.DoEvents()
         Next
 
     End Sub
@@ -3306,6 +3313,7 @@ Public Class frmInventario
         If pPresentaciones Is Nothing OrElse pPresentaciones.Count = 0 Then Return
 
         Const vTamanoBloque As Integer = 500
+        Dim vTotal As Integer = pPresentaciones.Count
 
         For vInicio As Integer = 0 To pPresentaciones.Count - 1 Step vTamanoBloque
             Dim vBloque As List(Of Integer) = pPresentaciones.Skip(vInicio).Take(vTamanoBloque).ToList()
@@ -3340,6 +3348,12 @@ Public Class frmInventario
                     Next
                 End Using
             End Using
+
+            Dim vProcesados As Integer = Math.Min(vInicio + vBloque.Count, vTotal)
+            Dim vMsg As String = "Precargando presentaciones para regularización: " & vProcesados & " de " & vTotal
+            lblPrg.Text = vMsg
+            If SplashScreenManager.Default IsNot Nothing Then SplashScreenManager.Default.SetWaitFormDescription(vMsg)
+            Application.DoEvents()
         Next
 
     End Sub
@@ -3749,8 +3763,22 @@ Public Class frmInventario
 
         Catch ex As Exception
             InvRegularizacionTrace(vSesionTrace, "UI_REG_ERROR", vInicioTrace, ex.Message)
+            Try
+                If SplashScreenManager.Default IsNot Nothing Then SplashScreenManager.CloseForm(False)
+            Catch
+            End Try
+            prg.Style = ProgressBarStyle.Blocks
+            prg.MarqueeAnimationSpeed = 0
+            prg.Value = 0
+            prg.Visible = False
+            lblPrg.Visible = False
+            Application.DoEvents()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Finally
+            Try
+                If SplashScreenManager.Default IsNot Nothing Then SplashScreenManager.CloseForm(False)
+            Catch
+            End Try
             prg.Value = 0
             prg.Visible = False
             lblPrg.Visible = False
