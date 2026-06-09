@@ -1940,11 +1940,13 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
 
 
                             If Enviar_Lotes_PV(PT.No_pedido,
+                                               PT.Idpedidoenc,
                                                lTransaccionesSalida,
                                                lblprg,
                                                prg) Then
 
                                 If Enviar_Cantidades_Pedido_Venta(PT.No_pedido,
+                                                                  PT.Idpedidoenc,
                                                                   lTransaccionesSalida,
                                                                   lblprg,
                                                                   prg) Then
@@ -2010,8 +2012,8 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
                                     End If
 
                                     If vContadorReproceso > 0 Then
-                                        If Enviar_Lotes_PV(PT.No_pedido, lTransaccionesSalidaReproceso, lblprg, prg) Then
-                                            If Enviar_Cantidades_Pedido_Venta(PT.No_pedido, lTransaccionesSalidaReproceso, lblprg, prg) Then
+                                        If Enviar_Lotes_PV(PT.No_pedido, PT.Idpedidoenc, lTransaccionesSalidaReproceso, lblprg, prg) Then
+                                            If Enviar_Cantidades_Pedido_Venta(PT.No_pedido, PT.Idpedidoenc, lTransaccionesSalidaReproceso, lblprg, prg) Then
                                                 'El registro no es necesario, leer: #EJC20180614 (arriba)  ;)
                                             End If
                                         End If
@@ -2079,6 +2081,7 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
     End Sub
 
     Private Function Enviar_Lotes_PV(ByVal NoPedidoTransf As String,
+                                    Optional ByVal pIdPedidoEnc As Integer = 0,
                                     ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                     ByRef lblprg As RichTextBox,
                                     ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
@@ -2095,7 +2098,11 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
             Dim vCantidad As Double = 0
             Dim vUnidMed As String = ""
 
-            Dim listaLotes = lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso x.Enviado = False).ToList()
+            '#EJC20260608: Blindaje La Cumbre/NAV.
+            'Evita mezclar líneas de otro IdPedidoEnc cuando comparten No_pedido.
+            Dim listaLotes = lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                    x.Enviado = False AndAlso
+                                                                    (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc)).ToList()
 
             If Not listaLotes Is Nothing Then
 
@@ -2172,6 +2179,7 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
     End Function
 
     Private Function Enviar_Cantidades_Pedido_Venta(ByVal NoPedidoTransf As String,
+                                                    Optional ByVal pIdPedidoEnc As Integer = 0,
                                                     ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                                     ByRef lblprg As RichTextBox,
                                                     ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
@@ -2188,11 +2196,14 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
             Dim BePresentacion As New clsBeProducto_Presentacion()
             Dim vUnidMed As String = ""
 
-            For Each T In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso x.Enviado = False)
+            For Each T In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                 x.Enviado = False AndAlso
+                                                                 (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc))
                 T.Enviado = True
             Next
 
-            Dim ListaResumen = (From i In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf)
+            Dim ListaResumen = (From i In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                         (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc))
                                 Group i By Keys = New With {Key i.No_pedido, Key i.No_linea,
                                 Key i.Codigo_producto, Key i.Codigo_variante, Key i.Enviado, Key i.Idpresentacion} Into Group
                                 Select New With {Keys.No_pedido, Keys.No_linea,
@@ -2234,7 +2245,8 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
                                                                     AndAlso x.No_linea = I.No_linea _
                                                                     AndAlso x.Codigo_producto = I.Codigo_producto _
                                                                     AndAlso x.Codigo_variante = I.Codigo_variante _
-                                                                    AndAlso x.Enviado = True).ToList()
+                                                                    AndAlso x.Enviado = True AndAlso
+                                                                    (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc)).ToList()
 
                     If Not lista_A_Actualizar Is Nothing Then
 

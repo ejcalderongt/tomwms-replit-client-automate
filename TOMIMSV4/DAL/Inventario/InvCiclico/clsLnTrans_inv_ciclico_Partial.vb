@@ -1,8 +1,32 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Configuration.ConfigurationManager
 Imports System.Reflection
+Imports System.IO
 
 Partial Public Class clsLnTrans_inv_ciclico
+
+    Private Shared Sub InvRegularizacionTrace(ByVal pSesion As String,
+                                              ByVal pPaso As String,
+                                              ByVal pInicio As DateTime,
+                                              Optional ByVal pExtra As String = "")
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260607_INV_REG_TRACE",
+                "clsLnTrans_inv_ciclico",
+                pSesion,
+                pPaso,
+                "DeltaMs=" & CLng((Date.Now - pInicio).TotalMilliseconds),
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "inventario-regularizacion-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
 
     Public Shared Function listaPorOperador(pIdenc As Integer, pIdOperador As Integer) As List(Of clsBeTrans_inv_ciclico)
         Dim lReturnList As List(Of clsBeTrans_inv_ciclico)
@@ -1890,8 +1914,26 @@ Partial Public Class clsLnTrans_inv_ciclico
         Dim objStockHist As New clsBeStock_hist()
         Dim vCantidadHist As Integer = 0
         Dim lIdStocksAEliminar As New List(Of Integer)
+        Dim vSesionTrace As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        Dim vInicioTrace As DateTime = Date.Now
+        Dim vPasoTrace As DateTime = vInicioTrace
+        Dim vMsGetStock As Long = 0
+        Dim vMsExisteConteo As Long = 0
+        Dim vMsInsertStock As Long = 0
+        Dim vMsStockHist As Long = 0
+        Dim vMsEliminarStock As Long = 0
+        Dim vMsProcesarAjuste As Long = 0
+        Dim vMsEliminarPendiente As Long = 0
+        Dim vCntStockNuevo As Integer = 0
+        Dim vCntAjustes As Integer = 0
+        Dim vCntEliminarPendiente As Integer = 0
 
         Try
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_START", vInicioTrace,
+                                   "IdInventario=" & BeTransInvEnc.Idinventarioenc &
+                                   ";Stocks=" & If(ListBeStockNuevo Is Nothing, 0, ListBeStockNuevo.Count) &
+                                   ";Movs=" & If(ListBeMovimientos Is Nothing, 0, ListBeMovimientos.Count) &
+                                   ";Ajustes=" & If(ListBeAjusteDet Is Nothing, 0, ListBeAjusteDet.Count))
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BeTransInvEnc.Idpropietario,
                                                                                                                                 BeTransInvEnc.IdBodega,
@@ -1913,8 +1955,11 @@ Partial Public Class clsLnTrans_inv_ciclico
             BeTransInvEnc.IdStock = IdStock
 
             For Each pBeStock As clsBeStock In ListBeStockNuevo.OrderBy(Function(x) x.IdProductoBodega)
+                vCntStockNuevo += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(pBeStock.IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If pBeStock.Cantidad = 0 Then
                     Debug.Write("Pausa")
@@ -1964,6 +2009,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                             '#EJC20180625: Mantener copia del stock original
                             clsPublic.CopyObject(pBeStock, objStockHist)
                             '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                            vPasoTrace = Date.Now
                             objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                             objStockHist.IdNuevoStock = BeStock.IdStock
                             objStockHist.IdPedidoEnc = BeStock.IdPedidoEnc
@@ -1976,17 +2022,22 @@ Partial Public Class clsLnTrans_inv_ciclico
                             objStockHist.Cantidad = vCantidadHist
                             objStockHist.IdProductoTallaColor = BeStock.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                            vMsStockHist += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                            vPasoTrace = Date.Now
                             clsLnStock.Eliminar(BeStock, lConnection, lTransaction)
+                            vMsEliminarStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                         Else
 
                             '#CKFK20250130 Agregué esto para que cuando se cree un nuevo Stock se elimine el original,
                             'si no tiene conteos
+                            vPasoTrace = Date.Now
                             If Not Existe_Conteo_By_IdStock_And_IdInvEnc_Mayor_0(pBeStock.IdStock,
                                                                                  BeTransInvEnc.Idinventarioenc,
                                                                                  lConnection,
                                                                                  lTransaction) Then
                                 lIdStocksAEliminar.Add(BeStock.IdStock)
                             End If
+                            vMsExisteConteo += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                             pBeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             pBeStock.Cantidad = Math.Abs(vCantInv)
@@ -1996,7 +2047,9 @@ Partial Public Class clsLnTrans_inv_ciclico
                             pBeStock.Lote = pBeStock.Lote
                             pBeStock.Fecha_vence = pBeStock.Fecha_vence
                             pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                            vPasoTrace = Date.Now
                             clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                            vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                             IdStock += 1
 
                         End If
@@ -2016,7 +2069,9 @@ Partial Public Class clsLnTrans_inv_ciclico
                         pBeStock.Lote = pBeStock.Lote
                         pBeStock.Fecha_vence = pBeStock.Fecha_vence
                         pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                        vPasoTrace = Date.Now
                         clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                        vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                         IdStock += 1
 
                     Else
@@ -2024,6 +2079,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                         '#EJC20180625: Mantener copia del stock original
                         clsPublic.CopyObject(pBeStock, objStockHist)
                         '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                        vPasoTrace = Date.Now
                         objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                         objStockHist.IdNuevoStock = 0
                         objStockHist.IdUbicacion_anterior = pBeStock.IdUbicacion
@@ -2034,38 +2090,88 @@ Partial Public Class clsLnTrans_inv_ciclico
                         objStockHist.Cantidad = vCantidadHist
                         objStockHist.IdProductoTallaColor = pBeStock.IdProductoTallaColor
                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                        vMsStockHist += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                        vPasoTrace = Date.Now
                         clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
+                        vMsEliminarStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                     End If
 
                 End If
 
+                If vCntStockNuevo Mod 500 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "DAL_REG_STOCK_PROGRESS", vInicioTrace,
+                                           "Procesados=" & vCntStockNuevo &
+                                           ";MsGetStock=" & vMsGetStock &
+                                           ";MsExisteConteo=" & vMsExisteConteo &
+                                           ";MsInsertStock=" & vMsInsertStock &
+                                           ";MsStockHist=" & vMsStockHist &
+                                           ";MsEliminarStock=" & vMsEliminarStock &
+                                           ";PendEliminar=" & lIdStocksAEliminar.Count)
+                End If
+
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_STOCK_END", vInicioTrace,
+                                   "Procesados=" & vCntStockNuevo &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsExisteConteo=" & vMsExisteConteo &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsStockHist=" & vMsStockHist &
+                                   ";MsEliminarStock=" & vMsEliminarStock &
+                                   ";PendEliminar=" & lIdStocksAEliminar.Count)
 
             IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1
 
             For Each BeAjusteDet As clsBeTrans_ajuste_det In ListBeAjusteDet
+                vCntAjustes += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(BeAjusteDet.IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If ListStock.Count > 0 Then
+                    vPasoTrace = Date.Now
                     clsLnStock.Procesar_Ajuste(BeAjusteDet,
                                                Usuario,
                                                lConnection,
                                                lTransaction)
+                    vMsProcesarAjuste += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                End If
+
+                If vCntAjustes Mod 250 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "DAL_REG_AJUSTE_PROGRESS", vInicioTrace,
+                                           "Procesados=" & vCntAjustes &
+                                           ";MsGetStock=" & vMsGetStock &
+                                           ";MsProcesarAjuste=" & vMsProcesarAjuste)
                 End If
 
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_AJUSTE_END", vInicioTrace,
+                                   "Procesados=" & vCntAjustes &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsProcesarAjuste=" & vMsProcesarAjuste)
 
             For Each IdStock In lIdStocksAEliminar
+                vCntEliminarPendiente += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If ListStock.Count > 0 Then
+                    vPasoTrace = Date.Now
                     clsLnStock.Eliminar_By_IdStock(IdStock, lConnection, lTransaction)
+                    vMsEliminarPendiente += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                 End If
 
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_ELIMINAR_PEND_END", vInicioTrace,
+                                   "Procesados=" & vCntEliminarPendiente &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsEliminarPendiente=" & vMsEliminarPendiente)
 
             clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc,
                                                  6,
@@ -2081,7 +2187,20 @@ Partial Public Class clsLnTrans_inv_ciclico
                                  pCodigoBodegaERP,
                                  pTallaColor)
 
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_FIN", vInicioTrace,
+                                   "Stocks=" & vCntStockNuevo &
+                                   ";Ajustes=" & vCntAjustes &
+                                   ";EliminarPendiente=" & vCntEliminarPendiente &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsExisteConteo=" & vMsExisteConteo &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsStockHist=" & vMsStockHist &
+                                   ";MsEliminarStock=" & vMsEliminarStock &
+                                   ";MsProcesarAjuste=" & vMsProcesarAjuste &
+                                   ";MsEliminarPendiente=" & vMsEliminarPendiente)
+
         Catch ex As Exception
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_ERROR", vInicioTrace, ex.Message)
             Throw New Exception(ex.Message)
         End Try
 
