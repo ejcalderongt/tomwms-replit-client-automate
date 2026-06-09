@@ -1,4 +1,215 @@
-notas:
+﻿notas:
+  - fecha: "2026-06-06"
+    area: "BOF inventario inicial performance TVP producto lite"
+    detalle: >
+      Se documento handoff brain/handoffs/2026-06-06-inventario-inicial-import-performance/README.md.
+      Hallazgo central: en importacion de inventario inicial, el costo fuerte despues
+      de optimizar UI/grid fue DAL_DETALLE_LOOP con MsProductoDetalle=766649ms para
+      9,833 filas. Se agrego dbo.tvp_wms_codigo_producto_v1 y
+      dbo.usp_wms_producto_lite_por_codigos_tvp_v1 en repo DBA para precargar productos
+      lite por codigos via TVP. BOF usa clsLnProducto.Get_All_By_Codigos_For_InventarioImport
+      con fallback legacy por codigo si el SP/TVP no existe. Trazas nuevas:
+      DAL_PRODUCTO_CACHE_START/END y MsProductoCacheBulk.
+  - fecha: "2026-06-04"
+    area: "Brain atlas/handoffs automation-safe"
+    detalle: >
+      Se implemento estructura operativa para eficiencia de contexto sin romper
+      flujos: brain/atlas/index.yml como discovery master, brain/handoffs/_index.yml
+      como inventario reusable por sintomas/tags/dominios, y script local
+      brain/tools/lint_brain_indexes.ps1 para validar rutas/metadatos/staleness.
+      Se documento backlog de tercerizacion segura en
+      brain/atlas/AUTOMATION-BACKLOG-2026-06-04.md y guia operativa en
+      brain/atlas/README.md.
+  - fecha: "2026-06-03"
+    area: "BOF graficador bodega V2 forma separada"
+    detalle: >
+      Se agrego baseline de nueva forma aislada frmDisenoB_V2 para evolucion UX
+      del graficador sin romper frmDiseñoB legacy. V2 carga empresa/bodega con
+      IMS/AP, materializa estructura via clsLnBodega.Get_Estructura_By_IdBodega
+      y dibuja usando clsGraficadorBodega. Incluye Debug.WriteLine de trazas
+      finas con tiempos (data/render) y conteos de sectores/tramos/ubicaciones.
+      Archivo: Mantenimientos/Bodega_Graficador/frmDisenoB_V2.vb.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra lookup producto pierde codigo al tab"
+    detalle: >
+      Se detecto caso en OC nueva donde el producto se seleccionaba/escaneaba,
+      pero al salir de la celda Codigo el texto visible se vaciaba. Causa:
+      en ShownEditor de IdProductoBodega se cargaba datasource solo al editor
+      activo (GridLookUpEdit) y no al RepositoryItem del grid, por lo que al
+      cerrar editor el DisplayMember no tenia mapa IdProductoBodega->Codigo.
+      Fix: sincronizar ambos datasources (editor + ProductoGridLookUpEdit) y
+      trazar producto_lookup_sync para diagnostico.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra reglas de bloqueo en modo edicion"
+    detalle: >
+      Se valido que el bloqueo global del grid en frmOrdenCompra NO depende
+      directamente de Enviado_A_ERP. La regla principal en ModoTrans.Editar es:
+      estado ANULADA/CERRADA => gvDetalleDocIngreso.OptionsBehavior.Editable=False,
+      Bloquea_Objetos y botones de agregar/eliminar fila deshabilitados.
+      Para estados abiertos/backorder se mantiene editable=True con validaciones
+      por columna/fila y restricciones de negocio (ej: IdProductoBodega no editable
+      en editar, filas hijas kit no editables por ShowingEditor). Se agrego traza
+      OC_EDIT_RULES (Debug.WriteLine + OCTrace_Marca step=oc_edit_rules) en puntos
+      de decision para diagnostico futuro.
+  - fecha: "2026-06-03"
+    area: "BOF frmOrdenCompra codigo producto/lookup en grid"
+    detalle: >
+      Se corrigio regresion visual en frmOrdenCompra al editar OC existente:
+      el lookup de producto quedaba lazy/vacio por performance y la columna
+      Codigo (IdProductoBodega con DisplayMember=Codigo) no resolvia texto.
+      Fix: despues de Cargar_Detalle_OC se hidrata ProductoGridLookUpEdit con
+      un datasource liviano construido desde DTGridDetalleDocIngresos
+      (solo productos presentes en el documento), manteniendo carga masiva lazy.
+      Se agrego traza Debug.WriteLine/OCTrace_Marca
+      producto_lookup_display_detalle para diagnostico.
+  - fecha: "2026-06-03"
+    area: "HH recepción doble envío tras NO imprimir"
+    detalle: >
+      En frm_recepcion_datos se blindo el flujo de guardado de recepción para
+      evitar reenvío por doble Enter después de guardar y elegir "Salir/No imprimir".
+      Se agregaron estados locales de envío/guardado con tag #EJC20260603
+      (recepcionInFlight/recepcionGuardada), bloqueo de input de cantidad durante
+      request activa y consumo de Enter para no propagar segundo submit.
+      Regla operativa: después de guardar exitosamente, la pantalla no debe
+      permitir un segundo guardado sobre el mismo detalle.
+  - fecha: "2026-06-03"
+    area: "HH cambio ubicacion ciega - race callback/xmlresult (XMLObject Unexpected token)"
+    detalle: >
+      Se confirmo incidencia por concurrencia en cliente HH, no por regresion
+      funcional del modelo de datos: WebService compartia callback/xmlresult y
+      podia mezclar respuestas de llamadas solapadas (JSON de
+      Get_Ubicacion_Sugerida_JSON con flujos que esperaban XML), provocando
+      XMLObject Error 2 / Unexpected token. Fix aplicado en
+      TOMHH2025/app/src/main/java/com/dts/base/WebService.java con
+      serializacion por instancia (singleThreadExecutor) y snapshot por request
+      de callback/xmlresult/error antes de wsFinished. Resultado esperado:
+      cada wsCallBack procesa su respuesta correcta y se evita parseo cruzado.
+  - fecha: "2026-06-03"
+    area: "HH reemplazo verificacion/picking - trazabilidad estado reservado"
+    detalle: >
+      En flujo de reemplazo se valido que la lectura de stock_res para
+      reaprovechar reservado en WS dependia del estado esperado. Se detectaron
+      casos donde el registro quedaba en estado distinto al filtro
+      historico ('UNCOMMITED HH'), generando lista vacia y error operativo.
+      Se documento que el blindaje real debe priorizar coherencia de estado
+      reservado HH + trazas EJC_REEMP_VERIF_WS_IN/OUT y mensajes operativos
+      claros cuando no exista linea pendiente real para reemplazo.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - incluir stock en despacho"
+    detalle: >
+      Ajuste en TOMIMSV4 para que el reporte Stock en una fecha pueda calcular
+      existencia actual considerando todo el stock (incluyendo ubicaciones
+      marcadas como despacho). Se agregó en clsBeStock el flag
+      IncluirUbicacionesDespacho (tag EJC20260602_STOCK_FECHA), se respeta en
+      clsLnStock.Get_Lista_Existencias_By_IdProductoBodega_And_DiasVencimiento
+      para no excluir ubicacion_despacho cuando aplica, y se activa en
+      frmStockEnUnaFecha/frmAnaliticaA.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - TRAS como salida"
+    detalle: >
+      Fix puntual en frmStockEnUnaFecha y frmAnaliticaA: el tipo de tarea TRAS
+      ahora suma a Salidas (igual que DESP) para la reconstrucción teórica de
+      la bodega origen. Corrige casos como bodega fiscal donde había RECE+TRAS
+      y la existencia teórica quedaba inflada (81 en vez de 0).
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - optimización de rendimiento"
+    detalle: >
+      Se aplicó optimización en 3 frentes: (1) se eliminó el patrón N+1 de
+      existencias en frmStockEnUnaFecha/frmAnaliticaA usando snapshot único de
+      VW_Stock_Res y diccionarios en memoria (con y sin estado), (2) en
+      clsLnTrans_movimientos se cambió el filtro por fecha a sargable
+      Fecha >= @FechaDel AND Fecha < @FechaAlExclusiva para métodos usados por
+      el reporte, y (3) se agregó script
+      tools/stock-en-fecha/001_optimize_stock_en_fecha.sql con índices de soporte
+      y SPs sugeridos para snapshot/movimientos del reporte.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - trazas de performance"
+    detalle: >
+      Se instrumentó frmStockEnUnaFecha.Generar_Reporte y Llena_Grid con
+      trazas por etapa (Get_Lista_Movimientos, consolidación, snapshot,
+      procesamiento de filas y cierre). Las trazas salen por Debug.Print y,
+      con modo depuración activo (Ctrl+D), también se guardan en
+      Application.StartupPath/Logs/StockEnFecha_Perf_yyyyMMdd.log para análisis
+      de cuellos de botella en ambiente operativo.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - mapper rápido movimientos"
+    detalle: >
+      Se creó clsLnVW_Movimientos.Cargar_StockEnFecha (sin Columns.Contains
+      por campo en columnas base del query) y se conectó en los dos overloads
+      de clsLnTrans_movimientos.Get_All_Movimientos_By_IdProducto usados por
+      Stock en una fecha, para reducir costo por fila en el llenado de la lista.
+  - fecha: "2026-06-02"
+    area: "Stock en una fecha - consolidación O(n)"
+    detalle: >
+      En frmStockEnUnaFecha.Generar_Reporte se reemplazó la consolidación por
+      FindIndex repetido sobre RepMovEnUnaFecha (patrón O(n²)) por acumulación
+      en Dictionary claveado por codigo/estado/presentacion/um/lote/vence
+      (patrón O(n)). Se mantiene lista final para el flujo existente del grid.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE blindaje transaccional ingresos SAP"
+    detalle: >
+      Se aplico blindaje en SAPSYNCCUMBRE tomando como referencia el patron de
+      Killios: nuevo helper Clases/clsSAPTransaction.vb con tag
+      EJC20260602_SYNC_INGRESO_SAP, incluido en SAPSYNCCUMBRE.vbproj. En
+      Pedido_Compra/clsSyncSAPPedidoCompra.vb, Enviar_Entrada_Mercancia_OC_SAP
+      ahora abre transaccion SAP antes de crear entrada/actualizar-cerrar OC y
+      confirma solo al final; en error hace rollback SAP para evitar que SAP
+      quede con documento creado y TOMWMS como no enviado. En transferencia de
+      ingreso, Enviar_Solicitud_Traslado_SAP valida lineas WMS, valida DocEntry
+      creado con GetByKey antes de marcar i_nav_transacciones_out y usa la misma
+      transaccion SAP. Se documento humanamente en
+      brain/handoffs/2026-06-02-sapsynccumbre/SAPSYNCCUMBRE-FINE-TRACE-2026-06-02.md,
+      seccion 16. Se amplio la idempotencia de entrada: si
+      trans_re_oc.No_Erp_Docentry_Entrega ya tiene referencia, la interface hace
+      GetByKey en SAP y no vuelve a crear la entrada; al crear una entrada nueva
+      guarda No_Erp_Docentry_Entrega/No_Erp_Docnum_Entrega para futuros reintentos.
+      Para punto 3, en Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb se
+      blindo el caso 05 -> bodega destino: si vBodega_Destino tiene valor,
+      Enviar_Solicitud_Traslado_SAP es obligatorio, debe devolver DocEntry > 0
+      y debe quedar No_Pase en WMS; si no, se lanza error y rollback SAP/SQL.
+      El metodo destino tambien falla si no hay lineas, si SAP no valida
+      GetByKey o si no logra guardar DocNum/No_Pase. Pendiente: reconciliacion
+      historica cuando no exista DocEntry guardado y prueba en Visual Studio con
+      SAP DI API/DevExpress instalados.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE sync ingresos SAP via worker WMS"
+    detalle: >
+      Fase 1 aplicada localmente para parametrizar i_nav_config_enc.enviar_ingreso_sap_via_ws:
+      Entity clsBeI_nav_config_enc agrega Enviar_Ingreso_SAP_Via_WS, DAL clsLnI_nav_config_enc
+      lo carga/guarda con tag EJC20260602_SYNC_INGRESO_SAP, y frmConfiguracion queda
+      mapeado sin tocar Designer mediante CheckEdit futuro chkSapSyncEnviaIngresosAuto.
+      Script DDL canonico en repo DBA ejcalderongt/DBA: i_nav_config_enc agrega
+      enviar_ingreso_sap_via_ws e i_nav_sync_request crea tabla/indices para cola.
+      Fase 2 acordada: WS/BOF solo encola i_nav_sync_request y el worker WMS del servidor
+      ejecuta SAPSYNCCUMBRE/MI3_Sync tipo 5; HH no requiere cambio obligatorio.
+      Se agregaron Entity/DAL minimos para i_nav_sync_request bajo Interface/SyncRequest:
+      encolar si no hay activa, tomar siguiente pendiente, marcar procesando/finalizado/error/ignorado.
+  - fecha: "2026-06-02"
+    area: "SAPSYNCCUMBRE fine-trace"
+    detalle: >
+      Se documento el workflow operativo de SAPSYNCCUMBRE en
+      brain/handoffs/2026-06-02-sapsynccumbre/SAPSYNCCUMBRE-FINE-TRACE-2026-06-02.md.
+      Hallazgo central: la interface WinForms/DI API no opera aislada; compila
+      hacia TOMIMSV4 y reutiliza Entity/DAL compartidos. SAP -> WMS usa campos
+      U_EnviadoWMS/U_Enviado_WMS=2 como pendientes, mapea documentos a i_nav_*
+      y consolida a trans_oc/trans_pe. WMS -> SAP sale desde i_nav_transacciones_out
+      agrupando ingresos, salidas, traslados, devoluciones y ajustes; al exito
+      marca enviados y guarda referencias externas. No exponer valores de Conn.ini.
+  - fecha: "2026-06-01"
+    area: "HH progress/cancel WS concurrency"
+    detalle: >
+      En TOMHH2025 se analizo el patron de progress.show/cancel/dismiss en
+      pantallas Java HH. El helper com.dts.base.ProgressDialog ya redirige
+      show/cancel/dismiss al hilo UI; el riesgo comun no es el dialog en si,
+      sino execws solapado con ws.callback mutable por pantalla y callbacks
+      tardios que cierran o reabren progress contra un estado mas nuevo. Areas
+      mas expuestas por volumen y entradas rapidas: Recepcion frm_recepcion_datos
+      y frm_list_rec_prod, CambioUbicacion frm_cambio_ubicacion_ciega,
+      Packing frm_Packing/frm_preparacion_packing, Picking frm_picking_datos/
+      frm_detalle_tareas_picking, Verificacion frm_detalle_tareas_verificacion/
+      frm_verificacion_datos. Mitigacion recomendada por pantalla: inFlight,
+      requestToken incremental, deshabilitar trigger durante WS y cerrar
+      progress en finally/catch solo si el token sigue vigente.
   - fecha: "2026-05-27"
     area: "RFID inventario fisico ILP"
     detalle: >
@@ -1073,3 +1284,38 @@ notas:
       el comportamiento por defecto y solo difiere asignar DataSource cuando
       Cargar_Datos procesa varios pedidos para asignarlo una vez al final.
       Toggle de traza: TOMWMS_PICKING_TRACE=0.
+  - fecha: "2026-06-02"
+    area: "BOF Stock en una fecha regularizacion inventario"
+    detalle: >
+      Fase 2 del reporte de stock en fecha para contemplar regularizaciones
+      intermedias de inventario ciclico. Se ajusto
+      dbo.usp_Reporte_StockEnFecha_Consolidado para incluir tipos de tarea de
+      reclasificacion por lote/vencimiento/estado (AJLOTE*/AJVENC*/CEST*), y se
+      robustecio el mapper clsLnVW_Movimientos.Cargar_StockEnFecha para mapear
+      Presentacion con/sin tilde y guardar TTarea desde TipoTarea. Se documento
+      la traza en tools/stock-en-fecha/STOCK_EN_FECHA_REGULARIZACION_TRACE_20260602.md.
+  - fecha: "2026-06-04"
+    area: "DAL reemplazo verificacion integridad stock_res"
+    detalle: >
+      Se elimino la dependencia de relectura por filtros fragiles
+      (IdPedidoDet/IdPicking/IdPedido + host/user/estado) en los flujos de
+      reemplazo que lanzaban "no se genero stock reservado". Ahora
+      Reservar_Stock_By_Stock_Reem captura los IdStockRes realmente insertados
+      dentro de la misma transaccion y Reemplazar_IdStock_By_Stock,
+      Reemplazo_Verificacion_By_ListPickingUbic y
+      ReemplazarAuto_IdStock_By_Stock recuperan con
+      Get_All_Reemplazo_By_IdsStockRes. Esto fuerza integridad fuerte:
+      si se inserto, se recupera por clave tecnica; si no existe IdStockRes
+      insertado, se considera falla real de datos/flujo.
+  - fecha: "2026-06-04"
+    area: "RCA reemplazo verificacion LA_CUMBRE_QA (pedido 7618)"
+    detalle: >
+      En EC2/Amazon (TOMWMS_LA_CUMBRE_QA), IdPedidoDet 462795 tiene
+      trans_pe_det.Cantidad=48 y stock_res acumulado=48 en estado PICKEADO
+      (sin UNCOMMITED). El tope defensivo Ajustar_Cantidad_Maxima_PedidoDet
+      sumaba todo stock_res por IdPedidoDet, por lo que una nueva reserva de
+      reemplazo quedaba en 0 y disparaba "no se genero stock reservado".
+      Se ajusto el tope para contar solo reservas abiertas
+      ('UNCOMMITED HH','UNCOMMITED') y se normaliza Lote en WS
+      ('-' => '') para evitar divergencia HH vs BD.
+

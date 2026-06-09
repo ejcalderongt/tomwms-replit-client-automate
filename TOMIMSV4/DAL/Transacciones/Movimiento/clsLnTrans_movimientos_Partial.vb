@@ -904,7 +904,8 @@ Partial Public Class clsLnTrans_movimientos
                 vSQL += " AND  IdProductoBodega =@IdProductoBodega "
             End If
 
-            vSQL += String.Format(" And cast(Fecha AS DATE) BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
+            'EJC20260602_STOCK_FECHA: Filtro sargable para mejorar uso de índices por fecha.
+            vSQL += " And Fecha >= @FechaDel And Fecha < @FechaAlExclusiva "
 
             vSQL += " ORDER BY Fecha DESC "
 
@@ -920,6 +921,8 @@ Partial Public Class clsLnTrans_movimientos
                         lDataAdapter.SelectCommand.CommandType = CommandType.Text
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaAlExclusiva", pFechaAl.Date.AddDays(1))
 
                         If pIdProductoBodega <> 0 Then
                             lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
@@ -974,7 +977,8 @@ Partial Public Class clsLnTrans_movimientos
                 vSQL += " AND  IdProductoBodega =@IdProductoBodega "
             End If
 
-            vSQL += String.Format(" And cast(Fecha AS DATE) BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
+            'EJC20260602_STOCK_FECHA: Filtro sargable para mejorar uso de índices por fecha.
+            vSQL += " And Fecha >= @FechaDel And Fecha < @FechaAlExclusiva "
 
             vSQL += " ORDER BY Fecha DESC "
 
@@ -990,6 +994,8 @@ Partial Public Class clsLnTrans_movimientos
                         lDataAdapter.SelectCommand.CommandType = CommandType.Text
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                         lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@FechaAlExclusiva", pFechaAl.Date.AddDays(1))
 
                         If pIdProductoBodega <> 0 Then
                             lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
@@ -1316,47 +1322,12 @@ Partial Public Class clsLnTrans_movimientos
                                                              ByVal pIdProductoBodega As Integer,
                                                              ByVal pIdBodega As Integer,
                                                              ByVal pIdPropietarioBodega As Integer,
-                                                             ByVal pLote As String) As List(Of clsBeVW_Movimientos)
+                                                             ByVal pLote As String,
+                                                             Optional ByVal pSoloProductosConStock As Boolean = False) As List(Of clsBeVW_Movimientos)
 
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
         Try
-
-            Dim vSQL As String = ""
-
-            vSQL = "SELECT Codigo,Producto, SUM(cantidad) AS Cantidad,
-                    EstadoOrigen, 
-                    EstadoDestino, 
-                    TipoTarea, lote,Fecha_Vence, IdTipoTarea, 
-                    IdPresentacion, IdUnidadMedida, IdEstadoOrigen, 
-                    IdProductoBodega,Fecha,
-                    Umbas, EstadoOrigen, Presentación, Operador
-                    FROM VW_Movimientos_N 
-                    WHERE 1 =1  "
-
-            If pIdProductoBodega <> 0 Then
-                vSQL += " AND IdProductoBodega =@IdProductoBodega "
-            End If
-
-            If pLote <> "" Then
-                vSQL += " AND lote =@lote "
-            End If
-
-            vSQL += " AND IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
-
-
-            vSQL += String.Format(" And cast(Fecha AS DATE) BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            vSQL += " AND TipoTarea NOT IN ('PIK', 'VERI','REEMP_BE_PICK','CEST')"
-
-            vSQL += " GROUP BY codigo,producto,EstadoOrigen, 
-                    EstadoDestino, IdProductoBodega,
-                    TipoTarea, lote,fecha_vence, 
-                    IdTipoTarea,Fecha, IdPresentacion, 
-                    IdUnidadMedida, IdEstadoOrigen,
-                    Umbas, EstadoOrigen, Presentación, Operador"
-
-            vSQL += " ORDER BY Fecha, Codigo, fecha_vence, Lote"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -1364,18 +1335,27 @@ Partial Public Class clsLnTrans_movimientos
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                    Using lDTA As New SqlDataAdapter("dbo.usp_Reporte_StockEnFecha_Movimientos", lConnection)
 
                         lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-
-                        If pIdProductoBodega <> 0 Then
-                            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
-                        End If
-
+                        lDTA.SelectCommand.CommandType = CommandType.StoredProcedure
+                        'EJC20260602_STOCK_FECHA_TIMEOUT: el reporte puede procesar volúmenes altos; evitar timeout por default (30s).
+                        lDTA.SelectCommand.CommandTimeout = 180
+                        lDTA.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@FechaAl", pFechaAl.Date)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@lote", pLote)
+                        If pIdProductoBodega = 0 Then
+                            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", DBNull.Value)
+                        Else
+                            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
+                        End If
+                        If pLote = "" Then
+                            lDTA.SelectCommand.Parameters.AddWithValue("@Lote", DBNull.Value)
+                        Else
+                            lDTA.SelectCommand.Parameters.AddWithValue("@Lote", pLote)
+                        End If
+                        lDTA.SelectCommand.Parameters.AddWithValue("@SoloProductosConStock", pSoloProductosConStock)
 
                         Dim lTable As New DataTable
                         lDTA.Fill(lTable)
@@ -1386,7 +1366,7 @@ Partial Public Class clsLnTrans_movimientos
 
                             For Each lRow As DataRow In lTable.Rows
                                 Obj = New clsBeVW_Movimientos
-                                clsLnVW_Movimientos.Cargar(Obj, lRow)
+                                clsLnVW_Movimientos.Cargar_StockEnFecha(Obj, lRow)
                                 lReturnList.Add(Obj)
                             Next
 
@@ -1416,60 +1396,30 @@ Partial Public Class clsLnTrans_movimientos
                                                              ByVal pIdBodega As Integer,
                                                              ByVal pIdPropietarioBodega As Integer,
                                                              ByRef lConnection As SqlConnection,
-                                                             ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_Movimientos)
+                                                             ByRef lTransaction As SqlTransaction,
+                                                             Optional ByVal pSoloProductosConStock As Boolean = False) As List(Of clsBeVW_Movimientos)
 
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
         Try
 
-            Dim vSQL As String = ""
+            Using lDTA As New SqlDataAdapter("dbo.usp_Reporte_StockEnFecha_Movimientos", lConnection)
 
-            vSQL = "SELECT Codigo,Producto, 
-                    SUM(cantidad) AS Cantidad,
-                    EstadoOrigen, 
-                    EstadoDestino, 
-                    TipoTarea, 
-                    lote,
-                    Fecha_Vence, 
-                    IdTipoTarea, 
-                    IdPresentacion, 
-                    IdUnidadMedida, 
-                    IdEstadoOrigen, 
-                    IdProductoBodega,
-                    Fecha,
-                    Umbas, 
-                    EstadoOrigen, 
-                    Presentación,
-                    barra_pallet,
-                    Clasificacion,
-                    Area_Origen,
-                    Operador
-                    FROM VW_Movimientos_N 
-                    WHERE IdProductoBodega=@IdProductoBodega "
-
-            vSQL += " AND IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
-
-            vSQL += String.Format(" And cast(Fecha AS DATE) BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            vSQL += " GROUP BY codigo,producto,EstadoOrigen, 
-                      EstadoDestino, IdProductoBodega,
-                      TipoTarea, lote,fecha_vence, 
-                      IdTipoTarea,Fecha, IdPresentacion, 
-                      IdUnidadMedida, IdEstadoOrigen,
-                      Umbas, EstadoOrigen, Presentación, 
-                      barra_pallet,
-                      Clasificacion,
-                      Area_Origen, Operador "
-
-            vSQL += " ORDER BY Codigo, Lote, Fecha"
-
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.CommandType = CommandType.StoredProcedure
                 lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
+                'EJC20260602_STOCK_FECHA_TIMEOUT: el reporte puede procesar volúmenes altos; evitar timeout por default (30s).
+                lDTA.SelectCommand.CommandTimeout = 180
+                lDTA.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
+                lDTA.SelectCommand.Parameters.AddWithValue("@FechaAl", pFechaAl.Date)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                If pIdProductoBodega = 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", DBNull.Value)
+                Else
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
+                End If
+                lDTA.SelectCommand.Parameters.AddWithValue("@Lote", DBNull.Value)
+                lDTA.SelectCommand.Parameters.AddWithValue("@SoloProductosConStock", pSoloProductosConStock)
 
                 Dim lTable As New DataTable
                 lDTA.Fill(lTable)
@@ -1480,7 +1430,7 @@ Partial Public Class clsLnTrans_movimientos
 
                     For Each lRow As DataRow In lTable.Rows
                         Obj = New clsBeVW_Movimientos
-                        clsLnVW_Movimientos.Cargar(Obj, lRow)
+                        clsLnVW_Movimientos.Cargar_StockEnFecha(Obj, lRow)
                         lReturnList.Add(Obj)
                     Next
 

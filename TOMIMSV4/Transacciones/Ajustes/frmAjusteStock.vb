@@ -39,6 +39,16 @@ Public Class frmAjusteStock
         Editar = 2
     End Enum
 
+    Private Sub Notificar_Lista_Ajustes_Actualizada()
+        Try
+            If Not InvokeListarAjustes Is Nothing Then
+                InvokeListarAjustes.Invoke()
+            End If
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Sub
+
     Public Sub New()
 
         InitializeComponent()
@@ -784,11 +794,20 @@ Public Class frmAjusteStock
             DgCombo.DisplayMember = "Nombre"
 
             If pidmotivo <> -1 Then
-                DgCombo.Value = pidmotivo
+                If ComboCellContainsValue(DgCombo, pidmotivo) Then
+                    DgCombo.Value = pidmotivo
+                Else
+                    ' #EJC20260603_FIX_AJUSTE_MOTIVO_COMBO: el motivo guardado no existe en catálogo actual.
+                    DgCombo.Value = Nothing
+                End If
             Else
                 If dt.Rows.Count = 1 Then
                     pidmotivo = 1
-                    DgCombo.Value = 1
+                    If ComboCellContainsValue(DgCombo, pidmotivo) Then
+                        DgCombo.Value = pidmotivo
+                    Else
+                        DgCombo.Value = Nothing
+                    End If
                 End If
             End If
 
@@ -873,7 +892,11 @@ Public Class frmAjusteStock
 
                 If pidtipo <> -1 Then
                     dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = True
-                    DgComboTipo.Value = pidtipo
+                    If ComboCellContainsValue(DgComboTipo, pidtipo) Then
+                        DgComboTipo.Value = pidtipo
+                    Else
+                        DgComboTipo.Value = Nothing
+                    End If
                     IdTipoAjuste = pidtipo
                     Valor_Tipo_Ajuste(pIndex)
                 End If
@@ -1316,6 +1339,7 @@ Public Class frmAjusteStock
             End If
 
             lblRegs.Caption = "Registros: " & dgrid.Rows.Count
+            Notificar_Lista_Ajustes_Actualizada()
         Catch ex As Exception
 
             XtraMessageBox.Show(ex.Message,
@@ -1586,6 +1610,7 @@ Public Class frmAjusteStock
         Dim DgCombo As New DataGridViewComboBoxCell()
         Dim sr As Integer
         Dim vNombreMotivo As String = ""
+        Dim vIdMotivo As Integer = 0
 
         Try
 
@@ -1597,16 +1622,23 @@ Public Class frmAjusteStock
 
                 DgCombo = TryCast(dgrid.Rows(sr).Cells("motivoajuste"), DataGridViewComboBoxCell)
 
-                vNombreMotivo = DgCombo.EditedFormattedValue
+                '#EJC20260603_FIX_AJUSTE_MOTIVO_MAP: mapear por Value(ID) del combo para evitar pérdida por nombre.
+                vIdMotivo = Get_IdMotivo_From_Grid_Row(sr)
 
-                If vNombreMotivo.Trim <> "" AndAlso vNombreMotivo <> "System.Data.DataRowView" Then
+                If vIdMotivo > 0 Then
+                    lBeTransAjusteDet(sr).IdMotivoAjuste = vIdMotivo
+                Else
+                    vNombreMotivo = DgCombo.EditedFormattedValue
 
-                    Get_IdMotivo_By_Nombre(vNombreMotivo)
+                    If vNombreMotivo.Trim <> "" AndAlso vNombreMotivo <> "System.Data.DataRowView" Then
 
-                    If IdMotivoAjuste > 0 Then
-                        lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        Get_IdMotivo_By_Nombre(vNombreMotivo)
+
+                        If IdMotivoAjuste > 0 Then
+                            lBeTransAjusteDet(sr).IdMotivoAjuste = IdMotivoAjuste
+                        End If
+
                     End If
-
                 End If
 
             End If
@@ -1660,9 +1692,9 @@ Public Class frmAjusteStock
 
                 IdMotivoAjuste = -1
 
-                dr = dtm.Select("Nombre='" & NombreMotivo & "'")
+                dr = dtm.Select("Nombre='" & NombreMotivo.Replace("'", "''") & "'")
 
-                If dr(0).Item("Idmotivoajuste") > 0 Then
+                If dr IsNot Nothing AndAlso dr.Length > 0 AndAlso dr(0).Item("Idmotivoajuste") > 0 Then
                     IdMotivoAjuste = IIf(IsDBNull(dr(0).Item("Idmotivoajuste")), "-1", dr(0).Item("Idmotivoajuste"))
                 End If
 
@@ -1731,6 +1763,7 @@ Public Class frmAjusteStock
     Private Sub mnuGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuGuardar.ItemClick
 
         Try
+            Guardado = False
 
             If XtraMessageBox.Show("¿Guardar ajuste?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
@@ -1759,8 +1792,8 @@ Public Class frmAjusteStock
                     Guardar_Stock_por_Ajuste_Positivo()
                 End If
 
-                If Not InvokeListarAjustes Is Nothing Then
-                    InvokeListarAjustes.Invoke
+                If Guardado Then
+                    Notificar_Lista_Ajustes_Actualizada()
                 End If
 
             End If
@@ -1795,8 +1828,12 @@ Public Class frmAjusteStock
                 Return False
             End If
 
-            vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
-            Get_IdMotivo_By_Nombre(vNomMotivo)
+            IdMotivoAjuste = Get_IdMotivo_From_Grid_Row(sr)
+
+            If IdMotivoAjuste < 1 Then
+                vNomMotivo = dgrid.Rows(sr).Cells("motivoajuste").EditedFormattedValue
+                Get_IdMotivo_By_Nombre(vNomMotivo)
+            End If
 
             If IdMotivoAjuste < 1 Then
                 dgrid.Rows(sr).Cells(0).Selected = True
@@ -2068,6 +2105,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 
@@ -2197,6 +2235,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 
@@ -2334,6 +2373,7 @@ Public Class frmAjusteStock
             Deshabilita_Grid()
 
             Llenar_DS_Rep()
+            Notificar_Lista_Ajustes_Actualizada()
 
         Catch ex As Exception
 
@@ -2449,7 +2489,11 @@ Public Class frmAjusteStock
             If pIdBodegaERP <> 0 Then
                 If DgComboBodega.Items.Count > 0 Then
                     If Not pIdBodegaERP = -1 Then
-                        DgComboBodega.Value = pIdBodegaERP
+                        If ComboCellContainsValue(DgComboBodega, pIdBodegaERP) Then
+                            DgComboBodega.Value = pIdBodegaERP
+                        Else
+                            DgComboBodega.Value = Nothing
+                        End If
                     Else
                         DgComboBodega.Value = Nothing
                     End If
@@ -3693,11 +3737,84 @@ Public Class frmAjusteStock
     Private Sub dgrid_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgrid.DataError
 
         Try
+            e.ThrowException = False
+
+            If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
+                Dim colName As String = dgrid.Columns(e.ColumnIndex).Name
+
+                If colName = "motivoajuste" OrElse colName = "tipoajuste" OrElse colName = "ColBodega" Then
+                    dgrid.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = Nothing
+                    clsLnLog_error_wms.Agregar_Error("#EJC20260603_FIX_AJUSTE_MOTIVO_COMBO DataError: valor no válido en combo " & colName)
+                End If
+            End If
 
         Catch ex As Exception
             Debug.Print(ex.Message)
         End Try
     End Sub
+
+    Private Function Get_IdMotivo_From_Grid_Row(ByVal pRowIndex As Integer) As Integer
+
+        Try
+            If pRowIndex < 0 OrElse pRowIndex >= dgrid.Rows.Count Then Return 0
+
+            Dim vValue As Object = dgrid.Rows(pRowIndex).Cells("motivoajuste").Value
+            If vValue Is Nothing OrElse IsDBNull(vValue) Then Return 0
+
+            Dim vId As Integer = 0
+            If Integer.TryParse(vValue.ToString(), vId) Then
+                Return vId
+            End If
+
+            Return 0
+        Catch
+            Return 0
+        End Try
+
+    End Function
+
+    Private Function ComboCellContainsValue(ByVal pCell As DataGridViewComboBoxCell, ByVal pValue As Object) As Boolean
+
+        Try
+            If pCell Is Nothing OrElse pValue Is Nothing OrElse IsDBNull(pValue) Then Return False
+
+            Dim pValueText As String = pValue.ToString().Trim()
+            If pValueText = "" Then Return False
+
+            Dim dt As DataTable = TryCast(pCell.DataSource, DataTable)
+            If dt IsNot Nothing Then
+                If String.IsNullOrWhiteSpace(pCell.ValueMember) Then
+                    For Each r As DataRow In dt.Rows
+                        If String.Equals(Convert.ToString(r(0)).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                            Return True
+                        End If
+                    Next
+                    Return False
+                End If
+
+                For Each r As DataRow In dt.Rows
+                    If String.Equals(Convert.ToString(r(pCell.ValueMember)).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                Next
+                Return False
+            End If
+
+            If pCell.Items IsNot Nothing AndAlso pCell.Items.Count > 0 Then
+                For Each i As Object In pCell.Items
+                    If String.Equals(Convert.ToString(i).Trim(), pValueText, StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                Next
+                Return False
+            End If
+
+            Return False
+        Catch
+            Return False
+        End Try
+
+    End Function
 
     Private Sub cmbTipoAjuste_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTipoAjuste.EditValueChanged
         Try

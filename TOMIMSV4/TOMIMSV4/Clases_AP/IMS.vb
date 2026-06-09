@@ -21,6 +21,9 @@ Public Class IMS
     Public Property IdConfiguracionInterface() As Integer
     Public Property Nombre_Skin As String = ""
     Public Property InterfaceSAP As Boolean = False
+    '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+    'Control global para detectar y reaplicar cambio de bodega en formularios abiertos.
+    Public Property IdBodegaGlobalAppChange() As Integer
 
     'Public vSQL As String = ""
 

@@ -397,7 +397,8 @@ Public Class frmExistenciasConReserva
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistenciasStock, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -441,7 +442,6 @@ Public Class frmExistenciasConReserva
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -685,6 +685,7 @@ Public Class frmExistenciasConReserva
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             'If threadListar_Stock.ThreadState = ThreadState.Stopped OrElse threadListar_Stock.ThreadState = 12 Then
             '    threadListar_Stock = New Thread(AddressOf Cargar_Datos)
             '    threadListar_Stock.Start()
@@ -740,3 +741,6 @@ Public Class frmExistenciasConReserva
     End Sub
 
 End Class
+
+
+

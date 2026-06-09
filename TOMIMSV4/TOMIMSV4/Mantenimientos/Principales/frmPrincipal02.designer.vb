@@ -116,7 +116,7 @@ Partial Class frmPrincipal02
         Me.dgridInidicesRotacion = New DevExpress.XtraGrid.GridControl()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.TabDashPicking = New DevExpress.XtraBars.Navigation.TabNavigationPage()
-        Me.dvPicking = New DevExpress.DashboardWin.DashboardViewer(Me.components)
+        Me.dvPicking = New DevExpress.XtraEditors.PanelControl()
         Me.tabIndicadoresBodProp = New DevExpress.XtraBars.Navigation.TabNavigationPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
@@ -1152,7 +1152,6 @@ Partial Class frmPrincipal02
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.dvPicking, DevExpress.Utils.DefaultBoolean.[Default])
         Me.dvPicking.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(210, Byte), Integer), CType(CType(210, Byte), Integer), CType(CType(210, Byte), Integer))
         Me.dvPicking.Appearance.Options.UseBackColor = True
-        Me.dvPicking.AsyncMode = True
         Me.dvPicking.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dvPicking.Location = New System.Drawing.Point(0, 0)
         Me.dvPicking.Margin = New System.Windows.Forms.Padding(5)
@@ -1807,7 +1806,7 @@ Partial Class frmPrincipal02
     Friend WithEvents txtCantidadPosiciones As DevExpress.XtraEditors.TextEdit
     Friend WithEvents lblCantidadPosiciones As DevExpress.XtraEditors.LabelControl
     Friend WithEvents TabDashPicking As DevExpress.XtraBars.Navigation.TabNavigationPage
-    Friend WithEvents dvPicking As DevExpress.DashboardWin.DashboardViewer
+    Friend WithEvents dvPicking As DevExpress.XtraEditors.PanelControl
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents dgridTareasPendientesReabasto As DevExpress.XtraGrid.GridControl
     Friend WithEvents gvReabastoPendiente As DevExpress.XtraGrid.Views.Grid.GridView

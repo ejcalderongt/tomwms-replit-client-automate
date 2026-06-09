@@ -15,13 +15,15 @@ Public Class frmRptMovPorDocu
     End Sub
 
     Private Sub frmRptMovPorDocu_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Cargar()
     End Sub
 
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdMovimiento_Documento, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -65,7 +67,6 @@ Public Class frmRptMovPorDocu
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -132,3 +133,6 @@ Public Class frmRptMovPorDocu
         Cargar()
     End Sub
 End Class
+
+
+

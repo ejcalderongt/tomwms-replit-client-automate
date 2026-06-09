@@ -142,7 +142,8 @@ Public Class frmExistenciasNumDocu
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistencias, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -175,7 +176,6 @@ Public Class frmExistenciasNumDocu
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -239,6 +239,7 @@ Public Class frmExistenciasNumDocu
     Private Sub frmExistenciasNumDocu_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             ListarIngresos()
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
@@ -410,3 +411,6 @@ Public Class frmExistenciasNumDocu
     End Sub
 
 End Class
+
+
+

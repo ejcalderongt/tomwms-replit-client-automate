@@ -9,7 +9,7 @@ Exporta un paquete de evidencia (seed) desde SQL productivo **solo lectura** par
   - `WMS_KILLIOS_DB_HOST`
   - `WMS_KILLIOS_DB_NAME`
   - `WMS_KILLIOS_DB_USER`
-  - `WMS_KILLIOS_DB_PASSWORD`
+  - `WMS_EC2_DB_PASSWORD`
 
 ## Uso rápido
 ```powershell
@@ -46,3 +46,4 @@ Así mantienes control manual y evitas fuga accidental de datos.
 
 ## Nota
 Las queries base de `queries/data-discrepancy` son plantilla inicial. Ajusta nombres de columnas si tu esquema de cliente difiere.
+

@@ -10,6 +10,8 @@
     Public Property Producto As New clsBeProducto
     Public Property IdStockOrigen As Integer = 0
     Public Property IsReportStockEnFecha As Boolean = False
+    'EJC20260602_STOCK_FECHA: Permite incluir existencias en ubicaciones de despacho en reportes puntuales.
+    Public Property IncluirUbicacionesDespacho As Boolean = False
     Public Property UbicacionPicking As Boolean = False
     Public Property UbicacionNivel As Integer = 0
     Public Property Pallet_Completo As Boolean = False
