@@ -114,7 +114,17 @@ Public Class frmConfiguracion
         seDespacharExiParc.Value = 0
         chkRechazarPedidoIncompleto.Checked = False
         chkValidaSoloCodigo.Checked = False
+        Set_Enviar_Ingreso_SAP_Via_WS(False)
         txtArchivo.Text = ""
+    End Sub
+
+    '#EJC20260602_SYNC_INGRESO_SAP: Mapeo de mantenimiento para el CheckEdit chkSapSyncEnviaIngresosAuto.
+    Private Function Get_Enviar_Ingreso_SAP_Via_WS() As Boolean
+        Return chkSapSyncEnviaIngresosAuto.Checked
+    End Function
+
+    Private Sub Set_Enviar_Ingreso_SAP_Via_WS(ByVal pValue As Boolean)
+        chkSapSyncEnviaIngresosAuto.Checked = pValue
     End Sub
 
     Private Function Actualizar() As Boolean
@@ -153,6 +163,7 @@ Public Class frmConfiguracion
                 BeConfigEnc.IdTipoEtiqueta = cmbEtiqueta.EditValue
                 BeConfigEnc.IdTipoRotacion = cmbTipoRotacion.EditValue
                 BeConfigEnc.Push_Ingreso_NAV_Desde_HH = chkpush_ingreso_nav_desde_hh.Checked
+                BeConfigEnc.Enviar_Ingreso_SAP_Via_WS = Get_Enviar_Ingreso_SAP_Via_WS()
                 BeConfigEnc.IdAcuerdoEnc = Val(txtIdAcuerdoEnc.Text)
                 BeConfigEnc.Implosion_Automatica = chkImplosionAutomaticaEnInterface.Checked
                 BeConfigEnc.Explosion_Automatica = chkExplosionAutomaticaInterface.Checked
@@ -245,6 +256,7 @@ Public Class frmConfiguracion
                 BeConfigEnc.IdTipoEtiqueta = cmbEtiqueta.EditValue
                 BeConfigEnc.IdTipoRotacion = cmbTipoRotacion.EditValue
                 BeConfigEnc.Push_Ingreso_NAV_Desde_HH = chkpush_ingreso_nav_desde_hh.Checked
+                BeConfigEnc.Enviar_Ingreso_SAP_Via_WS = Get_Enviar_Ingreso_SAP_Via_WS()
                 BeConfigEnc.IdAcuerdoEnc = Val(txtIdAcuerdoEnc.Text)
                 BeConfigEnc.Implosion_Automatica = chkImplosionAutomaticaEnInterface.Checked
                 BeConfigEnc.Explosion_Automatica = chkExplosionAutomaticaInterface.Checked
@@ -894,6 +906,7 @@ Public Class frmConfiguracion
                     nuCentroCostoERP.Value = BeConfigEnc.Centro_Costo_Erp
                     chkRequerirCentroCostoObligatario.Checked = BeConfigEnc.Requerir_Centro_Costo_Obligatorio
                     chkCantidadPresentacionTransaccionesOut.Checked = BeConfigEnc.cantidad_en_presentacion_transacciones_out
+                    Set_Enviar_Ingreso_SAP_Via_WS(BeConfigEnc.Enviar_Ingreso_SAP_Via_WS)
 
                     mnuGuardar.Enabled = False
 

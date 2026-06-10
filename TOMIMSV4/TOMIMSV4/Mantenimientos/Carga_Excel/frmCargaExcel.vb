@@ -2674,24 +2674,27 @@ Public Class frmCargaExcel
                                      ";Ms=" & vTraceMsCacheTallaColor)
             End If
 
+            Dim vUiChunk As Integer = 100
+            Dim vUltimoUiTick As Integer = Environment.TickCount
+
             For i As Integer = 0 To pDT.Rows.Count - 1
 
-                SplashScreenManager.Default.SetWaitFormDescription("Registros " & i + 1 & " de: " & vCantRegistros)
+                If i = 0 OrElse ((i + 1) Mod vUiChunk = 0) Then
+                    SplashScreenManager.Default.SetWaitFormDescription("Registros " & i + 1 & " de: " & vCantRegistros)
+                End If
 
                 Dim Indice As Integer = i
                 Contador = Contador + 1
 
-                Application.DoEvents()
-
-                If Contador = 113 - 1 Then
-                    Debug.WriteLine(" Espera " & Contador)
+                If i = 0 OrElse ((i + 1) Mod vUiChunk = 0) Then
+                    Dim vAhoraUiTick As Integer = Environment.TickCount
+                    If Math.Abs(vAhoraUiTick - vUltimoUiTick) >= 120 Then
+                        Application.DoEvents()
+                        vUltimoUiTick = vAhoraUiTick
+                    End If
                 End If
 
-                Debug.WriteLine(" Espera " & Contador)
-
                 Dim vCodigoProductoDebug As String = IIf(IsDBNull(pDT(i)(0)), "", pDT(i)(0))
-
-                Debug.Write(" Código: " & vCodigoProducto)
 
                 errorCampos = False
                 IdProductoTallaColor = 0
@@ -2936,7 +2939,13 @@ Public Class frmCargaExcel
                                          ";TallaColorBulkRows=" & vTraceTallaColorBulkRows)
                 End If
 
-                Application.DoEvents()
+                If i = 0 OrElse ((i + 1) Mod vUiChunk = 0) Then
+                    Dim vAhoraUiTick As Integer = Environment.TickCount
+                    If Math.Abs(vAhoraUiTick - vUltimoUiTick) >= 120 Then
+                        Application.DoEvents()
+                        vUltimoUiTick = vAhoraUiTick
+                    End If
+                End If
 
             Next
 

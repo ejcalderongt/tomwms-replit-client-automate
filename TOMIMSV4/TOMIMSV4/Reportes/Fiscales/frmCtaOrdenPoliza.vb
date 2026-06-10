@@ -22,6 +22,7 @@ Public Class frmCtaOrdenPoliza
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             IsLoading = True
             IMS.ListarRegimen(cmbRegimen)
             IMS.ListarMovimiento(cmbTransaccion)
@@ -38,7 +39,8 @@ Public Class frmCtaOrdenPoliza
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgridCuentasOrdenPoliza, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -79,7 +81,6 @@ Public Class frmCtaOrdenPoliza
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -231,3 +232,6 @@ Public Class frmCtaOrdenPoliza
 
 
 End Class
+
+
+

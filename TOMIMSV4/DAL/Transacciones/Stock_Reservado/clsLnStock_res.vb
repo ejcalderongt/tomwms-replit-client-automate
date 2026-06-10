@@ -225,7 +225,7 @@ Public Class clsLnStock_res
         Const sp As String = "SELECT " &
                               " CAST(ISNULL((SELECT TOP 1 d.Cantidad FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadPedido, " &
                              " CAST(ISNULL((SELECT TOP 1 ISNULL(d.IdPresentacion, 0) FROM trans_pe_det d WHERE d.IdPedidoDet = @IdPedidoDet), 0) AS INT) AS IdPresentacionPedido, " &
-                             " CAST(ISNULL((SELECT SUM(sr.cantidad) FROM stock_res sr WHERE sr.IdPedidoDet = @IdPedidoDet), 0) AS FLOAT) AS CantidadReservada "
+                             " CAST(ISNULL((SELECT SUM(sr.cantidad) FROM stock_res sr WHERE sr.IdPedidoDet = @IdPedidoDet AND sr.estado IN ('UNCOMMITED HH','UNCOMMITED')), 0) AS FLOAT) AS CantidadReservada "
 
         Using cmd As New SqlCommand(sp, pConnection, pTransaction)
             cmd.CommandType = CommandType.Text

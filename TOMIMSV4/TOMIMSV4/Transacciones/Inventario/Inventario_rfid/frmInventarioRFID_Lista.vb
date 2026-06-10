@@ -13,7 +13,7 @@ Public Class frmInventarioRFID_Lista
 
     Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
         Try
-            Cargar()
+            CargarListaInventariosRFID()
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
@@ -87,14 +87,14 @@ Public Class frmInventarioRFID_Lista
     Private Sub frmInventarioRFID_Lista_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Try
 
-            Cargar()
+            CargarListaInventariosRFID()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
-    Public Sub Cargar()
+    Public Sub CargarListaInventariosRFID()
 
         Try
 
@@ -216,5 +216,18 @@ Public Class frmInventarioRFID_Lista
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
+    End Sub
+
+    Private Sub dtpFechaInicio_ValueChanged(sender As Object, e As EventArgs) Handles dtpFechaInicio.ValueChanged
+        If dtpFechaInicio.Value.Date > dtpFechaFin.Value.Date Then
+            MessageBox.Show("La fecha inicial no puede ser mayor a la fecha final.",
+                            "Fecha inválida",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning)
+
+            dtpFechaInicio.Value = dtpFechaFin.Value.Date
+        Else
+            CargarListaInventariosRFID()
+        End If
     End Sub
 End Class

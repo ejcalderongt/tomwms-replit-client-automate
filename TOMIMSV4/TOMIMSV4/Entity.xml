@@ -24,7 +24,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeI_nav_barras_pallet.Cantidad_UMP">
  <summary>
- Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estándar de estiba.
+ Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estandar de estiba.
  </summary>
  <returns></returns>
 </member>
@@ -386,7 +386,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTms_ticket.Procesado_Stock_Jornada">
  <summary>
- Determina si stock jornada, ya analizó este ticket.
+ Determina si stock jornada, ya analiz� este ticket.
  </summary>
  <returns></returns>
 </member>
@@ -411,8 +411,8 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBe_vw_ajustes.Centro_Costo_Erp">
  <summary>
- #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
- ya que  centro de costo maneja centro de costo dirección y departamento
+ #CKFK20251030 Agregamos estos tres campos para la integraci�n con ERP 
+ ya que  centro de costo maneja centro de costo direcci�n y departamento
  </summary>
  <returns></returns>
 </member>
@@ -840,6 +840,91 @@ Entity
  Creates a new object that is a copy of the current instance.
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_sync_request">
+ <summary>
+ #EJC20260602_SYNC_INGRESO_SAP: Solicitud liviana para que WMS ejecute la interface SAP sin bloquear HH/WS.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdSyncRequest">
+ <summary>
+ Ejemplo: 12345. Identificador identity de i_nav_sync_request.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdNavConfigEnc">
+ <summary>
+ Ejemplo: 7. Configuracion de interface que contiene bodega, empresa, propietario y ejecutable.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdEmpresa">
+ <summary>
+ Ejemplo: 1. Empresa WMS asociada a la recepcion.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdBodega">
+ <summary>
+ Ejemplo: 89. Bodega WMS que genero ingresos pendientes para SAP.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.IdUsuario">
+ <summary>
+ Ejemplo: 101. Usuario que cerro la recepcion o solicito el sync.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Tipo_Interface">
+ <summary>
+ Ejemplo: 5. Valor de pInterfaceAEjecutar.Enviar_Pedidos_Compra en SAPSYNCCUMBRE.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Origen">
+ <summary>
+ Ejemplo: HH, BOF o WS. Punto que solicito la sincronizacion.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Estado">
+ <summary>
+ Ejemplo: PENDIENTE, PROCESANDO, FINALIZADO, ERROR o IGNORADO.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Parametros">
+ <summary>
+ Ejemplo: {"interface":"SAPSYNCCUMBRE","tipoInterface":5,"idRecepcionEnc":123}. Contexto con el que el worker ejecutara la interface.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Solicitud">
+ <summary>
+ Ejemplo: 2026-06-02 09:25:00. Momento en que WS/BOF encolo la solicitud.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Inicio">
+ <summary>
+ Ejemplo: 2026-06-02 09:26:00. Momento en que el worker tomo la solicitud.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Fecha_Fin">
+ <summary>
+ Ejemplo: 2026-06-02 09:28:00. Momento en que la interface termino.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Intento">
+ <summary>
+ Ejemplo: 1. Cantidad de intentos de procesamiento del worker WMS.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Mensaje">
+ <summary>
+ Ejemplo: Sync SAP solicitado, finalizado, sin pendientes o detalle de error controlado.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Host_Solicita">
+ <summary>
+ Ejemplo: HH-AND-01 o IIS-TOMHHWS. Host que solicito el sync.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_sync_request.Host_Procesa">
+ <summary>
+ Ejemplo: WMS-SRV-01. Host WMS que tomo y proceso la solicitud.
+ </summary>
 </member>
 <member name="P:TOMWMS.clsBeI_nav_transacciones_out.Auditar">
  <summary>
@@ -2881,7 +2966,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeOperador.Montacarga">
  <summary>
- #EJC20220613:Determinar si maneja o no  montacarga, importante para la asignación automática de líneas de picking.
+ #EJC20220613:Determinar si maneja o no  montacarga, importante para la asignaci�n autom�tica de l�neas de picking.
  </summary>
  <returns></returns>
 </member>
@@ -4870,10 +4955,10 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Requerir_Ubic_Rec_Ingreso">
  <summary>
- #EJC20220330_CEALSA: Si true, se traslada el parámetro a la tarea de recepción en el BOF
- Para marcar el check, Escanear ubicación en recepción.
- Si Escanear ubicación en recepción True en Rec.
- HH exige una ubicación de recepción válida antes de continuar con el proceso.
+ #EJC20220330_CEALSA: Si true, se traslada el par�metro a la tarea de recepci�n en el BOF
+ Para marcar el check, Escanear ubicaci�n en recepci�n.
+ Si Escanear ubicaci�n en recepci�n True en Rec.
+ HH exige una ubicaci�n de recepci�n v�lida antes de continuar con el proceso.
  </summary>
  <returns></returns>
 </member>
@@ -4885,33 +4970,33 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Marcar_Registros_Enviados_MI3">
  <summary>
- #EJC20220504: A petición de Carolina, si true, en I_NAV_TRANSACICONES_OUT se marcan los registros como enviados
+ #EJC20220504: A petici�n de Carolina, si true, en I_NAV_TRANSACICONES_OUT se marcan los registros como enviados
  utilizado en BYB para marcar los registros de bodega 2 (PT) como enviados.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Preguntar_En_BackOrder">
  <summary>
- #EJC20220601: En tarea de recepción, si no se ha completado el documento, preguntar si se quiere dejar en backorder. Marcelo, Mercosal.
+ #EJC20220601: En tarea de recepci�n, si no se ha completado el documento, preguntar si se quiere dejar en backorder. Marcelo, Mercosal.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Bloquear_Lotes">
  <summary>
- #EJC202303161024: Bloquear el lote para que no se modifique en la HH si están previamente definidos.
+ #EJC202303161024: Bloquear el lote para que no se modifique en la HH si est�n previamente definidos.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Permitir_Excedente_Lotes">
  <summary>
- #EJC20230508: Parámetro agregado para validar si se va a permitir o no agregar de un 
+ #EJC20230508: Par�metro agregado para validar si se va a permitir o no agregar de un 
  lote una cantidad mayor de lo ingresado en la tabla trans_oc_det_lote
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Es_Importacion">
  <summary>
- #EJC202310171614: Determina si un documento de ingreso es una importación
+ #EJC202310171614: Determina si un documento de ingreso es una importaci�n
  Se utiliza para la interface de SAP en BECO para enviar a bodega PNC el producto faltante.
  </summary>
  <returns></returns>
@@ -4925,14 +5010,14 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.IdProductoEstado">
  <summary>
- #GT23102023: Determina si una recepción maneja un estado general para el documento
+ #GT23102023: Determina si una recepci�n maneja un estado general para el documento
  Se utiliza para la interface
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.IdPropietario">
  <summary>
- #GT23102023: Determina si una recepción tiene un propietario asociado a un estado
+ #GT23102023: Determina si una recepci�n tiene un propietario asociado a un estado
  Se utiliza para la interface
  </summary>
  <returns></returns>

@@ -24,8 +24,8 @@ Partial Class frmMenu
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMenu))
-        Dim GalleryItemGroup2 As DevExpress.XtraBars.Ribbon.GalleryItemGroup = New DevExpress.XtraBars.Ribbon.GalleryItemGroup()
-        Dim GalleryItem2 As DevExpress.XtraBars.Ribbon.GalleryItem = New DevExpress.XtraBars.Ribbon.GalleryItem()
+        Dim GalleryItemGroup1 As DevExpress.XtraBars.Ribbon.GalleryItemGroup = New DevExpress.XtraBars.Ribbon.GalleryItemGroup()
+        Dim GalleryItem1 As DevExpress.XtraBars.Ribbon.GalleryItem = New DevExpress.XtraBars.Ribbon.GalleryItem()
         Me.rbMain = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuBodega = New DevExpress.XtraBars.BarSubItem()
         Me.mnuMantBodega = New DevExpress.XtraBars.BarButtonItem()
@@ -422,6 +422,7 @@ Partial Class frmMenu
         Me.BarButtonItem12 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuReporteTransNav = New DevExpress.XtraBars.BarSubItem()
         Me.PopupMenu3 = New DevExpress.XtraBars.PopupMenu(Me.components)
+        Me.BackWorkerRunSync = New System.ComponentModel.BackgroundWorker()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PopupMenu2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemBreadCrumbEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -719,10 +720,10 @@ Partial Class frmMenu
         '
         '
         '
-        GalleryItemGroup2.Caption = "Group4"
-        GalleryItem2.Caption = "Item4"
-        GalleryItemGroup2.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem2})
-        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup2})
+        GalleryItemGroup1.Caption = "Group4"
+        GalleryItem1.Caption = "Item4"
+        GalleryItemGroup1.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem1})
+        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup1})
         Me.RibbonGalleryBarItem1.Id = 25
         Me.RibbonGalleryBarItem1.Name = "RibbonGalleryBarItem1"
         '
@@ -2884,7 +2885,7 @@ Partial Class frmMenu
         Me.PopupControlContainer1.Margin = New System.Windows.Forms.Padding(24, 25, 24, 25)
         Me.PopupControlContainer1.Name = "PopupControlContainer1"
         Me.PopupControlContainer1.Ribbon = Me.rbMain
-        Me.PopupControlContainer1.Size = New System.Drawing.Size(1714, 513)
+        Me.PopupControlContainer1.Size = New System.Drawing.Size(1714, 483)
         Me.PopupControlContainer1.TabIndex = 3
         Me.PopupControlContainer1.Visible = False
         '
@@ -2894,7 +2895,7 @@ Partial Class frmMenu
         Me.lblprg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblprg.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.lblprg.Location = New System.Drawing.Point(0, 390)
+        Me.lblprg.Location = New System.Drawing.Point(0, 360)
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
         Me.lblprg.Size = New System.Drawing.Size(1714, 123)
@@ -2998,9 +2999,9 @@ Partial Class frmMenu
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1714, 706)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.PopupControlContainer1)
         Me.Controls.Add(Me.rbMain)
+        Me.Controls.Add(Me.RibbonStatusBar)
         Me.IsMdiContainer = True
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
@@ -3441,5 +3442,6 @@ Partial Class frmMenu
     Friend WithEvents mnuIndicadoresAjustes As BarSubItem
     Friend WithEvents mnurptIndicadorAjusteProveedor As BarButtonItem
     Friend WithEvents pgAjusteInventarioIndicadores As Ribbon.RibbonPageGroup
+    Friend WithEvents BackWorkerRunSync As System.ComponentModel.BackgroundWorker
     'Friend WithEvents Picking_Service1 As wWSPicking.Picking_Service
 End Class

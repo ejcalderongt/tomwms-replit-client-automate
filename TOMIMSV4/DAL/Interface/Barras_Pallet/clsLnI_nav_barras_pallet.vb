@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Public Class clsLnI_nav_barras_pallet
@@ -35,7 +35,13 @@ Public Class clsLnI_nav_barras_pallet
                 .GTIN = IIf(IsDBNull(dr.Item("gtin")), "", dr.Item("gtin"))
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
+                If dr.Table.Columns.Contains("IdOrdenCompraDetLote") Then
+                    .IdOrdenCompraDetLote = IIf(IsDBNull(dr.Item("IdOrdenCompraDetLote")), 0, dr.Item("IdOrdenCompraDetLote"))
+                Else
+                    .IdOrdenCompraDetLote = 0
+                End If
                 .Peso = IIf(IsDBNull(dr.Item("Peso")), 0, dr.Item("Peso"))
+                .cant_etiquetas_presentacion_impresas = IIf(IsDBNull(dr.Item("cant_etiquetas_presentacion_impresas")), 0, dr.Item("cant_etiquetas_presentacion_impresas"))
 
             End With
 
@@ -78,6 +84,7 @@ Public Class clsLnI_nav_barras_pallet
             Ins.Add("impreso", "@impreso", DataType.Parametro)
             Ins.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
             Ins.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
+            Ins.Add("idordencompradetlote", "@idordencompradetlote", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -115,6 +122,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETLOTE", oBeI_nav_barras_pallet.IdOrdenCompraDetLote))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -166,6 +174,7 @@ Public Class clsLnI_nav_barras_pallet
             Upd.Add("impreso", "@impreso", DataType.Parametro)
             Upd.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
             Upd.Add("idordencompradet", "@idordencompradet", DataType.Parametro)
+            Upd.Add("idordencompradetlote", "@idordencompradetlote", DataType.Parametro)
             Upd.Where("IdPallet = @IdPallet")
 
             Dim sp As String = Upd.SQL()
@@ -204,6 +213,7 @@ Public Class clsLnI_nav_barras_pallet
             cmd.Parameters.Add(New SqlParameter("@IMPRESO", oBeI_nav_barras_pallet.Impreso))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeI_nav_barras_pallet.IdOrdenCompraEnc))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeI_nav_barras_pallet.IdOrdenCompraDet))
+            cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETLOTE", oBeI_nav_barras_pallet.IdOrdenCompraDetLote))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -1292,9 +1302,12 @@ Public Class clsLnI_nav_barras_pallet
                         WHEN EXISTS (
                             SELECT 1
                             FROM i_nav_barras_rfid_det d
-                            INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc
+                            INNER JOIN i_nav_barras_rfid_enc e 
+                                ON e.IdRFIDEnc = d.IdRFIDEnc
+                            INNER JOIN i_nav_barras_rfid_tipo_mov tm
+                                ON tm.IdrfidTipoMov = e.Tipo
                             WHERE d.barra_epc = p.codigo_barra
-                              AND e.Tipo = 'ING'
+                              AND e.Tipo = 1
                         )
                         THEN 1
                         ELSE 0
@@ -1342,7 +1355,7 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
-    Public Shared Function GetAll_By_IdProducto_And_Barra_And_Idbodega(ByVal pIdProductoBodega As Integer, ByVal pCodigo_barra As String,
+    Public Shared Function GetAll_By_IdProducto_And_Barra_And_Idbodega(ByVal pIdProductoBodega As Integer, ByVal pCodigo As String,
                                                                        ByVal pIdBodega As Integer,
                                                                        ByRef lConnection As SqlConnection,
                                                                        ByRef lTransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
@@ -1383,14 +1396,14 @@ Public Class clsLnI_nav_barras_pallet
                                     FROM I_nav_barras_pallet nav
                                     inner join producto pr 
 								    on nav.codigo=pr.codigo inner join producto_bodega pb
-								    on pr.IdProducto = pb.IdProducto where (pb.IdProductoBodega=@pIdProductoBodega 
+								    on pr.IdProducto = pb.IdProducto where (nav.Codigo=@pCodigo 
                                     and pb.IdBodega=@pIdBodega) "
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdBodega", pIdBodega))
             dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdProductoBodega", pIdProductoBodega))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@pCodigo_barra", pCodigo_barra))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@pCodigo", pCodigo))
 
             Dim dt As New DataTable
             dad.Fill(dt)

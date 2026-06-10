@@ -865,4 +865,35 @@ Public Class clsLnTrans_inv_ciclico_rfid
 
 	End Function
 
+	'#GT27052026: validar si barra_epc existe en el inventario ciclico rfid para no duplicar el registro.
+	Public Shared Function Existe_Producto_By_Barra_Epc(ByVal IdInventario As Integer,
+														ByVal pBarra_Epc As String,
+														lConnection As SqlConnection,
+														lTransaction As SqlTransaction) As Boolean
+
+		Try
+
+			Const sp As String = "SELECT * 
+                                  FROM Trans_inv_ciclico_rfid 
+                                  WHERE idinventarioenc = @IdInventarioEnc AND SSCC = @pBarra_Epc "
+
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+			Dim dad As New SqlDataAdapter(cmd)
+
+			dad.SelectCommand.Parameters.Add(New SqlParameter("@pBarra_Epc", pBarra_Epc))
+			dad.SelectCommand.Parameters.Add(New SqlParameter("@idinventarioenc", IdInventario))
+
+			Dim dt As New DataTable
+			dad.Fill(dt)
+
+			Return dt.Rows.Count > 0
+
+		Catch ex As Exception
+			Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+			clsLnLog_error_wms.Agregar_Error(vMsgError)
+			Throw ex
+		End Try
+
+	End Function
+
 End Class

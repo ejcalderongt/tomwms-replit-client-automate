@@ -190,6 +190,7 @@ def read_source(repo_root: Path, rel_path: str, max_chars: int) -> str:
 
 def redact_sensitive(text: str) -> str:
     patterns = [
+        (r"(WMS_EC2_DB_PASSWORD\s*=\s*)(.+)", r"\1[REDACTED]"),
         (r"(WMS_KILLIOS_DB_PASSWORD\s*=\s*)(.+)", r"\1[REDACTED]"),
         (r"(BRAIN_IMPORT_TOKEN\s*=\s*)(.+)", r"\1[REDACTED]"),
         (r"(Password\s*=\s*)([^;\r\n]+)", r"\1[REDACTED]"),
@@ -430,3 +431,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

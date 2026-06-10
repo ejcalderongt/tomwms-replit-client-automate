@@ -21,7 +21,8 @@ Public Class frmResumenExistenciasUMBas
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdResumenUMB, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -65,7 +66,6 @@ Public Class frmResumenExistenciasUMBas
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -182,6 +182,7 @@ Public Class frmResumenExistenciasUMBas
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             vNombreArchivoLayOutGrid = grdResumenUMB.Name & ".xml"
 
             AP.Listar_Bodegas_By_Usuario(cmbBodega)
@@ -384,3 +385,6 @@ Public Class frmResumenExistenciasUMBas
     End Sub
 
 End Class
+
+
+

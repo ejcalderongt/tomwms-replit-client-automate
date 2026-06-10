@@ -73,6 +73,7 @@ Public Class frmReportDespacho
     Private Sub frmReportDespacho_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         Try
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             Cargar()
 
         Catch ex As Exception
@@ -180,7 +181,8 @@ Public Class frmReportDespacho
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdSalidas, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -221,7 +223,6 @@ Public Class frmReportDespacho
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -241,3 +242,6 @@ Public Class frmReportDespacho
     End Sub
 
 End Class
+
+
+

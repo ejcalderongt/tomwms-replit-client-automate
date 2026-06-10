@@ -4,6 +4,13 @@ purpose: >
   Context router for local WMS agents. Load the coordinator first, then only the
   domain packages whose triggers match the task.
 
+atlas:
+  index: brain/atlas/index.yml
+  handoffs_index: brain/handoffs/_index.yml
+  note: >
+    Use atlas as master discovery map. Router stays lightweight and delegates
+    historical evidence lookup to handoffs_index.
+
 always_load:
   - brain/agents/coordinator.yml
 
@@ -102,10 +109,12 @@ rules:
     - For reservation investigations, domain-reserva plus domain-database is mandatory.
     - For WebAPI reservation investigations, add domain-webapi and domain-performance.
     - For legacy WinForms/UI reserve traces, add domain-bof.
+    - Load handoffs only when symptoms/tags match entries in brain/handoffs/_index.yml.
     - For publish/sync work, run orchestration double-check from coordinator.yml.
   context_budget:
     - Do not load all brain files by default.
     - Prefer the listed entry points and only expand to source files required by the current hypothesis.
+    - Prefer atlas metadata (priority/freshness) before loading historical handoffs.
 
 codex_skills:
   installed_path: C:/Users/yejc2/.codex/skills

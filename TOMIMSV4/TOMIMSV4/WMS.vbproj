@@ -1457,7 +1457,9 @@
     <Compile Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.Designer.vb">
       <DependentUpon>frmRegularizarInventarioRFID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.vb" />
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
       <DependentUpon>frmManufactura.vb</DependentUpon>
     </Compile>

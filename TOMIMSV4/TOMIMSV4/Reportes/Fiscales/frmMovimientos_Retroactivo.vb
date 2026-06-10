@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
 Imports DevExpress.XtraBars
@@ -34,6 +34,7 @@ Public Class frmMovimientos_Retroactivo
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             lblPrg.Text = ""
             lblPrg.Refresh()
             pRetroactivoPendiente = 0
@@ -133,6 +134,9 @@ Public Class frmMovimientos_Retroactivo
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         If e.Column.FieldName = "estado" Then
 
             Dim View As GridView = sender
@@ -198,7 +202,8 @@ Public Class frmMovimientos_Retroactivo
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistenciasConLp, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -239,7 +244,6 @@ Public Class frmMovimientos_Retroactivo
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -620,3 +624,6 @@ Public Class frmMovimientos_Retroactivo
 
 
 End Class
+
+
+

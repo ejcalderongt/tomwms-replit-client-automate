@@ -279,11 +279,14 @@ Partial Public Class clsLnTrans_inv_stock_prod
         Dim vTraceMsInsertStock As Long = 0
         Dim vTraceMsUbicDetalle As Long = 0
         Dim vTraceMsProductoDetalle As Long = 0
+        Dim vTraceMsProductoCacheBulk As Long = 0
         Dim vTraceMsPropietarioBodega As Long = 0
         Dim vTraceMsNombreProducto As Long = 0
         Dim vTraceMsInsertDetalle As Long = 0
         Dim vTraceMsInsertResumen As Long = 0
         Dim vTraceMsTramos As Long = 0
+        Dim vTraceProductoCacheHit As Integer = 0
+        Dim vTraceProductoCacheMiss As Integer = 0
         '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: caches de lectura para no repetir producto/propietario por cada linea importada.
         Dim vProductosPorCodigo As New System.Collections.Generic.Dictionary(Of String, clsBeProducto)(System.StringComparer.OrdinalIgnoreCase)
         Dim vPropietarioBodegaPorClave As New System.Collections.Generic.Dictionary(Of String, Integer)(System.StringComparer.OrdinalIgnoreCase)
@@ -490,6 +493,26 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                 BeUbicacionLista = New clsBeBodega_ubicacion
 
+                InvImportTrace_Marca(vTraceSesion,
+                                     vTraceTotal,
+                                     vTracePaso,
+                                     "DAL_PRODUCTO_CACHE_START",
+                                     vIdInventarioEnc,
+                                     pListInvStockPrd.Count)
+                vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
+                vProductosPorCodigo = clsLnProducto.Get_All_By_Codigos_For_InventarioImport(InvImportCodigosUnicos(pListInvStockPrd),
+                                                                                             lConnection,
+                                                                                             lTransaction)
+                vTraceMsProductoCacheBulk = vTraceReloj.ElapsedMilliseconds
+                InvImportTrace_Marca(vTraceSesion,
+                                     vTraceTotal,
+                                     vTracePaso,
+                                     "DAL_PRODUCTO_CACHE_END",
+                                     vIdInventarioEnc,
+                                     pListInvStockPrd.Count,
+                                     "ProductoCache=" & vProductosPorCodigo.Count &
+                                     ";MsProductoCacheBulk=" & vTraceMsProductoCacheBulk)
+
                 Contador = 0
                 InvImportTrace_Marca(vTraceSesion, vTraceTotal, vTracePaso, "DAL_DETALLE_LOOP_START", vIdInventarioEnc, pListInvStockPrd.Count)
                 Dim vBatchDetalle As clsInsertBatch = CrearBatchDetalle()
@@ -558,11 +581,16 @@ Partial Public Class clsLnTrans_inv_stock_prod
 
                     '#EJC20260522_INV_IMPORT_PRODUCTO_LITE: producto lite cacheado; evita Obtener(Propietario) y Get_Nombre por fila.
                     vTraceReloj = System.Diagnostics.Stopwatch.StartNew()
-                    If Not vProductosPorCodigo.TryGetValue(BeTransInvStockProd.Codigo, pBeProducto) Then
-                        pBeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(BeTransInvStockProd.Codigo,
+                    Dim vCodigoNorm As String = InvImportCodigoNormalizado(BeTransInvStockProd.Codigo)
+
+                    If Not vProductosPorCodigo.TryGetValue(vCodigoNorm, pBeProducto) Then
+                        vTraceProductoCacheMiss += 1
+                        pBeProducto = clsLnProducto.Get_Single_By_Codigo_For_InventarioImport(vCodigoNorm,
                                                                                               lConnection,
                                                                                               lTransaction)
-                        vProductosPorCodigo(BeTransInvStockProd.Codigo) = pBeProducto
+                        vProductosPorCodigo(vCodigoNorm) = pBeProducto
+                    Else
+                        vTraceProductoCacheHit += 1
                     End If
                     vTraceMsProductoDetalle += vTraceReloj.ElapsedMilliseconds
 
@@ -654,7 +682,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     End If
 
                     Contador += 1
-                    If Contador Mod 500 = 0 Then
+                    If Contador Mod 250 = 0 Then
                         '#EJC20260523_INV_IMPORT_PROGRESS: progreso reportado desde el loop pesado del detalle.
                         If pProgreso IsNot Nothing Then pProgreso.Invoke(Contador, pListInvStockPrd.Count, "Preparando detalle")
                         InvImportTrace_Marca(vTraceSesion,
@@ -670,6 +698,10 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                              ";MsNombreProducto=" & vTraceMsNombreProducto &
                                              ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                              ";MsInsertResumen=" & vTraceMsInsertResumen &
+                                             ";ProductoCacheHit=" & vTraceProductoCacheHit &
+                                             ";ProductoCacheMiss=" & vTraceProductoCacheMiss &
+                                             ";ProductoCache=" & vProductosPorCodigo.Count &
+                                             ";PropBodegaCache=" & vPropietarioBodegaPorClave.Count &
                                              ";UbicCache=" & vUbicacionesPorId.Count &
                                              ";Tramos=" & lTramosInv.Count)
                     End If
@@ -704,11 +736,14 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                      vIdInventarioEnc,
                                      pListInvStockPrd.Count,
                                      "MsUbicDetalle=" & vTraceMsUbicDetalle &
+                                     ";MsProductoCacheBulk=" & vTraceMsProductoCacheBulk &
                                      ";MsProducto=" & vTraceMsProductoDetalle &
                                      ";MsPropietarioBodega=" & vTraceMsPropietarioBodega &
                                      ";MsNombreProducto=" & vTraceMsNombreProducto &
                                      ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                      ";MsInsertResumen=" & vTraceMsInsertResumen &
+                                     ";ProductoCacheHit=" & vTraceProductoCacheHit &
+                                     ";ProductoCacheMiss=" & vTraceProductoCacheMiss &
                                      ";UbicCache=" & vUbicacionesPorId.Count &
                                      ";Tramos=" & lTramosInv.Count)
 
@@ -761,18 +796,43 @@ Partial Public Class clsLnTrans_inv_stock_prod
                                  "MsUbicStock=" & vTraceMsUbicStock &
                                  ";MsInsertStock=" & vTraceMsInsertStock &
                                  ";MsUbicDetalle=" & vTraceMsUbicDetalle &
+                                 ";MsProductoCacheBulk=" & vTraceMsProductoCacheBulk &
                                  ";MsProductoDetalle=" & vTraceMsProductoDetalle &
                                  ";MsPropietarioBodega=" & vTraceMsPropietarioBodega &
                                  ";MsNombreProducto=" & vTraceMsNombreProducto &
                                  ";MsInsertDetalle=" & vTraceMsInsertDetalle &
                                  ";MsInsertResumen=" & vTraceMsInsertResumen &
                                  ";MsTramos=" & vTraceMsTramos &
+                                 ";ProductoCacheHit=" & vTraceProductoCacheHit &
+                                 ";ProductoCacheMiss=" & vTraceProductoCacheMiss &
                                  ";UbicCache=" & vUbicacionesPorId.Count)
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
 
     End Sub
 
+    Private Shared Function InvImportCodigosUnicos(ByVal pListInvStockPrd As List(Of clsBeTrans_inv_stock_prod)) As List(Of String)
+
+        Dim vCodigos As New List(Of String)()
+        Dim vUnicos As New System.Collections.Generic.HashSet(Of String)(System.StringComparer.OrdinalIgnoreCase)
+
+        If pListInvStockPrd Is Nothing Then Return vCodigos
+
+        For Each vItem As clsBeTrans_inv_stock_prod In pListInvStockPrd
+            Dim vCodigo As String = InvImportCodigoNormalizado(If(vItem Is Nothing, "", vItem.Codigo))
+
+            If vCodigo <> "" AndAlso vUnicos.Add(vCodigo) Then
+                vCodigos.Add(vCodigo)
+            End If
+        Next
+
+        Return vCodigos
+
+    End Function
+
+    Private Shared Function InvImportCodigoNormalizado(ByVal pCodigo As String) As String
+        Return If(pCodigo, "").Trim()
+    End Function
     Public Shared Function Eliminar(ByVal pIdInventario As Integer,
                                     ByVal pTipoInventarioTeorico As Integer,
                                     Optional ByVal pConection As SqlConnection = Nothing,

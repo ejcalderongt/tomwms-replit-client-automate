@@ -45,6 +45,7 @@ Public Class frmExistenciasConsolidador
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             IsLoading = True
 
             SetDatataTable()

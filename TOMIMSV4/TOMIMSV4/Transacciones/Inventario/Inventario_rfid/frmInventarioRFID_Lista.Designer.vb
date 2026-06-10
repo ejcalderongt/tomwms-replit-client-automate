@@ -68,7 +68,7 @@ Partial Class frmInventarioRFID_Lista
         Me.RibbonControl.MaxItemId = 5
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(880, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1105, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdActualizar
@@ -106,10 +106,10 @@ Partial Class frmInventarioRFID_Lista
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 609)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 661)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(880, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1105, 30)
         '
         'cmdNuevo
         '
@@ -122,7 +122,7 @@ Partial Class frmInventarioRFID_Lista
         Me.cmdNuevo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdNuevo.Name = "cmdNuevo"
         Me.cmdNuevo.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.cmdNuevo.Size = New System.Drawing.Size(880, 62)
+        Me.cmdNuevo.Size = New System.Drawing.Size(1105, 62)
         Me.cmdNuevo.TabIndex = 2
         Me.cmdNuevo.TabStop = False
         Me.cmdNuevo.Text = "Filtro por Fecha"
@@ -154,7 +154,7 @@ Partial Class frmInventarioRFID_Lista
         Me.grdInventario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdInventario.MenuManager = Me.RibbonControl
         Me.grdInventario.Name = "grdInventario"
-        Me.grdInventario.Size = New System.Drawing.Size(880, 354)
+        Me.grdInventario.Size = New System.Drawing.Size(1105, 406)
         Me.grdInventario.TabIndex = 3
         Me.grdInventario.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -169,7 +169,7 @@ Partial Class frmInventarioRFID_Lista
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(880, 639)
+        Me.ClientSize = New System.Drawing.Size(1105, 691)
         Me.Controls.Add(Me.grdInventario)
         Me.Controls.Add(Me.cmdNuevo)
         Me.Controls.Add(Me.RibbonStatusBar)

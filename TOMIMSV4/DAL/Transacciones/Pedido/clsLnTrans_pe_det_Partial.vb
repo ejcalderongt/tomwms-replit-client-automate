@@ -969,7 +969,8 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
                         ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
-                        ,res.color as Codigo_Color,res.talla as Codigo_Talla
+                        ,res.color as Codigo_Color,res.talla as Codigo_Talla,
+                        dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IdBodega) AS NomUbic
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -984,10 +985,11 @@ Partial Public Class clsLnTrans_pe_det
                         trans_picking_ubic.IdUbicacion = bu.IdUbicacion AND res.IdStock = trans_picking_ubic.IdStock 
                         and res.IdStockres = trans_picking_ubic.IdStockres LEFT OUTER JOIN 
                         producto_presentacion AS pp ON res.IdPresentacion = pp.IdPresentacion AND p.IdProducto = pp.IdProducto 
-                        WHERE(Res.IdPedido = @IdPedido) AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) "
+                        WHERE(Res.IdPedido = @IdPedido) AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) AND (ISNULL(trans_picking_ubic.no_encontrado, 0) = 0) "
 
             If PendientesDeDespacho Then
-                vSQL += " AND (trans_picking_ubic.cantidad_despachada = 0) "
+                '#EJC20260527_FIX_CUMBRE_DESPACHO_PACKING: incluir parciales pendientes, no solo lineas sin despacho.
+                vSQL += " AND (ISNULL(trans_picking_ubic.cantidad_despachada, 0) < ISNULL(trans_picking_ubic.cantidad_verificada, 0)) "
             End If
 
             If Not EsPicking Then
@@ -1003,7 +1005,7 @@ Partial Public Class clsLnTrans_pe_det
                         ISNULL(trans_picking_ubic.encontrado, 0),
                         bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
                         s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor,
-                        res.color ,res.talla "
+                        res.color, res.talla, res.IdBodega "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 
@@ -1026,10 +1028,9 @@ Partial Public Class clsLnTrans_pe_det
 
                         clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
 
-                        '#CKFK 20180419 09:59 PM Agregué el obtener de la ubicación para poder tener el nombre completo en GetAllStockResByPedido
                         Obj.UbicacionActual.IdUbicacion = IIf(IsDBNull(lRow.Item("IdUbicacion")), 0, lRow.Item("IdUbicacion"))
-                        clsLnBodega_ubicacion.Get_For_Picking(Obj.UbicacionActual, lConnection, lTransaction)
-                        Obj.Ubicacion_Nombre = Obj.UbicacionActual.NombreCompleto '#CKFK 20180603 Agregué esta línea para que se cargara el nombre de la ubicación
+                        Obj.Ubicacion_Nombre = IIf(IsDBNull(lRow("NomUbic")), "", lRow("NomUbic"))
+                        Obj.UbicacionActual.NombreCompleto = Obj.Ubicacion_Nombre
 
                         If lRow("encontrado") IsNot DBNull.Value AndAlso lRow("encontrado") IsNot Nothing Then
                             Obj.encontrado = CType(lRow("encontrado"), Boolean)

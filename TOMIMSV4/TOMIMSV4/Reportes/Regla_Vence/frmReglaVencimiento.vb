@@ -10,6 +10,7 @@ Public Class frmReglaVencimiento
     Private IsLoading As Boolean = False
 
     Private Sub frmReglaVencimiento_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         Try
 
             vNombreArchivoLayOutGrid = DgridReglasVencimiento.Name & ".xml"
@@ -45,7 +46,8 @@ Public Class frmReglaVencimiento
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(DgridReglasVencimiento, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -89,7 +91,6 @@ Public Class frmReglaVencimiento
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -325,3 +326,6 @@ Public Class frmReglaVencimiento
 
     End Sub
 End Class
+
+
+

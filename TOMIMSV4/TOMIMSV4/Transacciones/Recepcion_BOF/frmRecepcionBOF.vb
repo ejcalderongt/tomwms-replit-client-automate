@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Utils
 Imports DevExpress.XtraEditors
@@ -6171,6 +6171,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     End Class
     Private Sub GrdOperadorBobega_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GrdOperadorBobega.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 

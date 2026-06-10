@@ -2967,27 +2967,7 @@ Public Class frmPrincipal02
 
     End Sub
 
-    Private Sub dvPicking_ConfigureDataConnection(sender As Object, e As DevExpress.DashboardCommon.DashboardConfigureDataConnectionEventArgs) Handles dvPicking.ConfigureDataConnection
-
-        Try
-
-            Dim connectionParameters As CustomStringConnectionParameters = New CustomStringConnectionParameters(clsBD.Instancia.CadenaConexionSQLClient)
-            e.ConnectionParameters = connectionParameters
-
-            Dim oParam As New MsSqlConnectionParameters()
-            oParam.AuthorizationType = MsSqlAuthorizationType.SqlServer
-            oParam.ServerName = clsBD.Instancia.Server
-            oParam.DatabaseName = clsBD.Instancia.NombreBD
-            oParam.UserName = clsBD.Instancia.Usuario
-            oParam.Password = clsBD.Instancia.Clave
-            e.ConnectionParameters = oParam
-            e.ConnectionParameters = connectionParameters
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
+    ' #EJC20260602_DASH_TRIAL_FIX: dvPicking ya no usa DashboardViewer en principal para evitar popup trial al inicio.
     Private Sub Procesar_Registro_Tarea_Reabasto_No_Procesada()
 
         Try

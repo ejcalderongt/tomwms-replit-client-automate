@@ -1,5 +1,6 @@
 ﻿Imports System
 Imports System.Collections.Generic
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
@@ -2186,6 +2187,116 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_All_By_Codigos_For_InventarioImport(ByVal pCodigos As IEnumerable(Of String),
+                                                                   ByRef lConnection As SqlConnection,
+                                                                   ByRef lTransaction As SqlTransaction) As Dictionary(Of String, clsBeProducto)
+
+        Dim vResultado As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+        Dim vTablaCodigos As DataTable = CrearTablaCodigosInventarioImport(pCodigos)
+
+        If vTablaCodigos.Rows.Count = 0 Then Return vResultado
+
+        Try
+
+            '#EJC20260606_INV_IMPORT_PRODUCTO_TVP: precarga masiva para evitar un SELECT por codigo en el detalle de importacion.
+            Using lCommand As New SqlCommand("dbo.usp_wms_producto_lite_por_codigos_tvp_v1", lConnection)
+
+                lCommand.CommandType = CommandType.StoredProcedure
+                lCommand.CommandTimeout = 0
+                lCommand.Transaction = lTransaction
+
+                Dim vParamCodigos As SqlParameter = lCommand.Parameters.Add("@Codigos", SqlDbType.Structured)
+                vParamCodigos.TypeName = "dbo.tvp_wms_codigo_producto_v1"
+                vParamCodigos.Value = vTablaCodigos
+
+                Using lReader As SqlDataReader = lCommand.ExecuteReader()
+
+                    While lReader.Read()
+                        Dim ObjProducto As clsBeProducto = CargarProductoLiteInventarioImport(lReader)
+                        Dim vCodigo As String = If(ObjProducto Is Nothing, "", ObjProducto.Codigo)
+
+                        If vCodigo <> "" AndAlso Not vResultado.ContainsKey(vCodigo) Then
+                            vResultado.Add(vCodigo, ObjProducto)
+                        End If
+                    End While
+
+                End Using
+
+            End Using
+
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 2715 OrElse ex.Number = 208
+            'Fallback seguro: bases sin el SP/TVP nuevo siguen usando el camino legacy por codigo.
+            For Each vRow As DataRow In vTablaCodigos.Rows
+                Dim vCodigo As String = CStr(vRow("Codigo"))
+                If Not vResultado.ContainsKey(vCodigo) Then
+                    vResultado(vCodigo) = Get_Single_By_Codigo_For_InventarioImport(vCodigo, lConnection, lTransaction)
+                End If
+            Next
+        Catch ex As Exception
+            Throw New Exception(String.Format("EX{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+        End Try
+
+        Return vResultado
+
+    End Function
+
+    Private Shared Function CrearTablaCodigosInventarioImport(ByVal pCodigos As IEnumerable(Of String)) As DataTable
+
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("Codigo", GetType(String))
+
+        If pCodigos Is Nothing Then Return vTabla
+
+        Dim vUnicos As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+        For Each vCodigoRaw As String In pCodigos
+            Dim vCodigo As String = If(vCodigoRaw, "").Trim()
+
+            If vCodigo <> "" AndAlso vUnicos.Add(vCodigo) Then
+                vTabla.Rows.Add(vCodigo)
+            End If
+        Next
+
+        Return vTabla
+
+    End Function
+
+    Private Shared Function CargarProductoLiteInventarioImport(ByVal lReader As SqlDataReader) As clsBeProducto
+
+        Dim ObjProducto As New clsBeProducto()
+
+        ObjProducto.IdProducto = If(IsDBNull(lReader.Item("IdProducto")), 0, CInt(lReader.Item("IdProducto")))
+        ObjProducto.IdPropietario = If(IsDBNull(lReader.Item("IdPropietario")), 0, CInt(lReader.Item("IdPropietario")))
+        ObjProducto.Propietario = New clsBePropietarios()
+        ObjProducto.Propietario.IdPropietario = ObjProducto.IdPropietario
+        ObjProducto.Propietario.Nombre_comercial = If(IsDBNull(lReader.Item("PropietarioNombre")), "", CStr(lReader.Item("PropietarioNombre")))
+
+        ObjProducto.IdUnidadMedidaBasica = If(IsDBNull(lReader.Item("IdUnidadMedidaBasica")), 0, CInt(lReader.Item("IdUnidadMedidaBasica")))
+        ObjProducto.UnidadMedida = New clsBeUnidad_medida()
+        ObjProducto.UnidadMedida.IdUnidadMedida = ObjProducto.IdUnidadMedidaBasica
+        ObjProducto.UnidadMedida.Nombre = If(IsDBNull(lReader.Item("UnidadMedidaNombre")), "", CStr(lReader.Item("UnidadMedidaNombre")))
+
+        ObjProducto.IdProductoParametroA = If(IsDBNull(lReader.Item("IdProductoParametroA")), 0, CInt(lReader.Item("IdProductoParametroA")))
+        ObjProducto.ParametroA = New clsBeProducto_parametro_a()
+        ObjProducto.ParametroA.IdProductoParametroA = ObjProducto.IdProductoParametroA
+        ObjProducto.ParametroA.Nombre = If(IsDBNull(lReader.Item("ParametroANombre")), "", CStr(lReader.Item("ParametroANombre")))
+
+        ObjProducto.IdProductoParametroB = If(IsDBNull(lReader.Item("IdProductoParametroB")), 0, CInt(lReader.Item("IdProductoParametroB")))
+        ObjProducto.ParametroB = New clsBeProducto_parametro_b()
+        ObjProducto.ParametroB.IdProductoParametroB = ObjProducto.IdProductoParametroB
+        ObjProducto.ParametroB.Nombre = If(IsDBNull(lReader.Item("ParametroBNombre")), "", CStr(lReader.Item("ParametroBNombre")))
+
+        ObjProducto.Codigo = If(IsDBNull(lReader.Item("codigo")), "", CStr(lReader.Item("codigo")))
+        ObjProducto.Nombre = If(IsDBNull(lReader.Item("nombre")), "", CStr(lReader.Item("nombre")))
+        ObjProducto.Control_lote = If(IsDBNull(lReader.Item("control_lote")), False, CBool(lReader.Item("control_lote")))
+        ObjProducto.Control_vencimiento = If(IsDBNull(lReader.Item("control_vencimiento")), False, CBool(lReader.Item("control_vencimiento")))
+        ObjProducto.Costo = If(IsDBNull(lReader.Item("costo")), 0.0, CDbl(lReader.Item("costo")))
+        ObjProducto.Precio = If(IsDBNull(lReader.Item("precio")), 0.0, CDbl(lReader.Item("precio")))
+        ObjProducto.IsNew = False
+
+        Return ObjProducto
+
+    End Function
     Public Shared Function Get_Single_By_Codigo(ByVal pCodigo As String,
                                                 ByVal pCampos() As clsBeProducto.ProdPropiedades) As clsBeProducto
 
@@ -8226,6 +8337,7 @@ Partial Public Class clsLnProducto
 
         Try
             '#CKFK20241012 Modifiqué este query por el error detectado en Killios donde el producto tiene más de una presentación
+            '#EJC20260604_FIX_REC_SKU_OC_LOOKUP agrega búsqueda por trans_oc_det.codigo_producto (SKU OC) con trim seguro
             Dim vSQL As String = "SELECT DISTINCT IdBodega, IdProductoBodega, IdProducto, IdPropietario, IdClasificacion, IdFamilia, IdMarca, 
                                          IdTipoProducto, IdUnidadMedidaBasica, IdCamara, IdTipoRotacion, IdPerfilSerializado, IdIndiceRotacion, 
                                          IdSimbologia, IdArancel, codigo, nombre, codigo_barra, precio, existencia_min, existencia_max, costo, 
@@ -8237,16 +8349,29 @@ Partial Public Class clsLnProducto
                                          alto, genera_lp_old, IdUnidadMedidaCobro, IdTipoEtiqueta, dias_inventario_promedio, IdProductoParametroA, 
                                          IdProductoParametroB, IdTipoManufactura, Margen_Impresion
                                   FROM VW_ProductoSI v
-                                  WHERE (IdBodega = @IdBodega) and 
-                                        (codigo_barra_pcb = @CodigoBarra or 
-                                         codigo_barra_presentacion = @CodigoBarra or 
-                                         codigo_barra = @CodigoBarra or 
-                                         codigo = @CodigoBarra) AND
-                                         EXISTS (SELECT * 
-                                                FROM trans_oc_det d
-                                                WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
-                                                      d.IdProductoBodega = v.IdProductoBodega AND 
-                                                      d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica)"
+                                 WHERE (IdBodega = @IdBodega) and 
+                                       (
+                                         (
+                                           codigo_barra_pcb = @CodigoBarra or 
+                                           codigo_barra_presentacion = @CodigoBarra or 
+                                           codigo_barra = @CodigoBarra or 
+                                           codigo = @CodigoBarra
+                                         ) OR
+                                         (
+                                           EXISTS (SELECT * 
+                                                   FROM trans_oc_det d
+                                                   WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                                         d.IdProductoBodega = v.IdProductoBodega AND 
+                                                         d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica AND
+                                                         LTRIM(RTRIM(ISNULL(d.codigo_producto, ''))) = LTRIM(RTRIM(@CodigoBarra))
+                                           )
+                                         )
+                                       ) AND
+                                       EXISTS (SELECT * 
+                                              FROM trans_oc_det d
+                                              WHERE d.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                                    d.IdProductoBodega = v.IdProductoBodega AND 
+                                                    d.IdUnidadMedidaBasica = v.IdUnidadMedidaBasica)"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -11260,30 +11385,43 @@ Partial Public Class clsLnProducto
 
         Try
 
-            Dim vSQL As String = "SELECT
-                        convert(bit,0) as Seleccionar,
-                        propietarios.nombre_comercial as Propietario,
-                        producto.codigo AS Codigo, 
-                        producto.codigo_barra AS Codigo_Barra,
-                        producto.nombre AS Nombre,                            
-                        producto_clasificacion.nombre AS Clasificacion, 
-                        producto_familia.nombre AS Familia,
-                        producto_tipo.NombreTipoProducto, 
-                        tipo_rotacion.Descripcion AS TipoRotacion, 
-                        indice_rotacion.Descripcion AS IndiceRotacion,
-                        producto_bodega.IdProductoBodega,
-                        producto.IdProducto, 
-                        producto_familia.IdFamilia, 
-                        producto_clasificacion.IdClasificacion
-                        FROM producto LEFT OUTER JOIN
-                        producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
-                        producto_bodega ON producto.IdProducto = producto_bodega.IdProducto LEFT OUTER JOIN
-                        tipo_rotacion ON producto.IdTipoRotacion = tipo_rotacion.IdTipoRotacion LEFT OUTER JOIN
-                        indice_rotacion ON producto.IdIndiceRotacion = indice_rotacion.IdIndiceRotacion LEFT OUTER JOIN
-                        producto_familia ON producto.IdFamilia = producto_familia.IdFamilia LEFT OUTER JOIN
-                        producto_clasificacion ON producto.IdClasificacion = producto_clasificacion.IdClasificacion INNER JOIN
-						propietarios on producto.IdPropietario = propietarios.IdPropietario
-                        WHERE 1 > 0 "
+            Dim Vsql As String = "SELECT
+                                    CONVERT(BIT, 0) AS Seleccionar,
+                                    propietarios.nombre_comercial AS Propietario,
+                                    producto.codigo AS Codigo, 
+                                    producto.codigo_barra AS Codigo_Barra,
+                                    producto.nombre AS Nombre,                            
+                                    producto_clasificacion.nombre AS Clasificacion, 
+                                    producto_familia.nombre AS Familia,
+                                    tipo_rotacion.Descripcion AS TipoRotacion, 
+                                    indice_rotacion.Descripcion AS IndiceRotacion,
+                                    producto_bodega.IdProductoBodega,
+                                    producto.IdProducto, 
+                                    producto_familia.IdFamilia, 
+                                    producto_clasificacion.IdClasificacion
+                                FROM producto
+                                LEFT OUTER JOIN producto_tipo 
+                                    ON producto.IdTipoProducto = producto_tipo.IdTipoProducto
+                                INNER JOIN producto_bodega 
+                                    ON producto.IdProducto = producto_bodega.IdProducto
+                                LEFT OUTER JOIN tipo_rotacion 
+                                    ON producto.IdTipoRotacion = tipo_rotacion.IdTipoRotacion
+                                LEFT OUTER JOIN indice_rotacion 
+                                    ON producto.IdIndiceRotacion = indice_rotacion.IdIndiceRotacion
+                                LEFT OUTER JOIN producto_familia 
+                                    ON producto.IdFamilia = producto_familia.IdFamilia
+                                LEFT OUTER JOIN producto_clasificacion 
+                                    ON producto.IdClasificacion = producto_clasificacion.IdClasificacion
+                                INNER JOIN propietarios 
+                                    ON producto.IdPropietario = propietarios.IdPropietario
+                                WHERE EXISTS
+                                (
+                                    SELECT 1
+                                    FROM i_nav_barras_pallet pallet
+                                    INNER JOIN i_nav_barras_rfid_stock st 
+                                        ON pallet.SSCC = st.barra_epc
+                                    WHERE pallet.Codigo = producto.codigo
+                                ) "
 
             If pIdBodega <> 0 Then
                 vSQL += " AND producto_bodega.IdBodega=@IdBodega"
@@ -11293,13 +11431,21 @@ Partial Public Class clsLnProducto
                 vSQL += " AND producto.IdPropietario=@IdPropietario"
             End If
 
+
+            '#EJC20180809: Listar solo aquellos productos que aún no han sido adicionados al inventario
+            'Vsql += " AND producto_bodega.IdProductoBodega NOT INT (select IdProductoBodega from trans_inv_ciclico where IdInventarioEnc = @IdInventarioEnc)"
+
+            '#EJC20180809: Listar solo aquellos productos que aún no han sido adicionados al inventario
+            Vsql += " AND NOT EXISTS  (SELECT 1 FROM trans_inv_ciclico  WHERE trans_inv_ciclico.IdInventarioEnc = @IdInventarioEnc  AND trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega)"
+
+
+
             'If pConExistencia Then
             '    '#EJC20180809: Buscar el el inventario congelado cuales tienen existencia y no en el stock actual porque puede variar si es a puerta abierta
             '    vSQL += " AND producto_bodega.IdProductoBodega in (select IdProductoBodega from trans_inv_stock where IdInventario = @IdInventarioEnc)"
             'End If
 
-            '#EJC20180809: Listar solo aquellos productos que aún no han sido adicionados al inventario
-            vSQL += " AND producto_bodega.IdProductoBodega NOT in (select IdProductoBodega from trans_inv_ciclico where IdInventarioEnc = @IdInventarioEnc)"
+
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
@@ -11327,6 +11473,109 @@ Partial Public Class clsLnProducto
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    '#AT20260521 Funcion para codigos de barra en ciclico
+    Public Shared Function Get_List_Product_By_CodigoBarra_By_Cilcico(ByVal pCodigoBarra As String,
+                                                                      ByVal pIdBodega As Integer,
+                                                                      ByVal pIdInventario As Integer) As List(Of clsBeProducto)
+
+        Get_List_Product_By_CodigoBarra_By_Cilcico = Nothing
+
+        Try
+            Dim vSQL As String = "SELECT DISTINCT IdBodega, IdProductoBodega, IdProducto, IdPropietario, IdClasificacion, IdFamilia, IdMarca, 
+                                     IdTipoProducto, IdUnidadMedidaBasica, IdCamara, IdTipoRotacion, IdPerfilSerializado, IdIndiceRotacion, 
+                                     IdSimbologia, IdArancel, codigo, nombre, codigo_barra, precio, existencia_min, existencia_max, costo, 
+                                     peso_referencia, peso_tolerancia, noparte, noserie, control_peso, ciclo_vida, tolerancia, kit, materia_prima, 
+                                     control_lote, control_vencimiento, genera_lote, serializado, codigo_barra_presentacion, '' codigo_barra_pcb, 
+                                     '' NomPresentacion, activopp, 0 IdPresentacion, 0 factor, peso_recepcion, peso_despacho, temperatura_referencia, 
+                                     temperatura_tolerancia, temperatura_recepcion, temperatura_despacho, fechamanufactura, capturar_aniada, 
+                                     Arancel, user_agr, fec_agr, user_mod, fec_mod, captura_arancel, es_hardware, activo, imagen, largo, ancho,  
+                                     alto, genera_lp_old, IdUnidadMedidaCobro, IdTipoEtiqueta, dias_inventario_promedio, IdProductoParametroA, 
+                                     IdProductoParametroB, IdTipoManufactura, Margen_Impresion, IdTalla, IdColor
+                              FROM VW_ProductoSI v
+                              WHERE (IdBodega = @IdBodega) and 
+                                    (codigo_barra_pcb = @CodigoBarra or 
+                                     codigo_barra_presentacion = @CodigoBarra or 
+                                     codigo_barra = @CodigoBarra or 
+                                     codigo = @CodigoBarra) AND
+                                     EXISTS (SELECT * 
+                                            FROM trans_inv_ciclico d
+                                            WHERE d.idinventarioenc = @IdInventario AND 
+                                                  d.IdProductoBodega = v.IdProductoBodega AND 
+                                                  d.IdUnidadMedida = v.IdUnidadMedidaBasica)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@CodigoBarra", pCodigoBarra)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdInventario", pIdInventario)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim oBeProducto As New clsBeProducto()
+                            Dim lBeProducto As New List(Of clsBeProducto)
+
+                            For Each lRow In lDT.Rows
+
+                                oBeProducto = New clsBeProducto
+
+                                Cargar(oBeProducto, lRow, lConnection, lTransaction)
+
+                                If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                    oBeProducto.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                                End If
+
+                                If lRow("IdTalla") IsNot DBNull.Value AndAlso lRow("IdTalla") IsNot Nothing AndAlso
+                                    lRow("IdColor") IsNot DBNull.Value AndAlso lRow("IdColor") IsNot Nothing Then
+                                    oBeProducto.IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(lRow("IdTalla"),
+                                                                                                                                             lRow("IdColor"),
+                                                                                                                                             oBeProducto.IdProducto,
+                                                                                                                                             lConnection,
+                                                                                                                                             lTransaction)
+                                End If
+
+                                oBeProducto.IsNew = False
+
+                                lBeProducto.Add(oBeProducto)
+
+                            Next
+
+                            If Not lBeProducto Is Nothing Then
+
+                                lBeProducto = lBeProducto.Distinct.ToList()
+
+                                Get_List_Product_By_CodigoBarra_By_Cilcico = lBeProducto
+
+                            End If
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function

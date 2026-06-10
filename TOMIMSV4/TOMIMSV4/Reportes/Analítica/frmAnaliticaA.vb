@@ -1,5 +1,6 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Reflection
+Imports System.Data.SqlClient
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
@@ -224,7 +225,8 @@ Public Class frmAnaliticaA
                             BeStockEnFecha.Ajuste_Positivo += ObjM.Cantidad
                         ElseIf ObjM.TipoTarea = clsBeVW_Movimientos.pTipoTarea.AJCANTN OrElse ObjM.TipoTarea = clsBeVW_Movimientos.pTipoTarea.AJCANTNI Then
                             BeStockEnFecha.Ajuste_Negativo += ObjM.Cantidad
-                        ElseIf ObjM.TipoTarea = clsBeVW_Movimientos.pTipoTarea.DESP Then
+                        ElseIf ObjM.TipoTarea = clsBeVW_Movimientos.pTipoTarea.DESP OrElse ObjM.TipoTarea = clsBeVW_Movimientos.pTipoTarea.TRAS Then
+                            'EJC20260602_STOCK_FECHA: TRAS en la bodega origen debe descontar existencia teórica.
                             BeStockEnFecha.Salidas += ObjM.Cantidad
                         Else
                             Debug.Print(ObjM.TipoTarea)
@@ -467,6 +469,8 @@ Public Class frmAnaliticaA
         Dim vIdDiferencia As Integer = 0
         Dim vExistenciaSinEstado As Double = 0
         Dim lMovimientos As New List(Of clsBeTrans_movimientos)
+        Dim dExistenciaConEstado As New Dictionary(Of String, Double)
+        Dim dExistenciaSinEstado As New Dictionary(Of String, Double)
 
         Try
 
@@ -501,6 +505,12 @@ Public Class frmAnaliticaA
             dgrid.DataSource = Nothing
 
             If Lista IsNot Nothing AndAlso Lista.Count > 0 Then
+                Cargar_Snapshot_Existencias(cTrans.lConnection,
+                                            cTrans.lTransaction,
+                                            cmbBodega.EditValue,
+                                            cmbPropietario.EditValue,
+                                            dExistenciaConEstado,
+                                            dExistenciaSinEstado)
 
                 prg.Visible = True
                 prg.Properties.Step = 1
@@ -538,6 +548,7 @@ Public Class frmAnaliticaA
                     pBeStock.Fecha_vence = Obj.Fecha_Vence
                     pBeStock.Lote = Obj.Lote
                     pBeStock.IsReportStockEnFecha = True
+                    pBeStock.IncluirUbicacionesDespacho = True
 
                     If Obj.IdPresentacion <> 0 Then
                         ExistenciasAl = Math.Round(ExistenciasAl / pBeStock.Presentacion.Factor, 6)
@@ -547,29 +558,27 @@ Public Class frmAnaliticaA
 
                     clsPublic.CopyObject(pBeStock, pBeStockSinEstado)
 
-                    clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
-                                                                 cmbBodega.EditValue,
-                                                                 True,
-                                                                 True,
-                                                                 0,
-                                                                 False,
-                                                                 cTrans.lConnection,
-                                                                 cTrans.lTransaction)
+                    Dim kConEstado As String = Armar_Clave_Existencia(Obj.IdProductoBodega,
+                                                                       Obj.IdEstadoOrigen,
+                                                                       Obj.IdPresentacion,
+                                                                       Obj.IdUnidadMedida,
+                                                                       Obj.Lote,
+                                                                       Obj.Fecha_Vence,
+                                                                       True)
 
-                    ExistenciaActualConFechaYEstado = pBeStock.Cantidad
+                    Dim kSinEstado As String = Armar_Clave_Existencia(Obj.IdProductoBodega,
+                                                                       0,
+                                                                       Obj.IdPresentacion,
+                                                                       Obj.IdUnidadMedida,
+                                                                       Obj.Lote,
+                                                                       Obj.Fecha_Vence,
+                                                                       False)
 
-                    clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStockSinEstado,
-                                                                cmbBodega.EditValue,
-                                                                False,
-                                                                True,
-                                                                0,
-                                                                False,
-                                                                cTrans.lConnection,
-                                                                cTrans.lTransaction)
-
-                    vExistenciaSinEstado = pBeStockSinEstado.Cantidad
+                    ExistenciaActualConFechaYEstado = Get_Valor_Existencia(dExistenciaConEstado, kConEstado)
+                    vExistenciaSinEstado = Get_Valor_Existencia(dExistenciaSinEstado, kSinEstado)
 
                     If Obj.IdPresentacion <> 0 Then
+                        ExistenciaActualConFechaYEstado = Math.Round(ExistenciaActualConFechaYEstado / IIf(pBeStock.Presentacion.Factor > 0, pBeStock.Presentacion.Factor, 1), 6)
                         vExistenciaSinEstado = Math.Round(vExistenciaSinEstado / pBeStock.Presentacion.Factor, 6)
                     End If
 
@@ -908,6 +917,7 @@ Public Class frmAnaliticaA
 
 
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
     End Sub
 
     Private Sub BarButtonItem3_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem3.ItemClick
@@ -980,6 +990,7 @@ Public Class frmAnaliticaA
 
     Private Sub frmStockEnUnaFecha_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
         cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
         IMS.Listar_Propietarios_By_IdBodega(cmbPropietario, cmbBodega.EditValue)
@@ -1003,6 +1014,9 @@ Public Class frmAnaliticaA
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -1056,11 +1070,10 @@ Public Class frmAnaliticaA
     Private Sub Imprimir_Vista()
 
         Try
-
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
-            AddHandler printLink.CreateReportHeaderArea, AddressOf PrintableComponentLink_CreateReportHeaderArea
+            AddHandler printLink.CreateMarginalHeaderArea, AddressOf PrintableComponentLink_CreateReportHeaderArea
 
             Const leftColumnFoot As String = "Páginas: [Page # of Pages #] "
             Dim leftColumnHead As String = "Usuario: [User Name] - " & AP.UsuarioAp.Nombres
@@ -1079,10 +1092,17 @@ Public Class frmAnaliticaA
             phf.Header.Content.AddRange(New String() {leftColumnHead, "", rightColumn})
             phf.Header.LineAlignment = DevExpress.XtraPrinting.BrickAlignment.Far
 
+            printLink.Margins = New System.Drawing.Printing.Margins(40, 40, 130, 60)
+            printLink.PaperKind = System.Drawing.Printing.PaperKind.Letter
             printingSystem1.PageSettings.Landscape = True
             printLink.Component = dgrid
             printLink.Landscape = True
-            printLink.CreateDocument(printingSystem1)
+            Dim colScope As IDisposable = clsUiPrintHelper.BeginRelevantColumnsScope(dgrid, 12)
+            Try
+                printLink.CreateDocument(printingSystem1)
+            Finally
+                colScope.Dispose()
+            End Try
             printingSystem1.PreviewFormEx.ShowDialog()
             printingSystem1.Dispose()
 
@@ -1097,20 +1117,48 @@ Public Class frmAnaliticaA
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
 
-        Dim reportHeader As String = vbNewLine & "TOM, WMS" &
-                              vbNewLine & "Stock en una fecha " &
-                              vbNewLine & "BODEGA: " & AP.NomBodega
+        Dim vTitulo As String = "STOCK EN UNA FECHA - RESUMEN"
+        Dim vBodega As String = If(cmbBodega.Text, AP.NomBodega)
+        Dim vPropietario As String = If(cmbPropietario.Text, "")
+        Dim vUsuario As String = If(AP.UsuarioAp.Nombres, "")
+        Dim vProducto As String = If(String.IsNullOrWhiteSpace(txtIdProducto.Text),
+                                     "Todos",
+                                     String.Format("{0} - {1}", txtIdProducto.Text.Trim(), txtNombreProducto.Text.Trim()))
+        Dim vRango As String = String.Format("{0:dd/MM/yyyy} al {1:dd/MM/yyyy}", dtpFechaDesde.Value.Date, dtpfechaHasta.Value.Date)
 
-        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Center)
-        e.Graph.Font = New Font("Tahoma", 12, FontStyle.Bold)
+        Dim vWidth As Single = e.Graph.ClientPageSize.Width
+        Dim vBlue As Color = Color.FromArgb(24, 69, 117)
 
-        Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 70)
-        e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Near)
+        e.Graph.Font = New Font("Segoe UI Semibold", 16, FontStyle.Bold)
+        e.Graph.DrawString(vTitulo,
+                           vBlue,
+                           New RectangleF(0, 0, vWidth, 34),
+                           DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.DrawLine(New PointF(0, 34), New PointF(vWidth, 34), vBlue, 1)
+
+        e.Graph.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        e.Graph.DrawString("Bodega:", Color.Black, New RectangleF(0, 40, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Propietario:", Color.Black, New RectangleF(0, 58, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Rango:", Color.Black, New RectangleF(0, 76, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Producto:", Color.Black, New RectangleF(0, 94, 90, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Usuario:", Color.Black, New RectangleF(vWidth - 250, 40, 70, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString("Fecha impresión:", Color.Black, New RectangleF(vWidth - 250, 58, 110, 18), DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.Font = New Font("Segoe UI", 10, FontStyle.Regular)
+        e.Graph.DrawString(vBodega, Color.Black, New RectangleF(95, 40, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vPropietario, Color.Black, New RectangleF(95, 58, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vRango, Color.Black, New RectangleF(95, 76, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vProducto, Color.Black, New RectangleF(95, 94, vWidth - 360, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(vUsuario, Color.Black, New RectangleF(vWidth - 175, 40, 170, 18), DevExpress.XtraPrinting.BorderSide.None)
+        e.Graph.DrawString(Format(Now, "dd/MM/yyyy HH:mm"), Color.Black, New RectangleF(vWidth - 135, 58, 130, 18), DevExpress.XtraPrinting.BorderSide.None)
+
+        e.Graph.DrawLine(New PointF(0, 116), New PointF(vWidth, 116), Color.Gainsboro, 1)
 
     End Sub
 
@@ -1248,4 +1296,96 @@ Public Class frmAnaliticaA
     Private Sub prg_EditValueChanged(sender As Object, e As EventArgs) Handles prg.EditValueChanged
 
     End Sub
+
+    Private Shared Function Armar_Clave_Existencia(ByVal idProductoBodega As Integer,
+                                                   ByVal idEstado As Integer,
+                                                   ByVal idPresentacion As Integer,
+                                                   ByVal idUnidadMedida As Integer,
+                                                   ByVal lote As String,
+                                                   ByVal fechaVence As Date,
+                                                   ByVal conEstado As Boolean) As String
+        Dim loteSeguro As String = If(lote, "").Trim()
+        Dim estadoSeguro As Integer = If(conEstado, idEstado, 0)
+        Return String.Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                             idProductoBodega,
+                             estadoSeguro,
+                             idPresentacion,
+                             idUnidadMedida,
+                             loteSeguro,
+                             fechaVence.Date.ToString("yyyyMMdd"))
+    End Function
+
+    Private Shared Function Get_Valor_Existencia(ByVal d As Dictionary(Of String, Double), ByVal k As String) As Double
+        If d.ContainsKey(k) Then
+            Return d(k)
+        End If
+        Return 0
+    End Function
+
+    Private Sub Cargar_Snapshot_Existencias(ByVal lConnection As SqlConnection,
+                                            ByVal lTransaction As SqlTransaction,
+                                            ByVal idBodega As Integer,
+                                            ByVal idPropietarioBodega As Integer,
+                                            ByRef dConEstado As Dictionary(Of String, Double),
+                                            ByRef dSinEstado As Dictionary(Of String, Double))
+
+        Dim sql As String = "SELECT IdProductoBodega,
+                                    IdProductoEstado,
+                                    ISNULL(IdPresentacion,0) AS IdPresentacion,
+                                    IdUnidadMedida,
+                                    ISNULL(lote,'') AS lote,
+                                    CAST(fecha_vence AS DATE) AS fecha_vence,
+                                    SUM(Disponible_UMBas) AS Disponible_UMBas
+                             FROM VW_Stock_Res
+                             WHERE IdBodega = @IdBodega
+                               AND IdPropietarioBodega = @IdPropietarioBodega
+                             GROUP BY IdProductoBodega,
+                                      IdProductoEstado,
+                                      ISNULL(IdPresentacion,0),
+                                      IdUnidadMedida,
+                                      ISNULL(lote,''),
+                                      CAST(fecha_vence AS DATE)"
+
+        Using da As New SqlDataAdapter(sql, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+            da.SelectCommand.Parameters.AddWithValue("@IdBodega", idBodega)
+            da.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", idPropietarioBodega)
+
+            Dim dt As New DataTable()
+            da.Fill(dt)
+
+            dConEstado.Clear()
+            dSinEstado.Clear()
+
+            For Each r As DataRow In dt.Rows
+                Dim idProdBod As Integer = IIf(IsDBNull(r("IdProductoBodega")), 0, r("IdProductoBodega"))
+                Dim idEstado As Integer = IIf(IsDBNull(r("IdProductoEstado")), 0, r("IdProductoEstado"))
+                Dim idPresentacion As Integer = IIf(IsDBNull(r("IdPresentacion")), 0, r("IdPresentacion"))
+                Dim idUm As Integer = IIf(IsDBNull(r("IdUnidadMedida")), 0, r("IdUnidadMedida"))
+                Dim lote As String = IIf(IsDBNull(r("lote")), "", r("lote"))
+                Dim fechaVence As Date = IIf(IsDBNull(r("fecha_vence")), New Date(1900, 1, 1), r("fecha_vence"))
+                Dim disponible As Double = Math.Max(0, IIf(IsDBNull(r("Disponible_UMBas")), 0, r("Disponible_UMBas")))
+
+                Dim kConEstado As String = Armar_Clave_Existencia(idProdBod, idEstado, idPresentacion, idUm, lote, fechaVence, True)
+                Dim kSinEstado As String = Armar_Clave_Existencia(idProdBod, 0, idPresentacion, idUm, lote, fechaVence, False)
+
+                If dConEstado.ContainsKey(kConEstado) Then
+                    dConEstado(kConEstado) += disponible
+                Else
+                    dConEstado.Add(kConEstado, disponible)
+                End If
+
+                If dSinEstado.ContainsKey(kSinEstado) Then
+                    dSinEstado(kSinEstado) += disponible
+                Else
+                    dSinEstado.Add(kSinEstado, disponible)
+                End If
+            Next
+        End Using
+    End Sub
 End Class
+
+
+
+

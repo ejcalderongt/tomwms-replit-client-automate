@@ -1,4 +1,4 @@
-Public Class clsBeI_nav_config_enc
+﻿Public Class clsBeI_nav_config_enc
     Implements ICloneable
     Public Property Idnavconfigenc() As Integer = 0
     Public Property Idempresa() As Integer = 0
@@ -33,6 +33,8 @@ Public Class clsBeI_nav_config_enc
     '#EJC20210716_IdTipoEtiqueta: Cargar/Ins/Upd/frmConfiguracion
     Public Property IdTipoEtiqueta() As Integer = 1
     Public Property Push_Ingreso_NAV_Desde_HH As Boolean = False
+    '#EJC20260602_SYNC_INGRESO_SAP: Parametro de Fase 1. Habilita que WMS solicite al worker la ejecucion de la interface SAP de ingresos, sin cambiar el cierre actual de HH/BOF.
+    Public Property Enviar_Ingreso_SAP_Via_WS As Boolean = False
     Public Property equiparar_cliente_con_propietario_en_doc_salida As Boolean = False
 
     '#EJC20220307: En el caso de Cealsa, se requiere configuración de interface para importación, pero en despacho no es necesario llamar por que no envía datos

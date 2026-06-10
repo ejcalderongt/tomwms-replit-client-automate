@@ -212,6 +212,7 @@ Public Class frmLicenciasPorUbicacion
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             mnuGuardarLayoutGrid.Visibility = BarItemVisibility.Never
 
             vNombreArchivoLayOutGridStock = "frmLicenciasPorUbicacion.xml"

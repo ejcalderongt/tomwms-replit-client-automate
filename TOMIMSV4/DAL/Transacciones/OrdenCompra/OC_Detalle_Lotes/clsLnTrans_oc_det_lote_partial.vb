@@ -1,4 +1,4 @@
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_oc_det_lote
@@ -1258,12 +1258,16 @@ Partial Public Class clsLnTrans_oc_det_lote
             Dim vSQL As String = "
             SELECT 
                 IdPallet,
+                ISNULL(IdOrdenCompraDetLote, 0) AS IdOrdenCompraDetLote,
                 Codigo_Barra AS Licencia,
+                Fecha_Agregado,
                 Fecha_Vence,
                 Lote,
                 Cantidad_Presentacion,
                 Cantidad_UMP,
-                ISNULL(peso, 0) AS Peso
+                ISNULL(peso, 0) AS Peso,
+                ISNULL(Impreso, 0) AS Impreso,
+                ISNULL(cant_etiquetas_presentacion_impresas, 0) AS cant_etiquetas_presentacion_impresas
             FROM i_nav_barras_pallet
             WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc
               AND IdOrdenCompraDet = @IdOrdenCompraDet

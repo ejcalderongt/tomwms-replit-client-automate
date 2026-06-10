@@ -179,7 +179,6 @@ Public Class frmTiemposDespacho
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -450,3 +449,5 @@ Public Class frmTiemposDespacho
     End Sub
 
 End Class
+
+

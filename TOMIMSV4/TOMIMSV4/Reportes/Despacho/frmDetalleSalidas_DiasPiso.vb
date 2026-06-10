@@ -28,6 +28,7 @@ Public Class frmDetalleSalidas_DiasPiso
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             'mnuGuardarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
 
 
@@ -157,7 +158,8 @@ Public Class frmDetalleSalidas_DiasPiso
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Grd, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView.OptionsPrint.ExpandAllDetails = True
             GridView.OptionsPrint.PrintDetails = True
 
@@ -201,7 +203,6 @@ Public Class frmDetalleSalidas_DiasPiso
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub cmdImprimir_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdImprimir.ItemClick
@@ -334,3 +335,6 @@ Public Class frmDetalleSalidas_DiasPiso
         GridView.Focus()
     End Sub
 End Class
+
+
+

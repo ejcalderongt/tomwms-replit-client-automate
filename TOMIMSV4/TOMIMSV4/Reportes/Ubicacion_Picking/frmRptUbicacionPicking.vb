@@ -62,7 +62,8 @@ Public Class frmRptUbicacionPicking
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(Grd, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -103,7 +104,6 @@ Public Class frmRptUbicacionPicking
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
 
@@ -217,3 +217,5 @@ Public Class frmRptUbicacionPicking
     End Sub
 
 End Class
+
+
