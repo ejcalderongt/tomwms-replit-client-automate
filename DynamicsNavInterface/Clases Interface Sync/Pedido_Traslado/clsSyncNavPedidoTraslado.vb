@@ -3636,7 +3636,16 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
     End Function
 
     Private Function Enviar_Lotes_Transf(ByVal NoPedidoTransf As String,
-                                         Optional ByVal pIdPedidoEnc As Integer = 0,
+                                         ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
+                                         ByRef lblprg As RichTextBox,
+                                         ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
+
+        Return Enviar_Lotes_Transf(NoPedidoTransf, 0, lTransaccionesSalida, lblprg, prg)
+
+    End Function
+
+    Private Function Enviar_Lotes_Transf(ByVal NoPedidoTransf As String,
+                                         ByVal pIdPedidoEnc As Integer,
                                          ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                          ByRef lblprg As RichTextBox,
                                          ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
@@ -3733,7 +3742,16 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
     '#EJC20180111: Enviar las cantidades sumadas y agrupadas por producto (sin considerar el lote)
     Private Function Enviar_Cantidades_Transf(ByVal NoPedidoTransf As String,
-                                              Optional ByVal pIdPedidoEnc As Integer = 0,
+                                              ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
+                                              ByRef lblprg As RichTextBox,
+                                              ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
+
+        Return Enviar_Cantidades_Transf(NoPedidoTransf, 0, lTransaccionesSalida, lblprg, prg)
+
+    End Function
+
+    Private Function Enviar_Cantidades_Transf(ByVal NoPedidoTransf As String,
+                                              ByVal pIdPedidoEnc As Integer,
                                               ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                               ByRef lblprg As RichTextBox,
                                               ByRef prg As System.Windows.Forms.ProgressBar) As Boolean

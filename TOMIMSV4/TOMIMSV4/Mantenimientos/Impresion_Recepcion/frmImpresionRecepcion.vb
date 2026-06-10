@@ -9,6 +9,21 @@ Public Class frmImpresionRecepcion
     Private pImpresoraLicSeleccionada As String = ""
     Private EsPrimeraImpresion As Boolean = False
 
+    Private Function ObtenerTextoBodegaEtiqueta() As String
+        If AP.Bodega Is Nothing Then Return ""
+
+        Dim codigo As String = Convert.ToString(AP.Bodega.Codigo).Trim()
+        Dim nombre As String = Convert.ToString(AP.Bodega.Nombre).Trim()
+
+        If AP.Bodega.ocultar_nombre_etiquetas_impresas Then
+            Return codigo
+        End If
+
+        If String.IsNullOrWhiteSpace(nombre) Then Return codigo
+
+        Return codigo & " - " & nombre
+    End Function
+
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
@@ -197,7 +212,7 @@ Public Class frmImpresionRecepcion
                         '                          vFechaVence)
 
                         ZPLString = String.Format(tmpZPLString,
-                                                AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,                      ' {0}
+                                                ObtenerTextoBodegaEtiqueta(),                                     ' {0}
                                                 vEmpresa,                                                         ' {1}
                                                 vCodigoProducto & " - " & vNombreProducto.Trim(),                 ' {2}
                                                 vCodigoBarra,                                                     ' {3}

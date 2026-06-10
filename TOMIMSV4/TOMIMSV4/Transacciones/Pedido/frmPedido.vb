@@ -1582,7 +1582,7 @@ Public Class frmPedido
                 End If
 
                 '#EJC20220327: Cambio por lookupedit.
-                txtIdCliente.EditValue = pBePedidoEnc.Cliente.IdCliente
+                txtIdCliente.EditValue = Get_IdCliente_Pedido_UI()
                 txtIdCliente.Enabled = False
                 PedidoTrace_Marca("cliente_lookup")
 
@@ -1762,7 +1762,7 @@ Public Class frmPedido
                                                     True)
             End If
 
-            txtIdCliente.EditValue = pBePedidoEnc.Cliente.IdCliente
+            txtIdCliente.EditValue = Get_IdCliente_Pedido_UI()
             txtIdCliente.Enabled = False
 
             cmbMuelle.EditValue = pBePedidoEnc.IdMuelle
@@ -1871,6 +1871,19 @@ Public Class frmPedido
         End Try
 
     End Sub
+
+    '#EJC20260610: Evita cliente en blanco cuando el encabezado trae IdCliente pero el objeto anidado Cliente no está hidratado.
+    Private Function Get_IdCliente_Pedido_UI() As Integer
+        Try
+            If pBePedidoEnc Is Nothing Then Return 0
+            If pBePedidoEnc.Cliente IsNot Nothing AndAlso pBePedidoEnc.Cliente.IdCliente > 0 Then
+                Return pBePedidoEnc.Cliente.IdCliente
+            End If
+            Return pBePedidoEnc.IdCliente
+        Catch
+            Return 0
+        End Try
+    End Function
 
     Private Sub Cargar_Detalle_Pedido(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
 

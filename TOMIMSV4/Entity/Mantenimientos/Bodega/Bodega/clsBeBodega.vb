@@ -138,6 +138,7 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
 
     Public Property impresion_verificacion As Boolean = False
     Public Property IdSimbologiaLicencia As Integer = 0
+    Public Property ocultar_nombre_etiquetas_impresas As Boolean = False
 
     Public Property Interface_SAP As Boolean = False
     Public Property Restringir_Areas_SAP As Boolean = False

@@ -432,6 +432,21 @@ Public Class frmImpresionRecepcion_OC
         Return vCopias
     End Function
 
+    Private Function ObtenerTextoBodegaEtiqueta() As String
+        If AP.Bodega Is Nothing Then Return ""
+
+        Dim codigo As String = Convert.ToString(AP.Bodega.Codigo).Trim()
+        Dim nombre As String = Convert.ToString(AP.Bodega.Nombre).Trim()
+
+        If AP.Bodega.ocultar_nombre_etiquetas_impresas Then
+            Return codigo
+        End If
+
+        If String.IsNullOrWhiteSpace(nombre) Then Return codigo
+
+        Return codigo & " - " & nombre
+    End Function
+
     Private Function ConstruirZplProducto(ByVal pReDet As clsBeTrans_oc_det,
                                           Optional ByVal licenciaForzada As String = "") As String
 
@@ -464,7 +479,7 @@ Public Class frmImpresionRecepcion_OC
                                              licenciaForzada.Trim())
 
         Return String.Format(tmpZPLString,
-                         AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
+                         ObtenerTextoBodegaEtiqueta(),
                          vEmpresa,
                          vCodigoProducto & " - " & vNombreProducto,
                          licenciaImpresion,
@@ -516,7 +531,7 @@ Public Class frmImpresionRecepcion_OC
         End If
 
         Dim args() As Object = {
-        AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,                                                   ' {0}
+        ObtenerTextoBodegaEtiqueta(),                                                                  ' {0}
         vEmpresa,                                                                                      ' {1}
         vCodigoProducto & " - " & vNombreProducto.Trim(),                                              ' {2}
         vLicenciaQr,                                                                                   ' {3}
