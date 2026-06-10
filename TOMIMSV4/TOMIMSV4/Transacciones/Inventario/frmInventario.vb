@@ -409,6 +409,10 @@ Public Class frmInventario
                     chkCapturarNoAsignado.Checked = gBeTransInvEnc.Capturar_No_Asignados
 
                     If gBeTransInvEnc.Inicial Then
+                        '#MA20260608 MOSTRAR en inventario inicial
+                        If Not xtraTabInv.TabPages.Contains(tabUbicacionesNoContadas) Then
+                            xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
+                        End If
                         xtraTabInv.TabPages.Add(Tramos)
                         xtraTabInv.TabPages.Add(tabDetalle)
                         xtraTabInv.TabPages.Remove(tabAsignacionUbicaciones)
@@ -453,7 +457,8 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Add(tabInvCongelado)
                         xtraTabInv.TabPages.Add(TabInventarioCostos)
                         xtraTabInv.TabPages.Add(tbne)
-                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
+                        '#MA20260608 ocultar en ciclicos
+                        xtraTabInv.TabPages.Remove(tabUbicacionesNoContadas)
                         xtraTabInv.TabPages.Add(xtpRegularizacion)
                         '#AG27052026: Muestra pestaña de progreso para inventario cíclico.
                         If Not xtraTabInv.TabPages.Contains(tabProgreso) Then

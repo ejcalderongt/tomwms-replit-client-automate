@@ -978,10 +978,10 @@ Public Class frmInventarioRFID
 
 
         Try
-            Dim RegularizaInventario As New frmRegularizarInventarioRFID(frmRegularizarInventarioRFID.TipoTrans.Nuevo) With
-                {.gBeInventario = gBeTransInvEnc}
-            RegularizaInventario.ShowDialog()
-            RegularizaInventario.Dispose()
+            'Dim RegularizaInventario As New frmRegularizarInventarioRFID(frmRegularizarInventarioRFID.TipoTrans.Nuevo) With
+            '    {.gBeInventario = gBeTransInvEnc}
+            'RegularizaInventario.ShowDialog()
+            'RegularizaInventario.Dispose()
 
             If gBeTransInvEnc.Regularizado Then
                 Close()

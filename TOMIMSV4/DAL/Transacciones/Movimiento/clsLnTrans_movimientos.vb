@@ -3,6 +3,30 @@ Imports System.Reflection
 
 Public Class clsLnTrans_movimientos
 
+    Private Shared Function IdMovimientoEsIdentity(ByVal pConnection As SqlConnection,
+                                                   ByVal pTransaction As SqlTransaction) As Boolean
+        Const sql As String = "SELECT CONVERT(bit, ISNULL(COLUMNPROPERTY(OBJECT_ID('dbo.trans_movimientos'),'IdMovimiento','IsIdentity'),0))"
+
+        Using cmd As New SqlCommand(sql, pConnection, pTransaction)
+            cmd.CommandType = CommandType.Text
+            Dim result As Object = cmd.ExecuteScalar()
+            If result Is Nothing OrElse IsDBNull(result) Then Return False
+            Return Convert.ToBoolean(result)
+        End Using
+    End Function
+
+    Private Shared Function ObtenerSiguienteIdMovimiento(ByVal pConnection As SqlConnection,
+                                                         ByVal pTransaction As SqlTransaction) As Integer
+        Const sql As String = "SELECT ISNULL(MAX(IdMovimiento),0)+1 FROM trans_movimientos WITH (UPDLOCK, HOLDLOCK)"
+
+        Using cmd As New SqlCommand(sql, pConnection, pTransaction)
+            cmd.CommandType = CommandType.Text
+            Dim result As Object = cmd.ExecuteScalar()
+            If result Is Nothing OrElse IsDBNull(result) Then Return 1
+            Return Convert.ToInt32(result)
+        End Using
+    End Function
+
     Public Shared Sub Cargar(ByRef oBeTrans_movimientos As clsBeTrans_movimientos, ByRef dr As DataRow)
 
         Try
@@ -61,10 +85,28 @@ Public Class clsLnTrans_movimientos
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim cmd As New SqlCommand
+        Dim esIdMovimientoIdentity As Boolean = False
 
         Try
+            Dim sp As String = ""
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            cmd.CommandType = CommandType.Text
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand("", pConection, pTransaction)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand("", lConnection, lTransaction)
+            End If
+
+            esIdMovimientoIdentity = IdMovimientoEsIdentity(cmd.Connection, cmd.Transaction)
 
             Ins.Init("trans_movimientos")
+            If Not esIdMovimientoIdentity Then
+                Ins.Add("idmovimiento", "@idmovimiento", DataType.Parametro)
+            End If
             Ins.Add("idempresa", "@idempresa", DataType.Parametro)
             Ins.Add("idbodegaorigen", "@idbodegaorigen", DataType.Parametro)
             Ins.Add("idtransaccion", "@idtransaccion", DataType.Parametro)
@@ -103,17 +145,17 @@ Public Class clsLnTrans_movimientos
             Ins.Add("Talla", "@Talla", DataType.Parametro)
             Ins.Add("Color", "@Color", DataType.Parametro)
 
-            Dim sp As String = Ins.SQL() & "; SELECT CAST(SCOPE_IDENTITY() AS INT);"
+            sp = Ins.SQL()
+            If esIdMovimientoIdentity Then
+                sp &= "; SELECT CAST(SCOPE_IDENTITY() AS INT);"
+            End If
+            cmd.CommandText = sp
 
-            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
-
-            cmd.CommandType = CommandType.Text
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            If Not esIdMovimientoIdentity Then
+                If oBeTrans_movimientos.IdMovimiento <= 0 Then
+                    oBeTrans_movimientos.IdMovimiento = ObtenerSiguienteIdMovimiento(cmd.Connection, cmd.Transaction)
+                End If
+                cmd.Parameters.Add(New SqlParameter("@IDMOVIMIENTO", oBeTrans_movimientos.IdMovimiento))
             End If
 
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESA", oBeTrans_movimientos.IdEmpresa))
@@ -154,13 +196,19 @@ Public Class clsLnTrans_movimientos
             cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_movimientos.Talla))
             cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_movimientos.Color))
 
-
-            Dim idGeneradoObj As Object = cmd.ExecuteScalar()
             Dim rowsAffected As Integer = 0
 
-            If idGeneradoObj IsNot Nothing AndAlso Not IsDBNull(idGeneradoObj) Then
-                oBeTrans_movimientos.IdMovimiento = Convert.ToInt32(idGeneradoObj)
-                rowsAffected = oBeTrans_movimientos.IdMovimiento
+            If esIdMovimientoIdentity Then
+                Dim idGeneradoObj As Object = cmd.ExecuteScalar()
+                If idGeneradoObj IsNot Nothing AndAlso Not IsDBNull(idGeneradoObj) Then
+                    oBeTrans_movimientos.IdMovimiento = Convert.ToInt32(idGeneradoObj)
+                    rowsAffected = oBeTrans_movimientos.IdMovimiento
+                End If
+            Else
+                rowsAffected = cmd.ExecuteNonQuery()
+                If rowsAffected > 0 Then
+                    rowsAffected = oBeTrans_movimientos.IdMovimiento
+                End If
             End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
