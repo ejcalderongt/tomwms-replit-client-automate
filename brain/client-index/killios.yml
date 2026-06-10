@@ -4,7 +4,7 @@ slug: killios
 bd:
   host_env: WMS_DB_HOST
   user_env: WMS_DB_USER
-  password_env: WMS_KILLIOS_DB_PASSWORD
+  password_env: WMS_EC2_DB_PASSWORD
   database_env: WMS_KILLIOS_DB_NAME
   database_actual: TOMWMS_KILLIOS_PRD_2026
   driver: pymssql
@@ -231,3 +231,4 @@ colas_pendientes:
       Killios actualmente NO los hace (cero registros con ajuste_por_inventario=1 entre 2023-2025).
       Beneficio: detección temprana de bugs como CP-013 antes de que acumulen 6 meses sin descubrir.
     referencia_caso: CP-013-killios-wms164
+

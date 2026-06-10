@@ -6,7 +6,7 @@ estado: HISTORICO  # backup en EC2, ultima fecha 2024-07-31. Confirmar si sigue 
 bd:
   server: 52.41.114.122,1437
   nombre: IMS4MB_MERCOPAN_PRD
-  acceso: read-only via pymssql con WMS_DB_USER + WMS_KILLIOS_DB_PASSWORD
+  acceso: read-only via pymssql con WMS_DB_USER + WMS_EC2_DB_PASSWORD
 
 estructura:
   tablas: 322
@@ -56,3 +56,4 @@ acciones_pendientes:
 referencias:
   - debuged-cases/CP-014-bug-danado-picking-transversal/REPORTE-MULTI-BD.md
   - debuged-cases/CP-013-killios-wms164/PLAYBOOK-FIX.md
+

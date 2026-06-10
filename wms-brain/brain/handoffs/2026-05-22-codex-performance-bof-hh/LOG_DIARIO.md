@@ -2,6 +2,71 @@
 
 > Sigue protocolo `wms-brain/brain/reference/protocolo-log-diario.md`.
 
+## 2026-06-10 - MHS pedido MI3 sin cliente visible (cliente_bodega faltante)
+
+### Resumen
+
+Se atendió incidente en MHS DEV donde un pedido importado por MI3/NAV quedaba con `IdCliente` en `trans_pe_enc`, pero BOF no resolvía `Cliente` porque faltaba la relación `cliente_bodega` para la bodega del pedido.
+
+### Evidencia principal
+
+- `trans_pe_enc`: referencia `CSFA02-36522`, `IdCliente=1280`, `IdBodega=2`, `user_agr=1`.
+- `i_nav_ped_traslado_enc`: misma referencia con timestamp correlativo de importación.
+- `cliente`: maestro existente.
+- `cliente_bodega`: faltaba fila activa para `(IdCliente=1280, IdBodega=2)` al momento del fallo.
+
+### Causa raíz
+
+El flujo de importación de pedido no garantizaba alta de `cliente_bodega` antes de insertar `trans_pe_enc`. Además, no existía blindaje DB para evitar `DELETE` físico de `cliente_bodega` cuando ya hay pedidos asociados por `(IdCliente, IdBodega)`.
+
+### Corrección aplicada
+
+- Código VB (preventivo): asegurar `cliente_bodega` activa antes de `Inserta_Encabezado` en ambos caminos MI3/NAV del importador.
+- Datos DEV (correctivo): inserción de la relación faltante para restablecer visualización de cliente en pedido.
+
+### Guardrail SQL documentado
+
+- Script opcional por ambiente: `TOMWMS/tools/sql-deliverables/20260610_prevent_delete_cliente_bodega_referenced.sql`.
+- Implementa trigger `INSTEAD OF DELETE` en `cliente_bodega`, bloqueando borrado si existe `trans_pe_enc` asociado.
+
+## 2026-06-08 - Blindaje sync salida Killios + La Cumbre (No_pase / llave fuerte)
+
+### Resumen
+
+Se aplico blindaje quirurgico en sincronizacion de salida para eliminar cruces por correlacion debil. El foco fue evitar mezcla de lineas cuando comparten `No_pedido` y asegurar que la actualizacion de `no_pase` en Killios se haga sobre el `IdDespachoEnc` exacto de la corrida.
+
+### Cambios tecnicos
+
+- Killios SAP (`SAPSYNC_Killios`):
+  - Agrupacion/filtro por llave fuerte: `No_pedido + IdPedidoEnc + IdDespachoEnc`.
+  - Guard clause fail-fast cuando un lote trae multiples `IdDespachoEnc`.
+  - Finalizacion de entrega actualizando `no_pase` sobre `IdDespachoEnc` exacto (no por `Get_Single_By_IdPedidoEnc` ambiguo).
+  - Tag en codigo: `#EJC20260608`.
+- La Cumbre NAV (`DynamicsNavInterface`):
+  - Se agrego `pIdPedidoEnc` en funciones criticas de lotes/cantidades.
+  - Filtros reforzados por `No_pedido + IdPedidoEnc` en armado, marcado `Enviado`, resumen y update.
+  - Tag en codigo: `#EJC20260608`.
+
+### Evidencia
+
+- Commit: `cf28bf81` en `dev_2028_merge`.
+- Archivos:
+  - `SAPSYNC_Killios/Clases Interface Sync/Pedido_Cliente/clsSyncSAPSPedidoCliente.vb`
+  - `DynamicsNavInterface/Clases Interface Sync/Pedido_Venta/clsSyncNavPedidoVenta.vb`
+  - `DynamicsNavInterface/Clases Interface Sync/Pedido_Traslado/clsSyncNavPedidoTraslado.vb`
+
+### Jira (publicado)
+
+- `WMS-2326` Bug Killios - blindaje sync salida SAP / cruce de `no_pase`.
+- `WMS-2327` Bug La Cumbre - blindaje sync salida NAV por llave fuerte.
+- Parametros cargados:
+  - Asignado: Erik Calderon.
+  - Informer/Reporter: Carolina Fuentes (y watcher).
+  - Inicio: `2026-06-08`.
+  - Fin: `2026-06-08`.
+  - Esfuerzo: `4h` por issue.
+  - Story points estimados: `3` por issue.
+
 ## 2026-05-22 - Optimizaciones de rendimiento BOF/HH
 
 ### Resumen

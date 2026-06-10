@@ -85,6 +85,9 @@ entry_points:
   homologar_motivos_legacy_core: "Ver commit cb4726b9 como ejemplo - TIPO_NO_RESERVA legacy <-> ReservationFailureCode Core"
 
 ejemplos_tareas_pasadas:
+  - { fecha: 2026-06-10, caso: "Pedido MI3 con cliente no visible por cliente_bodega faltante", nota: "Se agregó aseguramiento preventivo de cliente_bodega en importación MI3/NAV antes de Inserta_Encabezado. Ver handoff 2026-06-10-pedido-mi3-cliente-bodega-guardrail." }
+  - { fecha: 2026-06-03, caso: "WSHHRN/HH reemplazo verificacion: trazas y estado reservado", nota: "Diagnostico con trazas EJC_REEMP_VERIF_WS_IN/OUT para correlacion de parametros y resultado cuando stock reservado no aparece por filtro de estado." }
+  - { fecha: 2026-06-03, caso: "Cliente HH WebService race callback/xmlresult", nota: "Fix en cliente Android para evitar mezcla de respuestas JSON/XML en callbacks solapados; ver handoff 2026-06-03-hh-reemplazo-verificacion-ws-race." }
   - { fecha: 2026-05-19, caso: "Homologar motivos no-reserva legacy<->WebAPI", commit: cb4726b9, archivos: [clsLnStock_res_Partial.vb, EntityLoadingStep.cs, SyncSalidasService.cs] }
   - { fecha: 2026-05-19, caso: "Mejoras reserva WebAPI Core MHS v4", commit: 68045f09 }
   - { fecha: 2026-05-19, caso: "Process_Result overwrite mayor (3 commits)", commits: [35f01749, 07202354, 311d3f29] }

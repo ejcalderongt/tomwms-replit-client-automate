@@ -2,6 +2,65 @@
 
 > Registro resumido de avances para copiar/adaptar en Jira, daily o cierre de tarea.
 
+## 2026-06-10
+
+### Jira draft sugerido (no publicar sin confirmación Erik)
+
+1. `WMS-XXXX`  
+   - Titulo: `[BUG][MHS][#EJC20260610] Pedido MI3 sin cliente visible por relación cliente_bodega faltante`
+   - Tipo: `Error (Bug)`  
+   - Asignado sugerido: `Erik Calderon`
+   - Reporter sugerido: `Carolina Fuentes`
+   - Fecha inicio: `2026-06-10`
+   - Fecha fin: `2026-06-10`
+   - Esfuerzo sugerido: `3h`
+   - Story points sugeridos: `2`
+   - Release note:
+     - Se corrige la generación de pedidos MI3/NAV para asegurar la relación `cliente_bodega` antes de insertar `trans_pe_enc`.
+     - Se documenta guardrail SQL opcional para bloquear `DELETE` físico de `cliente_bodega` cuando ya existe pedido asociado por cliente+bodega.
+   - Evidencia técnica:
+     - Pedido ejemplo: `CSFA02-36522` (`TOMWMS_MHS_DEV`), `IdCliente=1280`, `IdBodega=2`.
+     - Handoff: `brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md`.
+     - Script: `TOMWMS/tools/sql-deliverables/20260610_prevent_delete_cliente_bodega_referenced.sql`.
+
+## 2026-06-08
+
+### Jira publicado (bugs separados por cliente)
+
+1. `WMS-2326`  
+   - Titulo: `[BUG][KILLIOS][#EJC20260608] Blindaje sync salida SAP para evitar cruce de no_pase en despachos parciales`
+   - Tipo: `Error (Bug)`
+   - Asignado: `Erik Calderon`
+   - Informer/Reporter: `Carolina Fuentes` (agregada tambien como watcher)
+   - Fecha inicio: `2026-06-08`
+   - Fecha fin: `2026-06-08`
+   - Esfuerzo: `4h`
+   - Story points estimados: `3`
+   - Release note:
+     - Se corrige correlacion ambigua en salida SAP para evitar que `no_pase` se actualice en un despacho distinto cuando hay parciales/reproceso.
+     - Se fuerza llave fuerte por `No_pedido + IdPedidoEnc + IdDespachoEnc` y finalizacion sobre despacho exacto.
+   - Evidencia tecnica:
+     - Commit `cf28bf81`
+     - Archivo principal: `SAPSYNC_Killios/Clases Interface Sync/Pedido_Cliente/clsSyncSAPSPedidoCliente.vb`
+
+2. `WMS-2327`  
+   - Titulo: `[BUG][LA CUMBRE][#EJC20260608] Blindaje sync NAV salida por llave fuerte (No_pedido + IdPedidoEnc)`
+   - Tipo: `Error (Bug)`
+   - Asignado: `Erik Calderon`
+   - Informer/Reporter: `Carolina Fuentes` (agregada tambien como watcher)
+   - Fecha inicio: `2026-06-08`
+   - Fecha fin: `2026-06-08`
+   - Esfuerzo: `4h`
+   - Story points estimados: `3`
+   - Release note:
+     - Se evita mezcla de lineas de distintos pedidos internos durante envio/reproceso NAV cuando comparten `No_pedido`.
+     - Se refuerzan filtros de lotes/cantidades con `IdPedidoEnc` para mantener consistencia de marcas `Enviado`.
+   - Evidencia tecnica:
+     - Commit `cf28bf81`
+     - Archivos:
+       - `DynamicsNavInterface/Clases Interface Sync/Pedido_Venta/clsSyncNavPedidoVenta.vb`
+       - `DynamicsNavInterface/Clases Interface Sync/Pedido_Traslado/clsSyncNavPedidoTraslado.vb`
+
 ## 2026-05-26
 
 ### Resumen ejecutivo

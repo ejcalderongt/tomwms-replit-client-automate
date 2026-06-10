@@ -6,12 +6,13 @@ ramas_relevantes: [N/A - cada cliente tiene su BD]
 
 infraestructura:
   servidor: 52.41.114.122,1437
+  alias_servidor: [amazon, ec2]  # mismo SQL host
   os: Windows Server 2022
   motor: SQL Server 2022 CU18 Standard (16.0.4185.3)
   usuario_sa: sa
   passwords:
     convencion: WMS_<CLIENTE>_<ENV>_DB_PASSWORD (env var en este replit)
-    activo: WMS_KILLIOS_DB_PASSWORD
+    activo: WMS_EC2_DB_PASSWORD
   driver_node: tedious (instalado en raiz del workspace)
   driver_python: pymssql (para tools/wms-deep-dive/)
 
@@ -121,3 +122,4 @@ extension_points:
   - "Falta documentar diferencia schema IMS4MB vs nueva con tabla por tabla"
   - "Falta pattern PATTERNS-OUTBOX-HEALTH.md (suite suites/outbox-health/ ya existe)"
   - "Falta documentar trabajo en VW_Stock_Res"
+

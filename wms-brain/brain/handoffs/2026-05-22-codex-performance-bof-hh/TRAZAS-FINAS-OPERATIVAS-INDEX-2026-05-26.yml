@@ -9,10 +9,10 @@ meta:
 trazas_finas:
   recepcion:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/RECEPCION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
-    estado: "vigente"
+    estado: "vigente_con_blindaje_concurrencia_y_unificacion_busqueda_sku_lp_2026-06-05"
   picking:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/PICKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
-    estado: "vigente"
+    estado: "vigente_con_blindaje_concurrencia_2026-06-05"
   packing:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/PACKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
     estado: "vigente"
@@ -21,7 +21,7 @@ trazas_finas:
     estado: "diagnostico_fix_bof"
   verificacion:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/VERIFICACION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
-    estado: "vigente"
+    estado: "vigente_con_blindaje_concurrencia_2026-06-05"
   reemplazo:
     archivo: "brain/handoffs/2026-05-22-codex-performance-bof-hh/REEMPLAZO-HH-GRAFO-TRAZA-FINA-2026-05-26.yml"
     estado: "vigente"
@@ -34,6 +34,9 @@ trazas_finas:
   inventario_rfid:
     archivo: "brain/handoffs/2026-05-27-rfid-inventario-fisico/RFID-INVENTARIO-GRAFO-TRAZA-FINA-2026-05-27.yml"
     estado: "diagnostico_pre_mejora"
+  pedido_mi3_cliente:
+    archivo: "brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md"
+    estado: "vigente_guardrail_cliente_bodega_2026-06-10"
 
 estrategia_actual:
   fase_1:
@@ -51,3 +54,14 @@ estrategia_actual:
     acciones:
       - "Agregar métricas de ms y control de overlap donde aplique."
       - "Ejecutar checklist corto del proceso afectado."
+  fase_4:
+    nombre: "Concurrencia + cache-sync HH"
+    acciones:
+      - "Aplicar patrón de recarga segura cuando la BD fue actualizada por otra terminal."
+      - "Usar trazas de proceso y plantillas SQL reutilizables para evitar queries ad hoc repetidas."
+
+referencias_nuevas:
+  - "brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md"
+  - "brain/handoffs/2026-06-06-operativo-reusable-map/README.md"
+  - "brain/handoffs/2026-05-22-codex-performance-bof-hh/RECEPCION-HH-GRAFO-TRAZA-FINA-2026-05-26.yml#actualizacion_2026_06_05_lista_tareas_barras"
+  - "brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md"

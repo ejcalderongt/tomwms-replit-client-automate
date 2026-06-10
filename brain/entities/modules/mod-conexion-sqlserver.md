@@ -21,7 +21,7 @@ sources:
 | Versión | SQL Server 2022 CU18 (16.0.4185.3) |
 | Edición | Standard |
 | Usuario default | `sa` |
-| Password | secret `WMS_KILLIOS_DB_PASSWORD` |
+| Password | secret `WMS_EC2_DB_PASSWORD` |
 | Encrypt / TrustCert | `false` / `true` |
 
 ## Bases WMS accesibles
@@ -38,7 +38,7 @@ sources:
 const sql = require("mssql");
 const cfg = {
   server: "52.41.114.122", port: 1437, user: "sa",
-  password: process.env.WMS_KILLIOS_DB_PASSWORD,
+  password: process.env.WMS_EC2_DB_PASSWORD,
   database: "TOMWMS_KILLIOS_PRD",
   options: { encrypt: false, trustServerCertificate: true },
 };
@@ -74,3 +74,4 @@ Detalle completo de tablas, vistas, SPs y funciones del schema productivo: `db-b
 - `decisions/dec-2026-04-killios-acceso-replit` — rationale acceso
 - `rules/rule-08-killios-prod-solo-lectura` (M2) — restricción
 - `db-brain://_meta/stats` — stats globales del schema
+

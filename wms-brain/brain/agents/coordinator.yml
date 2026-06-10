@@ -33,6 +33,10 @@ orden_de_carga:
     - "brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml"
     - "Si existe traza fina del proceso, usarla como entry-point obligatorio."
     - "Si no existe, crear traza fina antes del fix."
+  paso_0b_preflight_mapa_reutilizable:
+    - "Cargar brain/handoffs/2026-06-06-operativo-reusable-map/README.md cuando la tarea sea operativa/repetitiva."
+    - "Reusar checklist y plantillas SQL estandar; evitar crear consultas ad hoc duplicadas."
+    - "Si aplica concurrencia/cache, encadenar con brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md."
   paso_1_siempre: [replit.md, brain/agents/_index.yml]
   paso_2_segun_trigger:
     - brain/agents/coordinator.yml  # este archivo
@@ -59,6 +63,10 @@ entry_points_generales:
   caso_soporte_cliente:
     cargar: [coordinator, client-<X>, domain-<que-aplique>]
     leer_primero: brain/customer-open-cases/<CP-NNN>/INDEX.md
+
+  incidencia_pedido_mi3_cliente:
+    cargar: [domain-bof, domain-integration-services, domain-database, client-<X>]
+    leer_primero: brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md
 
   release_notes_kpi:
     cargar: [domain-portal, domain-indicadores]

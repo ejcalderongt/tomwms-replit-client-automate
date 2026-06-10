@@ -11,7 +11,8 @@ infraestructura:
   usuario_sa: sa
   passwords:
     convencion: WMS_<CLIENTE>_<ENV>_DB_PASSWORD (env var en este replit)
-    activo: WMS_KILLIOS_DB_PASSWORD
+    activo: WMS_EC2_DB_PASSWORD
+    nota: "Amazon/EC2 se refiere al mismo SQL Server 52.41.114.122,1437"
   driver_node: tedious (instalado en raiz del workspace)
   driver_python: pymssql (para tools/wms-deep-dive/)
 
@@ -85,6 +86,7 @@ reglas_vinculantes:
   - "Nunca dropear/alterar sin SP previo de respaldo o autorizacion"
   - "REGLA 9: Estatus OC MI3 por trans_oc_enc.Referencia, NO IdOrdenCompraEnc"
   - "REGLA 6: Cantidad UMBAS en stock/movimientos/stock_res"
+  - "Integridad cliente-bodega: si un cliente ya tiene trans_pe_enc en una bodega, evitar DELETE físico de cliente_bodega para esa combinación sin saneamiento previo."
   - "Outliers conocidos: trans_ajuste_det idajustedet=638 (4.8B UM mayo-2021, observacion 'sa') - excluir de agregados"
 
 scripts_dba:
@@ -111,10 +113,12 @@ entry_points:
   schema_diferencia: "Cargar brain/data-deep-dive/CROSS-COMPARATIVA.md"
   vista_nueva: "Trabajo activo en VW_Stock_Res - github ejcalderongt/DBA"
   performance: "Pendiente - no hay pattern aun"
+  validacion_operativa_reutilizable_hh: "Para recepción/picking/verificación con sospecha de desfasaje, usar plantillas SQL del handoff brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md para no repetir queries ad hoc."
 
 ejemplos_tareas_pasadas:
   - { fecha: 2026-05-05, caso: "Snapshot operativo cross-cliente 8 BDs", artifacts: brain/data-deep-dive/, runner: tools/wms-deep-dive/snapshot_runner.py }
   - { fecha: 2026-05-19, caso: "SP regularizacion veri duplicados", handoff: brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/ }
+  - { fecha: 2026-06-10, caso: "Guardrail cliente_bodega vs trans_pe_enc (MHS)", handoff: brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/, script: TOMWMS/tools/sql-deliverables/20260610_prevent_delete_cliente_bodega_referenced.sql }
 
 extension_points:
   - "Falta inventario completo de SPs por familia"

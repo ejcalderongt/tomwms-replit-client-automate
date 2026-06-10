@@ -43,7 +43,7 @@ domains:
     archivo: brain/agents/domain-database.yml
     proposito: Esquema SQL Server, SPs, views, perfiles por cliente, scripts DBA
     triggers:
-      keywords: [SQL Server, schema, SP, view, stored procedure, VW_, trans_, stock_, query, tabla, columna, drop, alter]
+      keywords: [SQL Server, schema, SP, view, stored procedure, VW_, trans_, stock_, query, tabla, columna, drop, alter, cliente_bodega, integridad]
       paths: [DBA/, scripts/sql/]
       tareas_tipicas: [diagnostico-sql, vista-nueva, script-auditoria, regularizacion-data, performance-query]
 
@@ -100,6 +100,16 @@ cross_dominio:
     cargar: [coordinator, domain-bof, client-<X>]
   - tarea: kpi-portal
     cargar: [coordinator, domain-portal, domain-indicadores]
+  - tarea: incidente-operativo-repetitivo
+    cargar: [coordinator, domain-hh-android, domain-bof, domain-integration-services, domain-database, client-<X>]
+    preflight_extra:
+      - brain/handoffs/2026-06-06-operativo-reusable-map/README.md
+      - brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml
+      - brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md
+  - tarea: pedido-mi3-cliente-no-visible
+    cargar: [coordinator, domain-bof, domain-integration-services, domain-database, client-<X>]
+    preflight_extra:
+      - brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md
 
 triggers_conflicto:
   # Cuando un keyword puede pertenecer a varios dominios, regla de desempate.

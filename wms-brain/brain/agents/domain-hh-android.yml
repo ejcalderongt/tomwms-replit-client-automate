@@ -64,17 +64,25 @@ cross_refs:
 
 entry_points:
   preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
+  preflight_concurrencia_cache_sync: "Si el síntoma es desfasaje/concurrencia entre HHs, cargar brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md (plantillas SQL + checklist + tags de logcat)."
   bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
   parsing_soap: "WebService.java - parseo respuestas WSHHRN. Cuidar .replace(N,n) linea 352"
   nueva_activity: "Seguir patron de activities existentes en mismo modulo (recepcion/picking/etc)"
   cliente_cumbre: "rama dedicada dev_2028_Cumbre - NO mezclar con dev_2028_merge"
 
 ejemplos_tareas_pasadas:
+  - { fecha: 2026-06-05, caso: "Recepción lista de tareas MHS: unificación SKU+LP", nota: "Se documentó traza WMS.REC_MHS_SCAN y se unificó resolución de OC por SKU/licencia en DAL para reducir roundtrip; fallback HH se mantiene temporal." }
+  - { fecha: 2026-06-05, caso: "HH concurrencia/cache-sync en recepcion, picking y verificacion", nota: "Se aplicó fail-safe de recarga + trazas de concurrencia y se estandarizó validación SQL reutilizable; ver handoff 2026-06-05-hh-concurrencia-cache-sync." }
+  - { fecha: 2026-06-03, caso: "HH WS callback/xmlresult race en cambio ubicacion ciega", nota: "Fix en com.dts.base.WebService: serializacion por instancia + snapshot por request para evitar cruce JSON/XML y XMLObject Unexpected token." }
+  - { fecha: 2026-06-03, caso: "HH reemplazo verificacion/picking con trazas", nota: "Se reforzo trazabilidad de reemplazo y validacion de pendiente real; ver handoff 2026-06-03-hh-reemplazo-verificacion-ws-race." }
   - { fecha: 2026-05-20, caso: "Audit HH cantidad UMBAS pattern", handoff: brain/handoffs/2026-05-20-audit-hh-cantidad-umbas-pattern/, status: "ACCEPTANCE + ADDENDUM disponibles" }
   - { fecha: 2026-05-20, caso: "HH recepcion pallet presentacion cantidad", handoff: brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ }
   - { fecha: 2026-05-26, caso: "HH cambio ubicacion: foco destino desde recepcion", nota: "Fix en frm_cambio_ubicacion_ciega con tag #EJC20260526; no tocar recepcion detalle para este sintoma." }
   - { fecha: 2026-05-27, caso: "HH blindaje nulos/listas estrategico", nota: "Patron #EJC20260527 aplicado en cambio ubicacion, consulta existencias detalle y verificacion consolidada; extender por frontera WS, no masivo." }
   - { fecha: 2026-05-27, caso: "HH consulta existencias sin paginacion", nota: "Get_Stock_Consulta_CI_Json debe retornar Items completos acorde filtros; Total=RegistrosDevueltos y SinPaginacion=True." }
+  - { fecha: 2026-05-27, caso: "HH recepcion datos: pLineaOC vs pIdRecepcionDet", nota: "BUG-003: pLineaOC debe ser BeOcDet.No_Linea, no el ID autoincremental del detalle local. Vital para match det<->stk en BOF." }
+  - { fecha: 2026-05-27, caso: "HH recepcion datos: Guardar_Caja_Master_enMemoria", nota: "BUG-003: Filtrar pListBeStockRec por producto/talla/color al copiar a AuxListStockRec. Evita arrastrar stock de otros items." }
+  - { fecha: 2026-06-03, caso: "HH verificacion por busqueda sin click lista", nota: "Unificar fuente de vencimiento/lote en flujo de busqueda y flujo de seleccion para evitar default 1900 en pantalla." }
 
 extension_points:
   - "Falta inventario de las 55 activities con su flujo y endpoint WSHHRN consumido"

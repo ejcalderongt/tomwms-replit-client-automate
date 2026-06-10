@@ -53,3 +53,22 @@ python .\tools\jira-task-assistant\main.py `
 - Detecta commits documentados por hash corto/largo dentro de bitácoras.
 - Clasifica de forma heurística (Bug/Mejora/Técnica) y sugiere épica/horas.
 - No hace llamadas Jira; pensado para revisión previa.
+- Para publicación real (`publish_to_jira.py`), usar `--assignee` con alias humano.
+- Asignación Jira Cloud se hace siempre con `accountId` (nunca `name`).
+
+## Actualizacion de campos (operacion posterior)
+
+Cuando el issue ya existe, usar API Jira para completar campos operativos:
+
+- `description` (ADF)
+- `customfield_10015` (Start date)
+- `duedate` (Fecha de vencimiento)
+- `customfield_10016` (Story points)
+- `worklog` para `Horas_Utilizadas` / `Tiempo Trabajado`
+
+Reglas:
+
+1. `description`, fechas y story points se actualizan con `PUT /rest/api/3/issue/{key}`.
+2. Horas se registran con `POST /rest/api/3/issue/{key}/worklog` (acumulativo).
+3. La descripcion debe incluir: problema, que arruinaba, causa raiz, fix y trazabilidad (commits/archivos).
+4. Evitar registrar tareas internas del brain como funcionales en Jira.

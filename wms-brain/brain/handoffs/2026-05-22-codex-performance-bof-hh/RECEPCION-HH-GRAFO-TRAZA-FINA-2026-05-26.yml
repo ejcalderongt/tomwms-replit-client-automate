@@ -210,3 +210,32 @@ validacion_post_fix:
     - "Confirmar que no se invoca GetSingleRec (XML) en frm_detalle_ingresos."
     - "Verificar que flujo mantiene datos de propietario/proveedor/tipo doc sin regresión."
     - "Comparar tiempo promedio antes/después (mínimo 10 ejecuciones)."
+
+actualizacion_2026_06_05_lista_tareas_barras:
+  contexto:
+    - "Escenario MHS en lista de tareas de recepción: escaneo podía resolver por SKU pero requería fallback adicional para licencia pallet."
+    - "Se observó doble roundtrip: Get_ListOrdenCompraEnc_By_Codigo_Producto y luego Get_All_Pallet_Ingreso_By_Barra."
+  trazas_hh:
+    tag: "WMS.REC_MHS_SCAN"
+    eventos_clave:
+      - "WS_OC_LISTA / WS_OC_VACIA / WS_OC_NULL"
+      - "WS_PALLET_BARRA / WS_PALLET_BARRA_OC / WS_PALLET_BARRA_OC_SIN_TAREA"
+      - "NO_OC_ENCONTRADA"
+    archivo: "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java"
+  cambio_aplicado_bof_dal:
+    fecha: "2026-06-05"
+    tag: "#EJC20260605_FIX_REC_OC_UNIFICA_SKU_LP"
+    archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/OrdenCompra/OC_Detalle/clsLnTrans_oc_det_Partial.vb"
+    metodo: "Get_ListOrdenCompraEnc_By_Codigo_Producto"
+    detalle:
+      - "Consulta unificada para resolver OC por SKU/código y por licencia (i_nav_barras_pallet) en el mismo query."
+      - "Se usa EXISTS por Codigo_Barra + IdOrdenCompraEnc + Recibido=0 para evitar duplicados por JOIN."
+      - "No cambia firma WS ni contrato HH; reduce casos de fallback."
+  flujo_actual_resumido:
+    - "HH lista tareas ejecuta Get_ListOrdenCompraEnc_By_Codigo_Producto con el valor escaneado."
+    - "DAL resuelve por SKU/codigo_barra_pcb o por licencia en i_nav_barras_pallet."
+    - "HH obtiene IdOrdenCompraEnc -> IdRecepcionEnc y abre frm_list_rec_prod."
+    - "Desde frm_list_rec_prod continúa a frm_recepcion_datos según resolución unívoca de línea."
+  riesgo_residual:
+    - "Si la licencia no tiene IdOrdenCompraEnc consistente en i_nav_barras_pallet, puede seguir activándose fallback HH."
+    - "Mantener fallback temporal en HH como red de seguridad hasta validar en operación."

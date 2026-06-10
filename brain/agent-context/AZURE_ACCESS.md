@@ -185,7 +185,7 @@ Para contexto (no necesariamente accesibles ni relevantes hoy):
 | Puerto | `1437` *(no el 1433 default)* |
 | Engine | SQL Server 2022 (RTM-CU18), 16.0.4185.3 |
 | Usuario | `sa` |
-| Password | secret `WMS_KILLIOS_DB_PASSWORD` |
+| Password | secret `WMS_EC2_DB_PASSWORD` |
 | Encrypt / TrustCert | `false` / `true` |
 
 ### 9.1 Bases WMS accesibles
@@ -206,7 +206,7 @@ Si están registrados en el workspace, el agente conecta automáticamente sin in
 - `WMS_KILLIOS_DB_PORT` = `1437`
 - `WMS_KILLIOS_DB_USER` = `sa`
 - `WMS_KILLIOS_DB_NAME_DEFAULT` = `TOMWMS_KILLIOS_PRD`
-- `WMS_KILLIOS_DB_PASSWORD` *(ya existe)*
+- `WMS_EC2_DB_PASSWORD` *(ya existe)*
 
 ### 9.3 Reglas duras (no negociables)
 
@@ -215,3 +215,4 @@ Si están registrados en el workspace, el agente conecta automáticamente sin in
 3. **No es producción cliente**: este server es de Erik para análisis. Cada cliente real tiene su propia instancia `TOMWMS_<CLIENTE>_PRD`. El modelo es representativo; los datos NO.
 4. **Si no responde y la sesión la necesita**: detenerse y reportar. **No inventar shape de tablas**.
 5. **Naming real**: las tablas **NO** usan prefijo `t_*`. Son `trans_oc_det_lote`, `log_importacion_excel`, `cliente_lotes`, etc. directas. No confundir con la convención del estilo Java/HH (que tampoco la usa).
+
