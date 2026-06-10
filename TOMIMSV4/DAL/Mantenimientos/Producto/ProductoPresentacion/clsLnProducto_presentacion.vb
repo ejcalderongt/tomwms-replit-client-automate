@@ -89,7 +89,7 @@ Public Class clsLnProducto_presentacion
             Ins.Add("codigo", "@codigo", DataType.Parametro)
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Ins.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
             Ins.Add("sistema", "@sistema", DataType.Parametro)
-            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Ins.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Ins.Add("IdTipoEtiqueta", "@IDTIPOETIQUETA", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -195,7 +195,7 @@ Public Class clsLnProducto_presentacion
             Upd.Add("sistema", "@sistema", DataType.Parametro)
             Upd.Add("codigo", "@codigo", DataType.Parametro)
             If Not oBeProducto_presentacion.IdPresentacionPallet = 0 Then Upd.Add("idpresentacionpallet", "@idpresentacionpallet", DataType.Parametro)
-            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Upd.Add("IdTipoEtiqueta", "@sisIdTipoEtiquetatema", DataType.Parametro)
+            If Not oBeProducto_presentacion.IdTipoEtiqueta = 0 Then Upd.Add("IdTipoEtiqueta", "@IDTIPOETIQUETA", DataType.Parametro)
             Upd.Where("IdPresentacion = @IdPresentacion")
 
             Dim sp As String = Upd.SQL()

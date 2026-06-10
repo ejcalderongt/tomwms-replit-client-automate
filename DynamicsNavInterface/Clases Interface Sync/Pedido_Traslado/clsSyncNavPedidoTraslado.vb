@@ -2657,11 +2657,13 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                             Try
 
                                 If Enviar_Lotes_Transf(PT.No_pedido,
+                                                       PT.Idpedidoenc,
                                                        lTransaccionesSalida,
                                                        lblprg,
                                                        prg) Then
 
                                     If Enviar_Cantidades_Transf(PT.No_pedido,
+                                                                PT.Idpedidoenc,
                                                                 lTransaccionesSalida,
                                                                 lblprg,
                                                                 prg) Then
@@ -2853,8 +2855,8 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                         End If
 
                                         If vContadorReproceso > 0 Then
-                                            If Enviar_Lotes_Transf(PT.No_pedido, lTransaccionesSalidaReproceso, lblprg, prg) Then
-                                                If Enviar_Cantidades_Transf(PT.No_pedido, lTransaccionesSalidaReproceso, lblprg, prg) Then
+                                            If Enviar_Lotes_Transf(PT.No_pedido, PT.Idpedidoenc, lTransaccionesSalidaReproceso, lblprg, prg) Then
+                                                If Enviar_Cantidades_Transf(PT.No_pedido, PT.Idpedidoenc, lTransaccionesSalidaReproceso, lblprg, prg) Then
                                                     'Igual registro al final ;)
                                                 End If
                                             End If
@@ -3634,6 +3636,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
     End Function
 
     Private Function Enviar_Lotes_Transf(ByVal NoPedidoTransf As String,
+                                         Optional ByVal pIdPedidoEnc As Integer = 0,
                                          ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                          ByRef lblprg As RichTextBox,
                                          ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
@@ -3650,7 +3653,11 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
             Dim vCantidad As Double = 0
             Dim vUnidMed As String = ""
 
-            Dim listaLotes = lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso x.Enviado = False).ToList()
+            '#EJC20260608: Blindaje La Cumbre/NAV.
+            'Evita mezclar líneas de otro IdPedidoEnc cuando comparten No_pedido.
+            Dim listaLotes = lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                    x.Enviado = False AndAlso
+                                                                    (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc)).ToList()
 
             If Not listaLotes Is Nothing Then
 
@@ -3726,6 +3733,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
     '#EJC20180111: Enviar las cantidades sumadas y agrupadas por producto (sin considerar el lote)
     Private Function Enviar_Cantidades_Transf(ByVal NoPedidoTransf As String,
+                                              Optional ByVal pIdPedidoEnc As Integer = 0,
                                               ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                               ByRef lblprg As RichTextBox,
                                               ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
@@ -3739,11 +3747,14 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
             Dim vContador As Integer = 0
 
-            For Each T In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso x.Enviado = False)
+            For Each T In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                 x.Enviado = False AndAlso
+                                                                 (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc))
                 T.Enviado = True
             Next
 
-            Dim ListaResumen = (From i In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf)
+            Dim ListaResumen = (From i In lTransaccionesSalida.Where(Function(x) x.No_pedido = NoPedidoTransf AndAlso
+                                                                         (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc))
                                 Group i By Keys = New With {Key i.No_pedido, Key i.No_linea,
                                 Key i.Codigo_producto, Key i.Codigo_variante, Key i.Enviado} Into Group
                                 Select New With {Keys.No_pedido, Keys.No_linea,
@@ -3774,7 +3785,8 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
                     lista_A_Actualizar = lTransaccionesSalida.Where(Function(x) x.No_pedido = I.No_pedido AndAlso
                         x.No_linea = I.No_linea AndAlso x.Codigo_producto = I.Codigo_producto AndAlso
-                        x.Codigo_variante = I.Codigo_variante AndAlso x.Enviado = True).ToList()
+                        x.Codigo_variante = I.Codigo_variante AndAlso x.Enviado = True AndAlso
+                        (pIdPedidoEnc <= 0 OrElse x.Idpedidoenc = pIdPedidoEnc)).ToList()
 
                     If Not lista_A_Actualizar Is Nothing Then
 

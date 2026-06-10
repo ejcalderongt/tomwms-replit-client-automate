@@ -23,7 +23,7 @@ Module m_Global
     Public Property gVersionWS As String = "8.9.11"  '#EJC20260529 versión WSHHRN TOMHHWS.asmx.vb
 
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2026, 6, 4)
+    Public Property gFechaVersion As Date = New Date(2026, 6, 5)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
 
     Public gIndiceInstancia As Integer = -1

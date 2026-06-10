@@ -23,15 +23,15 @@ Partial Class frmInventarioImport
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmInventarioImport))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuAplicar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuValidar = New DevExpress.XtraBars.BarButtonItem()
@@ -88,7 +88,9 @@ Partial Class frmInventarioImport
         Me.ColTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colError = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DsExcel = New DsExcel()
+        Me.DsExcel = New TOMWMS.DsExcel()
+        Me.dgridInventario = New DevExpress.XtraGrid.GridControl()
+        Me.GridView7 = New DevExpress.XtraGrid.Views.Grid.GridView()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -97,6 +99,8 @@ Partial Class frmInventarioImport
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdData, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsExcel, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgridInventario, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -267,6 +271,7 @@ Partial Class frmInventarioImport
         '
         'grpVerificaInv
         '
+        Me.grpVerificaInv.Controls.Add(Me.dgridInventario)
         Me.grpVerificaInv.Controls.Add(Me.lblPrg)
         Me.grpVerificaInv.Controls.Add(Me.prg)
         Me.grpVerificaInv.Controls.Add(Me.cmbPropietario)
@@ -284,7 +289,7 @@ Partial Class frmInventarioImport
         Me.lblPrg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblPrg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblPrg.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblPrg.Location = New System.Drawing.Point(2, 91)
+        Me.lblPrg.Location = New System.Drawing.Point(2, 387)
         Me.lblPrg.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblPrg.Name = "lblPrg"
         Me.lblPrg.Size = New System.Drawing.Size(1554, 62)
@@ -294,7 +299,7 @@ Partial Class frmInventarioImport
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prg.Location = New System.Drawing.Point(2, 153)
+        Me.prg.Location = New System.Drawing.Point(2, 449)
         Me.prg.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.prg.Name = "prg"
         Me.prg.Size = New System.Drawing.Size(1554, 55)
@@ -332,8 +337,7 @@ Partial Class frmInventarioImport
         Me.grdData.BackgroundColor = System.Drawing.Color.White
         Me.grdData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.grdData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colEstado, Me.colId, Me.colCodigo, Me.colPresentacion, Me.colCantidad, Me.colPeso, Me.colUnidadMedida, Me.colIdProducto, Me.colIdPresentacion, Me.ColIdUnidadMedida, Me.ColLote, Me.colFechaVence, Me.ColUbicacion, Me.colIdPropietarioBodega, Me.colnombre_propietario, Me.ColLp, Me.ColCodVariante, Me.colCosto, Me.colPrecio, Me.colParametro_a, Me.colParametro_b, Me.ColCodigo_Area, Me.ColColor, Me.ColTalla, Me.colError, Me.ColIdProductoTallaColor})
-        Me.grdData.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.grdData.Location = New System.Drawing.Point(2, 208)
+        Me.grdData.Location = New System.Drawing.Point(64, 119)
         Me.grdData.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.grdData.MultiSelect = False
         Me.grdData.Name = "grdData"
@@ -344,7 +348,7 @@ Partial Class frmInventarioImport
         Me.grdData.ShowCellToolTips = False
         Me.grdData.ShowEditingIcon = False
         Me.grdData.ShowRowErrors = False
-        Me.grdData.Size = New System.Drawing.Size(1554, 296)
+        Me.grdData.Size = New System.Drawing.Size(611, 210)
         Me.grdData.TabIndex = 4
         '
         'colEstado
@@ -357,8 +361,8 @@ Partial Class frmInventarioImport
         '
         'colId
         '
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Gainsboro
-        Me.colId.DefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle10.BackColor = System.Drawing.Color.Gainsboro
+        Me.colId.DefaultCellStyle = DataGridViewCellStyle10
         Me.colId.HeaderText = "Id"
         Me.colId.MinimumWidth = 6
         Me.colId.Name = "colId"
@@ -375,8 +379,8 @@ Partial Class frmInventarioImport
         '
         'colPresentacion
         '
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colPresentacion.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colPresentacion.DefaultCellStyle = DataGridViewCellStyle11
         Me.colPresentacion.HeaderText = "Presentacion"
         Me.colPresentacion.MinimumWidth = 6
         Me.colPresentacion.Name = "colPresentacion"
@@ -384,10 +388,10 @@ Partial Class frmInventarioImport
         '
         'colCantidad
         '
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "N6"
-        DataGridViewCellStyle3.NullValue = Nothing
-        Me.colCantidad.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle12.Format = "N6"
+        DataGridViewCellStyle12.NullValue = Nothing
+        Me.colCantidad.DefaultCellStyle = DataGridViewCellStyle12
         Me.colCantidad.HeaderText = "Cantidad"
         Me.colCantidad.MinimumWidth = 6
         Me.colCantidad.Name = "colCantidad"
@@ -395,8 +399,8 @@ Partial Class frmInventarioImport
         '
         'colPeso
         '
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        Me.colPeso.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.colPeso.DefaultCellStyle = DataGridViewCellStyle13
         Me.colPeso.HeaderText = "Peso"
         Me.colPeso.MinimumWidth = 6
         Me.colPeso.Name = "colPeso"
@@ -404,8 +408,8 @@ Partial Class frmInventarioImport
         '
         'colUnidadMedida
         '
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colUnidadMedida.DefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colUnidadMedida.DefaultCellStyle = DataGridViewCellStyle14
         Me.colUnidadMedida.HeaderText = "UnidadMed"
         Me.colUnidadMedida.MinimumWidth = 6
         Me.colUnidadMedida.Name = "colUnidadMedida"
@@ -414,9 +418,9 @@ Partial Class frmInventarioImport
         'colIdProducto
         '
         Me.colIdProducto.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.colIdProducto.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle15.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.colIdProducto.DefaultCellStyle = DataGridViewCellStyle15
         Me.colIdProducto.HeaderText = "idProd"
         Me.colIdProducto.MinimumWidth = 6
         Me.colIdProducto.Name = "colIdProducto"
@@ -427,9 +431,9 @@ Partial Class frmInventarioImport
         'colIdPresentacion
         '
         Me.colIdPresentacion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.colIdPresentacion.DefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle16.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.colIdPresentacion.DefaultCellStyle = DataGridViewCellStyle16
         Me.colIdPresentacion.HeaderText = "idPres"
         Me.colIdPresentacion.MinimumWidth = 6
         Me.colIdPresentacion.Name = "colIdPresentacion"
@@ -440,9 +444,9 @@ Partial Class frmInventarioImport
         'ColIdUnidadMedida
         '
         Me.ColIdUnidadMedida.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.ColIdUnidadMedida.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle17.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.ColIdUnidadMedida.DefaultCellStyle = DataGridViewCellStyle17
         Me.ColIdUnidadMedida.HeaderText = "idUM"
         Me.ColIdUnidadMedida.MinimumWidth = 6
         Me.ColIdUnidadMedida.Name = "ColIdUnidadMedida"
@@ -459,9 +463,9 @@ Partial Class frmInventarioImport
         '
         'colFechaVence
         '
-        DataGridViewCellStyle9.Format = "d"
-        DataGridViewCellStyle9.NullValue = Nothing
-        Me.colFechaVence.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle18.Format = "d"
+        DataGridViewCellStyle18.NullValue = Nothing
+        Me.colFechaVence.DefaultCellStyle = DataGridViewCellStyle18
         Me.colFechaVence.HeaderText = "Fecha_Vence"
         Me.colFechaVence.MinimumWidth = 6
         Me.colFechaVence.Name = "colFechaVence"
@@ -572,15 +576,40 @@ Partial Class frmInventarioImport
         Me.DsExcel.DataSetName = "DsExcel"
         Me.DsExcel.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
+        'dgridInventario
+        '
+        Me.dgridInventario.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInventario.Location = New System.Drawing.Point(715, 119)
+        Me.dgridInventario.MainView = Me.GridView7
+        Me.dgridInventario.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridInventario.Name = "dgridInventario"
+        Me.dgridInventario.Size = New System.Drawing.Size(558, 257)
+        Me.dgridInventario.TabIndex = 21
+        Me.dgridInventario.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView7})
+        '
+        'GridView7
+        '
+        Me.GridView7.Appearance.HeaderPanel.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView7.Appearance.HeaderPanel.Options.UseFont = True
+        Me.GridView7.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView7.Appearance.Row.Options.UseFont = True
+        Me.GridView7.DetailHeight = 437
+        Me.GridView7.GridControl = Me.dgridInventario
+        Me.GridView7.Name = "GridView7"
+        Me.GridView7.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
+        Me.GridView7.OptionsBehavior.Editable = False
+        Me.GridView7.OptionsView.ShowAutoFilterRow = True
+        Me.GridView7.OptionsView.ShowGroupPanel = False
+        '
         'frmInventarioImport
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1558, 729)
         Me.Controls.Add(Me.grpVerificaInv)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Controls.Add(Me.RibbonStatusBar)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmInventarioImport"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -594,6 +623,8 @@ Partial Class frmInventarioImport
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grdData, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsExcel, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgridInventario, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout
 
@@ -656,4 +687,6 @@ End Sub
     Friend WithEvents ColTalla As DataGridViewTextBoxColumn
     Friend WithEvents colError As DataGridViewTextBoxColumn
     Friend WithEvents ColIdProductoTallaColor As DataGridViewTextBoxColumn
+    Friend WithEvents dgridInventario As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView7 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class
