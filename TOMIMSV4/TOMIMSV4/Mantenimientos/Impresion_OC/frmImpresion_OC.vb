@@ -103,13 +103,16 @@ Public Class frmImpresionRecepcion_OC
             Dim licenciaMadre As String = ObtenerLicenciaMadreActiva()
             If String.IsNullOrWhiteSpace(licenciaMadre) Then Exit Sub
 
-            clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(
+            Dim filasAfectadas As Integer = clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(
                 pTransOC_Enc.IdOrdenCompraEnc,
                 pBeTransOcDet.IdOrdenCompraDet,
                 licenciaMadre.Trim(),
                 pEtiquetasPresentacionImpresasLicenciaActual)
+            If filasAfectadas <= 0 Then
+                Throw New Exception("No se actualizó el contador de fardos impresos para la licencia madre " & licenciaMadre.Trim())
+            End If
         Catch
-            ' No interrumpir la operación de impresión por un fallo de refresco/persistencia auxiliar.
+            Throw
         End Try
     End Sub
 
@@ -797,6 +800,7 @@ Public Class frmImpresionRecepcion_OC
             End If
 
         Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
