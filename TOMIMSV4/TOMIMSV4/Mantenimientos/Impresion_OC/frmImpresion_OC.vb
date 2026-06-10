@@ -603,7 +603,11 @@ Public Class frmImpresionRecepcion_OC
                 lblEtiquetas.Text = $"Licencia actual: impresos {impresos} / capacidad {pCapacidadObjetivoLicenciaActual} / pendientes {pBultosPendientesLicenciaActual}"
         End Select
 
-        txtCantidadBarras.Value = pCapacidadObjetivoLicenciaActual
+        If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+            txtCantidadBarras.Value = Math.Max(0, pBultosPendientesLicenciaActual)
+        Else
+            txtCantidadBarras.Value = pCapacidadObjetivoLicenciaActual
+        End If
 
         Dim cantidad As Decimal = 0D
         If pBeTransOcDet IsNot Nothing Then cantidad = CDec(pBeTransOcDet.Cantidad)
@@ -768,6 +772,9 @@ Public Class frmImpresionRecepcion_OC
 
             PersistirContadorEtiquetasPresentacionLicenciaActual()
             ListarBarrasPallet(True)
+            If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto AndAlso Not String.IsNullOrWhiteSpace(licenciaMadre) Then
+                CargarEstadoLicenciaSeleccionadaParaBultos(licenciaMadre)
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
