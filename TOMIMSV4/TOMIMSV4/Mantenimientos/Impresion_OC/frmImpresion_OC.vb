@@ -433,12 +433,40 @@ Public Class frmImpresionRecepcion_OC
     End Function
 
     Private Function ObtenerTextoBodegaEtiqueta() As String
-        If AP.Bodega Is Nothing Then Return ""
+        Dim bodegaEtiqueta As clsBeBodega = Nothing
 
-        Dim codigo As String = Convert.ToString(AP.Bodega.Codigo).Trim()
-        Dim nombre As String = Convert.ToString(AP.Bodega.Nombre).Trim()
+        ' #EJC20260610_FIX_IMP_OC_BODEGA_NOMBRE_OCULTO_CACHE:
+        ' Fuerza lectura fresca de bodega para evitar valores stale en sesión/AP.Bodega.
+        Try
+            Dim idBodegaActual As Integer = 0
 
-        If AP.Bodega.ocultar_nombre_etiquetas_impresas Then
+            If BeBodega_Origen IsNot Nothing AndAlso BeBodega_Origen.IdBodega > 0 Then
+                idBodegaActual = BeBodega_Origen.IdBodega
+            ElseIf AP IsNot Nothing AndAlso AP.Bodega IsNot Nothing AndAlso AP.Bodega.IdBodega > 0 Then
+                idBodegaActual = AP.Bodega.IdBodega
+            End If
+
+            If idBodegaActual > 0 Then
+                bodegaEtiqueta = clsLnBodega.GetSingle_By_Idbodega(idBodegaActual)
+            End If
+        Catch
+            ' No interrumpir impresión por fallback de lectura de bodega.
+        End Try
+
+        If bodegaEtiqueta Is Nothing Then
+            If BeBodega_Origen IsNot Nothing AndAlso BeBodega_Origen.IdBodega > 0 Then
+                bodegaEtiqueta = BeBodega_Origen
+            Else
+                bodegaEtiqueta = AP.Bodega
+            End If
+        End If
+
+        If bodegaEtiqueta Is Nothing Then Return ""
+
+        Dim codigo As String = Convert.ToString(bodegaEtiqueta.Codigo).Trim()
+        Dim nombre As String = Convert.ToString(bodegaEtiqueta.Nombre).Trim()
+
+        If bodegaEtiqueta.ocultar_nombre_etiquetas_impresas Then
             Return codigo
         End If
 
@@ -710,6 +738,10 @@ Public Class frmImpresionRecepcion_OC
                 ReimprimirLicencia(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
                 pModoReimpresion = False
                 cmdImpresionLicencia.BackColor = Color.Transparent
+                ' #EJC20260610_FIX_IMP_OC_REIMPRESION_HABILITA_FARDO:
+                ' Tras reimprimir licencia, habilitar flujo de hijas (fardos/unidad) automáticamente.
+                If chkLicenciaBulto IsNot Nothing Then chkLicenciaBulto.Checked = True
+                CargarEstadoLicenciaSeleccionadaParaBultos(Convert.ToString(txtLicencia.Text).Trim())
                 ListarBarrasPallet(True)
                 Exit Sub
             End If
@@ -916,6 +948,27 @@ Public Class frmImpresionRecepcion_OC
 
                 Dim numeroTarima As Integer = pCorrelativoTarimaActual + 1
                 Dim cantidadPresentacion As Integer = ObtenerCantidadPresentacionPorTarima(numeroTarima)
+
+                If cantidadPresentacion <= 0 Then
+
+                    Dim capacidadTarima As Integer = Convert.ToInt32(txtCamaPorTarima.Value) *
+                                         Convert.ToInt32(txtCajaPorCama.Value)
+
+                    If XtraMessageBox.Show("No se pudo calcular la cantidad real de presentación para la tarima." &
+                                                                        Environment.NewLine &
+                                                                        $"¿Imprimir con: {capacidadTarima}?",
+                                                                        "Error",
+                                                                        MessageBoxButtons.YesNo,
+                                                                        MessageBoxIcon.Question) = DialogResult.No Then
+
+                        Return
+
+                    Else
+                        cantidadPresentacion = capacidadTarima
+                    End If
+
+                End If
+
 
                 If cantidadPresentacion <= 0 Then
                     Throw New Exception("No se pudo calcular la cantidad real de presentación para la tarima.")
@@ -1580,9 +1633,23 @@ Public Class frmImpresionRecepcion_OC
                         txtIdPallet.Text = pBeI_nav_barras_pallet.IdPallet.ToString()
                         tabImp.SelectedTab = tabImpresion
 
-                        ' #EJC20260610_FLOW_IMP_OC_FASEADA:
-                        ' En Licencia+Bulto: usar la licencia seleccionada como madre para imprimir solo remanente.
-                        If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+                        ' #EJC20260610_FIX_IMP_OC_AUTO_MODO_BULTO:
+                        ' Si el operador selecciona una licencia ya impresa desde la grilla,
+                        ' habilitar automáticamente flujo Licencia+Bulto para imprimir hijas (fardos).
+                        Dim licenciaImpresa As Boolean = False
+                        Try
+                            If Dr.Row.Table.Columns.Contains("Impreso") Then
+                                licenciaImpresa = (ValorEntero(Dr.Item("Impreso")) > 0)
+                            End If
+                        Catch
+                        End Try
+
+                        If licenciaImpresa Then
+                            If chkLicenciaBulto IsNot Nothing Then chkLicenciaBulto.Checked = True
+                            pModoReimpresion = False
+                            cmdImpresionLicencia.BackColor = Color.Transparent
+                            CargarEstadoLicenciaSeleccionadaParaBultos(pBeI_nav_barras_pallet.Codigo_barra)
+                        ElseIf pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
                             pModoReimpresion = False
                             cmdImpresionLicencia.BackColor = Color.Transparent
                             CargarEstadoLicenciaSeleccionadaParaBultos(pBeI_nav_barras_pallet.Codigo_barra)

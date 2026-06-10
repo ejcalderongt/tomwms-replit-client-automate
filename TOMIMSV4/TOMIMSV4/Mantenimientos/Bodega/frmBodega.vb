@@ -2876,7 +2876,7 @@ Public Class frmBodega
 
             mnuActualizar.Enabled = False
 
-            If (ControlPanelBodega.SelectedTabPageIndex = 0 Or ControlPanelBodega.SelectedTabPageIndex = 8 Or ControlPanelBodega.SelectedTabPageIndex = 1) Then
+            If (ControlPanelBodega.SelectedTabPageIndex = 0 Or ControlPanelBodega.SelectedTabPageIndex = 8 Or ControlPanelBodega.SelectedTabPageIndex = 1 OrElse ControlPanelBodega.SelectedTabPageIndex = 10) Then
                 If Actualizar() Then
                     XtraMessageBox.Show("Se actualizó el registro", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     If Listar IsNot Nothing Then
