@@ -88,6 +88,27 @@ Public Class frmImpresionRecepcion_OC
         End If
     End Sub
 
+    ' #EJC20260610_FIX_IMP_OC_REFRESH_CONTADOR_PRESENTACION:
+    ' En modo Licencia+Bulto, persiste el contador de fardos en la licencia madre tras cada impresión.
+    Private Sub PersistirContadorEtiquetasPresentacionLicenciaActual()
+        Try
+            If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then Exit Sub
+            If pTransOC_Enc Is Nothing OrElse pBeTransOcDet Is Nothing Then Exit Sub
+            If pTransOC_Enc.IdOrdenCompraEnc <= 0 OrElse pBeTransOcDet.IdOrdenCompraDet <= 0 Then Exit Sub
+
+            Dim licenciaMadre As String = ObtenerLicenciaMadreActiva()
+            If String.IsNullOrWhiteSpace(licenciaMadre) Then Exit Sub
+
+            clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(
+                pTransOC_Enc.IdOrdenCompraEnc,
+                pBeTransOcDet.IdOrdenCompraDet,
+                licenciaMadre.Trim(),
+                pEtiquetasPresentacionImpresasLicenciaActual)
+        Catch
+            ' No interrumpir la operación de impresión por un fallo de refresco/persistencia auxiliar.
+        End Try
+    End Sub
+
     Private Sub chkSoloLicencia_CheckedChanged(sender As Object, e As EventArgs) Handles chkSoloLicencia.CheckedChanged
         If chkSoloLicencia.Checked Then
             If chkLicenciaBulto IsNot Nothing Then chkLicenciaBulto.Checked = False
@@ -599,11 +620,13 @@ Public Class frmImpresionRecepcion_OC
                 ReimprimirLicencia(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
                 pModoReimpresion = False
                 cmdImpresionLicencia.BackColor = Color.Transparent
+                ListarBarrasPallet(True)
                 Exit Sub
             End If
 
             If DebeForzarCierreLicenciaAntesDeSeguir() Then
                 CerrarEImprimirLicenciaConBultos(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
+                ListarBarrasPallet(True)
                 Exit Sub
             End If
 
@@ -678,6 +701,9 @@ Public Class frmImpresionRecepcion_OC
                               Convert.ToString(cmbPrinterBarra.EditValue),
                               cantidadSolicitada,
                               licenciaMadre)
+
+            PersistirContadorEtiquetasPresentacionLicenciaActual()
+            ListarBarrasPallet(True)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
