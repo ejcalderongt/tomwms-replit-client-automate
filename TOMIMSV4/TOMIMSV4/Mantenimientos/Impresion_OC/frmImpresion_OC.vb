@@ -137,14 +137,18 @@ Public Class frmImpresionRecepcion_OC
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
                 txtCantidadLicencias.Enabled = True
-                'txtCantidadBarras.Enabled = False
+                txtCantidadBarras.Enabled = False
                 txtCopias.Enabled = True
+                cmdImpresionBarra.Enabled = False
+                cmdUnidad.Enabled = False
 
             Case TipoProcesoLicencia.LicenciaBulto
                 txtCantidadLicencias.Value = 1
                 txtCantidadLicencias.Enabled = False
-                'txtCantidadBarras.Enabled = True
+                txtCantidadBarras.Enabled = True
                 txtCopias.Enabled = True
+                cmdImpresionBarra.Enabled = True
+                cmdUnidad.Enabled = True
         End Select
 
         RecalcularCapacidadLicenciaActual()
@@ -723,6 +727,14 @@ Public Class frmImpresionRecepcion_OC
 
     Private Sub cmdImpresionBarra_Click(sender As Object, e As EventArgs) Handles cmdImpresionBarra.Click
         Try
+            If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then
+                XtraMessageBox.Show("Para imprimir fardos debe usar el modo 'Licencias y Presentación'.",
+                                    Text,
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
+
             If Not ValidarDatosBasicosProducto() Then Exit Sub
             If Not ValidarImpresora(cmbPrinterBarra, Convert.ToString(cmbPrinterBarra.EditValue), "Seleccione impresora") Then Exit Sub
 
