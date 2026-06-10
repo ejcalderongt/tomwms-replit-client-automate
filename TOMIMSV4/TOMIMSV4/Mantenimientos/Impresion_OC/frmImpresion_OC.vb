@@ -602,7 +602,7 @@ Public Class frmImpresionRecepcion_OC
 
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
-                lblEtiquetas.Text = $"Licencias sugeridas: {CalcularEtiquetasDocumento()}"
+                lblEtiquetas.Text = $"Licencias sugeridas: {CalcularEtiquetasDocumento()} | Para fardos cambie a 'Licencias y Presentación' y seleccione licencia madre."
             Case TipoProcesoLicencia.LicenciaBulto
                 lblEtiquetas.Text = $"Licencia actual: impresos {impresos} / capacidad {pCapacidadObjetivoLicenciaActual} / pendientes {pBultosPendientesLicenciaActual}"
         End Select
@@ -728,7 +728,15 @@ Public Class frmImpresionRecepcion_OC
     Private Sub cmdImpresionBarra_Click(sender As Object, e As EventArgs) Handles cmdImpresionBarra.Click
         Try
             If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then
-                XtraMessageBox.Show("Para imprimir fardos debe usar el modo 'Licencias y Presentación'.",
+                XtraMessageBox.Show("No se permite imprimir fardos en 'Solo Licencias'." &
+                                    Environment.NewLine & Environment.NewLine &
+                                    "Pasos:" &
+                                    Environment.NewLine &
+                                    "1. Cambie a 'Licencias y Presentación'." &
+                                    Environment.NewLine &
+                                    "2. Seleccione la licencia madre en la pestaña 'Licencias' (doble clic)." &
+                                    Environment.NewLine &
+                                    "3. Luego imprima Fardo/Unidad.",
                                     Text,
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation)
