@@ -386,7 +386,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTms_ticket.Procesado_Stock_Jornada">
  <summary>
- Determina si stock jornada, ya analiz� este ticket.
+ Determina si stock jornada, ya analizó este ticket.
  </summary>
  <returns></returns>
 </member>
@@ -411,8 +411,8 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBe_vw_ajustes.Centro_Costo_Erp">
  <summary>
- #CKFK20251030 Agregamos estos tres campos para la integraci�n con ERP 
- ya que  centro de costo maneja centro de costo direcci�n y departamento
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
  </summary>
  <returns></returns>
 </member>
@@ -2966,7 +2966,7 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeOperador.Montacarga">
  <summary>
- #EJC20220613:Determinar si maneja o no  montacarga, importante para la asignaci�n autom�tica de l�neas de picking.
+ #EJC20220613:Determinar si maneja o no  montacarga, importante para la asignación automática de líneas de picking.
  </summary>
  <returns></returns>
 </member>
@@ -4955,10 +4955,10 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Requerir_Ubic_Rec_Ingreso">
  <summary>
- #EJC20220330_CEALSA: Si true, se traslada el par�metro a la tarea de recepci�n en el BOF
- Para marcar el check, Escanear ubicaci�n en recepci�n.
- Si Escanear ubicaci�n en recepci�n True en Rec.
- HH exige una ubicaci�n de recepci�n v�lida antes de continuar con el proceso.
+ #EJC20220330_CEALSA: Si true, se traslada el parámetro a la tarea de recepción en el BOF
+ Para marcar el check, Escanear ubicación en recepción.
+ Si Escanear ubicación en recepción True en Rec.
+ HH exige una ubicación de recepción válida antes de continuar con el proceso.
  </summary>
  <returns></returns>
 </member>
@@ -4970,33 +4970,33 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Marcar_Registros_Enviados_MI3">
  <summary>
- #EJC20220504: A petici�n de Carolina, si true, en I_NAV_TRANSACICONES_OUT se marcan los registros como enviados
+ #EJC20220504: A petición de Carolina, si true, en I_NAV_TRANSACICONES_OUT se marcan los registros como enviados
  utilizado en BYB para marcar los registros de bodega 2 (PT) como enviados.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Preguntar_En_BackOrder">
  <summary>
- #EJC20220601: En tarea de recepci�n, si no se ha completado el documento, preguntar si se quiere dejar en backorder. Marcelo, Mercosal.
+ #EJC20220601: En tarea de recepción, si no se ha completado el documento, preguntar si se quiere dejar en backorder. Marcelo, Mercosal.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Bloquear_Lotes">
  <summary>
- #EJC202303161024: Bloquear el lote para que no se modifique en la HH si est�n previamente definidos.
+ #EJC202303161024: Bloquear el lote para que no se modifique en la HH si están previamente definidos.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Permitir_Excedente_Lotes">
  <summary>
- #EJC20230508: Par�metro agregado para validar si se va a permitir o no agregar de un 
+ #EJC20230508: Parámetro agregado para validar si se va a permitir o no agregar de un 
  lote una cantidad mayor de lo ingresado en la tabla trans_oc_det_lote
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.Es_Importacion">
  <summary>
- #EJC202310171614: Determina si un documento de ingreso es una importaci�n
+ #EJC202310171614: Determina si un documento de ingreso es una importación
  Se utiliza para la interface de SAP en BECO para enviar a bodega PNC el producto faltante.
  </summary>
  <returns></returns>
@@ -5010,14 +5010,14 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.IdProductoEstado">
  <summary>
- #GT23102023: Determina si una recepci�n maneja un estado general para el documento
+ #GT23102023: Determina si una recepción maneja un estado general para el documento
  Se utiliza para la interface
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeTrans_oc_ti.IdPropietario">
  <summary>
- #GT23102023: Determina si una recepci�n tiene un propietario asociado a un estado
+ #GT23102023: Determina si una recepción tiene un propietario asociado a un estado
  Se utiliza para la interface
  </summary>
  <returns></returns>
