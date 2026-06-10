@@ -75,26 +75,6 @@ Public Class frmBodega
         InitializeComponent()
     End Sub
 
-    Private Const NombreCheckOcultarNombreEtiquetasImpresas As String = "chkOcultarNombreEtiquetasImpresas"
-
-    Private Sub CargarControlOcultarNombreEtiquetasImpresas(ByVal valor As Boolean)
-        Dim controles As Control() = Me.Controls.Find(NombreCheckOcultarNombreEtiquetasImpresas, True)
-        If controles Is Nothing OrElse controles.Length <= 0 Then Exit Sub
-
-        Dim chk As CheckEdit = TryCast(controles(0), CheckEdit)
-        If chk IsNot Nothing Then chk.Checked = valor
-    End Sub
-
-    Private Function ObtenerValorOcultarNombreEtiquetasImpresas() As Boolean
-        Dim controles As Control() = Me.Controls.Find(NombreCheckOcultarNombreEtiquetasImpresas, True)
-        If controles Is Nothing OrElse controles.Length <= 0 Then Return False
-
-        Dim chk As CheckEdit = TryCast(controles(0), CheckEdit)
-        If chk Is Nothing Then Return False
-
-        Return chk.Checked
-    End Function
-
     Private Sub frmBodega_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         ConfigurarScrollValoresPorDefecto()
@@ -1345,7 +1325,7 @@ Public Class frmBodega
             '#CKFK20240403: Indicar los tipos de etiqueta y simbología para la licencia
             cmbEtiqueta.EditValue = pBeBodega.IdTipoEtiquetaLicencia
             cmbSymbology.EditValue = pBeBodega.IdSimbologiaLicencia
-            CargarControlOcultarNombreEtiquetasImpresas(pBeBodega.ocultar_nombre_etiquetas_impresas)
+            chkOcultarNombreEtiquetasImpresas.Checked = (pBeBodega.ocultar_nombre_etiquetas_impresas)
 
             cmbTamañoEtiquetaUbicacionDefecto.EditValue = pBeBodega.IdTamañoEtiquetaUbicacionDefecto
 
@@ -1617,7 +1597,7 @@ Public Class frmBodega
             pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
             pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
             pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
-            pBeBodega.ocultar_nombre_etiquetas_impresas = ObtenerValorOcultarNombreEtiquetasImpresas()
+            pBeBodega.ocultar_nombre_etiquetas_impresas = chkOcultarNombreEtiquetasImpresas.Checked
             pBeBodega.Interface_SAP = chkInterface_SAP.Checked
             pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
             pBeBodega.Control_Pallet_Mixto = chkControlPalletsMixtos.Checked
@@ -1866,7 +1846,7 @@ Public Class frmBodega
                 pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
                 pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
                 pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
-                pBeBodega.ocultar_nombre_etiquetas_impresas = ObtenerValorOcultarNombreEtiquetasImpresas()
+                pBeBodega.ocultar_nombre_etiquetas_impresas = chkOcultarNombreEtiquetasImpresas.Checked
                 pBeBodega.Interface_SAP = chkInterface_SAP.Checked
                 pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
                 pBeBodega.Control_Pallet_Mixto = chkControlPalletsMixtos.Checked

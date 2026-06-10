@@ -2081,10 +2081,19 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
     End Sub
 
     Private Function Enviar_Lotes_PV(ByVal NoPedidoTransf As String,
-                                    Optional ByVal pIdPedidoEnc As Integer = 0,
-                                    ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
-                                    ByRef lblprg As RichTextBox,
-                                    ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
+                                     ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
+                                     ByRef lblprg As RichTextBox,
+                                     ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
+
+        Return Enviar_Lotes_PV(NoPedidoTransf, 0, lTransaccionesSalida, lblprg, prg)
+
+    End Function
+
+    Private Function Enviar_Lotes_PV(ByVal NoPedidoTransf As String,
+                                     ByVal pIdPedidoEnc As Integer,
+                                     ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
+                                     ByRef lblprg As RichTextBox,
+                                     ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
 
         Enviar_Lotes_PV = False
 
@@ -2179,7 +2188,16 @@ Public Class clsSyncNavPedidoVenta : Inherits clsInterfaceBase
     End Function
 
     Private Function Enviar_Cantidades_Pedido_Venta(ByVal NoPedidoTransf As String,
-                                                    Optional ByVal pIdPedidoEnc As Integer = 0,
+                                                    ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
+                                                    ByRef lblprg As RichTextBox,
+                                                    ByRef prg As System.Windows.Forms.ProgressBar) As Boolean
+
+        Return Enviar_Cantidades_Pedido_Venta(NoPedidoTransf, 0, lTransaccionesSalida, lblprg, prg)
+
+    End Function
+
+    Private Function Enviar_Cantidades_Pedido_Venta(ByVal NoPedidoTransf As String,
+                                                    ByVal pIdPedidoEnc As Integer,
                                                     ByRef lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out),
                                                     ByRef lblprg As RichTextBox,
                                                     ByRef prg As System.Windows.Forms.ProgressBar) As Boolean

@@ -554,6 +554,9 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
+        Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.lblchkOcultarNombreEtiquetasImpresas = New System.Windows.Forms.Label()
+        Me.chkOcultarNombreEtiquetasImpresas = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -994,6 +997,8 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.XtraTabPage1.SuspendLayout()
+        CType(Me.chkOcultarNombreEtiquetasImpresas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -3432,7 +3437,7 @@ Partial Class frmBodega
         Me.ControlPanelBodega.SelectedTabPage = Me.tabDatos
         Me.ControlPanelBodega.Size = New System.Drawing.Size(1786, 741)
         Me.ControlPanelBodega.TabIndex = 0
-        Me.ControlPanelBodega.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDatos, Me.tabDimensionesBod, Me.tabArea, Me.tabSector, Me.tabTramo, Me.TabUbicacion, Me.tabReferencia, Me.tabParametros, Me.tabUbicacionesDefecto, Me.tabListaUbicaciones})
+        Me.ControlPanelBodega.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDatos, Me.tabDimensionesBod, Me.tabArea, Me.tabSector, Me.tabTramo, Me.TabUbicacion, Me.tabReferencia, Me.tabParametros, Me.tabUbicacionesDefecto, Me.tabListaUbicaciones, Me.XtraTabPage1})
         '
         'tabDatos
         '
@@ -6504,6 +6509,38 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
+        'XtraTabPage1
+        '
+        Me.XtraTabPage1.Controls.Add(Me.lblchkOcultarNombreEtiquetasImpresas)
+        Me.XtraTabPage1.Controls.Add(Me.chkOcultarNombreEtiquetasImpresas)
+        Me.XtraTabPage1.Name = "XtraTabPage1"
+        Me.XtraTabPage1.Size = New System.Drawing.Size(1784, 711)
+        Me.XtraTabPage1.Text = "Parámetros 2"
+        '
+        'lblchkOcultarNombreEtiquetasImpresas
+        '
+        Me.lblchkOcultarNombreEtiquetasImpresas.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblchkOcultarNombreEtiquetasImpresas.AutoSize = True
+        Me.lblchkOcultarNombreEtiquetasImpresas.Location = New System.Drawing.Point(21, 72)
+        Me.lblchkOcultarNombreEtiquetasImpresas.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblchkOcultarNombreEtiquetasImpresas.Name = "lblchkOcultarNombreEtiquetasImpresas"
+        Me.lblchkOcultarNombreEtiquetasImpresas.Size = New System.Drawing.Size(290, 16)
+        Me.lblchkOcultarNombreEtiquetasImpresas.TabIndex = 90
+        Me.lblchkOcultarNombreEtiquetasImpresas.Text = "Ocultar nombre de bodega en etiquetas impresas"
+        '
+        'chkOcultarNombreEtiquetasImpresas
+        '
+        Me.chkOcultarNombreEtiquetasImpresas.Location = New System.Drawing.Point(319, 68)
+        Me.chkOcultarNombreEtiquetasImpresas.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkOcultarNombreEtiquetasImpresas.Name = "chkOcultarNombreEtiquetasImpresas"
+        Me.chkOcultarNombreEtiquetasImpresas.Properties.Caption = ""
+        Me.chkOcultarNombreEtiquetasImpresas.Size = New System.Drawing.Size(24, 24)
+        Me.chkOcultarNombreEtiquetasImpresas.TabIndex = 89
+        Me.chkOcultarNombreEtiquetasImpresas.ToolTip = "#EJC20220912: Si true, se permite recibir X cantidad de copias de un producto en " &
+    "recepción que cumpla con los mismos parámetros si el usuario tiene resolución de" &
+    " licencias definidas."
+        '
         'frmBodega
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -6864,6 +6901,9 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.XtraTabPage1.ResumeLayout(False)
+        Me.XtraTabPage1.PerformLayout()
+        CType(Me.chkOcultarNombreEtiquetasImpresas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -7239,4 +7279,7 @@ Partial Class frmBodega
     Friend WithEvents chkControlGuia As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents Label96 As Label
     Friend WithEvents chkUbicImplosionAuto As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents XtraTabPage1 As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents lblchkOcultarNombreEtiquetasImpresas As Label
+    Friend WithEvents chkOcultarNombreEtiquetasImpresas As DevExpress.XtraEditors.CheckEdit
 End Class
