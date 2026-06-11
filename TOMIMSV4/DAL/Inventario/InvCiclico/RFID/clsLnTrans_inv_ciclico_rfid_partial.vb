@@ -1,7 +1,4 @@
-Imports System
 Imports System.Data.SqlClient
-Imports System.Reflection
-Imports DevExpress.Drawing.Internal.Images
 
 Partial Public Class clsLnTrans_inv_ciclico_rfid
 

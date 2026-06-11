@@ -1,0 +1,164 @@
+# RESERVA MI3 - LOG OUT DIAGNOSTICO
+
+Fecha: 2026-06-11
+Ambiente: LA_CUMBRE_QA (VPN)
+SQL Server: COLONIALWMS\\SQLEXPRESS (host 26.2.183.105)
+BD: TOMWMS_LA_CUMBRE_QA
+Documento analizado: Pedido/NoEnc 63605
+
+## 1) Sintoma observado
+En interfaz SAP/MI3, multiples lineas muestran:
+- TIPO_NO_RESERVA=SIN_VENCIMIENTO_VALIDO
+- Mensaje: "No hay existencia aplicable valida para la solicitud despues de evaluar presentacion, ubicacion, vencimiento y reservas vigentes."
+
+Captura reporta casos visibles en lineas 8, 12, 14 (y tambien linea 3).
+
+## 2) Evidencia BD (resultado real)
+
+### 2.1 Lineas fallidas en i_nav_ped_traslado_det
+Consulta base:
+SELECT d.NoEnc,d.Line_No,d.Item_No,d.Quantity,d.Quantity_Reserved_WMS,d.Status,d.Process_Result,tp.IdProductoBodega,tp.IdEstado
+FROM i_nav_ped_traslado_det d
+JOIN trans_pe_enc e ON e.Referencia=d.NoEnc
+JOIN trans_pe_det tp ON tp.IdPedidoEnc=e.IdPedidoEnc AND tp.No_linea=d.Line_No
+WHERE d.NoEnc='63605' AND d.Status=0
+ORDER BY TRY_CONVERT(int,d.Line_No);
+
+Hallazgo:
+- 28 lineas en Status=0
+- Quantity_Reserved_WMS = NULL en todas las fallidas
+- Todas vienen con el mismo TIPO_NO_RESERVA=SIN_VENCIMIENTO_VALIDO
+
+### 2.2 Configuracion que gobierna reserva
+Tabla: i_nav_config_enc (idbodega=89)
+- idproductoestado = 3
+- explosion_automatica = 0
+- rechazar_pedido_incompleto = 0
+
+Interpretacion:
+- La reserva para este flujo busca stock aplicable en estado 3 (Buen Estado).
+
+### 2.3 Cliente del pedido
+Tabla: cliente (IdCliente=5)
+- IdUbicacionAbastecerCon = 0
+- realiza_manufactura = 0
+- control_ultimo_lote = 0
+
+Interpretacion:
+- No hay restriccion por ubicacion obligatoria de cliente en este caso.
+
+### 2.4 Cruce stock por estado para lineas fallidas
+Consulta base resumida:
+WITH fail_lines AS (...) 
+SELECT Line_No, Item_No, Quantity, IdProductoBodega,
+       StockEstado3, ReservadoEstado3, DisponibleEstado3,
+       StockEstado22, ReservadoEstado22, DisponibleEstado22
+FROM ...
+
+Resultados clave (ejemplos del caso solicitado):
+
+- Linea 3 / 7402000003037 / IdProductoBodega=39546 / Qty=24
+  StockEstado3=0, DisponibleEstado3=0
+  StockEstado22=48, DisponibleEstado22=48
+
+- Linea 8 / 714258000148 / IdProductoBodega=18130 / Qty=72
+  StockEstado3=0, DisponibleEstado3=0
+  StockEstado22=0, DisponibleEstado22=0
+  (sin stock aplicable en estados revisados)
+
+- Linea 12 / 760444182112 / IdProductoBodega=30804 / Qty=24
+  StockEstado3=0, DisponibleEstado3=0
+  StockEstado22=24, DisponibleEstado22=24
+
+- Linea 14 / 7402000003099 / IdProductoBodega=19458 / Qty=24
+  StockEstado3=0, DisponibleEstado3=0
+  StockEstado22=24, DisponibleEstado22=24
+
+Patron general del pedido 63605 (lineas fallidas):
+- Estado 3 (Buen Estado): 0 disponible
+- Existe stock en estado 22 (EN RECEPCION) en la mayoria de lineas fallidas
+- Reservas vigentes (stock_res) no son la causa dominante en estas lineas
+
+## 3) Traza funcional -> codigo
+
+### 3.1 Flujo principal
+1. clsLnI_nav_ped_traslado_enc_Partial.vb
+   - Inserta_Linea_Detalle_Pedido(...)
+   - llama clsLnTrans_pe_det.Reservar_Stock_Por_Linea_Interface(...)
+
+2. clsLnTrans_pe_det_Partial.vb
+   - Reservar_Stock_Por_Linea_Interface(...)
+   - llama clsLnStock_res.Reserva_Stock_From_MI3(...)
+
+3. clsLnStock_res_Partial.vb
+   - Reserva_Stock_From_MI3(...) evalua disponibilidad aplicable
+   - Marcar_Motivo_No_Reserva_MI3(...) registra motivo
+
+### 3.2 Puntos relevantes de codigo (referencias)
+- Asignacion de estado objetivo al objeto de reserva:
+  TOMIMSV4/DAL/Interface/Pedido_Traslado/Pedido_Traslado_Enc/clsLnI_nav_ped_traslado_enc_Partial.vb
+  lineas ~1871, ~1886, ~3413, ~3428 (pBeStockRes.IdProductoEstado = ...)
+
+- Motivo default de no reserva usado en interfaz:
+  mismo archivo lineas ~1394, ~1538, ~1976, ~2953, ~3043, ~3532
+  texto base: "No hay existencia aplicable valida ... presentacion, ubicacion, vencimiento y reservas vigentes"
+
+- Tipificacion textual del motivo:
+  clsLnI_nav_ped_traslado_enc_Partial.vb lineas 115-119
+  y clsLnStock_res_Partial.vb lineas 18893+ / 18974+
+
+## 4) Por que falla en este escenario
+
+Causa real de negocio/estado de datos:
+- La reserva requiere estado 3 (Buen Estado) por configuracion de bodega (idproductoestado=3).
+- El stock disponible para esas lineas esta en estado 22 (EN RECEPCION), no en estado 3.
+- Resultado: no hay stock aplicable para reservar, aunque haya existencia fisica.
+
+Por que el mensaje confunde:
+- El tipificador clasifica por texto y termina etiquetando como SIN_VENCIMIENTO_VALIDO
+  porque el mensaje genrico incluye la palabra "vencimiento".
+- En estas lineas, vencimiento NO es la causa principal.
+
+## 5) Tenemos fix?
+
+Si, hay fix en 2 niveles.
+
+### 5.1 Fix operativo inmediato (sin despliegue)
+- Mover/liberar stock de estado 22 -> estado 3 para los productos del pedido 63605
+  siguiendo el proceso funcional autorizado (recepcion/cierre/liberacion), no por SQL directo.
+- Reprocesar "Enviar Traslados" y validar Quantity_Reserved_WMS por linea.
+
+### 5.2 Fix de codigo recomendado (diagnostico correcto)
+- Introducir motivo explicito cuando existe stock fisico pero en estado distinto al requerido:
+  TIPO_NO_RESERVA=ESTADO_PRODUCTO_NO_APLICA
+- Ajustar clasificador para no inferir SIN_VENCIMIENTO_VALIDO solo por texto generico.
+- Construir mensaje desde evidencia (estado requerido vs estado disponible), no solo string libre.
+
+## 6) Query corta de auditoria reutilizable
+
+-- Resumen para lineas fallidas de un NoEnc
+WITH fail_lines AS (
+  SELECT d.Line_No,d.Item_No,tp.IdProductoBodega,d.Quantity
+  FROM i_nav_ped_traslado_det d
+  JOIN trans_pe_enc e ON e.Referencia=d.NoEnc
+  JOIN trans_pe_det tp ON tp.IdPedidoEnc=e.IdPedidoEnc AND tp.No_linea=d.Line_No
+  WHERE d.NoEnc='63605' AND d.Status=0
+), rs AS (
+  SELECT IdStock,SUM(Cantidad) AS Reservado FROM stock_res GROUP BY IdStock
+)
+SELECT f.Line_No,f.Item_No,f.Quantity,
+       SUM(CASE WHEN s.IdProductoEstado=3 THEN s.Cantidad ELSE 0 END) AS StockEstado3,
+       SUM(CASE WHEN s.IdProductoEstado=3 THEN ISNULL(rs.Reservado,0) ELSE 0 END) AS ResEstado3,
+       SUM(CASE WHEN s.IdProductoEstado=3 THEN s.Cantidad-ISNULL(rs.Reservado,0) ELSE 0 END) AS DispEstado3,
+       SUM(CASE WHEN s.IdProductoEstado=22 THEN s.Cantidad ELSE 0 END) AS StockEstado22,
+       SUM(CASE WHEN s.IdProductoEstado=22 THEN s.Cantidad-ISNULL(rs.Reservado,0) ELSE 0 END) AS DispEstado22
+FROM fail_lines f
+LEFT JOIN stock s ON s.IdProductoBodega=f.IdProductoBodega
+LEFT JOIN rs ON rs.IdStock=s.IdStock
+GROUP BY f.Line_No,f.Item_No,f.Quantity
+ORDER BY TRY_CONVERT(int,f.Line_No);
+
+## 7) Conclusiones ejecutivas
+- Para lineas 8, 12, 14 (y el resto analizado), la falla no apunta a fecha de vencimiento como causa principal.
+- La causa dominante es falta de stock en estado objetivo de reserva (estado 3).
+- El texto/etiqueta actual SIN_VENCIMIENTO_VALIDO esta sobregeneralizado y puede inducir a diagnostico incorrecto.
