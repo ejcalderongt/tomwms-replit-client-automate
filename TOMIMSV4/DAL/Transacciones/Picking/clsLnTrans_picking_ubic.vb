@@ -110,12 +110,20 @@ Public Class clsLnTrans_picking_ubic
                     .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
                 End If
 
+                If String.IsNullOrEmpty(.Codigo_Talla) AndAlso dr.Table.Columns.Contains("Talla") Then
+                    .Codigo_Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                End If
+
                 If dr.Table.Columns.Contains("Nombre_Talla") Then
                     .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
                 End If
 
                 If dr.Table.Columns.Contains("Codigo_Color") Then
                     .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                End If
+
+                If String.IsNullOrEmpty(.Codigo_Color) AndAlso dr.Table.Columns.Contains("Color") Then
+                    .Codigo_Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
                 End If
 
                 If dr.Table.Columns.Contains("Nombre_Color") Then

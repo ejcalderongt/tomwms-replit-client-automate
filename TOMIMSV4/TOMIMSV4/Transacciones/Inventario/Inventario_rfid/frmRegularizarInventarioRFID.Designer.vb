@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmRegularizarInventarioRFID
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,11 +17,12 @@ Partial Class frmRegularizarInventarioRFID
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmRegularizarInventarioRFID))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdRegularizar = New DevExpress.XtraBars.BarButtonItem()
+        Me.lblPrg = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -41,16 +42,12 @@ Partial Class frmRegularizarInventarioRFID
         Me.tabAjustes = New DevExpress.XtraTab.XtraTabPage()
         Me.grdRegularizar = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tabMov = New DevExpress.XtraTab.XtraTabPage()
-        Me.dgridMovimientos = New DevExpress.XtraGrid.GridControl()
-        Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.tabIdStockConReserva = New DevExpress.XtraTab.XtraTabPage()
-        Me.grdInventarioConReserva = New DevExpress.XtraGrid.GridControl()
-        Me.grdvInventarioConReserva = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.tabRegularizacion = New DevExpress.XtraTab.XtraTabPage()
         Me.dgridRegularizado = New DevExpress.XtraGrid.GridControl()
         Me.GridViewRegularizado = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.lblPrg = New DevExpress.XtraBars.BarButtonItem()
+        Me.tabMovimientos = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridMovimientos = New DevExpress.XtraGrid.GridControl()
+        Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpInfo.SuspendLayout()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -63,15 +60,12 @@ Partial Class frmRegularizarInventarioRFID
         Me.tabAjustes.SuspendLayout()
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.tabMov.SuspendLayout()
-        CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.tabIdStockConReserva.SuspendLayout()
-        CType(Me.grdInventarioConReserva, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.grdvInventarioConReserva, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabRegularizacion.SuspendLayout()
         CType(Me.dgridRegularizado, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridViewRegularizado, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabMovimientos.SuspendLayout()
+        CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -89,8 +83,14 @@ Partial Class frmRegularizarInventarioRFID
         '
         Me.cmdRegularizar.Caption = "Actualizar Stock"
         Me.cmdRegularizar.Id = 1
-        Me.cmdRegularizar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdRegularizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdRegularizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdRegularizar.Name = "cmdRegularizar"
+        '
+        'lblPrg
+        '
+        Me.lblPrg.Caption = "Registros: 0"
+        Me.lblPrg.Id = 2
+        Me.lblPrg.Name = "lblPrg"
         '
         'RibbonPage1
         '
@@ -181,10 +181,10 @@ Partial Class frmRegularizarInventarioRFID
         Me.rdStockInventarioMovs.Location = New System.Drawing.Point(719, 28)
         Me.rdStockInventarioMovs.Margin = New System.Windows.Forms.Padding(4)
         Me.rdStockInventarioMovs.Name = "rdStockInventarioMovs"
-        Me.rdStockInventarioMovs.Size = New System.Drawing.Size(329, 20)
+        Me.rdStockInventarioMovs.Size = New System.Drawing.Size(253, 20)
         Me.rdStockInventarioMovs.TabIndex = 6
         Me.rdStockInventarioMovs.TabStop = True
-        Me.rdStockInventarioMovs.Text = "Stock = Inventario + (entradas - salidas) posteriores"
+        Me.rdStockInventarioMovs.Text = "Stock = Inventario - salidas posteriores"
         Me.rdStockInventarioMovs.UseVisualStyleBackColor = True
         '
         'lblinfohr
@@ -268,7 +268,7 @@ Partial Class frmRegularizarInventarioRFID
         Me.tabRegu.SelectedTabPage = Me.tabAjustes
         Me.tabRegu.Size = New System.Drawing.Size(1542, 367)
         Me.tabRegu.TabIndex = 6
-        Me.tabRegu.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabAjustes, Me.tabMov, Me.tabIdStockConReserva, Me.tabRegularizacion})
+        Me.tabRegu.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabAjustes, Me.tabMovimientos, Me.tabRegularizacion})
         '
         'tabAjustes
         '
@@ -301,63 +301,6 @@ Partial Class frmRegularizarInventarioRFID
         Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowGroupPanel = False
         '
-        'tabMov
-        '
-        Me.tabMov.Controls.Add(Me.dgridMovimientos)
-        Me.tabMov.Margin = New System.Windows.Forms.Padding(4)
-        Me.tabMov.Name = "tabMov"
-        Me.tabMov.Size = New System.Drawing.Size(1540, 337)
-        Me.tabMov.Text = "Movimientos"
-        '
-        'dgridMovimientos
-        '
-        Me.dgridMovimientos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgridMovimientos.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridMovimientos.Location = New System.Drawing.Point(0, 0)
-        Me.dgridMovimientos.MainView = Me.GridView2
-        Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridMovimientos.MenuManager = Me.RibbonControl
-        Me.dgridMovimientos.Name = "dgridMovimientos"
-        Me.dgridMovimientos.Size = New System.Drawing.Size(1540, 337)
-        Me.dgridMovimientos.TabIndex = 0
-        Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2})
-        '
-        'GridView2
-        '
-        Me.GridView2.DetailHeight = 431
-        Me.GridView2.GridControl = Me.dgridMovimientos
-        Me.GridView2.Name = "GridView2"
-        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 933
-        '
-        'tabIdStockConReserva
-        '
-        Me.tabIdStockConReserva.Controls.Add(Me.grdInventarioConReserva)
-        Me.tabIdStockConReserva.Margin = New System.Windows.Forms.Padding(4)
-        Me.tabIdStockConReserva.Name = "tabIdStockConReserva"
-        Me.tabIdStockConReserva.Size = New System.Drawing.Size(1540, 337)
-        Me.tabIdStockConReserva.Text = "Inventario con reserva"
-        '
-        'grdInventarioConReserva
-        '
-        Me.grdInventarioConReserva.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdInventarioConReserva.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdInventarioConReserva.Location = New System.Drawing.Point(0, 0)
-        Me.grdInventarioConReserva.MainView = Me.grdvInventarioConReserva
-        Me.grdInventarioConReserva.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdInventarioConReserva.MenuManager = Me.RibbonControl
-        Me.grdInventarioConReserva.Name = "grdInventarioConReserva"
-        Me.grdInventarioConReserva.Size = New System.Drawing.Size(1540, 337)
-        Me.grdInventarioConReserva.TabIndex = 0
-        Me.grdInventarioConReserva.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvInventarioConReserva})
-        '
-        'grdvInventarioConReserva
-        '
-        Me.grdvInventarioConReserva.DetailHeight = 431
-        Me.grdvInventarioConReserva.GridControl = Me.grdInventarioConReserva
-        Me.grdvInventarioConReserva.Name = "grdvInventarioConReserva"
-        Me.grdvInventarioConReserva.OptionsEditForm.PopupEditFormWidth = 933
-        Me.grdvInventarioConReserva.OptionsView.ColumnAutoWidth = False
-        '
         'tabRegularizacion
         '
         Me.tabRegularizacion.Controls.Add(Me.dgridRegularizado)
@@ -388,11 +331,28 @@ Partial Class frmRegularizarInventarioRFID
         Me.GridViewRegularizado.OptionsView.ColumnAutoWidth = False
         Me.GridViewRegularizado.OptionsView.ShowAutoFilterRow = True
         '
-        'lblPrg
+        'tabMovimientos
         '
-        Me.lblPrg.Caption = "Registros: 0"
-        Me.lblPrg.Id = 2
-        Me.lblPrg.Name = "lblPrg"
+        Me.tabMovimientos.Controls.Add(Me.dgridMovimientos)
+        Me.tabMovimientos.Name = "tabMovimientos"
+        Me.tabMovimientos.Size = New System.Drawing.Size(1540, 337)
+        Me.tabMovimientos.Text = "Movimientos"
+        '
+        'dgridMovimientos
+        '
+        Me.dgridMovimientos.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridMovimientos.Location = New System.Drawing.Point(0, 0)
+        Me.dgridMovimientos.MainView = Me.GridView2
+        Me.dgridMovimientos.MenuManager = Me.RibbonControl
+        Me.dgridMovimientos.Name = "dgridMovimientos"
+        Me.dgridMovimientos.Size = New System.Drawing.Size(1540, 337)
+        Me.dgridMovimientos.TabIndex = 0
+        Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2})
+        '
+        'GridView2
+        '
+        Me.GridView2.GridControl = Me.dgridMovimientos
+        Me.GridView2.Name = "GridView2"
         '
         'frmRegularizarInventarioRFID
         '
@@ -421,15 +381,12 @@ Partial Class frmRegularizarInventarioRFID
         Me.tabAjustes.ResumeLayout(False)
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.tabMov.ResumeLayout(False)
-        CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.tabIdStockConReserva.ResumeLayout(False)
-        CType(Me.grdInventarioConReserva, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.grdvInventarioConReserva, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tabRegularizacion.ResumeLayout(False)
         CType(Me.dgridRegularizado, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridViewRegularizado, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tabMovimientos.ResumeLayout(False)
+        CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -456,14 +413,11 @@ Partial Class frmRegularizarInventarioRFID
     Friend WithEvents tabAjustes As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents grdRegularizar As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents tabMov As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents dgridMovimientos As DevExpress.XtraGrid.GridControl
-    Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents tabIdStockConReserva As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents grdInventarioConReserva As DevExpress.XtraGrid.GridControl
-    Friend WithEvents grdvInventarioConReserva As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents tabRegularizacion As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents dgridRegularizado As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridViewRegularizado As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents lblPrg As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents tabMovimientos As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents dgridMovimientos As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

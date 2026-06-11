@@ -1,5 +1,5 @@
 ﻿version: 1
-updated: "2026-06-04"
+updated: "2026-06-11"
 purpose: >
   Atlas maestro del Brain local WMS. Centraliza discovery de paquetes de
   conocimiento y reduce carga de contexto innecesaria.
@@ -31,6 +31,13 @@ knowledge_packages:
     freshness_days: 45
     owner: bof
     tags: [vb, winforms, legacy]
+  domain_hh_android:
+    path: brain/agents/domain-hh-android.yml
+    type: domain
+    priority: p1
+    freshness_days: 30
+    owner: hh
+    tags: [android, hh, picking, reemplazo, etiquetas, talla_color]
   domain_database:
     path: brain/agents/domain-database.yml
     type: domain

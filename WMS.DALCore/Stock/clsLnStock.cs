@@ -1183,12 +1183,15 @@ public class clsLnStock
             clsBeStock vBeStock = new clsBeStock();
             List<clsBeStock> lBeStock = new List<clsBeStock>();
             int vIdProductoBodega = 0;
+            double cantidadSolicitada = 0;
+            int idClienteReglaLote = 0;
 
             if (pBeStockRes == null)
             {
                 return null;
             }
 
+            cantidadSolicitada = pBeStockRes.Cantidad;
             vIdProductoBodega = pBeStockRes.IdProductoBodega;
 
             pBeProductoOutput = clsLnProducto.Get_Single_By_IdProductoBodega(
@@ -1207,7 +1210,21 @@ public class clsLnStock
                 ltransaction);
 
             // Construcción de la consulta SQL
-            string vSQL = @"SELECT stock.*,
+            string vSQL = string.Empty;
+
+            if (pBeProductoOutput?.control_vencimiento == true)
+            {
+                vSQL += @"WITH FechaBase AS (
+                    SELECT MIN(stock.fecha_vence) AS FechaVencimientoBase
+                    FROM stock
+                    WHERE stock.idproductobodega = @IdProductoBodega
+                      AND stock.idunidadmedida = @IdUnidadMedida
+                      AND stock.idproductoestado = @IdProductoEstado)
+";
+            }
+
+            vSQL += @"SELECT stock.*,
+                    dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) AS NombreUbicacion,
                     bodega_ubicacion.indice_x, 
                     bodega_ubicacion.nivel, 
                     bodega_ubicacion.orientacion_pos, 
@@ -1222,6 +1239,11 @@ public class clsLnStock
                     bodega_tramo ON bodega_ubicacion.IdTramo = bodega_tramo.IdTramo 
                     AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega
                     AND bodega_ubicacion.IdSector = bodega_tramo.IdSector ";
+
+            if (pBeProductoOutput?.control_vencimiento == true)
+            {
+                vSQL += " CROSS APPLY (SELECT FechaVencimientoBase FROM FechaBase) fb ";
+            }
 
             if (pBeStockRes.Control_Ultimo_Lote)
             {
@@ -1250,7 +1272,15 @@ public class clsLnStock
                     {
                         if (pBeStockRes.Atributo_Variante_1 != "" || pBeStockRes.IdPresentacion != 0)
                         {
-                            vSQL += "and (stock.idpresentacion = @idpresentacion) ";
+                            // #EJC20260520_RESERVA_BYB_FIX: línea convertida a UMBAS puede traer IdPresentacion=0 con Variant_Code.
+                            if (pBeStockRes.IdPresentacion == 0)
+                            {
+                                vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) ";
+                            }
+                            else
+                            {
+                                vSQL += "and (stock.idpresentacion = @idpresentacion) ";
+                            }
                         }
                         else
                         {
@@ -1373,6 +1403,57 @@ public class clsLnStock
                 }
             }
 
+            // #EJC20260610_MERGE2023_2028: filtro robusto de lotes por cliente (bloqueados excluyen / permitidos restringen).
+            if (pBeStockRes.IdPedido > 0)
+            {
+                var pedidoEnc = clsLnTrans_pe_enc.GetSingle(pBeStockRes.IdPedido, lConnection, ltransaction);
+                idClienteReglaLote = pedidoEnc?.IdCliente ?? 0;
+            }
+
+            if (idClienteReglaLote > 0)
+            {
+                vSQL += @" AND NOT EXISTS (
+                              SELECT 1
+                              FROM cliente_lotes cl
+                              WHERE cl.IdCliente = @IdClienteReglaLote
+                                AND ISNULL(cl.activo, 0) = 1
+                                AND ISNULL(cl.bloquear, 0) = 1
+                                AND cl.IdProducto = producto_bodega.IdProducto
+                                AND ISNULL(cl.IdProductoEstado, 0) = stock.IdProductoEstado
+                                AND ISNULL(cl.Lote, '') = ISNULL(stock.lote, '')
+                          )
+                          AND (
+                              NOT EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto_bodega.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                              )
+                              OR EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto_bodega.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                                    AND ISNULL(clp.Lote, '') = ISNULL(stock.lote, '')
+                              )
+                          ) ";
+            }
+
+            if (pBeStockRes.IdPresentacion != 0 && ltransaction != null)
+            {
+                var beProductoPresentacion = clsLnProducto_presentacion.GetSingle(pBeStockRes.IdPresentacion, lConnection, ltransaction);
+                if (beProductoPresentacion != null)
+                {
+                    cantidadSolicitada = pBeStockRes.Cantidad * beProductoPresentacion.Factor;
+                }
+            }
+
             // Ordenamiento por tipo de rotación
             int IdTipoRotacion = clsLnProducto.Get_Tipo_Rotacion_By_IdProductoBodega(vIdProductoBodega, lConnection, ltransaction);
 
@@ -1386,7 +1467,19 @@ public class clsLnStock
                     vSQL += " ORDER BY fecha_ingreso desc, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack, bodega_ubicacion.IdTramo, indice_x, nivel, orientacion_pos, cantidad";
                     break;
                 case 3: // FEFO
-                    vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack, bodega_ubicacion.IdTramo, indice_x, nivel, orientacion_pos, cantidad";
+                    var priorizarCantidadSuperiorObj = BeBodega?.GetType().GetProperty("Priorizar_cantidad_superior")?.GetValue(BeBodega);
+                    bool priorizarCantidadSuperior = priorizarCantidadSuperiorObj != null && Convert.ToBoolean(priorizarCantidadSuperiorObj);
+                    if (priorizarCantidadSuperior)
+                    {
+                        vSQL += " ORDER BY stock.fecha_vence ASC, fecha_ingreso ASC, bodega_ubicacion.ubicacion_picking desc, " +
+                                "CASE WHEN stock.cantidad = @CantidadSolicitada THEN 0 " +
+                                "WHEN stock.cantidad > @CantidadSolicitada THEN 1 ELSE 2 END, " +
+                                "stock.cantidad ASC, dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega)";
+                    }
+                    else
+                    {
+                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack, dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega), cantidad";
+                    }
                     break;
                 case 4: // UPSR (Ubicación prioritaria sobre rotación)
                     vSQL += " ORDER BY indice_x, bodega_tramo.es_rack, bodega_ubicacion.IdTramo, nivel, orientacion_pos, cantidad";
@@ -1455,6 +1548,16 @@ public class clsLnStock
                 if (pBeStockRes?.IdProductoTallaColor != null && pBeStockRes.IdProductoTallaColor != 0)
                 {
                     lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pBeStockRes.IdProductoTallaColor);
+                }
+
+                if (idClienteReglaLote > 0)
+                {
+                    lCommand.Parameters.AddWithValue("@IdClienteReglaLote", idClienteReglaLote);
+                }
+
+                if (cantidadSolicitada > 0)
+                {
+                    lCommand.Parameters.AddWithValue("@CantidadSolicitada", cantidadSolicitada);
                 }
 
                 using (SqlDataReader dr = lCommand.ExecuteReader())

@@ -1,0 +1,51 @@
+version: 1
+updated: "2026-06-11"
+domain: hh-android
+scope: "Android HH operational flows (picking, verificacion, reemplazo, recepcion, impresion)."
+
+rules:
+  - Mantener parsing defensivo en cursores (preferir nombre de columna, no solo indice).
+  - Si hay control talla/color, validar IdProductoTallaColor y codigos TC en UI y persistencia.
+  - Para cargas masivas de listas, usar JSON como ruta principal y fallback SOAP solo cuando falten datos criticos.
+  - Documentar toda regla nueva con tag inline (ej. #EJCYYYYMMDD_xxx) en el bloque afectado.
+  - No esconder errores operativos: degradar popup a log solo cuando el desfase sea esperado y trazado.
+
+hotspots:
+  picking_detalle:
+    file: "TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_detalle_tareas_picking.java"
+    notes:
+      - Validar carga de TC al seleccionar/escanear licencia.
+      - Si lista JSON viene sin TC y Control_Talla_Color=true, reintentar SOAP.
+  reemplazo_picking:
+    file: "TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Picking/frm_list_prod_reemplazo_picking.java"
+    notes:
+      - Filtrar candidatos por misma talla/color cuando aplica.
+      - Buscar por licencia/ubicacion/codigo_sku y validar UX de lista vacia.
+  reemplazo_verificacion:
+    file: "TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Verificacion/frm_list_prod_reemplazo_verif.java"
+    notes:
+      - Espejar reglas de reemplazo de picking.
+      - Conservar criterio TC al marcar/mover en verificacion.
+  recepcion_impresion:
+    file: "TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+    notes:
+      - Resolver ZPL por parametrizacion de bodega/tipo_etiqueta antes de fallback hardcoded.
+      - Si aplica ocultar nombre de bodega, imprimir solo codigo segun parametro.
+
+cross_layer_contracts:
+  - WebMethod JSON debe exponer alias consistentes para TC:
+    - IdProductoTallaColor
+    - Codigo_Talla
+    - Nombre_Talla
+    - Codigo_Color
+    - Nombre_Color
+  - DAL VB debe mapear alias alternos Talla/Color como fallback.
+
+validation_cycle:
+  - Build: "./gradlew.bat :app:compileDebugJavaWithJavac"
+  - Flujo minimo:
+    - Escanear licencia con TC
+    - Ver TC visible en pantalla
+    - Ejecutar reemplazo y validar persistencia TC
+    - Confirmar que no haya regresion en modo sin TC
+

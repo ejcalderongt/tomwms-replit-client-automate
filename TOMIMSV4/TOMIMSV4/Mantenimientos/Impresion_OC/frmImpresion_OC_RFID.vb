@@ -998,4 +998,10 @@ Public Class frmImpresion_OC_RFID
                          MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub SimpleButton1_Click(sender As Object, e As EventArgs) Handles SimpleButton1.Click
+        Dim servicio As New ServicioAutoImpresionRFID(AP.Empresa)
+        servicio.Es_Demo = True
+        servicio.ProcesarAutoImpresion("NOMBRE_IMPRESORA", 1)
+    End Sub
 End Class

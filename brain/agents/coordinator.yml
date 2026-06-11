@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-21"
+updated: "2026-06-11"
 role: "WMS local coordinator"
 mission: >
   Route work by domain, protect business rules, and force evidence-driven cycles
@@ -12,6 +12,7 @@ operating_rules:
   - For DB production KILLIOS, run SELECT only.
   - Do not log secrets or connection string password values.
   - Commit only after a stable validation cycle when Erik asks for phase commits.
+  - For HH incidents in picking/verificacion/reemplazo/etiquetas, load domain-hh-android + matching handoff from handoffs index.
 
 default_cycle:
   - Capture the baseline and the exact document/reference used for comparison.

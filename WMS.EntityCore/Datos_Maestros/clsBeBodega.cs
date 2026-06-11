@@ -373,6 +373,10 @@ namespace WMS.EntityCore.Datos_Maestros
         [DisplayName("IdSimbologiaLicencia")]
         public int IdSimbologiaLicencia { get; set; } = 0;
 
+        [Column("ocultar_nombre_etiquetas_impresas")]
+        [DisplayName("ocultar_nombre_etiquetas_impresas")]
+        public bool ocultar_nombre_etiquetas_impresas { get; set; } = false;
+
         [Column("restringir_areas_sap")]
         [DisplayName("restringir_areas_sap")]
         public bool Restringir_areas_sap { get; set; } = false;

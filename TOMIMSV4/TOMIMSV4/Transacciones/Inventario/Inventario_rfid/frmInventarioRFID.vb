@@ -751,7 +751,7 @@ Public Class frmInventarioRFID
                     gdviewTeorico.Columns("fec_mod").Visible = False
 
 
-                    gdviewTeorico.Columns("SSCC").Caption = "Etiqueta RFID"
+                    gdviewTeorico.Columns("SSCC").Caption = "SSCC"
                     gdviewTeorico.Columns("Codigo_Barra").Caption = "Barra"
                     gdviewTeorico.Columns("Fecha_Produccion").Caption = "Producción"
                     gdviewTeorico.Columns("fec_agr").Caption = "Fecha Registro"
@@ -1001,6 +1001,7 @@ Public Class frmInventarioRFID
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
+
     End Sub
 
 End Class

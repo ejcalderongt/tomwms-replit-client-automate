@@ -25,6 +25,7 @@ Public Class clsBeTrans_inv_ciclico_rfid
 	Public Property Iddispositivo() As String = ""
 
 	Public Property IdBodega() As Integer = 0
+	Public Property Regularizar() As Boolean = False
 
 	Sub New()
 		'#EJC: Add your constructor here... 

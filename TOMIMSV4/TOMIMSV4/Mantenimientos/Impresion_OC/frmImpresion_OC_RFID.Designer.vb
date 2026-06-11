@@ -36,6 +36,7 @@ Partial Class frmImpresion_OC_RFID
         Me.lblImpresiones = New DevExpress.XtraEditors.LabelControl()
         Me.cmbImpresora = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmdImpresion = New DevExpress.XtraEditors.SimpleButton()
+        Me.SimpleButton1 = New DevExpress.XtraEditors.SimpleButton()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl4.SuspendLayout()
@@ -147,6 +148,7 @@ Partial Class frmImpresion_OC_RFID
         '
         'GroupControl1
         '
+        Me.GroupControl1.Controls.Add(Me.SimpleButton1)
         Me.GroupControl1.Controls.Add(Me.txtCantidadImpresiones)
         Me.GroupControl1.Controls.Add(Me.lblImpresiones)
         Me.GroupControl1.Controls.Add(Me.cmbImpresora)
@@ -206,14 +208,27 @@ Partial Class frmImpresion_OC_RFID
         Me.cmdImpresion.TabIndex = 46
         Me.cmdImpresion.Text = "Impresión TAG"
         '
+        'SimpleButton1
+        '
+        Me.SimpleButton1.Appearance.Font = New System.Drawing.Font("Tahoma", 7.8!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.SimpleButton1.Appearance.Options.UseFont = True
+        Me.SimpleButton1.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.TopCenter
+        Me.SimpleButton1.ImageOptions.SvgImage = CType(resources.GetObject("SimpleButton1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.SimpleButton1.Location = New System.Drawing.Point(23, 307)
+        Me.SimpleButton1.Margin = New System.Windows.Forms.Padding(10)
+        Me.SimpleButton1.Name = "SimpleButton1"
+        Me.SimpleButton1.Size = New System.Drawing.Size(212, 80)
+        Me.SimpleButton1.TabIndex = 50
+        Me.SimpleButton1.Text = "boton demo"
+        '
         'frmImpresion_OC_RFID
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1566, 701)
         Me.Controls.Add(Me.GroupControl4)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Name = "frmImpresion_OC_RFID"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -252,4 +267,5 @@ Partial Class frmImpresion_OC_RFID
     Friend WithEvents chkSeleccionMultiple As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents chkEstadoImpreso As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents SimpleButton1 As DevExpress.XtraEditors.SimpleButton
 End Class

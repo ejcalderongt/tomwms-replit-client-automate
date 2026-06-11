@@ -11580,4 +11580,70 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    '#GT08062026: traer producto por codigo para barras_pallet rfid.
+    Public Shared Function Get_BeProducto_By_Codigo(ByVal pCodigo As String,
+                                                    lConnection As SqlConnection,
+                                                    ltransaction As SqlTransaction) As clsBeProducto
+
+        Get_BeProducto_By_Codigo = Nothing
+
+        Dim Obj As New clsBeProducto
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM VW_ProductoSI 
+                 WHERE 
+                 (codigo =@Codigo or codigo_barra=@Codigo or 
+                codigo_barra_pcb =@Codigo or 
+                codigo_barra_presentacion =@Codigo)"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = ltransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
+
+                Dim lDT As New DataTable
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+
+                    Cargar(Obj, lRow, lConnection, ltransaction)
+
+                    Obj.IdProducto = CType(lRow("IdProducto"), Integer)
+
+                    If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                        Obj.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                    End If
+
+                    If lRow("nombre") IsNot DBNull.Value AndAlso lRow("nombre") IsNot Nothing Then
+                        Obj.Nombre = CType(lRow("nombre"), String)
+                    End If
+
+                    If lRow("costo") IsNot DBNull.Value AndAlso lRow("costo") IsNot Nothing Then
+                        Obj.Costo = CType(lRow("costo"), Double)
+                    End If
+
+                    If lRow("IdPropietario") IsNot DBNull.Value AndAlso lRow("IdPropietario") IsNot Nothing Then
+                        Obj.Propietario.IdPropietario = CType(lRow("IdPropietario"), Integer)
+                    End If
+
+                    If lRow("Control_vencimiento") IsNot DBNull.Value AndAlso lRow("Control_vencimiento") IsNot Nothing Then
+                        Obj.Control_vencimiento = CType(lRow("Control_vencimiento"), Boolean)
+                    End If
+
+                    Get_BeProducto_By_Codigo = Obj
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
