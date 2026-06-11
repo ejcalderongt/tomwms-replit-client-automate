@@ -528,6 +528,7 @@ Public Class SapServiceLayerClient
             .U_OPERADOR_WMS = vOperadorHHWMS,
             .U_DOCUMENTO_WMS = IdRecepcionEnc,
             .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
+            .U_LOGISTIKA_ID = IdRecepcionEnc,
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 
