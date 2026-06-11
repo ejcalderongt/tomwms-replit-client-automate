@@ -320,3 +320,13 @@ Resultado: push OK a Azure DevOps.
   - `brain/agents/coordinator.yml`
   - `brain/agents/domain-hh-android.yml`
   - `C:/Users/yejc2/source/repos/TOMWMS/AGENTS.md`
+
+## 2026-06-11 - HH reemplazo TC: guard de request y traza fina
+
+### Resumen
+
+Se corrigio perdida de `IdProductoTallaColor` en requests de reemplazo (picking/verificacion) cuando no habia seleccion de stock efectiva y `tmpBeStock_Res` viajaba con `0`.
+
+### Documento de detalle
+
+- `brain/handoffs/2026-05-22-codex-performance-bof-hh/2026-06-11-hh-reemplazo-tc-request-guard.md`
