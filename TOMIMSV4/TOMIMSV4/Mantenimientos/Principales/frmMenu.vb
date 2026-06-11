@@ -28,6 +28,12 @@ Public Class frmMenu
 
     Public Property ConexionActivaWebServiceTOMWMS As Boolean = False
 
+    '#GT08062026: backgroundowkrer y timer para ejecutar autoimpresión rfid desde barras_pallet
+    Private WithEvents bgwAutoImpresionRFID As New System.ComponentModel.BackgroundWorker
+    Private WithEvents tmrAutoImpresionRFID As New System.Windows.Forms.Timer
+    Private _cerrandoFormulario As Boolean = False
+
+
     Public Sub New()
 
         Try
@@ -188,6 +194,8 @@ Public Class frmMenu
                 backgroundWorker.RunWorkerAsync()
             End If
 
+            InicializarAutoImpresionRFID()
+
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
             Text,
@@ -263,6 +271,64 @@ Public Class frmMenu
         End Try
 
     End Sub
+
+    Private Sub InicializarAutoImpresionRFID()
+
+        Try
+            bgwAutoImpresionRFID.WorkerReportsProgress = False
+            bgwAutoImpresionRFID.WorkerSupportsCancellation = False
+
+            tmrAutoImpresionRFID.Interval = 3000 '3 segundos
+            tmrAutoImpresionRFID.Enabled = True
+            tmrAutoImpresionRFID.Start()
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub tmrAutoImpresionRFID_Tick(sender As Object, e As EventArgs) Handles tmrAutoImpresionRFID.Tick
+
+        Try
+            If _cerrandoFormulario Then
+                Exit Sub
+            End If
+
+            If Not bgwAutoImpresionRFID.IsBusy Then
+                bgwAutoImpresionRFID.RunWorkerAsync()
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub bgwAutoImpresionRFID_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bgwAutoImpresionRFID.DoWork
+
+        Try
+            EjecutarAutoImpresionRFID()
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub bgwAutoImpresionRFID_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles bgwAutoImpresionRFID.RunWorkerCompleted
+
+        Try
+            If e.Error IsNot Nothing Then
+                'Log silencioso
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
 
     Private Sub backgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles backgroundWorker.DoWork
 
@@ -5260,6 +5326,20 @@ Public Class frmMenu
                        MessageBoxIcon.Question) = DialogResult.No Then
             e.Cancel = True
         End If
+
+        Try
+            _cerrandoFormulario = True
+
+            If tmrAutoImpresionRFID IsNot Nothing Then
+                tmrAutoImpresionRFID.Stop()
+                tmrAutoImpresionRFID.Enabled = False
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+
     End Sub
 
     Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
@@ -5709,6 +5789,41 @@ Public Class frmMenu
             MessageBoxIcon.Exclamation)
         End Try
 
+    End Sub
+
+    Private Sub EjecutarAutoImpresionRFID()
+        Try
+
+
+
+            Dim printerName As String = ServicioAutoImpresionRFID.Cargar_Impresora_Zebra()
+
+            If String.IsNullOrWhiteSpace(printerName) Then
+
+                clsLnLog_error_wms.Agregar_Error("Printer: No hay una impresora RFID encendida/configurada.")
+
+                Exit Sub
+            End If
+
+            If Not ServicioAutoImpresionRFID.RawPrinterHelper.CanOpenPrinter(printerName) Then
+
+                Dim mensaje = "Printer: La impresora RFID no está conectada o no se puede abrir la cola: " & printerName
+                clsLnLog_error_wms.Agregar_Error(mensaje)
+
+                Exit Sub
+            End If
+
+            Dim servicio As New ServicioAutoImpresionRFID(AP.Empresa)
+
+            servicio.Es_Demo = False
+            servicio.ProcesarAutoImpresion(printerName, 1)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                            "Autoimpresión RFID",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning)
+        End Try
     End Sub
 
 End Class

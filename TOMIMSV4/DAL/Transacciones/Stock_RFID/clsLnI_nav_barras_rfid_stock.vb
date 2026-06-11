@@ -479,4 +479,47 @@ Public Class clsLnI_nav_barras_rfid_stock
 
 	End Sub
 
+	Public Shared Function Eliminar_Stock_Ajuste(ByRef oBeI_nav_barras_rfid_stock As clsBeI_nav_barras_rfid_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Const sp As String = " Delete from I_nav_barras_rfid_stock" &
+			 "  Where(barra_epc = @barra_epc and IdProductoBodega=@IdProductoBodega)"
+
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@barra_epc", oBeI_nav_barras_rfid_stock.Barra_epc))
+			cmd.Parameters.Add(New SqlParameter("@IdProductoBodega", oBeI_nav_barras_rfid_stock.IdProductoBodega))
+
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+			cmd.Dispose()
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			Return rowsAffected
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
 End Class

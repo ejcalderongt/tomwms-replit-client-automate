@@ -211,6 +211,9 @@ Public Class clsDataContractDI
         CESTI = 34
         CUBII = 35
         TALLACOLOR = 36
+        AJCANTNIRFID = 37
+        AJCANTPIRFID = 38
+
 
     End Enum
 

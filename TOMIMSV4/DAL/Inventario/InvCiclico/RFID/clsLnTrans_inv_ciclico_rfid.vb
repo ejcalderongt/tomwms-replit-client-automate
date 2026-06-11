@@ -29,6 +29,7 @@ Public Class clsLnTrans_inv_ciclico_rfid
 				.Cantidad_reconteo = IIf(IsDBNull(dr.Item("cantidad_reconteo")), 0, dr.Item("cantidad_reconteo"))
 				.Iddispositivo = IIf(IsDBNull(dr.Item("Iddispositivo")), "", dr.Item("Iddispositivo"))
 				.IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
+				.Regularizar = IIf(IsDBNull(dr.Item("Regularizar")), False, dr.Item("Regularizar"))
 			End With
 		Catch ex As Exception
 			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
@@ -892,6 +893,93 @@ Public Class clsLnTrans_inv_ciclico_rfid
 			Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
 			clsLnLog_error_wms.Agregar_Error(vMsgError)
 			Throw ex
+		End Try
+
+	End Function
+
+	Public Shared Function Get_All_By_IdInventarioEnc(pIdInvEnc As Integer,
+													  ByVal lConnection As SqlConnection,
+													  ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_inv_ciclico_rfid)
+
+		Try
+
+			Dim lReturnList As New List(Of clsBeTrans_inv_ciclico_rfid)
+
+			Dim vSQL As String = "SELECT * FROM trans_inv_ciclico_rfid WHERE idinventarioenc=@idinventarioenc Order by IdProductoBodega"
+
+			Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+				lDataAdapter.SelectCommand.CommandType = CommandType.Text
+				lDataAdapter.SelectCommand.Transaction = lTransaction
+				lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInvEnc)
+
+				Dim lDataTable As New DataTable()
+				lDataAdapter.Fill(lDataTable)
+
+				Dim vBeTrans_inv_detalle As New clsBeTrans_inv_ciclico_rfid
+
+				For Each dr As DataRow In lDataTable.Rows
+					vBeTrans_inv_detalle = New clsBeTrans_inv_ciclico_rfid
+					Cargar(vBeTrans_inv_detalle, dr)
+					lReturnList.Add(vBeTrans_inv_detalle)
+				Next
+
+			End Using
+
+			Return lReturnList
+
+		Catch ex As Exception
+			Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+			clsLnLog_error_wms.Agregar_Error(vMsgError)
+			Throw ex
+		End Try
+
+	End Function
+
+	Public Shared Function Actualizar_Regularizar_By_IdInventarioEnc(ByVal pIdInventarioEnc As Integer,
+																	 ByVal pRegularizar As Boolean,
+																	 Optional ByVal pConection As SqlConnection = Nothing,
+																	 Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Upd.Init("trans_inv_ciclico_rfid")
+			Upd.Add("regularizar", "@regularizar", DataType.Parametro)
+			Upd.Where("idinventarioenc=@idinventarioenc")
+
+			Dim sp As String = Upd.SQL()
+
+			Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection)
+				cmd.Transaction = pTransaction
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", pRegularizar))
+			cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
+
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+			cmd.Dispose()
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			Return rowsAffected
+
+		Catch ex As Exception
+			If lTransaction IsNot Nothing Then lTransaction.Rollback()
+			Throw ex
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If lTransaction IsNot Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function

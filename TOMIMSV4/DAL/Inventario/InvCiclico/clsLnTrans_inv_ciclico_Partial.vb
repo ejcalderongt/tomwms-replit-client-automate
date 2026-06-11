@@ -1,6 +1,8 @@
-﻿Imports System.Data.SqlClient
-Imports System.Configuration.ConfigurationManager
+﻿Imports System.Configuration.ConfigurationManager
+Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_inv_ciclico
 
@@ -8067,4 +8069,94 @@ Partial Public Class clsLnTrans_inv_ciclico
         End Try
 
     End Function
+
+    Public Shared Function Cerrar_Inventario_RFID(ByVal BeTransInvEnc As clsBeTrans_inv_enc,
+                                                  ByVal ListBeBarra_epc As List(Of clsBeTrans_inv_ciclico_rfid),
+                                                  ByVal Usuario As clsBeUsuario,
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As Boolean
+
+
+
+
+        Dim ListStock As New List(Of clsBeI_nav_barras_rfid_stock)
+        Dim objStockHist As New clsBeI_nav_barras_rfid_stock_his
+        Dim vCantidadHist As Integer = 0
+        Dim lIdStocksAEliminar As New List(Of Integer)
+
+        Try
+
+
+            BeTransInvEnc.Regularizado = True
+            BeTransInvEnc.Estado = "Finalizado"
+            BeTransInvEnc.Hora_fin = Now
+            BeTransInvEnc.Activo = True
+            BeTransInvEnc.User_mod = Usuario.IdUsuario
+
+            clsLnTrans_inv_enc.Actualizar(BeTransInvEnc, lConnection, lTransaction)
+
+
+            '#GT03062026: insertar historico y eliminar stock.
+
+            If ListBeBarra_epc IsNot Nothing AndAlso ListBeBarra_epc.Count > 0 Then
+
+                For Each pBeBarra_EPC As clsBeTrans_inv_ciclico_rfid In ListBeBarra_epc.OrderBy(Function(x) x.IdProductoBodega)
+
+                    Dim BeStockRFID As New clsBeI_nav_barras_rfid_stock
+
+                    BeStockRFID.Barra_epc = pBeBarra_EPC.SSCC
+
+                    clsLnI_nav_barras_rfid_stock.GetSingle_By_Barra_Epc(BeStockRFID, lConnection, lTransaction)
+
+                    If BeStockRFID IsNot Nothing Then
+
+                        'clsPublic.CopyObject(pBeBarra_EPC, objStockHist)
+                        '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                        'objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                        'objStockHist.IdNuevoStock = pBeBarra_EPC.IdStock
+                        'objStockHist.IdPedidoEnc = pBeStock.IdPedidoEnc
+                        'objStockHist.IdPickingEnc = pBeStock.IdPickingEnc
+                        'objStockHist.IdUbicacion_anterior = BeStock.IdUbicacion
+                        'objStockHist.IdUbicacion = pBeStock.IdUbicacion
+
+                        objStockHist.IdRfidStock = BeStockRFID.IdRfidStock
+                        objStockHist.IdBodega = BeStockRFID.IdBodega
+                        objStockHist.IdProductoBodega = BeStockRFID.IdProductoBodega
+                        objStockHist.Barra_epc = BeStockRFID.Barra_epc
+                        objStockHist.Lote = BeStockRFID.Lote
+                        objStockHist.IdPedidoEnc = 0
+                        objStockHist.IdOrdenCompraEnc = 0
+                        objStockHist.User_agr = Usuario.IdUsuario
+                        objStockHist.User_mod = Usuario.IdUsuario
+                        objStockHist.Fec_agr = Now
+                        objStockHist.Fec_mod = Now
+                        objStockHist.Cantidad = 1
+                        objStockHist.Motivo = "WMS-AJINRFID"
+
+                        clsLnI_nav_barras_rfid_stock_his.Insertar(objStockHist, lConnection, lTransaction)
+                        'clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                        '#GT04062026: solo elimina del stock la barra_epc
+                        clsLnI_nav_barras_rfid_stock.Eliminar_Stock_Salida(BeStockRFID)
+
+                    End If
+
+                Next
+
+            End If
+
+            clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc,
+                                                 6,
+                                                 4,
+                                                 lConnection,
+                                                 lTransaction)
+
+
+            Return True
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
 End Class

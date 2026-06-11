@@ -1033,7 +1033,7 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
-    '#GT06032026: listar barras_pallet con impreso=1
+    '#GT06032026: listar barras_pallet con impreso=0 sin tran
     Public Shared Function Get_All_By_EstadoImpresion(ByVal Impreso As Boolean) As List(Of clsBeI_nav_barras_pallet)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -1042,7 +1042,7 @@ Public Class clsLnI_nav_barras_pallet
 
         Try
 
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Dim sp As String = "SELECT IdPallet,
             Codigo,
@@ -1201,31 +1201,61 @@ Public Class clsLnI_nav_barras_pallet
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
 
             Const spActivo As String =
-                "SELECT p.* " &
-                "FROM I_nav_barras_pallet p " &
-                "WHERE p.codigo_barra = @codigo_barra " &
-                "AND EXISTS ( " &
-                "    SELECT 1 " &
-                "    FROM i_nav_barras_rfid_det d " &
-                "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
-                "    WHERE d.Barra_epc = p.codigo_barra " &
-                "      AND e.Tipo = 'ING' " &
-                ") " &
-                "AND NOT EXISTS ( " &
-                "    SELECT 1 " &
-                "    FROM i_nav_barras_rfid_det d " &
-                "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
-                "    WHERE d.Barra_epc = p.codigo_barra " &
-                "      AND e.Tipo = 'SAL' " &
-                ")"
+                                    "SELECT p.* " &
+                                    "FROM I_nav_barras_pallet p " &
+                                    "WHERE p.codigo_barra = @codigo_barra " &
+                                    "AND EXISTS ( " &
+                                    "    SELECT 1 " &
+                                    "    FROM i_nav_barras_rfid_det d " &
+                                    "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                                    "    INNER JOIN i_nav_barras_rfid_tipo_mov tm ON tm.IdRfidTipoMov = e.Tipo " &
+                                    "    WHERE d.Barra_epc = p.codigo_barra " &
+                                    "      AND tm.IdRfidTipoMov = 1 " &
+                                    ") " &
+                                    "AND NOT EXISTS ( " &
+                                    "    SELECT 1 " &
+                                    "    FROM i_nav_barras_rfid_det d " &
+                                    "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                                    "    INNER JOIN i_nav_barras_rfid_tipo_mov tm ON tm.IdRfidTipoMov = e.Tipo " &
+                                    "    WHERE d.Barra_epc = p.codigo_barra " &
+                                    "      AND tm.IdRfidTipoMov = 2 " &
+                                    ")"
 
             Const spYaSalio As String =
                 "SELECT TOP 1 1 " &
                 "FROM I_nav_barras_pallet p " &
                 "INNER JOIN i_nav_barras_rfid_det d ON d.Barra_epc = p.codigo_barra " &
                 "INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+                "INNER JOIN i_nav_barras_rfid_tipo_mov tm ON tm.IdRfidTipoMov = e.Tipo " &
                 "WHERE p.codigo_barra = @codigo_barra " &
-                "  AND e.Tipo = 'SAL' "
+                "  AND tm.IdRfidTipoMov = 2"
+
+            'Const spActivo As String =
+            '    "SELECT p.* " &
+            '    "FROM I_nav_barras_pallet p " &
+            '    "WHERE p.codigo_barra = @codigo_barra " &
+            '    "AND EXISTS ( " &
+            '    "    SELECT 1 " &
+            '    "    FROM i_nav_barras_rfid_det d " &
+            '    "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+            '    "    WHERE d.Barra_epc = p.codigo_barra " &
+            '    "      AND e.Tipo = 'ING' " &
+            '    ") " &
+            '    "AND NOT EXISTS ( " &
+            '    "    SELECT 1 " &
+            '    "    FROM i_nav_barras_rfid_det d " &
+            '    "    INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+            '    "    WHERE d.Barra_epc = p.codigo_barra " &
+            '    "      AND e.Tipo = 'SAL' " &
+            '    ")"
+
+            'Const spYaSalio As String =
+            '    "SELECT TOP 1 1 " &
+            '    "FROM I_nav_barras_pallet p " &
+            '    "INNER JOIN i_nav_barras_rfid_det d ON d.Barra_epc = p.codigo_barra " &
+            '    "INNER JOIN i_nav_barras_rfid_enc e ON e.IdRFIDEnc = d.IdRFIDEnc " &
+            '    "WHERE p.codigo_barra = @codigo_barra " &
+            '    "  AND e.Tipo = 'SAL' "
 
             For Each pCodigoBarraPallet As String In pListaCodigoBarraPallet
 
@@ -1517,5 +1547,76 @@ Public Class clsLnI_nav_barras_pallet
         End Try
 
     End Function
+
+    '#GT08062026: listar barras_pallet con impreso=0 con tran
+    Public Shared Function Get_All_By_EstadoImpresion(ByVal Impreso As Boolean,
+                                                     lConnection As SqlConnection,
+                                                     ltransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
+
+        Get_All_By_EstadoImpresion = Nothing
+
+        Try
+
+            Dim sp As String = "SELECT IdPallet,
+        Codigo,
+        Nombre,
+        Camas_Por_Tarima,
+        Cajas_Por_Cama,
+        Cantidad_Presentacion,
+        UM_Producto,
+        Lote,
+        Fecha_Agregado,
+        Fecha_Ingreso,
+        Fecha_Vence,
+        Fecha_Produccion,
+        Activo,
+        Recibido,
+        IdRecepcion,
+        Bodega_Origen,
+        Bodega_Destino,
+        Codigo_Barra,
+        Cantidad_UMP,
+        Lote_Numerico,
+        fecha_procesado_erp,
+        sscc,
+        gtin,
+        Impreso,
+        fecha_procesado_erp,
+        IdOrdenCompraEnc,
+        IdOrdenCompraDet,
+        Peso
+        FROM I_nav_barras_pallet WHERE ISNULL(Impreso, 0)=@Impreso "
+
+            Using dad As New SqlDataAdapter(sp, lConnection)
+
+                dad.SelectCommand.CommandType = CommandType.Text
+                dad.SelectCommand.Transaction = ltransaction
+                dad.SelectCommand.Parameters.Add(New SqlParameter("@Impreso", Impreso))
+
+                Dim dt As New DataTable
+                dad.Fill(dt)
+
+                Dim vBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                If dt.Rows.Count > 0 Then
+
+                    Get_All_By_EstadoImpresion = New List(Of clsBeI_nav_barras_pallet)
+
+                    For Each dr As DataRow In dt.Rows
+                        vBeI_nav_barras_pallet = New clsBeI_nav_barras_pallet
+                        Cargar(vBeI_nav_barras_pallet, dr)
+                        Get_All_By_EstadoImpresion.Add(vBeI_nav_barras_pallet)
+                    Next
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+
 
 End Class

@@ -582,6 +582,15 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 					If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
 
+						Dim pCodigoProducto = clsLnI_nav_barras_pallet.Get_CodigoProducto_By_Barra_EPC(detalle.Barra_epc, lConnection, lTransaction)
+						Dim pIdProducto = clsLnProducto.Get_IdProducto_By_Codigo(pCodigoProducto, lConnection, lTransaction)
+						Dim pIdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pIdProducto,
+																													pEncabezado.IdBodega,
+																													lConnection,
+																													lTransaction)
+
+
+
 						'#GT26052026: insertar el movimiento
 						Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
 						pMovimientoRFID.IdRFIDEnc = pEncabezado.IdRFIDEnc
@@ -590,7 +599,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 						pMovimientoRFID.Barra_epc = detalle.Barra_epc
 						pMovimientoRFID.Tagid = ""
 						pMovimientoRFID.IdBodega = pEncabezado.IdBodega
-						pMovimientoRFID.IdProductoBodega = 0
+						pMovimientoRFID.IdProductoBodega = pIdProductoBodega
 						pMovimientoRFID.Lote = ""
 						pMovimientoRFID.Cantidad = 1
 						pMovimientoRFID.User_agr = 1
@@ -603,7 +612,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 							Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
 							pStockRFID.Barra_epc = detalle.Barra_epc
 							pStockRFID.IdBodega = pEncabezado.IdBodega
-							pStockRFID.IdProductoBodega = 0
+							pStockRFID.IdProductoBodega = pIdProductoBodega
 							pStockRFID.Cantidad = 1
 							pStockRFID.IdRFIDEncOrigen = pEncabezado.IdRFIDEnc
 							pStockRFID.User_agr = detalle.IdOperador
@@ -692,6 +701,14 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 						If clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, lTransaction) Then
 
+							Dim pCodigoProducto = clsLnI_nav_barras_pallet.Get_CodigoProducto_By_Barra_EPC(detalle.Barra_epc, lConnection, lTransaction)
+							Dim pIdProducto = clsLnProducto.Get_IdProducto_By_Codigo(pCodigoProducto, lConnection, lTransaction)
+							Dim pIdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pIdProducto,
+																													pEncabezado.IdBodega,
+																													lConnection,
+																													lTransaction)
+
+
 							'#GT26052026: insertar el movimiento
 							Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
 							pMovimientoRFID.IdRFIDEnc = pIdRfidEnc
@@ -700,7 +717,7 @@ Public Class clsLnI_nav_barras_rfid_enc
 							pMovimientoRFID.Barra_epc = detalle.Barra_epc
 							pMovimientoRFID.Tagid = ""
 							pMovimientoRFID.IdBodega = pEncabezado.IdBodega
-							pMovimientoRFID.IdProductoBodega = 0
+							pMovimientoRFID.IdProductoBodega = pIdProductoBodega
 							pMovimientoRFID.Lote = ""
 							pMovimientoRFID.Cantidad = 1
 							pMovimientoRFID.User_agr = detalle.IdOperador
@@ -713,10 +730,11 @@ Public Class clsLnI_nav_barras_rfid_enc
 								Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
 								pStockRFID.Barra_epc = detalle.Barra_epc
 								pStockRFID.IdBodega = pEncabezado.IdBodega
-								pStockRFID.IdProductoBodega = 0
+								pStockRFID.IdProductoBodega = pIdProductoBodega
 								pStockRFID.Cantidad = 1
 								pStockRFID.IdRFIDEncOrigen = pIdRfidEnc
 								pStockRFID.User_agr = detalle.IdOperador
+								pStockRFID.Activo = 1
 								clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, lTransaction)
 
 							ElseIf pEncabezado.Tipo = 2 Then
@@ -1221,6 +1239,165 @@ Public Class clsLnI_nav_barras_rfid_enc
 
 		Catch ex As Exception
 			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+		End Try
+
+	End Function
+
+	'#GT05062026: Guardado cuando es proceso BOF por inserción barra desde SAVONA.
+	Public Shared Function Barra_AutoGuardado_RFID(ByVal pEncabezado As clsBeI_nav_barras_rfid_enc,
+											   lConnection As SqlConnection,
+											   ltransaction As SqlTransaction) As Boolean
+
+		Barra_AutoGuardado_RFID = False
+
+		Try
+
+			'If lConnection Is Nothing Then
+			'	clsLnLog_error_wms.Agregar_Error("AUTO_RFID: La conexión SQL no puede ser nula.")
+			'	Return False
+			'End If
+
+			'If ltransaction Is Nothing Then
+			'	clsLnLog_error_wms.Agregar_Error("AUTO_RFID: La transacción SQL no puede ser nula.")
+			'	Return False
+			'End If
+
+			If pEncabezado Is Nothing Then
+				clsLnLog_error_wms.Agregar_Error("AUTO_RFID: El encabezado RFID no puede ser nulo.")
+				Return False
+			End If
+
+			If pEncabezado.Detalle Is Nothing OrElse pEncabezado.Detalle.Count = 0 Then
+				clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No existen barras RFID para procesar.")
+				Return False
+			End If
+
+			If pEncabezado.IdBodega <= 0 Then
+				clsLnLog_error_wms.Agregar_Error("AUTO_RFID: La bodega del encabezado RFID no es válida.")
+				Return False
+			End If
+
+			If pEncabezado.Tipo <> 1 Then
+				clsLnLog_error_wms.Agregar_Error("AUTO_RFID: El tipo de transacción RFID no es válido para auto ingreso.")
+				Return False
+			End If
+
+			pEncabezado.IdRFIDEnc = Insertar(pEncabezado, lConnection, ltransaction)
+
+			If pEncabezado.IdRFIDEnc <= 0 Then
+				clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se pudo insertar el encabezado RFID.")
+				Return False
+			End If
+
+			For Each detalle As clsBeI_nav_barras_rfid_det In pEncabezado.Detalle
+
+				If detalle Is Nothing Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: Existe un detalle RFID nulo.")
+					Return False
+				End If
+
+				If String.IsNullOrWhiteSpace(detalle.Barra_epc) Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: Existe una barra EPC vacía.")
+					Return False
+				End If
+
+				detalle.IdRFIDEnc = pEncabezado.IdRFIDEnc
+
+				If clsLnI_nav_barras_rfid_det.Exist_By_EPC(detalle.Barra_epc,
+															pEncabezado.Tipo,
+															lConnection,
+															ltransaction) Then
+
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: La barra EPC ya está registrada para este tipo de operación: " & detalle.Barra_epc)
+					Return False
+				End If
+
+				If Not clsLnI_nav_barras_rfid_det.Insertar_Detalle_RFID(detalle, lConnection, ltransaction) Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se pudo insertar el detalle RFID para la barra EPC: " & detalle.Barra_epc)
+					Return False
+				End If
+
+				Dim pCodigoProducto As String = clsLnI_nav_barras_pallet.Get_CodigoProducto_By_Barra_EPC(detalle.Barra_epc,
+																										lConnection,
+																										ltransaction)
+
+				If String.IsNullOrWhiteSpace(pCodigoProducto) Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se encontró código de producto para la barra EPC: " & detalle.Barra_epc)
+					Return False
+				End If
+
+				Dim pIdProducto As Integer = clsLnProducto.Get_IdProducto_By_Codigo(pCodigoProducto,
+																					lConnection,
+																					ltransaction)
+
+				If pIdProducto <= 0 Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se encontró IdProducto para el código: " & pCodigoProducto)
+					Return False
+				End If
+
+				Dim pIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pIdProducto,
+																													 pEncabezado.IdBodega,
+																													 lConnection,
+																													 ltransaction)
+
+				If pIdProductoBodega <= 0 Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se encontró IdProductoBodega para producto/bodega. Producto: " &
+												 pCodigoProducto &
+												 " Bodega: " &
+												 pEncabezado.IdBodega.ToString())
+					Return False
+				End If
+
+				Dim pMovimientoRFID As New clsBeI_nav_barras_rfid_mov
+				pMovimientoRFID.IdRFIDEnc = pEncabezado.IdRFIDEnc
+				pMovimientoRFID.IdRfidTipoMov = 1
+				pMovimientoRFID.Barra_epc = detalle.Barra_epc
+				pMovimientoRFID.Tagid = ""
+				pMovimientoRFID.IdBodega = pEncabezado.IdBodega
+				pMovimientoRFID.IdProductoBodega = pIdProductoBodega
+				pMovimientoRFID.Lote = ""
+				pMovimientoRFID.Cantidad = 1
+				pMovimientoRFID.User_agr = detalle.IdOperador
+
+				If Not clsLnI_nav_barras_rfid_mov.Insertar(pMovimientoRFID, lConnection, ltransaction) Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se pudo insertar el movimiento RFID para la barra EPC: " & detalle.Barra_epc)
+					Return False
+				End If
+
+				Dim pStockRFID As New clsBeI_nav_barras_rfid_stock
+				pStockRFID.Barra_epc = detalle.Barra_epc
+				pStockRFID.IdBodega = pEncabezado.IdBodega
+				pStockRFID.IdProductoBodega = pIdProductoBodega
+				pStockRFID.Cantidad = 1
+				pStockRFID.IdRFIDEncOrigen = pEncabezado.IdRFIDEnc
+				pStockRFID.User_agr = detalle.IdOperador
+				pStockRFID.Activo = 1
+
+				If Not clsLnI_nav_barras_rfid_stock.Insertar(pStockRFID, lConnection, ltransaction) Then
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se pudo insertar el stock RFID para la barra EPC: " & detalle.Barra_epc)
+					Return False
+				End If
+
+				Dim BeBarra_Pallet As New clsBeI_nav_barras_pallet
+				BeBarra_Pallet.Codigo_barra = detalle.Barra_epc
+				BeBarra_Pallet.Recibido = 1
+
+				If Not clsLnI_nav_barras_pallet.Actualiza_Recibido_BarraPallet_RFID(BeBarra_Pallet,
+																				 lConnection,
+																				 ltransaction) Then
+
+					clsLnLog_error_wms.Agregar_Error("AUTO_RFID: No se pudo actualizar el estado recibido de la barra pallet: " & detalle.Barra_epc)
+					Return False
+				End If
+
+			Next
+
+			Barra_AutoGuardado_RFID = True
+			Return True
+
+		Catch ex As Exception
+			clsLnLog_error_wms.Agregar_Error("AUTO_RFID: " & ex.Message)
+			Return False
 		End Try
 
 	End Function
