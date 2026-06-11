@@ -1,6 +1,8 @@
 ﻿Imports System.IO
+Imports System.Diagnostics
 Imports System.Net.Http
 Imports System.Reflection
+Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Timers
@@ -24,15 +26,9 @@ Public Class frmMenu
 
     Private pHorario_Ejecucion_Historico As TimeSpan
 
-    Private WithEvents backgroundWorker As New System.ComponentModel.BackgroundWorker
+    Private WithEvents backgroundWorker As New ComponentModel.BackgroundWorker
 
     Public Property ConexionActivaWebServiceTOMWMS As Boolean = False
-
-    '#GT08062026: backgroundowkrer y timer para ejecutar autoimpresión rfid desde barras_pallet
-    Private WithEvents bgwAutoImpresionRFID As New System.ComponentModel.BackgroundWorker
-    Private WithEvents tmrAutoImpresionRFID As New System.Windows.Forms.Timer
-    Private _cerrandoFormulario As Boolean = False
-
 
     Public Sub New()
 
@@ -194,7 +190,8 @@ Public Class frmMenu
                 backgroundWorker.RunWorkerAsync()
             End If
 
-            InicializarAutoImpresionRFID()
+            '#EJC20260603_SYNC_REQUEST_WORKER: Inicia worker central de cola SAP.
+            Iniciar_BackWorker_RunSync()
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -262,6 +259,10 @@ Public Class frmMenu
                 End If
             End If
 
+            '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+            'Inicializa marcador global de bodega para que formularios abiertos detecten cambio.
+            AP.IdBodegaGlobalAppChange = AP.IdBodega
+
             'CargarToolTipsNotificaciones()
 
         Catch ex As Exception
@@ -271,64 +272,6 @@ Public Class frmMenu
         End Try
 
     End Sub
-
-    Private Sub InicializarAutoImpresionRFID()
-
-        Try
-            bgwAutoImpresionRFID.WorkerReportsProgress = False
-            bgwAutoImpresionRFID.WorkerSupportsCancellation = False
-
-            tmrAutoImpresionRFID.Interval = 3000 '3 segundos
-            tmrAutoImpresionRFID.Enabled = True
-            tmrAutoImpresionRFID.Start()
-
-        Catch ex As Exception
-            'Log silencioso
-        End Try
-
-    End Sub
-
-    Private Sub tmrAutoImpresionRFID_Tick(sender As Object, e As EventArgs) Handles tmrAutoImpresionRFID.Tick
-
-        Try
-            If _cerrandoFormulario Then
-                Exit Sub
-            End If
-
-            If Not bgwAutoImpresionRFID.IsBusy Then
-                bgwAutoImpresionRFID.RunWorkerAsync()
-            End If
-
-        Catch ex As Exception
-            'Log silencioso
-        End Try
-
-    End Sub
-
-    Private Sub bgwAutoImpresionRFID_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bgwAutoImpresionRFID.DoWork
-
-        Try
-            EjecutarAutoImpresionRFID()
-
-        Catch ex As Exception
-            'Log silencioso
-        End Try
-
-    End Sub
-
-    Private Sub bgwAutoImpresionRFID_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles bgwAutoImpresionRFID.RunWorkerCompleted
-
-        Try
-            If e.Error IsNot Nothing Then
-                'Log silencioso
-            End If
-
-        Catch ex As Exception
-            'Log silencioso
-        End Try
-
-    End Sub
-
 
     Private Sub backgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles backgroundWorker.DoWork
 
@@ -343,11 +286,6 @@ Public Class frmMenu
             If e.Result Then
                 ConexionActivaWebServiceTOMWMS = True
             End If
-
-            ' Esperar un tiempo antes de la próxima verificación (por ejemplo, 10 segundos)
-            'Thread.Sleep(10000)
-
-            'End While
 
         Catch ex As Exception
 
@@ -416,6 +354,13 @@ Public Class frmMenu
             Cierra_Proceso_Impresion()
         Catch ex As Exception
             MsgBox(ex.Message)
+        End Try
+
+        Try
+            '#EJC20260603_SYNC_REQUEST_WORKER: Detiene worker al cerrar menu.
+            Detener_BackWorker_RunSync()
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
         Try
@@ -3463,6 +3408,7 @@ Public Class frmMenu
                     AP.IdBodega = vIdBodega
                     AP.NomBodega = AP.Bodega.Codigo & " - " & AP.Bodega.Nombre
                     AP.IdConfiguracionInterface = clsLnI_nav_config_enc.Get_IdConfiguracion(AP.IdBodega, AP.IdEmpresa)
+                    AP.IdBodegaGlobalAppChange = AP.IdBodega
 
                     vCaptionBodega = "Bodega: " & " " & AP.NomBodega
                     lblBodega.Caption = vCaptionBodega
@@ -3491,7 +3437,7 @@ Public Class frmMenu
                     Dim t1 As Thread = New Thread(AddressOf Actualiza_Ultimo_Ingreso)
                     t1.Start()
 
-                    Cerrar_Abrir_Lista_Orden_Compra(Me)
+                    AplicarCambioBodegaEnFormasAbiertas(Me)
 
                 Else
                     XtraMessageBox.Show("Usuario no válido en la bodega seleccionada!", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -3510,6 +3456,115 @@ Public Class frmMenu
         End Try
 
     End Sub
+
+    '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+    'Reaplica contexto de bodega en formularios abiertos:
+    '- cierra formularios transaccionales que dependen de la bodega cargada,
+    '- reabre listas principales que estaban visibles.
+    Private Shared Sub AplicarCambioBodegaEnFormasAbiertas(ByVal padre As frmMenu)
+
+        Try
+            Dim abrirPedidoList As Boolean = False
+            Dim abrirOrdenCompraList As Boolean = False
+            Dim abrirRecepcionList As Boolean = False
+            Dim abrirPickingList As Boolean = False
+            Dim abrirMonitorPrincipal02 As Boolean = False
+
+            Dim formulariosAbiertos As New List(Of Form)
+            For Each frm As Form In My.Application.OpenForms
+                formulariosAbiertos.Add(frm)
+            Next
+
+            For Each frm In formulariosAbiertos
+                If frm Is Nothing OrElse frm.IsDisposed Then Continue For
+                If frm.Name = padre.Name Then Continue For
+
+                Select Case frm.Name
+                    Case "frmPedido_List"
+                        abrirPedidoList = True
+                    Case "frmOrdenCompra_List"
+                        abrirOrdenCompraList = True
+                    Case "frmRecepcion_List"
+                        abrirRecepcionList = True
+                    Case "frmPicking_List"
+                        abrirPickingList = True
+                    Case "frmPrincipal02"
+                        abrirMonitorPrincipal02 = True
+                End Select
+            Next
+
+            For Each frm In formulariosAbiertos
+                If frm Is Nothing OrElse frm.IsDisposed Then Continue For
+                If frm.Name = padre.Name Then Continue For
+
+                If EsFormularioDependienteDeBodega(frm.Name) Then
+                    Try
+                        frm.Close()
+                    Catch
+                    End Try
+                End If
+            Next
+
+            If abrirPedidoList Then
+                With frmPedido_List
+                    .Modo = frmPedido_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirOrdenCompraList Then
+                With frmOrdenCompra_List
+                    .Modo = frmOrdenCompra_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirRecepcionList Then
+                With frmRecepcion_List
+                    .Modo = frmRecepcion_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirPickingList Then
+                With frmPicking_List
+                    .Modo = frmPicking_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+            'Si el monitor estaba abierto, reabrirlo para que recargue indicadores con nueva bodega.
+            If abrirMonitorPrincipal02 Then
+                padre.Mostrar_Monitor()
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
+
+    Private Shared Function EsFormularioDependienteDeBodega(ByVal pNombreFormulario As String) As Boolean
+        If String.IsNullOrWhiteSpace(pNombreFormulario) Then Return False
+
+        Select Case pNombreFormulario
+            Case "frmPedido_List", "frmOrdenCompra_List", "frmRecepcion_List", "frmPicking_List",
+                 "frmPedido", "frmOrdenCompra", "frmRecepcion", "frmPicking", "frmDespacho"
+                Return True
+        End Select
+
+        Return False
+    End Function
 
     Public Shared Sub Cerrar_Abrir_Lista_Orden_Compra(ByVal padre As frmMenu)
 
@@ -5326,20 +5381,6 @@ Public Class frmMenu
                        MessageBoxIcon.Question) = DialogResult.No Then
             e.Cancel = True
         End If
-
-        Try
-            _cerrandoFormulario = True
-
-            If tmrAutoImpresionRFID IsNot Nothing Then
-                tmrAutoImpresionRFID.Stop()
-                tmrAutoImpresionRFID.Enabled = False
-            End If
-
-        Catch ex As Exception
-            'Log silencioso
-        End Try
-
-
     End Sub
 
     Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
@@ -5791,39 +5832,237 @@ Public Class frmMenu
 
     End Sub
 
-    Private Sub EjecutarAutoImpresionRFID()
+    '#EJC20260603_SYNC_REQUEST_WORKER
+    ' ============================================================================
+    ' Worker central de sincronizacion SAP basado en tabla i_nav_sync_request.
+    ' Regla: los formularios operativos no ejecutan el EXE; solo encolan solicitud.
+    ' El menu principal procesa la cola en background mientras WMS este activo.
+    ' ============================================================================
+    Private Const SYNC_REQUEST_POLL_MS_SYNC_SAP As Integer = 5000
+    Private Const SYNC_REQUEST_PROCESS_TIMEOUT_MS As Integer = 15 * 60 * 1000
+
+    Private Sub Iniciar_BackWorker_RunSync()
         Try
+            If BackWorkerRunSync Is Nothing Then Exit Sub
 
+            BackWorkerRunSync.WorkerSupportsCancellation = True
+            BackWorkerRunSync.WorkerReportsProgress = False
 
-
-            Dim printerName As String = ServicioAutoImpresionRFID.Cargar_Impresora_Zebra()
-
-            If String.IsNullOrWhiteSpace(printerName) Then
-
-                clsLnLog_error_wms.Agregar_Error("Printer: No hay una impresora RFID encendida/configurada.")
-
-                Exit Sub
+            If Not BackWorkerRunSync.IsBusy Then
+                BackWorkerRunSync.RunWorkerAsync()
             End If
-
-            If Not ServicioAutoImpresionRFID.RawPrinterHelper.CanOpenPrinter(printerName) Then
-
-                Dim mensaje = "Printer: La impresora RFID no está conectada o no se puede abrir la cola: " & printerName
-                clsLnLog_error_wms.Agregar_Error(mensaje)
-
-                Exit Sub
-            End If
-
-            Dim servicio As New ServicioAutoImpresionRFID(AP.Empresa)
-
-            servicio.Es_Demo = False
-            servicio.ProcesarAutoImpresion(printerName, 1)
 
         Catch ex As Exception
-            XtraMessageBox.Show(ex.Message,
-                            "Autoimpresión RFID",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning)
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
     End Sub
+
+    Private Sub Detener_BackWorker_RunSync()
+        Try
+            If BackWorkerRunSync Is Nothing Then Exit Sub
+
+            If BackWorkerRunSync.IsBusy AndAlso BackWorkerRunSync.WorkerSupportsCancellation Then
+                BackWorkerRunSync.CancelAsync()
+            End If
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Sub
+
+    Private Sub BackWorkerRunSync_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackWorkerRunSync.DoWork
+
+        Dim bw As ComponentModel.BackgroundWorker = TryCast(sender, ComponentModel.BackgroundWorker)
+
+        Do While bw IsNot Nothing AndAlso Not bw.CancellationPending
+
+            Dim vReq As clsBeI_nav_sync_request = Nothing
+
+            Try
+                vReq = clsLnI_nav_sync_request.Tomar_Siguiente_Pendiente(AP.HostName)
+
+                If bw.CancellationPending Then Exit Do
+
+                If vReq Is Nothing Then
+                    Thread.Sleep(SYNC_REQUEST_POLL_MS_SYNC_SAP)
+                    Continue Do
+                End If
+
+                Procesar_Solicitud_Sync_Request(vReq)
+
+            Catch ex As Exception
+                Try
+                    If vReq IsNot Nothing AndAlso vReq.IdSyncRequest > 0 Then
+                        clsLnI_nav_sync_request.Marcar_Error(vReq.IdSyncRequest, Strings.Left(ex.Message, 500))
+                    End If
+                Catch
+                End Try
+
+                clsLnLog_error_wms.Agregar_Error(String.Format("BackWorkerRunSync_DoWork {0}", ex.Message))
+                Thread.Sleep(SYNC_REQUEST_POLL_MS_SYNC_SAP)
+            End Try
+
+        Loop
+
+        e.Cancel = (bw IsNot Nothing AndAlso bw.CancellationPending)
+
+    End Sub
+
+    Private Sub BackWorkerRunSync_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BackWorkerRunSync.RunWorkerCompleted
+        Try
+            If e.Error IsNot Nothing Then
+                clsLnLog_error_wms.Agregar_Error(String.Format("BackWorkerRunSync_RunWorkerCompleted {0}", e.Error.Message))
+            End If
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Sub
+
+    Private Sub Procesar_Solicitud_Sync_Request(ByVal pReq As clsBeI_nav_sync_request)
+
+        Try
+            If pReq Is Nothing OrElse pReq.IdSyncRequest <= 0 Then Exit Sub
+
+            If pReq.IdNavConfigEnc <= 0 Then
+                clsLnI_nav_sync_request.Marcar_Ignorado(pReq.IdSyncRequest, "Sin idnavconfigenc en solicitud.")
+                Exit Sub
+            End If
+
+            Dim beConfig As clsBeI_nav_config_enc = clsLnI_nav_config_enc.GetSingle(pReq.IdNavConfigEnc)
+            If beConfig Is Nothing Then
+                clsLnI_nav_sync_request.Marcar_Ignorado(pReq.IdSyncRequest, String.Format("No existe configuracion id {0}.", pReq.IdNavConfigEnc))
+                Exit Sub
+            End If
+
+            If String.IsNullOrWhiteSpace(beConfig.Nombre_ejecutable) Then
+                clsLnI_nav_sync_request.Marcar_Ignorado(pReq.IdSyncRequest, "Configuracion sin nombre_ejecutable.")
+                Exit Sub
+            End If
+
+            Dim vExePath As String = Path.Combine(CurDir(), beConfig.Nombre_ejecutable)
+            If Not File.Exists(vExePath) Then
+                clsLnI_nav_sync_request.Marcar_Error(pReq.IdSyncRequest, String.Format("No existe ejecutable: {0}", vExePath))
+                Exit Sub
+            End If
+
+            Dim vArgs As String = Construir_Argumentos_Sync_Request(pReq)
+            Dim vExitCode As Integer = 0
+            Dim vOutput As String = ""
+            Dim vError As String = ""
+            Dim vOk As Boolean = Ejecutar_Proceso_Sync_Request(vExePath, vArgs, vExitCode, vOutput, vError)
+
+            If vOk Then
+                clsLnI_nav_sync_request.Marcar_Finalizado(pReq.IdSyncRequest, String.Format("OK ExitCode={0}.", vExitCode))
+            Else
+                Dim vMsg As String = String.Format("ERROR ExitCode={0}. {1}", vExitCode, If(String.IsNullOrWhiteSpace(vError), vOutput, vError))
+                clsLnI_nav_sync_request.Marcar_Error(pReq.IdSyncRequest, Strings.Left(vMsg, 500))
+            End If
+
+        Catch ex As Exception
+            If pReq IsNot Nothing AndAlso pReq.IdSyncRequest > 0 Then
+                clsLnI_nav_sync_request.Marcar_Error(pReq.IdSyncRequest, Strings.Left(ex.Message, 500))
+            End If
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+
+    End Sub
+
+    Private Function Construir_Argumentos_Sync_Request(ByVal pReq As clsBeI_nav_sync_request) As String
+
+        Dim vNoDocEntry As Integer = Extraer_Entero_Parametro(pReq.Parametros, "NoDocEntrySAP", "noDocEntrySAP", "docEntry", "idPedidoEnc", "idDespachoEnc")
+        Dim vEstadoEnviado As Integer = Extraer_Entero_Parametro(pReq.Parametros, "EstadoEnviadoSAP", "estadoEnviadoSAP", "estado")
+
+        Dim vNombreInstancia As String = ""
+        Try
+            vNombreInstancia = clsBD.Instancia.NombreInstancia
+        Catch
+            vNombreInstancia = ""
+        End Try
+
+        Return String.Format("{0}-{1}-{2}-{3}-{4}-{5}-{6}",
+                             pReq.Tipo_Interface,
+                             pReq.IdNavConfigEnc,
+                             gIndiceInstancia,
+                             pReq.IdUsuario,
+                             vNoDocEntry,
+                             vEstadoEnviado,
+                             vNombreInstancia)
+
+    End Function
+
+    Private Function Extraer_Entero_Parametro(ByVal pParametros As String, ParamArray pKeys() As String) As Integer
+
+        Try
+            If String.IsNullOrWhiteSpace(pParametros) OrElse pKeys Is Nothing OrElse pKeys.Length = 0 Then Return 0
+
+            For Each k As String In pKeys
+                If String.IsNullOrWhiteSpace(k) Then Continue For
+
+                Dim ptn As String = """" & Regex.Escape(k) & """" & "\s*:\s*(-?\d+)"
+                Dim m As Match = Regex.Match(pParametros, ptn, RegexOptions.IgnoreCase)
+
+                If m.Success Then
+                    Dim v As Integer = 0
+                    If Integer.TryParse(m.Groups(1).Value, v) Then Return v
+                End If
+            Next
+
+            Dim g As Match = Regex.Match(pParametros, "(-?\d+)")
+            If g.Success Then
+                Dim v As Integer = 0
+                If Integer.TryParse(g.Groups(1).Value, v) Then Return v
+            End If
+
+        Catch
+        End Try
+
+        Return 0
+
+    End Function
+
+    Private Function Ejecutar_Proceso_Sync_Request(ByVal pExePath As String,
+                                                   ByVal pArguments As String,
+                                                   ByRef pExitCode As Integer,
+                                                   ByRef pStdOut As String,
+                                                   ByRef pStdErr As String) As Boolean
+
+        Dim p As Process = Nothing
+
+        Try
+            Dim psi As New ProcessStartInfo With {
+                .FileName = pExePath,
+                .Arguments = pArguments,
+                .UseShellExecute = False,
+                .CreateNoWindow = True,
+                .RedirectStandardOutput = True,
+                .RedirectStandardError = True,
+                .WorkingDirectory = Path.GetDirectoryName(pExePath)
+            }
+
+            p = New Process With {.StartInfo = psi}
+            p.Start()
+
+            If Not p.WaitForExit(SYNC_REQUEST_PROCESS_TIMEOUT_MS) Then
+                Try : p.Kill() : Catch : End Try
+                pExitCode = -1
+                pStdErr = "Timeout al ejecutar interface."
+                Return False
+            End If
+
+            pStdOut = p.StandardOutput.ReadToEnd()
+            pStdErr = p.StandardError.ReadToEnd()
+            pExitCode = p.ExitCode
+
+            Return pExitCode = 0
+
+        Catch ex As Exception
+            pExitCode = -1
+            pStdErr = ex.Message
+            Return False
+        Finally
+            If p IsNot Nothing Then p.Dispose()
+        End Try
+
+    End Function
 
 End Class

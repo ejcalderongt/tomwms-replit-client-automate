@@ -251,7 +251,8 @@ Public Class frmKardexLote
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdKardex, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -292,7 +293,6 @@ Public Class frmKardexLote
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -316,6 +316,9 @@ Public Class frmKardexLote
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -359,6 +362,7 @@ Public Class frmKardexLote
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Inicializando reporte...")
 
@@ -480,3 +484,6 @@ Public Class frmKardexLote
     End Sub
 
 End Class
+
+
+

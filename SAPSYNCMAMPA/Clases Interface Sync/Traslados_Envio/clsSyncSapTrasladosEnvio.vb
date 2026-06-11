@@ -1565,12 +1565,13 @@ Public Class clsSyncSapTrasladosEnvio
 
         Dim vOperadorWMS As Integer = 0
 
+        '#CKFK20260610: Quité el campo JournalMemo porque no se debe modificar el original
+        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferDto With {
         .FromWarehouse = Fromwarehouse,
         .ToWarehouse = ToWarehouse,
         .DocDate = Today,
         .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {lTransaccionesSalida.FirstOrDefault.Idordencompra}",
-        .JournalMemo = $"WMS Transfer from OWTQ {docNumSolicitud}",
         .U_ENVIADO_WMS = 2,
         .U_DOCUMENTO_WMS = BeTransOcEnc.IdOrdenCompraEnc,
         .U_INICIO_PICK = BeTransOcEnc.Hora_Inicio_Recepcion.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
@@ -1578,7 +1579,6 @@ Public Class clsSyncSapTrasladosEnvio
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
-        .U_Tipo = 1,
         .U_USR_PICK = vIdOperadorDefecto,
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
@@ -1661,12 +1661,14 @@ Public Class clsSyncSapTrasladosEnvio
 
         Dim vOperadorPickingDefecto As String = clsLnTrans_picking_ubic.Get_Operador_Defecto_By_IdPickingEnc(BePedidoEnc.Picking.IdPickingEnc, clsTrans.lConnection, clsTrans.lTransaction)
 
+        '#CKFK20260610: Concatenar observación con la observación del documento de origen en WMS para facilitar trazabilidad en SAP.
+        'Quité el campo JournalMemo porque no se debe modificar el original
+        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferDto With {
         .FromWarehouse = Fromwarehouse,
         .ToWarehouse = ToWarehouse,
         .DocDate = Today,
-        .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {BePedidoEnc.IdPedidoEnc}",
-        .JournalMemo = $"WMS Transfer from OWTQ {docNumSolicitud}",
+        .Comments = $"{BePedidoEnc.Observacion} - Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {BePedidoEnc.IdPedidoEnc}",
         .U_USR_PICK = vOperadorPickingDefecto,
         .U_ENVIADO_WMS = 2,
         .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
@@ -1675,7 +1677,7 @@ Public Class clsSyncSapTrasladosEnvio
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
-        .U_Tipo = 1,
+        .U_LOGISTIKA_ID = BePedidoEnc.IdPedidoEnc,
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1749,13 +1751,13 @@ Public Class clsSyncSapTrasladosEnvio
 
         Dim vMensaje As String = $"IdPedidoEncWMS:{BePedidoEnc.IdPedidoEnc} Despacho: {BePedidoEnc.No_despacho}"
 
-
+        '#CKFK20260610: 'Quité el campo JournalMemo porque no se debe modificar el original
+        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferRequestDto With {
         .FromWarehouse = FromWarehouse,
         .DocDate = Today,
         .ToWarehouse = ToWarehouse,
         .Comments = vMensaje,
-        .JournalMemo = vMensaje,
         .U_ENVIADO_WMS = 2,
         .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
         .U_INICIO_PICK = BePedidoEnc.Picking.Hora_ini.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
@@ -1763,7 +1765,6 @@ Public Class clsSyncSapTrasladosEnvio
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
-        .U_Tipo = 1,
         .StockTransferLines = New List(Of StockTransferRequestLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1863,6 +1864,9 @@ Public Class clsSyncSapTrasladosEnvio
 
         <JsonProperty("U_ENVIADO_SAP_WMS", Order:=15)>
         Public Property U_ENVIADO_SAP_WMS As String = ""
+
+        <JsonProperty("U_LOGISTIKA_ID", Order:=17)>
+        Public Property U_LOGISTIKA_ID As String = ""
 
         <JsonProperty("StockTransferLines", Order:=16)>
         Public Property StockTransferLines As List(Of StockTransferLineDto)

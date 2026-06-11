@@ -3003,6 +3003,26 @@ Partial Public Class clsLnTrans_re_enc
 
                                 If pListRecDet.Count > 0 Then
 
+                                    '#EJC20260604 FIX_REC_CM_RULES_SERVER_EXT: cuando Guardar_Recepcion entra
+                                    'por pRecepcionCajaMaster=True, revalidar por línea OC en servidor para
+                                    'evitar sobre-recepción/reintentos que no deben pasar.
+                                    Dim lBeTransOCEnc As clsBeTrans_oc_enc = Nothing
+                                    Dim lIdPropietarioRecCm As Integer = 0
+                                    If pRecepcionCajaMaster AndAlso pIdOrdenCompraEnc > 0 Then
+                                        lBeTransOCEnc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                                                    lConnection,
+                                                                                    lTransaction)
+                                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.DetalleOC Is Nothing Then
+                                            lBeTransOCEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                                      lConnection,
+                                                                                                                      lTransaction)
+                                        End If
+                                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.IdPropietarioBodega > 0 Then
+                                            lIdPropietarioRecCm = clsLnPropietarios.Get_IdPropietario(pIdBodega,
+                                                                                                       lBeTransOCEnc.IdPropietarioBodega)
+                                        End If
+                                    End If
+
                                     vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
                                                                                             pListRecDet,
                                                                                             lConnection,
@@ -3016,6 +3036,16 @@ Partial Public Class clsLnTrans_re_enc
 
                                     '#GT05012024:validar AQUI que la lp si la tuviera en eliminar detalle, no exista antes de hacer la nueva inserción
                                     For Each pRecepcionDet In pListRecDet
+                                        If pRecepcionCajaMaster AndAlso lBeTransOCEnc IsNot Nothing AndAlso lIdPropietarioRecCm > 0 Then
+                                            If Not Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC(lBeTransOCEnc,
+                                                                                                    lIdPropietarioRecCm,
+                                                                                                    pRecepcionDet,
+                                                                                                    lConnection,
+                                                                                                    lTransaction) Then
+                                                Throw New Exception("Cantidad no válida por regla de recepción (Caja Master / Guardar_Recepcion).")
+                                            End If
+                                        End If
+
                                         If clsLnTrans_re_det.Existe_By_BeRecepcionDet(pRecepcionDet, lConnection, lTransaction) Then
 
                                             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
@@ -6468,7 +6498,34 @@ Partial Public Class clsLnTrans_re_enc
 
                         If Not pListaRecDet Is Nothing Then
 
+                            '#EJC20260604 FIX_REC_CM_RULES_SERVER: en Caja Master también revalidar reglas de recepción
+                            'por línea de OC en servidor (como GuardarHH_BOF) para evitar sobre-recepción por reintento/concurrencia.
+                            Dim lBeTransOCEnc As clsBeTrans_oc_enc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+                            If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.DetalleOC Is Nothing Then
+                                lBeTransOCEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                          lConnection,
+                                                                                                          lTransaction)
+                            End If
+
+                            Dim lIdPropietario As Integer = 0
+                            If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.IdPropietarioBodega > 0 Then
+                                lIdPropietario = clsLnPropietarios.Get_IdPropietario(pIdBodega,
+                                                                                      lBeTransOCEnc.IdPropietarioBodega)
+                            End If
+
                             For Each BeTransReDet In pListaRecDet
+                                If lIdPropietario > 0 AndAlso lBeTransOCEnc IsNot Nothing Then
+                                    If Not Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC(lBeTransOCEnc,
+                                                                                            lIdPropietario,
+                                                                                            BeTransReDet,
+                                                                                            lConnection,
+                                                                                            lTransaction) Then
+                                        Throw New Exception("Cantidad no válida por regla de recepción (Caja Master).")
+                                    End If
+                                End If
+
                                 vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
                                                                                     BeTransReDet,
                                                                                     lConnection,
@@ -6508,7 +6565,10 @@ Partial Public Class clsLnTrans_re_enc
                                 '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
 
                                 Dim Obj As clsBeTrans_oc_det_lote = pListaDetLote.
-                                        FirstOrDefault(Function(x) x.IdOrdenCompraDet = BeTransReDet.IdOrdenCompraDet And x.IdProductoBodega = BeTransReDet.IdProductoBodega)
+                                        FirstOrDefault(Function(x) x.IdOrdenCompraDet = BeTransReDet.IdOrdenCompraDet AndAlso
+                                                                   x.IdProductoBodega = BeTransReDet.IdProductoBodega AndAlso
+                                                                   x.No_linea = BeTransReDet.No_Linea AndAlso
+                                                                   (x.Lic_Plate = BeTransReDet.Lic_plate OrElse String.IsNullOrEmpty(x.Lic_Plate)))
 
                                 If Obj IsNot Nothing Then
                                     vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(Obj,
@@ -7269,6 +7329,32 @@ Partial Public Class clsLnTrans_re_enc
                         IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
                                                                                                     lConnection,
                                                                                                     lTransaction)
+
+                        '#EJC20260603_FIX_REC_RULES_CONCURRENCY: revalidar reglas al guardar (server-side) para evitar sobre recepción concurrente.
+                        Dim lBeTransOCEnc As clsBeTrans_oc_enc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.DetalleOC Is Nothing Then
+                            lBeTransOCEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                      lConnection,
+                                                                                                      lTransaction)
+                        End If
+
+                        Dim lIdPropietario As Integer = 0
+                        If lBeTransOCEnc IsNot Nothing AndAlso lBeTransOCEnc.IdPropietarioBodega > 0 Then
+                            lIdPropietario = clsLnPropietarios.Get_IdPropietario(pIdBodega,
+                                                                                  lBeTransOCEnc.IdPropietarioBodega)
+                        End If
+
+                        If lIdPropietario > 0 Then
+                            If Not Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC(lBeTransOCEnc,
+                                                                                    lIdPropietario,
+                                                                                    BeTransReDet,
+                                                                                    lConnection,
+                                                                                    lTransaction) Then
+                                Throw New Exception("Cantidad no válida por regla de recepción.")
+                            End If
+                        End If
                     End If
 
                     '#GT19012023: bandera para aplicar historico 
@@ -7728,7 +7814,7 @@ Partial Public Class clsLnTrans_re_enc
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 1) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirProductoFaltantes = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductoFaltantes = True
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 2) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirProductosAdicionales = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductosAdicionales = True
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 3) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadFaltantePorProducto = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCantidadFaltantePorProducto = True
-                vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 4) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadSobrantePorProducto = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductoFaltantes = True
+                vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 4) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadSobrantePorProducto = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCantidadSobrantePorProducto = True
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 5) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCostoDiferentePorProducto = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCostoDiferentePorProducto = True
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 6) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirPesoMenor = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirPesoMenor = True
                 vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 7) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirPesoMayor = vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirPesoMayor = True
@@ -9467,7 +9553,7 @@ Partial Public Class clsLnTrans_re_enc
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 1) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirProductoFaltantes = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductoFaltantes = True
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 2) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirProductosAdicionales = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductosAdicionales = True
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 3) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadFaltantePorProducto = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCantidadFaltantePorProducto = True
-                    vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 4) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadSobrantePorProducto = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirProductoFaltantes = True
+                    vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 4) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCantidadSobrantePorProducto = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCantidadSobrantePorProducto = True
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 5) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirCostoDiferentePorProducto = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirCostoDiferentePorProducto = True
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 6) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirPesoMenor = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirPesoMenor = True
                     vReglaProp = ListaRegla.Find(Function(x) x.IdReglaRecepcion = 7) : If Not vReglaProp Is Nothing Then BeReglaRec.PermitirPesoMayor = Not vReglaProp.Regla.Rechazar Else BeReglaRec.PermitirPesoMayor = True

@@ -230,7 +230,8 @@ Public Class frmMovimientos_Detalle
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdMovimientosDetalle, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -271,7 +272,6 @@ Public Class frmMovimientos_Detalle
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -310,6 +310,7 @@ Public Class frmMovimientos_Detalle
     End Sub
 
     Private Sub frmMovimientos_Detalle_Load(sender As Object, e As EventArgs) Handles Me.Load
+        clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
         SetDatataTable()
         AP.Listar_Bodegas_By_Usuario(cmbBodega)
     End Sub
@@ -452,3 +453,6 @@ Public Class frmMovimientos_Detalle
         Cargar()
     End Sub
 End Class
+
+
+

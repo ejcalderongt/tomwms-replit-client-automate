@@ -26,6 +26,7 @@ Public Class frmPackingDespachado
     Private Sub frmPackingDespachado_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Try
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             vNombreArchivoLayOutGrid = "frmPickingDespachados.xml"
             'lblRegs.Caption = String.Format("Registros: 0")
 
@@ -121,7 +122,8 @@ Public Class frmPackingDespachado
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdDetalleSalidas, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -165,7 +167,6 @@ Public Class frmPackingDespachado
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub Exportar_Grid_A_Excel(ByRef dGrid As GridControl, ByVal NomArchivo As String)
@@ -351,3 +352,6 @@ Public Class frmPackingDespachado
     End Sub
 
 End Class
+
+
+

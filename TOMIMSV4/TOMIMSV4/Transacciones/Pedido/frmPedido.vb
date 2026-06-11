@@ -89,6 +89,17 @@ Public Class frmPedido
     ' 8=Cerrada/entregada; 11=Anulada al anular/eliminar pedido; 12=Back order. Se notifica despues del commit WMS.
     Private Const TAG_NOTIFICAR_SAP_HANA_MAMAPA As String = "#EJCCKF20260519_Notificar_SAP_Hana_MAMAPA"
 
+    '#EJC20260602_DELEGADOS_PEDIDO: puente seguro para que formularios hijos actualicen la lista de pedidos.
+    Private Sub Refrescar_Lista_Pedidos_Desde_Hijo()
+        Try
+            If InvokeListarPedidos IsNot Nothing Then
+                InvokeListarPedidos.Invoke()
+            End If
+        Catch ex As Exception
+            ' #EJC20260602_DELEGADOS_PEDIDO: best-effort, no interrumpir flujo del hijo.
+        End Try
+    End Sub
+
     Private Async Function Notificar_Estado_SAP_Hana_MAMAPA_Pedido_Async(ByVal pPedidoEnc As clsBeTrans_pe_enc,
                                                                           ByVal pEstadoPedido As Integer,
                                                                           ByVal pEstadoFactura As Integer,
@@ -1571,7 +1582,7 @@ Public Class frmPedido
                 End If
 
                 '#EJC20220327: Cambio por lookupedit.
-                txtIdCliente.EditValue = pBePedidoEnc.Cliente.IdCliente
+                txtIdCliente.EditValue = Get_IdCliente_Pedido_UI()
                 txtIdCliente.Enabled = False
                 PedidoTrace_Marca("cliente_lookup")
 
@@ -1751,7 +1762,7 @@ Public Class frmPedido
                                                     True)
             End If
 
-            txtIdCliente.EditValue = pBePedidoEnc.Cliente.IdCliente
+            txtIdCliente.EditValue = Get_IdCliente_Pedido_UI()
             txtIdCliente.Enabled = False
 
             cmbMuelle.EditValue = pBePedidoEnc.IdMuelle
@@ -1860,6 +1871,19 @@ Public Class frmPedido
         End Try
 
     End Sub
+
+    '#EJC20260610: Evita cliente en blanco cuando el encabezado trae IdCliente pero el objeto anidado Cliente no está hidratado.
+    Private Function Get_IdCliente_Pedido_UI() As Integer
+        Try
+            If pBePedidoEnc Is Nothing Then Return 0
+            If pBePedidoEnc.Cliente IsNot Nothing AndAlso pBePedidoEnc.Cliente.IdCliente > 0 Then
+                Return pBePedidoEnc.Cliente.IdCliente
+            End If
+            Return pBePedidoEnc.IdCliente
+        Catch
+            Return 0
+        End Try
+    End Function
 
     Private Sub Cargar_Detalle_Pedido(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
 
@@ -7533,6 +7557,10 @@ Public Class frmPedido
             Picking.cmbPropietario.EditValue = lcmbPropietario.EditValue
             Picking.cmbPropietario.Enabled = False
             Picking.pReferencia = txtReferencia.Text
+            Picking.InvokeActualizarIdPicking = AddressOf Actualizar_Info_Picking
+            Picking.InvokeListarPedidos = AddressOf Refrescar_Lista_Pedidos_Desde_Hijo
+            Picking.InvokeCargarPedido = AddressOf Cargar_Datos
+            Picking.InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
             Picking.Set_Stock_Res(pBePedidoEnc.IdPedidoEnc)
 
             If pBePedidoEnc.IdPickingEnc = 0 Then
@@ -8863,6 +8891,9 @@ Public Class frmPedido
     End Sub
 
     Private Sub GridView8_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView8.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -10893,6 +10924,7 @@ Public Class frmPedido
                 .BeDespachoEnc = clsLnTrans_despacho_enc.GetSingle(IdDespacho)
                 SplashScreenManager.CloseForm(False)
                 .WindowState = FormWindowState.Maximized
+                .InvokeListarPedidos = AddressOf Refrescar_Lista_Pedidos_Desde_Hijo
                 .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                 .InvokeCargarPedido = AddressOf Cargar_Datos
                 .Show()
@@ -12134,6 +12166,7 @@ Public Class frmPedido
                     .WindowState = FormWindowState.Normal
                     .MdiParent = MdiParent
                     .InvokeActualizarIdPicking = AddressOf Actualizar_Info_Picking
+                    .InvokeListarPedidos = AddressOf Refrescar_Lista_Pedidos_Desde_Hijo
                     .InvokeCargarPedido = AddressOf Cargar_Datos
                     .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                     .Show()
@@ -13270,7 +13303,6 @@ Public Class frmPedido
                                                              Text,
                                                              MessageBoxButtons.YesNo,
                                                              MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-
                                         Nuevo_Despacho()
                                         Exit Sub
 
@@ -13453,6 +13485,7 @@ Public Class frmPedido
                 .Despacho_Cargado_Desde_Pedido = True
                 .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
                 .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
+                .InvokeListarPedidos = AddressOf Refrescar_Lista_Pedidos_Desde_Hijo
                 .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
                 .InvokeCargarPedido = AddressOf Cargar_Datos
                 .WindowState = FormWindowState.Maximized

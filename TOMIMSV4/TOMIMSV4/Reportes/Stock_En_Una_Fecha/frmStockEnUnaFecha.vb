@@ -1,6 +1,8 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Reflection
+Imports System.Data.SqlClient
 Imports DevExpress.XtraEditors
+Imports System.Diagnostics
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
@@ -15,6 +17,7 @@ Public Class frmMov_Reporte
     Public Property ProductoEspecifico As New clsBeProducto
     Public Property ModoDepuracion As Boolean = False
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
+    Private vPerfSessionId As String = ""
 
     '#EJC20210716:Guardar LayoutGrid en LotesPorUbi.
     Private vNombreArchivoLayOutGrid As String = ""
@@ -78,7 +81,8 @@ Public Class frmMov_Reporte
                                                                                         IdProductoBodega,
                                                                                         cmbBodega.EditValue,
                                                                                         cmbPropietario.EditValue,
-                                                                                        txtLote.Text.Trim())
+                                                                                        txtLote.Text.Trim(),
+                                                                                        chkSoloProductosConStock.Checked)
 
             If Not ListaMovimientos Is Nothing Then
                 Get_Lista_Movimientos = ListaMovimientos.Count > 0
@@ -100,20 +104,32 @@ Public Class frmMov_Reporte
 
     Private Sub Generar_Reporte()
 
+        Dim swTotal As Stopwatch = Stopwatch.StartNew()
+
         Try
+
+            vPerfSessionId = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")
+            PerfTrace("Generar_Reporte", "Inicio")
+            PerfTrace("Generar_Reporte", String.Format("SoloProductosConStock={0}", chkSoloProductosConStock.Checked))
 
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormDescription("Generando...")
 
             Dim BeStockEnFecha As New clsBeStockEnUnaFecha
-            Dim Idx As Integer = -1
-            Dim Idx1 As Integer = -1
 
             ListaMovimientos.Clear()
             RepMovEnUnaFecha.Clear()
             lblPrg.Visible = True
 
-            If Get_Lista_Movimientos() Then
+            Dim swLista As Stopwatch = Stopwatch.StartNew()
+            Dim hayMovimientos As Boolean = Get_Lista_Movimientos()
+            swLista.Stop()
+            PerfTrace("Generar_Reporte", String.Format("Get_Lista_Movimientos={0}, count={1}, ms={2}",
+                                                       hayMovimientos,
+                                                       If(ListaMovimientos Is Nothing, 0, ListaMovimientos.Count),
+                                                       swLista.ElapsedMilliseconds))
+
+            If hayMovimientos Then
 
                 RepMovEnUnaFecha.Clear()
 
@@ -126,9 +142,13 @@ Public Class frmMov_Reporte
                 If Not ListaMovimientos Is Nothing Then
 
                     Dim TheGoalDate As Date = New Date(2019, 8, 30)
+                    Dim swConsolida As Stopwatch = Stopwatch.StartNew()
+                    Dim vContadorMov As Integer = 0
+                    Dim dConsolidado As New Dictionary(Of String, clsBeStockEnUnaFecha)
                     'For Each ObjM In ListaMovimientos.Where(Function(x) x.TipoTarea <> clsDataContractDI.tTipoTarea.UBIC).OrderBy(Function(x) x.Codigo)
 
                     For Each ObjM In ListaMovimientos.OrderBy(Function(x) x.EstadoOrigen)
+                        vContadorMov += 1
 
                         lblPrg.Text = "Procesando movimiento para producto: " & ObjM.Codigo
                         lblPrg.Refresh()
@@ -153,69 +173,12 @@ Public Class frmMov_Reporte
                         BeStockEnFecha.IdUnidadMedida = ObjM.IdUnidadMedida
                         clsPublic.CopyObject(ObjM, BeStockEnFecha)
 
-                        Idx = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
-                                                         AndAlso x.IdEstadoOrigen = BeStockEnFecha.IdEstadoOrigen _
-                                                         AndAlso x.Fecha_Vence = BeStockEnFecha.Fecha_Vence)
-
-                        If Idx <> -1 Then 'Lo encontró por lote.
-
-                            Idx1 = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
-                              AndAlso x.Lote = BeStockEnFecha.Lote _
-                              AndAlso x.Fecha_Vence.Date = BeStockEnFecha.Fecha_Vence.Date)
-
-                            If Idx1 = -1 Then 'No coincide la fecha de vencimiento para el mismo lote en el mismo movimiento
-                                '(Por error en el cambio de ubicación fecha_vence = now -> JP.)
-                                Debug.Print("Espera")
-                                'Magia por EJC para corregir cagada.
-                                If RepMovEnUnaFecha(Idx).Fecha_Vence.Date > BeStockEnFecha.Fecha_Vence.Date Then
-                                    'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
-                                    Debug.Print(BeStockEnFecha.Codigo)
-                                End If
-                            End If
-
-                            'Si no tiene contro por lote...
-                            If BeStockEnFecha.Lote = "" Then
-
-                                Idx1 = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
-                                                                  AndAlso x.Fecha_Vence.Date = BeStockEnFecha.Fecha_Vence.Date)
-                                If Idx1 = -1 Then 'No coincide la fecha de vencimiento.. no pasa nada
-                                    Idx = Idx1
-                                Else
-                                    Idx1 = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
-                                                                      AndAlso x.Fecha_Vence.Date = BeStockEnFecha.Fecha_Vence.Date _
-                                                                      AndAlso x.IdEstadoOrigen = BeStockEnFecha.IdEstadoOrigen)
-                                    If Idx1 = -1 Then 'No coincide el estado
-                                        Idx = Idx1
-                                    Else
-                                        Idx = Idx1
-                                    End If
-
-                                End If
-
-                            End If
-
+                        Dim k As String = Armar_Clave_Consolidado_Movimiento(BeStockEnFecha)
+                        If dConsolidado.ContainsKey(k) Then
+                            BeStockEnFecha = dConsolidado(k)
                         Else
-
-                            Idx = RepMovEnUnaFecha.FindIndex(Function(x) x.Codigo = BeStockEnFecha.Codigo _
-                                                             AndAlso x.Fecha_Vence = BeStockEnFecha.Fecha_Vence)
-
-                            If Idx <> -1 Then 'Lo encontró por FechaVence.
-
-                                Debug.Print(BeStockEnFecha.Codigo)
-
-                                If RepMovEnUnaFecha(Idx).Fecha_Vence.Date > BeStockEnFecha.Fecha_Vence.Date Then
-                                    'BeStockEnFecha.Fecha_Vence = RepMovEnUnaFecha(Idx).Fecha_Vence.Date
-                                    Debug.Print(BeStockEnFecha.Codigo)
-                                End If
-
-                            End If
-
-                        End If
-
-                        If Idx = -1 Then
+                            dConsolidado.Add(k, BeStockEnFecha)
                             RepMovEnUnaFecha.Add(BeStockEnFecha)
-                        Else
-                            BeStockEnFecha = RepMovEnUnaFecha(Idx) 'Puntero =>
                         End If
 
 
@@ -227,29 +190,44 @@ Public Class frmMov_Reporte
                             BeStockEnFecha.Ajuste_Positivo += ObjM.Cantidad
                         ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTN OrElse ObjM.TipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI Then
                             BeStockEnFecha.Ajuste_Negativo += ObjM.Cantidad
-                        ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP Then
+                        ElseIf ObjM.TipoTarea = clsDataContractDI.tTipoTarea.DESP OrElse ObjM.TipoTarea = clsDataContractDI.tTipoTarea.TRAS Then
+                            'EJC20260602_STOCK_FECHA: TRAS en la bodega origen debe descontar existencia teórica.
                             BeStockEnFecha.Salidas += ObjM.Cantidad
-                        Else
-                            Debug.Print(ObjM.TipoTarea)
                         End If
-
-                        Debug.Print(ObjM.TipoTarea)
 
                         prg.PerformStep()
 
                         Application.DoEvents()
 
+                        If vContadorMov Mod 500 = 0 Then
+                            PerfTrace("Generar_Reporte", String.Format("Consolidando movimientos {0}/{1}, ms={2}",
+                                                                       vContadorMov,
+                                                                       ListaMovimientos.Count,
+                                                                       swConsolida.ElapsedMilliseconds))
+                        End If
+
                     Next
+
+                    swConsolida.Stop()
+                    PerfTrace("Generar_Reporte", String.Format("Consolidación movimientos completada, repCount={0}, ms={1}",
+                                                               RepMovEnUnaFecha.Count,
+                                                               swConsolida.ElapsedMilliseconds))
 
                 End If
 
+                Dim swGrid As Stopwatch = Stopwatch.StartNew()
                 Llena_Grid()
+                swGrid.Stop()
+                PerfTrace("Generar_Reporte", String.Format("Llena_Grid ms={0}", swGrid.ElapsedMilliseconds))
 
             End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            PerfTrace("Generar_Reporte", "ERROR: " & ex.Message, True)
         Finally
+            swTotal.Stop()
+            PerfTrace("Generar_Reporte", String.Format("Fin ms={0}", swTotal.ElapsedMilliseconds), True)
             SplashScreenManager.CloseForm(False)
             prg.Visible = False
         End Try
@@ -268,8 +246,12 @@ Public Class frmMov_Reporte
         Dim vIdDiferencia As Integer = 0
         Dim vExistenciaSinEstado As Double = 0
         Dim lMovimientos As New List(Of clsBeTrans_movimientos)
+        Dim dExistenciaConEstado As New Dictionary(Of String, Double)
+        Dim dExistenciaSinEstado As New Dictionary(Of String, Double)
+        Dim swLlena As Stopwatch = Stopwatch.StartNew()
 
         Try
+            PerfTrace("Llena_Grid", "Inicio")
 
             clsTransaccion.Begin_Transaction()
 
@@ -302,6 +284,18 @@ Public Class frmMov_Reporte
             dgrid.DataSource = Nothing
 
             If Lista IsNot Nothing AndAlso Lista.Count > 0 Then
+                Dim swSnapshot As Stopwatch = Stopwatch.StartNew()
+                Cargar_Snapshot_Existencias(clsTransaccion.lConnection,
+                                            clsTransaccion.lTransaction,
+                                            cmbBodega.EditValue,
+                                            cmbPropietario.EditValue,
+                                            dExistenciaConEstado,
+                                            dExistenciaSinEstado)
+                swSnapshot.Stop()
+                PerfTrace("Llena_Grid", String.Format("Snapshot existencias: conEstado={0}, sinEstado={1}, ms={2}",
+                                                      dExistenciaConEstado.Count,
+                                                      dExistenciaSinEstado.Count,
+                                                      swSnapshot.ElapsedMilliseconds))
 
                 prg.Visible = True
                 prg.Properties.Step = 1
@@ -320,7 +314,9 @@ Public Class frmMov_Reporte
 
                 End If
 
+                Dim vIdx As Integer = 0
                 For Each Obj In Lista
+                    vIdx += 1
 
                     lblPrg.Text = "Calculando inventarios para producto: " & Obj.Codigo
                     lblPrg.Refresh()
@@ -339,6 +335,7 @@ Public Class frmMov_Reporte
                     pBeStock.Fecha_vence = Obj.Fecha_Vence
                     pBeStock.Lote = Obj.Lote
                     pBeStock.IsReportStockEnFecha = True
+                    pBeStock.IncluirUbicacionesDespacho = True
 
                     If Obj.IdPresentacion <> 0 Then
                         ExistenciasAl = Math.Round(ExistenciasAl / pBeStock.Presentacion.Factor, 6)
@@ -348,29 +345,27 @@ Public Class frmMov_Reporte
 
                     clsPublic.CopyObject(pBeStock, pBeStockSinEstado)
 
-                    clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
-                                                                 cmbBodega.EditValue,
-                                                                 True,
-                                                                 True,
-                                                                 0,
-                                                                 False,
-                                                                 clsTransaccion.lConnection,
-                                                                 clsTransaccion.lTransaction)
+                    Dim kConEstado As String = Armar_Clave_Existencia(Obj.IdProductoBodega,
+                                                                       Obj.IdEstadoOrigen,
+                                                                       Obj.IdPresentacion,
+                                                                       Obj.IdUnidadMedida,
+                                                                       Obj.Lote,
+                                                                       Obj.Fecha_Vence,
+                                                                       True)
 
-                    ExistenciaActualConFechaYEstado = pBeStock.Cantidad
+                    Dim kSinEstado As String = Armar_Clave_Existencia(Obj.IdProductoBodega,
+                                                                       0,
+                                                                       Obj.IdPresentacion,
+                                                                       Obj.IdUnidadMedida,
+                                                                       Obj.Lote,
+                                                                       Obj.Fecha_Vence,
+                                                                       False)
 
-                    clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStockSinEstado,
-                                                                cmbBodega.EditValue,
-                                                                False,
-                                                                True,
-                                                                0,
-                                                                False,
-                                                                clsTransaccion.lConnection,
-                                                                clsTransaccion.lTransaction)
-
-                    vExistenciaSinEstado = pBeStockSinEstado.Cantidad
+                    ExistenciaActualConFechaYEstado = Get_Valor_Existencia(dExistenciaConEstado, kConEstado)
+                    vExistenciaSinEstado = Get_Valor_Existencia(dExistenciaSinEstado, kSinEstado)
 
                     If Obj.IdPresentacion <> 0 Then
+                        ExistenciaActualConFechaYEstado = Math.Round(ExistenciaActualConFechaYEstado / IIf(pBeStock.Presentacion.Factor > 0, pBeStock.Presentacion.Factor, 1), 6)
                         vExistenciaSinEstado = Math.Round(vExistenciaSinEstado / pBeStock.Presentacion.Factor, 6)
                     End If
 
@@ -493,6 +488,13 @@ Public Class frmMov_Reporte
 
                     prg.PerformStep()
 
+                    If vIdx Mod 500 = 0 Then
+                        PerfTrace("Llena_Grid", String.Format("Filas procesadas {0}/{1}, ms={2}",
+                                                              vIdx,
+                                                              Lista.Count,
+                                                              swLlena.ElapsedMilliseconds))
+                    End If
+
                 Next
 
                 clsTransaccion.Commit_Transaction()
@@ -501,6 +503,7 @@ Public Class frmMov_Reporte
 
 
                 Restore_LayOut_Grid()
+                PerfTrace("Llena_Grid", String.Format("DataSource rows={0}", DT.Rows.Count))
 
                 GridView1.OptionsView.ShowFooter = True
 
@@ -618,7 +621,10 @@ Public Class frmMov_Reporte
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            PerfTrace("Llena_Grid", "ERROR: " & ex.Message, True)
         Finally
+            swLlena.Stop()
+            PerfTrace("Llena_Grid", String.Format("Fin ms={0}", swLlena.ElapsedMilliseconds), True)
             prg.Visible = False
             lblPrg.Visible = False
             clsTransaccion.Close_Conection()
@@ -674,6 +680,10 @@ Public Class frmMov_Reporte
         Try
 
             SetDatataTable()
+
+            '#EJC20260602_GRID_COPY_HELPER:
+            'Grid en solo-lectura: habilitar menu contextual para copiar valores de celdas/fila.
+            clsUiGridCopyHelper.Attach(GridView1, "Copiar")
 
         Catch ex As Exception
 
@@ -761,6 +771,7 @@ Public Class frmMov_Reporte
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en grdStockPorLote - frmstockPorLote_posicion.
             'vNombreArchivoLayOutGrid = "grdStockEnUnaFecha.xml"
 
@@ -779,6 +790,9 @@ Public Class frmMov_Reporte
     End Sub
 
     Private Sub GridView1_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles GridView1.RowCellStyle
+
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
 
         Try
 
@@ -834,7 +848,8 @@ Public Class frmMov_Reporte
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(dgrid, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -875,20 +890,18 @@ Public Class frmMov_Reporte
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As System.Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
 
-        Dim reportHeader As String = vbNewLine & "TOM, WMS" &
-                              vbNewLine & "Stock en una fecha " &
-                              vbNewLine & "BODEGA: " & AP.NomBodega
-
-        e.Graph.StringFormat = New DevExpress.XtraPrinting.BrickStringFormat(StringAlignment.Center)
-        e.Graph.Font = New Font("Tahoma", 12, FontStyle.Bold)
-
-        Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 70)
-        e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+        '#EJC20260602_PRINT_HELPER:
+        'Cabecera estandarizada para homologar formato base de impresion de vista.
+        clsUiPrintHelper.DrawStandardHeader(e,
+                                            "Stock en una fecha",
+                                            String.Format("Del: {0}  Al: {1}",
+                                                          FormatoFechas.tFecha(dtpFechaDesde.Value),
+                                                          FormatoFechas.tFecha(dtpfechaHasta.Value)),
+                                            AP.NomBodega)
 
     End Sub
 
@@ -1109,4 +1122,128 @@ Public Class frmMov_Reporte
 
         End Try
     End Sub
+
+    Private Shared Function Armar_Clave_Existencia(ByVal idProductoBodega As Integer,
+                                                   ByVal idEstado As Integer,
+                                                   ByVal idPresentacion As Integer,
+                                                   ByVal idUnidadMedida As Integer,
+                                                   ByVal lote As String,
+                                                   ByVal fechaVence As Date,
+                                                   ByVal conEstado As Boolean) As String
+        Dim loteSeguro As String = If(lote, "").Trim()
+        Dim estadoSeguro As Integer = If(conEstado, idEstado, 0)
+        Return String.Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                             idProductoBodega,
+                             estadoSeguro,
+                             idPresentacion,
+                             idUnidadMedida,
+                             loteSeguro,
+                             fechaVence.Date.ToString("yyyyMMdd"))
+    End Function
+
+    Private Shared Function Armar_Clave_Consolidado_Movimiento(ByVal m As clsBeStockEnUnaFecha) As String
+        Return String.Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                             m.Codigo.Trim(),
+                             m.IdEstadoOrigen,
+                             m.IdPresentacion,
+                             m.IdUnidadMedida,
+                             If(m.Lote, "").Trim(),
+                             m.Fecha_Vence.Date.ToString("yyyyMMdd"))
+    End Function
+
+    Private Shared Function Get_Valor_Existencia(ByVal d As Dictionary(Of String, Double), ByVal k As String) As Double
+        If d.ContainsKey(k) Then
+            Return d(k)
+        End If
+        Return 0
+    End Function
+
+    Private Sub Cargar_Snapshot_Existencias(ByVal lConnection As SqlConnection,
+                                            ByVal lTransaction As SqlTransaction,
+                                            ByVal idBodega As Integer,
+                                            ByVal idPropietarioBodega As Integer,
+                                            ByRef dConEstado As Dictionary(Of String, Double),
+                                            ByRef dSinEstado As Dictionary(Of String, Double))
+
+        Dim sql As String = "SELECT IdProductoBodega,
+                                    IdProductoEstado,
+                                    ISNULL(IdPresentacion,0) AS IdPresentacion,
+                                    IdUnidadMedida,
+                                    ISNULL(lote,'') AS lote,
+                                    CAST(fecha_vence AS DATE) AS fecha_vence,
+                                    SUM(Disponible_UMBas) AS Disponible_UMBas
+                             FROM VW_Stock_Res
+                             WHERE IdBodega = @IdBodega
+                               AND IdPropietarioBodega = @IdPropietarioBodega
+                             GROUP BY IdProductoBodega,
+                                      IdProductoEstado,
+                                      ISNULL(IdPresentacion,0),
+                                      IdUnidadMedida,
+                                      ISNULL(lote,''),
+                                      CAST(fecha_vence AS DATE)"
+
+        Using da As New SqlDataAdapter(sql, lConnection)
+            da.SelectCommand.Transaction = lTransaction
+            da.SelectCommand.CommandType = CommandType.Text
+            da.SelectCommand.Parameters.AddWithValue("@IdBodega", idBodega)
+            da.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", idPropietarioBodega)
+
+            Dim dt As New DataTable()
+            da.Fill(dt)
+
+            dConEstado.Clear()
+            dSinEstado.Clear()
+
+            For Each r As DataRow In dt.Rows
+                Dim idProdBod As Integer = IIf(IsDBNull(r("IdProductoBodega")), 0, r("IdProductoBodega"))
+                Dim idEstado As Integer = IIf(IsDBNull(r("IdProductoEstado")), 0, r("IdProductoEstado"))
+                Dim idPresentacion As Integer = IIf(IsDBNull(r("IdPresentacion")), 0, r("IdPresentacion"))
+                Dim idUm As Integer = IIf(IsDBNull(r("IdUnidadMedida")), 0, r("IdUnidadMedida"))
+                Dim lote As String = IIf(IsDBNull(r("lote")), "", r("lote"))
+                Dim fechaVence As Date = IIf(IsDBNull(r("fecha_vence")), New Date(1900, 1, 1), r("fecha_vence"))
+                Dim disponible As Double = Math.Max(0, IIf(IsDBNull(r("Disponible_UMBas")), 0, r("Disponible_UMBas")))
+
+                Dim kConEstado As String = Armar_Clave_Existencia(idProdBod, idEstado, idPresentacion, idUm, lote, fechaVence, True)
+                Dim kSinEstado As String = Armar_Clave_Existencia(idProdBod, 0, idPresentacion, idUm, lote, fechaVence, False)
+
+                If dConEstado.ContainsKey(kConEstado) Then
+                    dConEstado(kConEstado) += disponible
+                Else
+                    dConEstado.Add(kConEstado, disponible)
+                End If
+
+                If dSinEstado.ContainsKey(kSinEstado) Then
+                    dSinEstado(kSinEstado) += disponible
+                Else
+                    dSinEstado.Add(kSinEstado, disponible)
+                End If
+            Next
+        End Using
+    End Sub
+
+    Private Sub PerfTrace(ByVal etapa As String, ByVal mensaje As String, Optional ByVal forzarArchivo As Boolean = False)
+        Try
+            Dim linea As String = String.Format("{0:yyyy-MM-dd HH:mm:ss.fff} [{1}] [{2}] {3}",
+                                                Now,
+                                                If(vPerfSessionId = "", "SINSESION", vPerfSessionId),
+                                                etapa,
+                                                mensaje)
+            Debug.Print(linea)
+
+            If ModoDepuracion OrElse forzarArchivo Then
+                Dim dirLog As String = Path.Combine(Application.StartupPath, "Logs")
+                If Not Directory.Exists(dirLog) Then
+                    Directory.CreateDirectory(dirLog)
+                End If
+
+                Dim f As String = Path.Combine(dirLog, "StockEnFecha_Perf_" & Date.Now.ToString("yyyyMMdd") & ".log")
+                File.AppendAllText(f, linea & Environment.NewLine)
+            End If
+        Catch
+        End Try
+    End Sub
 End Class
+
+
+
+

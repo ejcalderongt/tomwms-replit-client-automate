@@ -143,7 +143,8 @@ Public Class frmLotePorUbi
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdLotePorUbi, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -187,7 +188,6 @@ Public Class frmLotePorUbi
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -346,6 +346,7 @@ Public Class frmLotePorUbi
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en LotesPorUbi.
             'vNombreArchivoLayOutGrid = grdLotePorUbi.Name & ".xml"
             vNombreArchivoLayOutGrid = "frmLotePorUbi.xml"
@@ -440,3 +441,6 @@ Public Class frmLotePorUbi
     End Sub
 
 End Class
+
+
+

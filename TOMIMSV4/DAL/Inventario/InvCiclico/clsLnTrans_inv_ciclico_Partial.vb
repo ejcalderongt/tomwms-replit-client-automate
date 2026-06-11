@@ -2,9 +2,32 @@
 Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.XtraEditors
+Imports System.IO
 
 Partial Public Class clsLnTrans_inv_ciclico
+
+    Private Shared Sub InvRegularizacionTrace(ByVal pSesion As String,
+                                              ByVal pPaso As String,
+                                              ByVal pInicio As DateTime,
+                                              Optional ByVal pExtra As String = "")
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260607_INV_REG_TRACE",
+                "clsLnTrans_inv_ciclico",
+                pSesion,
+                pPaso,
+                "DeltaMs=" & CLng((Date.Now - pInicio).TotalMilliseconds),
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "inventario-regularizacion-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
 
     Public Shared Function listaPorOperador(pIdenc As Integer, pIdOperador As Integer) As List(Of clsBeTrans_inv_ciclico)
         Dim lReturnList As List(Of clsBeTrans_inv_ciclico)
@@ -1892,8 +1915,26 @@ Partial Public Class clsLnTrans_inv_ciclico
         Dim objStockHist As New clsBeStock_hist()
         Dim vCantidadHist As Integer = 0
         Dim lIdStocksAEliminar As New List(Of Integer)
+        Dim vSesionTrace As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        Dim vInicioTrace As DateTime = Date.Now
+        Dim vPasoTrace As DateTime = vInicioTrace
+        Dim vMsGetStock As Long = 0
+        Dim vMsExisteConteo As Long = 0
+        Dim vMsInsertStock As Long = 0
+        Dim vMsStockHist As Long = 0
+        Dim vMsEliminarStock As Long = 0
+        Dim vMsProcesarAjuste As Long = 0
+        Dim vMsEliminarPendiente As Long = 0
+        Dim vCntStockNuevo As Integer = 0
+        Dim vCntAjustes As Integer = 0
+        Dim vCntEliminarPendiente As Integer = 0
 
         Try
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_START", vInicioTrace,
+                                   "IdInventario=" & BeTransInvEnc.Idinventarioenc &
+                                   ";Stocks=" & If(ListBeStockNuevo Is Nothing, 0, ListBeStockNuevo.Count) &
+                                   ";Movs=" & If(ListBeMovimientos Is Nothing, 0, ListBeMovimientos.Count) &
+                                   ";Ajustes=" & If(ListBeAjusteDet Is Nothing, 0, ListBeAjusteDet.Count))
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BeTransInvEnc.Idpropietario,
                                                                                                                                 BeTransInvEnc.IdBodega,
@@ -1915,8 +1956,11 @@ Partial Public Class clsLnTrans_inv_ciclico
             BeTransInvEnc.IdStock = IdStock
 
             For Each pBeStock As clsBeStock In ListBeStockNuevo.OrderBy(Function(x) x.IdProductoBodega)
+                vCntStockNuevo += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(pBeStock.IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If pBeStock.Cantidad = 0 Then
                     Debug.Write("Pausa")
@@ -1966,6 +2010,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                             '#EJC20180625: Mantener copia del stock original
                             clsPublic.CopyObject(pBeStock, objStockHist)
                             '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                            vPasoTrace = Date.Now
                             objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                             objStockHist.IdNuevoStock = BeStock.IdStock
                             objStockHist.IdPedidoEnc = BeStock.IdPedidoEnc
@@ -1978,17 +2023,22 @@ Partial Public Class clsLnTrans_inv_ciclico
                             objStockHist.Cantidad = vCantidadHist
                             objStockHist.IdProductoTallaColor = BeStock.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                            vMsStockHist += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                            vPasoTrace = Date.Now
                             clsLnStock.Eliminar(BeStock, lConnection, lTransaction)
+                            vMsEliminarStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                         Else
 
                             '#CKFK20250130 Agregué esto para que cuando se cree un nuevo Stock se elimine el original,
                             'si no tiene conteos
+                            vPasoTrace = Date.Now
                             If Not Existe_Conteo_By_IdStock_And_IdInvEnc_Mayor_0(pBeStock.IdStock,
                                                                                  BeTransInvEnc.Idinventarioenc,
                                                                                  lConnection,
                                                                                  lTransaction) Then
                                 lIdStocksAEliminar.Add(BeStock.IdStock)
                             End If
+                            vMsExisteConteo += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                             pBeStock.IdStock = 0 'EJC20260226: el IdStock se asigna en la función Insertar, por lo que se inicializa en 0 para evitar confusiones.
                             pBeStock.Cantidad = Math.Abs(vCantInv)
@@ -1998,7 +2048,9 @@ Partial Public Class clsLnTrans_inv_ciclico
                             pBeStock.Lote = pBeStock.Lote
                             pBeStock.Fecha_vence = pBeStock.Fecha_vence
                             pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                            vPasoTrace = Date.Now
                             clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                            vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                             IdStock += 1
 
                         End If
@@ -2018,7 +2070,9 @@ Partial Public Class clsLnTrans_inv_ciclico
                         pBeStock.Lote = pBeStock.Lote
                         pBeStock.Fecha_vence = pBeStock.Fecha_vence
                         pBeStock.IdUbicacion = pBeStock.IdUbicacion
+                        vPasoTrace = Date.Now
                         clsLnStock.Insertar(pBeStock, lConnection, lTransaction)
+                        vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                         IdStock += 1
 
                     Else
@@ -2026,6 +2080,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                         '#EJC20180625: Mantener copia del stock original
                         clsPublic.CopyObject(pBeStock, objStockHist)
                         '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo                                        
+                        vPasoTrace = Date.Now
                         objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                         objStockHist.IdNuevoStock = 0
                         objStockHist.IdUbicacion_anterior = pBeStock.IdUbicacion
@@ -2036,38 +2091,88 @@ Partial Public Class clsLnTrans_inv_ciclico
                         objStockHist.Cantidad = vCantidadHist
                         objStockHist.IdProductoTallaColor = pBeStock.IdProductoTallaColor
                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                        vMsStockHist += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                        vPasoTrace = Date.Now
                         clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
+                        vMsEliminarStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                     End If
 
                 End If
 
+                If vCntStockNuevo Mod 500 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "DAL_REG_STOCK_PROGRESS", vInicioTrace,
+                                           "Procesados=" & vCntStockNuevo &
+                                           ";MsGetStock=" & vMsGetStock &
+                                           ";MsExisteConteo=" & vMsExisteConteo &
+                                           ";MsInsertStock=" & vMsInsertStock &
+                                           ";MsStockHist=" & vMsStockHist &
+                                           ";MsEliminarStock=" & vMsEliminarStock &
+                                           ";PendEliminar=" & lIdStocksAEliminar.Count)
+                End If
+
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_STOCK_END", vInicioTrace,
+                                   "Procesados=" & vCntStockNuevo &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsExisteConteo=" & vMsExisteConteo &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsStockHist=" & vMsStockHist &
+                                   ";MsEliminarStock=" & vMsEliminarStock &
+                                   ";PendEliminar=" & lIdStocksAEliminar.Count)
 
             IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1
 
             For Each BeAjusteDet As clsBeTrans_ajuste_det In ListBeAjusteDet
+                vCntAjustes += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(BeAjusteDet.IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If ListStock.Count > 0 Then
+                    vPasoTrace = Date.Now
                     clsLnStock.Procesar_Ajuste(BeAjusteDet,
                                                Usuario,
                                                lConnection,
                                                lTransaction)
+                    vMsProcesarAjuste += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                End If
+
+                If vCntAjustes Mod 250 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "DAL_REG_AJUSTE_PROGRESS", vInicioTrace,
+                                           "Procesados=" & vCntAjustes &
+                                           ";MsGetStock=" & vMsGetStock &
+                                           ";MsProcesarAjuste=" & vMsProcesarAjuste)
                 End If
 
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_AJUSTE_END", vInicioTrace,
+                                   "Procesados=" & vCntAjustes &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsProcesarAjuste=" & vMsProcesarAjuste)
 
             For Each IdStock In lIdStocksAEliminar
+                vCntEliminarPendiente += 1
 
+                vPasoTrace = Date.Now
                 ListStock = Get_Existente_By_IdStock(IdStock, lConnection, lTransaction)
+                vMsGetStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 If ListStock.Count > 0 Then
+                    vPasoTrace = Date.Now
                     clsLnStock.Eliminar_By_IdStock(IdStock, lConnection, lTransaction)
+                    vMsEliminarPendiente += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                 End If
 
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_ELIMINAR_PEND_END", vInicioTrace,
+                                   "Procesados=" & vCntEliminarPendiente &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsEliminarPendiente=" & vMsEliminarPendiente)
 
             clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc,
                                                  6,
@@ -2083,7 +2188,20 @@ Partial Public Class clsLnTrans_inv_ciclico
                                  pCodigoBodegaERP,
                                  pTallaColor)
 
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_FIN", vInicioTrace,
+                                   "Stocks=" & vCntStockNuevo &
+                                   ";Ajustes=" & vCntAjustes &
+                                   ";EliminarPendiente=" & vCntEliminarPendiente &
+                                   ";MsGetStock=" & vMsGetStock &
+                                   ";MsExisteConteo=" & vMsExisteConteo &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsStockHist=" & vMsStockHist &
+                                   ";MsEliminarStock=" & vMsEliminarStock &
+                                   ";MsProcesarAjuste=" & vMsProcesarAjuste &
+                                   ";MsEliminarPendiente=" & vMsEliminarPendiente)
+
         Catch ex As Exception
+            InvRegularizacionTrace(vSesionTrace, "DAL_REG_ERROR", vInicioTrace, ex.Message)
             Throw New Exception(ex.Message)
         End Try
 
@@ -4226,7 +4344,6 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                                   And x.Lote = Temp.LoteDestino _
                                                                   And x.Fecha_Vence = Temp.FechaVence _
                                                                   And x.Lic_Plate = Temp.Licencia _
-                                                                  And x.Fecha <= Temp.Fec_Mod _
                                                                   And (((x.IdUbicacionOrigen = Temp.IdUbicacion) And
                                                                          x.IdTipoTarea <> clsDataContractDI.tTipoTarea.PIK And
                                                                          x.IdTipoTarea <> clsDataContractDI.tTipoTarea.DESP) _
@@ -4866,6 +4983,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     "  trans_inv_ciclico.IdPresentacion, " &
                                     "  trans_inv_ciclico.fecha_vence_stock, " &
                                     "  MAX(CASE WHEN trans_inv_ciclico.contado = 1 THEN ISNULL(trans_inv_ciclico.IdPresentacion_nuevo, 0) ELSE 0 END) AS IdPresentacion_nuevo, " &
+                                    "  MAX(CASE WHEN trans_inv_ciclico.contado = 1 AND ISNULL(trans_inv_ciclico.IdPresentacion_nuevo, 0) = 0 THEN 1 ELSE 0 END) AS Conteo_En_Unidad, " &
                                     "  trans_inv_ciclico.peso_stock AS Peso_Stock, " &
                                     "  trans_inv_ciclico.cant_stock AS Cantidad_Stock, " &
                                     "  trans_inv_ciclico.peso_reconteo, " &
@@ -4967,6 +5085,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     If lRow("IdPresentacion_nuevo") IsNot DBNull.Value AndAlso lRow("IdPresentacion_nuevo") IsNot Nothing Then
                         BeTransInvCiclico.IdPresentacion_nuevo = CType(lRow("IdPresentacion_nuevo"), Integer)
                     End If
+
 
                     If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
                         BeTransInvCiclico.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
@@ -7225,7 +7344,8 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     Public Shared Function Agregar_Conteo(ByVal pBeTransInvCiclico As clsBeTrans_inv_ciclico,
                                           pIdResolucion As Integer,
-                                          pTallaColor As clsBeProducto_talla_color) As Integer
+                                          pTallaColor As clsBeProducto_talla_color,
+                                          pCrearTallaColor As Boolean) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -7238,7 +7358,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                 '#AT20260529 Crear nueva combinacion de talla color si aplica
-                If pTallaColor IsNot Nothing Then
+                If pTallaColor IsNot Nothing AndAlso pCrearTallaColor Then
                     pTallaColor.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
 
                     If clsLnProducto_talla_color.Insertar(pTallaColor) > 0 Then
@@ -8158,5 +8278,176 @@ Partial Public Class clsLnTrans_inv_ciclico
         End Try
 
     End Function
+
+End Class
+
+'#AG27052026: Obtiene progreso de conteo ciclico por ubicacion.
+Public Shared Function Get_Progreso_Conteo_Ubicacion(ByVal pIdInventarioEnc As Integer,
+                                                         ByVal pIdBodega As Integer,
+                                                         ByVal lConnection As SqlConnection,
+                                                         ByVal lTransaction As SqlTransaction) As DataTable
+
+    Dim lDataTable As New DataTable
+
+    Try
+
+        Dim vSQL As String =
+                "WITH StockBase AS ( " &
+                "    SELECT " &
+                "        c.IdUbicacion, " &
+                "        c.IdBodega, " &
+                "        dbo.Nombre_Completo_Ubicacion(c.IdUbicacion, c.IdBodega) AS Ubicacion, " &
+                "        c.IdStock, " &
+                "        c.IdProductoBodega, " &
+                "        MAX(ISNULL(c.cant_stock, 0)) AS CantidadAContar, " &
+                "        MAX(CASE WHEN ISNULL(c.contado, 0) = 1 THEN 1 ELSE 0 END) AS StockContado, " &
+                "        MAX(CASE WHEN ISNULL(c.contado, 0) = 1 THEN ISNULL(c.cantidad, 0) ELSE 0 END) AS CantidadContada " &
+                "    FROM trans_inv_ciclico c " &
+                "    WHERE c.idinventarioenc = @idinventarioenc " &
+                "      AND c.IdBodega = @IdBodega " &
+                "    GROUP BY " &
+                "        c.IdUbicacion, " &
+                "        c.IdBodega, " &
+                "        dbo.Nombre_Completo_Ubicacion(c.IdUbicacion, c.IdBodega), " &
+                "        c.IdStock, " &
+                "        c.IdProductoBodega " &
+                "), " &
+                "ProductoBase AS ( " &
+                "    SELECT " &
+                "        IdUbicacion, " &
+                "        IdBodega, " &
+                "        Ubicacion, " &
+                "        IdProductoBodega, " &
+                "        SUM(CantidadAContar) AS CantidadAContar, " &
+                "        SUM(CantidadContada) AS CantidadContada, " &
+                "        MIN(StockContado) AS ProductoContado " &
+                "    FROM StockBase " &
+                "    GROUP BY " &
+                "        IdUbicacion, " &
+                "        IdBodega, " &
+                "        Ubicacion, " &
+                "        IdProductoBodega " &
+                ") " &
+                "SELECT " &
+                "    Ubicacion, " &
+                "    COUNT(IdProductoBodega) AS ProductosAContar, " &
+                "    SUM(CASE WHEN ProductoContado = 1 THEN 1 ELSE 0 END) AS ProductosContados, " &
+                "    COUNT(IdProductoBodega) - SUM(CASE WHEN ProductoContado = 1 THEN 1 ELSE 0 END) AS DiferenciaProductos, " &
+                "    SUM(CantidadAContar) AS CantidadTotalAContar, " &
+                "    SUM(CantidadContada) AS CantidadTotalContada, " &
+                "    SUM(CantidadContada) - SUM(CantidadAContar) AS DiferenciaTotal " &
+                "FROM ProductoBase " &
+                "GROUP BY Ubicacion " &
+                "ORDER BY Ubicacion "
+
+        Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+            lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Transaction = lTransaction
+            lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+            lDTA.Fill(lDataTable)
+
+        End Using
+
+        Return lDataTable
+
+    Catch ex As Exception
+        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+        clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Throw ex
+    End Try
+
+End Function
+
+'#AG27052026: Obtiene progreso de conteo ciclico por tramo/rack.
+Public Shared Function Get_Progreso_Conteo_Tramo(ByVal pIdInventarioEnc As Integer,
+                                                     ByVal pIdBodega As Integer,
+                                                     ByVal lConnection As SqlConnection,
+                                                     ByVal lTransaction As SqlTransaction) As DataTable
+
+    Dim lDataTable As New DataTable
+
+    Try
+
+        Dim vSQL As String =
+                "WITH StockBase AS ( " &
+                "    SELECT " &
+                "        bu.IdTramo, " &
+                "        bt.descripcion AS Tramo, " &
+                "        c.IdUbicacion, " &
+                "        c.IdStock, " &
+                "        c.IdProductoBodega, " &
+                "        MAX(CASE WHEN ISNULL(c.contado, 0) = 1 THEN 1 ELSE 0 END) AS StockContado " &
+                "    FROM trans_inv_ciclico c " &
+                "    INNER JOIN bodega_ubicacion bu " &
+                "        ON bu.IdUbicacion = c.IdUbicacion " &
+                "       AND bu.IdBodega = c.IdBodega " &
+                "    LEFT JOIN bodega_tramo bt " &
+                "        ON bt.IdTramo = bu.IdTramo " &
+                "       AND bt.IdBodega = bu.IdBodega " &
+                "    WHERE c.idinventarioenc = @idinventarioenc " &
+                "      AND c.IdBodega = @IdBodega " &
+                "    GROUP BY " &
+                "        bu.IdTramo, " &
+                "        bt.descripcion, " &
+                "        c.IdUbicacion, " &
+                "        c.IdStock, " &
+                "        c.IdProductoBodega " &
+                "), " &
+                "ProductoBase AS ( " &
+                "    SELECT " &
+                "        Tramo, " &
+                "        IdUbicacion, " &
+                "        IdProductoBodega, " &
+                "        MIN(StockContado) AS ProductoContado " &
+                "    FROM StockBase " &
+                "    GROUP BY " &
+                "        Tramo, " &
+                "        IdUbicacion, " &
+                "        IdProductoBodega " &
+                "), " &
+                "Ubicaciones AS ( " &
+                "    SELECT " &
+                "        Tramo, " &
+                "        IdUbicacion, " &
+                "        COUNT(IdProductoBodega) AS ProductosAContar, " &
+                "        SUM(CASE WHEN ProductoContado = 1 THEN 1 ELSE 0 END) AS ProductosContados " &
+                "    FROM ProductoBase " &
+                "    GROUP BY " &
+                "        Tramo, " &
+                "        IdUbicacion " &
+                ") " &
+                "SELECT " &
+                "    ISNULL(Tramo, '') AS Tramo, " &
+                "    COUNT(IdUbicacion) AS UbicacionesAContar, " &
+                "    SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS UbicacionesContadas, " &
+                "    COUNT(IdUbicacion) - SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS DiferenciaUbicaciones " &
+                "FROM Ubicaciones " &
+                "GROUP BY Tramo " &
+                "ORDER BY Tramo "
+
+        Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+            lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Transaction = lTransaction
+            lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+            lDTA.Fill(lDataTable)
+
+        End Using
+
+        Return lDataTable
+
+    Catch ex As Exception
+        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+        clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Throw ex
+    End Try
+
+End Function
+
 
 End Class

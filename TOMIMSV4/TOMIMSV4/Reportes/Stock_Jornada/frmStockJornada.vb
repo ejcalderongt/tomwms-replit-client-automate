@@ -111,6 +111,7 @@ Public Class frmStockJornada
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en LotesPorUbi.
             vNombreArchivoLayOutGrid = "GridStockJornada.xml"
 
@@ -146,7 +147,8 @@ Public Class frmStockJornada
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdRegistroInt, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True)
+            Exit Sub
             Dim printingSystem1 As New DevExpress.XtraPrinting.PrintingSystem()
             Dim printLink As New DevExpress.XtraPrinting.PrintableComponentLink()
 
@@ -178,7 +180,6 @@ Public Class frmStockJornada
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -317,3 +318,6 @@ Public Class frmStockJornada
         End Try
     End Sub
 End Class
+
+
+

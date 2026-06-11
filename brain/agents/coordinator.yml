@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-21"
+updated: "2026-06-11"
 role: "WMS local coordinator"
 mission: >
   Route work by domain, protect business rules, and force evidence-driven cycles
@@ -12,6 +12,7 @@ operating_rules:
   - For DB production KILLIOS, run SELECT only.
   - Do not log secrets or connection string password values.
   - Commit only after a stable validation cycle when Erik asks for phase commits.
+  - For HH incidents in picking/verificacion/reemplazo/etiquetas, load domain-hh-android + matching handoff from handoffs index.
 
 default_cycle:
   - Capture the baseline and the exact document/reference used for comparison.
@@ -61,7 +62,7 @@ brain_api_usage:
     changes and Erik wants Brain synchronized.
 
 jira_reporting:
-  mode_default: "draft_only"
+  mode_default: "draft_only_unless_erik_confirms_publish"
   purpose: >
     Keep a reusable Jira reporting workflow for WMS tasks without publishing
     anything automatically until Erik confirms scope, description and effort.
@@ -69,6 +70,7 @@ jira_reporting:
     - Never send issues/comments/transitions to Jira platform without explicit confirmation from Erik.
     - Prepare draft content first: title, scope, description, effort estimate, evidence and risks.
     - Use local review cycle to refine dimensioning before any publish action.
+    - Do not include agent/tool names in customer-facing Jira issue text unless Erik asks.
   setup_reference:
     files:
       - AGENTS.md
@@ -80,11 +82,40 @@ jira_reporting:
       - Save automation helper script as jira_report.py in the project when requested.
       - Use JIRA_TOKEN from environment variables; never print the token value.
   publish_gate:
-    required_confirmation_phrase: "confirmado por Erik para subir a Jira"
+    required_confirmation_phrase: "Erik explicitly asks to create/update/push Jira issues"
     allowed_actions_after_confirmation:
       - Create issue
       - Add comments
       - Transition status
+      - Update assignee/reporter/start date/due date/story points
+  field_map_2026:
+    base_url: "https://dtsolutionsdevops.atlassian.net"
+    project_key: "WMS"
+    auth: "Basic Auth with JIRA_EMAIL + JIRA_TOKEN environment variables"
+    fields:
+      assignee: "assignee.accountId"
+      reporter: "reporter.accountId"
+      start_date: "customfield_10015"
+      due_date: "duedate"
+      story_points: "customfield_10016"
+      sprint: "customfield_10020 / Agile API sprint issue endpoint"
+      parent_epic: "parent.key"
+      status: "POST /rest/api/3/issue/{key}/transitions"
+    known_transitions_wms:
+      todo: "11"
+      in_progress: "21"
+      done: "31"
+      inicio: "51"
+    known_people:
+      carolina_fuentes: "557058:88d97c4b-ebd7-46b2-b194-74de23f1613d"
+      erik_calderon: "557058:0239b0a8-451b-48a5-ac22-a06111f5b8a5"
+    known_sprints:
+      wms_la_cumbre_v2026: 3749
+    issue_pattern:
+      - Functional development issues are assigned to the implementer, reporter is Carolina when Erik asks.
+      - QA/test issues are assigned to Carolina and remain Por hacer unless Erik says otherwise.
+      - Development issues executed by Erik on a given day should carry start_date, due_date, story points and Done transition.
+      - Use labels for client and initiative when custom fields are not on the creation screen.
   optional_future_hook:
     note: >
       A git hook for automatic Jira draft generation can be prepared, but must

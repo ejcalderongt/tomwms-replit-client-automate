@@ -110,6 +110,7 @@ public class clsLnBodega
             oBeBodega.Interface_SAP = GetBool("interface_SAP");
             oBeBodega.IdTipoEtiquetaLicencia = GetInt("IdTipoEtiquetaLicencia");
             oBeBodega.IdSimbologiaLicencia = GetInt("IdSimbologiaLicencia");
+            oBeBodega.ocultar_nombre_etiquetas_impresas = GetBool("ocultar_nombre_etiquetas_impresas");
             oBeBodega.Restringir_areas_sap = GetBool("restringir_areas_sap");
             oBeBodega.Control_pallet_mixto = GetBool("control_pallet_mixto");
             oBeBodega.Despacho_automatico_hh = GetBool("despacho_automatico_hh");
@@ -224,6 +225,7 @@ public class clsLnBodega
             Ins.Add("interface_sap", "@interface_sap", "F");
             Ins.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", "F");
             Ins.Add("idsimbologialicencia", "@idsimbologialicencia", "F");
+            Ins.Add("ocultar_nombre_etiquetas_impresas", "@ocultar_nombre_etiquetas_impresas", "F");
             Ins.Add("restringir_areas_sap", "@restringir_areas_sap", "F");
             Ins.Add("control_pallet_mixto", "@control_pallet_mixto", "F");
             Ins.Add("despacho_automatico_hh", "@despacho_automatico_hh", "F");
@@ -380,6 +382,7 @@ public class clsLnBodega
             Ins.Add("interface_sap", "@interface_sap", "F");
             Ins.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", "F");
             Ins.Add("idsimbologialicencia", "@idsimbologialicencia", "F");
+            Ins.Add("ocultar_nombre_etiquetas_impresas", "@ocultar_nombre_etiquetas_impresas", "F");
             Ins.Add("restringir_areas_sap", "@restringir_areas_sap", "F");
             Ins.Add("control_pallet_mixto", "@control_pallet_mixto", "F");
             Ins.Add("despacho_automatico_hh", "@despacho_automatico_hh", "F");
@@ -523,6 +526,7 @@ public class clsLnBodega
             Upd.Add("interface_sap", "@interface_sap", "F");
             Upd.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", "F");
             Upd.Add("idsimbologialicencia", "@idsimbologialicencia", "F");
+            Upd.Add("ocultar_nombre_etiquetas_impresas", "@ocultar_nombre_etiquetas_impresas", "F");
             Upd.Add("restringir_areas_sap", "@restringir_areas_sap", "F");
             Upd.Add("control_pallet_mixto", "@control_pallet_mixto", "F");
             Upd.Add("despacho_automatico_hh", "@despacho_automatico_hh", "F");
@@ -977,6 +981,7 @@ public class clsLnBodega
         cmd.Parameters.Add(new SqlParameter("@interface_SAP", oBeBodega.Interface_SAP? (object)oBeBodega.Interface_SAP: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdTipoEtiquetaLicencia", oBeBodega.IdTipoEtiquetaLicencia != 0 ? (object)oBeBodega.IdTipoEtiquetaLicencia: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdSimbologiaLicencia", oBeBodega.IdSimbologiaLicencia != 0 ? (object)oBeBodega.IdSimbologiaLicencia: DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@ocultar_nombre_etiquetas_impresas", oBeBodega.ocultar_nombre_etiquetas_impresas));
         cmd.Parameters.Add(new SqlParameter("@restringir_areas_sap", oBeBodega.Restringir_areas_sap? (object)oBeBodega.Restringir_areas_sap: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@control_pallet_mixto", oBeBodega.Control_pallet_mixto? (object)oBeBodega.Control_pallet_mixto: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@despacho_automatico_hh", oBeBodega.Despacho_automatico_hh? (object)oBeBodega.Despacho_automatico_hh: DBNull.Value));

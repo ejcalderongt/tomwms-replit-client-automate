@@ -1238,6 +1238,14 @@ Partial Public Class clsLnTrans_oc_enc
 
                     If Detalle.IsNew Then
 
+                        If Detalle.Talla Is Nothing Then
+                            Throw New Exception("Debe ingresar la talla del producto")
+                        End If
+
+                        If Detalle.Color Is Nothing Then
+                            Throw New Exception("Debe ingresar el color del producto")
+                        End If
+
                         Detalle.Talla = clsLnTalla.GetSingle(Detalle.Talla.IdTalla, lConnection, lTransaction)
                         Detalle.Color = clsLnColor.GetSingle(Detalle.Color.IdColor, lConnection, lTransaction)
 

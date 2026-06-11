@@ -58,6 +58,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 .Dañado_picking = IIf(IsDBNull(dr.Item("dañado_picking")), False, dr.Item("dañado_picking"))
                 .IdUbicacionTemporal = IIf(IsDBNull(dr.Item("IdUbicacionTemporal")), 0, dr.Item("IdUbicacionTemporal"))
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Codigo_Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Codigo_Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
             End With
 
         Catch ex1 As SqlException
@@ -88,12 +90,17 @@ Partial Public Class clsLnTrans_picking_ubic
                        pdet.nombre_producto AS nombre,
                        pdet.nom_presentacion AS Presentacion,
                        pdet.nom_unid_med AS UnidadMedida,
-                       pdet.nom_estado AS NomEstado
+                       pdet.nom_estado AS NomEstado,
+                       t.Codigo as Talla,
+                       c.Codigo as Color
                 FROM trans_picking_ubic pu
                 INNER JOIN trans_picking_det pkdet ON pkdet.IdPickingEnc = pu.IdPickingEnc
                                                    AND pkdet.IdPickingDet = pu.IdPickingDet
                 INNER JOIN trans_pe_det pdet ON pdet.IdPedidoEnc = pu.IdPedidoEnc
-                                             AND pdet.IdPedidoDet = pu.IdPedidoDet "
+                                             AND pdet.IdPedidoDet = pu.IdPedidoDet 
+                LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor =  pu.IdProductoTallaColor 
+                LEFT OUTER JOIN talla t ON ptc.IdTalla = t.IdTalla 
+                LEFT OUTER JOIN color c ON ptc.IdColor = c.IdColor "
 
     End Function
 
@@ -4374,6 +4381,17 @@ Partial Public Class clsLnTrans_picking_ubic
 
             If Not Es_Transaccion_Remota Then lConnection.Open() : ltransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
+            '#EJC20260602: Releer dentro de transacción para blindar contra estado stale HH/BOF.
+            pBePickingUbic = Get_Single_By_IdStockRes_And_IdPickingEnc(pBePickingUbic.IdStockRes,
+                                                                       pBePickingUbic.IdPickingEnc,
+                                                                       pBePickingUbic.IdBodega,
+                                                                       IIf(Not Es_Transaccion_Remota, lConnection, pConnection),
+                                                                       IIf(Not Es_Transaccion_Remota, ltransaction, pTransaction))
+
+            If pBePickingUbic Is Nothing Then
+                Throw New Exception("ERROR_20260602_Marcar_Linea_No_Verificada: No se encontró la línea de picking con estado vigente.")
+            End If
+
             If (pBePickingUbic.Cantidad_despachada > 0) Then
                 pBePickingUbic.Cantidad_Verificada = pBePickingUbic.Cantidad_despachada
                 pBePickingUbic.Peso_verificado = pBePickingUbic.Peso_despachado
@@ -6798,7 +6816,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pu.cantidad_verificada > 0 AND pu.dañado_picking = 0 AND 
                                             pu.no_encontrado = 0 AND pu.dañado_verificacion = 0 AND 
                                             pu.cantidad_verificada<>pu.cantidad_despachada AND
-                                            (pu.fecha_packing IS NULL OR pu.fecha_packing < '19010101'))
+                                            (
+                                                pu.fecha_packing IS NULL OR
+                                                pu.fecha_packing < '19010101' OR
+                                                NOT EXISTS (
+                                                    SELECT 1
+                                                    FROM dbo.trans_packing_enc pe2
+                                                    WHERE pe2.IdPickingEnc = pu.IdPickingEnc
+                                                      AND pe2.IdPedidoEnc = pu.IdPedidoEnc
+                                                      AND pe2.IdProductoBodega = pu.IdProductoBodega
+                                                      AND ISNULL(pe2.lic_plate, '') = ISNULL(pu.lic_plate, '')
+                                                      AND ISNULL(pe2.lote, '') = ISNULL(pu.lote, '')
+                                                      AND CONVERT(DATE, ISNULL(pe2.fecha_vence, '19000101')) = CONVERT(DATE, ISNULL(pu.fecha_vence, '19000101'))
+                                                      AND pe2.IdProductoEstado = pu.IdProductoEstado
+                                                      AND pe2.IdDespachoEnc = 0
+                                                )
+                                            ))
                                                                         GROUP BY pu.IdPickingEnc,  pu.IdPropietarioBodega, pu.IdProductoEstado, pu.IdUnidadMedida, 
                                             pu.lote, pu.fecha_vence, pu.fecha_minima, pu.serial, 
                                             pu.lic_plate, 
@@ -7857,7 +7890,9 @@ Partial Public Class clsLnTrans_picking_ubic
                                                               cantidad_verificada > 0 AND
                                   (Fecha_packing IS NULL OR Fecha_packing < '19010101') AND
                                   IdPickingEnc=@IdPickingEnc AND
+                                  IdPedidoEnc=@IdPedidoEnc AND
                                   IdUnidadMedida=@IdUnidadMedida AND
+                                  lic_plate=@lic_plate AND
                                   ISNULL(IdPresentacion,0) = @IdPresentacion AND
                                   (Lote = @Lote OR Lote IS NULL)  AND 
                                   ISNULL(CONVERT(DATE, fecha_vence),CONVERT(DATE, '19000101')) = CONVERT(DATE, @Fecha_Vence) AND 
@@ -7871,11 +7906,14 @@ Partial Public Class clsLnTrans_picking_ubic
                 lDTA.SelectCommand.CommandType = CommandType.Text
 
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pPackingEnc.Idpickingenc)
+                '#EJC20260604 FIX_PACKING_CRUCE_PEDIDOS: aislar lookup por pedido y licencia para evitar
+                'que un empaque de cantidad 1 termine sellando más de un trans_picking_ubic entre pedidos.
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pPackingEnc.IdPedidoEnc)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pPackingEnc.Idpresentacion)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pPackingEnc.Idunidadmedida)
                 lDTA.SelectCommand.Parameters.AddWithValue("@lote", pPackingEnc.Lote)
                 lDTA.SelectCommand.Parameters.AddWithValue("@fecha_vence", pPackingEnc.Fecha_vence)
-                '#EJCRP fix(packing): @lic_plate param eliminado junto con filtro SQL #EJC20260528
+                lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pPackingEnc.Lic_plate)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pPackingEnc.Idproductoestado)
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pPackingEnc.Idproductobodega)
 

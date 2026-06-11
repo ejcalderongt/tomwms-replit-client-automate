@@ -467,11 +467,12 @@ Public Class clsSyncSapDevolProveedor
 
             Dim vOperadorPickingDefecto As String = clsLnTrans_picking_ubic.Get_Operador_Defecto_By_IdPickingEnc(bePedidoEnc.Picking.IdPickingEnc)
 
+            '#CKFK20260610: Concatenar observación de la solicitud con detalle de origen en WMS para facilitar trazabilidad en SAP.
             Dim devolucion As New GoodsReturnDto With {
                 .CardCode = If(bePedidoEnc IsNot Nothing AndAlso bePedidoEnc.Cliente IsNot Nothing, bePedidoEnc.Cliente.Codigo, Nothing),
                 .DocDate = Date.Today,
                 .DocDueDate = Date.Today,
-                .Comments = $"Devolución generada por WMS sobre Solicitud SAP: {no_pedido} - Pedido WMS: {If(bePedidoEnc IsNot Nothing, bePedidoEnc.IdPedidoEnc.ToString(), "")}",
+                .Comments = bePedidoEnc.Observacion & " - " & $"Devolución generada por WMS sobre Solicitud SAP: {no_pedido} - Pedido WMS: {If(bePedidoEnc IsNot Nothing, bePedidoEnc.IdPedidoEnc.ToString(), "")}",
                 .U_USR_PICK = vOperadorPickingDefecto,
                 .U_ENVIADO_WMS = 2,
                 .U_DOCUMENTO_WMS = bePedidoEnc.IdPedidoEnc,

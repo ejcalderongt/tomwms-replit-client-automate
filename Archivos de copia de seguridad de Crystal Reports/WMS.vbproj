@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS</AssemblyName>
+    <AssemblyName>WMS_QAS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,15 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\10.238.113.198\WMS\</InstallUrl>
-    <UpdateUrl>\\10.238.113.198\WMS\</UpdateUrl>
-    <ProductName>WMS</ProductName>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS</SuiteName>
-    <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
+    <SuiteName>WMS_QAS</SuiteName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>157</ApplicationRevision>
-    <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>7.0.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -55,19 +54,19 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,13 +91,13 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -107,7 +106,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -145,34 +144,26 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
-    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Enterprise.Viewing.ReportSource">
       <HintPath>..\..\packages\CrystalReports.Enterprise.Viewing.ReportSource.13.0.4001\lib\net40\CrystalDecisions.Enterprise.Viewing.ReportSource.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.ReportAppServer.ClientDoc.dll</HintPath>
+    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.ReportAppServer.CommLayer.dll</HintPath>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.Controllers">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.ReportAppServer.Controllers.dll</HintPath>
+    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.ReportAppServer.DataDefModel.dll</HintPath>
+    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.Windows.Forms">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win64_x64\dotnet\CrystalDecisions.Windows.Forms.dll</HintPath>
-    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.BonusSkins.v25.2, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Charts.v25.2.Core, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.CodeParser.v25.2, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
@@ -226,28 +217,14 @@
     <Reference Include="DevExpress.XtraScheduler.v25.2.Extensions, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeList.v25.2, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraVerticalGrid.v25.2, Version=25.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 9.0\Visual Studio Tools for Office\PIA\Office12\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -261,9 +238,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.IO.FileSystem.Primitives" />
-    <Reference Include="System.IO.Packaging">
-      <HintPath>..\..\packages\System.IO.Packaging.6.0.0\lib\net461\System.IO.Packaging.dll</HintPath>
-    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Remoting" />
@@ -299,6 +273,9 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Clases_AP\clsBD.vb" />
     <Compile Include="Clases_AP\clsTabla.vb" />
+    <Compile Include="Clases_AP\clsUiGridCopyHelper.vb" />
+    <Compile Include="Clases_AP\clsUiPrintHelper.vb" />
+    <Compile Include="Clases_AP\CryptoHelper.vb" />
     <Compile Include="Clases_AP\TOMWMSSystemInfo.vb" />
     <Compile Include="Clases_AP\m_Global.vb" />
     <Compile Include="Clases_AP\RawPrinterHelper.vb" />
@@ -357,6 +334,18 @@
     <Compile Include="Mantenimientos\Base_Datos\frmTablasBD.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Campaña\frmCampaña.Designer.vb">
+      <DependentUpon>frmCampaña.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Campaña\frmCampaña.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Campaña\frmCampaña_List.Designer.vb">
+      <DependentUpon>frmCampaña_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Campaña\frmCampaña_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Cliente\Tiempos_Clientes\frmTiemposClientes_List.Designer.vb">
       <DependentUpon>frmTiemposClientes_List.vb</DependentUpon>
     </Compile>
@@ -367,6 +356,18 @@
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Email\frmcorreorpt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.Designer.vb">
+      <DependentUpon>frmImpresion_OC_RFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.Designer.vb">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.Designer.vb">
@@ -564,10 +565,37 @@
     <Compile Include="Mantenimientos\Principales\frmPrincipal02.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Principales\frmReporteOcupacion.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.Designer.vb">
       <DependentUpon>ReleaseNotesReview.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Principales\ReleaseNotesReview.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Color\frmProducto_Color.Designer.vb">
+      <DependentUpon>frmProducto_Color.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Color\frmProducto_Color.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Color\frmProducto_ColorList.Designer.vb">
+      <DependentUpon>frmProducto_ColorList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Color\frmProducto_ColorList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Estilo\frmProducto_Estilo.Designer.vb">
+      <DependentUpon>frmProducto_Estilo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Estilo\frmProducto_Estilo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Estilo\frmProducto_EstiloList.Designer.vb">
+      <DependentUpon>frmProducto_EstiloList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Estilo\frmProducto_EstiloList.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Producto_Etiquetas\Producto_Etiquetas.Designer.vb">
@@ -598,6 +626,24 @@
       <DependentUpon>frmProducto_Parametro_BList.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Producto_Parametro_B\frmProducto_Parametro_BList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Talla\frmProducto_Talla.Designer.vb">
+      <DependentUpon>frmProducto_Talla.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Talla\frmProducto_Talla.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.Designer.vb">
+      <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.Designer.vb">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.Designer.vb">
@@ -748,10 +794,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsRepAjustes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reportes\Ajustes\dsRepAjustes.vb">
+      <DependentUpon>dsRepAjustes.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.Designer.vb">
+      <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\Ajustes\rptAjuste.Designer.vb">
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Ajustes\rptAjuste.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.Designer.vb">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Analítica\DsetAnalitica.Designer.vb">
@@ -780,6 +841,18 @@
     <Compile Include="Reportes\Analítica\frmIndicadores.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.Designer.vb">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.Designer.vb">
+      <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reportes\DashDesigner\frmDashboardDesigner.Designer.vb">
       <DependentUpon>frmDashboardDesigner.vb</DependentUpon>
     </Compile>
@@ -797,6 +870,24 @@
     </Compile>
     <Compile Include="Reportes\Despacho\frmDetalleSalidas_DiasPiso.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Despacho\frmTiemposDespacho.Designer.vb">
+      <DependentUpon>frmTiemposDespacho.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Despacho\frmTiemposDespacho.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Despacho\Packing\frmPackingDespachado.Designer.vb">
+      <DependentUpon>frmPackingDespachado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Despacho\Packing\frmPackingDespachado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.Designer.vb">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Despacho\rptDespachofCealsa.Designer.vb">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>
@@ -997,6 +1088,12 @@
     <Compile Include="Reportes\MI3_Registros\frmRegistrosInterface.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Reportes\MI3_Registros\frmRegistrosInterfaceRes.Designer.vb">
+      <DependentUpon>frmRegistrosInterfaceRes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\MI3_Registros\frmRegistrosInterfaceRes.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\Movimiento\frmMovimientosDoc.Designer.vb">
       <DependentUpon>frmMovimientosDoc.vb</DependentUpon>
     </Compile>
@@ -1014,6 +1111,12 @@
     </Compile>
     <Compile Include="Reportes\Movimiento\frmMovimientosPoliza.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.Designer.vb">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Packing\rptPackingPorBarra.Designer.vb">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
@@ -1039,10 +1142,34 @@
     <Compile Include="Reportes\Picking\rptUbicacionesPickingResumido.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reportes\Prefactura\rptPrefactura.Designer.vb">
+      <DependentUpon>rptPrefactura.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Prefactura\rptPrefactura.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\Productividad\Picking\frmfrmProductividadPicking.Designer.vb">
+      <DependentUpon>frmfrmProductividadPicking.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Productividad\Picking\frmfrmProductividadPicking.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Reportes\Producto\Estacionalidad\frmEstacionalidadProducto.Designer.vb">
       <DependentUpon>frmEstacionalidadProducto.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Producto\Estacionalidad\frmEstacionalidadProducto.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Producto_CambioEstado\frmReportCambiosEstado.Designer.vb">
+      <DependentUpon>frmReportCambiosEstado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Producto_CambioEstado\frmReportCambiosEstado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Recepcion\Tiempos_Recepcion\frmTiemposRecepcion.Designer.vb">
+      <DependentUpon>frmTiemposRecepcion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Recepcion\Tiempos_Recepcion\frmTiemposRecepcion.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Reportes\Regla_Vence\frmReglaVencimiento.Designer.vb">
@@ -1073,6 +1200,12 @@
       <DependentUpon>FrmStockJornadaGeneral.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Stock_Jornada\FrmStockJornadaGeneral.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Transacciones_Operador\frmRptTransaccionesOP.Designer.vb">
+      <DependentUpon>frmRptTransaccionesOP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Transacciones_Operador\frmRptTransaccionesOP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Reportes\Trazabilidad_Lote\frmMovimientosporLote.Designer.vb">
@@ -1291,10 +1424,40 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Transacciones\Ajustes\Ajustes_Positivos\frmAjustePositivo.Designer.vb">
+      <DependentUpon>frmAjustePositivo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Ajustes_Positivos\frmAjustePositivo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\frmInventarioRes.Designer.vb">
+      <DependentUpon>frmInventarioRes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\frmInventarioRes.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.Designer.vb">
       <DependentUpon>frmListaStockControlCalidad.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Implosion\frmImplosion.Designer.vb">
+      <DependentUpon>frmImplosion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Implosion\frmImplosion.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\frmInventarioDet.Designer.vb">
+      <DependentUpon>frmInventarioDet.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.Designer.vb">
+      <DependentUpon>frmRegularizarInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
@@ -1333,10 +1496,22 @@
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.Designer.vb">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Picking\frmPicking.Designer.vb">
       <DependentUpon>frmPicking.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Picking\frmPicking.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\PreFactura\frmIngresos_List.Designer.vb">
+      <DependentUpon>frmIngresos_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\PreFactura\frmIngresos_List.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\PreFactura\frmPreFactura.Designer.vb">
@@ -1351,10 +1526,46 @@
     <Compile Include="Transacciones\PreFactura\frmPreFactura_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Recepcion\frmImpresionSojet.Designer.vb">
+      <DependentUpon>frmImpresionSojet.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Recepcion\frmImpresionSojet.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.designer.vb">
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.Designer.vb">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocIngresoRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.Designer.vb">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmDocSalidaRFID_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.Designer.vb">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\RFID\frmExistenciasRFID.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Servicios\frmRegServicios.Designer.vb">
@@ -1387,10 +1598,22 @@
     <Compile Include="Transacciones\Ajustes\frmAjusteStock.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.Designer.vb">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Ajustes\frmAjusteStock_List.Designer.vb">
       <DependentUpon>frmAjusteStock_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Ajustes\frmAjusteStock_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.Designer.vb">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Ajuste\frmAjusteTipo.Designer.vb">
@@ -2790,6 +3013,24 @@
     <Compile Include="Transacciones\Inventario\frmInventarioList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.Designer.vb">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.Designer.vb">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.Designer.vb">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Inventario\frmInventarioVerifica.Designer.vb">
       <DependentUpon>frmInventarioVerifica.vb</DependentUpon>
     </Compile>
@@ -2898,6 +3139,12 @@
     <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmControlUbicaciones.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.Designer.vb">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Recepcion\Asistente\DsAsistente.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2952,6 +3199,12 @@
     <Compile Include="Transacciones\Recepcion\frmRecepcion_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.Designer.vb">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WaitForm.Designer.vb">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </Compile>
@@ -2986,6 +3239,9 @@
     <EmbeddedResource Include="Mantenimientos\Ajuste\frmAjusteMotivo_List.resx">
       <DependentUpon>frmAjusteMotivo_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Ajuste\frmImportarAjusteExcel.resx">
+      <DependentUpon>frmImportarAjusteExcel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Backup\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>
     </EmbeddedResource>
@@ -3006,6 +3262,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Bodega_Graficador\frmColumViewervb.resx">
       <DependentUpon>frmColumViewervb.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Campaña\frmCampaña.resx">
+      <DependentUpon>frmCampaña.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Campaña\frmCampaña_List.resx">
+      <DependentUpon>frmCampaña_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Carga_Excel\frmCargaExcel_Inv_Ini_Op_Log.resx">
       <DependentUpon>frmCargaExcel_Inv_Ini_Op_Log.vb</DependentUpon>
@@ -3046,6 +3308,12 @@
     <EmbeddedResource Include="Mantenimientos\Email\frmcorreorpt.resx">
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC_RFID.resx">
+      <DependentUpon>frmImpresion_OC_RFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC.resx">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.resx">
       <DependentUpon>frmImpresionRecepcion.vb</DependentUpon>
     </EmbeddedResource>
@@ -3083,6 +3351,18 @@
     <EmbeddedResource Include="Mantenimientos\Principales\ReleaseNotesReview.resx">
       <DependentUpon>ReleaseNotesReview.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Color\frmProducto_Color.resx">
+      <DependentUpon>frmProducto_Color.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx">
+      <DependentUpon>frmProducto_ColorList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Estilo\frmProducto_Estilo.resx">
+      <DependentUpon>frmProducto_Estilo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Estilo\frmProducto_EstiloList.resx">
+      <DependentUpon>frmProducto_EstiloList.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Producto_Etiquetas\Producto_Etiquetas.resx">
       <DependentUpon>Producto_Etiquetas.vb</DependentUpon>
     </EmbeddedResource>
@@ -3097,6 +3377,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Producto_Parametro_B\frmProducto_Parametro_BList.resx">
       <DependentUpon>frmProducto_Parametro_BList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx">
+      <DependentUpon>frmProducto_Talla.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx">
+      <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.resx">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.resx">
       <DependentUpon>frmRegimenFiscal.vb</DependentUpon>
@@ -3182,8 +3471,14 @@
     <EmbeddedResource Include="QA\frmQA.resx">
       <DependentUpon>frmQA.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\frmReporteAjustesDet.resx">
+      <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Ajustes\rptAjuste.resx">
       <DependentUpon>rptAjuste.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\rptAjuste_TallaColor.resx">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\Dashboard1.resx" />
     <EmbeddedResource Include="Reportes\Analítica\frmAnalitica1.resx">
@@ -3197,6 +3492,12 @@
     <EmbeddedResource Include="Reportes\Analítica\frmIndicadores.resx">
       <DependentUpon>frmIndicadores.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.resx">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.resx">
+      <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\DashDesigner\frmDashboardDesigner.resx">
       <DependentUpon>frmDashboardDesigner.vb</DependentUpon>
     </EmbeddedResource>
@@ -3205,6 +3506,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\frmDetalleSalidas_DiasPiso.resx">
       <DependentUpon>frmDetalleSalidas_DiasPiso.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Despacho\frmTiemposDespacho.resx">
+      <DependentUpon>frmTiemposDespacho.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Despacho\Packing\frmPackingDespachado.resx">
+      <DependentUpon>frmPackingDespachado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Despacho\rptDespachoMampa.resx">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\rptDespachofCealsa.resx">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>
@@ -3295,6 +3605,9 @@
     <EmbeddedResource Include="Reportes\MI3_Registros\frmRegistrosInterface.resx">
       <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\MI3_Registros\frmRegistrosInterfaceRes.resx">
+      <DependentUpon>frmRegistrosInterfaceRes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Movimiento\frmMovimientosDoc.resx">
       <DependentUpon>frmMovimientosDoc.vb</DependentUpon>
     </EmbeddedResource>
@@ -3303,6 +3616,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Movimiento\frmMovimientosPoliza.resx">
       <DependentUpon>frmMovimientosPoliza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Packing\rptPackingTallaColor.resx">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Packing\rptPackingPorBarra.resx">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
@@ -3316,8 +3632,20 @@
     <EmbeddedResource Include="Reportes\Picking\rptUbicacionesPickingResumido.resx">
       <DependentUpon>rptUbicacionesPickingResumido.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Prefactura\rptPrefactura.resx">
+      <DependentUpon>rptPrefactura.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Productividad\Picking\frmfrmProductividadPicking.resx">
+      <DependentUpon>frmfrmProductividadPicking.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Producto\Estacionalidad\frmEstacionalidadProducto.resx">
       <DependentUpon>frmEstacionalidadProducto.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Producto_CambioEstado\frmReportCambiosEstado.resx">
+      <DependentUpon>frmReportCambiosEstado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Recepcion\Tiempos_Recepcion\frmTiemposRecepcion.resx">
+      <DependentUpon>frmTiemposRecepcion.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Regla_Vence\frmReglaVencimiento.resx">
       <DependentUpon>frmReglaVencimiento.vb</DependentUpon>
@@ -3333,6 +3661,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Stock_Jornada\FrmStockJornadaGeneral.resx">
       <DependentUpon>FrmStockJornadaGeneral.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Transacciones_Operador\frmRptTransaccionesOP.resx">
+      <DependentUpon>frmRptTransaccionesOP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Trazabilidad_Lote\frmMovimientosporLote.resx">
       <DependentUpon>frmMovimientosporLote.vb</DependentUpon>
@@ -3429,8 +3760,23 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptListaUbicacion.vb</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Ajustes\Ajustes_Positivos\frmAjustePositivo.resx">
+      <DependentUpon>frmAjustePositivo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Ajustes\frmInventarioRes.resx">
+      <DependentUpon>frmInventarioRes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Control_Calidad\Cambio_Estado\frmListaStockControlCalidad.resx">
       <DependentUpon>frmListaStockControlCalidad.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Implosion\frmImplosion.resx">
+      <DependentUpon>frmImplosion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
+      <DependentUpon>frmInventarioDet.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmRegularizarInventarioRFID.resx">
+      <DependentUpon>frmRegularizarInventarioRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
@@ -3451,8 +3797,14 @@
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Picking\frmCantidadreemplazo.resx">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Picking\frmPicking.resx">
       <DependentUpon>frmPicking.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\PreFactura\frmIngresos_List.resx">
+      <DependentUpon>frmIngresos_List.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\PreFactura\frmPreFactura.resx">
       <DependentUpon>frmPreFactura.vb</DependentUpon>
@@ -3460,9 +3812,27 @@
     <EmbeddedResource Include="Transacciones\PreFactura\frmPreFactura_List.resx">
       <DependentUpon>frmPreFactura_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Recepcion\frmImpresionSojet.resx">
+      <DependentUpon>frmImpresionSojet.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.resx">
       <DependentUpon>frmRecepcionBOF.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID.resx">
+      <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocIngresoRFID_List.resx">
+      <DependentUpon>frmDocIngresoRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID.resx">
+      <DependentUpon>frmDocSalidaRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmDocSalidaRFID_List.resx">
+      <DependentUpon>frmDocSalidaRFID_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\RFID\frmExistenciasRFID.resx">
+      <DependentUpon>frmExistenciasRFID.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Servicios\frmRegServicios.resx">
       <DependentUpon>frmRegServicios.vb</DependentUpon>
@@ -3480,6 +3850,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Ajustes\frmAjusteStock.resx">
       <DependentUpon>frmAjusteStock.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Ajustes\Reportes\frmIndicadorAjusteProveedor.resx">
+      <DependentUpon>frmIndicadorAjusteProveedor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Ajustes\frmAjusteStock_List.resx">
       <DependentUpon>frmAjusteStock_List.vb</DependentUpon>
@@ -3739,6 +4112,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Producto\frmProducto.resx">
       <DependentUpon>frmProducto.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Producto\frmProducto_List.resx">
       <DependentUpon>frmProducto_List.vb</DependentUpon>
@@ -4084,6 +4458,15 @@
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioList.resx">
       <DependentUpon>frmInventarioList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID.resx">
+      <DependentUpon>frmInventarioRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioProductosRFID.resx">
+      <DependentUpon>frmInventarioProductosRFID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\Inventario_rfid\frmInventarioRFID_Lista.resx">
+      <DependentUpon>frmInventarioRFID_Lista.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Inventario\frmInventarioVerifica.resx">
       <DependentUpon>frmInventarioVerifica.vb</DependentUpon>
     </EmbeddedResource>
@@ -4134,6 +4517,9 @@
     <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmControlUbicaciones.resx">
       <DependentUpon>frmControlUbicaciones.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Cambio_Ubicacion_Estado\frmResultadoValidacionCambioUbic.resx">
+      <DependentUpon>frmResultadoValidacionCambioUbic.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Recepcion\Asistente\frmR3Asistente.resx">
       <DependentUpon>frmR3Asistente.vb</DependentUpon>
     </EmbeddedResource>
@@ -4153,6 +4539,9 @@
     <EmbeddedResource Include="Transacciones\Recepcion\frmRecepcion_List.resx">
       <DependentUpon>frmRecepcion_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.resx">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WaitForm.resx">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -4162,13 +4551,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <None Include="app.config" />
-    <None Include="CEALSASync.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="Conn_Becofarma.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Conn_Becofarma.ini" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
@@ -4180,27 +4563,26 @@
     <None Include="Configuracion_QADataSet.xss">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
-    <Content Include="Conn - Cumbre.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Conn _BECOFARMAPRD.ini" />
-    <None Include="Conn_GT.ini" />
-    <None Include="Conn_Killios.ini" />
+    <Content Include="Conn - Cumbre.ini" />
+    <Content Include="ConnMHS.ini" />
     <None Include="ConnDev.ini" />
+    <None Include="Conn_GT.ini" />
+    <None Include="Conn_Inelac.ini" />
+    <None Include="Conn_Killios.ini" />
     <None Include="Conn_CLC_Fiscal.ini" />
+    <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
     <None Include="Conn_Merhonsa.ini" />
-    <Content Include="CEALSASync.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="es\Microsoft.Data.SqlClient.resources.dll" />
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Inventario_Inicial.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="DMS.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Dset_Regla_Vence.xsc">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
@@ -4232,12 +4614,14 @@
     <Content Include="Mantenimientos\plantillas\WMS_Formato_Importacion_Cambio_Ubicacion.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SAPBOSync.exe">
+    <Content Include="Mantenimientos\plantillas\WMS_plantilla_Actualizacion_IndiceRotacion.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SAPBOSync.exe.config">
+    <Content Include="Mantenimientos\plantillas\WMS_plantilla_Actualizacion_IndiceRotacionUbicacion.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
+    <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4255,13 +4639,10 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\srvTipoCambio\TipoCambio.wsdl" />
-    <None Include="Service References\wsTOMHH\TOMHHWS.wsdl" />
+    <None Include="Service References\wsTOMHH\TOMHHWS1.wsdl" />
     <None Include="Skin.ini" />
     <None Include="Conn_Cealsa.ini" />
     <Content Include="Conn.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NavSync.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Conn_CKFK.ini" />
@@ -4279,9 +4660,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -4298,7 +4676,6 @@
     <None Include="Resources\convert_16x16.png" />
     <None Include="Resources\actions_refresh.svg" />
     <None Include="Resources\lgosat.png" />
-    <None Include="Service References\wsTOMHH\TOMHHWS.disco" />
     <None Include="Service References\wsTOMHH\configuration91.svcinfo" />
     <None Include="Service References\wsTOMHH\configuration.svcinfo" />
     <None Include="Service References\wsTOMHH\Reference.svcmap">
@@ -4306,10 +4683,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Resources\lgosat.png" />
-    <Content Include="SAPBOSyncCumbre.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SAPBOSyncCumbre.exe.config" />
     <None Include="Service References\srvTipoCambio\TipoCambio.disco" />
     <None Include="Service References\srvTipoCambio\configuration91.svcinfo" />
     <None Include="Service References\srvTipoCambio\configuration.svcinfo" />
@@ -4317,9 +4690,7 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
-    <Content Include="Update_BD_WMS.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4466,9 +4837,6 @@
     <None Include="Resources\Single_Pallet_Box.png" />
     <None Include="Resources\Single_Pallet_Box_Fit.png" />
     <None Include="Resources\logonuevodts1.png" />
-    <Content Include="PrintsService.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\5b91750ebd518_thumb900.jpg" />
     <None Include="Resources\LogoDTS1.png" />
     <None Include="Resources\LogoDTS_small.png" />
@@ -4481,7 +4849,6 @@
     <None Include="Resources\exporttoxls_32x32.png" />
     <None Include="Resources\exporttoxls_16x16.png" />
     <None Include="Resources\tom_wms.png" />
-    <Content Include="scriptBD.sql" />
     <None Include="Reportes\Resumen_Stock\DsDetalleExistencias.xsc">
       <DependentUpon>DsDetalleExistencias.xsd</DependentUpon>
     </None>
@@ -5104,6 +5471,7 @@
     <Folder Include="Mantenimientos\Impresión_Pallet\" />
     <Folder Include="Mantenimientos\PreFactura\" />
     <Folder Include="Mantenimientos\Producto_Parametro\" />
+    <Folder Include="Transacciones\Picking\Balanceador\" />
     <Folder Include="Web References\bin\" />
   </ItemGroup>
   <ItemGroup>
@@ -5194,6 +5562,66 @@
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Productividad_Ingresos_Por_Operador_Y_Tipo_Documento.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Productividad_Picking_Por_Operador.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Productos_con_menor_rotación_por_mes_y_año.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Progreso_Picking_By_Operador.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Top_15_Productos_Salida.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Tableros_Por_Defecto\Top_15_Productos_Salida_Por_Mes.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
@@ -5218,23 +5646,45 @@
     <PackageReference Include="ExcelNumberFormat">
       <Version>1.1.0</Version>
     </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>5.8.14</Version>
+    </PackageReference>
+    <PackageReference Include="Irony">
+      <Version>1.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>6.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Packaging">
+      <Version>10.0.8</Version>
+    </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>8.0.0</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
-      <Version>4.5.5</Version>
+      <Version>4.6.3</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
+      <Version>4.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="Zebra.Printer.SDK">
+      <Version>2.15.2634</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AppGlobal\AppGlobal.vbproj">
       <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
       <Name>AppGlobal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAPSYNCMAMPA\SAPSYNCMAMPA.vbproj">
+      <Project>{69ea4ff6-c886-49c1-b9d1-f011bc18d0d2}</Project>
+      <Name>SAPSYNCMAMPA</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
@@ -5247,16 +5697,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-  <Import Project="..\..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <Import Project="..\..\packages\Microsoft.Data.SqlClient.SNI.4.0.0\build\net46\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\..\packages\Microsoft.Data.SqlClient.SNI.4.0.0\build\net46\Microsoft.Data.SqlClient.SNI.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.7\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.7\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

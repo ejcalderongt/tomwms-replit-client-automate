@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS</AssemblyName>
+    <AssemblyName>WMS_QAS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\WMS_QAP\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.1.3\WMS_QAP\</InstallUrl>
-    <UpdateUrl>\\192.168.1.3\WMS_QAP\</UpdateUrl>
-    <ProductName>WMS</ProductName>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS</SuiteName>
+    <SuiteName>WMS_QAS</SuiteName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>20</ApplicationRevision>
-    <ApplicationVersion>7.0.1.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>7.0.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -54,7 +54,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -66,7 +66,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -91,7 +91,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -106,7 +106,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -228,9 +228,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -275,6 +273,9 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Clases_AP\clsBD.vb" />
     <Compile Include="Clases_AP\clsTabla.vb" />
+    <Compile Include="Clases_AP\clsUiGridCopyHelper.vb" />
+    <Compile Include="Clases_AP\clsUiPrintHelper.vb" />
+    <Compile Include="Clases_AP\CryptoHelper.vb" />
     <Compile Include="Clases_AP\TOMWMSSystemInfo.vb" />
     <Compile Include="Clases_AP\m_Global.vb" />
     <Compile Include="Clases_AP\RawPrinterHelper.vb" />
@@ -1537,7 +1538,6 @@
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transacciones\RFID\AutoImpresion\ServicioAutoImpresionRFID.vb" />
     <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
       <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
     </Compile>
@@ -4551,7 +4551,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="CEALSASync.exe" />
     <Content Include="Conn_Becofarma.ini" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>

@@ -107,7 +107,8 @@ Public Class frmStockConDocument
     Private Sub Imprimir_Vista()
 
         Try
-
+            clsUiPrintHelper.PrintGridPreview(grdExistDoc, AP.UsuarioAp.Nombres, AddressOf PrintableComponentLink_CreateReportHeaderArea, True, True, 12)
+            Exit Sub
             GridView1.OptionsPrint.ExpandAllDetails = True
             GridView1.OptionsPrint.PrintDetails = True
 
@@ -151,7 +152,6 @@ Public Class frmStockConDocument
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
         End Try
-
     End Sub
 
     Private Sub PrintableComponentLink_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
@@ -255,6 +255,7 @@ Public Class frmStockConDocument
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210719:Restaurar LayoutGrid en grdExistDoc.
             vNombreArchivoLayOutGrid = grdExistDoc.Name & ".xml"
 
@@ -341,3 +342,6 @@ Public Class frmStockConDocument
     End Sub
 
 End Class
+
+
+

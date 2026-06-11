@@ -53,6 +53,7 @@ Public Class frmStockPorComposicion
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             '#EJC20210716:Restaurar LayoutGrid en LotesPorUbi.
             vNombreArchivoLayOutGrid = grdComposi.Name & ".xml"
 

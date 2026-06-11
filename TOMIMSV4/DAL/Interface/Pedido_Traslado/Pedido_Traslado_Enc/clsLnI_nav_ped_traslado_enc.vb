@@ -923,6 +923,10 @@ Public Class clsLnI_nav_ped_traslado_enc
 
                                 End If
 
+                            Else
+
+                                Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+
                             End If
 
                         Else

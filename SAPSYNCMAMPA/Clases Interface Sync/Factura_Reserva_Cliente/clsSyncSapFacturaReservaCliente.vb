@@ -776,13 +776,15 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
         clsLnTrans_picking_ubic.Get_Operador_Defecto_By_IdPickingEnc(
             BePedidoEnc.Picking.IdPickingEnc, clsTrans.lConnection, clsTrans.lTransaction)
 
+        '#CKFK20260610: Concatenar observación de la solicitud con detalle de origen en WMS para facilitar trazabilidad en SAP.
+        'Quité el campo JournalMemo porque no se no se debe modificar el documento original
+        'Quité el U_Tipo porque debe dejar el original
         Dim dto As New DeliveryNoteDto With {
         .CardCode = clsLnCliente.Get_Codigo_By_IdCliente(BePedidoEnc.IdCliente),
         .DocDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .TaxDate = BePedidoEnc.Fecha_Pedido.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .DocDueDate = Now.Date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-        .Comments = $"Entrega generada por WMS sobre Factura de Reserva: {docEntryFacturaReserva} - Ref: {docNumFacturaReserva} - IdWMS: {BePedidoEnc.IdPedidoEnc}",
-        .JournalMemo = $"WMS Delivery from ODPI/OINV {docNumFacturaReserva}",
+        .Comments = $"{BePedidoEnc.Observacion} - Entrega generada por WMS sobre Factura de Reserva: {docEntryFacturaReserva} - Ref: {docNumFacturaReserva} - IdWMS: {BePedidoEnc.IdPedidoEnc}",
         .U_USR_PICK = vOperadorPickingDefecto,
         .U_ENVIADO_WMS = 2,
         .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
@@ -791,7 +793,6 @@ Public Class clsSyncSapFacturaReservaCliente : Inherits clsInterfaceBase
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
-        .U_Tipo = 1,
         .DocumentLines = New List(Of DeliveryNoteLineDto)()}
 
         ' Agrupar para armar cantidades y lotes

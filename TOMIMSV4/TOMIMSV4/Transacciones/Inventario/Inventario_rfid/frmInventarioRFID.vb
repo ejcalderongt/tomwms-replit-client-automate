@@ -1,4 +1,4 @@
-﻿Imports System.Data.SqlClient
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
@@ -780,6 +780,9 @@ Public Class frmInventarioRFID
 
     Private Sub gdviewTeorico_RowCellStyle(sender As Object, e As RowCellStyleEventArgs) Handles gdviewTeorico.RowCellStyle
 
+        ' #EJC20260603_ROWSTYLE_PRINT_GUARD: evitar costo de formato por celda durante impresión.
+        If clsUiPrintHelper.IsPrintingPreviewInProgress Then Exit Sub
+
         Try
 
             Dim View As GridView = CType(sender, GridView)
@@ -975,10 +978,10 @@ Public Class frmInventarioRFID
 
 
         Try
-            Dim RegularizaInventario As New frmRegularizarInventarioRFID(frmRegularizarInventarioRFID.TipoTrans.Nuevo) With
-                {.gBeInventario = gBeTransInvEnc}
-            RegularizaInventario.ShowDialog()
-            RegularizaInventario.Dispose()
+            'Dim RegularizaInventario As New frmRegularizarInventarioRFID(frmRegularizarInventarioRFID.TipoTrans.Nuevo) With
+            '    {.gBeInventario = gBeTransInvEnc}
+            'RegularizaInventario.ShowDialog()
+            'RegularizaInventario.Dispose()
 
             If gBeTransInvEnc.Regularizado Then
                 Close()

@@ -120,6 +120,39 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
+    Private Shared Sub Asegurar_Cliente_Bodega_Activo(ByVal pIdCliente As Integer,
+                                                      ByVal pIdBodega As Integer,
+                                                      ByVal pUser As String,
+                                                      ByVal pConnection As SqlConnection,
+                                                      ByVal pTransaction As SqlTransaction)
+
+        If pIdCliente <= 0 OrElse pIdBodega <= 0 Then Exit Sub
+
+        Dim vClienteBodega As clsBeCliente_bodega = clsLnCliente_bodega.GetSingle(pIdCliente,
+                                                                                   pIdBodega,
+                                                                                   pConnection,
+                                                                                   pTransaction)
+
+        If vClienteBodega IsNot Nothing Then Exit Sub
+
+        Dim vUser As String = If(String.IsNullOrWhiteSpace(pUser), "1", pUser.Trim())
+        Dim vNow As Date = Now
+
+        vClienteBodega = New clsBeCliente_bodega With {
+            .IdClienteBodega = clsLnCliente_bodega.MaxID(pConnection, pTransaction) + 1,
+            .IdCliente = pIdCliente,
+            .IdBodega = pIdBodega,
+            .Activo = True,
+            .User_agr = vUser,
+            .User_mod = vUser,
+            .Fec_agr = vNow,
+            .Fec_mod = vNow
+        }
+
+        clsLnCliente_bodega.Insertar_From_Interface(vClienteBodega, pConnection, pTransaction)
+
+    End Sub
+
     Private Shared Function Obtener_Motivo_No_Reserva(ByVal pBeTrasladoDet As clsBeI_nav_ped_traslado_det,
                                                       ByVal pMotivoDefecto As String) As String
 
@@ -1156,6 +1189,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                         lTransInterface)
                             pBePedidoEnc.IdEmpresaTransporte = BeTransporte.IdEmpresaTransporte
                         End If
+
+                        Asegurar_Cliente_Bodega_Activo(pBePedidoEnc.IdCliente,
+                                                       pBePedidoEnc.IdBodega,
+                                                       CStr(BeConfigEnc.IdUsuario),
+                                                       lConectionInterface,
+                                                       lTransInterface)
 
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
@@ -2797,6 +2836,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.Enviado_A_ERP = False
                         '#EJC20190711: Se utilizará para generar el pedido de ingreso ( pedido de compra) en la bodega  a la que se le envía el despacho.
                         pBePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino = BeINavPedTrasladoEnc.Receipt_Document_Reference
+
+                        Asegurar_Cliente_Bodega_Activo(pBePedidoEnc.IdCliente,
+                                                       pBePedidoEnc.IdBodega,
+                                                       CStr(BeConfigEnc.IdUsuario),
+                                                       lConectionInterface,
+                                                       lTransInterface)
 
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,

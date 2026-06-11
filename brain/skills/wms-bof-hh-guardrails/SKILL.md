@@ -40,6 +40,28 @@ If a dedicated `domain-hh-android.yml` exists later, load it for HH Java tasks.
 3. Update Java and VB together only when the task explicitly requires cross-layer work, but keep the commit scoped and documented.
 4. Never change generated proxy files as the source of truth.
 
+## Fast Path 2026-06 (Etiquetas + Reemplazo TC)
+
+Use this when symptoms mention `licencia`, `fardo`, `etiqueta`, `talla/color`, `reemplazo`, `JSON vs SOAP`.
+
+1. Load:
+   - `brain/agents/domain-hh-android.yml`
+   - `brain/handoffs/2026-06-11-operativo-hh-bof-etiquetas-reemplazo-tc/README.md`
+2. Verify payload/list contract first:
+   - `IdProductoTallaColor`, `Codigo_Talla`, `Codigo_Color`.
+3. If HH list is JSON-based:
+   - Keep JSON primary.
+   - Add SOAP fallback only when JSON arrives without critical TC fields.
+4. In HH cursors:
+   - Prefer column-name mapping; keep index fallback.
+5. In VB DAL loader:
+   - Accept aliases (`Codigo_Talla/Codigo_Color` and `Talla/Color`) to avoid brittle coupling with view shape.
+
+Quick validation:
+- Scan/select license in HH and confirm TC is visible.
+- Run replacement and confirm TC persists.
+- Compile HH (`:app:compileDebugJavaWithJavac`) before close.
+
 ## Commit Hygiene
 
 - Keep BOF-only and HH-only changes separate unless Erik explicitly requests a cross-layer change.

@@ -1479,6 +1479,7 @@ Public Class frmCapturaParametroRecepcionS
 
         Try
 
+            clsUiGridCopyHelper.AttachToForm(Me, "Copiar")
             xtrCapParametros.TabPages.Remove(Series)
 
             Carga_Parametros_Personalizados()
