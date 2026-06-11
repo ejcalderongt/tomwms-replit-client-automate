@@ -222,7 +222,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         End Try
 
         Try
-            Dim vTemp As String = Path.GetTempPath()
+            Dim vTemp As String = System.IO.Path.GetTempPath()
             If Not String.IsNullOrWhiteSpace(vTemp) Then
                 Return System.IO.Path.Combine(vTemp, "TOMWMS", "logs", "debug-reserva-mi3", "imports")
             End If
