@@ -1528,4 +1528,72 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    Public Shared Function Get_All_By_EstadoImpresion(ByVal Impreso As Boolean,
+                                                  ByRef lConnection As SqlConnection,
+                                                  ByRef lTransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
+
+        Get_All_By_EstadoImpresion = Nothing
+
+        Try
+
+            Const sp As String = "SELECT IdPallet,
+                                Codigo,
+                                Nombre,
+                                Camas_Por_Tarima,
+                                Cajas_Por_Cama,
+                                Cantidad_Presentacion,
+                                UM_Producto,
+                                Lote,
+                                Fecha_Agregado,
+                                Fecha_Ingreso,
+                                Fecha_Vence,
+                                Fecha_Produccion,
+                                Activo,
+                                Recibido,
+                                IdRecepcion,
+                                Bodega_Origen,
+                                Bodega_Destino,
+                                Codigo_Barra,
+                                Cantidad_UMP,
+                                Lote_Numerico,
+                                fecha_procesado_erp,
+                                sscc,
+                                gtin,
+                                Impreso,
+                                fecha_procesado_erp,
+                                IdOrdenCompraEnc,
+                                IdOrdenCompraDet,
+                                Peso
+                                FROM I_nav_barras_pallet 
+                                WHERE ISNULL(Impreso, 0) = @Impreso "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Impreso", Impreso))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+                Get_All_By_EstadoImpresion = New List(Of clsBeI_nav_barras_pallet)
+
+                For Each dr As DataRow In dt.Rows
+
+                    Dim vBeI_nav_barras_pallet As New clsBeI_nav_barras_pallet
+
+                    Cargar(vBeI_nav_barras_pallet, dr)
+
+                    Get_All_By_EstadoImpresion.Add(vBeI_nav_barras_pallet)
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

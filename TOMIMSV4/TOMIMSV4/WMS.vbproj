@@ -1538,6 +1538,7 @@
     <Compile Include="Transacciones\Recepcion_BOF\frmRecepcionBOF.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\RFID\AutoImpresion\ServicioAutoImpresionRFID.vb" />
     <Compile Include="Transacciones\RFID\frmDocIngresoRFID.Designer.vb">
       <DependentUpon>frmDocIngresoRFID.vb</DependentUpon>
     </Compile>

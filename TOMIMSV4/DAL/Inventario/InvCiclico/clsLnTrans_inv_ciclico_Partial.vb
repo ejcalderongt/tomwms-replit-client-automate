@@ -8279,10 +8279,9 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
-End Class
 
-'#AG27052026: Obtiene progreso de conteo ciclico por ubicacion.
-Public Shared Function Get_Progreso_Conteo_Ubicacion(ByVal pIdInventarioEnc As Integer,
+    '#AG27052026: Obtiene progreso de conteo ciclico por ubicacion.
+    Public Shared Function Get_Progreso_Conteo_Ubicacion(ByVal pIdInventarioEnc As Integer,
                                                          ByVal pIdBodega As Integer,
                                                          ByVal lConnection As SqlConnection,
                                                          ByVal lTransaction As SqlTransaction) As DataTable
@@ -8361,17 +8360,17 @@ Public Shared Function Get_Progreso_Conteo_Ubicacion(ByVal pIdInventarioEnc As I
 
 End Function
 
-'#AG27052026: Obtiene progreso de conteo ciclico por tramo/rack.
-Public Shared Function Get_Progreso_Conteo_Tramo(ByVal pIdInventarioEnc As Integer,
+    '#AG27052026: Obtiene progreso de conteo ciclico por tramo/rack.
+    Public Shared Function Get_Progreso_Conteo_Tramo(ByVal pIdInventarioEnc As Integer,
                                                      ByVal pIdBodega As Integer,
                                                      ByVal lConnection As SqlConnection,
                                                      ByVal lTransaction As SqlTransaction) As DataTable
 
-    Dim lDataTable As New DataTable
+        Dim lDataTable As New DataTable
 
-    Try
+        Try
 
-        Dim vSQL As String =
+            Dim vSQL As String =
                 "WITH StockBase AS ( " &
                 "    SELECT " &
                 "        bu.IdTramo, " &
@@ -8428,26 +8427,26 @@ Public Shared Function Get_Progreso_Conteo_Tramo(ByVal pIdInventarioEnc As Integ
                 "GROUP BY Tramo " &
                 "ORDER BY Tramo "
 
-        Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
-            lDTA.SelectCommand.CommandType = CommandType.Text
-            lDTA.SelectCommand.Transaction = lTransaction
-            lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
-            lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
-            lDTA.Fill(lDataTable)
+                lDTA.Fill(lDataTable)
 
-        End Using
+            End Using
 
-        Return lDataTable
+            Return lDataTable
 
-    Catch ex As Exception
-        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-        clsLnLog_error_wms.Agregar_Error(vMsgError)
-        Throw ex
-    End Try
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
 
-End Function
+    End Function
 
 
 End Class

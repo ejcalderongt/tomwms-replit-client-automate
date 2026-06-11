@@ -179,7 +179,9 @@
     <Compile Include="Interface\Transacciones_Push\clsLnI_nav_transacciones_push.vb" />
     <Compile Include="Inventario\InvCiclico\clsLnTempComparacionInventario.vb" />
     <Compile Include="Inventario\InvCiclico\clsLnTrans_inv_operador_partial.vb" />
+    <Compile Include="Inventario\InvCiclico\RFID\clsLnI_nav_barras_rfid_stock_his.vb" />
     <Compile Include="Inventario\InvCiclico\RFID\clsLnTrans_inv_ciclico_rfid.vb" />
+    <Compile Include="Inventario\InvCiclico\RFID\clsLnTrans_inv_ciclico_rfid_partial.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne.vb" />
     <Compile Include="Inventario\InvNE\clsLnTrans_inv_ne_partial.vb" />
     <Compile Include="Log\clsLnDMS_Log_sincronizacion_fallos.vb" />
@@ -868,7 +870,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.7\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.7\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>
