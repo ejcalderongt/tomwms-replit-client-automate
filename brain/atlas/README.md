@@ -18,3 +18,9 @@ powershell -ExecutionPolicy Bypass -File brain/tools/lint_brain_indexes.ps1 -Rep
 
 ## Regla de oro
 No cargar handoffs por defecto. Cargar solo por match de sintomas/tags/domains.
+
+## Actualizacion 2026-06-11
+- Nuevo dominio: `brain/agents/domain-hh-android.yml`.
+- Nuevo handoff operativo reutilizable:
+  `brain/handoffs/2026-06-11-operativo-hh-bof-etiquetas-reemplazo-tc/README.md`.
+- Router actualizado para triggers HH (`etiqueta`, `licencia`, `fardo`, `reemplazo`, `talla/color`).

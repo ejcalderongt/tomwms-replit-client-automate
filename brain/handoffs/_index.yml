@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-06-06"
+updated: "2026-06-11"
 purpose: >
   Indice de handoffs para carga selectiva de evidencia operativa. Cada entrada
   define cuando conviene cargar el handoff y cuando tratarlo como historico.
@@ -71,6 +71,19 @@ entries:
       - necesidad de TVP/SP para lookups masivos de producto
     confidence: high
     stale_after_days: 90
+
+  - id: operativo-hh-bof-etiquetas-reemplazo-tc
+    path: brain/handoffs/2026-06-11-operativo-hh-bof-etiquetas-reemplazo-tc/README.md
+    date: "2026-06-11"
+    domains: [hh, bof, database]
+    tags: [etiquetas, licencia, fardo, reemplazo, talla_color, tc, json, soap]
+    symptoms:
+      - talla y color no cargan al escanear licencia en hh
+      - reemplazo registra sin talla y color
+      - lista picking json llega sin idproductotallacolor
+      - mismatch de alias talla color entre vistas y mapeo
+    confidence: high
+    stale_after_days: 60
 load_rules:
   - Si el incidente coincide con sintomas/tags, cargar solo 1 handoff principal.
   - Si hay cruce de capas (VB + SQL o API + SQL), permitir 2 handoffs maximo.

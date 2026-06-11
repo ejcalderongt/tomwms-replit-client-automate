@@ -1,5 +1,5 @@
 version: 1
-updated: "2026-05-21"
+updated: "2026-06-11"
 purpose: >
   Context router for local WMS agents. Load the coordinator first, then only the
   domain packages whose triggers match the task.
@@ -59,6 +59,27 @@ domains:
       - TOMWMS_BOF
       - frmEjecucion
       - Reference.vb
+  hh_android:
+    file: brain/agents/domain-hh-android.yml
+    triggers:
+      - HH
+      - Android
+      - picking
+      - verificacion
+      - reemplazo
+      - talla
+      - color
+      - talla color
+      - licencia
+      - fardo
+      - etiqueta
+      - zpl
+      - recepcion
+      - escaneo
+      - tc
+    also_load:
+      - brain/agents/domain-bof.yml
+      - brain/agents/domain-database.yml
   webapi:
     file: brain/agents/domain-webapi.yml
     triggers:
@@ -109,6 +130,7 @@ rules:
     - For reservation investigations, domain-reserva plus domain-database is mandatory.
     - For WebAPI reservation investigations, add domain-webapi and domain-performance.
     - For legacy WinForms/UI reserve traces, add domain-bof.
+    - For HH incidents (picking/verificacion/reemplazo/impresion), load domain-hh-android first, then BOF/DB as needed.
     - Load handoffs only when symptoms/tags match entries in brain/handoffs/_index.yml.
     - For publish/sync work, run orchestration double-check from coordinator.yml.
   context_budget:
