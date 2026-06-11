@@ -1064,7 +1064,7 @@ Public Class frmImpresionRecepcion_OC
             BeInavBarraPallet.Peso = vPeso
             ' #EJC20260605_FIX_IMP_OC_CONTADOR_ETIQUETAS_PRESENTACION:
             'Persistir en la licencia cerrada cuántas etiquetas de presentación se imprimieron realmente.
-            BeInavBarraPallet.cant_etiquetas_presentacion_impresas = pEtiquetasPresentacionImpresasLicenciaActual
+            BeInavBarraPallet.Cant_Etiquetas_Presentacion_Impresas = pEtiquetasPresentacionImpresasLicenciaActual
             BeInavBarraPallet.Cantidad_Presentacion = pEtiquetasPresentacionImpresasLicenciaActual
 
             Dim factorPresentacion As Double = ObtenerFactorPresentacionActual()
@@ -1085,7 +1085,7 @@ Public Class frmImpresionRecepcion_OC
             clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(BeInavBarraPallet.IdOrdenCompraEnc,
                                                                                       BeInavBarraPallet.IdOrdenCompraDet,
                                                                                       BeInavBarraPallet.Codigo_barra,
-                                                                                      BeInavBarraPallet.cant_etiquetas_presentacion_impresas,
+                                                                                      BeInavBarraPallet.Cant_Etiquetas_Presentacion_Impresas,
                                                                                       clsTransaccion.lConnection,
                                                                                       clsTransaccion.lTransaction)
 
