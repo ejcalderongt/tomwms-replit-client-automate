@@ -204,7 +204,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vPreferido As String = ""
 
         Try
-            vPreferido = Configuration.ConfigurationManager.AppSettings("WMS_RESERVA_MI3_IMPORT_TRACE_PATH")
+            vPreferido = ConfigurationManager.AppSettings("WMS_RESERVA_MI3_IMPORT_TRACE_PATH")
         Catch
             vPreferido = ""
         End Try
@@ -214,15 +214,24 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         End If
 
         Try
-            Dim vBase As String = System.AppDomain.CurrentDomain.BaseDirectory
-            If Not String.IsNullOrWhiteSpace(vBase) Then
-                Return System.IO.Path.Combine(vBase, "logs", "debug-reserva-mi3", "imports")
+            Dim vLocalAppData As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+            If Not String.IsNullOrWhiteSpace(vLocalAppData) Then
+                Return System.IO.Path.Combine(vLocalAppData, "TOMWMS", "logs", "debug-reserva-mi3", "imports")
+            End If
+        Catch
+        End Try
+
+        Try
+            Dim vTemp As String = Path.GetTempPath()
+            If Not String.IsNullOrWhiteSpace(vTemp) Then
+                Return System.IO.Path.Combine(vTemp, "TOMWMS", "logs", "debug-reserva-mi3", "imports")
             End If
         Catch
         End Try
 
         Return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                                       "TOMWMS",
+                                      "logs",
                                       "debug-reserva-mi3",
                                       "imports")
 
