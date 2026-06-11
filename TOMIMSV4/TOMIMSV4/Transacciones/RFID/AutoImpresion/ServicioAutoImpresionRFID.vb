@@ -165,7 +165,7 @@ Public Class ServicioAutoImpresionRFID
     Private Function ObtenerBarrasPendientesImpresion(lConnection As SqlConnection, ltransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
         Try
 
-            Return clsLnI_nav_barras_pallet.Get_All_By_EstadoImpresion(False, lConnection, ltransaction)
+            'Return clsLnI_nav_barras_pallet.Get_All_By_EstadoImpresion(False, lConnection, ltransaction)
 
         Catch ex As Exception
             Throw

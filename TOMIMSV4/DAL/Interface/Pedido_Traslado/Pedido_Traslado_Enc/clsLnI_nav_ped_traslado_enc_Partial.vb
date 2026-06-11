@@ -1,10 +1,12 @@
-﻿Imports System.Configuration
+Imports System.Configuration
 Imports System.Data.SqlClient
+Imports System.Diagnostics
 Imports System.Reflection
 Partial Public Class clsLnI_nav_ped_traslado_enc
 
     Private Shared lProductoBodegaInMemory As New List(Of clsBeProducto_bodega)
     Private Shared lBeConfigInMemory As New List(Of clsBeI_nav_config_enc)
+    Private Shared ReadOnly mImportTraceLock As New Object()
 
     Private Shared Function Limpiar_Motivo_No_Reserva(ByVal pTexto As String) As String
 
@@ -41,6 +43,14 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     Private Shared Function Clasificar_Motivo_No_Reserva(ByVal pMotivo As String) As String
 
         Dim vTexto As String = Normalizar_Texto_Tipo_No_Reserva(pMotivo)
+
+        If vTexto.Contains("ESTADO DE PRODUCTO") OrElse
+           vTexto.Contains("IDPRODUCTOESTADO") OrElse
+           vTexto.Contains("BUEN ESTADO") OrElse
+           vTexto.Contains("EN RECEPCION") OrElse
+           vTexto.Contains("NO HAY STOCK EN EL ESTADO") Then
+            Return "ESTADO_PRODUCTO_NO_APLICA"
+        End If
 
         If vTexto.Contains("TALLA") OrElse
            vTexto.Contains("COLOR") OrElse
@@ -188,6 +198,197 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Return "No se pudo completar la reserva: " & vMotivo
 
     End Function
+
+    Private Shared Function ReservaImportTrace_ResolverDirectorio() As String
+
+        Dim vPreferido As String = ""
+
+        Try
+            vPreferido = ConfigurationManager.AppSettings("WMS_RESERVA_MI3_IMPORT_TRACE_PATH")
+        Catch
+            vPreferido = ""
+        End Try
+
+        If Not String.IsNullOrWhiteSpace(vPreferido) Then
+            Return vPreferido
+        End If
+
+        Try
+            Dim vLocalAppData As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+            If Not String.IsNullOrWhiteSpace(vLocalAppData) Then
+                Return System.IO.Path.Combine(vLocalAppData, "TOMWMS", "logs", "debug-reserva-mi3", "imports")
+            End If
+        Catch
+        End Try
+
+        Try
+            Dim vTemp As String = System.IO.Path.GetTempPath()
+            If Not String.IsNullOrWhiteSpace(vTemp) Then
+                Return System.IO.Path.Combine(vTemp, "TOMWMS", "logs", "debug-reserva-mi3", "imports")
+            End If
+        Catch
+        End Try
+
+        Return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                                      "TOMWMS",
+                                      "logs",
+                                      "debug-reserva-mi3",
+                                      "imports")
+
+    End Function
+
+    Private Shared Function ReservaImportTrace_LimpiarArchivo(ByVal pTexto As String) As String
+        Dim vTexto As String = If(pTexto, "doc")
+        For Each vChar As Char In System.IO.Path.GetInvalidFileNameChars()
+            vTexto = vTexto.Replace(vChar, "_"c)
+        Next
+        If String.IsNullOrWhiteSpace(vTexto) Then vTexto = "doc"
+        Return vTexto.Trim()
+    End Function
+
+    Private Shared Function ReservaImportTrace_Iniciar(ByVal pNoEnc As String,
+                                                       ByVal pReferenciaSap As String,
+                                                       ByVal pCompany As String,
+                                                       ByVal pIdBodega As Integer,
+                                                       ByVal pIdPropietarioBodega As Integer,
+                                                       ByVal pLineas As Integer) As String
+
+        Try
+            Dim vDirectorio As String = ReservaImportTrace_ResolverDirectorio()
+            System.IO.Directory.CreateDirectory(vDirectorio)
+
+            Dim vCorrelativo As String = Date.Now.ToString("yyyyMMdd-HHmmss-fff")
+            Dim vDoc As String = ReservaImportTrace_LimpiarArchivo(pNoEnc)
+            Dim vSapRef As String = ReservaImportTrace_LimpiarArchivo(If(String.IsNullOrWhiteSpace(pReferenciaSap), "N_A", pReferenciaSap))
+            If vDoc.Length > 40 Then vDoc = vDoc.Substring(0, 40)
+            If vSapRef.Length > 40 Then vSapRef = vSapRef.Substring(0, 40)
+            Dim vArchivo As String = System.IO.Path.Combine(vDirectorio, String.Format("reserva-mi3-log-out-{0}-doc-{1}-sap-{2}.txt", vCorrelativo, vDoc, vSapRef))
+
+            Dim vHeader As New List(Of String)
+            vHeader.Add("RESERVA MI3 TRACE")
+            vHeader.Add("inicio=" & Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"))
+            vHeader.Add("documento=" & If(pNoEnc, ""))
+            vHeader.Add("referencia_sap=" & If(pReferenciaSap, ""))
+            vHeader.Add("company=" & If(pCompany, ""))
+            vHeader.Add("id_bodega_origen=" & pIdBodega.ToString(Globalization.CultureInfo.InvariantCulture))
+            vHeader.Add("id_propietario_bodega_origen=" & pIdPropietarioBodega.ToString(Globalization.CultureInfo.InvariantCulture))
+            vHeader.Add("lineas_recibidas=" & pLineas.ToString(Globalization.CultureInfo.InvariantCulture))
+            vHeader.Add("maquina=" & Environment.MachineName)
+            vHeader.Add("usuario_windows=" & Environment.UserName)
+            vHeader.Add("proceso_id=" & Process.GetCurrentProcess().Id.ToString(Globalization.CultureInfo.InvariantCulture))
+            vHeader.Add("------------------------------------------------------------")
+
+            System.IO.File.WriteAllLines(vArchivo, vHeader, System.Text.Encoding.UTF8)
+            Return vArchivo
+        Catch
+            Return ""
+        End Try
+
+    End Function
+
+    Private Shared Sub ReservaImportTrace_Evento(ByVal pArchivo As String, ByVal pEvento As String)
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Exit Sub
+
+        Try
+            SyncLock mImportTraceLock
+                System.IO.File.AppendAllText(pArchivo,
+                                             String.Format("{0} | {1}{2}",
+                                                           Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                                           If(pEvento, ""),
+                                                           Environment.NewLine),
+                                             System.Text.Encoding.UTF8)
+            End SyncLock
+        Catch
+        End Try
+
+    End Sub
+
+    Private Shared Sub ReservaImportTrace_DocumentSnapshot(ByVal pArchivo As String,
+                                                           ByVal pNoEnc As String,
+                                                           ByVal pConnection As SqlConnection,
+                                                           ByVal pTransaction As SqlTransaction)
+
+        If String.IsNullOrWhiteSpace(pArchivo) OrElse String.IsNullOrWhiteSpace(pNoEnc) Then Exit Sub
+        If pConnection Is Nothing OrElse pConnection.State <> ConnectionState.Open Then Exit Sub
+
+        Try
+            ReservaImportTrace_Evento(pArchivo, "snapshot_sql_inicio")
+
+            Const sqlResumen As String = "SELECT Status, COUNT(*) AS Lineas " &
+                                         "FROM i_nav_ped_traslado_det WHERE NoEnc=@NoEnc " &
+                                         "GROUP BY Status ORDER BY Status"
+
+            Using cmd As New SqlCommand(sqlResumen, pConnection, pTransaction)
+                cmd.Parameters.Add(New SqlParameter("@NoEnc", pNoEnc))
+                Using dr = cmd.ExecuteReader()
+                    While dr.Read()
+                        ReservaImportTrace_Evento(pArchivo,
+                                                  String.Format("snapshot_resumen status={0} lineas={1}",
+                                                                Convert.ToString(dr("Status"), Globalization.CultureInfo.InvariantCulture),
+                                                                Convert.ToString(dr("Lineas"), Globalization.CultureInfo.InvariantCulture)))
+                    End While
+                End Using
+            End Using
+
+            Const sqlDetalle As String = "SELECT Line_No, Item_No, Quantity, Quantity_Reserved_WMS, Qty_to_Receive, Status, Process_Result " &
+                                         "FROM i_nav_ped_traslado_det WHERE NoEnc=@NoEnc " &
+                                         "ORDER BY TRY_CONVERT(int, Line_No), Line_No"
+
+            Using cmd As New SqlCommand(sqlDetalle, pConnection, pTransaction)
+                cmd.Parameters.Add(New SqlParameter("@NoEnc", pNoEnc))
+                Using dr = cmd.ExecuteReader()
+                    While dr.Read()
+                        Dim vLinea As String = Convert.ToString(dr("Line_No"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vItem As String = Convert.ToString(dr("Item_No"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vQty As String = Convert.ToString(dr("Quantity"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vQtyRes As String = Convert.ToString(dr("Quantity_Reserved_WMS"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vQtyRec As String = Convert.ToString(dr("Qty_to_Receive"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vStatus As String = Convert.ToString(dr("Status"), Globalization.CultureInfo.InvariantCulture)
+                        Dim vResult As String = Convert.ToString(dr("Process_Result"), Globalization.CultureInfo.InvariantCulture)
+                        If vResult IsNot Nothing Then
+                            vResult = vResult.Replace(vbCr, " ").Replace(vbLf, " ").Trim()
+                        End If
+
+                        ReservaImportTrace_Evento(pArchivo,
+                                                  String.Format("linea={0} item={1} qty={2} qty_res_wms={3} qty_to_receive={4} status={5} result={6}",
+                                                                vLinea, vItem, vQty, vQtyRes, vQtyRec, vStatus, vResult))
+                    End While
+                End Using
+            End Using
+
+            ReservaImportTrace_Evento(pArchivo, "snapshot_sql_fin")
+
+        Catch ex As Exception
+            ReservaImportTrace_Evento(pArchivo, "snapshot_sql_error=" & ex.Message)
+        End Try
+
+    End Sub
+
+    Private Shared Sub ReservaImportTrace_Finalizar(ByVal pArchivo As String,
+                                                    ByVal pEstado As String,
+                                                    ByVal pNoEnc As String,
+                                                    ByVal pConnection As SqlConnection,
+                                                    ByVal pTransaction As SqlTransaction,
+                                                    Optional ByVal pDetalle As String = "")
+
+        If String.IsNullOrWhiteSpace(pArchivo) Then Exit Sub
+
+        Try
+            If Not String.IsNullOrWhiteSpace(pDetalle) Then
+                ReservaImportTrace_Evento(pArchivo, "detalle=" & pDetalle.Replace(vbCr, " ").Replace(vbLf, " ").Trim())
+            End If
+
+            ReservaImportTrace_DocumentSnapshot(pArchivo, pNoEnc, pConnection, pTransaction)
+            ReservaImportTrace_Evento(pArchivo, "fin_estado=" & If(pEstado, ""))
+
+            Dim vAlias As String = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(pArchivo), "reserva-mi3-log-out.txt")
+            System.IO.File.Copy(pArchivo, vAlias, True)
+
+        Catch
+        End Try
+
+    End Sub
 
     Public Shared Function GetAll(ByRef lConnection As SqlConnection,
                                   ByRef lTrans As SqlTransaction) As List(Of clsBeI_nav_ped_traslado_enc)
@@ -956,16 +1157,25 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
         Dim vCantStockRes As Integer = 0
         Dim BeBodega As New clsBeBodega
+        Dim vTraceImport As String = ""
 
         Try
 
             VContadorBitacoraTOMWMS = 0
+            vTraceImport = ReservaImportTrace_Iniciar(BeINavPedTrasladoEnc.No,
+                                                      BeINavPedTrasladoEnc.External_Document_No,
+                                                      BeINavPedTrasladoEnc.Company_Code,
+                                                      IdBodegaOrigen,
+                                                      IdPropietarioBodegaOrigen,
+                                                      If(BeINavPedTrasladoEnc.Lineas_Detalle Is Nothing, 0, BeINavPedTrasladoEnc.Lineas_Detalle.Count))
+            ReservaImportTrace_Evento(vTraceImport, "inicio_proceso_reserva_mi3")
 
             If BeINavPedTrasladoEnc.Status > 0 Then
 
                 If Not BeConfigEnc.Interface_SAP Then
                     clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Documento: {0} ", BeINavPedTrasladoEnc.No, vbNewLine))
                 End If
+                ReservaImportTrace_Evento(vTraceImport, "documento_activo status=1")
 
                 If BeINavPedTrasladoEnc.Lineas_Detalle.Count > 0 Then
 
@@ -986,6 +1196,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     If PedidoClienteExistente IsNot Nothing AndAlso PedidoClienteExistenteByCompany IsNot Nothing Then
                         clsPublic.Actualizar_Progreso(lblprg, "El documento ya existe para : " & PedidoClienteExistente.Codigo_Empresa_ERP & " IdPedidoWMS: " & PedidoClienteExistente.IdPedidoEnc)
                         '#CKFK20260324 Puse el pedido en nothing porque no se puedo importar
+                        ReservaImportTrace_Finalizar(vTraceImport,
+                                                     "PED_EXISTENTE",
+                                                     BeINavPedTrasladoEnc.No,
+                                                     lConectionInterface,
+                                                     lTransInterface,
+                                                     "Documento ya existente para empresa destino.")
                         Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS = Nothing 'pBePedidoEnc
                         Exit Function
                     Else
@@ -1214,6 +1430,11 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                             vCodigoProducto = PDet.Item_No
                             BeProducto = New clsBeProducto()
+                            ReservaImportTrace_Evento(vTraceImport,
+                                                      String.Format("linea_inicio no_linea={0} item={1} qty={2}",
+                                                                    PDet.Line_No,
+                                                                    PDet.Item_No,
+                                                                    PDet.Quantity))
 
                             If vMostrar Then clsPublic.Actualizar_Progreso(lblprg, "Procesando producto: " & PDet.Item_No & IIf(PDet.Color = "", "", " Color: " & PDet.Color) & IIf(PDet.Size = "", "", " Talla:" & PDet.Size))
 
@@ -1392,7 +1613,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                           lTransInterface)
 
                                         Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
-                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
                                         Dim vMensajeEx As String = lblprg.Text
 
                                         If BeCliente.IdUbicacionAbastecerCon = 0 Then
@@ -1536,7 +1757,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                                             '#EJC202303011454: Log de errores de WMS.
                                             Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
-                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
                                             Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021911: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", PDet.NoEnc,
                                                                                     PDet.Line_No,
                                                                                     vMotivoNoReserva,
@@ -1607,6 +1828,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                             '#EJC202409041652: Punteros para revertir las líneas.
                             BeINAVPedDetAnt = PDet
                             refBePedidoDetAnt = refBePedidoDet
+                            ReservaImportTrace_Evento(vTraceImport,
+                                                      String.Format("linea_fin no_linea={0} item={1} status={2} result={3}",
+                                                                    PDet.Line_No,
+                                                                    PDet.Item_No,
+                                                                    PDet.Status,
+                                                                    If(PDet.Process_Result, "").Replace(vbCr, " ").Replace(vbLf, " ").Trim()))
 
                         Next
 
@@ -1702,6 +1929,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             Else
                 clsPublic.Actualizar_Progreso(lblprg, String.Format("Documento Inactivo {0} ", BeINavPedTrasladoEnc.No, vbNewLine))
+                ReservaImportTrace_Evento(vTraceImport, "documento_inactivo status=0")
             End If
 
             vContador += 1
@@ -1731,6 +1959,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             If Not BeConfigEnc.Interface_SAP Then
                 clsPublic.Actualizar_Progreso(lblprg, String.Format("Tiempo transcurrido: {0} segundo(s)", difSegundos))
             End If
+            ReservaImportTrace_Finalizar(vTraceImport,
+                                         "OK",
+                                         BeINavPedTrasladoEnc.No,
+                                         lConectionInterface,
+                                         lTransInterface,
+                                         String.Format("Segundos={0}", difSegundos))
+            If Not String.IsNullOrWhiteSpace(vTraceImport) Then
+                clsPublic.Actualizar_Progreso(lblprg, "Trace reserva MI3: " & vTraceImport)
+            End If
 
         Catch ex As Exception
 
@@ -1756,6 +1993,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
             clsLnLog_error_wms.Agregar_Error(vMensajeError)
 
             clsPublic.Actualizar_Progreso(lblprg, vMensajeError)
+            ReservaImportTrace_Finalizar(vTraceImport,
+                                         "ERROR",
+                                         BeINavPedTrasladoEnc.No,
+                                         lConectionInterface,
+                                         lTransInterface,
+                                         vMensajeError)
+            If Not String.IsNullOrWhiteSpace(vTraceImport) Then
+                clsPublic.Actualizar_Progreso(lblprg, "Trace reserva MI3: " & vTraceImport)
+            End If
 
             If vListaMensajeError = "" Then
                 Throw ex
@@ -1974,7 +2220,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                     '#EJC202303011454: Log de errores de WMS.
                     Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(pBeTrasladoDet,
-                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
                     Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021909: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", pBeTrasladoDet.NoEnc,
                                                             pBeTrasladoDet.Line_No,
                                                             vMotivoNoReserva,
@@ -2951,7 +3197,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                                         '#EJC202303011454: Log de errores de WMS.
                                         Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
-                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                                    "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
                                         Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021910: No se pudo completar la reserva para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6} ", PDet.NoEnc,
                                                                                 PDet.Line_No,
                                                                                 vMotivoNoReserva,
@@ -3041,7 +3287,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                                             '#EJC202303011454: Log de errores de WMS.
                                             Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(PDet,
-                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                                        "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
                                             Dim vMensajeEx As String = String.Format(vbNewLine & "ERROR_202310021911: Al reservar stock para el pedido: {0} Línea: {1} Código_Producto: {3} U.M.: {4} V.C.: {5} Descripción del error: {2} Cantidad: {6}", PDet.NoEnc,
                                                                                     PDet.Line_No,
                                                                                     vMotivoNoReserva,
@@ -3530,7 +3776,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                     Dim vMensajeEx As String = ""
                     Dim vMotivoNoReserva As String = Obtener_Motivo_No_Reserva(pBeTrasladoDet,
-                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar presentación, ubicación, vencimiento y reservas vigentes.")
+                                                                                "No hay existencia aplicable válida para la solicitud después de evaluar estado de producto, presentación, ubicación y reservas vigentes.")
 
                     Dim tieneTallaOColor As Boolean = Not String.IsNullOrWhiteSpace(pBeTrasladoDet.Size) OrElse
                                                      Not String.IsNullOrWhiteSpace(pBeTrasladoDet.Color)
@@ -4593,3 +4839,6 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     End Function
 
 End Class
+
+
+
