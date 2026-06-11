@@ -18894,6 +18894,14 @@ Partial Public Class clsLnStock_res
 
         Dim vTexto As String = Normalizar_Texto_No_Reserva_MI3(pMotivo)
 
+        If vTexto.Contains("ESTADO DE PRODUCTO") OrElse
+           vTexto.Contains("IDPRODUCTOESTADO") OrElse
+           vTexto.Contains("BUEN ESTADO") OrElse
+           vTexto.Contains("EN RECEPCION") OrElse
+           vTexto.Contains("NO HAY STOCK EN EL ESTADO") Then
+            Return "ESTADO_PRODUCTO_NO_APLICA"
+        End If
+
         If vTexto.Contains("TALLA") OrElse
            vTexto.Contains("COLOR") OrElse
            vTexto.Contains("IDPRODUCTOTALLACOLOR") Then
