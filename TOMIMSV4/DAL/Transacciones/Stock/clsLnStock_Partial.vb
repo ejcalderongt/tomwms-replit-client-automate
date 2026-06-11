@@ -5776,12 +5776,15 @@ Partial Public Class clsLnStock
             Dim lBeStock As New List(Of clsBeStock)
             Dim IdxProductoEnMemoria As Integer = -1
             Dim vIdProductoBodega As Integer = 0
+            Dim CantidadSolicitada As Double = 0
+            Dim vIdClienteReglaLote As Integer = 0
 
             If pBeStockRes Is Nothing Then
                 '#EJC20231220
                 Exit Function
             End If
 
+            CantidadSolicitada = pBeStockRes.Cantidad
             vIdProductoBodega = pBeStockRes.IdProductoBodega
 
             pBeProductoOutput = New clsBeProducto()
@@ -5817,7 +5820,19 @@ Partial Public Class clsLnStock
             End If
 
             '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
-            Dim vSQL As String = "SELECT stock.*,
+            Dim vSQL As String = ""
+
+            If pBeProductoOutput.Control_vencimiento Then
+                vSQL += "WITH FechaBase AS (" &
+                    " SELECT MIN(stock.fecha_vence) AS FechaVencimientoBase" &
+                    " FROM stock" &
+                    " WHERE stock.idproductobodega = @IdProductoBodega" &
+                    " AND stock.idunidadmedida = @IdUnidadMedida" &
+                    " AND stock.idproductoestado = @IdProductoEstado)" & vbCrLf
+            End If
+
+            vSQL += " SELECT stock.*,
+                                  dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) AS NombreUbicacion,
 					              bodega_ubicacion.indice_x, 
 					              bodega_ubicacion.nivel, 
 					              bodega_ubicacion.orientacion_pos, 
@@ -5833,17 +5848,20 @@ Partial Public Class clsLnStock
                                   AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega
                                   AND bodega_ubicacion.IdSector = bodega_tramo.IdSector "
 
+            If pBeProductoOutput.Control_vencimiento Then
+                vSQL += " CROSS APPLY (SELECT FechaVencimientoBase FROM FechaBase) fb" & vbCrLf
+            End If
+
             If pBeStockRes.Control_Ultimo_Lote Then
                 vSQL += " LEFT OUTER JOIN
 						 trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
 						 AND stock.lote = trans_re_det_lote_num.Lote "
             End If
 
-
-            vSQL += " WHERE bodega_ubicacion.activo = 1 
+            vSQL += " WHERE bodega_ubicacion.activo = 1
                       and bodega_ubicacion.bloqueada = 0
-                      and producto_bodega.idproductobodega=@idproductobodega                     
-					  and stock.idunidadmedida =@idunidadmedida  "
+                      and producto_bodega.idproductobodega=@idproductobodega
+					  and stock.idunidadmedida =@idunidadmedida "
 
             '#CKFK20240528 Agregué esta validación para cuando sea devolución a proveedor
             If Not pEs_Devolucion AndAlso pBeStockRes.IdUbicacionAbastecerCon = 0 Then
@@ -5964,12 +5982,59 @@ Partial Public Class clsLnStock
 
             End If
 
+            '#EJC20260610_MERGE2023_2028: regla de lotes por cliente usando criterio robusto de 2028.
+            'Se toma IdCliente desde el pedido; bloqueados excluyen y permitidos restringen solo cuando existan para producto+estado.
+            If pBeStockRes.IdPedido > 0 Then
+                vIdClienteReglaLote = clsLnTrans_pe_enc.GetIdCliente(pBeStockRes.IdPedido, lConnection, ltransaction)
+            End If
+
+            If vIdClienteReglaLote > 0 Then
+                vSQL += " AND NOT EXISTS (
+                              SELECT 1
+                              FROM cliente_lotes cl
+                              WHERE cl.IdCliente = @IdClienteReglaLote
+                                AND ISNULL(cl.activo, 0) = 1
+                                AND ISNULL(cl.bloquear, 0) = 1
+                                AND cl.IdProducto = producto_bodega.IdProducto
+                                AND ISNULL(cl.IdProductoEstado, 0) = stock.IdProductoEstado
+                                AND ISNULL(cl.Lote, '') = ISNULL(stock.lote, '')
+                          )
+                          AND (
+                              NOT EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto_bodega.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                              )
+                              OR EXISTS (
+                                  SELECT 1
+                                  FROM cliente_lotes clp
+                                  WHERE clp.IdCliente = @IdClienteReglaLote
+                                    AND ISNULL(clp.activo, 0) = 1
+                                    AND ISNULL(clp.bloquear, 0) = 0
+                                    AND clp.IdProducto = producto_bodega.IdProducto
+                                    AND ISNULL(clp.IdProductoEstado, 0) = stock.IdProductoEstado
+                                    AND ISNULL(clp.Lote, '') = ISNULL(stock.lote, '')
+                              )
+                          ) "
+            End If
+
             If BeBodega.Control_Talla_Color Then
 
                 If Not pBeStockRes.IdProductoTallaColor = 0 Then
                     vSQL += " and stock.IdProductoTallaColor= @IdProductoTallaColor"
                 End If
 
+            End If
+
+            If Not pBeStockRes.IdPresentacion = 0 Then
+                Dim beProductoPresentacion = clsLnProducto_presentacion.GetSingle(pBeStockRes.IdPresentacion, lConnection, ltransaction)
+                If Not beProductoPresentacion Is Nothing Then
+                    CantidadSolicitada = pBeStockRes.Cantidad * beProductoPresentacion.Factor
+                End If
             End If
 
             '#EJC20200204: Mejora por nuevo tipo de rotación
@@ -5995,10 +6060,20 @@ Partial Public Class clsLnStock
                 Case 2 'LIFO
                     vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
                 Case 3 'FEFO
-                    vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad "
-                    '#EJC202004: Este me lo inventé yo por la cagada del inventario inicial en Idealsa
-                    'La idea es que saque el producto por ubicaciones,antes que por reglas de rotación
-                    'Este ordenamiento forza a tomar producto de las ubicaciones 
+                    If Not BeBodega.Priorizar_Cantidad_Superior Then
+                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                    Else
+                        vSQL += " ORDER BY" &
+                        " stock.fecha_vence ASC," &
+                        " fecha_ingreso ASC, " &
+                        " bodega_ubicacion.ubicacion_picking desc, " &
+                        " CASE" &
+                        " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
+                        " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &
+                        " ELSE 2 END," &
+                        " stock.cantidad ASC," &
+                        " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
+                    End If
                 Case 4 'UPSR (Ubicación prioritaria sobre rotación)
                     vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
                 Case Else 'Default
@@ -6032,6 +6107,14 @@ Partial Public Class clsLnStock
 
                 If Not pBeStockRes.IdProductoTallaColor = 0 Then
                     lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pBeStockRes.IdProductoTallaColor)
+                End If
+
+                If vIdClienteReglaLote > 0 Then
+                    lCommand.Parameters.AddWithValue("@IdClienteReglaLote", vIdClienteReglaLote)
+                End If
+
+                If CantidadSolicitada > 0 Then
+                    lCommand.Parameters.AddWithValue("@CantidadSolicitada", CantidadSolicitada)
                 End If
 
                 Using dr = lCommand.ExecuteReader()
@@ -6097,7 +6180,7 @@ Partial Public Class clsLnStock
 
     End Function
 
-    ' #AT 20211228 Copia de la función lstock para devolverla como un datatable
+    '#EJC20260610: Mejora en consulta de stock para reservas.
     Public Shared Function lStock_DT(ByRef pBeStockRes As clsBeStock_res,
                                      ByRef pBeProductoOutput As clsBeProducto,
                                      ByVal DiasVencimiento As Integer,
