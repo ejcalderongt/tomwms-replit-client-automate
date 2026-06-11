@@ -8365,87 +8365,87 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                      ByVal lConnection As SqlConnection,
                                                      ByVal lTransaction As SqlTransaction) As DataTable
 
-    Dim lDataTable As New DataTable
+        Dim lDataTable As New DataTable
 
-    Try
+        Try
 
-        Dim vSQL As String =
-                "WITH StockBase AS ( " &
-                "    SELECT " &
-                "        bu.IdTramo, " &
-                "        bt.descripcion AS Tramo, " &
-                "        c.IdUbicacion, " &
-                "        c.IdStock, " &
-                "        c.IdProductoBodega, " &
-                "        MAX(CASE WHEN ISNULL(c.contado, 0) = 1 THEN 1 ELSE 0 END) AS StockContado " &
-                "    FROM trans_inv_ciclico c " &
-                "    INNER JOIN bodega_ubicacion bu " &
-                "        ON bu.IdUbicacion = c.IdUbicacion " &
-                "       AND bu.IdBodega = c.IdBodega " &
-                "    LEFT JOIN bodega_tramo bt " &
-                "        ON bt.IdTramo = bu.IdTramo " &
-                "       AND bt.IdBodega = bu.IdBodega " &
-                "    WHERE c.idinventarioenc = @idinventarioenc " &
-                "      AND c.IdBodega = @IdBodega " &
-                "    GROUP BY " &
-                "        bu.IdTramo, " &
-                "        bt.descripcion, " &
-                "        c.IdUbicacion, " &
-                "        c.IdStock, " &
-                "        c.IdProductoBodega " &
-                "), " &
-                "ProductoBase AS ( " &
-                "    SELECT " &
-                "        Tramo, " &
-                "        IdUbicacion, " &
-                "        IdProductoBodega, " &
-                "        MIN(StockContado) AS ProductoContado " &
-                "    FROM StockBase " &
-                "    GROUP BY " &
-                "        Tramo, " &
-                "        IdUbicacion, " &
-                "        IdProductoBodega " &
-                "), " &
-                "Ubicaciones AS ( " &
-                "    SELECT " &
-                "        Tramo, " &
-                "        IdUbicacion, " &
-                "        COUNT(IdProductoBodega) AS ProductosAContar, " &
-                "        SUM(CASE WHEN ProductoContado = 1 THEN 1 ELSE 0 END) AS ProductosContados " &
-                "    FROM ProductoBase " &
-                "    GROUP BY " &
-                "        Tramo, " &
-                "        IdUbicacion " &
-                ") " &
-                "SELECT " &
-                "    ISNULL(Tramo, '') AS Tramo, " &
-                "    COUNT(IdUbicacion) AS UbicacionesAContar, " &
-                "    SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS UbicacionesContadas, " &
-                "    COUNT(IdUbicacion) - SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS DiferenciaUbicaciones " &
-                "FROM Ubicaciones " &
-                "GROUP BY Tramo " &
-                "ORDER BY Tramo "
+            Dim vSQL As String =
+                    "WITH StockBase AS ( " &
+                    "    SELECT " &
+                    "        bu.IdTramo, " &
+                    "        bt.descripcion AS Tramo, " &
+                    "        c.IdUbicacion, " &
+                    "        c.IdStock, " &
+                    "        c.IdProductoBodega, " &
+                    "        MAX(CASE WHEN ISNULL(c.contado, 0) = 1 THEN 1 ELSE 0 END) AS StockContado " &
+                    "    FROM trans_inv_ciclico c " &
+                    "    INNER JOIN bodega_ubicacion bu " &
+                    "        ON bu.IdUbicacion = c.IdUbicacion " &
+                    "       AND bu.IdBodega = c.IdBodega " &
+                    "    LEFT JOIN bodega_tramo bt " &
+                    "        ON bt.IdTramo = bu.IdTramo " &
+                    "       AND bt.IdBodega = bu.IdBodega " &
+                    "    WHERE c.idinventarioenc = @idinventarioenc " &
+                    "      AND c.IdBodega = @IdBodega " &
+                    "    GROUP BY " &
+                    "        bu.IdTramo, " &
+                    "        bt.descripcion, " &
+                    "        c.IdUbicacion, " &
+                    "        c.IdStock, " &
+                    "        c.IdProductoBodega " &
+                    "), " &
+                    "ProductoBase AS ( " &
+                    "    SELECT " &
+                    "        Tramo, " &
+                    "        IdUbicacion, " &
+                    "        IdProductoBodega, " &
+                    "        MIN(StockContado) AS ProductoContado " &
+                    "    FROM StockBase " &
+                    "    GROUP BY " &
+                    "        Tramo, " &
+                    "        IdUbicacion, " &
+                    "        IdProductoBodega " &
+                    "), " &
+                    "Ubicaciones AS ( " &
+                    "    SELECT " &
+                    "        Tramo, " &
+                    "        IdUbicacion, " &
+                    "        COUNT(IdProductoBodega) AS ProductosAContar, " &
+                    "        SUM(CASE WHEN ProductoContado = 1 THEN 1 ELSE 0 END) AS ProductosContados " &
+                    "    FROM ProductoBase " &
+                    "    GROUP BY " &
+                    "        Tramo, " &
+                    "        IdUbicacion " &
+                    ") " &
+                    "SELECT " &
+                    "    ISNULL(Tramo, '') AS Tramo, " &
+                    "    COUNT(IdUbicacion) AS UbicacionesAContar, " &
+                    "    SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS UbicacionesContadas, " &
+                    "    COUNT(IdUbicacion) - SUM(CASE WHEN ProductosAContar = ProductosContados THEN 1 ELSE 0 END) AS DiferenciaUbicaciones " &
+                    "FROM Ubicaciones " &
+                    "GROUP BY Tramo " &
+                    "ORDER BY Tramo "
 
-        Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
-            lDTA.SelectCommand.CommandType = CommandType.Text
-            lDTA.SelectCommand.Transaction = lTransaction
-            lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
-            lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInventarioEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
-            lDTA.Fill(lDataTable)
+                lDTA.Fill(lDataTable)
 
-        End Using
+            End Using
 
-        Return lDataTable
+            Return lDataTable
 
-    Catch ex As Exception
-        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-        clsLnLog_error_wms.Agregar_Error(vMsgError)
-        Throw ex
-    End Try
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
 
-End Function
+    End Function
 
 
 End Class
