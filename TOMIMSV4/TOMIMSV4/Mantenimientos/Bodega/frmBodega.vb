@@ -1325,6 +1325,7 @@ Public Class frmBodega
             '#CKFK20240403: Indicar los tipos de etiqueta y simbología para la licencia
             cmbEtiqueta.EditValue = pBeBodega.IdTipoEtiquetaLicencia
             cmbSymbology.EditValue = pBeBodega.IdSimbologiaLicencia
+            chkOcultarNombreEtiquetasImpresas.Checked = (pBeBodega.ocultar_nombre_etiquetas_impresas)
 
             cmbTamañoEtiquetaUbicacionDefecto.EditValue = pBeBodega.IdTamañoEtiquetaUbicacionDefecto
 
@@ -1596,6 +1597,7 @@ Public Class frmBodega
             pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
             pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
             pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
+            pBeBodega.ocultar_nombre_etiquetas_impresas = chkOcultarNombreEtiquetasImpresas.Checked
             pBeBodega.Interface_SAP = chkInterface_SAP.Checked
             pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
             pBeBodega.Control_Pallet_Mixto = chkControlPalletsMixtos.Checked
@@ -1844,6 +1846,7 @@ Public Class frmBodega
                 pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
                 pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
                 pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
+                pBeBodega.ocultar_nombre_etiquetas_impresas = chkOcultarNombreEtiquetasImpresas.Checked
                 pBeBodega.Interface_SAP = chkInterface_SAP.Checked
                 pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
                 pBeBodega.Control_Pallet_Mixto = chkControlPalletsMixtos.Checked
@@ -2873,7 +2876,7 @@ Public Class frmBodega
 
             mnuActualizar.Enabled = False
 
-            If (ControlPanelBodega.SelectedTabPageIndex = 0 Or ControlPanelBodega.SelectedTabPageIndex = 8 Or ControlPanelBodega.SelectedTabPageIndex = 1) Then
+            If (ControlPanelBodega.SelectedTabPageIndex = 0 Or ControlPanelBodega.SelectedTabPageIndex = 8 Or ControlPanelBodega.SelectedTabPageIndex = 1 OrElse ControlPanelBodega.SelectedTabPageIndex = 10) Then
                 If Actualizar() Then
                     XtraMessageBox.Show("Se actualizó el registro", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     If Listar IsNot Nothing Then

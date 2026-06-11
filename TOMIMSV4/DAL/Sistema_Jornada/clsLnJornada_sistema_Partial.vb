@@ -1,11 +1,221 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading
+Imports System.IO
 Imports DevExpress.XtraSplashScreen
 
 Partial Public Class clsLnJornada_sistema
 
     Private Shared BeJornada As New clsBeJornada_sistema()
+    Private Class InvJornadaPreloadCtx
+        Public Property Activo As Boolean = False
+        Public Property TicketsProcesados As New HashSet(Of Integer)()
+        Public Property LicenciasProcesadas As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Public Property StockExistente As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Public Property HashRetroExistente As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        Public Property JornadasExistentes As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+    End Class
+
+    Private Shared Function InvJornadaKeyStock(ByVal pLic As String,
+                                               ByVal pFecha As Date,
+                                               ByVal pIdPropBod As Integer,
+                                               ByVal pIdProdBod As Integer,
+                                               ByVal pIdStock As Integer) As String
+        Return String.Format("{0}|{1}|{2}|{3}|{4}",
+                             If(pLic, "").Trim().ToUpperInvariant(),
+                             pFecha.ToString("yyyyMMdd"),
+                             pIdPropBod,
+                             pIdProdBod,
+                             pIdStock)
+    End Function
+
+    Private Shared Function InvJornadaKeyLic(ByVal pLic As String,
+                                             ByVal pIdRecepcionEnc As Integer,
+                                             ByVal pIdRecepcionDet As Integer) As String
+        Return String.Format("{0}|{1}|{2}",
+                             If(pLic, "").Trim().ToUpperInvariant(),
+                             pIdRecepcionEnc,
+                             pIdRecepcionDet)
+    End Function
+
+    Private Shared Function InvJornadaKeyHashFecha(ByVal pHash As String, ByVal pFecha As Date) As String
+        Return String.Format("{0}|{1}",
+                             If(pHash, "").Trim().ToUpperInvariant(),
+                             pFecha.ToString("yyyyMMdd"))
+    End Function
+
+    Private Shared Function InvJornadaFechaKey(ByVal pFecha As Date) As String
+        Return pFecha.ToString("yyyyMMdd")
+    End Function
+
+    Private Shared Function InvJornadaBuildClavesTVP(ByVal pRows As DataTable) As DataTable
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("LicPlate", GetType(String))
+        vTabla.Columns.Add("IdPropietarioBodega", GetType(Integer))
+        vTabla.Columns.Add("IdProductoBodega", GetType(Integer))
+        vTabla.Columns.Add("IdStock", GetType(Integer))
+        vTabla.Columns.Add("StockJornadaHash", GetType(String))
+        vTabla.Columns.Add("IdTicketTMS", GetType(Integer))
+        vTabla.Columns.Add("IdRecepcionEnc", GetType(Integer))
+        vTabla.Columns.Add("IdRecepcionDet", GetType(Integer))
+
+        If pRows Is Nothing OrElse pRows.Rows.Count = 0 Then Return vTabla
+
+        For Each r As DataRow In pRows.Rows
+            Dim vLicObj As Object = InvJornadaGetRowValue(r, "Lic_Plate", "lic_plate")
+            Dim vIdPropObj As Object = InvJornadaGetRowValue(r, "IdPropietarioBodega", "idpropietariobodega")
+            Dim vIdProdObj As Object = InvJornadaGetRowValue(r, "IdProductoBodega", "idproductobodega")
+            Dim vIdStockObj As Object = InvJornadaGetRowValue(r, "IdStock", "idstock")
+            Dim vIdTicketObj As Object = InvJornadaGetRowValue(r, "IdTicketTMS", "idtickettms")
+            Dim vIdRecepEncObj As Object = InvJornadaGetRowValue(r, "IdRecepcionEnc", "idrecepcionenc")
+            Dim vIdRecepDetObj As Object = InvJornadaGetRowValue(r, "IdRecepcionDet", "idrecepciondet")
+
+            Dim vLic As String = If(vLicObj Is Nothing OrElse IsDBNull(vLicObj), "", CStr(vLicObj))
+            Dim vIdProp As Integer = If(vIdPropObj Is Nothing OrElse IsDBNull(vIdPropObj), 0, CInt(vIdPropObj))
+            Dim vIdProd As Integer = If(vIdProdObj Is Nothing OrElse IsDBNull(vIdProdObj), 0, CInt(vIdProdObj))
+            Dim vIdStock As Integer = If(vIdStockObj Is Nothing OrElse IsDBNull(vIdStockObj), 0, CInt(vIdStockObj))
+            Dim vIdTicket As Integer = If(vIdTicketObj Is Nothing OrElse IsDBNull(vIdTicketObj), 0, CInt(Val(vIdTicketObj.ToString())))
+            Dim vIdRecepEnc As Integer = If(vIdRecepEncObj Is Nothing OrElse IsDBNull(vIdRecepEncObj), 0, CInt(vIdRecepEncObj))
+            Dim vIdRecepDet As Integer = If(vIdRecepDetObj Is Nothing OrElse IsDBNull(vIdRecepDetObj), 0, CInt(vIdRecepDetObj))
+
+            Dim vHash As String = ""
+            Try
+                Dim vTmp As New clsBeStock_jornada()
+                vTmp.IdStock = vIdStock
+                vTmp.IdPropietarioBodega = vIdProp
+                vTmp.IdProductoBodega = vIdProd
+                vTmp.Lic_plate = vLic
+                Dim vFechaTicketObj As Object = InvJornadaGetRowValue(r, "Fecha_Ingreso_Ticket_TMS", "fecha_ingreso_ticket_tms")
+                vTmp.Fecha_Ingreso_Ticket_TMS = If(vFechaTicketObj Is Nothing OrElse IsDBNull(vFechaTicketObj), New Date(1900, 1, 1), CDate(vFechaTicketObj))
+                vTmp.IdRecepcionEnc = vIdRecepEnc
+                vTmp.IdRecepcionDet = vIdRecepDet
+                vTmp.IdTicketTMS = vIdTicket
+                vHash = clsBeStock_jornada.GetRecordHash(vTmp)
+            Catch
+                vHash = ""
+            End Try
+
+            vTabla.Rows.Add(vLic, vIdProp, vIdProd, vIdStock, vHash, vIdTicket, vIdRecepEnc, vIdRecepDet)
+        Next
+
+        Return vTabla
+    End Function
+
+    Private Shared Function InvJornadaGetRowValue(ByVal pRow As DataRow, ParamArray pNombres() As String) As Object
+        If pRow Is Nothing OrElse pRow.Table Is Nothing Then Return Nothing
+        For Each vNombre As String In pNombres
+            If pRow.Table.Columns.Contains(vNombre) Then
+                Return pRow(vNombre)
+            End If
+        Next
+        Return Nothing
+    End Function
+
+    Private Shared Function InvJornadaTryPreloadCtx(ByVal pRows As DataTable,
+                                                     ByVal pFechaDesde As Date,
+                                                     ByVal pFechaHasta As Date,
+                                                     ByVal pConnection As SqlConnection,
+                                                     ByVal pTransaction As SqlTransaction,
+                                                     ByVal pSesionTrace As String,
+                                                     ByVal pInicioTrace As DateTime) As InvJornadaPreloadCtx
+        Dim vCtx As New InvJornadaPreloadCtx()
+
+        Try
+            Dim vClaves As DataTable = InvJornadaBuildClavesTVP(pRows)
+            If vClaves.Rows.Count = 0 Then Return vCtx
+
+            Using vCmd As New SqlCommand("dbo.usp_wms_stock_jornada_preload_ctx_tvp_v1", pConnection, pTransaction)
+                vCmd.CommandType = CommandType.StoredProcedure
+                vCmd.CommandTimeout = 120
+                vCmd.Parameters.Add("@FechaDesde", SqlDbType.Date).Value = pFechaDesde.Date
+                vCmd.Parameters.Add("@FechaHasta", SqlDbType.Date).Value = pFechaHasta.Date
+
+                Dim vParamClaves As SqlParameter = vCmd.Parameters.Add("@Claves", SqlDbType.Structured)
+                vParamClaves.TypeName = "dbo.tvp_wms_stock_jornada_claves_v1"
+                vParamClaves.Value = vClaves
+
+                Using vReader As SqlDataReader = vCmd.ExecuteReader()
+                    While vReader.Read()
+                        If Not IsDBNull(vReader("IdTicketTMS")) Then
+                            vCtx.TicketsProcesados.Add(CInt(vReader("IdTicketTMS")))
+                        End If
+                    End While
+
+                    If vReader.NextResult() Then
+                        While vReader.Read()
+                            vCtx.LicenciasProcesadas.Add(InvJornadaKeyLic(
+                                If(IsDBNull(vReader("LicPlate")), "", CStr(vReader("LicPlate"))),
+                                If(IsDBNull(vReader("IdRecepcionEnc")), 0, CInt(vReader("IdRecepcionEnc"))),
+                                If(IsDBNull(vReader("IdRecepcionDet")), 0, CInt(vReader("IdRecepcionDet")))))
+                        End While
+                    End If
+
+                    If vReader.NextResult() Then
+                        While vReader.Read()
+                            vCtx.StockExistente.Add(InvJornadaKeyStock(
+                                If(IsDBNull(vReader("LicPlate")), "", CStr(vReader("LicPlate"))),
+                                If(IsDBNull(vReader("Fecha")), New Date(1900, 1, 1), CDate(vReader("Fecha"))),
+                                If(IsDBNull(vReader("IdPropietarioBodega")), 0, CInt(vReader("IdPropietarioBodega"))),
+                                If(IsDBNull(vReader("IdProductoBodega")), 0, CInt(vReader("IdProductoBodega"))),
+                                If(IsDBNull(vReader("IdStock")), 0, CInt(vReader("IdStock")))))
+                        End While
+                    End If
+
+                    If vReader.NextResult() Then
+                        While vReader.Read()
+                            vCtx.HashRetroExistente.Add(InvJornadaKeyHashFecha(
+                                If(IsDBNull(vReader("Stock_Jornada_Hash")), "", CStr(vReader("Stock_Jornada_Hash"))),
+                                If(IsDBNull(vReader("Fecha")), New Date(1900, 1, 1), CDate(vReader("Fecha")))))
+                        End While
+                    End If
+
+                    If vReader.NextResult() Then
+                        While vReader.Read()
+                            vCtx.JornadasExistentes.Add(InvJornadaFechaKey(If(IsDBNull(vReader("Fecha")), New Date(1900, 1, 1), CDate(vReader("Fecha")))))
+                        End While
+                    End If
+                End Using
+            End Using
+
+            vCtx.Activo = True
+            JornadaStockTrace(pSesionTrace, "INSERTAR_STOCK_JORNADA_PRELOAD_OK", pInicioTrace,
+                              "Tickets=" & vCtx.TicketsProcesados.Count &
+                              ";Licencias=" & vCtx.LicenciasProcesadas.Count &
+                              ";Stock=" & vCtx.StockExistente.Count &
+                              ";HashRetro=" & vCtx.HashRetroExistente.Count &
+                              ";Jornadas=" & vCtx.JornadasExistentes.Count)
+        Catch exSql As SqlException When exSql.Number = 2812 OrElse exSql.Number = 208 OrElse exSql.Number = 207
+            JornadaStockTrace(pSesionTrace, "INSERTAR_STOCK_JORNADA_PRELOAD_FALLBACK", pInicioTrace,
+                              "SqlNumber=" & exSql.Number & ";Msg=" & exSql.Message)
+        Catch ex As Exception
+            JornadaStockTrace(pSesionTrace, "INSERTAR_STOCK_JORNADA_PRELOAD_ERROR", pInicioTrace, ex.Message)
+        End Try
+
+        Return vCtx
+    End Function
+
+    Private Shared Sub JornadaStockTrace(ByVal pSesion As String,
+                                         ByVal pPaso As String,
+                                         ByVal pInicio As DateTime,
+                                         Optional ByVal pExtra As String = "")
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260607_STOCK_JORNADA_TRACE",
+                "clsLnJornada_sistema",
+                pSesion,
+                pPaso,
+                "DeltaMs=" & CLng((Date.Now - pInicio).TotalMilliseconds),
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "stock-jornada-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
 
     Public Shared Function Inicio_De_Jornada_Correcto(ByVal pIdEmpresa As Integer,
                                                       ByVal pIdBodega As Integer,
@@ -1139,10 +1349,46 @@ Partial Public Class clsLnJornada_sistema
         Dim lBeStockDetUltimaJornada As New DataTable
         Dim lTicketProcesados As New List(Of String)
         Dim lCambiosUbicacionYEstado As New List(Of clsBeVW_Movimientos)
+        Dim vSesionTrace As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        Dim vInicioTrace As DateTime = Date.Now
+        Dim vPasoTrace As DateTime = vInicioTrace
+        Dim vMsServidor As Long = 0
+        Dim vMsMaxId As Long = 0
+        Dim vMsStockDet As Long = 0
+        Dim vMsBodega As Long = 0
+        Dim vMsMapeo As Long = 0
+        Dim vMsSingularidad As Long = 0
+        Dim vMsTicket As Long = 0
+        Dim vMsLicencia As Long = 0
+        Dim vMsHash As Long = 0
+        Dim vMsRetroactivo As Long = 0
+        Dim vMsDedupe As Long = 0
+        Dim vMsInsertNormal As Long = 0
+        Dim vMsInsertRetro As Long = 0
+        Dim vMsUi As Long = 0
+        Dim vMsCierreTickets As Long = 0
+        Dim vMsCierreLicencias As Long = 0
+        Dim vCntInsertNormal As Integer = 0
+        Dim vCntInsertRetro As Integer = 0
+        Dim vCntOmitidosDuplicado As Integer = 0
+        Dim vCntRetroIntentos As Integer = 0
+        Dim vCntTicketQuery As Integer = 0
+        Dim vCntLicenciaQuery As Integer = 0
+        Dim vLoteInsert As New List(Of clsBeStock_jornada)
+        Dim vLoteTam As Integer = 250
+        Dim vPreload As New InvJornadaPreloadCtx()
 
         Try
 
+            JornadaStockTrace(vSesionTrace, "INSERTAR_STOCK_JORNADA_START", vInicioTrace,
+                              "Rows=" & If(DTVWStockJornada Is Nothing, 0, DTVWStockJornada.Rows.Count) &
+                              ";FechaJornada=" & pFechaJornada.ToString("yyyy-MM-dd") &
+                              ";IdBodega=" & pIdBodega &
+                              ";ValidarRetroactivo=" & ValidarRetroactivo.ToString())
+
+            vPasoTrace = Date.Now
             Dim fecha_hoy = clsServidor.Get_Fecha_Servidor(lConnection, lTransaction)
+            vMsServidor = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
             If DTVWStockJornada IsNot Nothing AndAlso DTVWStockJornada.Rows.Count > 0 Then
 
@@ -1167,6 +1413,7 @@ Partial Public Class clsLnJornada_sistema
                 Dim vVerificarExistenciaStock As Boolean = False
                 Dim pBeBodega As New clsBeBodega
 
+                vPasoTrace = Date.Now
                 lblprg.AppendText("Se encontraron " & DTVWStockJornada.Rows.Count & " registros de stock para jornada")
                 lblprg.AppendText(vbNewLine)
                 lblprg.Refresh()
@@ -1174,10 +1421,13 @@ Partial Public Class clsLnJornada_sistema
                 lblprg.ScrollToCaret()
 
                 prg.Visible = True : prg.Value = 0 : prg.Maximum = DTVWStockJornada.Rows.Count
+                vMsUi += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
+                vPasoTrace = Date.Now
                 lBeStockDet = New List(Of clsBeStock_det)
                 lBeStockDet = clsLnStock_det.Get_All(lConnection,
                                                      lTransaction)
+                vMsStockDet = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                 Dim vIdJornada As Integer = 0
 
@@ -1207,7 +1457,28 @@ Partial Public Class clsLnJornada_sistema
                 Dim registro_ As Integer = 0
 
 
+                vPasoTrace = Date.Now
                 pBeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega, lConnection, lTransaction)
+                vMsBodega = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+
+                Dim vFechaDesdePreload As Date = pFechaJornada.Date
+                Dim vFechaHastaPreload As Date = fecha_hoy.Date
+                For Each rPre As DataRow In DTVWStockJornada.Rows
+                    Dim vFechaTicketObj As Object = InvJornadaGetRowValue(rPre, "Fecha_Ingreso_Ticket_TMS", "fecha_ingreso_ticket_tms")
+                    Dim vFechaIngresoObj As Object = InvJornadaGetRowValue(rPre, "Fecha_ingreso", "fecha_ingreso")
+                    Dim vFechaTicket As Date = If(vFechaTicketObj Is Nothing OrElse IsDBNull(vFechaTicketObj), pFechaJornada.Date, CDate(vFechaTicketObj).Date)
+                    Dim vFechaIngreso As Date = If(vFechaIngresoObj Is Nothing OrElse IsDBNull(vFechaIngresoObj), pFechaJornada.Date, CDate(vFechaIngresoObj).Date)
+                    If vFechaTicket < vFechaDesdePreload Then vFechaDesdePreload = vFechaTicket
+                    If vFechaIngreso < vFechaDesdePreload Then vFechaDesdePreload = vFechaIngreso
+                Next
+
+                vPreload = InvJornadaTryPreloadCtx(DTVWStockJornada,
+                                                   vFechaDesdePreload,
+                                                   vFechaHastaPreload,
+                                                   lConnection,
+                                                   lTransaction,
+                                                   vSesionTrace,
+                                                   vInicioTrace)
 
 
                 For Each R As DataRow In DTVWStockJornada.Rows
@@ -1215,6 +1486,7 @@ Partial Public Class clsLnJornada_sistema
 
                     'Dim vStopwatch2 As Stopwatch = Stopwatch.StartNew()
 
+                    vPasoTrace = Date.Now
                     vIdOrdenCompraEnc = IIf(IsDBNull(R.Item("IdOrdenCompraEnc")), 0, R.Item("IdOrdenCompraEnc"))
 
                     If vIndiceDocumentoIngreso = -1 Then
@@ -1319,9 +1591,11 @@ Partial Public Class clsLnJornada_sistema
                     BeStockJornadaExistente.IdProductoTallaColor = IIf(IsDBNull(R.Item("IdProductoTallaColor")), 0, R.Item("IdProductoTallaColor"))
                     BeStockJornadaExistente.Talla = IIf(IsDBNull(R.Item("Talla")), "", R.Item("Talla"))
                     BeStockJornadaExistente.Color = IIf(IsDBNull(R.Item("Color")), "", R.Item("Color"))
+                    vMsMapeo += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                     '#EJC20210618: Optimizado, se obtiene la lista completo primero.-
                     'GT 020820211028: En la lista completa, se valida que el id stock coincida con el detalle, para traer las posiciones ocupadas.
+                    vPasoTrace = Date.Now
                     BeStockDet = lBeStockDet.Find(Function(x) x.IdStock = BeStockJornadaExistente.IdStock)
                     '#EJC20210603:Posiciones cealsa.
                     'BeStockDet = clsLnStock_det.GetSingle(BeStockJornada.IdStock, lConnection, lTransaction)
@@ -1330,11 +1604,13 @@ Partial Public Class clsLnJornada_sistema
                     Else
                         BeStockJornadaExistente.Posiciones = 1
                     End If
+                    vMsStockDet += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                     Dim tickettms As New clsBeTms_ticket()
 
                     If Not pListaIngresosYSalidasDelDia Is Nothing Then
 
+                        vPasoTrace = Date.Now
                         '#EJC20210519: Buscar en la lista si este producto existe con estos criterios
                         vSingularidadStock = pListaIngresosYSalidasDelDia.FindAll(Function(x) x.IdProductoBodega = BeStockJornadaExistente.IdProductoBodega _
                                                                               AndAlso x.IdPropietarioBodega = BeStockJornadaExistente.IdPropietarioBodega _
@@ -1347,12 +1623,15 @@ Partial Public Class clsLnJornada_sistema
                         For Each vs In vSingularidadStock
                             BeStockJornadaExistente.Cantidad_Ingreso_Afecta_A_salida += vs.Ingresos
                         Next
+                        vMsSingularidad += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
                     End If
 
                     '#GT03012023_2100: solo se asigna cuando es retroactivo
+                    vPasoTrace = Date.Now
                     Dim Hash As String = clsBeStock_jornada.GetRecordHash(BeStockJornadaExistente)
                     BeStockJornadaExistente.Stock_Jornada_Hash = ""
+                    vMsHash += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
 #Region "Retroactivo"
 
@@ -1364,9 +1643,16 @@ Partial Public Class clsLnJornada_sistema
                             If Not lTicketsProcesados.ContainsKey(BeStockJornadaExistente.IdTicketTMS) Then
                                 '#CKFK 20210523 Puse esto en comentario porque daba error ya que el ticket no existe en la lista lTicketsProcesados y daba error
                                 ' Dim num As Boolean = lTicketsProcesados.Item(BeStockJornada.IdTicketTMS)
-                                vTicketTMSProcesado = clsLnTms_ticket.Ticket_Procesado_Stock_Jornada(BeStockJornadaExistente.IdTicketTMS,
-                                                                                                     lConnection,
-                                                                                                     lTransaction)
+                                If vPreload.Activo Then
+                                    vTicketTMSProcesado = vPreload.TicketsProcesados.Contains(BeStockJornadaExistente.IdTicketTMS)
+                                Else
+                                    vPasoTrace = Date.Now
+                                    vTicketTMSProcesado = clsLnTms_ticket.Ticket_Procesado_Stock_Jornada(BeStockJornadaExistente.IdTicketTMS,
+                                                                                                         lConnection,
+                                                                                                         lTransaction)
+                                    vMsTicket += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                                    vCntTicketQuery += 1
+                                End If
                                 '#GT26122022_1600: no se requieren ticket ya cerrados.
                                 If Not vTicketTMSProcesado Then
                                     lTicketsProcesados.Add(BeStockJornadaExistente.IdTicketTMS, vTicketTMSProcesado)
@@ -1376,9 +1662,16 @@ Partial Public Class clsLnJornada_sistema
                                 vTicketTMSProcesado = lTicketsProcesados.Item(BeStockJornadaExistente.IdTicketTMS)
                             End If
                         Else
-                            vTicketTMSProcesado = clsLnTms_ticket.Ticket_Procesado_Stock_Jornada(BeStockJornadaExistente.IdTicketTMS,
-                                                                                                 lConnection,
-                                                                                                 lTransaction)
+                            If vPreload.Activo Then
+                                vTicketTMSProcesado = vPreload.TicketsProcesados.Contains(BeStockJornadaExistente.IdTicketTMS)
+                            Else
+                                vPasoTrace = Date.Now
+                                vTicketTMSProcesado = clsLnTms_ticket.Ticket_Procesado_Stock_Jornada(BeStockJornadaExistente.IdTicketTMS,
+                                                                                                     lConnection,
+                                                                                                     lTransaction)
+                                vMsTicket += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                                vCntTicketQuery += 1
+                            End If
                             '#GT26122022_1600: no se requieren ticket ya cerrados.
                             If Not vTicketTMSProcesado Then
                                 lTicketsProcesados.Add(BeStockJornadaExistente.IdTicketTMS, vTicketTMSProcesado)
@@ -1402,11 +1695,20 @@ Partial Public Class clsLnJornada_sistema
 
                         If vIndiceLicenciaExistente = -1 Then
 
-                            vLicenciaProcesada = clsLnTrans_re_det.Licencia_Procesada_Stock_Jornada(BeStockJornadaExistente.Lic_plate,
-                                                                                                    BeStockJornadaExistente.IdRecepcionEnc,
-                                                                                                    BeStockJornadaExistente.IdRecepcionDet,
-                                                                                                    lConnection,
-                                                                                                    lTransaction)
+                            If vPreload.Activo Then
+                                vLicenciaProcesada = vPreload.LicenciasProcesadas.Contains(InvJornadaKeyLic(BeStockJornadaExistente.Lic_plate,
+                                                                                                                BeStockJornadaExistente.IdRecepcionEnc,
+                                                                                                                BeStockJornadaExistente.IdRecepcionDet))
+                            Else
+                                vPasoTrace = Date.Now
+                                vLicenciaProcesada = clsLnTrans_re_det.Licencia_Procesada_Stock_Jornada(BeStockJornadaExistente.Lic_plate,
+                                                                                                        BeStockJornadaExistente.IdRecepcionEnc,
+                                                                                                        BeStockJornadaExistente.IdRecepcionDet,
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
+                                vMsLicencia += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                                vCntLicenciaQuery += 1
+                            End If
 
                             '#GT26122022_1600: no se requieren ticket ya cerrados.
                             If Not vLicenciaProcesada Then
@@ -1426,11 +1728,20 @@ Partial Public Class clsLnJornada_sistema
 
                     Else
 
-                        vLicenciaProcesada = clsLnTrans_re_det.Licencia_Procesada_Stock_Jornada(BeStockJornadaExistente.Lic_plate,
-                                                                                                BeStockJornadaExistente.IdRecepcionEnc,
-                                                                                                BeStockJornadaExistente.IdRecepcionDet,
-                                                                                                lConnection,
-                                                                                                lTransaction)
+                        If vPreload.Activo Then
+                            vLicenciaProcesada = vPreload.LicenciasProcesadas.Contains(InvJornadaKeyLic(BeStockJornadaExistente.Lic_plate,
+                                                                                                            BeStockJornadaExistente.IdRecepcionEnc,
+                                                                                                            BeStockJornadaExistente.IdRecepcionDet))
+                        Else
+                            vPasoTrace = Date.Now
+                            vLicenciaProcesada = clsLnTrans_re_det.Licencia_Procesada_Stock_Jornada(BeStockJornadaExistente.Lic_plate,
+                                                                                                    BeStockJornadaExistente.IdRecepcionEnc,
+                                                                                                    BeStockJornadaExistente.IdRecepcionDet,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+                            vMsLicencia += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                            vCntLicenciaQuery += 1
+                        End If
                         '#GT26122022_1600: no se requieren licencias ya cerradas.
                         If Not vLicenciaProcesada Then
                             Dim BeLicenciaJornada As New clsBeLicenciaJornada
@@ -1448,6 +1759,7 @@ Partial Public Class clsLnJornada_sistema
                     Debug.Print("LP: " & BeStockJornadaExistente.Lic_plate)
 
                     If ValidarRetroactivo AndAlso BeStockJornadaExistente.IdTicketTMS <> 0 Then
+                        vPasoTrace = Date.Now
                         '#EJC20210521: Si el ticket ya fue procesado, no volver a escribir los días en el retroactivo.
                         '#GT12012023: Aunque el ticket ya este procesado validamos, con maximo 10 dias atras, para no cargar todo.
                         ''If Not vTicketTMSProcesado Then
@@ -1465,10 +1777,14 @@ Partial Public Class clsLnJornada_sistema
 
                                 Dim vDiaRetroaActivo As Date = BeStockJornadaExistente.Fecha_Ingreso_Ticket_TMS.Date
 
-                                vExisteRetroactivoDia = clsLnStock_jornada.Existe_Hash_Retroactivo_By_Fecha(Hash,
-                                                                                                            vDiaRetroaActivo,
-                                                                                                            lConnection,
-                                                                                                            lTransaction)
+                                If vPreload.Activo Then
+                                    vExisteRetroactivoDia = vPreload.HashRetroExistente.Contains(InvJornadaKeyHashFecha(Hash, vDiaRetroaActivo))
+                                Else
+                                    vExisteRetroactivoDia = clsLnStock_jornada.Existe_Hash_Retroactivo_By_Fecha(Hash,
+                                                                                                                vDiaRetroaActivo,
+                                                                                                                lConnection,
+                                                                                                                lTransaction)
+                                End If
 
                                 If Not vExisteRetroactivoDia Then
 
@@ -1476,9 +1792,14 @@ Partial Public Class clsLnJornada_sistema
 
                                     For i = 0 To vDifDiasIngreso - 1
 
-                                        If Not Existe_Jornada(vDiaRetroaActivo,
-                                                              lConnection,
-                                                              lTransaction) Then
+                                        Dim vExisteJornadaDia As Boolean = False
+                                        If vPreload.Activo Then
+                                            vExisteJornadaDia = vPreload.JornadasExistentes.Contains(InvJornadaFechaKey(vDiaRetroaActivo))
+                                        Else
+                                            vExisteJornadaDia = Existe_Jornada(vDiaRetroaActivo, lConnection, lTransaction)
+                                        End If
+
+                                        If Not vExisteJornadaDia Then
 
                                             Dim BeJornadaSistemaDiaFaltante As New clsBeJornada_sistema()
                                             BeJornadaSistemaDiaFaltante = Inserta_Jornada(pIdEmpresa,
@@ -1490,6 +1811,7 @@ Partial Public Class clsLnJornada_sistema
                                             If Not BeJornadaSistemaDiaFaltante Is Nothing Then
                                                 BeStockJornadaRetroActiva = New clsBeStock_jornada()
                                                 clsPublic.CopyObject(BeJornadaSistemaDiaFaltante, BeStockJornadaRetroActiva)
+                                                If vPreload.Activo Then vPreload.JornadasExistentes.Add(InvJornadaFechaKey(vDiaRetroaActivo))
                                             End If
 
                                         Else
@@ -1531,25 +1853,44 @@ Partial Public Class clsLnJornada_sistema
                                             '#GT28122022_1500: validar que no exista el stock con la fecha del retroactivo
                                             Dim BeStockJornadaExistente_ As New clsBeStock_jornada
 
-                                            BeStockJornadaExistente_ = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaRetroActiva.Lic_plate,
-                                                                                                                vDiaRetroaActivo,
-                                                                                                                BeStockJornadaRetroActiva.IdPropietarioBodega,
-                                                                                                                BeStockJornadaRetroActiva.IdProductoBodega,
-                                                                                                                BeStockJornadaRetroActiva.IdStock,
-                                                                                                                lConnection,
-                                                                                                                lTransaction)
-                                            If Not BeStockJornadaExistente_ Is Nothing Then
+                                            Dim vExisteStockRetro As Boolean = False
+                                            Dim vKeyStockRetro As String = InvJornadaKeyStock(BeStockJornadaRetroActiva.Lic_plate,
+                                                                                              vDiaRetroaActivo,
+                                                                                              BeStockJornadaRetroActiva.IdPropietarioBodega,
+                                                                                              BeStockJornadaRetroActiva.IdProductoBodega,
+                                                                                              BeStockJornadaRetroActiva.IdStock)
+                                            If vPreload.Activo Then
+                                                vExisteStockRetro = vPreload.StockExistente.Contains(vKeyStockRetro)
+                                            Else
+                                                BeStockJornadaExistente_ = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaRetroActiva.Lic_plate,
+                                                                                                                    vDiaRetroaActivo,
+                                                                                                                    BeStockJornadaRetroActiva.IdPropietarioBodega,
+                                                                                                                    BeStockJornadaRetroActiva.IdProductoBodega,
+                                                                                                                    BeStockJornadaRetroActiva.IdStock,
+                                                                                                                    lConnection,
+                                                                                                                    lTransaction)
+                                                vExisteStockRetro = Not BeStockJornadaExistente_ Is Nothing
+                                            End If
+                                            If vExisteStockRetro Then
 
                                                 vDiaRetroaActivo = vDiaRetroaActivo.AddDays(1)
+                                                vCntOmitidosDuplicado += 1
                                                 Continue For
 
                                             End If
 
                                             lTicketProcesados.Add(BeStockJornadaRetroActiva.IdJornadaSistema)
 
+                                            Dim vPasoInsertRetro As DateTime = Date.Now
                                             clsLnStock_jornada.Insertar(BeStockJornadaRetroActiva,
                                                                         lConnection,
                                                                         lTransaction)
+                                            vMsInsertRetro += CLng((Date.Now - vPasoInsertRetro).TotalMilliseconds)
+                                            vCntInsertRetro += 1
+                                            If vPreload.Activo Then
+                                                vPreload.StockExistente.Add(vKeyStockRetro)
+                                                vPreload.HashRetroExistente.Add(InvJornadaKeyHashFecha(Hash, vDiaRetroaActivo))
+                                            End If
 
 
                                             '#EJC202302160922: Revisar si aplica.
@@ -1564,6 +1905,7 @@ Partial Public Class clsLnJornada_sistema
                             End If
 
                         End If
+                        vMsRetroactivo += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
 
 
@@ -1574,6 +1916,7 @@ Partial Public Class clsLnJornada_sistema
                     '#GT03022023_1440: valida retroactivo desde un día atras a la fecha actual, para no sobrecargar en ingresos desde 2017
                     If ValidarRetroactivo AndAlso BeStockJornadaExistente.IdTicketTMS = 0 AndAlso BeStockJornadaExistente.Fecha_ingreso.Date = vFechaDiaAnterior.Date Then
 
+                        vPasoTrace = Date.Now
                         vDiasPrevios = 0
                         vDiasPrevios = DateDiff(DateInterval.Day,
                                                 BeStockJornadaExistente.Fecha_ingreso.Date,
@@ -1593,9 +1936,14 @@ Partial Public Class clsLnJornada_sistema
 
                             For i = 0 To vDiasPrevios - 1
 
-                                If Not Existe_Jornada(vDiaRetroaActivo,
-                                                          lConnection,
-                                                          lTransaction) Then
+                                Dim vExisteJornadaDia As Boolean = False
+                                If vPreload.Activo Then
+                                    vExisteJornadaDia = vPreload.JornadasExistentes.Contains(InvJornadaFechaKey(vDiaRetroaActivo))
+                                Else
+                                    vExisteJornadaDia = Existe_Jornada(vDiaRetroaActivo, lConnection, lTransaction)
+                                End If
+
+                                If Not vExisteJornadaDia Then
 
                                     Dim BeJornadaSistemaDiaFaltante As New clsBeJornada_sistema()
                                     BeJornadaSistemaDiaFaltante = Inserta_Jornada(pIdEmpresa,
@@ -1607,6 +1955,7 @@ Partial Public Class clsLnJornada_sistema
                                     If Not BeJornadaSistemaDiaFaltante Is Nothing Then
                                         BeStockJornadaRetroActiva = New clsBeStock_jornada()
                                         clsPublic.CopyObject(BeJornadaSistemaDiaFaltante, BeStockJornadaRetroActiva)
+                                        If vPreload.Activo Then vPreload.JornadasExistentes.Add(InvJornadaFechaKey(vDiaRetroaActivo))
                                     End If
 
                                 Else
@@ -1622,21 +1971,37 @@ Partial Public Class clsLnJornada_sistema
 
                                     '#GT28122022_1500: validar que no exista el stock con la fecha del retroactivo
                                     Dim BeStockJornadaExistente_ As New clsBeStock_jornada
-                                    BeStockJornadaExistente_ = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaRetroActiva.Lic_plate,
-                                                                                                        vDiaRetroaActivo,
-                                                                                                        BeStockJornadaRetroActiva.IdPropietarioBodega,
-                                                                                                        BeStockJornadaRetroActiva.IdProductoBodega,
-                                                                                                        BeStockJornadaRetroActiva.IdStock,
-                                                                                                        lConnection,
-                                                                                                        lTransaction)
-                                    If Not BeStockJornadaExistente_ Is Nothing Then
+                                    Dim vExisteStockRetro As Boolean = False
+                                    Dim vKeyStockRetro As String = InvJornadaKeyStock(BeStockJornadaRetroActiva.Lic_plate,
+                                                                                      vDiaRetroaActivo,
+                                                                                      BeStockJornadaRetroActiva.IdPropietarioBodega,
+                                                                                      BeStockJornadaRetroActiva.IdProductoBodega,
+                                                                                      BeStockJornadaRetroActiva.IdStock)
+                                    If vPreload.Activo Then
+                                        vExisteStockRetro = vPreload.StockExistente.Contains(vKeyStockRetro)
+                                    Else
+                                        BeStockJornadaExistente_ = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaRetroActiva.Lic_plate,
+                                                                                                            vDiaRetroaActivo,
+                                                                                                            BeStockJornadaRetroActiva.IdPropietarioBodega,
+                                                                                                            BeStockJornadaRetroActiva.IdProductoBodega,
+                                                                                                            BeStockJornadaRetroActiva.IdStock,
+                                                                                                            lConnection,
+                                                                                                            lTransaction)
+                                        vExisteStockRetro = Not BeStockJornadaExistente_ Is Nothing
+                                    End If
+                                    If vExisteStockRetro Then
                                         vDiaRetroaActivo = vDiaRetroaActivo.AddDays(1)
+                                        vCntOmitidosDuplicado += 1
                                         Continue For
                                     End If
 
+                                    Dim vPasoInsertRetro As DateTime = Date.Now
                                     clsLnStock_jornada.Insertar(BeStockJornadaRetroActiva,
                                                                                 lConnection,
                                                                                 lTransaction)
+                                    vMsInsertRetro += CLng((Date.Now - vPasoInsertRetro).TotalMilliseconds)
+                                    vCntInsertRetro += 1
+                                    If vPreload.Activo Then vPreload.StockExistente.Add(vKeyStockRetro)
 
                                     vDiaRetroaActivo = vDiaRetroaActivo.AddDays(1)
 
@@ -1645,23 +2010,39 @@ Partial Public Class clsLnJornada_sistema
 
                             Next
                         End If
+                        vMsRetroactivo += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                     End If
 
 #End Region
 
                     '#GT26122022_1630: valido nuevamente sino existe con la Fecha, porque previamente se pudo ejecutar iteración de Retroactivo
                     If vVerificarExistenciaStock Then
-                        BeStockJornadaExistentePosteriorRetroactivo = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaExistente.Lic_plate,
-                                                                                                               pFechaJornada,
-                                                                                                               BeStockJornadaExistente.IdPropietarioBodega,
-                                                                                                               BeStockJornadaExistente.IdProductoBodega,
-                                                                                                               BeStockJornadaExistente.IdStock,
-                                                                                                               lConnection,
-                                                                                                               lTransaction)
-                        If Not BeStockJornadaExistentePosteriorRetroactivo Is Nothing Then
+                        vPasoTrace = Date.Now
+                        Dim vKeyStockActual As String = InvJornadaKeyStock(BeStockJornadaExistente.Lic_plate,
+                                                                           pFechaJornada,
+                                                                           BeStockJornadaExistente.IdPropietarioBodega,
+                                                                           BeStockJornadaExistente.IdProductoBodega,
+                                                                           BeStockJornadaExistente.IdStock)
+                        Dim vExisteStockActual As Boolean = False
+                        If vPreload.Activo Then
+                            vExisteStockActual = vPreload.StockExistente.Contains(vKeyStockActual)
+                        Else
+                            BeStockJornadaExistentePosteriorRetroactivo = clsLnStock_jornada.Get_Single_By_IdStock(BeStockJornadaExistente.Lic_plate,
+                                                                                                                   pFechaJornada,
+                                                                                                                   BeStockJornadaExistente.IdPropietarioBodega,
+                                                                                                                   BeStockJornadaExistente.IdProductoBodega,
+                                                                                                                   BeStockJornadaExistente.IdStock,
+                                                                                                                   lConnection,
+                                                                                                                   lTransaction)
+                            vExisteStockActual = Not BeStockJornadaExistentePosteriorRetroactivo Is Nothing
+                        End If
+                        If vExisteStockActual Then
                             vIdStockJornada += 1
+                            vCntOmitidosDuplicado += 1
+                            vMsDedupe += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                             Continue For
                         End If
+                        vMsDedupe += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
                     End If
 
                     '#EJC202302211036: No actualizar cantidad base.
@@ -1677,19 +2058,56 @@ Partial Public Class clsLnJornada_sistema
                     '    End If
                     'End If
 
-                    clsLnStock_jornada.Insertar(BeStockJornadaExistente,
-                                                lConnection,
-                                                lTransaction)
+                    vLoteInsert.Add(BeStockJornadaExistente)
+                    If vPreload.Activo Then
+                        vPreload.StockExistente.Add(InvJornadaKeyStock(BeStockJornadaExistente.Lic_plate,
+                                                                        pFechaJornada,
+                                                                        BeStockJornadaExistente.IdPropietarioBodega,
+                                                                        BeStockJornadaExistente.IdProductoBodega,
+                                                                        BeStockJornadaExistente.IdStock))
+                    End If
+                    If vLoteInsert.Count >= vLoteTam Then
+                        vPasoTrace = Date.Now
+                        vCntInsertNormal += clsLnStock_jornada.Insert_Multiple_Fast(vLoteInsert,
+                                                                                     lConnection,
+                                                                                     lTransaction)
+                        vMsInsertNormal += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                        vLoteInsert.Clear()
+                    End If
 
                     vIdStockJornada += 1
 
+                    vPasoTrace = Date.Now
                     Application.DoEvents()
 
                     prg.Value = vContador
                     vContador += 1
+                    vMsUi += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+
+                    If vContador Mod 500 = 0 Then
+                        JornadaStockTrace(vSesionTrace, "INSERTAR_STOCK_JORNADA_PROGRESS", vInicioTrace,
+                                          "Procesados=" & vContador &
+                                          ";InsertNormal=" & vCntInsertNormal &
+                                          ";InsertRetro=" & vCntInsertRetro &
+                                          ";Duplicados=" & vCntOmitidosDuplicado &
+                                          ";MsInsertNormal=" & vMsInsertNormal &
+                                          ";MsInsertRetro=" & vMsInsertRetro &
+                                          ";MsDedupe=" & vMsDedupe &
+                                          ";MsRetro=" & vMsRetroactivo &
+                                          ";MsUi=" & vMsUi)
+                    End If
 
 
                 Next
+
+                If vLoteInsert.Count > 0 Then
+                    vPasoTrace = Date.Now
+                    vCntInsertNormal += clsLnStock_jornada.Insert_Multiple_Fast(vLoteInsert,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+                    vMsInsertNormal += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                    vLoteInsert.Clear()
+                End If
 
                 lblprg.AppendText("Fin de inserción para jornada: - " & pFechaJornada)
                 lblprg.AppendText(vbNewLine)
@@ -1701,27 +2119,54 @@ Partial Public Class clsLnJornada_sistema
 
             '#GT26122022_1700: sígun proceso que llena la lista, toma solo ticket con procesado_stock_jornada=0, para aca setearlos a 1
             If lTicketsProcesados.Count > 0 Then
+                vPasoTrace = Date.Now
                 For Each t In lTicketsProcesados
                     clsLnTms_ticket.Actualizar_Tms_Ticket_Procesado_Por_Stock_Jornada(t.Key,
                                                                                       lConnection,
                                                                                       lTransaction)
                 Next
+                vMsCierreTickets = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
             End If
 
             '#GT26122022_1700: sígun proceso que llena la lista, toma solo licencia en recepcion sin procesar jornada, para aca setearlos a 1
             If lLicenciasProcesadas.Count > 0 Then
+                vPasoTrace = Date.Now
                 For Each tBeLicenciaJornada In lLicenciasProcesadas
                     clsLnTrans_re_det.Actualizar_Licencia_Procesada_Por_Stock_Jornada(tBeLicenciaJornada,
                                                                                       lConnection,
                                                                                       lTransaction)
                 Next
+                vMsCierreLicencias = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
             End If
 
 
             Insertar_Stock_Jornada = True
+            JornadaStockTrace(vSesionTrace, "INSERTAR_STOCK_JORNADA_FIN", vInicioTrace,
+                              "Rows=" & If(DTVWStockJornada Is Nothing, 0, DTVWStockJornada.Rows.Count) &
+                              ";InsertNormal=" & vCntInsertNormal &
+                              ";InsertRetro=" & vCntInsertRetro &
+                              ";Duplicados=" & vCntOmitidosDuplicado &
+                              ";TicketQueries=" & vCntTicketQuery &
+                              ";LicenciaQueries=" & vCntLicenciaQuery &
+                              ";MsServidor=" & vMsServidor &
+                              ";MsStockDet=" & vMsStockDet &
+                              ";MsBodega=" & vMsBodega &
+                              ";MsMapeo=" & vMsMapeo &
+                              ";MsSingularidad=" & vMsSingularidad &
+                              ";MsTicket=" & vMsTicket &
+                              ";MsLicencia=" & vMsLicencia &
+                              ";MsHash=" & vMsHash &
+                              ";MsRetro=" & vMsRetroactivo &
+                              ";MsDedupe=" & vMsDedupe &
+                              ";MsInsertNormal=" & vMsInsertNormal &
+                              ";MsInsertRetro=" & vMsInsertRetro &
+                              ";MsUi=" & vMsUi &
+                              ";MsCierreTickets=" & vMsCierreTickets &
+                              ";MsCierreLicencias=" & vMsCierreLicencias)
 
         Catch ex As Exception
 
+            JornadaStockTrace(vSesionTrace, "INSERTAR_STOCK_JORNADA_ERROR", vInicioTrace, ex.Message)
             lblprg.AppendText("ERROR: " & String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             lblprg.AppendText(vbNewLine)
             lblprg.Refresh()

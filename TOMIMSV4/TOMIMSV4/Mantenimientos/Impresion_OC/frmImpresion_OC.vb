@@ -1,8 +1,11 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
 Imports DevExpress.XtraEditors
+Imports DevExpress.XtraGrid.Views.Grid
 
 Public Class frmImpresionRecepcion_OC
+
+    Public Event NotificarActualizacionLotesOC()
 
     Private Enum TipoProcesoLicencia
         SoloLicencia = 1
@@ -35,8 +38,15 @@ Public Class frmImpresionRecepcion_OC
     Private pCorrelativoTarimaActual As Integer = 0
     Private pTarimasImpresasAcumuladas As Integer = 0
     Private pModoReimpresion As Boolean = False
+    ' #EJC20260610_FLOW_IMP_OC_FASEADA:
+    ' Estado para trabajar fardos sobre una licencia ya generada (madre existente).
+    Private pModoLicenciaExistenteBultos As Boolean = False
+    Private pCapacidadObjetivoLicenciaSeleccionada As Integer = 0
     ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: ancla de licencia madre para fardos (evita saltos accidentales).
     Private pLicenciaMadreBulto As String = ""
+    '#EJC20260605_FIX_IMP_OC_CONTADOR_ETIQUETAS_PRESENTACION:
+    'Contador en memoria por licencia activa. Se persiste al cerrar licencia.
+    Private pEtiquetasPresentacionImpresasLicenciaActual As Integer = 0
 
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -57,8 +67,8 @@ Public Class frmImpresionRecepcion_OC
 
             EsPrimeraImpresion = True
 
-            cmbPrinterLicencia.EditValue = frmRecepcion.pImpresoraLicSeleccionada
-            cmbPrinterBarra.EditValue = frmRecepcion.pImpresoraProdSeleccionada
+            AsignarImpresoraInicial(cmbPrinterLicencia, frmRecepcion.pImpresoraLicSeleccionada)
+            AsignarImpresoraInicial(cmbPrinterBarra, frmRecepcion.pImpresoraProdSeleccionada)
 
             If chkSoloLicencia IsNot Nothing Then chkSoloLicencia.Checked = True
 
@@ -72,10 +82,38 @@ Public Class frmImpresionRecepcion_OC
         End Try
     End Sub
 
-    Private Sub ListarBarrasPallet()
+    Private Sub ListarBarrasPallet(Optional ByVal pNotificar As Boolean = False)
+        Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc, pBeTransOcDet.IdOrdenCompraDet)
+        dgridBarrasPallet.DataSource = dt
+        ConfigurarGridLicencias()
+        ActualizarPanelUltimaEtiqueta(dt)
+        If pNotificar Then
+            RaiseEvent NotificarActualizacionLotesOC()
+        End If
+    End Sub
 
-        dgridBarrasPallet.DataSource = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(pTransOC_Enc.IdOrdenCompraEnc, pBeTransOcDet.IdOrdenCompraDet)
+    ' #EJC20260610_FIX_IMP_OC_REFRESH_CONTADOR_PRESENTACION:
+    ' En modo Licencia+Bulto, persiste el contador de fardos en la licencia madre tras cada impresión.
+    Private Sub PersistirContadorEtiquetasPresentacionLicenciaActual()
+        Try
+            If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then Exit Sub
+            If pTransOC_Enc Is Nothing OrElse pBeTransOcDet Is Nothing Then Exit Sub
+            If pTransOC_Enc.IdOrdenCompraEnc <= 0 OrElse pBeTransOcDet.IdOrdenCompraDet <= 0 Then Exit Sub
 
+            Dim licenciaMadre As String = ObtenerLicenciaMadreActiva()
+            If String.IsNullOrWhiteSpace(licenciaMadre) Then Exit Sub
+
+            Dim filasAfectadas As Integer = clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(
+                pTransOC_Enc.IdOrdenCompraEnc,
+                pBeTransOcDet.IdOrdenCompraDet,
+                licenciaMadre.Trim(),
+                pEtiquetasPresentacionImpresasLicenciaActual)
+            If filasAfectadas <= 0 Then
+                Throw New Exception("No se actualizó el contador de fardos impresos para la licencia madre " & licenciaMadre.Trim())
+            End If
+        Catch
+            Throw
+        End Try
     End Sub
 
     Private Sub chkSoloLicencia_CheckedChanged(sender As Object, e As EventArgs) Handles chkSoloLicencia.CheckedChanged
@@ -102,14 +140,18 @@ Public Class frmImpresionRecepcion_OC
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
                 txtCantidadLicencias.Enabled = True
-                'txtCantidadBarras.Enabled = False
+                txtCantidadBarras.Enabled = False
                 txtCopias.Enabled = True
+                cmdImpresionBarra.Enabled = False
+                cmdUnidad.Enabled = False
 
             Case TipoProcesoLicencia.LicenciaBulto
                 txtCantidadLicencias.Value = 1
                 txtCantidadLicencias.Enabled = False
-                'txtCantidadBarras.Enabled = True
+                txtCantidadBarras.Enabled = True
                 txtCopias.Enabled = True
+                cmdImpresionBarra.Enabled = True
+                cmdUnidad.Enabled = True
         End Select
 
         RecalcularCapacidadLicenciaActual()
@@ -125,6 +167,9 @@ Public Class frmImpresionRecepcion_OC
         RecalcularCapacidadLicenciaActual()
         pBultosPendientesLicenciaActual = pCapacidadObjetivoLicenciaActual
         pLicenciaActualCerrada = False
+        pEtiquetasPresentacionImpresasLicenciaActual = 0
+        pModoLicenciaExistenteBultos = False
+        pCapacidadObjetivoLicenciaSeleccionada = 0
         ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: al abrir nueva licencia de trabajo, queda anclada como licencia madre de fardos.
         pLicenciaMadreBulto = Convert.ToString(txtLicencia.Text).Trim()
         ActualizarEstadoPantalla()
@@ -147,7 +192,58 @@ Public Class frmImpresionRecepcion_OC
         pCamasPorTarima = Convert.ToInt32(txtCamaPorTarima.Value)
         pCajasPorCama = Convert.ToInt32(txtCajaPorCama.Value)
         pPresentacion = CStr(txtPresentacion.EditValue)
-        pCapacidadObjetivoLicenciaActual = Math.Max(0, pCamasPorTarima * pCajasPorCama)
+        ' #EJC20260610_FLOW_IMP_OC_FASEADA:
+        ' Si el operador seleccionó una licencia ya generada, la capacidad real es la persistida en esa licencia.
+        If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto AndAlso pModoLicenciaExistenteBultos AndAlso pCapacidadObjetivoLicenciaSeleccionada > 0 Then
+            pCapacidadObjetivoLicenciaActual = pCapacidadObjetivoLicenciaSeleccionada
+        Else
+            pCapacidadObjetivoLicenciaActual = Math.Max(0, pCamasPorTarima * pCajasPorCama)
+        End If
+    End Sub
+
+    ' #EJC20260610_FLOW_IMP_OC_FASEADA:
+    ' Carga estado operativo (capacidad/impresas/pendientes) desde una licencia madre ya generada.
+    Private Sub CargarEstadoLicenciaSeleccionadaParaBultos(ByVal licencia As String)
+        If String.IsNullOrWhiteSpace(licencia) Then Exit Sub
+        If pTransOC_Enc Is Nothing OrElse pBeTransOcDet Is Nothing Then Exit Sub
+        If pTransOC_Enc.IdOrdenCompraEnc <= 0 OrElse pBeTransOcDet.IdOrdenCompraDet <= 0 Then Exit Sub
+
+        Dim dt As DataTable = clsLnTrans_oc_det_lote.Get_Barras_By_IdOrdenCompraEnc_And_IdOrdenCompraDet(
+            pTransOC_Enc.IdOrdenCompraEnc,
+            pBeTransOcDet.IdOrdenCompraDet)
+
+        If dt Is Nothing OrElse dt.Rows.Count <= 0 Then Exit Sub
+
+        Dim dr As DataRow = dt.AsEnumerable().
+            FirstOrDefault(Function(r) String.Equals(Convert.ToString(r("Licencia")).Trim(),
+                                                     licencia.Trim(),
+                                                     StringComparison.OrdinalIgnoreCase))
+
+        If dr Is Nothing Then Exit Sub
+
+        Dim capacidad As Integer = 0
+        If dt.Columns.Contains("Cantidad_Presentacion") Then
+            capacidad = ValorEntero(dr("Cantidad_Presentacion"))
+        End If
+
+        Dim impresas As Integer = 0
+        If dt.Columns.Contains("cant_etiquetas_presentacion_impresas") Then
+            impresas = ValorEntero(dr("cant_etiquetas_presentacion_impresas"))
+        End If
+
+        If capacidad < 0 Then capacidad = 0
+        If impresas < 0 Then impresas = 0
+
+        pModoLicenciaExistenteBultos = True
+        pCapacidadObjetivoLicenciaSeleccionada = capacidad
+        pLicenciaMadreBulto = licencia.Trim()
+        pEtiquetasPresentacionImpresasLicenciaActual = impresas
+        pBultosPendientesLicenciaActual = Math.Max(0, capacidad - impresas)
+        pLicenciaActualCerrada = (pBultosPendientesLicenciaActual <= 0)
+
+        txtLicencia.Text = pLicenciaMadreBulto
+        txtCantidadBarras.Value = pBultosPendientesLicenciaActual
+        ActualizarEstadoPantalla()
     End Sub
 
     Private Sub AvanzarALaSiguienteLicencia(ByVal clsTransaccion As clsTransaccion)
@@ -228,6 +324,42 @@ Public Class frmImpresionRecepcion_OC
         Return True
     End Function
 
+    '#EJC20260605_FIX_IMP_OC_VALIDA_LIC_MADRE_PREVIA:
+    'En flujo Licencia+Bulto, solo permitir fardos si la licencia madre ya existe/impresa en i_nav_barras_pallet.
+    Private Function ValidarLicenciaMadreImpresaParaFardos(ByVal licenciaMadre As String) As Boolean
+
+        If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then Return True
+
+        If String.IsNullOrWhiteSpace(licenciaMadre) Then
+            XtraMessageBox.Show("No existe una licencia madre activa para imprimir fardos.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return False
+        End If
+
+        If pTransOC_Enc Is Nothing OrElse pBeTransOcDet Is Nothing Then
+            XtraMessageBox.Show("No se pudo validar la licencia madre. Recargue el producto y vuelva a intentar.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return False
+        End If
+
+        If pTransOC_Enc.IdOrdenCompraEnc <= 0 OrElse pBeTransOcDet.IdOrdenCompraDet <= 0 Then
+            XtraMessageBox.Show("No se pudo validar la licencia madre por falta de referencia de documento/línea.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return False
+        End If
+
+        Dim existeLicenciaMadreImpresa As Boolean = clsLnI_nav_barras_pallet.Existe_Licencia_Madre_Impresa(pTransOC_Enc.IdOrdenCompraEnc,
+                                                                                                             pBeTransOcDet.IdOrdenCompraDet,
+                                                                                                             licenciaMadre.Trim())
+
+        If Not existeLicenciaMadreImpresa Then
+            XtraMessageBox.Show("Debe imprimir primero la licencia madre [" & licenciaMadre & "] para habilitar impresión de etiquetas de presentación/fardos.",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation)
+            Return False
+        End If
+
+        Return True
+    End Function
+
     Private Function DebeForzarCierreLicenciaAntesDeSeguir() As Boolean
         If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then Return False
         Return pBultosPendientesLicenciaActual <= 0 AndAlso Not pLicenciaActualCerrada
@@ -300,6 +432,49 @@ Public Class frmImpresionRecepcion_OC
         Return vCopias
     End Function
 
+    Private Function ObtenerTextoBodegaEtiqueta() As String
+        Dim bodegaEtiqueta As clsBeBodega = Nothing
+
+        ' #EJC20260610_FIX_IMP_OC_BODEGA_NOMBRE_OCULTO_CACHE:
+        ' Fuerza lectura fresca de bodega para evitar valores stale en sesión/AP.Bodega.
+        Try
+            Dim idBodegaActual As Integer = 0
+
+            If BeBodega_Origen IsNot Nothing AndAlso BeBodega_Origen.IdBodega > 0 Then
+                idBodegaActual = BeBodega_Origen.IdBodega
+            ElseIf AP IsNot Nothing AndAlso AP.Bodega IsNot Nothing AndAlso AP.Bodega.IdBodega > 0 Then
+                idBodegaActual = AP.Bodega.IdBodega
+            End If
+
+            If idBodegaActual > 0 Then
+                bodegaEtiqueta = clsLnBodega.GetSingle_By_Idbodega(idBodegaActual)
+            End If
+        Catch
+            ' No interrumpir impresión por fallback de lectura de bodega.
+        End Try
+
+        If bodegaEtiqueta Is Nothing Then
+            If BeBodega_Origen IsNot Nothing AndAlso BeBodega_Origen.IdBodega > 0 Then
+                bodegaEtiqueta = BeBodega_Origen
+            Else
+                bodegaEtiqueta = AP.Bodega
+            End If
+        End If
+
+        If bodegaEtiqueta Is Nothing Then Return ""
+
+        Dim codigo As String = Convert.ToString(bodegaEtiqueta.Codigo).Trim()
+        Dim nombre As String = Convert.ToString(bodegaEtiqueta.Nombre).Trim()
+
+        If bodegaEtiqueta.ocultar_nombre_etiquetas_impresas Then
+            Return codigo
+        End If
+
+        If String.IsNullOrWhiteSpace(nombre) Then Return codigo
+
+        Return codigo & " - " & nombre
+    End Function
+
     Private Function ConstruirZplProducto(ByVal pReDet As clsBeTrans_oc_det,
                                           Optional ByVal licenciaForzada As String = "") As String
 
@@ -332,7 +507,7 @@ Public Class frmImpresionRecepcion_OC
                                              licenciaForzada.Trim())
 
         Return String.Format(tmpZPLString,
-                         AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,
+                         ObtenerTextoBodegaEtiqueta(),
                          vEmpresa,
                          vCodigoProducto & " - " & vNombreProducto,
                          licenciaImpresion,
@@ -384,7 +559,7 @@ Public Class frmImpresionRecepcion_OC
         End If
 
         Dim args() As Object = {
-        AP.Bodega.Codigo & " - " & AP.Bodega.Nombre,                                                   ' {0}
+        ObtenerTextoBodegaEtiqueta(),                                                                  ' {0}
         vEmpresa,                                                                                      ' {1}
         vCodigoProducto & " - " & vNombreProducto.Trim(),                                              ' {2}
         vLicenciaQr,                                                                                   ' {3}
@@ -423,7 +598,10 @@ Public Class frmImpresionRecepcion_OC
                                              ByVal cantidadPresentacion As Integer) As clsBeI_nav_barras_pallet
 
         Dim vFechaVence As Date = ObtenerFechaVence()
+        Dim idOrdenCompraDetLote As Integer = ObtenerIdOrdenCompraDetLoteSeleccionado()
 
+        '#EJC20260605_FIX_MHS_FK_LOTE_BARRA:
+        'Persistir vínculo fuerte barra->lote para trazabilidad robusta (evita inferencia por texto de lote).
         Return New clsBeI_nav_barras_pallet With {
             .IdPallet = 0,
             .Codigo = BeTransOcDetLote.Codigo_Producto,
@@ -447,8 +625,19 @@ Public Class frmImpresionRecepcion_OC
             .Lote_Numerico = Nothing,
             .IdOrdenCompraEnc = BeTransOcDetLote.IdOrdenCompraEnc,
             .IdOrdenCompraDet = BeTransOcDetLote.IdOrdenCompraDet,
+            .IdOrdenCompraDetLote = idOrdenCompraDetLote,
             .Impreso = True
         }
+    End Function
+
+    Private Function ObtenerIdOrdenCompraDetLoteSeleccionado() As Integer
+        Try
+            If cmbLote Is Nothing OrElse cmbLote.EditValue Is Nothing Then Return 0
+            If IsDBNull(cmbLote.EditValue) Then Return 0
+            Return Convert.ToInt32(cmbLote.EditValue)
+        Catch
+            Return 0
+        End Try
     End Function
 
     Private Sub ActualizarEstadoPantalla()
@@ -459,12 +648,16 @@ Public Class frmImpresionRecepcion_OC
 
         Select Case pModoProcesoActual
             Case TipoProcesoLicencia.SoloLicencia
-                lblEtiquetas.Text = $"Licencias sugeridas: {CalcularEtiquetasDocumento()}"
+                lblEtiquetas.Text = $"Licencias sugeridas: {CalcularEtiquetasDocumento()} | Para fardos cambie a 'Licencias y Presentación' y seleccione licencia madre."
             Case TipoProcesoLicencia.LicenciaBulto
                 lblEtiquetas.Text = $"Licencia actual: impresos {impresos} / capacidad {pCapacidadObjetivoLicenciaActual} / pendientes {pBultosPendientesLicenciaActual}"
         End Select
 
-        txtCantidadBarras.Value = pCapacidadObjetivoLicenciaActual
+        If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+            txtCantidadBarras.Value = Math.Max(0, pBultosPendientesLicenciaActual)
+        Else
+            txtCantidadBarras.Value = pCapacidadObjetivoLicenciaActual
+        End If
 
         Dim cantidad As Decimal = 0D
         If pBeTransOcDet IsNot Nothing Then cantidad = CDec(pBeTransOcDet.Cantidad)
@@ -534,15 +727,28 @@ Public Class frmImpresionRecepcion_OC
             If Not ValidarDatosBasicosProducto() Then Exit Sub
             If Not ValidarImpresora(cmbPrinterLicencia, Convert.ToString(cmbPrinterLicencia.EditValue), "Seleccione impresora") Then Exit Sub
 
+            ' #EJC20260610_FLOW_IMP_OC_FASEADA:
+            ' Si se está trabajando sobre licencia existente, el cierre/generación de licencia no aplica.
+            If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto AndAlso pModoLicenciaExistenteBultos Then
+                XtraMessageBox.Show("Está trabajando sobre una licencia ya generada. Use Fardo/Unidad para imprimir presentaciones pendientes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Sub
+            End If
+
             If pModoReimpresion Then
                 ReimprimirLicencia(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
                 pModoReimpresion = False
                 cmdImpresionLicencia.BackColor = Color.Transparent
+                ' #EJC20260610_FIX_IMP_OC_REIMPRESION_HABILITA_FARDO:
+                ' Tras reimprimir licencia, habilitar flujo de hijas (fardos/unidad) automáticamente.
+                If chkLicenciaBulto IsNot Nothing Then chkLicenciaBulto.Checked = True
+                CargarEstadoLicenciaSeleccionadaParaBultos(Convert.ToString(txtLicencia.Text).Trim())
+                ListarBarrasPallet(True)
                 Exit Sub
             End If
 
             If DebeForzarCierreLicenciaAntesDeSeguir() Then
                 CerrarEImprimirLicenciaConBultos(pBeTransOcDet, Convert.ToString(cmbPrinterLicencia.EditValue))
+                ListarBarrasPallet(True)
                 Exit Sub
             End If
 
@@ -559,7 +765,7 @@ Public Class frmImpresionRecepcion_OC
                                                  Convert.ToString(cmbPrinterLicencia.EditValue))
             End Select
 
-            ListarBarrasPallet()
+            ListarBarrasPallet(True)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -571,6 +777,22 @@ Public Class frmImpresionRecepcion_OC
 
     Private Sub cmdImpresionBarra_Click(sender As Object, e As EventArgs) Handles cmdImpresionBarra.Click
         Try
+            If pModoProcesoActual <> TipoProcesoLicencia.LicenciaBulto Then
+                XtraMessageBox.Show("No se permite imprimir fardos en 'Solo Licencias'." &
+                                    Environment.NewLine & Environment.NewLine &
+                                    "Pasos:" &
+                                    Environment.NewLine &
+                                    "1. Cambie a 'Licencias y Presentación'." &
+                                    Environment.NewLine &
+                                    "2. Seleccione la licencia madre en la pestaña 'Licencias' (doble clic)." &
+                                    Environment.NewLine &
+                                    "3. Luego imprima Fardo/Unidad.",
+                                    Text,
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
+
             If Not ValidarDatosBasicosProducto() Then Exit Sub
             If Not ValidarImpresora(cmbPrinterBarra, Convert.ToString(cmbPrinterBarra.EditValue), "Seleccione impresora") Then Exit Sub
 
@@ -579,7 +801,7 @@ Public Class frmImpresionRecepcion_OC
 
             If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
                 ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: reimpresión de licencia no puede mezclarse con impresión de fardos.
-                If pModoReimpresion Then
+                If pModoReimpresion AndAlso Not pModoLicenciaExistenteBultos Then
                     XtraMessageBox.Show("No puede imprimir fardos en modo reimpresión de licencia. Finalice la reimpresión o seleccione una licencia activa.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
@@ -596,6 +818,8 @@ Public Class frmImpresionRecepcion_OC
                     XtraMessageBox.Show("Se detectó cambio de licencia durante el proceso de fardos. Se restauró la licencia madre para evitar mezcla de bultos.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Exit Sub
                 End If
+
+                If Not ValidarLicenciaMadreImpresaParaFardos(licenciaMadre) Then Exit Sub
             End If
 
             If DebeForzarCierreLicenciaAntesDeSeguir() Then
@@ -616,7 +840,14 @@ Public Class frmImpresionRecepcion_OC
                               cantidadSolicitada,
                               licenciaMadre)
 
+            PersistirContadorEtiquetasPresentacionLicenciaActual()
+            ListarBarrasPallet(True)
+            If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto AndAlso Not String.IsNullOrWhiteSpace(licenciaMadre) Then
+                CargarEstadoLicenciaSeleccionadaParaBultos(licenciaMadre)
+            End If
+
         Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
@@ -632,6 +863,10 @@ Public Class frmImpresionRecepcion_OC
         Try
             If pImpresiones <= 0 Then Exit Sub
 
+            If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+                If Not ValidarLicenciaMadreImpresaParaFardos(licenciaForzada) Then Exit Sub
+            End If
+
             ' #EJC20260604_FIX_IMP_OC_LIC_MADRE_FARDO: licencia forzada en ZPL para mantener trazabilidad madre->fardos.
             Dim zplString As String = ConstruirZplProducto(pReDet, licenciaForzada)
             Dim vCopias As Integer = ObtenerCopiasSolicitadas()
@@ -645,6 +880,7 @@ Public Class frmImpresionRecepcion_OC
             If pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
                 pBultosPendientesLicenciaActual -= pImpresiones
                 If pBultosPendientesLicenciaActual < 0 Then pBultosPendientesLicenciaActual = 0
+                pEtiquetasPresentacionImpresasLicenciaActual += (pImpresiones * vCopias)
             End If
 
             ActualizarEstadoPantalla()
@@ -714,6 +950,27 @@ Public Class frmImpresionRecepcion_OC
                 Dim cantidadPresentacion As Integer = ObtenerCantidadPresentacionPorTarima(numeroTarima)
 
                 If cantidadPresentacion <= 0 Then
+
+                    Dim capacidadTarima As Integer = Convert.ToInt32(txtCamaPorTarima.Value) *
+                                         Convert.ToInt32(txtCajaPorCama.Value)
+
+                    If XtraMessageBox.Show("No se pudo calcular la cantidad real de presentación para la tarima." &
+                                                                        Environment.NewLine &
+                                                                        $"¿Imprimir con: {capacidadTarima}?",
+                                                                        "Error",
+                                                                        MessageBoxButtons.YesNo,
+                                                                        MessageBoxIcon.Question) = DialogResult.No Then
+
+                        Return
+
+                    Else
+                        cantidadPresentacion = capacidadTarima
+                    End If
+
+                End If
+
+
+                If cantidadPresentacion <= 0 Then
                     Throw New Exception("No se pudo calcular la cantidad real de presentación para la tarima.")
                 End If
 
@@ -737,7 +994,7 @@ Public Class frmImpresionRecepcion_OC
                                                                   clsTransaccion.lConnection,
                                                                   clsTransaccion.lTransaction) Then
 
-                    ListarBarrasPallet()
+                    ListarBarrasPallet(True)
 
                     Throw New Exception($"La licencia [{licenciaActual}] ya existe.")
 
@@ -759,7 +1016,7 @@ Public Class frmImpresionRecepcion_OC
             clsTransaccion.Commit_Transaction()
 
             ActualizarEstadoPantalla()
-            ListarBarrasPallet()
+            ListarBarrasPallet(True)
 
         Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
@@ -805,12 +1062,19 @@ Public Class frmImpresionRecepcion_OC
                                                                                       cantidadPresentacion)
 
             BeInavBarraPallet.Peso = vPeso
+            ' #EJC20260605_FIX_IMP_OC_CONTADOR_ETIQUETAS_PRESENTACION:
+            'Persistir en la licencia cerrada cuántas etiquetas de presentación se imprimieron realmente.
+            BeInavBarraPallet.cant_etiquetas_presentacion_impresas = pEtiquetasPresentacionImpresasLicenciaActual
+            BeInavBarraPallet.Cantidad_Presentacion = pEtiquetasPresentacionImpresasLicenciaActual
+
+            Dim factorPresentacion As Double = ObtenerFactorPresentacionActual()
+            BeInavBarraPallet.Cantidad_UMP = pEtiquetasPresentacionImpresasLicenciaActual * factorPresentacion
 
             If clsLnI_nav_barras_pallet.Get_Single_By_Licencia(licenciaActual,
                                                                   clsTransaccion.lConnection,
                                                                   clsTransaccion.lTransaction) Then
 
-                ListarBarrasPallet()
+                ListarBarrasPallet(True)
                 Throw New Exception($"La licencia [{licenciaActual}] ya existe. (Verifique concurrencia)")
 
             End If
@@ -818,6 +1082,12 @@ Public Class frmImpresionRecepcion_OC
             clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(BeInavBarraPallet,
                                                                  clsTransaccion.lConnection,
                                                                  clsTransaccion.lTransaction)
+            clsLnI_nav_barras_pallet.Actualizar_Cant_Etiquetas_Presentacion_Impresas(BeInavBarraPallet.IdOrdenCompraEnc,
+                                                                                      BeInavBarraPallet.IdOrdenCompraDet,
+                                                                                      BeInavBarraPallet.Codigo_barra,
+                                                                                      BeInavBarraPallet.cant_etiquetas_presentacion_impresas,
+                                                                                      clsTransaccion.lConnection,
+                                                                                      clsTransaccion.lTransaction)
 
             pLicenciaActualCerrada = True
             AvanzarALaSiguienteLicencia(clsTransaccion)
@@ -867,6 +1137,70 @@ Public Class frmImpresionRecepcion_OC
             Return False
         End Try
     End Function
+
+    '#EJC20260605_FIX_IMP_OC_DEFAULT_PRINTER:
+    'Carga impresora inicial por prioridad: guardada -> Zebra -> predeterminada Windows -> primera disponible.
+    Private Sub AsignarImpresoraInicial(ByRef cmb As LookUpEdit, ByVal impresoraGuardada As String)
+        Try
+            If cmb Is Nothing OrElse cmb.Properties Is Nothing OrElse cmb.Properties.DataSource Is Nothing Then Exit Sub
+
+            Dim lista As New List(Of String)
+            For Each item In CType(cmb.Properties.DataSource, System.Collections.IEnumerable)
+                Dim nombre As String = Convert.ToString(item).Trim()
+                If Not String.IsNullOrWhiteSpace(nombre) Then lista.Add(nombre)
+            Next
+
+            If lista.Count <= 0 Then Exit Sub
+
+            Dim seleccion As String = ""
+
+            If Not String.IsNullOrWhiteSpace(impresoraGuardada) Then
+                For Each p As String In lista
+                    If String.Equals(p.Trim(), impresoraGuardada.Trim(), StringComparison.OrdinalIgnoreCase) Then
+                        seleccion = p
+                        Exit For
+                    End If
+                Next
+            End If
+
+            If String.IsNullOrWhiteSpace(seleccion) Then
+                For Each p As String In lista
+                    If p.IndexOf("zebra", StringComparison.OrdinalIgnoreCase) >= 0 Then
+                        seleccion = p
+                        Exit For
+                    End If
+                Next
+            End If
+
+            If String.IsNullOrWhiteSpace(seleccion) Then
+                Dim windowsDefault As String = ""
+                Try
+                    Dim ps As New PrinterSettings()
+                    If ps IsNot Nothing AndAlso ps.IsValid Then
+                        windowsDefault = Convert.ToString(ps.PrinterName).Trim()
+                    End If
+                Catch
+                End Try
+
+                If Not String.IsNullOrWhiteSpace(windowsDefault) Then
+                    For Each p As String In lista
+                        If String.Equals(p.Trim(), windowsDefault, StringComparison.OrdinalIgnoreCase) Then
+                            seleccion = p
+                            Exit For
+                        End If
+                    Next
+                End If
+            End If
+
+            If String.IsNullOrWhiteSpace(seleccion) Then
+                seleccion = lista(0)
+            End If
+
+            cmb.EditValue = seleccion
+
+        Catch
+        End Try
+    End Sub
 
     Private Sub cmbPrinterBarra_EditValueChanged(sender As Object, e As EventArgs) Handles cmbPrinterBarra.EditValueChanged
         pImpresoraProdSeleccionada = Convert.ToString(cmbPrinterBarra.EditValue)
@@ -1297,9 +1631,32 @@ Public Class frmImpresionRecepcion_OC
                         lblIdPallet.Visible = True
                         txtIdPallet.Visible = True
                         txtIdPallet.Text = pBeI_nav_barras_pallet.IdPallet.ToString()
-                        pModoReimpresion = True
                         tabImp.SelectedTab = tabImpresion
-                        cmdImpresionLicencia.BackColor = Color.MistyRose
+
+                        ' #EJC20260610_FIX_IMP_OC_AUTO_MODO_BULTO:
+                        ' Si el operador selecciona una licencia ya impresa desde la grilla,
+                        ' habilitar automáticamente flujo Licencia+Bulto para imprimir hijas (fardos).
+                        Dim licenciaImpresa As Boolean = False
+                        Try
+                            If Dr.Row.Table.Columns.Contains("Impreso") Then
+                                licenciaImpresa = (ValorEntero(Dr.Item("Impreso")) > 0)
+                            End If
+                        Catch
+                        End Try
+
+                        If licenciaImpresa Then
+                            If chkLicenciaBulto IsNot Nothing Then chkLicenciaBulto.Checked = True
+                            pModoReimpresion = False
+                            cmdImpresionLicencia.BackColor = Color.Transparent
+                            CargarEstadoLicenciaSeleccionadaParaBultos(pBeI_nav_barras_pallet.Codigo_barra)
+                        ElseIf pModoProcesoActual = TipoProcesoLicencia.LicenciaBulto Then
+                            pModoReimpresion = False
+                            cmdImpresionLicencia.BackColor = Color.Transparent
+                            CargarEstadoLicenciaSeleccionadaParaBultos(pBeI_nav_barras_pallet.Codigo_barra)
+                        Else
+                            pModoReimpresion = True
+                            cmdImpresionLicencia.BackColor = Color.MistyRose
+                        End If
                     End If
 
 
@@ -1413,4 +1770,127 @@ Public Class frmImpresionRecepcion_OC
 
     End Function
 
+
+    Private Function ObtenerFactorPresentacionActual() As Double
+        Try
+            If txtFactor.EditValue IsNot Nothing Then
+                Return Convert.ToDouble(txtFactor.EditValue)
+            End If
+        Catch
+        End Try
+        Return 0
+    End Function
+
+    Private Sub ConfigurarGridLicencias()
+        Try
+            If gviewlicencias Is Nothing Then Exit Sub
+            If gviewlicencias.Columns Is Nothing Then Exit Sub
+
+            If gviewlicencias.Columns.ColumnByFieldName("Impreso") IsNot Nothing Then
+                gviewlicencias.Columns("Impreso").Caption = "Licencia Impresa"
+                gviewlicencias.Columns("Impreso").Width = 120
+            End If
+
+            If gviewlicencias.Columns.ColumnByFieldName("cant_etiquetas_presentacion_impresas") IsNot Nothing Then
+                gviewlicencias.Columns("cant_etiquetas_presentacion_impresas").Caption = "Etiquetas Pres. Impresas"
+                gviewlicencias.Columns("cant_etiquetas_presentacion_impresas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                gviewlicencias.Columns("cant_etiquetas_presentacion_impresas").DisplayFormat.FormatString = "n0"
+                gviewlicencias.Columns("cant_etiquetas_presentacion_impresas").Summary.Clear()
+                gviewlicencias.Columns("cant_etiquetas_presentacion_impresas").Summary.Add(DevExpress.Data.SummaryItemType.Sum, "cant_etiquetas_presentacion_impresas", "{0:n0}")
+            End If
+        Catch
+        End Try
+    End Sub
+
+    Private Sub ActualizarPanelUltimaEtiqueta(ByVal dt As DataTable)
+        Try
+            txtUltimaLicencia.Text = ""
+            TextEdit2.Text = "0"
+            txtFechaUltimaImpresion.Text = ""
+
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Sub
+
+            Dim dr As DataRow = dt.Rows(0)
+
+            If dt.Columns.Contains("Licencia") Then
+                txtUltimaLicencia.Text = Convert.ToString(dr("Licencia"))
+            End If
+
+            If dt.Columns.Contains("cant_etiquetas_presentacion_impresas") Then
+                TextEdit2.Text = Convert.ToString(ValorEntero(dr("cant_etiquetas_presentacion_impresas")))
+            ElseIf dt.Columns.Contains("Cantidad_Presentacion") Then
+                TextEdit2.Text = Convert.ToString(ValorEntero(dr("Cantidad_Presentacion")))
+            End If
+
+            If dt.Columns.Contains("Fecha_Agregado") AndAlso Not IsDBNull(dr("Fecha_Agregado")) Then
+                txtFechaUltimaImpresion.Text = CDate(dr("Fecha_Agregado")).ToString("dd/MM/yyyy HH:mm")
+            ElseIf dt.Columns.Contains("Fecha_Vence") AndAlso Not IsDBNull(dr("Fecha_Vence")) Then
+                txtFechaUltimaImpresion.Text = CDate(dr("Fecha_Vence")).ToString("dd/MM/yyyy")
+            End If
+
+        Catch
+        End Try
+    End Sub
+
+    Private Function ValorEntero(ByVal value As Object) As Integer
+        Try
+            If IsDBNull(value) Then Return 0
+            Return Convert.ToInt32(value)
+        Catch
+            Return 0
+        End Try
+    End Function
+
+    Private Function ValorBooleano(ByVal value As Object) As Boolean
+        Try
+            If IsDBNull(value) Then Return False
+            Return Convert.ToBoolean(value)
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Private Sub gviewlicencias_RowStyle(sender As Object, e As RowStyleEventArgs) Handles gviewlicencias.RowStyle
+        Try
+            If e.RowHandle < 0 Then Exit Sub
+
+            Dim impreso As Boolean = False
+            Dim etiquetas As Integer = 0
+
+            If gviewlicencias.Columns.ColumnByFieldName("Impreso") IsNot Nothing Then
+                impreso = ValorBooleano(gviewlicencias.GetRowCellValue(e.RowHandle, "Impreso"))
+            End If
+
+            If gviewlicencias.Columns.ColumnByFieldName("cant_etiquetas_presentacion_impresas") IsNot Nothing Then
+                etiquetas = ValorEntero(gviewlicencias.GetRowCellValue(e.RowHandle, "cant_etiquetas_presentacion_impresas"))
+            ElseIf gviewlicencias.Columns.ColumnByFieldName("Cantidad_Presentacion") IsNot Nothing Then
+                etiquetas = ValorEntero(gviewlicencias.GetRowCellValue(e.RowHandle, "Cantidad_Presentacion"))
+            End If
+
+            If impreso AndAlso etiquetas > 0 Then
+                e.Appearance.BackColor = Color.Honeydew
+                e.Appearance.ForeColor = Color.DarkGreen
+            ElseIf impreso AndAlso etiquetas <= 0 Then
+                e.Appearance.BackColor = Color.Moccasin
+                e.Appearance.ForeColor = Color.DarkGoldenrod
+            Else
+                e.Appearance.BackColor = Color.MistyRose
+                e.Appearance.ForeColor = Color.DarkRed
+            End If
+        Catch
+        End Try
+    End Sub
+
+    Private Sub gviewlicencias_CustomColumnDisplayText(sender As Object, e As DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs) Handles gviewlicencias.CustomColumnDisplayText
+        Try
+            If e.Column Is Nothing Then Exit Sub
+            If Not String.Equals(e.Column.FieldName, "Impreso", StringComparison.OrdinalIgnoreCase) Then Exit Sub
+
+            e.DisplayText = If(ValorBooleano(e.Value), "SI", "NO")
+        Catch
+        End Try
+    End Sub
+    Private Sub tabImpresion_Click(sender As Object, e As EventArgs) Handles tabImpresion.Click
+
+    End Sub
 End Class

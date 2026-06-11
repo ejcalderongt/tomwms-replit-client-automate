@@ -1,5 +1,5 @@
-﻿version: 1
-updated: "2026-06-04"
+version: 1
+updated: "2026-06-06"
 purpose: >
   Indice de handoffs para carga selectiva de evidencia operativa. Cada entrada
   define cuando conviene cargar el handoff y cuando tratarlo como historico.
@@ -59,6 +59,18 @@ entries:
     confidence: high
     stale_after_days: 90
 
+  - id: inventario-inicial-import-performance
+    path: brain/handoffs/2026-06-06-inventario-inicial-import-performance/README.md
+    date: "2026-06-06"
+    domains: [bof, database]
+    tags: [inventario, importacion, performance, tvp, producto_lookup]
+    symptoms:
+      - importacion de inventario inicial lenta
+      - DAL_DETALLE_LOOP consume minutos en MsProductoDetalle
+      - grid o UI aparenta colgarse luego de validar/cargar inventario
+      - necesidad de TVP/SP para lookups masivos de producto
+    confidence: high
+    stale_after_days: 90
 load_rules:
   - Si el incidente coincide con sintomas/tags, cargar solo 1 handoff principal.
   - Si hay cruce de capas (VB + SQL o API + SQL), permitir 2 handoffs maximo.
@@ -76,3 +88,4 @@ maintenance:
     - Registrar en este indice el mismo dia.
     - Definir sintomas concretos reutilizables.
     - Definir stale_after_days segun volatilidad del tema.
+

@@ -1,5 +1,6 @@
 ﻿Imports System
 Imports System.Collections.Generic
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
@@ -2186,6 +2187,116 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_All_By_Codigos_For_InventarioImport(ByVal pCodigos As IEnumerable(Of String),
+                                                                   ByRef lConnection As SqlConnection,
+                                                                   ByRef lTransaction As SqlTransaction) As Dictionary(Of String, clsBeProducto)
+
+        Dim vResultado As New Dictionary(Of String, clsBeProducto)(StringComparer.OrdinalIgnoreCase)
+        Dim vTablaCodigos As DataTable = CrearTablaCodigosInventarioImport(pCodigos)
+
+        If vTablaCodigos.Rows.Count = 0 Then Return vResultado
+
+        Try
+
+            '#EJC20260606_INV_IMPORT_PRODUCTO_TVP: precarga masiva para evitar un SELECT por codigo en el detalle de importacion.
+            Using lCommand As New SqlCommand("dbo.usp_wms_producto_lite_por_codigos_tvp_v1", lConnection)
+
+                lCommand.CommandType = CommandType.StoredProcedure
+                lCommand.CommandTimeout = 0
+                lCommand.Transaction = lTransaction
+
+                Dim vParamCodigos As SqlParameter = lCommand.Parameters.Add("@Codigos", SqlDbType.Structured)
+                vParamCodigos.TypeName = "dbo.tvp_wms_codigo_producto_v1"
+                vParamCodigos.Value = vTablaCodigos
+
+                Using lReader As SqlDataReader = lCommand.ExecuteReader()
+
+                    While lReader.Read()
+                        Dim ObjProducto As clsBeProducto = CargarProductoLiteInventarioImport(lReader)
+                        Dim vCodigo As String = If(ObjProducto Is Nothing, "", ObjProducto.Codigo)
+
+                        If vCodigo <> "" AndAlso Not vResultado.ContainsKey(vCodigo) Then
+                            vResultado.Add(vCodigo, ObjProducto)
+                        End If
+                    End While
+
+                End Using
+
+            End Using
+
+        Catch ex As SqlException When ex.Number = 2812 OrElse ex.Number = 2715 OrElse ex.Number = 208
+            'Fallback seguro: bases sin el SP/TVP nuevo siguen usando el camino legacy por codigo.
+            For Each vRow As DataRow In vTablaCodigos.Rows
+                Dim vCodigo As String = CStr(vRow("Codigo"))
+                If Not vResultado.ContainsKey(vCodigo) Then
+                    vResultado(vCodigo) = Get_Single_By_Codigo_For_InventarioImport(vCodigo, lConnection, lTransaction)
+                End If
+            Next
+        Catch ex As Exception
+            Throw New Exception(String.Format("EX{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+        End Try
+
+        Return vResultado
+
+    End Function
+
+    Private Shared Function CrearTablaCodigosInventarioImport(ByVal pCodigos As IEnumerable(Of String)) As DataTable
+
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("Codigo", GetType(String))
+
+        If pCodigos Is Nothing Then Return vTabla
+
+        Dim vUnicos As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+        For Each vCodigoRaw As String In pCodigos
+            Dim vCodigo As String = If(vCodigoRaw, "").Trim()
+
+            If vCodigo <> "" AndAlso vUnicos.Add(vCodigo) Then
+                vTabla.Rows.Add(vCodigo)
+            End If
+        Next
+
+        Return vTabla
+
+    End Function
+
+    Private Shared Function CargarProductoLiteInventarioImport(ByVal lReader As SqlDataReader) As clsBeProducto
+
+        Dim ObjProducto As New clsBeProducto()
+
+        ObjProducto.IdProducto = If(IsDBNull(lReader.Item("IdProducto")), 0, CInt(lReader.Item("IdProducto")))
+        ObjProducto.IdPropietario = If(IsDBNull(lReader.Item("IdPropietario")), 0, CInt(lReader.Item("IdPropietario")))
+        ObjProducto.Propietario = New clsBePropietarios()
+        ObjProducto.Propietario.IdPropietario = ObjProducto.IdPropietario
+        ObjProducto.Propietario.Nombre_comercial = If(IsDBNull(lReader.Item("PropietarioNombre")), "", CStr(lReader.Item("PropietarioNombre")))
+
+        ObjProducto.IdUnidadMedidaBasica = If(IsDBNull(lReader.Item("IdUnidadMedidaBasica")), 0, CInt(lReader.Item("IdUnidadMedidaBasica")))
+        ObjProducto.UnidadMedida = New clsBeUnidad_medida()
+        ObjProducto.UnidadMedida.IdUnidadMedida = ObjProducto.IdUnidadMedidaBasica
+        ObjProducto.UnidadMedida.Nombre = If(IsDBNull(lReader.Item("UnidadMedidaNombre")), "", CStr(lReader.Item("UnidadMedidaNombre")))
+
+        ObjProducto.IdProductoParametroA = If(IsDBNull(lReader.Item("IdProductoParametroA")), 0, CInt(lReader.Item("IdProductoParametroA")))
+        ObjProducto.ParametroA = New clsBeProducto_parametro_a()
+        ObjProducto.ParametroA.IdProductoParametroA = ObjProducto.IdProductoParametroA
+        ObjProducto.ParametroA.Nombre = If(IsDBNull(lReader.Item("ParametroANombre")), "", CStr(lReader.Item("ParametroANombre")))
+
+        ObjProducto.IdProductoParametroB = If(IsDBNull(lReader.Item("IdProductoParametroB")), 0, CInt(lReader.Item("IdProductoParametroB")))
+        ObjProducto.ParametroB = New clsBeProducto_parametro_b()
+        ObjProducto.ParametroB.IdProductoParametroB = ObjProducto.IdProductoParametroB
+        ObjProducto.ParametroB.Nombre = If(IsDBNull(lReader.Item("ParametroBNombre")), "", CStr(lReader.Item("ParametroBNombre")))
+
+        ObjProducto.Codigo = If(IsDBNull(lReader.Item("codigo")), "", CStr(lReader.Item("codigo")))
+        ObjProducto.Nombre = If(IsDBNull(lReader.Item("nombre")), "", CStr(lReader.Item("nombre")))
+        ObjProducto.Control_lote = If(IsDBNull(lReader.Item("control_lote")), False, CBool(lReader.Item("control_lote")))
+        ObjProducto.Control_vencimiento = If(IsDBNull(lReader.Item("control_vencimiento")), False, CBool(lReader.Item("control_vencimiento")))
+        ObjProducto.Costo = If(IsDBNull(lReader.Item("costo")), 0.0, CDbl(lReader.Item("costo")))
+        ObjProducto.Precio = If(IsDBNull(lReader.Item("precio")), 0.0, CDbl(lReader.Item("precio")))
+        ObjProducto.IsNew = False
+
+        Return ObjProducto
+
+    End Function
     Public Shared Function Get_Single_By_Codigo(ByVal pCodigo As String,
                                                 ByVal pCampos() As clsBeProducto.ProdPropiedades) As clsBeProducto
 

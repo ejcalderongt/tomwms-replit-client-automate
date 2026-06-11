@@ -237,7 +237,7 @@ Partial Class frmInventario
         Me.grdReconteo = New DevExpress.XtraGrid.GridControl()
         Me.EncabezadoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DSReconteoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        Me.DSReconteo = New DSReconteo()
+        Me.DSReconteo = New TOMWMS.DSReconteo()
         Me.GridView8 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.colCorrelativo = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdReconteoEnc = New DevExpress.XtraGrid.Columns.GridColumn()
@@ -314,12 +314,6 @@ Partial Class frmInventario
         Me.gridUbicContadas = New DevExpress.XtraGrid.GridControl()
         Me.gvUbicacionesContadas = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.tabTiemposPorTramo = New DevExpress.XtraTab.XtraTabPage()
-        Me.tabProgreso = New DevExpress.XtraTab.XtraTabPage()
-        Me.SplitProgreso = New System.Windows.Forms.SplitContainer()
-        Me.grdProgresoUbicacion = New DevExpress.XtraGrid.GridControl()
-        Me.gvProgresoUbicacion = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.grdProgresoTramo = New DevExpress.XtraGrid.GridControl()
-        Me.gvProgresoTramo = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.SplitContainerControl3 = New DevExpress.XtraEditors.SplitContainerControl()
         Me.gridTiempoConteos = New DevExpress.XtraGrid.GridControl()
         Me.gvTiempoConteos = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -328,6 +322,12 @@ Partial Class frmInventario
         Me.gvTiempoVerif = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.LabelControl3 = New DevExpress.XtraEditors.LabelControl()
         Me.Splitter1 = New System.Windows.Forms.Splitter()
+        Me.tabProgreso = New DevExpress.XtraTab.XtraTabPage()
+        Me.SplitProgreso = New System.Windows.Forms.SplitContainer()
+        Me.grdProgresoUbicacion = New DevExpress.XtraGrid.GridControl()
+        Me.gvProgresoUbicacion = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.grdProgresoTramo = New DevExpress.XtraGrid.GridControl()
+        Me.gvProgresoTramo = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.DetalleBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.bwKPI = New System.ComponentModel.BackgroundWorker()
@@ -535,15 +535,6 @@ Partial Class frmInventario
         CType(Me.gridUbicContadas, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvUbicacionesContadas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabTiemposPorTramo.SuspendLayout()
-        Me.tabProgreso.SuspendLayout()
-        CType(Me.SplitProgreso, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitProgreso.Panel1.SuspendLayout()
-        Me.SplitProgreso.Panel2.SuspendLayout()
-        Me.SplitProgreso.SuspendLayout()
-        CType(Me.grdProgresoUbicacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.gvProgresoUbicacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.grdProgresoTramo, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.gvProgresoTramo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainerControl3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainerControl3.Panel1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainerControl3.Panel1.SuspendLayout()
@@ -554,6 +545,15 @@ Partial Class frmInventario
         CType(Me.gvTiempoConteos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gridTiempoVerif, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvTiempoVerif, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tabProgreso.SuspendLayout()
+        CType(Me.SplitProgreso, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitProgreso.Panel1.SuspendLayout()
+        Me.SplitProgreso.Panel2.SuspendLayout()
+        Me.SplitProgreso.SuspendLayout()
+        CType(Me.grdProgresoUbicacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gvProgresoUbicacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grdProgresoTramo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gvProgresoTramo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -610,7 +610,7 @@ Partial Class frmInventario
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.cmbSector1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1384, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1669, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
@@ -920,7 +920,7 @@ Partial Class frmInventario
         Me.hideContainerBottom.Location = New System.Drawing.Point(0, 760)
         Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(4)
         Me.hideContainerBottom.Name = "hideContainerBottom"
-        Me.hideContainerBottom.Size = New System.Drawing.Size(1384, 26)
+        Me.hideContainerBottom.Size = New System.Drawing.Size(1669, 26)
         '
         'DockPanel1
         '
@@ -1326,7 +1326,7 @@ Partial Class frmInventario
         Me.Datos.Controls.Add(Me.grpInven)
         Me.Datos.Margin = New System.Windows.Forms.Padding(5)
         Me.Datos.Name = "Datos"
-        Me.Datos.Size = New System.Drawing.Size(1382, 537)
+        Me.Datos.Size = New System.Drawing.Size(1667, 537)
         Me.Datos.Text = "Datos de Inventario"
         '
         'grpInven
@@ -1379,7 +1379,7 @@ Partial Class frmInventario
         Me.grpInven.Location = New System.Drawing.Point(0, 0)
         Me.grpInven.Margin = New System.Windows.Forms.Padding(5)
         Me.grpInven.Name = "grpInven"
-        Me.grpInven.Size = New System.Drawing.Size(1382, 537)
+        Me.grpInven.Size = New System.Drawing.Size(1667, 537)
         Me.grpInven.TabIndex = 0
         '
         'chkCapturarNoAsignado
@@ -1577,7 +1577,7 @@ Partial Class frmInventario
         Me.lblPrg.Location = New System.Drawing.Point(2, 490)
         Me.lblPrg.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lblPrg.Name = "lblPrg"
-        Me.lblPrg.Size = New System.Drawing.Size(1378, 34)
+        Me.lblPrg.Size = New System.Drawing.Size(1663, 34)
         Me.lblPrg.TabIndex = 34
         Me.lblPrg.Text = "..."
         Me.lblPrg.Visible = False
@@ -1588,7 +1588,7 @@ Partial Class frmInventario
         Me.prg.Location = New System.Drawing.Point(2, 524)
         Me.prg.Margin = New System.Windows.Forms.Padding(5)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1378, 11)
+        Me.prg.Size = New System.Drawing.Size(1663, 11)
         Me.prg.TabIndex = 35
         Me.prg.Visible = False
         '
@@ -1865,7 +1865,7 @@ Partial Class frmInventario
         Me.xtraTabInv.Margin = New System.Windows.Forms.Padding(5)
         Me.xtraTabInv.Name = "xtraTabInv"
         Me.xtraTabInv.SelectedTabPage = Me.Datos
-        Me.xtraTabInv.Size = New System.Drawing.Size(1384, 567)
+        Me.xtraTabInv.Size = New System.Drawing.Size(1669, 567)
         Me.xtraTabInv.TabIndex = 0
         Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.Datos, Me.tabAsignacionProductos, Me.Tramos, Me.tabAsignacionOperadores, Me.tabDetalle, Me.tabConteo, Me.tabDiferenciasInventario, Me.tabConteoOperador, Me.tabReconteo, Me.tabInvTeorico, Me.tabComparativoERPFisicoWMS, Me.tabCompativoTeoricos, Me.tbne, Me.tabInvCongelado, Me.TabInventarioCostos, Me.tabKPI, Me.tabAsignacionUbicaciones, Me.xtpRegularizacion, Me.tabUbicacionesNoContadas, Me.tabUbicacionesContadas, Me.tabTiemposPorTramo, Me.tabProgreso})
         '
@@ -3598,60 +3598,6 @@ Partial Class frmInventario
         Me.tabTiemposPorTramo.Name = "tabTiemposPorTramo"
         Me.tabTiemposPorTramo.Size = New System.Drawing.Size(1382, 537)
         Me.tabTiemposPorTramo.Text = "Tiempos por tramo"
-        'tabProgreso
-        Me.tabProgreso.Name = "tabProgreso"
-        Me.tabProgreso.Size = New System.Drawing.Size(1382, 537)
-        Me.tabProgreso.Text = "Progreso de Conteo"
-        Me.tabProgreso.Controls.Add(Me.SplitProgreso)
-
-        'SplitProgreso
-        Me.SplitProgreso.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitProgreso.Location = New System.Drawing.Point(0, 0)
-        Me.SplitProgreso.Name = "SplitProgreso"
-        Me.SplitProgreso.Orientation = System.Windows.Forms.Orientation.Vertical
-        Me.SplitProgreso.Size = New System.Drawing.Size(1382, 537)
-        Me.SplitProgreso.SplitterDistance = 691
-        Me.SplitProgreso.TabIndex = 0
-        Me.SplitProgreso.Panel1.Controls.Add(Me.grdProgresoUbicacion)
-        Me.SplitProgreso.Panel2.Controls.Add(Me.grdProgresoTramo)
-
-        'grdProgresoUbicacion
-        Me.grdProgresoUbicacion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdProgresoUbicacion.Location = New System.Drawing.Point(0, 0)
-        Me.grdProgresoUbicacion.MainView = Me.gvProgresoUbicacion
-        Me.grdProgresoUbicacion.MenuManager = Me.RibbonControl
-        Me.grdProgresoUbicacion.Name = "grdProgresoUbicacion"
-        Me.grdProgresoUbicacion.Size = New System.Drawing.Size(1382, 260)
-        Me.grdProgresoUbicacion.TabIndex = 0
-        Me.grdProgresoUbicacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvProgresoUbicacion})
-
-        'gvProgresoUbicacion
-        Me.gvProgresoUbicacion.GridControl = Me.grdProgresoUbicacion
-        Me.gvProgresoUbicacion.Name = "gvProgresoUbicacion"
-        Me.gvProgresoUbicacion.OptionsBehavior.ReadOnly = True
-        Me.gvProgresoUbicacion.OptionsView.ShowAutoFilterRow = True
-        Me.gvProgresoUbicacion.OptionsView.ShowFooter = True
-        Me.gvProgresoUbicacion.OptionsView.ShowGroupPanel = False
-        Me.gvProgresoUbicacion.OptionsView.ColumnAutoWidth = False
-
-        'grdProgresoTramo
-        Me.grdProgresoTramo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdProgresoTramo.Location = New System.Drawing.Point(0, 0)
-        Me.grdProgresoTramo.MainView = Me.gvProgresoTramo
-        Me.grdProgresoTramo.MenuManager = Me.RibbonControl
-        Me.grdProgresoTramo.Name = "grdProgresoTramo"
-        Me.grdProgresoTramo.Size = New System.Drawing.Size(1382, 271)
-        Me.grdProgresoTramo.TabIndex = 0
-        Me.grdProgresoTramo.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvProgresoTramo})
-
-        'gvProgresoTramo
-        Me.gvProgresoTramo.GridControl = Me.grdProgresoTramo
-        Me.gvProgresoTramo.Name = "gvProgresoTramo"
-        Me.gvProgresoTramo.OptionsBehavior.ReadOnly = True
-        Me.gvProgresoTramo.OptionsView.ShowAutoFilterRow = True
-        Me.gvProgresoTramo.OptionsView.ShowFooter = True
-        Me.gvProgresoTramo.OptionsView.ShowGroupPanel = False
-        Me.gvProgresoTramo.OptionsView.ColumnAutoWidth = False
         '
         'SplitContainerControl3
         '
@@ -3752,6 +3698,72 @@ Partial Class frmInventario
         Me.Splitter1.TabIndex = 0
         Me.Splitter1.TabStop = False
         '
+        'tabProgreso
+        '
+        Me.tabProgreso.Controls.Add(Me.SplitProgreso)
+        Me.tabProgreso.Name = "tabProgreso"
+        Me.tabProgreso.Size = New System.Drawing.Size(1382, 537)
+        Me.tabProgreso.Text = "Progreso de Conteo"
+        '
+        'SplitProgreso
+        '
+        Me.SplitProgreso.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitProgreso.Location = New System.Drawing.Point(0, 0)
+        Me.SplitProgreso.Name = "SplitProgreso"
+        '
+        'SplitProgreso.Panel1
+        '
+        Me.SplitProgreso.Panel1.Controls.Add(Me.grdProgresoUbicacion)
+        '
+        'SplitProgreso.Panel2
+        '
+        Me.SplitProgreso.Panel2.Controls.Add(Me.grdProgresoTramo)
+        Me.SplitProgreso.Size = New System.Drawing.Size(1382, 537)
+        Me.SplitProgreso.SplitterDistance = 691
+        Me.SplitProgreso.TabIndex = 0
+        '
+        'grdProgresoUbicacion
+        '
+        Me.grdProgresoUbicacion.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdProgresoUbicacion.Location = New System.Drawing.Point(0, 0)
+        Me.grdProgresoUbicacion.MainView = Me.gvProgresoUbicacion
+        Me.grdProgresoUbicacion.MenuManager = Me.RibbonControl
+        Me.grdProgresoUbicacion.Name = "grdProgresoUbicacion"
+        Me.grdProgresoUbicacion.Size = New System.Drawing.Size(691, 537)
+        Me.grdProgresoUbicacion.TabIndex = 0
+        Me.grdProgresoUbicacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvProgresoUbicacion})
+        '
+        'gvProgresoUbicacion
+        '
+        Me.gvProgresoUbicacion.GridControl = Me.grdProgresoUbicacion
+        Me.gvProgresoUbicacion.Name = "gvProgresoUbicacion"
+        Me.gvProgresoUbicacion.OptionsBehavior.ReadOnly = True
+        Me.gvProgresoUbicacion.OptionsView.ColumnAutoWidth = False
+        Me.gvProgresoUbicacion.OptionsView.ShowAutoFilterRow = True
+        Me.gvProgresoUbicacion.OptionsView.ShowFooter = True
+        Me.gvProgresoUbicacion.OptionsView.ShowGroupPanel = False
+        '
+        'grdProgresoTramo
+        '
+        Me.grdProgresoTramo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdProgresoTramo.Location = New System.Drawing.Point(0, 0)
+        Me.grdProgresoTramo.MainView = Me.gvProgresoTramo
+        Me.grdProgresoTramo.MenuManager = Me.RibbonControl
+        Me.grdProgresoTramo.Name = "grdProgresoTramo"
+        Me.grdProgresoTramo.Size = New System.Drawing.Size(687, 537)
+        Me.grdProgresoTramo.TabIndex = 0
+        Me.grdProgresoTramo.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvProgresoTramo})
+        '
+        'gvProgresoTramo
+        '
+        Me.gvProgresoTramo.GridControl = Me.grdProgresoTramo
+        Me.gvProgresoTramo.Name = "gvProgresoTramo"
+        Me.gvProgresoTramo.OptionsBehavior.ReadOnly = True
+        Me.gvProgresoTramo.OptionsView.ColumnAutoWidth = False
+        Me.gvProgresoTramo.OptionsView.ShowAutoFilterRow = True
+        Me.gvProgresoTramo.OptionsView.ShowFooter = True
+        Me.gvProgresoTramo.OptionsView.ShowGroupPanel = False
+        '
         'ContextMenuStrip1
         '
         Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
@@ -3785,7 +3797,7 @@ Partial Class frmInventario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1384, 786)
+        Me.ClientSize = New System.Drawing.Size(1669, 786)
         Me.Controls.Add(Me.xtraTabInv)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonControl)
@@ -4005,15 +4017,6 @@ Partial Class frmInventario
         CType(Me.gridUbicContadas, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvUbicacionesContadas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tabTiemposPorTramo.ResumeLayout(False)
-        Me.tabProgreso.ResumeLayout(False)
-        Me.SplitProgreso.Panel1.ResumeLayout(False)
-        Me.SplitProgreso.Panel2.ResumeLayout(False)
-        CType(Me.SplitProgreso, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitProgreso.ResumeLayout(False)
-        CType(Me.grdProgresoUbicacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.gvProgresoUbicacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.grdProgresoTramo, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.gvProgresoTramo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.SplitContainerControl3.Panel1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainerControl3.Panel1.ResumeLayout(False)
         Me.SplitContainerControl3.Panel1.PerformLayout()
@@ -4026,6 +4029,15 @@ Partial Class frmInventario
         CType(Me.gvTiempoConteos, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gridTiempoVerif, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvTiempoVerif, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tabProgreso.ResumeLayout(False)
+        Me.SplitProgreso.Panel1.ResumeLayout(False)
+        Me.SplitProgreso.Panel2.ResumeLayout(False)
+        CType(Me.SplitProgreso, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitProgreso.ResumeLayout(False)
+        CType(Me.grdProgresoUbicacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gvProgresoUbicacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grdProgresoTramo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gvProgresoTramo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

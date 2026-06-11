@@ -259,6 +259,10 @@ Public Class frmMenu
                 End If
             End If
 
+            '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+            'Inicializa marcador global de bodega para que formularios abiertos detecten cambio.
+            AP.IdBodegaGlobalAppChange = AP.IdBodega
+
             'CargarToolTipsNotificaciones()
 
         Catch ex As Exception
@@ -3404,6 +3408,7 @@ Public Class frmMenu
                     AP.IdBodega = vIdBodega
                     AP.NomBodega = AP.Bodega.Codigo & " - " & AP.Bodega.Nombre
                     AP.IdConfiguracionInterface = clsLnI_nav_config_enc.Get_IdConfiguracion(AP.IdBodega, AP.IdEmpresa)
+                    AP.IdBodegaGlobalAppChange = AP.IdBodega
 
                     vCaptionBodega = "Bodega: " & " " & AP.NomBodega
                     lblBodega.Caption = vCaptionBodega
@@ -3432,7 +3437,7 @@ Public Class frmMenu
                     Dim t1 As Thread = New Thread(AddressOf Actualiza_Ultimo_Ingreso)
                     t1.Start()
 
-                    Cerrar_Abrir_Lista_Orden_Compra(Me)
+                    AplicarCambioBodegaEnFormasAbiertas(Me)
 
                 Else
                     XtraMessageBox.Show("Usuario no válido en la bodega seleccionada!", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -3451,6 +3456,115 @@ Public Class frmMenu
         End Try
 
     End Sub
+
+    '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+    'Reaplica contexto de bodega en formularios abiertos:
+    '- cierra formularios transaccionales que dependen de la bodega cargada,
+    '- reabre listas principales que estaban visibles.
+    Private Shared Sub AplicarCambioBodegaEnFormasAbiertas(ByVal padre As frmMenu)
+
+        Try
+            Dim abrirPedidoList As Boolean = False
+            Dim abrirOrdenCompraList As Boolean = False
+            Dim abrirRecepcionList As Boolean = False
+            Dim abrirPickingList As Boolean = False
+            Dim abrirMonitorPrincipal02 As Boolean = False
+
+            Dim formulariosAbiertos As New List(Of Form)
+            For Each frm As Form In My.Application.OpenForms
+                formulariosAbiertos.Add(frm)
+            Next
+
+            For Each frm In formulariosAbiertos
+                If frm Is Nothing OrElse frm.IsDisposed Then Continue For
+                If frm.Name = padre.Name Then Continue For
+
+                Select Case frm.Name
+                    Case "frmPedido_List"
+                        abrirPedidoList = True
+                    Case "frmOrdenCompra_List"
+                        abrirOrdenCompraList = True
+                    Case "frmRecepcion_List"
+                        abrirRecepcionList = True
+                    Case "frmPicking_List"
+                        abrirPickingList = True
+                    Case "frmPrincipal02"
+                        abrirMonitorPrincipal02 = True
+                End Select
+            Next
+
+            For Each frm In formulariosAbiertos
+                If frm Is Nothing OrElse frm.IsDisposed Then Continue For
+                If frm.Name = padre.Name Then Continue For
+
+                If EsFormularioDependienteDeBodega(frm.Name) Then
+                    Try
+                        frm.Close()
+                    Catch
+                    End Try
+                End If
+            Next
+
+            If abrirPedidoList Then
+                With frmPedido_List
+                    .Modo = frmPedido_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirOrdenCompraList Then
+                With frmOrdenCompra_List
+                    .Modo = frmOrdenCompra_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirRecepcionList Then
+                With frmRecepcion_List
+                    .Modo = frmRecepcion_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            If abrirPickingList Then
+                With frmPicking_List
+                    .Modo = frmPicking_List.pModo.Lista
+                    .MdiParent = padre
+                    .Show()
+                    .Focus()
+                End With
+            End If
+
+            '#EJC20260605_FIX_BODEGA_GLOBAL_APP_CHANGE:
+            'Si el monitor estaba abierto, reabrirlo para que recargue indicadores con nueva bodega.
+            If abrirMonitorPrincipal02 Then
+                padre.Mostrar_Monitor()
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0}: {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
+
+    Private Shared Function EsFormularioDependienteDeBodega(ByVal pNombreFormulario As String) As Boolean
+        If String.IsNullOrWhiteSpace(pNombreFormulario) Then Return False
+
+        Select Case pNombreFormulario
+            Case "frmPedido_List", "frmOrdenCompra_List", "frmRecepcion_List", "frmPicking_List",
+                 "frmPedido", "frmOrdenCompra", "frmRecepcion", "frmPicking", "frmDespacho"
+                Return True
+        End Select
+
+        Return False
+    End Function
 
     Public Shared Sub Cerrar_Abrir_Lista_Orden_Compra(ByVal padre As frmMenu)
 

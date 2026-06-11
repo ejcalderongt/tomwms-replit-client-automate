@@ -1,0 +1,116 @@
+{
+  "timestamp_utc": "2026-06-05T22:13:41.162074+00:00",
+  "target": "https://yogurtsanandres.com",
+  "root_status": 200,
+  "login_status": 200,
+  "server_banner": "nginx",
+  "x_powered_by": null,
+  "tls": {
+    "host": "yogurtsanandres.com",
+    "port": 443,
+    "ok": true,
+    "error": null,
+    "tls_version": "TLSv1.3",
+    "cipher": [
+      "TLS_AES_256_GCM_SHA384",
+      "TLSv1.3",
+      256
+    ],
+    "cert_subject": [
+      [
+        [
+          "commonName",
+          "*.yogurtsanandres.com"
+        ]
+      ]
+    ],
+    "cert_issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Let's Encrypt"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "R12"
+        ]
+      ]
+    ],
+    "cert_not_before": "May 24 21:12:18 2026 GMT",
+    "cert_not_after": "Aug 22 21:12:17 2026 GMT"
+  },
+  "security_headers": {
+    "Strict-Transport-Security": null,
+    "Content-Security-Policy": null,
+    "X-Frame-Options": null,
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": null,
+    "Permissions-Policy": "private-state-token-redemption=(self \"https://www.google.com\" \"https://www.gstatic.com\" \"https://recaptcha.net\" \"https://challenges.cloudflare.com\" \"https://hcaptcha.com\"), private-state-token-issuance=(self \"https://www.google.com\" \"https://www.gstatic.com\" \"https://recaptcha.net\" \"https://challenges.cloudflare.com\" \"https://hcaptcha.com\")"
+  },
+  "login_cookies": [
+    {
+      "cookie": "wordpress_test_cookie=WP%20Cookie%20check; path=/; secure; HttpOnly",
+      "has_secure": true,
+      "has_httponly": true,
+      "has_samesite": false
+    }
+  ],
+  "wordpress_paths": {
+    "/wp-json/": {
+      "ok": true,
+      "status_code": 200,
+      "server": "nginx",
+      "x_powered_by": null,
+      "body_sample": "{\"name\":\"San Andr\\u00e9s\",\"description\":\"Yogurt\",\"url\":\"https:\\/\\/yogurtsanandres.com\",\"home\":\"https:\\/\\/yogurtsanandres.com\",\"gmt_offset\":\"-6\",\"timezone_string\":\"\",\"page_for_posts\":0,\"page_on_front\":64,\"show_on_front\":\"page\",\"namespaces\":[\"oembed\\/1.0\",\"code-snippets\\/v1\",\"jetpack\\/v4\",\"loginpress\\/v1\",\"oceanwp\\/v1\",\"sg-ai-studio\",\"siteground-settings\\/v1\",\"siteground-optimizer\\/v1\",\"sg-security\\/v1\",\"wcpt_qv2\\/v1\",\"wc\\/v3\",\"wc\\/v1\",\"wc\\/pos\\/v1\\/catalog\",\"wpnotif\\/v1\",\"elementor-one\\/v1\",\"wpco",
+      "error": null
+    },
+    "/xmlrpc.php": {
+      "ok": true,
+      "status_code": 403,
+      "server": "nginx",
+      "x_powered_by": null,
+      "body_sample": "403 - Forbidden | Access to this page is forbidden.\n",
+      "error": null
+    },
+    "/readme.html": {
+      "ok": true,
+      "status_code": 200,
+      "server": "nginx",
+      "x_powered_by": null,
+      "body_sample": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta name=\"viewport\" content=\"width=device-width\" />\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\t<meta name=\"robots\" content=\"noindex,nofollow\" />\n\t<title>WordPress &#8250; ReadMe</title>\n\t<link rel=\"stylesheet\" href=\"wp-admin/css/install.css?ver=20100228\" />\n</head>\n<body>\n<h1 id=\"logo\">\n\t<a href=\"https://wordpress.org/\"><img alt=\"WordPress\" src=\"wp-admin/images/wordpress-logo.png\" /></a>\n</h1>\n<p style=\"text-align: center\">S",
+      "error": null
+    },
+    "/robots.txt": {
+      "ok": true,
+      "status_code": 200,
+      "server": "nginx",
+      "x_powered_by": null,
+      "body_sample": "User-agent: *\nDisallow: /wp-content/uploads/wc-logs/\nDisallow: /wp-content/uploads/woocommerce_transient_files/\nDisallow: /wp-content/uploads/woocommerce_uploads/\nDisallow: /*?add-to-cart=\nDisallow: /*?*add-to-cart=\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n\nSitemap: https://yogurtsanandres.com/wp-sitemap.xml\n",
+      "error": null
+    },
+    "/sitemap_index.xml": {
+      "ok": true,
+      "status_code": 404,
+      "server": "nginx",
+      "x_powered_by": null,
+      "body_sample": "<!DOCTYPE html>\n<html class=\"html\" lang=\"es\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\n\t<title>Página no encontrada &#8211; San Andrés</title>\n<script type=\"text/template\" id=\"freeze-table-template\">\n  <div class=\"frzTbl antiscroll-wrap frzTbl--scrolled-to-left-edge\">\n    <div class=\"frzTbl-scroll-overlay antiscroll-inner\">\n        <div class=\"frzTbl-scroll-overlay__inner\"></div>\n    </div>\n    <div class=\"frzTbl-content-wrapper\">\n\n        <!-- sticky ",
+      "error": null
+    }
+  },
+  "risk_summary": [
+    "Falta HSTS: riesgo de downgrade/SSL stripping en primeras conexiones.",
+    "Falta CSP: mayor exposición a XSS en contenido dinámico.",
+    "Falta X-Frame-Options: posible clickjacking.",
+    "Cookie sin SameSite detectada.",
+    "readme.html público: posible fuga de versión/metadatos."
+  ],
+  "scope_notice": "No se realizaron ataques activos, bypass de auth ni fuerza bruta."
+}

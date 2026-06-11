@@ -1,8 +1,32 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
+Imports System.IO
 
 Partial Public Class clsLnStock
+
+    Private Shared Sub InvRegularizacionTrace(ByVal pSesion As String,
+                                              ByVal pPaso As String,
+                                              ByVal pInicio As DateTime,
+                                              Optional ByVal pExtra As String = "")
+        Try
+            Dim vDir As String = Path.Combine(Path.GetTempPath(), "TOMWMS")
+            If Not Directory.Exists(vDir) Then Directory.CreateDirectory(vDir)
+
+            Dim vLinea As String = String.Join("|", New String() {
+                Date.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                "#EJC20260607_INV_REG_TRACE",
+                "clsLnStock",
+                pSesion,
+                pPaso,
+                "DeltaMs=" & CLng((Date.Now - pInicio).TotalMilliseconds),
+                pExtra
+            })
+
+            File.AppendAllText(Path.Combine(vDir, "inventario-regularizacion-trace.log"), vLinea & Environment.NewLine, System.Text.Encoding.UTF8)
+        Catch
+        End Try
+    End Sub
 
     Private Shared lpBeProductoOutput As New List(Of clsBeProducto)
     Private Shared lBeBodega As New List(Of clsBeBodega)
@@ -12301,6 +12325,238 @@ Por favor reportar este problema a DevOps."
 
     End Function
 
+    Private Shared Function InvRegCrearTablaStockTvp() As DataTable
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("RowId", GetType(Integer))
+        vTabla.Columns.Add("IdBodega", GetType(Integer))
+        vTabla.Columns.Add("IdPropietarioBodega", GetType(Integer))
+        vTabla.Columns.Add("IdProductoBodega", GetType(Integer))
+        vTabla.Columns.Add("IdProductoEstado", GetType(Integer))
+        vTabla.Columns.Add("IdPresentacion", GetType(Integer))
+        vTabla.Columns.Add("IdUnidadMedida", GetType(Integer))
+        vTabla.Columns.Add("IdUbicacion", GetType(Integer))
+        vTabla.Columns.Add("IdUbicacion_anterior", GetType(Integer))
+        vTabla.Columns.Add("IdRecepcionEnc", GetType(Integer))
+        vTabla.Columns.Add("IdRecepcionDet", GetType(Integer))
+        vTabla.Columns.Add("IdPedidoEnc", GetType(Integer))
+        vTabla.Columns.Add("IdPickingEnc", GetType(Integer))
+        vTabla.Columns.Add("IdDespachoEnc", GetType(Integer))
+        vTabla.Columns.Add("Lote", GetType(String))
+        vTabla.Columns.Add("Lic_plate", GetType(String))
+        vTabla.Columns.Add("Serial", GetType(String))
+        vTabla.Columns.Add("Cantidad", GetType(Double))
+        vTabla.Columns.Add("Fecha_ingreso", GetType(Date))
+        vTabla.Columns.Add("Fecha_vence", GetType(Date))
+        vTabla.Columns.Add("Uds_lic_plate", GetType(Double))
+        vTabla.Columns.Add("No_bulto", GetType(Integer))
+        vTabla.Columns.Add("Fecha_manufactura", GetType(Date))
+        vTabla.Columns.Add("Añada", GetType(Integer))
+        vTabla.Columns.Add("User_agr", GetType(String))
+        vTabla.Columns.Add("Fec_agr", GetType(Date))
+        vTabla.Columns.Add("User_mod", GetType(String))
+        vTabla.Columns.Add("Fec_mod", GetType(Date))
+        vTabla.Columns.Add("Activo", GetType(Boolean))
+        vTabla.Columns.Add("Peso", GetType(Double))
+        vTabla.Columns.Add("Temperatura", GetType(Double))
+        vTabla.Columns.Add("Atributo_variante_1", GetType(String))
+        vTabla.Columns.Add("Pallet_no_estandar", GetType(Boolean))
+        vTabla.Columns.Add("IdProductoTallaColor", GetType(Integer))
+        Return vTabla
+    End Function
+
+    Private Shared Function InvRegCrearTablaMovTvp() As DataTable
+        Dim vTabla As New DataTable()
+        vTabla.Columns.Add("RowId", GetType(Integer))
+        vTabla.Columns.Add("IdEmpresa", GetType(Integer))
+        vTabla.Columns.Add("IdBodegaOrigen", GetType(Integer))
+        vTabla.Columns.Add("IdTransaccion", GetType(Integer))
+        vTabla.Columns.Add("IdPropietarioBodega", GetType(Integer))
+        vTabla.Columns.Add("IdProductoBodega", GetType(Integer))
+        vTabla.Columns.Add("IdUbicacionOrigen", GetType(Integer))
+        vTabla.Columns.Add("IdUbicacionDestino", GetType(Integer))
+        vTabla.Columns.Add("IdPresentacion", GetType(Integer))
+        vTabla.Columns.Add("IdEstadoOrigen", GetType(Integer))
+        vTabla.Columns.Add("IdEstadoDestino", GetType(Integer))
+        vTabla.Columns.Add("IdUnidadMedida", GetType(Integer))
+        vTabla.Columns.Add("IdTipoTarea", GetType(Integer))
+        vTabla.Columns.Add("IdBodegaDestino", GetType(Integer))
+        vTabla.Columns.Add("IdRecepcion", GetType(Integer))
+        vTabla.Columns.Add("Cantidad", GetType(Double))
+        vTabla.Columns.Add("Serie", GetType(String))
+        vTabla.Columns.Add("Peso", GetType(Double))
+        vTabla.Columns.Add("Lote", GetType(String))
+        vTabla.Columns.Add("Fecha_vence", GetType(Date))
+        vTabla.Columns.Add("Fecha", GetType(Date))
+        vTabla.Columns.Add("Barra_pallet", GetType(String))
+        vTabla.Columns.Add("Hora_ini", GetType(Date))
+        vTabla.Columns.Add("Hora_fin", GetType(Date))
+        vTabla.Columns.Add("Fecha_agr", GetType(Date))
+        vTabla.Columns.Add("Usuario_agr", GetType(String))
+        vTabla.Columns.Add("Cantidad_hist", GetType(Double))
+        vTabla.Columns.Add("Peso_hist", GetType(Double))
+        vTabla.Columns.Add("IdOperadorBodega", GetType(Integer))
+        vTabla.Columns.Add("Lic_plate", GetType(String))
+        vTabla.Columns.Add("IdRecepcionDet", GetType(Integer))
+        vTabla.Columns.Add("IdPedidoEnc", GetType(Integer))
+        vTabla.Columns.Add("IdPedidoDet", GetType(Integer))
+        vTabla.Columns.Add("IdDespachoEnc", GetType(Integer))
+        vTabla.Columns.Add("IdDespachoDet", GetType(Integer))
+        vTabla.Columns.Add("IdProductoTallaColor", GetType(Integer))
+        vTabla.Columns.Add("Talla", GetType(String))
+        vTabla.Columns.Add("Color", GetType(String))
+        Return vTabla
+    End Function
+
+    Private Shared Function InvRegEsObjetoSqlFaltante(ByVal pEx As SqlException) As Boolean
+        For Each vError As SqlError In pEx.Errors
+            Select Case vError.Number
+                Case 201, 208, 2715, 2812
+                    Return True
+            End Select
+        Next
+        Return False
+    End Function
+
+    Private Shared Function TryImportar_Inventario_Tvp(ByVal BeTransInvEnc As clsBeTrans_inv_enc,
+                                                       ByVal ListBeStock As IList(Of clsBeStock),
+                                                       ByVal ListBeMovimientos As IList(Of clsBeTrans_movimientos),
+                                                       ByVal pSesionTrace As String,
+                                                       ByVal pInicioTrace As DateTime) As Boolean
+
+        Dim vTablaStock As DataTable = InvRegCrearTablaStockTvp()
+        Dim vTablaMov As DataTable = InvRegCrearTablaMovTvp()
+        Dim vRowId As Integer = 0
+        Dim vPasoTrace As DateTime = Date.Now
+
+        Try
+            If ListBeStock IsNot Nothing Then
+                For Each BeStock As clsBeStock In ListBeStock
+                    vRowId += 1
+                    vTablaStock.Rows.Add(vRowId,
+                                         BeTransInvEnc.IdBodega,
+                                         BeStock.IdPropietarioBodega,
+                                         BeStock.IdProductoBodega,
+                                         BeStock.IdProductoEstado,
+                                         BeStock.IdPresentacion,
+                                         BeStock.IdUnidadMedida,
+                                         BeStock.IdUbicacion,
+                                         BeStock.IdUbicacion_anterior,
+                                         BeStock.IdRecepcionEnc,
+                                         BeStock.IdRecepcionDet,
+                                         BeStock.IdPedidoEnc,
+                                         BeStock.IdPickingEnc,
+                                         BeStock.IdDespachoEnc,
+                                         If(BeStock.Lote, ""),
+                                         If(BeStock.Lic_plate, ""),
+                                         If(BeStock.Serial, ""),
+                                         BeStock.Cantidad,
+                                         BeStock.Fecha_Ingreso,
+                                         BeStock.Fecha_vence,
+                                         BeStock.Uds_lic_plate,
+                                         BeStock.No_bulto,
+                                         BeStock.Fecha_Manufactura,
+                                         BeStock.Añada,
+                                         If(BeStock.User_agr, ""),
+                                         BeStock.Fec_agr,
+                                         If(BeStock.User_mod, ""),
+                                         BeStock.Fec_mod,
+                                         BeStock.Activo,
+                                         BeStock.Peso,
+                                         BeStock.Temperatura,
+                                         If(BeStock.Atributo_Variante_1, ""),
+                                         BeStock.Pallet_No_Estandar,
+                                         BeStock.IdProductoTallaColor)
+                Next
+            End If
+
+            vRowId = 0
+            If ListBeMovimientos IsNot Nothing Then
+                For Each BeMov As clsBeTrans_movimientos In ListBeMovimientos
+                    vRowId += 1
+                    vTablaMov.Rows.Add(vRowId,
+                                       BeMov.IdEmpresa,
+                                       BeMov.IdBodegaOrigen,
+                                       BeMov.IdTransaccion,
+                                       BeMov.IdPropietarioBodega,
+                                       BeMov.IdProductoBodega,
+                                       BeMov.IdUbicacionOrigen,
+                                       BeMov.IdUbicacionDestino,
+                                       BeMov.IdPresentacion,
+                                       BeMov.IdEstadoOrigen,
+                                       BeMov.IdEstadoDestino,
+                                       BeMov.IdUnidadMedida,
+                                       BeMov.IdTipoTarea,
+                                       BeMov.IdBodegaDestino,
+                                       BeMov.IdRecepcion,
+                                       BeMov.Cantidad,
+                                       If(BeMov.Serie, ""),
+                                       BeMov.Peso,
+                                       If(BeMov.Lote, ""),
+                                       BeMov.Fecha_vence,
+                                       BeMov.Fecha,
+                                       If(BeMov.Barra_pallet, ""),
+                                       BeMov.Hora_ini,
+                                       BeMov.Hora_fin,
+                                       BeMov.Fecha_agr,
+                                       If(BeMov.Usuario_agr, ""),
+                                       BeMov.Cantidad_hist,
+                                       BeMov.Peso_hist,
+                                       BeMov.IdOperadorBodega,
+                                       If(BeMov.Lic_plate, ""),
+                                       BeMov.IdRecepcionDet,
+                                       BeMov.IdPedidoEnc,
+                                       BeMov.IdPedidoDet,
+                                       BeMov.IdDespachoEnc,
+                                       BeMov.IdDespachoDet,
+                                       BeMov.IdProductoTallaColor,
+                                       If(BeMov.Talla, ""),
+                                       If(BeMov.Color, ""))
+                Next
+            End If
+
+            InvRegularizacionTrace(pSesionTrace, "STOCK_IMPORT_INV_TVP_ARMADO_END", pInicioTrace,
+                                   "Stocks=" & vTablaStock.Rows.Count &
+                                   ";Movs=" & vTablaMov.Rows.Count &
+                                   ";MsArmarTvp=" & CLng((Date.Now - vPasoTrace).TotalMilliseconds))
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using vCmd As New SqlCommand("dbo.usp_wms_inventario_regularizar_inicial_tvp_v1", lConnection)
+                    vCmd.CommandType = CommandType.StoredProcedure
+                    vCmd.CommandTimeout = 0
+                    vCmd.Parameters.Add("@IdInventarioEnc", SqlDbType.Int).Value = BeTransInvEnc.Idinventarioenc
+                    vCmd.Parameters.Add("@IdTipoInventario", SqlDbType.Int).Value = BeTransInvEnc.IdTipoInventario
+                    vCmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = BeTransInvEnc.IdBodega
+
+                    Dim vParamStock As SqlParameter = vCmd.Parameters.Add("@Stocks", SqlDbType.Structured)
+                    vParamStock.TypeName = "dbo.tvp_wms_inventario_regularizacion_stock_v1"
+                    vParamStock.Value = vTablaStock
+
+                    Dim vParamMov As SqlParameter = vCmd.Parameters.Add("@Movimientos", SqlDbType.Structured)
+                    vParamMov.TypeName = "dbo.tvp_wms_inventario_regularizacion_mov_v1"
+                    vParamMov.Value = vTablaMov
+
+                    vPasoTrace = Date.Now
+                    Using vReader As SqlDataReader = vCmd.ExecuteReader()
+                        If vReader.Read() Then
+                            InvRegularizacionTrace(pSesionTrace, "STOCK_IMPORT_INV_TVP_SQL_END", pInicioTrace,
+                                                   "StockInsertados=" & vReader("StockInsertados").ToString() &
+                                                   ";MovInsertados=" & vReader("MovInsertados").ToString() &
+                                                   ";MsSql=" & CLng((Date.Now - vPasoTrace).TotalMilliseconds))
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            Return True
+        Catch exSql As SqlException When InvRegEsObjetoSqlFaltante(exSql)
+            InvRegularizacionTrace(pSesionTrace, "STOCK_IMPORT_INV_TVP_FALLBACK", pInicioTrace,
+                                   "Motivo=Objetos SQL TVP no instalados;" & exSql.Number.ToString())
+            Return False
+        End Try
+    End Function
+
     Public Shared Sub Importar_Inventario(ByVal BeTransInvEnc As clsBeTrans_inv_enc,
                                           ByVal ListBeStock As IList(Of clsBeStock),
                                           ByVal ListBeMovimientos As IList(Of clsBeTrans_movimientos))
@@ -12308,8 +12564,26 @@ Por favor reportar este problema a DevOps."
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
         Dim IdStock, IdMovimiento As Integer
+        Dim vSesionTrace As String = Date.Now.ToString("yyyyMMddHHmmssfff") & "-" & Guid.NewGuid().ToString("N").Substring(0, 8)
+        Dim vInicioTrace As DateTime = Date.Now
+        Dim vPasoTrace As DateTime = vInicioTrace
+        Dim vMsActualizarEnc As Long = 0
+        Dim vMsInsertStock As Long = 0
+        Dim vMsInsertMov As Long = 0
+        Dim vCntStock As Integer = 0
+        Dim vCntMov As Integer = 0
 
         Try
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_START", vInicioTrace,
+                                   "IdInventario=" & BeTransInvEnc.Idinventarioenc &
+                                   ";Stocks=" & If(ListBeStock Is Nothing, 0, ListBeStock.Count) &
+                                   ";Movs=" & If(ListBeMovimientos Is Nothing, 0, ListBeMovimientos.Count))
+
+            '#EJC20260607_INV_REG_TVP: ruta rapida set-based; fallback mantiene compatibilidad con BDs sin el SP instalado.
+            If TryImportar_Inventario_Tvp(BeTransInvEnc, ListBeStock, ListBeMovimientos, vSesionTrace, vInicioTrace) Then
+                InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_FIN_TVP", vInicioTrace)
+                Return
+            End If
 
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
@@ -12319,7 +12593,9 @@ Por favor reportar este problema a DevOps."
             BeTransInvEnc.Regularizado = True
             BeTransInvEnc.Estado = "Finalizado"
             BeTransInvEnc.Activo = False
+            vPasoTrace = Date.Now
             clsLnTrans_inv_enc.Actualizar(BeTransInvEnc, lConnection, lTransaction)
+            vMsActualizarEnc = CLng((Date.Now - vPasoTrace).TotalMilliseconds)
 
             For Each BeStock As clsBeStock In ListBeStock
                 IdStock += 1
@@ -12328,30 +12604,73 @@ Por favor reportar este problema a DevOps."
                     BeStock.IdBodega = BeTransInvEnc.IdBodega
                     BeStock.IdStock = IdStock
                     Debug.Write("IdStock:" & IdStock)
+                    vPasoTrace = Date.Now
                     Insertar(BeStock, lConnection, lTransaction)
+                    vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                    vCntStock += 1
                 ElseIf BeTransInvEnc.IdTipoInventario = 2 AndAlso BeStock.Cantidad > 0 Then
                     '#EJC20191218:IdBodega2Stock
                     BeStock.IdBodega = BeTransInvEnc.IdBodega
                     BeStock.IdStock = IdStock
                     Debug.Write("IdStock:" & IdStock)
+                    vPasoTrace = Date.Now
                     Insertar(BeStock, lConnection, lTransaction)
+                    vMsInsertStock += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                    vCntStock += 1
 
+                End If
+
+                If IdStock Mod 500 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_STOCK_PROGRESS", vInicioTrace,
+                                           "Iterados=" & IdStock &
+                                           ";Insertados=" & vCntStock &
+                                           ";MsInsertStock=" & vMsInsertStock)
                 End If
             Next
 
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_STOCK_END", vInicioTrace,
+                                   "Iterados=" & IdStock &
+                                   ";Insertados=" & vCntStock &
+                                   ";MsInsertStock=" & vMsInsertStock)
+
             For Each BeMov As clsBeTrans_movimientos In ListBeMovimientos
                 BeMov.IdMovimiento = 0
+                vPasoTrace = Date.Now
                 clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
+                vMsInsertMov += CLng((Date.Now - vPasoTrace).TotalMilliseconds)
+                vCntMov += 1
+
+                If vCntMov Mod 500 = 0 Then
+                    InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_MOV_PROGRESS", vInicioTrace,
+                                           "Insertados=" & vCntMov &
+                                           ";MsInsertMov=" & vMsInsertMov)
+                End If
             Next
+
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_MOV_END", vInicioTrace,
+                                   "Insertados=" & vCntMov &
+                                   ";MsInsertMov=" & vMsInsertMov)
 
             '#CKFK 20180602 Agregué la funcionalidad de que actualice la tarea de inventario a finalizada cuando se regularice
             'Dim IdTareaHH As Integer = clsLnTarea_hh.GetIdTarea(BeTransInvEnc.Idinventarioenc, 6, lConnection, lTransaction)
 
             clsLnTarea_hh.Actualiza_Estado_Tarea(BeTransInvEnc.Idinventarioenc, 6, 4, lConnection, lTransaction) 'El IdEstado 4 es Finalizado
 
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_COMMIT_START", vInicioTrace,
+                                   "MsActualizarEnc=" & vMsActualizarEnc &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsInsertMov=" & vMsInsertMov)
             lTransaction.Commit()
 
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_FIN", vInicioTrace,
+                                   "StockInsertados=" & vCntStock &
+                                   ";MovInsertados=" & vCntMov &
+                                   ";MsActualizarEnc=" & vMsActualizarEnc &
+                                   ";MsInsertStock=" & vMsInsertStock &
+                                   ";MsInsertMov=" & vMsInsertMov)
+
         Catch ex As Exception
+            InvRegularizacionTrace(vSesionTrace, "STOCK_IMPORT_INV_ERROR", vInicioTrace, ex.Message)
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw New Exception(ex.Message)
         Finally
