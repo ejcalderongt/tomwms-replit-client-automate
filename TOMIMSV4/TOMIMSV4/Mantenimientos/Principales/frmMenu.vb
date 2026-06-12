@@ -18,7 +18,6 @@ Imports DevExpress.XtraSplashScreen
 '#EJC20220407: PickingReference.
 '#CKFK20220425 Si funciona la aplicacion
 Public Class frmMenu
-
     Public Property HostName As String
     Public Property IpAdress As String
     Public Property Guardar_Configuracion_Menu_Al_Salir As Boolean = True
@@ -29,6 +28,12 @@ Public Class frmMenu
     Private WithEvents backgroundWorker As New ComponentModel.BackgroundWorker
 
     Public Property ConexionActivaWebServiceTOMWMS As Boolean = False
+
+    '#GT08062026: backgroundowkrer y timer para ejecutar autoimpresión rfid desde barras_pallet
+    Private WithEvents bgwAutoImpresionRFID As New System.ComponentModel.BackgroundWorker
+    Private WithEvents tmrAutoImpresionRFID As New System.Windows.Forms.Timer
+    Private _cerrandoFormulario As Boolean = False
+    Private pIntervalo_autoimpresionRFID As Integer = 0
 
     Public Sub New()
 
@@ -190,6 +195,14 @@ Public Class frmMenu
                 backgroundWorker.RunWorkerAsync()
             End If
 
+            '#GT12062026: autoimpresión rfid y log de mensajes
+            pIntervalo_autoimpresionRFID = clsLnI_nav_config_enc.Get_Intervalo_AutoImpresionRFID(AP.IdBodega, AP.IdEmpresa)
+            If pIntervalo_autoimpresionRFID > 0 Then
+                pIntervalo_autoimpresionRFID = pIntervalo_autoimpresionRFID * 1000
+                InicializarAutoImpresionRFID()
+                CrearRichTextRFID()
+            End If
+
             '#EJC20260603_SYNC_REQUEST_WORKER: Inicia worker central de cola SAP.
             Iniciar_BackWorker_RunSync()
 
@@ -269,6 +282,62 @@ Public Class frmMenu
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
+        End Try
+
+    End Sub
+
+    Private Sub InicializarAutoImpresionRFID()
+
+        Try
+            bgwAutoImpresionRFID.WorkerReportsProgress = False
+            bgwAutoImpresionRFID.WorkerSupportsCancellation = False
+            tmrAutoImpresionRFID.Interval = pIntervalo_autoimpresionRFID 'tiempo de ejecución
+            tmrAutoImpresionRFID.Enabled = True
+            tmrAutoImpresionRFID.Start()
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub tmrAutoImpresionRFID_Tick(sender As Object, e As EventArgs) Handles tmrAutoImpresionRFID.Tick
+
+        Try
+            If _cerrandoFormulario Then
+                Exit Sub
+            End If
+
+            If Not bgwAutoImpresionRFID.IsBusy Then
+                bgwAutoImpresionRFID.RunWorkerAsync()
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub bgwAutoImpresionRFID_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bgwAutoImpresionRFID.DoWork
+
+        Try
+            EjecutarAutoImpresionRFID()
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub bgwAutoImpresionRFID_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles bgwAutoImpresionRFID.RunWorkerCompleted
+
+        Try
+            If e.Error IsNot Nothing Then
+                'Log silencioso
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
         End Try
 
     End Sub
@@ -6064,5 +6133,110 @@ Public Class frmMenu
         End Try
 
     End Function
+
+    Private Sub EjecutarAutoImpresionRFID()
+
+        Try
+
+            MostrarMensajeRFID("RFID: Validando impresora RFID...")
+
+            Dim printerName As String = ServicioAutoImpresionRFID.Cargar_Impresora_Zebra()
+
+            If String.IsNullOrWhiteSpace(printerName) Then
+
+                Dim mensaje As String = "Printer: No hay una impresora RFID encendida/configurada."
+
+                clsLnLog_error_wms.Agregar_Error(mensaje)
+                MostrarMensajeRFID(mensaje)
+
+                Exit Sub
+            End If
+
+            If Not ServicioAutoImpresionRFID.RawPrinterHelper.CanOpenPrinter(printerName) Then
+
+                Dim mensaje As String = "Printer: La impresora RFID no está conectada o no se puede abrir la cola: " & printerName
+
+                clsLnLog_error_wms.Agregar_Error(mensaje)
+                MostrarMensajeRFID(mensaje)
+
+                Exit Sub
+            End If
+
+            MostrarMensajeRFID("RFID: Impresora lista...")
+
+            Dim servicio As New ServicioAutoImpresionRFID(AP.Empresa)
+
+            servicio.Es_Demo = False
+            servicio.NotificarMensaje = AddressOf MostrarMensajeRFID
+            servicio.ProcesarAutoImpresion(printerName, 1)
+
+            MostrarMensajeRFID("RFID: Proceso de autoimpresión finalizado.")
+
+        Catch ex As Exception
+
+            Dim mensaje As String = "RFID: " & ex.Message
+
+            clsLnLog_error_wms.Agregar_Error(mensaje)
+            MostrarMensajeRFID(mensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub MostrarMensajeRFID(ByVal mensaje As String)
+
+        Try
+            If rtbAutoImpresionRFID Is Nothing Then
+                CrearRichTextRFID()
+            End If
+
+            If rtbAutoImpresionRFID.InvokeRequired Then
+                rtbAutoImpresionRFID.Invoke(New MethodInvoker(Sub()
+                                                                  rtbAutoImpresionRFID.AppendText(mensaje & vbNewLine)
+                                                                  rtbAutoImpresionRFID.SelectionStart = rtbAutoImpresionRFID.TextLength
+                                                                  rtbAutoImpresionRFID.ScrollToCaret()
+                                                                  rtbAutoImpresionRFID.BringToFront()
+                                                                  rtbAutoImpresionRFID.Refresh()
+                                                              End Sub))
+            Else
+                rtbAutoImpresionRFID.AppendText(mensaje & vbNewLine)
+                rtbAutoImpresionRFID.SelectionStart = rtbAutoImpresionRFID.TextLength
+                rtbAutoImpresionRFID.ScrollToCaret()
+                rtbAutoImpresionRFID.BringToFront()
+                rtbAutoImpresionRFID.Refresh()
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private rtbAutoImpresionRFID As RichTextBox = Nothing
+    Private Sub CrearRichTextRFID()
+
+        Try
+            If rtbAutoImpresionRFID IsNot Nothing Then
+                Exit Sub
+            End If
+
+            rtbAutoImpresionRFID = New RichTextBox()
+            rtbAutoImpresionRFID.Name = "rtbAutoImpresionRFID"
+            rtbAutoImpresionRFID.ReadOnly = True
+            rtbAutoImpresionRFID.Multiline = True
+            rtbAutoImpresionRFID.Height = 80
+            rtbAutoImpresionRFID.Dock = DockStyle.Bottom
+            rtbAutoImpresionRFID.ScrollBars = RichTextBoxScrollBars.Vertical
+            rtbAutoImpresionRFID.Visible = True
+
+            Me.Controls.Add(rtbAutoImpresionRFID)
+            rtbAutoImpresionRFID.BringToFront()
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
 
 End Class
