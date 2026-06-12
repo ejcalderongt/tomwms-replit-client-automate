@@ -378,6 +378,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Guia_Transporte = IIf(IsDBNull(lRow("Guia_Transporte")), "", lRow("Guia_Transporte"))
                     vPedidoEnc.IdEmpresaTransporte = IIf(IsDBNull(lRow("IdEmpresaTransporte")), 0, lRow("IdEmpresaTransporte"))
                     vPedidoEnc.IdPiloto = IIf(IsDBNull(lRow("IdPiloto")), 0, lRow("IdPiloto"))
+                    vPedidoEnc.Tipo_Solicitud_ERP = IIf(IsDBNull(lRow("Tipo_Solicitud_ERP")), 0, lRow("Tipo_Solicitud_ERP"))
 
                     vPedidoEnc.Detalle = clsLnTrans_pe_det.Get_Detalle_By_IdPedidoEnc(vPedidoEnc.IdPedidoEnc, lConnection, lTransaction)
 
@@ -561,6 +562,7 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Guia_Transporte = IIf(IsDBNull(lRow("Guia_Transporte")), "", lRow("Guia_Transporte"))
                     vPedidoEnc.IdEmpresaTransporte = IIf(IsDBNull(lRow("IdEmpresaTransporte")), 0, lRow("IdEmpresaTransporte"))
                     vPedidoEnc.IdPiloto = IIf(IsDBNull(lRow("IdPiloto")), 0, lRow("IdPiloto"))
+                    vPedidoEnc.Tipo_Solicitud_ERP = IIf(IsDBNull(lRow("Tipo_Solicitud_ERP")), 0, lRow("Tipo_Solicitud_ERP"))
 
                     If vPedidoEnc.IdPickingEnc <> 0 Then
                         vPedidoEnc.Picking.IdPickingEnc = vPedidoEnc.IdPickingEnc
