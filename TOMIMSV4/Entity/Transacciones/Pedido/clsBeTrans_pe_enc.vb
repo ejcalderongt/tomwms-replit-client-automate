@@ -74,6 +74,7 @@ Public Class clsBeTrans_pe_enc
     Public Property IdMotivoAnulacionBodega As Integer = 0
     Public Property IdEmpresaTransporte As Integer = 0
     Public Property IdPiloto As Integer = 0
+    Public Property Tipo_Solicitud_ERP As String = ""
 
     Sub New()
     End Sub

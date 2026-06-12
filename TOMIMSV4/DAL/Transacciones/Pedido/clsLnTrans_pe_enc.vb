@@ -177,6 +177,7 @@ Public Class clsLnTrans_pe_enc
             If Not oBeTrans_pe_enc.Guia_Transporte Is Nothing Then Ins.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
             Ins.Add("IdEmpresaTransporte", "@IdEmpresaTransporte", DataType.Parametro)
             Ins.Add("IdPiloto", "@IdPiloto", DataType.Parametro)
+            Ins.Add("Tipo_Solicitud_ERP", "@Tipo_Solicitud_ERP", DataType.Parametro)
 
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then Ins.Add("IdMotivoDevolucion", "@IdMotivoDevolucion", DataType.Parametro)
 
@@ -264,6 +265,7 @@ Public Class clsLnTrans_pe_enc
             If Not oBeTrans_pe_enc.Guia_Transporte Is Nothing Then cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESATRANSPORTE", oBeTrans_pe_enc.IdEmpresaTransporte))
             cmd.Parameters.Add(New SqlParameter("@IDPILOTO", oBeTrans_pe_enc.IdPiloto))
+            cmd.Parameters.Add(New SqlParameter("Tipo_Solicitud_ERP", oBeTrans_pe_enc.Tipo_Solicitud_ERP))
 
 
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then cmd.Parameters.Add(New SqlParameter("@IDMOTIVODEVOLUCION", oBeTrans_pe_enc.IdMotivoDevolucion))
@@ -368,6 +370,7 @@ Public Class clsLnTrans_pe_enc
             Upd.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
             Upd.Add("IdEmpresaTransporte", "@IdEmpresaTransporte", DataType.Parametro)
             Upd.Add("IdPiloto", "@IdPiloto", DataType.Parametro)
+            Upd.Add("Tipo_Solicitud_ERP", "@Tipo_Solicitud_ERP", DataType.Parametro)
             Upd.Where("IdPedidoEnc = @IdPedidoEnc")
 
             Dim sp As String = Upd.SQL()
@@ -455,6 +458,7 @@ Public Class clsLnTrans_pe_enc
             cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESATRANSPORTE", oBeTrans_pe_enc.IdEmpresaTransporte))
             cmd.Parameters.Add(New SqlParameter("@IDPILOTO", oBeTrans_pe_enc.IdPiloto))
+            cmd.Parameters.Add(New SqlParameter("Tipo_Solicitud_ERP", oBeTrans_pe_enc.Tipo_Solicitud_ERP))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
