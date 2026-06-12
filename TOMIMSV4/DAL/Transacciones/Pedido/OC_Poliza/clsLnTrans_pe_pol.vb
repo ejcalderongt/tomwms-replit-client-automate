@@ -184,7 +184,6 @@ Public Class clsLnTrans_pe_pol
             cmd.Parameters.Add(New SqlParameter("@TOTAL_GENERAL", oBeTrans_pe_pol.total_general))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeTrans_pe_pol.activo))
 
-
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
