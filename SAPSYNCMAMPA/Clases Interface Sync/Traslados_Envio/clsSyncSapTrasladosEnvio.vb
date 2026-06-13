@@ -1566,7 +1566,6 @@ Public Class clsSyncSapTrasladosEnvio
         Dim vOperadorWMS As Integer = 0
 
         '#CKFK20260610: Quité el campo JournalMemo porque no se debe modificar el original
-        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferDto With {
         .FromWarehouse = Fromwarehouse,
         .ToWarehouse = ToWarehouse,
@@ -1580,6 +1579,8 @@ Public Class clsSyncSapTrasladosEnvio
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_USR_PICK = vIdOperadorDefecto,
+        .U_LOGISTIKA_ID = BeTransOcEnc.IdOrdenCompraEnc,
+        .U_Tipo = "1",
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1663,7 +1664,6 @@ Public Class clsSyncSapTrasladosEnvio
 
         '#CKFK20260610: Concatenar observación con la observación del documento de origen en WMS para facilitar trazabilidad en SAP.
         'Quité el campo JournalMemo porque no se debe modificar el original
-        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferDto With {
         .FromWarehouse = Fromwarehouse,
         .ToWarehouse = ToWarehouse,
@@ -1678,6 +1678,7 @@ Public Class clsSyncSapTrasladosEnvio
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_LOGISTIKA_ID = BePedidoEnc.IdPedidoEnc,
+        .U_Tipo = "1",
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1719,6 +1720,7 @@ Public Class clsSyncSapTrasladosEnvio
             .Quantity = Decimal.Round(ln.QtyLinea, 6),
             .FromWarehouseCode = Fromwarehouse,
             .WarehouseCode = ToWarehouse,
+            .DistributionRule = clsLnCentro_costo.Get_CentroCosto_By_IdBodega(BePedidoEnc.IdBodega),
             .BatchNumbers = New List(Of BatchNumberDto)()
         }
 
@@ -1750,9 +1752,18 @@ Public Class clsSyncSapTrasladosEnvio
                                                                lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferRequestDto
 
         Dim vMensaje As String = $"IdPedidoEncWMS:{BePedidoEnc.IdPedidoEnc} Despacho: {BePedidoEnc.No_despacho}"
+        Dim idBodega As Integer? = Nothing
+        Dim centroCosto As String = String.Empty
+
+        If Not String.IsNullOrWhiteSpace(BePedidoEnc.Bodega_Destino) Then
+            idBodega = clsLnBodega.GetIdBodega_By_Codigo(BePedidoEnc.Bodega_Destino)
+
+            If idBodega.HasValue AndAlso idBodega.Value > 0 Then
+                centroCosto = If(clsLnCentro_costo.Get_CentroCosto_By_IdBodega(idBodega.Value), String.Empty)
+            End If
+        End If
 
         '#CKFK20260610: 'Quité el campo JournalMemo porque no se debe modificar el original
-        'Quité el campo U_Tipo porque debe conservarse el original
         Dim dto As New StockTransferRequestDto With {
         .FromWarehouse = FromWarehouse,
         .DocDate = Today,
@@ -1765,6 +1776,8 @@ Public Class clsSyncSapTrasladosEnvio
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
+        .U_LOGISTIKA_ID = BePedidoEnc.IdPedidoEnc,
+        .U_Tipo = "1",
         .StockTransferLines = New List(Of StockTransferRequestLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1802,7 +1815,8 @@ Public Class clsSyncSapTrasladosEnvio
             .ItemCode = ln.ItemCode,
             .Quantity = Decimal.Round(ln.QtyLinea, 6),
             .FromWarehouseCode = Nothing,
-            .WarehouseCode = Nothing}
+            .WarehouseCode = Nothing,
+            .DistributionRule = centroCosto}
 
             ' UDFs de referencia: se llenan con el primer batch por simplicidad
             Dim first = ln.Batches.FirstOrDefault()
@@ -1889,6 +1903,8 @@ Public Class clsSyncSapTrasladosEnvio
         Public Property U_FIN_ENVIO As Date = Now
         Public Property U_Tipo As String = "" '1Manual, 2Resurtido Auto, 3Pedido Inicial
         Public Property U_ENVIADO_SAP_WMS As String = ""
+        Public Property U_LOGISTIKA_ID As String = ""
+        Public Property DistributionRule As String = ""
         Public Property StockTransferLines As List(Of StockTransferRequestLineDto)
     End Class
 
@@ -1921,6 +1937,9 @@ Public Class clsSyncSapTrasladosEnvio
         <JsonProperty("U_Talla", Order:=9)>
         Public Property U_Talla As String
 
+        <JsonProperty("DistributionRule", Order:=11)>
+        Public Property DistributionRule As String = ""
+
         <JsonProperty("BatchNumbers", Order:=10)>
         Public Property BatchNumbers As List(Of BatchNumberDto)
     End Class
@@ -1933,7 +1952,8 @@ Public Class clsSyncSapTrasladosEnvio
         Public Property WarehouseCode As String
         Public Property U_Color As String
         Public Property U_Talla As String
-        
+        Public Property DistributionRule As String = ""
+
     End Class
 
     Public Class ProductoTransferSAPProrrateo

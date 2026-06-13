@@ -1703,4 +1703,47 @@ Public Class clsLnBodega
 
     End Function
 
+    Public Shared Function GetIdBodega_By_Codigo(ByVal codigo As String) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT IdBodega FROM Bodega " &
+                                 " Where(codigo = @codigo)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                lCommand.Parameters.AddWithValue("@codigo", codigo)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                lConnection.Close()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Return lReturnValue
+                End If
+
+            End Using
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
 End Class
