@@ -82,7 +82,9 @@ Public Class clsSyncTransacWMS
             If lblprg.IsDisposed Then Return
 
             If lblprg.InvokeRequired Then
-                lblprg.BeginInvoke(New Action(Of RichTextBox, String)(AddressOf clsPublic.Actualizar_Progreso), lblprg, mensaje)
+                lblprg.BeginInvoke(New Action(Sub()
+                                                  clsPublic.Actualizar_Progreso(lblprg, mensaje)
+                                              End Sub))
             Else
                 clsPublic.Actualizar_Progreso(lblprg, mensaje)
             End If
@@ -1205,7 +1207,7 @@ Public Class clsSyncTransacWMS
             End If
 
             Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
-            lAjustes = ProcesarTransaccionesWMS_Ajustes(jsonResponse, pCodigoBodegaInterface, BePropietario)
+            lAjustes = ProcesarTransaccionesWMS_Ajustes(jsonResponse, pCodigoBodegaInterface, BePropietario, lblprg)
 
             Return lAjustes
 
@@ -1216,7 +1218,8 @@ Public Class clsSyncTransacWMS
 
     Public Shared Function ProcesarTransaccionesWMS_Ajustes(jsonResponse As String,
                                                             pCodigoBodegaInterface As String,
-                                                            BePropietario As clsBePropietarios) As List(Of clsBeTrans_ajuste_enc)
+                                                            BePropietario As clsBePropietarios,
+                                                            Optional lblprg As RichTextBox = Nothing) As List(Of clsBeTrans_ajuste_enc)
         Try
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
