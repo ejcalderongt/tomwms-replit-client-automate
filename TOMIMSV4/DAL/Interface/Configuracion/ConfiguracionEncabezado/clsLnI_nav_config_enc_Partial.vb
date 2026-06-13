@@ -539,6 +539,8 @@ Partial Public Class clsLnI_nav_config_enc
                         vInterface_SAP = CInt(lReturnValue)
                     End If
 
+                    lTransaction.Commit()
+
                 End Using
 
             End Using
@@ -673,5 +675,44 @@ Partial Public Class clsLnI_nav_config_enc
 
     End Function
 
+    '#GT12062026: obtener intervalo autoimpresion rfid sin tocar el metodo de carga.
+    Public Shared Function Get_Intervalo_AutoImpresionRFID(ByVal pIdBodega As Integer, pIdEmpresa As Integer) As Integer
+
+        Dim vIntervalo_autoimpresion_rfid As Integer = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT intervalo_autoimpresion_rfid FROM i_nav_config_enc 
+                                  WHERE (IdBodega=@IdBodega and IdEmpresa=@IdEmpresa) "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    cmd.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                    cmd.Parameters.AddWithValue("@IdEmpresa", pIdEmpresa)
+                    Dim lReturnValue As Object = cmd.ExecuteScalar()
+                    If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                        vIntervalo_autoimpresion_rfid = CInt(lReturnValue)
+                    End If
+
+                    lTransaction.Commit()
+
+                End Using
+
+            End Using
+
+            Return vIntervalo_autoimpresion_rfid
+
+        Catch ex As Exception
+            '#GT12062026: excepción silenciosa para no arruinar el menu principal/UI
+            clsLnLog_error_wms.Agregar_Error("AUTO_RFID: Get_Intervalo_AutoImpresionRFID " & ex.Message)
+            Return 0
+        End Try
+
+    End Function
 
 End Class
