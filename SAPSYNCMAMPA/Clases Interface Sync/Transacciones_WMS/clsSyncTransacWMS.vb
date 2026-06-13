@@ -75,6 +75,39 @@ Public Class clsSyncTransacWMS
         Return valor.Substring(0, maxLength)
     End Function
 
+    Private Shared Function EsArticuloServicioSV(codigoArticulo As String) As Boolean
+        Return Not String.IsNullOrWhiteSpace(codigoArticulo) AndAlso
+               codigoArticulo.StartsWith("SV", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    Private Shared Function FiltrarArticulosServicioSV(rows As JArray, Optional lblprg As RichTextBox = Nothing) As JArray
+        Dim filtradas As New JArray()
+
+        If rows Is Nothing OrElse rows.Count = 0 Then Return filtradas
+
+        Dim descartadas As Integer = 0
+
+        For Each token As JToken In rows
+            Dim row As JObject = TryCast(token, JObject)
+            If row Is Nothing Then Continue For
+
+            Dim itemNo As String = Convert.ToString(row("U_Item_No"))
+            If EsArticuloServicioSV(itemNo) Then
+                descartadas += 1
+                Continue For
+            End If
+
+            filtradas.Add(row)
+        Next
+
+        If descartadas > 0 Then
+            ' CKFK260612SVFILTER: servicios SV excluidos del flujo MAMPA por regla operativa.
+            ActualizarProgresoSeguro(lblprg, $"Se descartaron {descartadas} servicio(s) SV antes de mapear.")
+        End If
+
+        Return filtradas
+    End Function
+
     Private Shared Sub ActualizarProgresoSeguro(lblprg As RichTextBox, mensaje As String)
         If lblprg Is Nothing OrElse String.IsNullOrWhiteSpace(mensaje) Then Return
 
@@ -303,7 +336,8 @@ Public Class clsSyncTransacWMS
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
             Dim filtroVentas As String = "(U_Document_Type eq '2')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
+            Dim filtroServicio As String = "(U_Item_No ne null and not startswith(U_Item_No,'SV'))"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} and {filtroServicio}"
 
             Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtroFinal,
                                                                              vHanaService.SessionCookie,
@@ -313,6 +347,8 @@ Public Class clsSyncTransacWMS
             If allRows.Count = 0 Then
                 Return lPedidosCliente
             End If
+
+            allRows = FiltrarArticulosServicioSV(allRows, lblprg)
 
             Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
             lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario, clsDataContractDI.tTipoDocumentoSalida.Pedido_Consolidado)
@@ -735,7 +771,8 @@ Public Class clsSyncTransacWMS
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
             Dim filtroVentas As String = "(U_Document_Type eq '17')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
+            Dim filtroServicio As String = "(U_Item_No ne null and not startswith(U_Item_No,'SV'))"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} and {filtroServicio}"
 
             Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(
             filtroFinal,
@@ -746,6 +783,8 @@ Public Class clsSyncTransacWMS
             If allRows.Count = 0 Then
                 Return lDevolucionesCliente
             End If
+
+            allRows = FiltrarArticulosServicioSV(allRows, lblprg)
 
             Dim grupos = allRows _
             .OfType(Of JObject)() _
@@ -1659,7 +1698,8 @@ Public Class clsSyncTransacWMS
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
             Dim filtroVentas As String = "(U_Document_Type eq '15')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
+            Dim filtroServicio As String = "(U_Item_No ne null and not startswith(U_Item_No,'SV'))"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} and {filtroServicio}"
 
             Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(
             filtroFinal,
@@ -1670,6 +1710,8 @@ Public Class clsSyncTransacWMS
             If allRows.Count = 0 Then
                 Return lPedidosCliente
             End If
+
+            allRows = FiltrarArticulosServicioSV(allRows, lblprg)
 
             Dim jsonResponse As String = SapServiceBase.CrearJsonResponseDesdeRows(allRows)
             lPedidosCliente = ProcesarTransaccionesWMSCompleto(jsonResponse, pCodigoBodegaInterface, BePropietario, clsDataContractDI.tTipoDocumentoSalida.Anulacion_Devolucion)
@@ -2061,7 +2103,8 @@ Public Class clsSyncTransacWMS
 
             Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
             Dim filtroVentas As String = "(U_Document_Type eq '18')"
-            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas}"
+            Dim filtroServicio As String = "(U_Item_No ne null and not startswith(U_Item_No,'SV'))"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} and {filtroServicio}"
 
             Dim allRows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtroFinal,
                                                                              vHanaService.SessionCookie,
@@ -2071,6 +2114,8 @@ Public Class clsSyncTransacWMS
             If allRows.Count = 0 Then
                 Return lAnulacionVentas
             End If
+
+            allRows = FiltrarArticulosServicioSV(allRows, lblprg)
 
             Dim grupos = allRows _
             .OfType(Of JObject)() _
