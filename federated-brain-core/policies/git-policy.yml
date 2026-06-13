@@ -1,0 +1,11 @@
+version: 1
+branching:
+  default_prefix: codex/
+
+commit_policy:
+  - Small focused commits.
+  - No mixed HH+BOF changes in one commit for WMS.
+  - Include evidence reference in commit body for incident fixes.
+
+review_policy:
+  - Findings first for review requests.

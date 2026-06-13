@@ -1,0 +1,14 @@
+version: 1
+project:
+  name: <PROJECT_NAME>
+  repo_path: <ABS_REPO_PATH>
+  stack: <STACK>
+
+context:
+  domains:
+    - domain-database
+    - domain-jira
+
+connections:
+  profiles:
+    - <PROFILE_ALIAS>

@@ -1,0 +1,26 @@
+version: 1
+notes:
+  - This file stores connection profiles and aliases only.
+  - Real secrets must come from env vars.
+
+profiles:
+  wms_qa_sql:
+    engine: sqlserver
+    host_env: WMS_QA_SQL_HOST
+    db_env: WMS_QA_SQL_DB
+    user_env: WMS_QA_SQL_USER
+    password_env: WMS_QA_SQL_PASSWORD
+
+  roadpod_sql:
+    engine: sqlserver
+    host_env: ROADPOD_SQL_HOST
+    db_env: ROADPOD_SQL_DB
+    user_env: ROADPOD_SQL_USER
+    password_env: ROADPOD_SQL_PASSWORD
+
+  mcp_sql:
+    engine: sqlserver
+    host_env: MCP_SQL_HOST
+    db_env: MCP_SQL_DB
+    user_env: MCP_SQL_USER
+    password_env: MCP_SQL_PASSWORD

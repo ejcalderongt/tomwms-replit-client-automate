@@ -1,0 +1,12 @@
+version: 1
+secrets_policy:
+  - Never store real credentials in repo docs.
+  - Use env vars for DB/API auth.
+  - Use aliases in documentation (example: WMS_QA_SQL_HOST).
+
+db_policy:
+  - Production connections default to read-only diagnostics.
+  - Write scripts must be separated and explicitly approved.
+
+logging_policy:
+  - Redact passwords, tokens, and personal secrets.

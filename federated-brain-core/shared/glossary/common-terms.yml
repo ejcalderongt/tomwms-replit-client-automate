@@ -1,0 +1,9 @@
+version: 1
+terms:
+  pedido_enc: Order header record
+  pedido_det: Order detail record
+  picking_enc: Picking header
+  picking_ubic: Picking by location line
+  stock_res: Reserved stock line
+  verificacion: Post-picking verification process
+  empaque: Packing process

@@ -1,0 +1,17 @@
+version: 1
+mode_default: draft_only_unless_erik_confirms_publish
+
+guardrails:
+  - No issue/comment/transition publish without explicit confirmation.
+  - Build draft first: title, scope, evidence, estimate, risks.
+  - Keep Jira token out of outputs.
+
+minimum_fields:
+  - summary
+  - description
+  - evidence
+  - impact
+  - estimate
+
+publish_gate:
+  required_phrase: Erik explicitly confirms publish

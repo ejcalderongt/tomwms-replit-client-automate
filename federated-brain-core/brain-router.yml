@@ -1,0 +1,37 @@
+version: 1
+updated: 2026-06-12
+default_mode: federated_context
+
+always_load:
+  - policies/jira-policy.yml
+  - policies/security-policy.yml
+  - policies/git-policy.yml
+  - shared/infra/connection-profiles.yml
+  - shared/glossary/common-terms.yml
+
+load_order:
+  - resolve_project
+  - load_always
+  - load_project_overlay
+  - load_domains_by_trigger
+
+triggers:
+  reserva:
+    domains: [domain-reserva, domain-database]
+  picking:
+    domains: [domain-picking, domain-database]
+  verificacion:
+    domains: [domain-verificacion, domain-picking, domain-database]
+  empaque:
+    domains: [domain-empaque, domain-picking, domain-database]
+  hh:
+    domains: [domain-hh-android, domain-integration-services]
+  jira:
+    domains: [domain-jira]
+  api:
+    domains: [domain-integration-services]
+
+rules:
+  - Do not auto-publish Jira artifacts without explicit confirmation.
+  - Never expose secrets in logs or notes.
+  - Prefer selective loading over full-brain loading.

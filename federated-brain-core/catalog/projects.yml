@@ -1,0 +1,11 @@
+version: 1
+projects:
+  TOMWMS:
+    repo_path: C:\Users\yejc2\source\repos\TOMWMS
+    overlay_entry: C:\Users\yejc2\source\repos\TOMWMS\brain\project-overlay.yml
+  RoadPOD:
+    repo_path: C:\Users\yejc2\source\repos\RoadPOD
+    overlay_entry: C:\Users\yejc2\source\repos\RoadPOD\brain\project-overlay.yml
+  MCP:
+    repo_path: C:\Users\yejc2\source\repos\MCP
+    overlay_entry: C:\Users\yejc2\source\repos\MCP\brain\project-overlay.yml

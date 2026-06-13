@@ -1,0 +1,4 @@
+version: 1
+name: domain-jira
+entry_points:
+  - ops/jira-playbook.md
