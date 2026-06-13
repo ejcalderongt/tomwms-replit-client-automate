@@ -189,6 +189,13 @@ Public Class clsSyncTransacWMS
         mTransacWmsIdNavConfigDet = 0
     End Sub
 
+    Private Shared Sub TrazaDebugTransacWms(mensaje As String)
+        Try
+            Debug.WriteLine($"[TRANSAC_WMS][DEBUG] {DateTime.Now:O} {mensaje}")
+        Catch
+        End Try
+    End Sub
+
     Private Shared Sub RegistrarTrazaTransacWms(ctx As TransacWmsTraceContext,
                                                 etapa As String,
                                                 resultado As String,
@@ -197,6 +204,8 @@ Public Class clsSyncTransacWMS
 
         Dim detalle As String = CrearResultadoTransacWms(ctx, etapa, resultado, causa, mensaje)
         Dim referencia As String = If(String.IsNullOrWhiteSpace(ctx.Referencia), ctx.Documento, ctx.Referencia)
+
+        TrazaDebugTransacWms($"TRAZA|ETAPA={etapa}|RESULTADO={resultado}|CAUSA={causa}|REF={referencia}|DOCENTRY={FormatearDocEntries(ctx.DocEntries)}|MSG={mensaje}")
 
         If String.Equals(resultado, "OK", StringComparison.OrdinalIgnoreCase) Then Return
 
@@ -1037,7 +1046,16 @@ Public Class clsSyncTransacWMS
             Dim payloadObj As New JObject()
             payloadObj("U_Procesado_WMS") = estadoProcesado
             payloadObj("U_Process_Result") = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
-            Dim payload As String = payloadObj.ToString(Formatting.None)
+            TrazaDebugTransacWms($"PATCH_PREP|DOCENTRIES={FormatearDocEntries(docEntries)}|BASEURL={baseUrl}|ESTADO={estadoProcesado}|RESULT_LEN={If(processResult, String.Empty).Length}|JSON_TYPE={payloadObj.GetType().FullName}|JSON_ASM={payloadObj.GetType().Assembly.FullName}")
+
+            Dim payload As String = ""
+            Try
+                payload = payloadObj.ToString(Formatting.None)
+                TrazaDebugTransacWms($"PATCH_PAYLOAD_OK|LEN={payload.Length}|PAYLOAD={payload}")
+            Catch exPayload As Exception
+                TrazaDebugTransacWms($"PATCH_PAYLOAD_FAIL|JSON_TYPE={payloadObj.GetType().FullName}|JSON_ASM={payloadObj.GetType().Assembly.FullName}|EX={exPayload.GetType().FullName}|MSG={NormalizarMensajeError(exPayload)}")
+                Throw
+            End Try
 
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
@@ -1052,6 +1070,8 @@ Public Class clsSyncTransacWMS
                         Dim requestUrl As String = $"TRANSAC_WMS('{docEntry}')"
                         Dim fullUrl As String = baseUrl & requestUrl
 
+                        TrazaDebugTransacWms($"PATCH_SEND|DOCENTRY={docEntry}|URL={fullUrl}")
+
                         Using request As New HttpRequestMessage(httpPatch, fullUrl)
                             request.Headers.ConnectionClose = True
                             request.Headers.Add("Cookie", sessionCookie)
@@ -1062,6 +1082,7 @@ Public Class clsSyncTransacWMS
 
                             If Not response.IsSuccessStatusCode Then
                                 Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                TrazaDebugTransacWms($"PATCH_FAIL|DOCENTRY={docEntry}|STATUS={response.StatusCode}|DETAIL={errContent}")
                                 Throw New Exception($"Error al actualizar TRANSAC_WMS('{docEntry}'). Código: {response.StatusCode}, Detalle: {errContent}")
                             End If
                         End Using
@@ -1075,6 +1096,7 @@ Public Class clsSyncTransacWMS
             End Using
 
         Catch ex As Exception
+            TrazaDebugTransacWms($"PATCH_EXCEPTION|EX={ex.GetType().FullName}|MSG={NormalizarMensajeError(ex)}")
             Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
         End Try
     End Function
