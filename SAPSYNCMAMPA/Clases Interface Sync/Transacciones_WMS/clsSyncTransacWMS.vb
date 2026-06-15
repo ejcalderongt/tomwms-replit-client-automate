@@ -75,188 +75,6 @@ Public Class clsSyncTransacWMS
         Return valor.Substring(0, maxLength)
     End Function
 
-    Private Shared Function EsArticuloServicioSV(codigoArticulo As String) As Boolean
-        Return Not String.IsNullOrWhiteSpace(codigoArticulo) AndAlso
-               codigoArticulo.StartsWith("SV", StringComparison.OrdinalIgnoreCase)
-    End Function
-
-    Private Shared Function FiltrarArticulosServicioSV(rows As JArray, Optional lblprg As RichTextBox = Nothing) As JArray
-        Dim filtradas As New JArray()
-
-        If rows Is Nothing OrElse rows.Count = 0 Then Return filtradas
-
-        Dim descartadas As Integer = 0
-
-        For Each token As JToken In rows
-            Dim row As JObject = TryCast(token, JObject)
-            If row Is Nothing Then Continue For
-
-            Dim itemNo As String = Convert.ToString(row("U_Item_No"))
-            If EsArticuloServicioSV(itemNo) Then
-                descartadas += 1
-                Continue For
-            End If
-
-            filtradas.Add(row)
-        Next
-
-        If descartadas > 0 Then
-            ' CKFK260612SVFILTER: servicios SV excluidos del flujo MAMPA por regla operativa.
-            ActualizarProgresoSeguro(lblprg, $"Se descartaron {descartadas} servicio(s) SV antes de mapear.")
-        End If
-
-        Return filtradas
-    End Function
-
-    Private Shared Sub ActualizarProgresoSeguro(lblprg As RichTextBox, mensaje As String)
-        If lblprg Is Nothing OrElse String.IsNullOrWhiteSpace(mensaje) Then Return
-
-        Try
-            If lblprg.IsDisposed Then Return
-
-            If lblprg.InvokeRequired Then
-                lblprg.BeginInvoke(New Action(Sub()
-                                                  clsPublic.Actualizar_Progreso(lblprg, mensaje)
-                                              End Sub))
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, mensaje)
-            End If
-        Catch
-        End Try
-    End Sub
-
-    Private Shared Function ObtenerFlagConfiguracionTransacWms(nombre As String, Optional valorDefecto As Boolean = False) As Boolean
-        Try
-            Dim valor As String = ConfigurationManager.AppSettings(nombre)
-            If String.IsNullOrWhiteSpace(valor) Then Return valorDefecto
-
-            Dim flag As Boolean
-            If Boolean.TryParse(valor, flag) Then Return flag
-
-            Select Case valor.Trim().ToUpperInvariant()
-                Case "1", "SI", "S", "TRUE", "T", "YES", "Y"
-                    Return True
-                Case "0", "NO", "N", "FALSE", "F"
-                    Return False
-            End Select
-        Catch
-        End Try
-
-        Return valorDefecto
-    End Function
-
-    Private Shared Function ConstruirFiltroTransacWmsPorDocEntries(docEntries As IEnumerable(Of Integer)) As String
-        If docEntries Is Nothing Then Return ""
-
-        Dim vistos As New List(Of Integer)()
-        Dim partes As New List(Of String)()
-
-        For Each docEntry In docEntries
-            If docEntry <= 0 Then Continue For
-            If vistos.Contains(docEntry) Then Continue For
-
-            vistos.Add(docEntry)
-            partes.Add($"DocEntry eq {docEntry}")
-        Next
-
-        If partes.Count = 0 Then Return ""
-        Return String.Join(" or ", partes)
-    End Function
-
-    Private Shared Function NormalizarValorTransacWms(valor As JToken) As String
-        If valor Is Nothing OrElse valor.Type = JTokenType.Null OrElse valor.Type = JTokenType.Undefined Then
-            Return ""
-        End If
-
-        Return Convert.ToString(valor).Trim()
-    End Function
-
-    '#EJC20260615_MAMPA_TRANSAC_WMS_VERIFY: No confiamos solo en HTTP 2xx; confirmamos persistencia con GET posterior.
-    Private Shared Function VerificarMarcadoTransacWmsSL(docEntries As IEnumerable(Of Integer),
-                                                         sessionCookie As String,
-                                                         baseUrl As String,
-                                                         estadoProcesado As Integer,
-                                                         processResult As String) As Boolean
-
-        Dim filtro As String = ConstruirFiltroTransacWmsPorDocEntries(docEntries)
-        If String.IsNullOrWhiteSpace(filtro) Then Return False
-
-        Dim esperados As New List(Of Integer)()
-        For Each docEntry In docEntries
-            If docEntry <= 0 Then Continue For
-            If esperados.Contains(docEntry) Then Continue For
-            esperados.Add(docEntry)
-        Next
-
-        If esperados.Count = 0 Then Return False
-
-        Dim rows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtro,
-                                                                      sessionCookie,
-                                                                      baseUrl,
-                                                                      Nothing,
-                                                                      "Verificando marcación TRANSAC_WMS",
-                                                                      50)
-
-        Dim encontrados As New List(Of Integer)()
-        Dim inconsistencias As New List(Of String)()
-        Dim resultadoEsperado As String = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
-        Dim estadoEsperado As String = estadoProcesado.ToString(CultureInfo.InvariantCulture)
-
-        For Each row As JToken In rows
-            Dim docEntryActual As Integer = 0
-            If Not Integer.TryParse(NormalizarValorTransacWms(row("DocEntry")), docEntryActual) Then Continue For
-
-            If Not encontrados.Contains(docEntryActual) Then
-                encontrados.Add(docEntryActual)
-            End If
-
-            Dim procesadoActual As String = NormalizarValorTransacWms(row("U_Procesado_WMS"))
-            Dim resultadoActual As String = NormalizarValorTransacWms(row("U_Process_Result"))
-            Dim detalle As New StringBuilder()
-            Dim falla As Boolean = False
-
-            If Not String.Equals(procesadoActual, estadoEsperado, StringComparison.OrdinalIgnoreCase) Then
-                detalle.Append($"U_Procesado_WMS={procesadoActual}")
-                falla = True
-            End If
-
-            If Not String.IsNullOrWhiteSpace(resultadoEsperado) AndAlso
-               Not String.Equals(resultadoActual, resultadoEsperado, StringComparison.OrdinalIgnoreCase) Then
-                If detalle.Length > 0 Then detalle.Append("; ")
-                detalle.Append($"U_Process_Result={resultadoActual}")
-                falla = True
-            End If
-
-            If falla Then
-                inconsistencias.Add($"DocEntry {docEntryActual}: {detalle}")
-            End If
-        Next
-
-        Dim faltantes As New List(Of Integer)()
-        For Each docEntry In esperados
-            If Not encontrados.Contains(docEntry) Then
-                faltantes.Add(docEntry)
-            End If
-        Next
-
-        If faltantes.Count > 0 OrElse inconsistencias.Count > 0 Then
-            Dim mensaje As New StringBuilder()
-            mensaje.Append("La marcación en SAP no quedó confirmada por GET posterior al PATCH.")
-
-            If faltantes.Count > 0 Then
-                mensaje.Append(" Faltantes: ").Append(String.Join(",", faltantes))
-            End If
-
-            If inconsistencias.Count > 0 Then
-                mensaje.Append(" Inconsistencias: ").Append(String.Join(" | ", inconsistencias))
-            End If
-
-            Throw New Exception(mensaje.ToString())
-        End If
-
-        Return True
-    End Function
-
     Private Shared Function NormalizarMensajeError(ex As Exception) As String
         If ex Is Nothing Then Return ""
         Return ex.Message.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/").Trim()
@@ -1251,12 +1069,12 @@ Public Class clsSyncTransacWMS
             Return False
         End Try
     End Function
+
     Private Shared Async Function Marcar_Transac_Wms_Por_DocEntries_SLAsync(docEntries As List(Of Integer),
                                                                              sessionCookie As String,
                                                                              baseUrl As String,
                                                                              Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
-                                                                             Optional processResult As String = "OK",
-                                                                             Optional validarPersistencia As Boolean = False) As Task(Of Boolean)
+                                                                             Optional processResult As String = "OK") As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 
@@ -1269,17 +1087,6 @@ Public Class clsSyncTransacWMS
             payloadObj("U_Procesado_WMS") = estadoProcesado
             payloadObj("U_Process_Result") = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
             TrazaDebugTransacWms($"PATCH_PREP|DOCENTRIES={FormatearDocEntries(docEntries)}|BASEURL={baseUrl}|ESTADO={estadoProcesado}|RESULT_LEN={If(processResult, String.Empty).Length}|JSON_TYPE={payloadObj.GetType().FullName}|JSON_ASM={payloadObj.GetType().Assembly.FullName}")
-
-            Dim payload As String = ""
-            Try
-                payload = payloadObj.ToString(Formatting.None)
-                TrazaDebugTransacWms($"PATCH_PAYLOAD_OK|LEN={payload.Length}|PAYLOAD={payload}")
-            Catch exPayload As Exception
-                TrazaDebugTransacWms($"PATCH_PAYLOAD_FAIL|JSON_TYPE={payloadObj.GetType().FullName}|JSON_ASM={payloadObj.GetType().Assembly.FullName}|EX={exPayload.GetType().FullName}|MSG={NormalizarMensajeError(exPayload)}")
-                Throw
-            End Try
-
-            validarPersistencia = validarPersistencia OrElse ObtenerFlagConfiguracionTransacWms("WMS_TRANSAC_WMS_VERIFY_PATCH", True)
 
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
@@ -1617,7 +1424,7 @@ Public Class clsSyncTransacWMS
                         .IdBodega = BeBodega.IdBodega,
                         .IdProductoFamilia = 0,
                         .Enviado_A_ERP = False,
-                        .IdPropietarioBodega = idPropietarioBodega,
+                        .idPropietarioBodega = idPropietarioBodega,
                         .Ajuste_Por_Inventario = 0,
                         .IdCentroCosto = 0,
                         .Auditado = False,
@@ -1751,7 +1558,7 @@ Public Class clsSyncTransacWMS
                         .IdAjusteDet = nextIdAjusteDet,
                         .IdAjusteEnc = beAjustes.IdAjusteenc,
                         .IdStock = 0,
-                        .IdPropietarioBodega = beAjustes.IdPropietarioBodega,
+                        .idPropietarioBodega = beAjustes.IdPropietarioBodega,
                         .IdProductoBodega = vIdProductoBodega,
                         .IdProductoEstado = vIdProductoEstado,
                         .IdPresentacion = 0,
