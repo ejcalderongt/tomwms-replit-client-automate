@@ -7,10 +7,20 @@ Partial Public Class clsLnTrans_oc_det
     '#EJC20260522_OC_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmOrdenCompra.
     Private Const SP_OC_READMODEL As String = "dbo.usp_wms_ordencompra_readmodel_v1"
 
-    '#CKFK260614_OC_TALLACOLOR: asegura la hidratacion del objeto de talla/color solo cuando el detalle trae IdProductoTallaColor.
+    '#CKFK260614_OC_TALLACOLOR: asegura el llenado del objeto de talla/color solo cuando el detalle trae IdProductoTallaColor.
     Friend Shared Sub AsegurarTallaColorDetalle(ByRef pBeTransOcDet As clsBeTrans_oc_det,
                                                 ByRef lConnection As SqlConnection,
                                                 ByRef lTransaction As SqlTransaction)
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Inicio AsegurarTallaColorDetalle IdOrdenCompraDet={1} IdProductoTallaColor={2} Talla={3}:{4} Color={5}:{6} SKU={7}",
+                                                        Date.Now,
+                                                        If(pBeTransOcDet Is Nothing, 0, pBeTransOcDet.IdOrdenCompraDet),
+                                                        If(pBeTransOcDet Is Nothing, 0, pBeTransOcDet.IdProductoTallaColor),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Talla Is Nothing, 0, pBeTransOcDet.Talla.IdTalla),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Talla Is Nothing, String.Empty, pBeTransOcDet.Talla.Codigo),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Color Is Nothing, 0, pBeTransOcDet.Color.IdColor),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Color Is Nothing, String.Empty, pBeTransOcDet.Color.Codigo),
+                                                        If(pBeTransOcDet Is Nothing, String.Empty, pBeTransOcDet.CodigoSKU)))
 
         If pBeTransOcDet Is Nothing OrElse pBeTransOcDet.IdProductoTallaColor <= 0 Then Exit Sub
 
@@ -21,13 +31,27 @@ Partial Public Class clsLnTrans_oc_det
            pBeTransOcDet.Color.IdColor > 0 AndAlso
            Not String.IsNullOrWhiteSpace(pBeTransOcDet.Talla.Codigo) AndAlso
            Not String.IsNullOrWhiteSpace(pBeTransOcDet.Color.Codigo) Then
+            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Skip AsegurarTallaColorDetalle IdProductoTallaColor={1} porque ya venia completo.",
+                                                            Date.Now,
+                                                            pBeTransOcDet.IdProductoTallaColor))
             Exit Sub
         End If
 
         Dim BeProductoTallaColor As clsBeProducto_talla_color = clsLnProducto_talla_color.GetSingle(pBeTransOcDet.IdProductoTallaColor,
                                                                                                     lConnection,
                                                                                                     lTransaction)
-        If BeProductoTallaColor Is Nothing Then Exit Sub
+        If BeProductoTallaColor Is Nothing Then
+            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] No se encontro producto_talla_color para IdProductoTallaColor={1}.",
+                                                            Date.Now,
+                                                            pBeTransOcDet.IdProductoTallaColor))
+            Exit Sub
+        End If
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] producto_talla_color encontrado IdTalla={1} IdColor={2} SKU={3}",
+                                                        Date.Now,
+                                                        BeProductoTallaColor.IdTalla,
+                                                        BeProductoTallaColor.IdColor,
+                                                        BeProductoTallaColor.CodigoSKU))
 
         If BeProductoTallaColor.IdTalla > 0 Then
             pBeTransOcDet.Talla.IdTalla = BeProductoTallaColor.IdTalla
@@ -42,6 +66,16 @@ Partial Public Class clsLnTrans_oc_det
         If String.IsNullOrWhiteSpace(pBeTransOcDet.CodigoSKU) Then
             pBeTransOcDet.CodigoSKU = BeProductoTallaColor.CodigoSKU
         End If
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Fin AsegurarTallaColorDetalle IdOrdenCompraDet={1} IdProductoTallaColor={2} Talla={3}:{4} Color={5}:{6} SKU={7}",
+                                                        Date.Now,
+                                                        pBeTransOcDet.IdOrdenCompraDet,
+                                                        pBeTransOcDet.IdProductoTallaColor,
+                                                        If(pBeTransOcDet.Talla Is Nothing, 0, pBeTransOcDet.Talla.IdTalla),
+                                                        If(pBeTransOcDet.Talla Is Nothing, String.Empty, pBeTransOcDet.Talla.Codigo),
+                                                        If(pBeTransOcDet.Color Is Nothing, 0, pBeTransOcDet.Color.IdColor),
+                                                        If(pBeTransOcDet.Color Is Nothing, String.Empty, pBeTransOcDet.Color.Codigo),
+                                                        If(pBeTransOcDet.CodigoSKU, String.Empty)))
 
     End Sub
 

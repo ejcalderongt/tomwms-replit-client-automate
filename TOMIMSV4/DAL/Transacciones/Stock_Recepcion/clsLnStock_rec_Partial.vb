@@ -576,12 +576,29 @@ Partial Public Class clsLnStock_rec
 
         Try
 
+            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] Inicio Guarda_Stock_Rec IdRecepcionEnc={1} IdBodega={2} items={3}",
+                                                            Date.Now,
+                                                            IdRecepcionEnc,
+                                                            IdBodega,
+                                                            If(pListStockRec Is Nothing, 0, pListStockRec.Count)))
+
             If Not pListStockRec Is Nothing Then
 
                 If pListStockRec.Count > 0 Then
 
                     '#EJC202408100456AM: En la recepción ciega en el grid, se genera una línea vacía que se puede evitar con este filtro.
                     For Each BeStockRec As clsBeStock_rec In pListStockRec.Where(Function(x) x.Cantidad > 0)
+
+                        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] Antes de persistir IdStockRec={1} IdRecepcionDet={2} IdPTC={3} Talla={4} Color={5} Lote={6} LP={7} IsNew={8}",
+                                                                        Date.Now,
+                                                                        BeStockRec.IdStockRec,
+                                                                        BeStockRec.IdRecepcionDet,
+                                                                        BeStockRec.IdProductoTallaColor,
+                                                                        BeStockRec.Talla,
+                                                                        BeStockRec.Color,
+                                                                        BeStockRec.Lote,
+                                                                        BeStockRec.Lic_plate,
+                                                                        BeStockRec.IsNew))
 
                         '#EJCCKFK20260520: stock_rec no debe guardarse huerfano; trans_re_det.IdRecepcionDet es identity.
                         If IdRecepcionEnc > 0 AndAlso BeStockRec.IdRecepcionDet <= 0 Then
@@ -615,6 +632,15 @@ Partial Public Class clsLnStock_rec
                             End If
 
                             vRegistros += Insertar(BeStockRec, lConnection, lTransaction)
+                            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] Insertado IdStockRec={1} IdRecepcionDet={2} IdPTC={3} Talla={4} Color={5} Lote={6} LP={7}",
+                                                                            Date.Now,
+                                                                            BeStockRec.IdStockRec,
+                                                                            BeStockRec.IdRecepcionDet,
+                                                                            BeStockRec.IdProductoTallaColor,
+                                                                            BeStockRec.Talla,
+                                                                            BeStockRec.Color,
+                                                                            BeStockRec.Lote,
+                                                                            BeStockRec.Lic_plate))
 
                             BeStockRec.IsNew = False
 
@@ -632,6 +658,15 @@ Partial Public Class clsLnStock_rec
                             End If
 
                             vRegistros += Actualizar(BeStockRec, lConnection, lTransaction)
+                            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] Actualizado IdStockRec={1} IdRecepcionDet={2} IdPTC={3} Talla={4} Color={5} Lote={6} LP={7}",
+                                                                            Date.Now,
+                                                                            BeStockRec.IdStockRec,
+                                                                            BeStockRec.IdRecepcionDet,
+                                                                            BeStockRec.IdProductoTallaColor,
+                                                                            BeStockRec.Talla,
+                                                                            BeStockRec.Color,
+                                                                            BeStockRec.Lote,
+                                                                            BeStockRec.Lic_plate))
 
                         End If
 

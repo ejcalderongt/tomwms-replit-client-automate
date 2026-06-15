@@ -124,6 +124,32 @@ Public Class clsLnStock_rec
             Dim newId As Integer = Convert.ToInt32(cmd.ExecuteScalar())
             oBeStock_rec.IdStockRec = newId
 
+            Dim vConnVerificacion As SqlConnection = If(Es_Transaccion_Remota, pConection, lConnection)
+            Dim vTxVerificacion As SqlTransaction = If(Es_Transaccion_Remota, pTransaction, lTransaction)
+            Dim vVerificado As clsBeStock_rec = GetSingle_Stock_By_IdRecepcionEnc_And_IdRecpecionDet(oBeStock_rec.IdRecepcionEnc,
+                                                                                                     oBeStock_rec.IdRecepcionDet,
+                                                                                                     oBeStock_rec.Lic_plate,
+                                                                                                     vConnVerificacion,
+                                                                                                     vTxVerificacion)
+            If vVerificado IsNot Nothing Then
+                System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] Verificado en BD IdStockRec={1} IdRecepcionDet={2} IdPTC={3} Talla={4} Color={5} Lote={6} LP={7} Activo={8}",
+                                                                Date.Now,
+                                                                vVerificado.IdStockRec,
+                                                                vVerificado.IdRecepcionDet,
+                                                                vVerificado.IdProductoTallaColor,
+                                                                vVerificado.Talla,
+                                                                vVerificado.Color,
+                                                                vVerificado.Lote,
+                                                                vVerificado.Lic_plate,
+                                                                vVerificado.Activo))
+            Else
+                System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][STOCK_REC][{0:yyyy-MM-dd HH:mm:ss.fff}] No se pudo verificar en BD IdStockRec={1} IdRecepcionDet={2} LP={3}",
+                                                                Date.Now,
+                                                                oBeStock_rec.IdStockRec,
+                                                                oBeStock_rec.IdRecepcionDet,
+                                                                oBeStock_rec.Lic_plate))
+            End If
+
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return newId
