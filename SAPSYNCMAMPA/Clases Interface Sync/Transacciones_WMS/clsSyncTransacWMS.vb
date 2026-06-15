@@ -80,15 +80,27 @@ Public Class clsSyncTransacWMS
         Return valor.Trim()
     End Function
 
-    Private Shared Sub ValidarCampoRequeridoTransacWms(nombreCampo As String,
-                                                      valor As String,
-                                                      contexto As String)
-        If Not String.IsNullOrWhiteSpace(valor) Then Return
+    '#EJC20260615_AJUSTE_TALLA_COLOR_NULL: validación contextual para campos obligatorios del documento.
+    Private Shared Function ValidarYNormalizarCampoTransacWms(proceso As String,
+                                                             documento As String,
+                                                             linea As Integer,
+                                                             docEntry As String,
+                                                             nombreCampo As String,
+                                                             valor As String,
+                                                             Optional obligatorio As Boolean = True) As String
 
-        Dim mensaje As String = $"TRANSAC_WMS_AJUSTES: el campo '{nombreCampo}' viene nulo o vacío. {contexto}"
-        TrazaDebugTransacWms($"AJUSTE_CAMPO_NULO|CAMPO={nombreCampo}|{contexto}")
+        Dim normalizado As String = NormalizarClaveTransacWms(valor)
+        If Not obligatorio Then Return normalizado
+
+        If Not String.IsNullOrWhiteSpace(normalizado) Then Return normalizado
+
+        Dim documentoTexto As String = If(String.IsNullOrWhiteSpace(documento), "<sin documento>", documento.Trim())
+        Dim docEntryTexto As String = If(String.IsNullOrWhiteSpace(docEntry), "<sin docentry>", docEntry.Trim())
+        Dim mensaje As String = $"[{proceso}] Documento {documentoTexto}, línea {linea}, DocEntry {docEntryTexto}: el campo '{nombreCampo}' viene nulo o vacío."
+
+        TrazaDebugTransacWms($"CAMPO_FALTANTE|TAG=#EJC20260615_AJUSTE_TALLA_COLOR_NULL|PROCESO={proceso}|DOC={documentoTexto}|LINEA={linea}|DOCENTRY={docEntryTexto}|CAMPO={nombreCampo}")
         Throw New Exception(mensaje)
-    End Sub
+    End Function
 
     Private Shared Function NormalizarMensajeError(ex As Exception) As String
         If ex Is Nothing Then Return ""
@@ -423,7 +435,7 @@ Public Class clsSyncTransacWMS
             Return MapearAClasesNegocio(transaccionesAgrupadas, pCodigoBodegaInterface, BePropietario)
 
         Catch ex As Exception
-            Throw New Exception("Error completo en procesamiento de transacciones WMS: " & ex.Message, ex)
+            Throw New Exception("[AJUSTE_PARSE] " & ex.Message, ex)
         End Try
     End Function
 
@@ -1413,8 +1425,8 @@ Public Class clsSyncTransacWMS
                                                             Optional lblprg As RichTextBox = Nothing) As List(Of clsBeTrans_ajuste_enc)
         Try
 
-            If jsonResponse.Trim = "" Then
-                Debug.WriteLine("aja.")
+            If String.IsNullOrWhiteSpace(jsonResponse) Then
+                Throw New Exception("TRANSAC_WMS_AJUSTES: la respuesta JSON viene vacía.")
             End If
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
@@ -1468,6 +1480,33 @@ Public Class clsSyncTransacWMS
                     detalle.ProcesadoWMS = transaccion.U_Procesado_WMS
                     detalle.ProcessResult = transaccion.U_Process_Result
                     detalle.DocEntry = transaccion.DocEntry
+
+                    Dim documentoParseo As String = primerRegistro.U_NoEnc
+                    Dim docEntryParseo As String = Convert.ToString(transaccion.DocEntry)
+                    detalle.ItemNo = ValidarYNormalizarCampoTransacWms("AJUSTE_PARSE",
+                                                                       documentoParseo,
+                                                                       transaccion.U_Line_No,
+                                                                       docEntryParseo,
+                                                                       "ItemNo",
+                                                                       detalle.ItemNo)
+                    detalle.UnitOfMeasureCode = ValidarYNormalizarCampoTransacWms("AJUSTE_PARSE",
+                                                                                 documentoParseo,
+                                                                                 transaccion.U_Line_No,
+                                                                                 docEntryParseo,
+                                                                                 "UnitOfMeasureCode",
+                                                                                 detalle.UnitOfMeasureCode)
+                    detalle.Size = ValidarYNormalizarCampoTransacWms("AJUSTE_PARSE",
+                                                                      documentoParseo,
+                                                                      transaccion.U_Line_No,
+                                                                      docEntryParseo,
+                                                                      "Size",
+                                                                      detalle.Size)
+                    detalle.Color = ValidarYNormalizarCampoTransacWms("AJUSTE_PARSE",
+                                                                      documentoParseo,
+                                                                      transaccion.U_Line_No,
+                                                                      docEntryParseo,
+                                                                      "Color",
+                                                                      detalle.Color)
                     encabezado.LineasDetalle.Add(detalle)
                 Next
 
@@ -1522,12 +1561,18 @@ Public Class clsSyncTransacWMS
 
                     ActualizarProgresoSeguro(lblprg, $"Mapeando ajuste {ajuste.NoEnc} con {If(ajuste.LineasDetalle Is Nothing, 0, ajuste.LineasDetalle.Count)} detalle(s).")
 
-                    Dim contextoAjuste As String = $"NOENC={ajuste.NoEnc}|BODEGA={pCodigoBodegaInterface}"
-                    ValidarCampoRequeridoTransacWms("NoEnc", ajuste.NoEnc, contextoAjuste)
-                    ValidarCampoRequeridoTransacWms("TransferFromCode", ajuste.TransferFromCode, contextoAjuste)
-
-                    Dim codigoBodegaOrigen As String = NormalizarClaveTransacWms(ajuste.TransferFromCode)
-                    Dim noEncAjuste As String = NormalizarClaveTransacWms(ajuste.NoEnc)
+                    Dim noEncAjuste As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                  ajuste.NoEnc,
+                                                                                  0,
+                                                                                  "",
+                                                                                  "NoEnc",
+                                                                                  ajuste.NoEnc)
+                    Dim codigoBodegaOrigen As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                         noEncAjuste,
+                                                                                         0,
+                                                                                         "",
+                                                                                         "TransferFromCode",
+                                                                                         ajuste.TransferFromCode)
 
                     Dim BeBodega As clsBeBodega = Nothing
                     If Not cacheBodegas.TryGetValue(codigoBodegaOrigen, BeBodega) Then
@@ -1603,15 +1648,30 @@ Public Class clsSyncTransacWMS
                             ActualizarProgresoSeguro(lblprg, $"Mapeando ajuste {ajuste.NoEnc}: {indiceDetalle}/{ajuste.LineasDetalle.Count} detalle(s).")
                         End If
 
-                        Dim contextoDetalle As String = $"NOENC={ajuste.NoEnc}|LINEA={detalle.LineNo}|DOCENTRY={detalle.DocEntry}"
-                        Dim itemNo As String = NormalizarClaveTransacWms(detalle.ItemNo)
-                        Dim unidadMedidaCodigo As String = NormalizarClaveTransacWms(detalle.UnitOfMeasureCode)
-                        Dim tallaCodigo As String = NormalizarClaveTransacWms(detalle.Size)
-                        Dim colorCodigo As String = NormalizarClaveTransacWms(detalle.Color)
-                        ValidarCampoRequeridoTransacWms("ItemNo", itemNo, contextoDetalle)
-                        ValidarCampoRequeridoTransacWms("UnitOfMeasureCode", unidadMedidaCodigo, contextoDetalle)
-                        ValidarCampoRequeridoTransacWms("Size", tallaCodigo, contextoDetalle)
-                        ValidarCampoRequeridoTransacWms("Color", colorCodigo, contextoDetalle)
+                        Dim itemNo As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                 ajuste.NoEnc,
+                                                                                 detalle.LineNo,
+                                                                                 Convert.ToString(detalle.DocEntry),
+                                                                                 "ItemNo",
+                                                                                 detalle.ItemNo)
+                        Dim unidadMedidaCodigo As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                              ajuste.NoEnc,
+                                                                                              detalle.LineNo,
+                                                                                              Convert.ToString(detalle.DocEntry),
+                                                                                              "UnitOfMeasureCode",
+                                                                                              detalle.UnitOfMeasureCode)
+                        Dim tallaCodigo As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                       ajuste.NoEnc,
+                                                                                       detalle.LineNo,
+                                                                                       Convert.ToString(detalle.DocEntry),
+                                                                                       "Size",
+                                                                                       detalle.Size)
+                        Dim colorCodigo As String = ValidarYNormalizarCampoTransacWms("AJUSTE_MAPEO",
+                                                                                       ajuste.NoEnc,
+                                                                                       detalle.LineNo,
+                                                                                       Convert.ToString(detalle.DocEntry),
+                                                                                       "Color",
+                                                                                       detalle.Color)
 
                         Dim productoKey As String = beAjustes.IdBodega.ToString() & "|" & itemNo
                         Dim BeProducto As clsBeProducto = Nothing
