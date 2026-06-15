@@ -1519,7 +1519,7 @@ Public Class clsSyncTransacWMS
 
                         Dim vIdProductoBodega As Integer = 0
                         If Not cacheIdProductoBodega.TryGetValue(productoKey, vIdProductoBodega) Then
-                            vIdProductoBodega = clsLnProducto.Get_IdProductoBodega_By_Codigo_And_IdBodega(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
+                            vIdProductoBodega = clsLnProducto.Get_IdProductoBodega_By_Codigo_And_IdBodega(itemNo, beAjustes.IdBodega, lConnection, lTransaction)
                             cacheIdProductoBodega(productoKey) = vIdProductoBodega
                         End If
                         'Dim vIdProductoBodega As Integer = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(BeProducto.IdProducto, beAjustes.IdBodega, lConnection, lTransaction)
@@ -1565,24 +1565,23 @@ Public Class clsSyncTransacWMS
                         Dim IdProductoTallaColor As Integer = 0
                         If Not cacheIdProductoTallaColor.TryGetValue(ptcKey, IdProductoTallaColor) Then
                             IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_CodTalla_and_CodColor(tallaCodigo,
-                                                                                                                                colorCodigo,
+                                                                                                                                 colorCodigo,
                                                                                                                                BeProducto.IdProducto,
                                                                                                                                lConnection,
                                                                                                                                lTransaction)
                             If IdProductoTallaColor = 0 AndAlso Not ajusteYaExiste Then
-                                Dim BeProductoTallaColor As New clsBeProducto_talla_color With {
-                                    .IdProductoTallaColor = nextIdProductoTallaColor,
-                                    .IdProducto = BeProducto.IdProducto,
-                                    .IdTalla = IdTalla,
-                                    .IdColor = IdColor,
-                                    .CodigoSKU = BeProducto.Codigo & detalle.Color & detalle.Size,
-                                    .IdCampaña = 0,
-                                    .Fec_agr = Now,
-                                    .User_agr = beAjustes.Idusuario,
-                                    .Fec_mod = Now,
-                                    .User_mod = beAjustes.Idusuario,
-                                    .Activo = True
-                                }
+                                Dim BeProductoTallaColor As New clsBeProducto_talla_color()
+                                BeProductoTallaColor.IdProductoTallaColor = nextIdProductoTallaColor
+                                BeProductoTallaColor.IdProducto = BeProducto.IdProducto
+                                BeProductoTallaColor.IdTalla = IdTalla
+                                BeProductoTallaColor.IdColor = IdColor
+                                BeProductoTallaColor.CodigoSKU = BeProducto.Codigo & colorCodigo & tallaCodigo
+                                BeProductoTallaColor.IdCampaña = 0
+                                BeProductoTallaColor.Fec_agr = Now
+                                BeProductoTallaColor.User_agr = beAjustes.Idusuario
+                                BeProductoTallaColor.Fec_mod = Now
+                                BeProductoTallaColor.User_mod = beAjustes.Idusuario
+                                BeProductoTallaColor.Activo = True
 
                                 Dim RowInsertadas As Integer = clsLnProducto_talla_color.Insertar(BeProductoTallaColor,
                                                                                                   lConnection,
