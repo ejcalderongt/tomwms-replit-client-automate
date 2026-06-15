@@ -75,6 +75,138 @@ Public Class clsSyncTransacWMS
         Return valor.Substring(0, maxLength)
     End Function
 
+    Private Shared Function ObtenerFlagConfiguracionTransacWms(nombre As String, Optional valorDefecto As Boolean = False) As Boolean
+        Try
+            Dim valor As String = ConfigurationManager.AppSettings(nombre)
+            If String.IsNullOrWhiteSpace(valor) Then Return valorDefecto
+
+            Dim flag As Boolean
+            If Boolean.TryParse(valor, flag) Then Return flag
+
+            Select Case valor.Trim().ToUpperInvariant()
+                Case "1", "SI", "S", "TRUE", "T", "YES", "Y"
+                    Return True
+                Case "0", "NO", "N", "FALSE", "F"
+                    Return False
+            End Select
+        Catch
+        End Try
+
+        Return valorDefecto
+    End Function
+
+    Private Shared Function ConstruirFiltroTransacWmsPorDocEntries(docEntries As IEnumerable(Of Integer)) As String
+        If docEntries Is Nothing Then Return ""
+
+        Dim vistos As New List(Of Integer)()
+        Dim partes As New List(Of String)()
+
+        For Each docEntry In docEntries
+            If docEntry <= 0 Then Continue For
+            If vistos.Contains(docEntry) Then Continue For
+
+            vistos.Add(docEntry)
+            partes.Add($"DocEntry eq {docEntry}")
+        Next
+
+        If partes.Count = 0 Then Return ""
+        Return String.Join(" or ", partes)
+    End Function
+
+    Private Shared Function NormalizarValorTransacWms(valor As JToken) As String
+        If valor Is Nothing OrElse valor.Type = JTokenType.Null OrElse valor.Type = JTokenType.Undefined Then
+            Return ""
+        End If
+
+        Return Convert.ToString(valor).Trim()
+    End Function
+
+    '#EJC20260615_MAMPA_TRANSAC_WMS_VERIFY: No confiamos solo en HTTP 2xx; confirmamos persistencia con GET posterior.
+    Private Shared Function VerificarMarcadoTransacWmsSL(docEntries As IEnumerable(Of Integer),
+                                                         sessionCookie As String,
+                                                         baseUrl As String,
+                                                         estadoProcesado As Integer,
+                                                         processResult As String) As Boolean
+
+        Dim filtro As String = ConstruirFiltroTransacWmsPorDocEntries(docEntries)
+        If String.IsNullOrWhiteSpace(filtro) Then Return False
+
+        Dim esperados As New List(Of Integer)()
+        For Each docEntry In docEntries
+            If docEntry <= 0 Then Continue For
+            If esperados.Contains(docEntry) Then Continue For
+            esperados.Add(docEntry)
+        Next
+
+        If esperados.Count = 0 Then Return False
+
+        Dim rows As JArray = SapServiceBase.ObtenerTransacWmsPaginado(filtro,
+                                                                      sessionCookie,
+                                                                      baseUrl,
+                                                                      Nothing,
+                                                                      "Verificando marcación TRANSAC_WMS",
+                                                                      50)
+
+        Dim encontrados As New List(Of Integer)()
+        Dim inconsistencias As New List(Of String)()
+        Dim resultadoEsperado As String = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
+        Dim estadoEsperado As String = estadoProcesado.ToString(CultureInfo.InvariantCulture)
+
+        For Each row As JToken In rows
+            Dim docEntryActual As Integer = 0
+            If Not Integer.TryParse(NormalizarValorTransacWms(row("DocEntry")), docEntryActual) Then Continue For
+
+            If Not encontrados.Contains(docEntryActual) Then
+                encontrados.Add(docEntryActual)
+            End If
+
+            Dim procesadoActual As String = NormalizarValorTransacWms(row("U_Procesado_WMS"))
+            Dim resultadoActual As String = NormalizarValorTransacWms(row("U_Process_Result"))
+            Dim detalle As New StringBuilder()
+            Dim falla As Boolean = False
+
+            If Not String.Equals(procesadoActual, estadoEsperado, StringComparison.OrdinalIgnoreCase) Then
+                detalle.Append($"U_Procesado_WMS={procesadoActual}")
+                falla = True
+            End If
+
+            If Not String.IsNullOrWhiteSpace(resultadoEsperado) AndAlso
+               Not String.Equals(resultadoActual, resultadoEsperado, StringComparison.OrdinalIgnoreCase) Then
+                If detalle.Length > 0 Then detalle.Append("; ")
+                detalle.Append($"U_Process_Result={resultadoActual}")
+                falla = True
+            End If
+
+            If falla Then
+                inconsistencias.Add($"DocEntry {docEntryActual}: {detalle}")
+            End If
+        Next
+
+        Dim faltantes As New List(Of Integer)()
+        For Each docEntry In esperados
+            If Not encontrados.Contains(docEntry) Then
+                faltantes.Add(docEntry)
+            End If
+        Next
+
+        If faltantes.Count > 0 OrElse inconsistencias.Count > 0 Then
+            Dim mensaje As New StringBuilder()
+            mensaje.Append("La marcación en SAP no quedó confirmada por GET posterior al PATCH.")
+
+            If faltantes.Count > 0 Then
+                mensaje.Append(" Faltantes: ").Append(String.Join(",", faltantes))
+            End If
+
+            If inconsistencias.Count > 0 Then
+                mensaje.Append(" Inconsistencias: ").Append(String.Join(" | ", inconsistencias))
+            End If
+
+            Throw New Exception(mensaje.ToString())
+        End If
+
+        Return True
+    End Function
+
     Private Shared Function NormalizarMensajeError(ex As Exception) As String
         If ex Is Nothing Then Return ""
         Return ex.Message.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/").Trim()
@@ -1025,7 +1157,8 @@ Public Class clsSyncTransacWMS
                                                                              sessionCookie As String,
                                                                              baseUrl As String,
                                                                              Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
-                                                                             Optional processResult As String = "OK") As Task(Of Boolean)
+                                                                             Optional processResult As String = "OK",
+                                                                             Optional validarPersistencia As Boolean = False) As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 
@@ -1039,21 +1172,20 @@ Public Class clsSyncTransacWMS
             payloadObj("U_Process_Result") = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
             Dim payload As String = payloadObj.ToString(Formatting.None)
 
+            validarPersistencia = validarPersistencia OrElse ObtenerFlagConfiguracionTransacWms("WMS_TRANSAC_WMS_VERIFY_PATCH", True)
+
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
                 handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
                 handler.UseCookies = False
 
                 Using client As New HttpClient(handler)
-                    client.DefaultRequestHeaders.ConnectionClose = True
-
                     For Each docEntry In docEntries.Distinct()
 
                         Dim requestUrl As String = $"TRANSAC_WMS('{docEntry}')"
                         Dim fullUrl As String = baseUrl & requestUrl
 
                         Using request As New HttpRequestMessage(httpPatch, fullUrl)
-                            request.Headers.ConnectionClose = True
                             request.Headers.Add("Cookie", sessionCookie)
                             request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
                             request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
@@ -1067,6 +1199,14 @@ Public Class clsSyncTransacWMS
                         End Using
 
                     Next
+
+                    If validarPersistencia Then
+                        VerificarMarcadoTransacWmsSL(docEntries,
+                                                     sessionCookie,
+                                                     baseUrl,
+                                                     estadoProcesado,
+                                                     processResult)
+                    End If
 
                     Return True
 
@@ -2164,41 +2304,20 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Marcar_Devolucion_Sincronizada_SLAsync(docEntry As String,
-                                                                         sessionCookie As String,
-                                                                         baseUrl As String) As Task(Of Boolean)
+                                                                          sessionCookie As String,
+                                                                          baseUrl As String) As Task(Of Boolean)
 
         Try
             If String.IsNullOrWhiteSpace(docEntry) Then Return False
 
-            Dim requestUrl As String = $"TRANSAC_WMS({docEntry})"
-            Dim payload As String = "{""U_Procesado_WMS"": 1}"
-            Dim httpPatch As New HttpMethod("PATCH")
+            Dim docEntryNumerico As Integer = 0
+            If Not Integer.TryParse(docEntry, docEntryNumerico) Then Return False
 
-            Using handler As New HttpClientHandler()
-                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
-                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
-                handler.UseCookies = False
-
-                Using client As New HttpClient(handler)
-                    client.DefaultRequestHeaders.ConnectionClose = True
-
-                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
-                        request.Headers.ConnectionClose = True
-                        request.Headers.Add("Cookie", sessionCookie)
-                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
-
-                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
-
-                        If response.IsSuccessStatusCode Then
-                            Return True
-                        Else
-                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
-                            Throw New Exception($"Error al actualizar Invoices. Código: {response.StatusCode}, Detalle: {errContent}")
-                        End If
-                    End Using
-                End Using
-            End Using
+            Return Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(New List(Of Integer) From {docEntryNumerico},
+                                                                   sessionCookie,
+                                                                   baseUrl,
+                                                                   TRANSAC_WMS_OK,
+                                                                   "OK").ConfigureAwait(False)
 
         Catch ex As Exception
             Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)

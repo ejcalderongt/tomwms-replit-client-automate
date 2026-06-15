@@ -690,13 +690,17 @@ Public Class clsPublic
     '    Actualizar_Progreso_CR(lblPrg)
     'End Sub
     Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String, Optional limpiar As Boolean = False)
+        If lblPrg Is Nothing OrElse lblPrg.IsDisposed Then
+            Return
+        End If
+
         If lblPrg IsNot Nothing Then
             If lblPrg.InvokeRequired Then
                 Dim control = lblPrg
-                control.Invoke(New MethodInvoker(Sub()
-                                                     Actualizar_Progreso_Interno(control, mensaje, limpiar)
-                                                     'Application.DoEvents()
-                                                 End Sub))
+                '#EJC20260615_UI_PROGRESS: El refresco diferido evita bloquear el hilo de sincronización con cada mensaje.
+                control.BeginInvoke(New MethodInvoker(Sub()
+                                                           Actualizar_Progreso_Interno(control, mensaje, limpiar)
+                                                       End Sub))
             Else
                 Actualizar_Progreso_Interno(lblPrg, mensaje, limpiar)
                 'Application.DoEvents()
@@ -723,7 +727,6 @@ Public Class clsPublic
 
         lblPrg.SelectionStart = lblPrg.TextLength
         lblPrg.ScrollToCaret()
-        lblPrg.Refresh()
     End Sub
 
     Private Shared Sub LimpiarEstadoVisualReserva(ByVal lblPrg As RichTextBox)

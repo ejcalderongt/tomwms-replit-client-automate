@@ -70,7 +70,6 @@ Public MustInherit Class SapServiceBase
         client.BaseAddress = New Uri(baseUrl)
         client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
         client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
-        client.DefaultRequestHeaders.ConnectionClose = True
 
         Return client
     End Function
@@ -87,24 +86,21 @@ Public MustInherit Class SapServiceBase
         Dim urlBase As String = baseUrl.TrimEnd("/"c) & "/"
         Dim allRows As New JArray()
 
-        Using handler As New HttpClientHandler()
-            handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
-            handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
-            handler.UseCookies = False
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
+                handler.UseCookies = False
 
-            Using client As New HttpClient(handler)
-                client.DefaultRequestHeaders.ConnectionClose = True
-                client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
-                client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-                While hayMas
-                    Dim url As String =
-                        $"{urlBase}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}&$top={pageSize}&$skip={skip}"
+                    While hayMas
+                        Dim url As String =
+                            $"{urlBase}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}&$top={pageSize}&$skip={skip}"
 
-                    Using request As New HttpRequestMessage(HttpMethod.Get, url)
-                        request.Headers.ConnectionClose = True
-
-                        Dim response = client.SendAsync(request).GetAwaiter().GetResult()
+                        Using request As New HttpRequestMessage(HttpMethod.Get, url)
+                            Dim response = client.SendAsync(request).GetAwaiter().GetResult()
 
                         If Not response.IsSuccessStatusCode Then
                             Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
