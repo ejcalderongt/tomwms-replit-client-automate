@@ -1,0 +1,203 @@
+id: traza-003-sapsyncmampa-interface
+tipo: trace
+estado: vigente
+cliente: mampa
+rama_codigo: dev_2028_merge
+proyecto: C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNCMAMPA
+proposito: >
+  Mapa operativo para modificar de forma segura la interface MAMPA
+  sin volver a releer todo el proyecto. Sirve como entry-point para
+  cambios de flujo, validacion, soporte o trazabilidad.
+
+reglas_operativas:
+  - "No tocar Conn.ini salvo que el pedido sea de configuracion."
+  - "No mezclar esta interface con cambios de HH u otros proyectos."
+  - "Antes de modificar, ubicar el punto de entrada exacto y el flujo de salida."
+  - "Si el cambio afecta SAP, validar login, cookie, PATCH y respuesta."
+  - "Si el cambio afecta SQL, validar tablas de bitacora y banderas de envio."
+  - "Para diagnostico fino, usar trazas debug en TRANSAC_WMS antes de serializar payload y antes de cada PATCH."
+  - "No importar articulos de servicio que inicien con SV; preferir filtro en Service Layer y dejar LINQ como respaldo."
+  - "Tags inline de mejoras MAMPA: usar CKFKYYMMDDFeature (ejemplo CKFK260612SVFILTER)."
+  - "Si la validacion pertenece a MAMPA, tocar primero clsSyncTransacWMS; no moverla al ciclico por defecto."
+  - "Documentar el aprendizaje en brain antes de cerrar."
+
+arranque:
+  main:
+    archivo: "SAPSYNCMAMPA/Clases/ModuleMain.vb"
+    funciones:
+      - "Main"
+      - "Init_App"
+      - "Abrio_Conexion"
+    responsabilidades:
+      - "Leer Conn.ini"
+      - "Cargar BD.Instancia"
+      - "Resolver IdConfiguracion"
+      - "Abrir la unica instancia de la interface"
+  menu:
+    archivo: "SAPSYNCMAMPA/Formas/Principal/frmMenu.vb"
+    funciones:
+      - "frmMenu_Load"
+      - "Set_Info_Conexion"
+    responsabilidades:
+      - "Cargar BeConfigEnc"
+      - "Mostrar empresa y bodega activa"
+      - "Lanzar frmEjecucion en modo remoto o manual"
+  ejecucion:
+    archivo: "SAPSYNCMAMPA/Formas/frmEjecucion.vb"
+    funciones:
+      - "frmEjecucion_Shown"
+      - "DesactivarMenu"
+      - "HabilitarMenuRol"
+    responsabilidades:
+      - "Orquestar menus y botones"
+      - "Resolver modo de interface"
+      - "Despachar cada sincronizador"
+
+sync_inbound_sap_a_wms:
+  maestros:
+    - nombre: "bodegas"
+      metodo: "clsSyncSAPBodega.Insertar_Bodegas_Desde_Tabla_Intermedia_A_Tabla_TOMWMS"
+      ui: "mnuBodegas"
+    - nombre: "proveedores"
+      metodo: "clsSyncSAPProveedor.Insertar_Proveedores_Desde_TablaIntermedia_A_Tabla_TOMWMS"
+      ui: "mnuActualizarProveedores"
+    - nombre: "clientes"
+      metodo: "clsSyncSAPCliente.Insertar_Clientes_Desde_TablaIntermedia_A_Tabla_TOMWMSAsync"
+      ui: "mnuClientes"
+    - nombre: "productos"
+      metodo: "clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS"
+      ui: "mnuProductosI"
+    - nombre: "tallas"
+      metodo: "clsSyncSapTalla.Get_Tallas_SAP_SL"
+      ui: "mnuTallas"
+    - nombre: "colores"
+      metodo: "clsSyncSapColor.Get_Colores_SAP_SL"
+      ui: "mnuColores"
+    - nombre: "centros_costo"
+      metodo: "clsSyncSapCentrosCosto.Importar_Centros_Costo_Desde_SAP"
+      ui: "mnuCentroCosto"
+    - nombre: "codigos_barra"
+      metodo: "clsSyncSapCodigosBarra.Importar_Codigos_Barra_Productos_SL"
+      ui: "mnuActualizarCodigosBarra"
+
+  transacciones:
+    - nombre: "traslados_sap"
+      metodo: "clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_SAP"
+      ui: "mnuTraslados / menu de traslados"
+    - nombre: "factura_reserva_cliente"
+      metodo: "clsSyncSapFacturaReservaCliente.Procesar_Facturas_de_Reserva_Cliente_SAP"
+      ui: "mnuRecibirFactReservaCliente"
+    - nombre: "factura_deudor"
+      metodo: "clsSyncSapFacturaDeudor.Procesar_Facturas_de_Deudor_SAP"
+      ui: "mnuRecibirFactDeudor"
+    - nombre: "solicitud_traslado_tienda"
+      metodo: "clsSyncSapSolTrasladoRec.Procesar_Solicitud_Traslado_Tienda_SAP"
+      ui: "mnuRecibirSolTraTi"
+    - nombre: "devolucion_proveedor"
+      metodo: "clsSyncSapDevolProveedor.Procesar_Solicitud_Devol_Prov_SAP"
+      ui: "mnuDevolucionProveedor"
+
+sync_outbound_wms_a_sap:
+  - nombre: "traslados_salida_prorrateo"
+    metodo: "clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo"
+  - nombre: "traslados_salida_tienda"
+    metodo: "clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Tienda"
+  - nombre: "traslados_ingreso_tiendas"
+    metodo: "clsSyncSapTrasladosEnvio.Enviar_Traslados_Ingreso_Desde_Solicitud_Tiendas"
+  - nombre: "ajustes_wms"
+    metodo: "clsSyncSapAjustes.Enviar_Ajustes_WMS_SAP"
+  - nombre: "factura_reserva_cliente"
+    metodo: "clsSyncSapFacturaReservaCliente.Enviar_Factura_Reserva_ClienteAsync"
+  - nombre: "factura_deudor"
+    metodo: "clsSyncSapFacturaDeudor.Enviar_Factura_Deudor_ClienteAsync"
+  - nombre: "transac_wms"
+    metodo: "clsSyncTransacWMS.Procesar_Ajustes_SAP / Procesar_Devoluciones_de_Cliente_SAP / Procesar_Pedido_de_Cliente_SAP / Procesar_Anulacion_Devolucion_SAP / Procesar_Anulacion_Ventas_SAP"
+
+sap_service_layer:
+  cliente: "SAPSYNCMAMPA/Clases/SapServiceLayerClient.vb"
+  funciones:
+    - "LoginAsync"
+    - "GetBusinessPartnerAsync"
+    - "GetPurchaseOrderAsync"
+    - "Procesar_Detalle_Ingreso_HANA2"
+  contratos:
+    login:
+      cookies: ["B1SESSION", "ROUTEID"]
+      headers:
+        - "Cookie"
+        - "Accept: application/json"
+    entities:
+      - "Invoices"
+      - "PurchaseInvoices"
+      - "PurchaseDeliveryNotes"
+      - "BusinessPartners"
+  notas:
+    - "Usa HttpClient con UseCookies=False y maneja la cookie manualmente."
+    - "Desactiva validacion de certificado para el entorno actual."
+    - "La respuesta de SAP se usa para actualizar banderas y documentos locales."
+
+persistencia:
+  tablas_y_objetos:
+    - "i_nav_config_enc"
+    - "i_nav_ejecucion_enc"
+    - "i_nav_ejecucion_det_error"
+    - "i_nav_transacciones_out"
+    - "transacciones_out"
+    - "trans_pe_enc"
+    - "trans_pe_det"
+  campos_clave:
+    - "U_ENVIADO_WMS"
+    - "U_Procesado_WMS"
+    - "U_DOCUMENTO_WMS"
+    - "U_OPERADOR_WMS"
+    - "Bodega_Prorrateo"
+    - "Bodega_Faltante"
+
+riesgos:
+  - "Romper el contrato de SAP Service Layer al cambiar nombres de UDF o filtros."
+  - "Dejar documentos marcados en SAP sin actualizar la bandera local."
+  - "Alterar la seleccion de bodega y afectar un flujo solo de MAMPA."
+  - "Cambiar el menu sin respetar el modo remoto de frmEjecucion."
+  - "Tocar Conn.ini y confundir ajuste operativo con fix funcional."
+
+validaciones_minimas:
+  - "Abrir la interface con la configuracion MAMPA correcta."
+  - "Verificar que frmMenu muestra la bodega activa."
+  - "Confirmar que LoginAsync devuelve B1SESSION y ROUTEID."
+  - "Validar un flujo de lectura SAP y un flujo de escritura SAP."
+  - "Comprobar que el log de ejecucion se registra."
+  - "Confirmar que los documentos quedan marcados con la bandera esperada."
+
+hilos_para_modificacion:
+  - "UI/arranque"
+  - "SAP login y session management"
+  - "SAP Service Layer payloads"
+  - "Banderas de sincronizacion"
+  - "Bitacora de ejecucion"
+  - "Configuracion por bodega"
+
+referencias:
+  traza_md: "brain/code-deep-flow/traza-003-sapsyncmampa-interface.md"
+  fingerprint: "brain/fingerprint/MAMPA.md"
+  diff_base: "brain/code-deep-flow/DIFF-BOF-2023-VS-2028.md"
+  client_index: "brain/client-index/mampa.yml"
+  skill: "brain/skills/wms-mampa-interface/SKILL.md"
+
+automatizacion:
+  barrido_rapido: "brain/skills/wms-mampa-interface/scripts/wms-mampa-scan.ps1"
+  salida_esperada: "hotspots de clsSyncTransacWMS, ajustes, trazas y UI"
+
+checklist_cambio:
+  antes:
+    - "Leer esta traza y la MD asociada."
+    - "Ubicar metodo exacto con rg antes de abrir archivo completo."
+    - "No mezclar con HH."
+  durante:
+  - "Tocar la menor superficie posible."
+  - "Preservar UTF-8 con BOM en VB."
+  - "Mantener tags EJC/CKFK si el archivo ya los usa."
+  - "Si aparece fallo de Newtonsoft.Json, registrar tipo y assembly antes de ToString(Formatting.None)."
+  despues:
+    - "Verificar logs y banderas de envio."
+    - "Dejar nota en brain si aparecio un nuevo aprendizaje."
+    - "Si cambia contrato SAP, actualizar la traza."

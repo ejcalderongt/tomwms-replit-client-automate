@@ -1,0 +1,5 @@
+interface:
+  display_name: "WMS MAMPA Interface"
+  short_description: "Trazas finas y cambios rapidos en SAPSYNCMAMPA y clsSyncTransacWMS."
+  default_prompt: "Usa el skill WMS MAMPA Interface para ubicar el flujo exacto, generar trazas finas, aplicar cambios pequenos y documentar hallazgos de MAMPA sin mover la validacion al cíclico salvo que se pida explicitamente."
+

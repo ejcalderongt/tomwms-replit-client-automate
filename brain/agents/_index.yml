@@ -23,6 +23,14 @@ domains:
       paths: [TOMIMSV4/, DAL/, Entity/]
       tareas_tipicas: [bug-ui-bof, ajuste-stock-export, indicador-pedido, regla-negocio-vb]
 
+  - slug: domain-mampa
+    archivo: brain/agents/domain-mampa.yml
+    proposito: Interface MAMPA SAPSYNCMAMPA + clsSyncTransacWMS + trazas finas
+    triggers:
+      keywords: [SAPSYNCMAMPA, clsSyncTransacWMS, Procesar_Ajustes_SAP, AjusteYaExisteEnWMS, Referencia, stock_rec, talla, color, Service Layer]
+      paths: [SAPSYNCMAMPA/, TOMIMSV4/DAL/Mantenimientos/Ajustes/, TOMIMSV4/DAL/Transacciones/Stock_Recepcion/]
+      tareas_tipicas: [mampa-ajustes-idempotencia, mampa-recepcion-tallacolor, mampa-filtro-sv, mampa-traza-fina]
+
   - slug: domain-integration-services
     archivo: brain/agents/domain-integration-services.yml
     proposito: Superficies de integracion (WSHHRN .asmx, WMSWebAPI Core, MI3 legacy, SAP, NAV, DMS)
@@ -98,6 +106,8 @@ cross_dominio:
     cargar: [coordinator, domain-hh-android, domain-integration-services, domain-database, client-<X>]
   - tarea: feature-cliente-nuevo
     cargar: [coordinator, domain-bof, client-<X>]
+  - tarea: mampa-interface
+    cargar: [coordinator, domain-mampa, domain-bof, domain-integration-services, domain-database, client-mampa]
   - tarea: kpi-portal
     cargar: [coordinator, domain-portal, domain-indicadores]
 
@@ -115,3 +125,6 @@ triggers_conflicto:
   - keyword: WSHHRN
     primario: domain-integration-services
     secundario: [domain-hh-android]
+  - keyword: SAPSYNCMAMPA
+    primario: domain-mampa
+    secundario: [domain-bof, domain-integration-services, domain-database]

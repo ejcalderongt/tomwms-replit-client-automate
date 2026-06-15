@@ -1,0 +1,78 @@
+slug: domain-mampa
+nombre: MAMPA Interface - SAPSYNCMAMPA y clsSyncTransacWMS
+proposito: |
+  Ruta especializada para la interface MAMPA en BOF.
+  Usar cuando la tarea toque SAPSYNCMAMPA, clsSyncTransacWMS,
+  trazas finas, Service Layer, idempotencia por Referencia,
+  talla/color o progreso seguro de UI.
+estado: vigente
+ramas_relevantes: [dev_2028_merge]
+runtime: .NET Framework 4.8 / VB.NET / WinForms / SAP Service Layer
+
+solution_layout:
+  proyecto_principal: SAPSYNCMAMPA
+  proyectos_relacionados:
+    - TOMIMSV4/DAL
+    - TOMIMSV4/Entity
+    - WSHHRN
+    - WMSWebAPI
+  ide: Visual Studio 2022
+
+archivos_clave:
+  interface:
+    - { path: SAPSYNCMAMPA/Clases Interface Sync/Transacciones_WMS/clsSyncTransacWMS.vb, rol: "Flujo central de ajustes, devoluciones, pedidos y anulaciones" }
+    - { path: SAPSYNCMAMPA/Clases/SapServiceLayerClient.vb, rol: "Cliente Service Layer" }
+    - { path: SAPSYNCMAMPA/Formas/frmEjecucion.vb, rol: "UI de ejecucion y progreso" }
+  trazas:
+    - { path: brain/code-deep-flow/traza-003-sapsyncmampa-interface.md, rol: "Mapa fino de la interface" }
+    - { path: brain/code-deep-flow/traza-003-sapsyncmampa-interface.yml, rol: "Indice operativo y reglas" }
+  conocimiento:
+    - { path: brain/fingerprint/MAMPA.md, rol: "Huella funcional del cliente" }
+    - { path: brain/learnings/L-052-proc-transac-wms-idempotencia-por-documento.md, rol: "Regla de unicidad por documento" }
+
+triggers:
+  keywords:
+    - SAPSYNCMAMPA
+    - clsSyncTransacWMS
+    - Procesar_Ajustes_SAP
+    - AjusteYaExisteEnWMS
+    - Referencia
+    - talla
+    - color
+    - stock_rec
+    - Service Layer
+    - MAMPA
+  paths:
+    - SAPSYNCMAMPA/
+    - TOMIMSV4/DAL/Mantenimientos/Ajustes/
+    - TOMIMSV4/DAL/Transacciones/Stock_Recepcion/
+  tareas_tipicas:
+    - mampa-ajustes-idempotencia
+    - mampa-recepcion-tallacolor
+    - mampa-filtro-sv
+    - mampa-traza-fina
+    - mampa-ui-progreso
+
+cross_refs:
+  - domain-bof
+  - domain-integration-services
+  - domain-database
+  - client-mampa
+
+entry_points:
+  diagnostico_rapido: "brain/code-deep-flow/traza-003-sapsyncmampa-interface.yml"
+  mapa_humano: "brain/code-deep-flow/traza-003-sapsyncmampa-interface.md"
+  skill: "brain/skills/wms-mampa-interface/SKILL.md"
+  barrido: "brain/skills/wms-mampa-interface/scripts/wms-mampa-scan.ps1"
+
+hilos_para_modificacion:
+  - "Ajustes SAP -> WMS por clsSyncTransacWMS"
+  - "Recepcion y stock_rec con talla/color"
+  - "Filtro de servicios SV en Service Layer"
+  - "Bitacora, trazas y progreso UI"
+
+reglas_operativas:
+  - "No mover validaciones de la interface a clases del ciclico si el alcance es MAMPA."
+  - "Validar por Referencia cuando el documento se escribe en trans_ajuste_enc."
+  - "Mantener traza tecnica interna y mensaje humano breve."
+  - "Usar tag inline CKFKYYMMDDFeature cuando la mejora quede en codigo."

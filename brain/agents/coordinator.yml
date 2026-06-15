@@ -25,6 +25,7 @@ reglas_vinculantes:
     - "Cantidad en UMBAS para stock/movimientos/stock_res (HH y BOF)"
     - "Capas WMSWebAPI: DALCore -> EntityCore -> Services -> Controller (no mezclar)"
     - "Estatus OC MI3 se resuelve por trans_oc_enc.Referencia, NO IdOrdenCompraEnc"
+    - "MAMPA interface: clsSyncTransacWMS es el punto fino; no mover la validacion al ciclico por defecto"
     - "Archivos AGENTS.md / .codex/ NO viajan con codigo WMS - branch separado prograx-local-codex-backup-recovery"
 
 orden_de_carga:
@@ -38,6 +39,7 @@ orden_de_carga:
     - brain/agents/coordinator.yml  # este archivo
     - brain/agents/domain-<X>.yml   # 1-3 de estos
     - brain/client-index/<Y>.yml    # 0-2 de estos
+    - brain/skills/wms-mampa-interface/SKILL.md  # cuando el trigger sea SAPSYNCMAMPA/MAMPA interface
   paso_3_si_la_tarea_lo_pide:
     - brain/code-changes/{BOF,HH}/PATTERNS-<Z>.md
     - brain/handoffs/<fecha-slug>/PROPOSAL.md
@@ -51,6 +53,14 @@ entry_points_generales:
   nuevo_endpoint_webapi:
     cargar: [domain-integration-services]
     leer_primero: brain/code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md
+
+  mampa_interface:
+    cargar: [domain-mampa, domain-bof, domain-integration-services, domain-database, client-mampa]
+    leer_primero:
+      - brain/code-deep-flow/traza-003-sapsyncmampa-interface.yml
+      - brain/code-deep-flow/traza-003-sapsyncmampa-interface.md
+      - brain/fingerprint/MAMPA.md
+      - brain/skills/wms-mampa-interface/SKILL.md
 
   bug_hh_android:
     cargar: [domain-hh-android, domain-integration-services]
@@ -89,6 +99,7 @@ drift_a_vigilar:
   - "Handoffs cerrados sin entrada en ejemplos_tareas_pasadas"
   - "Endpoints nuevos del portal no agregados a domain-portal.yml"
   - "Cliente nuevo con client-index/<slug>.yml sin entrada en _index.yml.clients"
+  - "Cambios MAMPA aplicados en ciclico por error en vez de clsSyncTransacWMS"
 
 jira_reporting:
   modo: draft_only

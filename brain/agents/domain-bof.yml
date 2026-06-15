@@ -67,6 +67,7 @@ cross_refs:
   - domain-reserva                 # cuando toca stock_res
   - domain-database                # cuando se inventa una nueva query
   - domain-hh-android              # contraparte mobile
+  - domain-mampa                   # interface MAMPA vive aqui y en la skill dedicada
 
 entry_points:
   bug_form_ui: "Buscar frmXxxx.vb en TOMIMSV4/Transacciones/, ver eventos Click/Load"
