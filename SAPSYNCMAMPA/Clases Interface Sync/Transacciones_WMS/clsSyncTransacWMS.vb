@@ -1486,6 +1486,10 @@ Public Class clsSyncTransacWMS
                                                             BePropietario As clsBePropietarios,
                                                             Optional lblprg As RichTextBox = Nothing) As List(Of clsBeTrans_ajuste_enc)
         Try
+
+            If jsonResponse.Trim = "" Then
+                Debug.WriteLine("aja.")
+            End If
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
 
@@ -1639,7 +1643,7 @@ Public Class clsSyncTransacWMS
 
                     Dim RowsEncabezadoAjuste As Integer = 0
                     If Not ajusteYaExiste Then
-                        RowsEncabezadoAjuste = clsLnTrans_ajuste_enc.Insertar(beAjustes)
+                        RowsEncabezadoAjuste = clsLnTrans_ajuste_enc.Insertar(beAjustes, lConnection, lTransaction)
                     End If
 
                     If Not ajusteYaExiste AndAlso RowsEncabezadoAjuste = 0 Then
