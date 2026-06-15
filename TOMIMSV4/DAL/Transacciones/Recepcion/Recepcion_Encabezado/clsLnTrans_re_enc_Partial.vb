@@ -9354,7 +9354,7 @@ Partial Public Class clsLnTrans_re_enc
                 End If
 
                 BeTareaHH = New clsBeTarea_hh
-                BeTareaHH.IdPropietario = clsLnPropietarios.Get_IdPropietario(IdBodegaDestino, BeOrdenCompraEnc.IdPropietarioBodega)
+                BeTareaHH.IdPropietario = clsLnPropietarios.Get_IdPropietario(IdBodegaDestino, BeOrdenCompraEnc.IdPropietarioBodega, lConnection, lTransaction)
                 BeTareaHH.IdBodega = IdBodegaDestino
                 BeTareaHH.IdMuelle = BeRecepcionEnc.IdMuelle
                 BeTareaHH.IdEstado = 1
@@ -9476,7 +9476,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                     BeTransReDet.Lote))
                     lBeRecDet.Add(BeTransReDet)
 
-                    BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
+                    BeStockRec.IdStockRec = 0
                     BeStockRec.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
                     BeStockRec.IdProductoBodega = BeOCDet.IdProductoBodega
                     BeStockRec.IdProductoEstado = BeTransReDet.IdProductoEstado
