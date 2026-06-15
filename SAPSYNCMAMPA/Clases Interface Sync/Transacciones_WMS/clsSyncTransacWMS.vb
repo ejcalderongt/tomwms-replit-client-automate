@@ -1194,26 +1194,28 @@ Public Class clsSyncTransacWMS
     Private Shared Function AjusteYaExisteEnWMS(referencia As String,
                                                 idBodega As Integer,
                                                 Optional fechaBase As Date? = Nothing) As Boolean
-        If String.IsNullOrWhiteSpace(referencia) OrElse idBodega <= 0 Then Return False
+        If String.IsNullOrWhiteSpace(referencia) Then Return False
 
         Try
-            Dim fechaReferencia As Date = If(fechaBase.HasValue, fechaBase.Value, Date.Now)
-            Dim desde As Date = fechaReferencia.AddYears(-5)
-            Dim hasta As Date = fechaReferencia.AddYears(5)
-            Dim dtAjustes As DataTable = clsLnTrans_ajuste_enc.Get_All_VW(desde, hasta, idBodega)
-
-            If dtAjustes Is Nothing OrElse dtAjustes.Rows.Count = 0 Then Return False
-
-            For Each row As DataRow In dtAjustes.Rows
-                Dim refActual As String = Convert.ToString(row("Referencia")).Trim()
-                If String.Equals(refActual, referencia.Trim(), StringComparison.OrdinalIgnoreCase) Then
-                    Return True
-                End If
-            Next
-
-            Return False
+            Using lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+                Return AjusteYaExisteEnWMS(referencia, lConnection, Nothing)
+            End Using
         Catch ex As Exception
             TrazaDebugTransacWms($"AJUSTE_EXISTE_WMS_FAIL|REF={referencia}|BODEGA={idBodega}|EX={NormalizarMensajeError(ex)}")
+            Throw New Exception($"No se pudo validar si el ajuste ya existía en WMS. Ref: {referencia}. {ex.Message}", ex)
+        End Try
+    End Function
+
+    Private Shared Function AjusteYaExisteEnWMS(referencia As String,
+                                                pConnection As SqlConnection,
+                                                pTransaction As SqlTransaction) As Boolean
+        If String.IsNullOrWhiteSpace(referencia) Then Return False
+
+        Try
+            Return clsLnTrans_ajuste_enc.AjusteYaExisteEnWMS(referencia, pConnection, pTransaction)
+        Catch ex As Exception
+            TrazaDebugTransacWms($"AJUSTE_EXISTE_WMS_FAIL|REF={referencia}|EX={NormalizarMensajeError(ex)}")
             Throw New Exception($"No se pudo validar si el ajuste ya existía en WMS. Ref: {referencia}. {ex.Message}", ex)
         End Try
     End Function
@@ -1488,9 +1490,20 @@ Public Class clsSyncTransacWMS
 
                     nextIdAjusteEnc += 1
 
-                    Dim RowsEncabezadoAjuste As Integer = clsLnTrans_ajuste_enc.Insertar(beAjustes)
+                    ' #CKFK260615_AJUSTE_UNICIDAD_REFERENCIA: antes de escribir trans_ajuste_enc validamos por Referencia contra WMS.
+                    Dim ajusteYaExiste As Boolean = AjusteYaExisteEnWMS(beAjustes.Referencia, lConnection, lTransaction)
 
-                    If RowsEncabezadoAjuste = 0 Then
+                    If ajusteYaExiste Then
+                        ActualizarProgresoSeguro(lblprg, $"#CKFK260615_AJUSTE_UNICIDAD_REFERENCIA: el ajuste {beAjustes.Referencia} ya existe en WMS; se omite la inserción del encabezado.")
+                        TrazaDebugTransacWms($"AJUSTE_DUPLICADO_WMS|REF={beAjustes.Referencia}|NOENC={ajuste.NoEnc}|BODEGA={beAjustes.IdBodega}")
+                    End If
+
+                    Dim RowsEncabezadoAjuste As Integer = 0
+                    If Not ajusteYaExiste Then
+                        RowsEncabezadoAjuste = clsLnTrans_ajuste_enc.Insertar(beAjustes)
+                    End If
+
+                    If Not ajusteYaExiste AndAlso RowsEncabezadoAjuste = 0 Then
                         Throw New Exception("No se pudo insertar el encabezado del ajuste " & ajuste.NoEnc)
                     End If
 
@@ -1566,7 +1579,7 @@ Public Class clsSyncTransacWMS
                                                                                                                                BeProducto.IdProducto,
                                                                                                                                lConnection,
                                                                                                                                lTransaction)
-                            If IdProductoTallaColor = 0 Then
+                            If IdProductoTallaColor = 0 AndAlso Not ajusteYaExiste Then
                                 Dim BeProductoTallaColor As New clsBeProducto_talla_color With {
                                     .IdProductoTallaColor = nextIdProductoTallaColor,
                                     .IdProducto = BeProducto.IdProducto,
@@ -1635,10 +1648,12 @@ Public Class clsSyncTransacWMS
                         beAjustes.Lineas_Detalle.Add(beAjusteDet)
                         nextIdAjusteDet += 1
 
-                        Dim RowsDetalleAjuste As Integer = clsLnTrans_ajuste_det.Insertar(beAjusteDet)
+                        If Not ajusteYaExiste Then
+                            Dim RowsDetalleAjuste As Integer = clsLnTrans_ajuste_det.Insertar(beAjusteDet)
 
-                        If RowsDetalleAjuste = 0 Then
-                            Throw New Exception("No se pudo insertar el detalle del ajuste " & detalle.DocEntry)
+                            If RowsDetalleAjuste = 0 Then
+                                Throw New Exception("No se pudo insertar el detalle del ajuste " & detalle.DocEntry)
+                            End If
                         End If
 
                     Next
@@ -1701,31 +1716,6 @@ Public Class clsSyncTransacWMS
                 Dim clsTrans As New clsTransaccion
 
                 Try
-
-                    Dim fechaAjuste As Date = Date.Now
-                    If ajuste.Fecha <> Date.MinValue Then
-                        fechaAjuste = ajuste.Fecha
-                    End If
-
-                    Dim ajusteYaExiste As Boolean = AjusteYaExisteEnWMS(ajuste.Referencia, BeConfigEnc.Idbodega, fechaAjuste)
-
-                    If ajusteYaExiste Then
-                        ' CKFK260612AjusteIdempotencia: si el ajuste ya está en WMS, no se reinserta; solo reintentamos marcar en SAP.
-                        Dim ajusteMarcado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
-                                                                                                     vHanaService.SessionCookie,
-                                                                                                     BD.Instancia.HANA_SL)
-
-                        If ajusteMarcado Then
-                            RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "OK", "DUPLICADO_WMS", "El ajuste ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
-                            clsPublic.Actualizar_Progreso(lblprg, "El ajuste ya existía en WMS; no se reimportó y se marcó en SAP.")
-                            ajustes_correctos += 1
-                        Else
-                            RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El ajuste ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
-                            clsPublic.Actualizar_Progreso(lblprg, "El ajuste ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
-                        End If
-
-                        Continue For
-                    End If
 
                     clsTrans.Begin_Transaction()
 
