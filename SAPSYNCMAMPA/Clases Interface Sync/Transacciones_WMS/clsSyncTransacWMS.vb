@@ -75,6 +75,21 @@ Public Class clsSyncTransacWMS
         Return valor.Substring(0, maxLength)
     End Function
 
+    Private Shared Function NormalizarClaveTransacWms(valor As String) As String
+        If String.IsNullOrWhiteSpace(valor) Then Return ""
+        Return valor.Trim()
+    End Function
+
+    Private Shared Sub ValidarCampoRequeridoTransacWms(nombreCampo As String,
+                                                      valor As String,
+                                                      contexto As String)
+        If Not String.IsNullOrWhiteSpace(valor) Then Return
+
+        Dim mensaje As String = $"TRANSAC_WMS_AJUSTES: el campo '{nombreCampo}' viene nulo o vacío. {contexto}"
+        TrazaDebugTransacWms($"AJUSTE_CAMPO_NULO|CAMPO={nombreCampo}|{contexto}")
+        Throw New Exception(mensaje)
+    End Sub
+
     Private Shared Function NormalizarMensajeError(ex As Exception) As String
         If ex Is Nothing Then Return ""
         Return ex.Message.Replace(vbCr, " ").Replace(vbLf, " ").Replace("|", "/").Trim()
@@ -1296,43 +1311,56 @@ Public Class clsSyncTransacWMS
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
 
+            If response Is Nothing OrElse response.Value Is Nothing Then
+                Throw New Exception("TRANSAC_WMS_AJUSTES: la respuesta deserializada viene vacía.")
+            End If
+
+            Dim filasSinEncabezado As List(Of TRANSAC_WMS_DTO) =
+                response.Value.Where(Function(x) x Is Nothing OrElse String.IsNullOrWhiteSpace(x.U_NoEnc)).ToList()
+
+            If filasSinEncabezado.Count > 0 Then
+                TrazaDebugTransacWms($"AJUSTE_PARSE|FILAS_SIN_NOENC={filasSinEncabezado.Count}|TOTAL={response.Value.Count}")
+                Throw New Exception($"TRANSAC_WMS_AJUSTES: se encontraron {filasSinEncabezado.Count} fila(s) sin U_NoEnc; no se puede agrupar el ajuste.")
+            End If
+
             ' 2. Agrupar por número de encabezado
             Dim transaccionesAgrupadas As New List(Of PedidoTrasladoEncabezado)()
-            Dim agrupamiento = response.Value.GroupBy(Function(x) x.U_NoEnc)
+            Dim agrupamiento = response.Value.GroupBy(Function(x) NormalizarClaveTransacWms(x.U_NoEnc))
 
             For Each grupo In agrupamiento
                 Dim primerRegistro = grupo.First()
-                Dim encabezado As New PedidoTrasladoEncabezado With {
-                .NoEnc = primerRegistro.U_NoEnc,
-                .ExternalDocumentNo = primerRegistro.U_External_Document_No,
-                .Serie = primerRegistro.U_Serie,
-                .CompanyCode = primerRegistro.U_Company_Code,
-                .PostingDate = primerRegistro.U_Posting_Date,
-                .CreateDate = primerRegistro.CreateDate,
-                .TransferFromCode = primerRegistro.U_Transfer_from_Code,
-                .TransferFromContact = primerRegistro.U_Transfer_from_Contact,
-                .TransferToCode = primerRegistro.U_Transfer_to_Code,
-                .TransferToName = primerRegistro.U_Transfer_to_Name,
-                .ReceipDocumentReference = primerRegistro.U_Receip_Document_Reference,
-                .DocumentType = primerRegistro.U_Document_Type,
-                .LineasDetalle = New List(Of PedidoTrasladoDetalle)()
-            }
+                TrazaDebugTransacWms($"AJUSTE_GRUPO|NOENC={primerRegistro.U_NoEnc}|LINEAS={grupo.Count()}")
+
+                Dim encabezado As New PedidoTrasladoEncabezado()
+                encabezado.NoEnc = primerRegistro.U_NoEnc
+                encabezado.ExternalDocumentNo = primerRegistro.U_External_Document_No
+                encabezado.Serie = primerRegistro.U_Serie
+                encabezado.CompanyCode = primerRegistro.U_Company_Code
+                encabezado.PostingDate = primerRegistro.U_Posting_Date
+                encabezado.CreateDate = primerRegistro.CreateDate
+                encabezado.TransferFromCode = primerRegistro.U_Transfer_from_Code
+                encabezado.TransferFromContact = primerRegistro.U_Transfer_from_Contact
+                encabezado.TransferToCode = primerRegistro.U_Transfer_to_Code
+                encabezado.TransferToName = primerRegistro.U_Transfer_to_Name
+                encabezado.ReceipDocumentReference = primerRegistro.U_Receip_Document_Reference
+                encabezado.DocumentType = primerRegistro.U_Document_Type
+                encabezado.LineasDetalle = New List(Of PedidoTrasladoDetalle)()
 
                 ' Agregar líneas
                 For Each transaccion In grupo
-                    encabezado.LineasDetalle.Add(New PedidoTrasladoDetalle With {
-                .LineNo = transaccion.U_Line_No,
-                .ItemNo = transaccion.U_Item_No,
-                .Descripcion = transaccion.U_Descripcion,
-                .UnitOfMeasureCode = transaccion.U_Unit_of_Mesasure_Code,
-                .QtyToShip = transaccion.U_Qty_to_Ship,
-                .QtyWMS = transaccion.U_Qty_WMS,
-                .Color = transaccion.U_Color,
-                .Size = transaccion.U_Size,
-                .ProcesadoWMS = transaccion.U_Procesado_WMS,
-                .ProcessResult = transaccion.U_Process_Result,
-                .DocEntry = transaccion.DocEntry
-            })
+                    Dim detalle As New PedidoTrasladoDetalle()
+                    detalle.LineNo = transaccion.U_Line_No
+                    detalle.ItemNo = transaccion.U_Item_No
+                    detalle.Descripcion = transaccion.U_Descripcion
+                    detalle.UnitOfMeasureCode = transaccion.U_Unit_of_Mesasure_Code
+                    detalle.QtyToShip = transaccion.U_Qty_to_Ship
+                    detalle.QtyWMS = transaccion.U_Qty_WMS
+                    detalle.Color = transaccion.U_Color
+                    detalle.Size = transaccion.U_Size
+                    detalle.ProcesadoWMS = transaccion.U_Procesado_WMS
+                    detalle.ProcessResult = transaccion.U_Process_Result
+                    detalle.DocEntry = transaccion.DocEntry
+                    encabezado.LineasDetalle.Add(detalle)
                 Next
 
                 ' Ordenar líneas
@@ -1386,14 +1414,21 @@ Public Class clsSyncTransacWMS
 
                     ActualizarProgresoSeguro(lblprg, $"Mapeando ajuste {ajuste.NoEnc} con {If(ajuste.LineasDetalle Is Nothing, 0, ajuste.LineasDetalle.Count)} detalle(s).")
 
+                    Dim contextoAjuste As String = $"NOENC={ajuste.NoEnc}|BODEGA={pCodigoBodegaInterface}"
+                    ValidarCampoRequeridoTransacWms("NoEnc", ajuste.NoEnc, contextoAjuste)
+                    ValidarCampoRequeridoTransacWms("TransferFromCode", ajuste.TransferFromCode, contextoAjuste)
+
+                    Dim codigoBodegaOrigen As String = NormalizarClaveTransacWms(ajuste.TransferFromCode)
+                    Dim noEncAjuste As String = NormalizarClaveTransacWms(ajuste.NoEnc)
+
                     Dim BeBodega As clsBeBodega = Nothing
-                    If Not cacheBodegas.TryGetValue(ajuste.TransferFromCode, BeBodega) Then
-                        BeBodega = clsLnBodega.GetSingle_By_Codigo(ajuste.TransferFromCode, lConnection, lTransaction)
-                        cacheBodegas(ajuste.TransferFromCode) = BeBodega
+                    If Not cacheBodegas.TryGetValue(codigoBodegaOrigen, BeBodega) Then
+                        BeBodega = clsLnBodega.GetSingle_By_Codigo(codigoBodegaOrigen, lConnection, lTransaction)
+                        cacheBodegas(codigoBodegaOrigen) = BeBodega
                     End If
 
                     If BeBodega Is Nothing Then
-                        Throw New Exception("No se encontró la bodega: " & ajuste.TransferFromCode)
+                        Throw New Exception("No se encontró la bodega: " & codigoBodegaOrigen)
                     End If
 
                     Dim idPropietarioBodega As Integer = 0
@@ -1412,27 +1447,26 @@ Public Class clsSyncTransacWMS
                     End If
 
                     ' Mapeo del encabezado según tu referencia
-                    Dim beAjustes As New clsBeTrans_ajuste_enc With {
-                        .IdAjusteenc = nextIdAjusteEnc,
-                        .Fecha = postingDate,
-                        .Idusuario = 1,
-                        .Referencia = ajuste.NoEnc,
-                        .Fec_agr = Date.Now,
-                        .User_agr = "MI3",
-                        .Fec_mod = Date.Now,
-                        .User_mod = "MI3",
-                        .IdBodega = BeBodega.IdBodega,
-                        .IdProductoFamilia = 0,
-                        .Enviado_A_ERP = False,
-                        .idPropietarioBodega = idPropietarioBodega,
-                        .Ajuste_Por_Inventario = 0,
-                        .IdCentroCosto = 0,
-                        .Auditado = False,
-                        .Centro_Costo_Erp = "",
-                        .Centro_Costo_Dir_Erp = "",
-                        .Centro_Costo_Dep_Erp = "",
-                        .Lineas_Detalle = New List(Of clsBeTrans_ajuste_det)()
-                    }
+                    Dim beAjustes As New clsBeTrans_ajuste_enc()
+                    beAjustes.IdAjusteenc = nextIdAjusteEnc
+                    beAjustes.Fecha = postingDate
+                    beAjustes.Idusuario = 1
+                    beAjustes.Referencia = noEncAjuste
+                    beAjustes.Fec_agr = Date.Now
+                    beAjustes.User_agr = "MI3"
+                    beAjustes.Fec_mod = Date.Now
+                    beAjustes.User_mod = "MI3"
+                    beAjustes.IdBodega = BeBodega.IdBodega
+                    beAjustes.IdProductoFamilia = 0
+                    beAjustes.Enviado_A_ERP = False
+                    beAjustes.idPropietarioBodega = idPropietarioBodega
+                    beAjustes.Ajuste_Por_Inventario = 0
+                    beAjustes.IdCentroCosto = 0
+                    beAjustes.Auditado = False
+                    beAjustes.Centro_Costo_Erp = ""
+                    beAjustes.Centro_Costo_Dir_Erp = ""
+                    beAjustes.Centro_Costo_Dep_Erp = ""
+                    beAjustes.Lineas_Detalle = New List(Of clsBeTrans_ajuste_det)()
 
                     nextIdAjusteEnc += 1
 
@@ -1461,10 +1495,20 @@ Public Class clsSyncTransacWMS
                             ActualizarProgresoSeguro(lblprg, $"Mapeando ajuste {ajuste.NoEnc}: {indiceDetalle}/{ajuste.LineasDetalle.Count} detalle(s).")
                         End If
 
-                        Dim productoKey As String = beAjustes.IdBodega.ToString() & "|" & detalle.ItemNo
+                        Dim contextoDetalle As String = $"NOENC={ajuste.NoEnc}|LINEA={detalle.LineNo}|DOCENTRY={detalle.DocEntry}"
+                        Dim itemNo As String = NormalizarClaveTransacWms(detalle.ItemNo)
+                        Dim unidadMedidaCodigo As String = NormalizarClaveTransacWms(detalle.UnitOfMeasureCode)
+                        Dim tallaCodigo As String = NormalizarClaveTransacWms(detalle.Size)
+                        Dim colorCodigo As String = NormalizarClaveTransacWms(detalle.Color)
+                        ValidarCampoRequeridoTransacWms("ItemNo", itemNo, contextoDetalle)
+                        ValidarCampoRequeridoTransacWms("UnitOfMeasureCode", unidadMedidaCodigo, contextoDetalle)
+                        ValidarCampoRequeridoTransacWms("Size", tallaCodigo, contextoDetalle)
+                        ValidarCampoRequeridoTransacWms("Color", colorCodigo, contextoDetalle)
+
+                        Dim productoKey As String = beAjustes.IdBodega.ToString() & "|" & itemNo
                         Dim BeProducto As clsBeProducto = Nothing
                         If Not cacheProductos.TryGetValue(productoKey, BeProducto) Then
-                            BeProducto = clsLnProducto.Get_BeProducto_By_Codigo(detalle.ItemNo, beAjustes.IdBodega, lConnection, lTransaction)
+                            BeProducto = clsLnProducto.Get_BeProducto_By_Codigo(itemNo, beAjustes.IdBodega, lConnection, lTransaction)
                             cacheProductos(productoKey) = BeProducto
                         End If
 
@@ -1482,46 +1526,46 @@ Public Class clsSyncTransacWMS
                         Dim vIdProductoEstado As Integer = clsLnProducto_estado.Get_Buen_Estado_Producto_By_IdPropietario(BePropietario.IdPropietario, lConnection, lTransaction)
                         Dim BeUnidadMedida As clsBeUnidad_medida = Nothing
 
-                        If Not cacheUnidadMedida.TryGetValue(detalle.UnitOfMeasureCode, BeUnidadMedida) Then
-                            BeUnidadMedida = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(detalle.UnitOfMeasureCode,
-                                                                                                   BeConfigEnc.IdPropietario,
-                                                                                                   lConnection,
-                                                                                                   lTransaction)
-                            cacheUnidadMedida(detalle.UnitOfMeasureCode) = BeUnidadMedida
+                        If Not cacheUnidadMedida.TryGetValue(unidadMedidaCodigo, BeUnidadMedida) Then
+                            BeUnidadMedida = clsLnUnidad_medida.Existe_By_Codigo_And_IdPropietario(unidadMedidaCodigo,
+                                                                                                    BeConfigEnc.IdPropietario,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+                            cacheUnidadMedida(unidadMedidaCodigo) = BeUnidadMedida
                         End If
 
                         If BeUnidadMedida Is Nothing Then
-                            Dim vMsgEx2 As String = "La U.M básica de producto: " & detalle.ItemNo & " no existe o no está definida: " & detalle.UnitOfMeasureCode
+                            Dim vMsgEx2 As String = "La U.M básica de producto: " & itemNo & " no existe o no está definida: " & unidadMedidaCodigo
                             Throw New Exception(vMsgEx2)
                         Else
                             BeProducto.UnidadMedida = BeUnidadMedida
                         End If
 
                         Dim IdTalla As Integer = 0
-                        If Not cacheIdTalla.TryGetValue(detalle.Size, IdTalla) Then
-                            Dim beTallaTmp = clsLnTalla.Get_Single_By_Codigo(detalle.Size)
+                        If Not cacheIdTalla.TryGetValue(tallaCodigo, IdTalla) Then
+                            Dim beTallaTmp = clsLnTalla.Get_Single_By_Codigo(tallaCodigo)
                             If beTallaTmp Is Nothing Then
-                                Throw New Exception("La talla no existe: " & detalle.Size)
+                                Throw New Exception("La talla no existe: " & tallaCodigo)
                             End If
                             IdTalla = beTallaTmp.IdTalla
-                            cacheIdTalla(detalle.Size) = IdTalla
+                            cacheIdTalla(tallaCodigo) = IdTalla
                         End If
 
                         Dim IdColor As Integer = 0
-                        If Not cacheIdColor.TryGetValue(detalle.Color, IdColor) Then
-                            Dim beColorTmp = clsLnColor.GetSingle_By_CodigoColor(detalle.Color)
+                        If Not cacheIdColor.TryGetValue(colorCodigo, IdColor) Then
+                            Dim beColorTmp = clsLnColor.GetSingle_By_CodigoColor(colorCodigo)
                             If beColorTmp Is Nothing Then
-                                Throw New Exception("El color no existe: " & detalle.Color)
+                                Throw New Exception("El color no existe: " & colorCodigo)
                             End If
                             IdColor = beColorTmp.IdColor
-                            cacheIdColor(detalle.Color) = IdColor
+                            cacheIdColor(colorCodigo) = IdColor
                         End If
 
-                        Dim ptcKey As String = BeProducto.IdProducto.ToString() & "|" & detalle.Size & "|" & detalle.Color
+                        Dim ptcKey As String = BeProducto.IdProducto.ToString() & "|" & tallaCodigo & "|" & colorCodigo
                         Dim IdProductoTallaColor As Integer = 0
                         If Not cacheIdProductoTallaColor.TryGetValue(ptcKey, IdProductoTallaColor) Then
-                            IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_CodTalla_and_CodColor(detalle.Size,
-                                                                                                                               detalle.Color,
+                            IdProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_CodTalla_and_CodColor(tallaCodigo,
+                                                                                                                                colorCodigo,
                                                                                                                                BeProducto.IdProducto,
                                                                                                                                lConnection,
                                                                                                                                lTransaction)
@@ -1554,42 +1598,41 @@ Public Class clsSyncTransacWMS
                             cacheIdProductoTallaColor(ptcKey) = IdProductoTallaColor
                         End If
 
-                        Dim beAjusteDet As New clsBeTrans_ajuste_det With {
-                        .IdAjusteDet = nextIdAjusteDet,
-                        .IdAjusteEnc = beAjustes.IdAjusteenc,
-                        .IdStock = 0,
-                        .idPropietarioBodega = beAjustes.IdPropietarioBodega,
-                        .IdProductoBodega = vIdProductoBodega,
-                        .IdProductoEstado = vIdProductoEstado,
-                        .IdPresentacion = 0,
-                        .IdUnidadMedida = BeUnidadMedida.IdUnidadMedida,
-                        .IdUbicacion = BeBodega.Ubic_recepcion,
-                        .Lote_original = "",
-                        .Lote_nuevo = "",
-                        .Fecha_vence_original = New Date(1900, 1, 1),
-                        .Fecha_vence_nueva = New Date(1900, 1, 1),
-                        .Peso_original = 0,
-                        .Peso_nuevo = 0,
-                        .Cantidad_original = 0,
-                        .Cantidad_nueva = detalle.QtyToShip,
-                        .Codigo_producto = detalle.ItemNo,
-                        .Nombre_producto = BeProducto.Nombre,
-                        .Idtipoajuste = 3,
-                        .IdMotivoAjuste = 1,
-                        .Observacion = "Ajuste positivo por transacción en Tienda",
-                        .Codigo_ajuste = 13,
-                        .Enviado = False,
-                        .Presentacion = Nothing,
-                        .IdBodegaERP = 0,
-                        .lic_plate = "",
-                        .referencia_ajuste_erp = detalle.DocEntry,
-                        .estado_ajuste_erp = False,
-                        .IdProductoTallaColor_origen = IdProductoTallaColor,
-                        .Talla_origen = detalle.Size,
-                        .Color_origen = detalle.Color,
-                        .Talla_destino = detalle.Size,
-                        .Color_destino = detalle.Color
-                        }
+                        Dim beAjusteDet As New clsBeTrans_ajuste_det()
+                        beAjusteDet.IdAjusteDet = nextIdAjusteDet
+                        beAjusteDet.IdAjusteEnc = beAjustes.IdAjusteenc
+                        beAjusteDet.IdStock = 0
+                        beAjusteDet.idPropietarioBodega = beAjustes.IdPropietarioBodega
+                        beAjusteDet.IdProductoBodega = vIdProductoBodega
+                        beAjusteDet.IdProductoEstado = vIdProductoEstado
+                        beAjusteDet.IdPresentacion = 0
+                        beAjusteDet.IdUnidadMedida = BeUnidadMedida.IdUnidadMedida
+                        beAjusteDet.IdUbicacion = BeBodega.Ubic_recepcion
+                        beAjusteDet.Lote_original = ""
+                        beAjusteDet.Lote_nuevo = ""
+                        beAjusteDet.Fecha_vence_original = New Date(1900, 1, 1)
+                        beAjusteDet.Fecha_vence_nueva = New Date(1900, 1, 1)
+                        beAjusteDet.Peso_original = 0
+                        beAjusteDet.Peso_nuevo = 0
+                        beAjusteDet.Cantidad_original = 0
+                        beAjusteDet.Cantidad_nueva = detalle.QtyToShip
+                        beAjusteDet.Codigo_producto = itemNo
+                        beAjusteDet.Nombre_producto = BeProducto.Nombre
+                        beAjusteDet.Idtipoajuste = 3
+                        beAjusteDet.IdMotivoAjuste = 1
+                        beAjusteDet.Observacion = "Ajuste positivo por transacción en Tienda"
+                        beAjusteDet.Codigo_ajuste = 13
+                        beAjusteDet.Enviado = False
+                        beAjusteDet.Presentacion = Nothing
+                        beAjusteDet.IdBodegaERP = 0
+                        beAjusteDet.lic_plate = ""
+                        beAjusteDet.referencia_ajuste_erp = detalle.DocEntry
+                        beAjusteDet.estado_ajuste_erp = False
+                        beAjusteDet.IdProductoTallaColor_origen = IdProductoTallaColor
+                        beAjusteDet.Talla_origen = tallaCodigo
+                        beAjusteDet.Color_origen = colorCodigo
+                        beAjusteDet.Talla_destino = tallaCodigo
+                        beAjusteDet.Color_destino = colorCodigo
 
                         beAjustes.Lineas_Detalle.Add(beAjusteDet)
                         nextIdAjusteDet += 1
