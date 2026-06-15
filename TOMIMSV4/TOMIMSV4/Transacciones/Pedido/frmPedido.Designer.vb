@@ -239,6 +239,7 @@ Partial Class frmPedido
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridLevelNode3 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim PushTransition1 As DevExpress.Utils.Animation.PushTransition = New DevExpress.Utils.Animation.PushTransition()
+        Dim Label47 As System.Windows.Forms.Label
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
@@ -563,6 +564,7 @@ Partial Class frmPedido
         Me.DetalleBindingSource1 = New System.Windows.Forms.BindingSource(Me.components)
         Me.AutoHideContainer1 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
+        Me.nudTipoSolicERP = New System.Windows.Forms.NumericUpDown()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -665,6 +667,7 @@ Partial Class frmPedido
         Label45 = New System.Windows.Forms.Label()
         lblPiloto = New System.Windows.Forms.Label()
         lblEmpresaTransporte = New System.Windows.Forms.Label()
+        Label47 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -868,6 +871,7 @@ Partial Class frmPedido
         CType(Me.GridView11, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DetalleBindingSource1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nudTipoSolicERP, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -1744,7 +1748,7 @@ Partial Class frmPedido
         'Label10
         '
         Label10.AutoSize = True
-        Label10.Location = New System.Drawing.Point(678, 214)
+        Label10.Location = New System.Drawing.Point(678, 213)
         Label10.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label10.Name = "Label10"
         Label10.Size = New System.Drawing.Size(114, 16)
@@ -1866,7 +1870,7 @@ Partial Class frmPedido
         'Label16
         '
         Label16.AutoSize = True
-        Label16.Location = New System.Drawing.Point(519, 217)
+        Label16.Location = New System.Drawing.Point(519, 213)
         Label16.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label16.Name = "Label16"
         Label16.Size = New System.Drawing.Size(118, 16)
@@ -2340,6 +2344,8 @@ Partial Class frmPedido
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.nudTipoSolicERP)
+        Me.GroupBox3.Controls.Add(Label47)
         Me.GroupBox3.Controls.Add(Me.txtEsExportacion)
         Me.GroupBox3.Controls.Add(Me.Label46)
         Me.GroupBox3.Controls.Add(Me.cmbPiloto)
@@ -2419,7 +2425,7 @@ Partial Class frmPedido
         '
         Me.txtEsExportacion.BackColor = System.Drawing.Color.LightPink
         Me.txtEsExportacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtEsExportacion.Location = New System.Drawing.Point(905, 181)
+        Me.txtEsExportacion.Location = New System.Drawing.Point(918, 181)
         Me.txtEsExportacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtEsExportacion.Name = "txtEsExportacion"
         Me.txtEsExportacion.ReadOnly = True
@@ -2431,7 +2437,7 @@ Partial Class frmPedido
         'Label46
         '
         Me.Label46.AutoSize = True
-        Me.Label46.Location = New System.Drawing.Point(906, 160)
+        Me.Label46.Location = New System.Drawing.Point(918, 160)
         Me.Label46.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.Label46.Name = "Label46"
         Me.Label46.Size = New System.Drawing.Size(95, 16)
@@ -2708,7 +2714,7 @@ Partial Class frmPedido
         'dtpFechaPreparacion
         '
         Me.dtpFechaPreparacion.EditValue = New Date(2017, 11, 20, 9, 3, 33, 744)
-        Me.dtpFechaPreparacion.Location = New System.Drawing.Point(519, 236)
+        Me.dtpFechaPreparacion.Location = New System.Drawing.Point(519, 235)
         Me.dtpFechaPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpFechaPreparacion.MenuManager = Me.RibbonControl
         Me.dtpFechaPreparacion.Name = "dtpFechaPreparacion"
@@ -2842,7 +2848,7 @@ Partial Class frmPedido
         'dtpHoraInicioPreparacion
         '
         Me.dtpHoraInicioPreparacion.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraInicioPreparacion.Location = New System.Drawing.Point(675, 236)
+        Me.dtpHoraInicioPreparacion.Location = New System.Drawing.Point(675, 234)
         Me.dtpHoraInicioPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpHoraInicioPreparacion.Name = "dtpHoraInicioPreparacion"
         Me.dtpHoraInicioPreparacion.Size = New System.Drawing.Size(110, 23)
@@ -2872,7 +2878,7 @@ Partial Class frmPedido
         'dtpHoraFinPreparacion
         '
         Me.dtpHoraFinPreparacion.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraFinPreparacion.Location = New System.Drawing.Point(795, 235)
+        Me.dtpHoraFinPreparacion.Location = New System.Drawing.Point(795, 234)
         Me.dtpHoraFinPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpHoraFinPreparacion.Name = "dtpHoraFinPreparacion"
         Me.dtpHoraFinPreparacion.Size = New System.Drawing.Size(111, 23)
@@ -5386,6 +5392,27 @@ Partial Class frmPedido
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
         '
+        'Label47
+        '
+        Label47.AutoSize = True
+        Label47.Location = New System.Drawing.Point(918, 213)
+        Label47.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Label47.Name = "Label47"
+        Label47.Size = New System.Drawing.Size(110, 16)
+        Label47.TabIndex = 112
+        Label47.Text = "Tipo Solicitud ERP"
+        Label47.Visible = False
+        '
+        'nudTipoSolicERP
+        '
+        Me.nudTipoSolicERP.Location = New System.Drawing.Point(918, 234)
+        Me.nudTipoSolicERP.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.nudTipoSolicERP.Maximum = New Decimal(New Integer() {15, 0, 0, 0})
+        Me.nudTipoSolicERP.Name = "nudTipoSolicERP"
+        Me.nudTipoSolicERP.Size = New System.Drawing.Size(113, 23)
+        Me.nudTipoSolicERP.TabIndex = 113
+        Me.nudTipoSolicERP.Visible = False
+        '
         'frmPedido
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -5393,8 +5420,8 @@ Partial Class frmPedido
         Me.ClientSize = New System.Drawing.Size(1675, 1065)
         Me.Controls.Add(Me.xtrPedido)
         Me.Controls.Add(Me.AutoHideContainer2)
-        Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Controls.Add(Me.RibbonStatusBar)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmPedido"
@@ -5616,6 +5643,7 @@ Partial Class frmPedido
         CType(Me.GridView11, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DetalleBindingSource1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nudTipoSolicERP, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -5962,4 +5990,5 @@ Partial Class frmPedido
     Friend WithEvents cmbEmpresaTransporte As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents txtEsExportacion As TextBox
     Friend WithEvents Label46 As Label
+    Friend WithEvents nudTipoSolicERP As NumericUpDown
 End Class

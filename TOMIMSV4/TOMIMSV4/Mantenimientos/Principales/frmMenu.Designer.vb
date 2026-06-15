@@ -2895,10 +2895,10 @@ Partial Class frmMenu
         Me.lblprg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblprg.Font = New System.Drawing.Font("Arial", 12.0!)
-        Me.lblprg.Location = New System.Drawing.Point(0, 360)
+        Me.lblprg.Location = New System.Drawing.Point(0, 397)
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(1714, 123)
+        Me.lblprg.Size = New System.Drawing.Size(1714, 86)
         Me.lblprg.TabIndex = 35
         Me.lblprg.Text = ""
         Me.lblprg.Visible = False
@@ -2993,6 +2993,9 @@ Partial Class frmMenu
         '
         Me.PopupMenu3.Name = "PopupMenu3"
         Me.PopupMenu3.Ribbon = Me.rbMain
+        '
+        'BackWorkerRunSync
+        '
         '
         'frmMenu
         '

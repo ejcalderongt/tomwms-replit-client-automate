@@ -1833,6 +1833,7 @@ Public Class frmPedido
             txtObservacion.Text = pBePedidoEnc.Observacion
             txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
             cmbEmpresaTransporte.EditValue = pBePedidoEnc.IdEmpresaTransporte
+            nudTipoSolicERP.Value = pBePedidoEnc.Tipo_Solicitud_ERP
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -2789,6 +2790,7 @@ Public Class frmPedido
             End If
 
             pBePedidoEnc.IdEmpresaTransporte = Val(cmbEmpresaTransporte.EditValue)
+            pBePedidoEnc.Tipo_Solicitud_ERP = Val(nudTipoSolicERP.Value)
 
             If chkControlPoliza.Checked Then
 

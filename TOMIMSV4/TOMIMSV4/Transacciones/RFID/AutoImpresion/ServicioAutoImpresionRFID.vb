@@ -9,13 +9,42 @@ Public Class ServicioAutoImpresionRFID
 
     Private BeEmpresa As clsBeEmpresa
     Public Es_Demo As Boolean
+    Public Property NotificarMensaje As Action(Of String)
 
     Public Sub New(pEmpresa As clsBeEmpresa)
         Try
             BeEmpresa = pEmpresa
         Catch ex As Exception
-            Throw
+            clsLnLog_error_wms.Agregar_Error("AUTO_RFID: New ServicioAutoImpresionRFID " & ex.Message)
         End Try
+    End Sub
+
+    Private Sub NotificarRFID(ByVal mensaje As String, Optional ByVal registrarLog As Boolean = False)
+
+        Try
+            If registrarLog Then
+                clsLnLog_error_wms.Agregar_Error(mensaje)
+            End If
+
+            If NotificarMensaje IsNot Nothing Then
+                NotificarMensaje.Invoke(mensaje)
+            End If
+
+        Catch ex As Exception
+            'Log silencioso
+        End Try
+
+    End Sub
+
+    Private Sub RollbackSeguro(ByVal pTransaccion As clsTransaccion)
+
+        Try
+            If pTransaccion IsNot Nothing AndAlso pTransaccion.lTransaction IsNot Nothing Then
+                pTransaccion.lTransaction.Rollback()
+            End If
+        Catch
+        End Try
+
     End Sub
 
     Public Shared Function Cargar_Impresora_Zebra() As String
@@ -39,11 +68,11 @@ Public Class ServicioAutoImpresionRFID
 
                         '#GT08062026: validar que existe una printer zebra, de lo contrario no imprimira los tag
                         Dim isZebra As Boolean =
-                        driverName.IndexOf("zebra", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
-                        driverName.IndexOf("zdesigner", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
-                        name.IndexOf("zebra", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
-                        name.IndexOf("zdesigner", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
-                        name.IndexOf("zt", StringComparison.OrdinalIgnoreCase) >= 0
+                            driverName.IndexOf("zebra", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+                            driverName.IndexOf("zdesigner", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+                            name.IndexOf("zebra", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+                            name.IndexOf("zdesigner", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+                            name.IndexOf("zt", StringComparison.OrdinalIgnoreCase) >= 0
 
                         If isZebra Then
                             If String.IsNullOrWhiteSpace(primeraImpresoraZebra) Then
@@ -67,10 +96,10 @@ Public Class ServicioAutoImpresionRFID
             Return primeraImpresoraZebra
 
         Catch ex As Exception
-            Throw
+            clsLnLog_error_wms.Agregar_Error("AUTO_RFID: Cargar_Impresora_Zebra " & ex.Message)
+            Return String.Empty
         End Try
     End Function
-
 
     Public Sub ProcesarAutoImpresion(printerName As String, cantidadCopias As Integer)
 
@@ -78,11 +107,16 @@ Public Class ServicioAutoImpresionRFID
 
         Try
 
+            NotificarRFID("RFID: Iniciando proceso de autoimpresión...")
+
             clsTransaccion.Begin_Transaction()
 
             If Not Es_Demo Then
+
                 If String.IsNullOrWhiteSpace(printerName) Then
-                    Throw New Exception("Nombre de impresora vacío.")
+                    NotificarRFID("AUTO_RFID: Nombre de impresora vacío.", True)
+                    RollbackSeguro(clsTransaccion)
+                    Exit Sub
                 End If
 
                 If cantidadCopias <= 0 Then
@@ -92,54 +126,99 @@ Public Class ServicioAutoImpresionRFID
                 Dim st = GetPrinterStatus(printerName)
 
                 If Not st.found Then
-                    Throw New Exception("Impresora no encontrada: " & printerName)
+                    NotificarRFID("AUTO_RFID: Impresora no encontrada: " & printerName, True)
+                    RollbackSeguro(clsTransaccion)
+                    Exit Sub
                 End If
 
                 If Not st.ok Then
-                    Throw New Exception("Impresora no lista: " & printerName & " - " & st.message)
+                    NotificarRFID("AUTO_RFID: Impresora no lista: " & printerName & " - " & st.message, True)
+                    RollbackSeguro(clsTransaccion)
+                    Exit Sub
                 End If
+
+            Else
+
+                If cantidadCopias <= 0 Then
+                    cantidadCopias = 1
+                End If
+
+                NotificarRFID("RFID DEMO: Modo simulación activo.")
+
             End If
 
-
-            '#GT05062026: leer las barras, asignarlas e imprimiras dentro de la tran, sino tiene nada la lista, no pasa nada, commit o rollback es indiferente.
+            '#GT05062026: leer las barras, asignarlas e imprimirlas dentro de la tran.
             Dim listaBarrasPallet As List(Of clsBeI_nav_barras_pallet) = ObtenerBarrasPendientesImpresion(clsTransaccion.lConnection,
                                                                                                           clsTransaccion.lTransaction)
 
             If listaBarrasPallet Is Nothing OrElse listaBarrasPallet.Count = 0 Then
+                NotificarRFID("RFID: No hay barras pendientes para autoimpresión.")
                 clsTransaccion.Commit_Transaction()
                 Exit Sub
             End If
 
-            If ProcesarIngresoMovimientoStock(listaBarrasPallet, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+            NotificarRFID("RFID: Barras pendientes encontradas: " & listaBarrasPallet.Count.ToString())
 
-                ImprimirLista(printerName, listaBarrasPallet, cantidadCopias, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            If Not ProcesarIngresoMovimientoStock(listaBarrasPallet, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+                NotificarRFID("AUTO_RFID: No se pudo completar ingreso/movimiento/stock. Se revierte la operación.", True)
+                RollbackSeguro(clsTransaccion)
+                Exit Sub
+            End If
+
+            If Not ImprimirLista(printerName, listaBarrasPallet, cantidadCopias, clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+                NotificarRFID("AUTO_RFID: No se pudo completar la impresión. Se revierte la operación.", True)
+                RollbackSeguro(clsTransaccion)
+                Exit Sub
             End If
 
             clsTransaccion.Commit_Transaction()
 
-        Catch ex As Exception
-            If clsTransaccion.lTransaction IsNot Nothing Then
-                Try
-                    clsTransaccion.lTransaction.Rollback()
-                Catch
-                End Try
-            End If
+            NotificarRFID("RFID: Autoimpresión finalizada correctamente.")
 
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), ex)
+        Catch ex As Exception
+
+            RollbackSeguro(clsTransaccion)
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+
         Finally
-            If clsTransaccion.lConnection.State = ConnectionState.Open Then clsTransaccion.lConnection.Close()
-            If clsTransaccion.lTransaction IsNot Nothing Then clsTransaccion.lTransaction.Dispose()
-            If clsTransaccion.lConnection IsNot Nothing Then clsTransaccion.lConnection.Dispose()
+
+            Try
+                If clsTransaccion IsNot Nothing Then
+
+                    If clsTransaccion.lConnection IsNot Nothing AndAlso clsTransaccion.lConnection.State = ConnectionState.Open Then
+                        clsTransaccion.lConnection.Close()
+                    End If
+
+                    If clsTransaccion.lTransaction IsNot Nothing Then
+                        clsTransaccion.lTransaction.Dispose()
+                    End If
+
+                    If clsTransaccion.lConnection IsNot Nothing Then
+                        clsTransaccion.lConnection.Dispose()
+                    End If
+
+                End If
+            Catch
+            End Try
+
         End Try
+
     End Sub
 
-    Private Function ProcesarIngresoMovimientoStock(listaBarrasPallet As List(Of clsBeI_nav_barras_pallet), lConnection As SqlConnection, ltransaction As SqlTransaction) As Boolean
+    Private Function ProcesarIngresoMovimientoStock(listaBarrasPallet As List(Of clsBeI_nav_barras_pallet),
+                                                    lConnection As SqlConnection,
+                                                    ltransaction As SqlTransaction) As Boolean
 
         ProcesarIngresoMovimientoStock = False
-        Dim pEncabezado As clsBeI_nav_barras_rfid_enc
 
         Try
-            pEncabezado = New clsBeI_nav_barras_rfid_enc
+
+            If listaBarrasPallet Is Nothing OrElse listaBarrasPallet.Count = 0 Then
+                NotificarRFID("AUTO_RFID: No existen barras para registrar ingreso/movimiento/stock.", True)
+                Return False
+            End If
+
+            Dim pEncabezado As New clsBeI_nav_barras_rfid_enc
             pEncabezado.IdBodega = AP.IdBodega
             pEncabezado.Estado = "Cerrado"
             pEncabezado.Tipo = 1 'Ingreso
@@ -148,61 +227,112 @@ Public Class ServicioAutoImpresionRFID
 
             For Each barraPallet As clsBeI_nav_barras_pallet In listaBarrasPallet
 
+                If barraPallet Is Nothing Then
+                    NotificarRFID("AUTO_RFID: Existe una barra pallet nula.", True)
+                    Return False
+                End If
+
+                If String.IsNullOrWhiteSpace(barraPallet.SSCC) Then
+                    NotificarRFID("AUTO_RFID: Existe una barra pallet sin SSCC.", True)
+                    Return False
+                End If
+
                 Dim pBarra_Detalle As New clsBeI_nav_barras_rfid_det
                 pBarra_Detalle.IdOperador = AP.UsuarioAp.IdUsuario
                 pBarra_Detalle.Barra_epc = barraPallet.SSCC
-                pBarra_Detalle.IdOperador = AP.UsuarioAp.IdUsuario
+
                 pEncabezado.Detalle.Add(pBarra_Detalle)
+
             Next
 
-            ProcesarIngresoMovimientoStock = clsLnI_nav_barras_rfid_enc.Barra_AutoGuardado_RFID(pEncabezado, lConnection, ltransaction)
+            ProcesarIngresoMovimientoStock = clsLnI_nav_barras_rfid_enc.Barra_AutoGuardado_RFID(pEncabezado,
+                                                                                                lConnection,
+                                                                                                ltransaction)
+
+            If Not ProcesarIngresoMovimientoStock Then
+                NotificarRFID("AUTO_RFID: Barra_AutoGuardado_RFID retornó False.", True)
+                Return False
+            End If
+
+            Return True
 
         Catch ex As Exception
-            Throw
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return False
         End Try
+
     End Function
 
-    Private Function ObtenerBarrasPendientesImpresion(lConnection As SqlConnection, ltransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
+    Private Function ObtenerBarrasPendientesImpresion(lConnection As SqlConnection,
+                                                      ltransaction As SqlTransaction) As List(Of clsBeI_nav_barras_pallet)
         Try
 
-            'Return clsLnI_nav_barras_pallet.Get_All_By_EstadoImpresion(False, lConnection, ltransaction)
+            Return clsLnI_nav_barras_pallet.Get_All_By_EstadoImpresion(False, lConnection, ltransaction)
 
         Catch ex As Exception
-            Throw
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return Nothing
         End Try
+
     End Function
 
-    Public Sub ImprimirLista(printerName As String, listaBarrasPallet As List(Of clsBeI_nav_barras_pallet),
-                                                   cantidadCopias As Integer,
-                                                   lConnection As SqlConnection,
-                                                   ltransaction As SqlTransaction)
+    Public Function ImprimirLista(printerName As String,
+                                  listaBarrasPallet As List(Of clsBeI_nav_barras_pallet),
+                                  cantidadCopias As Integer,
+                                  lConnection As SqlConnection,
+                                  ltransaction As SqlTransaction) As Boolean
+
+        ImprimirLista = False
+
         Try
+
             If listaBarrasPallet Is Nothing OrElse listaBarrasPallet.Count = 0 Then
-                Exit Sub
+                NotificarRFID("AUTO_RFID: No existen barras para imprimir.", True)
+                Return False
             End If
 
             For Each barraPallet As clsBeI_nav_barras_pallet In listaBarrasPallet
 
-                If barraPallet Is Nothing Then Continue For
+                If barraPallet Is Nothing Then
+                    NotificarRFID("AUTO_RFID: Existe una barra pallet nula en impresión.", True)
+                    Return False
+                End If
 
-                ImprimirBarraPallet(printerName, barraPallet, cantidadCopias, lConnection, ltransaction)
+                If Not ImprimirBarraPallet(printerName, barraPallet, cantidadCopias, lConnection, ltransaction) Then
+                    Return False
+                End If
 
             Next
 
-        Catch ex As Exception
-            Throw
-        End Try
-    End Sub
+            Return True
 
-    Private Sub ImprimirBarraPallet(printerName As String, barraPallet As clsBeI_nav_barras_pallet,
-                                                          cantidadCopias As Integer,
-                                                          lConnection As SqlConnection,
-                                                          ltransaction As SqlTransaction)
+        Catch ex As Exception
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return False
+        End Try
+
+    End Function
+
+    Private Function ImprimirBarraPallet(printerName As String,
+                                         barraPallet As clsBeI_nav_barras_pallet,
+                                         cantidadCopias As Integer,
+                                         lConnection As SqlConnection,
+                                         ltransaction As SqlTransaction) As Boolean
+
+        ImprimirBarraPallet = False
+
         Try
+
+            If barraPallet Is Nothing Then
+                NotificarRFID("AUTO_RFID: Barra pallet nula.", True)
+                Return False
+            End If
+
             Dim beProducto = clsLnProducto.Get_BeProducto_By_Codigo(barraPallet.Codigo, lConnection, ltransaction)
 
             If beProducto Is Nothing Then
-                Throw New Exception("No se encontró producto para código: " & barraPallet.Codigo)
+                NotificarRFID("AUTO_RFID: No se encontró producto para código: " & barraPallet.Codigo, True)
+                Return False
             End If
 
             Dim bePresentacion As clsBeProducto_Presentacion =
@@ -213,28 +343,22 @@ Public Class ServicioAutoImpresionRFID
                 bePresentacion.Nombre = "ND"
             End If
 
-
             Dim idBodegaOrigen As Integer = 0
 
             If Not Integer.TryParse(Convert.ToString(barraPallet.Bodega_Origen), idBodegaOrigen) Then
-                XtraMessageBox.Show("La bodega origen no es numérica para la barra EPC: " & barraPallet.Codigo_barra,
-                        "Autoimpresión RFID",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning)
-                Exit Sub
+                NotificarRFID("AUTO_RFID: La bodega origen no es numérica para la barra EPC: " & barraPallet.Codigo_barra, True)
+                Return False
             End If
 
             Dim beBodega = clsLnBodega.GetSingle_By_Idbodega(idBodegaOrigen, lConnection, ltransaction)
 
             If beBodega Is Nothing Then
-                XtraMessageBox.Show("No se encontró bodega origen: " & idBodegaOrigen.ToString() &
-                        " para la barra EPC: " & barraPallet.Codigo_barra,
-                        "Autoimpresión RFID",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning)
-                Exit Sub
+                NotificarRFID("AUTO_RFID: No se encontró bodega origen: " &
+                              idBodegaOrigen.ToString() &
+                              " para la barra EPC: " &
+                              barraPallet.Codigo_barra, True)
+                Return False
             End If
-
 
             Dim loteGs1 As String = barraPallet.Lote.ToString().PadLeft(6, "0"c).Substring(0, 6)
 
@@ -257,30 +381,35 @@ Public Class ServicioAutoImpresionRFID
                                                               barraPallet.Nombre,
                                                               barraPallet.GTIN)
 
-
             If Not Es_Demo Then
 
                 For i As Integer = 1 To cantidadCopias
                     RawPrinterHelper.SendStringToPrinter(printerName, zpl)
                 Next
 
+                NotificarRFID("RFID: Impresión enviada para SSCC: " & barraPallet.SSCC)
+
             Else
 
-                XtraMessageBox.Show("Simulación de impresión enviada para " & barraPallet.Codigo_barra & ". RFID",
-                       "Autoimpresión RFID",
-                       MessageBoxButtons.OK,
-                       MessageBoxIcon.Information)
+                NotificarRFID("RFID DEMO: Simulación de impresión enviada para " & barraPallet.Codigo_barra)
 
             End If
 
-
             barraPallet.Impreso = True
-            clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet_By_Impresion(barraPallet, lConnection, ltransaction)
+
+            If Not clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet_By_Impresion(barraPallet, lConnection, ltransaction) Then
+                NotificarRFID("AUTO_RFID: No se pudo actualizar estado Impreso para SSCC: " & barraPallet.SSCC, True)
+                Return False
+            End If
+
+            Return True
 
         Catch ex As Exception
-            Throw
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return False
         End Try
-    End Sub
+
+    End Function
 
     Private Function BuildZpl_RfidEncode_And_Print(epc96Hex As String,
                                                    licencia As String,
@@ -346,7 +475,8 @@ Public Class ServicioAutoImpresionRFID
             Return sb.ToString()
 
         Catch ex As Exception
-            Throw
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return String.Empty
         End Try
     End Function
 
@@ -362,7 +492,6 @@ Public Class ServicioAutoImpresionRFID
                                                            cantidad As String,
                                                            descripcionProducto As String,
                                                            GTIN As String) As String
-
 
         Try
             Dim sb As New StringBuilder()
@@ -417,7 +546,8 @@ Public Class ServicioAutoImpresionRFID
             Return sb.ToString()
 
         Catch ex As Exception
-            Throw
+            NotificarRFID("AUTO_RFID: " & MethodBase.GetCurrentMethod.Name() & " " & ex.Message, True)
+            Return String.Empty
         End Try
 
     End Function
@@ -469,13 +599,13 @@ Public Class ServicioAutoImpresionRFID
                 End Using
 
             Catch ex As Exception
-                ' Si WMI falla, no se bloquea si OpenPrinter abrió correctamente.
+                'Si WMI falla, no se bloquea si OpenPrinter abrió correctamente.
             End Try
 
             Return (True, True, "OK")
 
         Catch ex As Exception
-            Throw
+            Return (False, False, ex.Message)
         End Try
     End Function
 
@@ -499,7 +629,7 @@ Public Class ServicioAutoImpresionRFID
             Try
                 Return OpenPrinter(printerName, hPrinter, IntPtr.Zero)
             Catch ex As Exception
-                Throw
+                Return False
             Finally
                 If hPrinter <> IntPtr.Zero Then
                     ClosePrinter(hPrinter)

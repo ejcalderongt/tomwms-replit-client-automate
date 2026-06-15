@@ -9389,9 +9389,38 @@ Partial Public Class clsLnTrans_re_enc
                 Dim i As Integer = 0
 
                 BeOrdenCompraEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+                System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][RECEPCION][{0:yyyy-MM-dd HH:mm:ss.fff}] OC={1} detalle={2}",
+                                                                Date.Now,
+                                                                BeOrdenCompraEnc.IdOrdenCompraEnc,
+                                                                If(BeOrdenCompraEnc.DetalleOC Is Nothing, 0, BeOrdenCompraEnc.DetalleOC.Count)))
 
                 '#EJC20190719: Se verifica si en la lista de pedidos del despacho hay pedidos para sucursales WMS.
                 For Each BeOCDet As clsBeTrans_oc_det In BeOrdenCompraEnc.DetalleOC
+
+                    '#CKFK260614_REC_TALLACOLOR: si la OC trae IdProductoTallaColor, llenamos talla/color antes de mapear la recepcion y stock.
+                    System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][RECEPCION][{0:yyyy-MM-dd HH:mm:ss.fff}] Inicio OCDet={1} Linea={2} Prod={3} IdPTC={4} Talla={5}:{6} Color={7}:{8} SKU={9}",
+                                                                    Date.Now,
+                                                                    BeOCDet.IdOrdenCompraDet,
+                                                                    BeOCDet.No_Linea,
+                                                                    BeOCDet.Codigo_Producto,
+                                                                    BeOCDet.IdProductoTallaColor,
+                                                                    If(BeOCDet.Talla Is Nothing, 0, BeOCDet.Talla.IdTalla),
+                                                                    If(BeOCDet.Talla Is Nothing, String.Empty, BeOCDet.Talla.Codigo),
+                                                                    If(BeOCDet.Color Is Nothing, 0, BeOCDet.Color.IdColor),
+                                                                    If(BeOCDet.Color Is Nothing, String.Empty, BeOCDet.Color.Codigo),
+                                                                    If(BeOCDet.CodigoSKU, String.Empty)))
+                    clsLnTrans_oc_det.AsegurarTallaColorDetalle(BeOCDet, lConnection, lTransaction)
+                    System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][RECEPCION][{0:yyyy-MM-dd HH:mm:ss.fff}] PostAsegurar OCDet={1} Linea={2} Prod={3} IdPTC={4} Talla={5}:{6} Color={7}:{8} SKU={9}",
+                                                                    Date.Now,
+                                                                    BeOCDet.IdOrdenCompraDet,
+                                                                    BeOCDet.No_Linea,
+                                                                    BeOCDet.Codigo_Producto,
+                                                                    BeOCDet.IdProductoTallaColor,
+                                                                    If(BeOCDet.Talla Is Nothing, 0, BeOCDet.Talla.IdTalla),
+                                                                    If(BeOCDet.Talla Is Nothing, String.Empty, BeOCDet.Talla.Codigo),
+                                                                    If(BeOCDet.Color Is Nothing, 0, BeOCDet.Color.IdColor),
+                                                                    If(BeOCDet.Color Is Nothing, String.Empty, BeOCDet.Color.Codigo),
+                                                                    If(BeOCDet.CodigoSKU, String.Empty)))
 
                     Dim BeTransReDet As New clsBeTrans_re_det
                     Dim BeINavBarraPallet As New clsBeI_nav_barras_pallet
@@ -9429,9 +9458,22 @@ Partial Public Class clsLnTrans_re_enc
                     BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
                     BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
                     BeTransReDet.IdJornadaSistema = 0
-                    BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
-                    BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
-                    BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    If BeOCDet.IdProductoTallaColor > 0 Then
+                        BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
+                        BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
+                        BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                        BeTransReDet.Lote = (BeOCDet.Talla.Codigo & " " & BeOCDet.Color.Codigo).Trim()
+                    Else
+                        BeTransReDet.IdProductoTallaColor = 0
+                        BeTransReDet.Lote = ""
+                    End If
+                    System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][RECEPCION][{0:yyyy-MM-dd HH:mm:ss.fff}] BeTransReDet listo OCDet={1} IdPTC={2} Talla={3} Color={4} Lote={5}",
+                                                                    Date.Now,
+                                                                    BeOCDet.IdOrdenCompraDet,
+                                                                    BeTransReDet.IdProductoTallaColor,
+                                                                    BeTransReDet.Talla.IdTalla,
+                                                                    BeTransReDet.Color.IdColor,
+                                                                    BeTransReDet.Lote))
                     lBeRecDet.Add(BeTransReDet)
 
                     BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
@@ -9463,9 +9505,25 @@ Partial Public Class clsLnTrans_re_enc
                     BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
                     BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
                     BeStockRec.Pallet_No_Estandar = False
-                    BeStockRec.Talla = BeOCDet.Talla.Codigo
-                    BeStockRec.Color = BeOCDet.Color.Codigo
-                    BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    If BeOCDet.IdProductoTallaColor > 0 Then
+                        BeStockRec.Talla = BeOCDet.Talla.Codigo
+                        BeStockRec.Color = BeOCDet.Color.Codigo
+                        BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    Else
+                        BeStockRec.Talla = ""
+                        BeStockRec.Color = ""
+                        BeStockRec.IdProductoTallaColor = 0
+                    End If
+                    System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][RECEPCION][{0:yyyy-MM-dd HH:mm:ss.fff}] BeStockRec listo OCDet={1} IdStockRec={2} IdPTC={3} Talla={4} Color={5} Lote={6} LP={7} IdRecepcionDet={8}",
+                                                                    Date.Now,
+                                                                    BeOCDet.IdOrdenCompraDet,
+                                                                    BeStockRec.IdStockRec,
+                                                                    BeStockRec.IdProductoTallaColor,
+                                                                    BeStockRec.Talla,
+                                                                    BeStockRec.Color,
+                                                                    BeStockRec.Lote,
+                                                                    BeStockRec.Lic_plate,
+                                                                    BeStockRec.IdRecepcionDet))
                     lBeStockRec.Add(BeStockRec)
 
                 Next

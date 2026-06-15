@@ -7,6 +7,78 @@ Partial Public Class clsLnTrans_oc_det
     '#EJC20260522_OC_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmOrdenCompra.
     Private Const SP_OC_READMODEL As String = "dbo.usp_wms_ordencompra_readmodel_v1"
 
+    '#CKFK260614_OC_TALLACOLOR: asegura el llenado del objeto de talla/color solo cuando el detalle trae IdProductoTallaColor.
+    Friend Shared Sub AsegurarTallaColorDetalle(ByRef pBeTransOcDet As clsBeTrans_oc_det,
+                                                ByRef lConnection As SqlConnection,
+                                                ByRef lTransaction As SqlTransaction)
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Inicio AsegurarTallaColorDetalle IdOrdenCompraDet={1} IdProductoTallaColor={2} Talla={3}:{4} Color={5}:{6} SKU={7}",
+                                                        Date.Now,
+                                                        If(pBeTransOcDet Is Nothing, 0, pBeTransOcDet.IdOrdenCompraDet),
+                                                        If(pBeTransOcDet Is Nothing, 0, pBeTransOcDet.IdProductoTallaColor),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Talla Is Nothing, 0, pBeTransOcDet.Talla.IdTalla),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Talla Is Nothing, String.Empty, pBeTransOcDet.Talla.Codigo),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Color Is Nothing, 0, pBeTransOcDet.Color.IdColor),
+                                                        If(pBeTransOcDet Is Nothing OrElse pBeTransOcDet.Color Is Nothing, String.Empty, pBeTransOcDet.Color.Codigo),
+                                                        If(pBeTransOcDet Is Nothing, String.Empty, pBeTransOcDet.CodigoSKU)))
+
+        If pBeTransOcDet Is Nothing OrElse pBeTransOcDet.IdProductoTallaColor <= 0 Then Exit Sub
+
+        If pBeTransOcDet.Talla Is Nothing Then pBeTransOcDet.Talla = New clsBeTalla()
+        If pBeTransOcDet.Color Is Nothing Then pBeTransOcDet.Color = New clsBeColor()
+
+        If pBeTransOcDet.Talla.IdTalla > 0 AndAlso
+           pBeTransOcDet.Color.IdColor > 0 AndAlso
+           Not String.IsNullOrWhiteSpace(pBeTransOcDet.Talla.Codigo) AndAlso
+           Not String.IsNullOrWhiteSpace(pBeTransOcDet.Color.Codigo) Then
+            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Skip AsegurarTallaColorDetalle IdProductoTallaColor={1} porque ya venia completo.",
+                                                            Date.Now,
+                                                            pBeTransOcDet.IdProductoTallaColor))
+            Exit Sub
+        End If
+
+        Dim BeProductoTallaColor As clsBeProducto_talla_color = clsLnProducto_talla_color.GetSingle(pBeTransOcDet.IdProductoTallaColor,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+        If BeProductoTallaColor Is Nothing Then
+            System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] No se encontro producto_talla_color para IdProductoTallaColor={1}.",
+                                                            Date.Now,
+                                                            pBeTransOcDet.IdProductoTallaColor))
+            Exit Sub
+        End If
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] producto_talla_color encontrado IdTalla={1} IdColor={2} SKU={3}",
+                                                        Date.Now,
+                                                        BeProductoTallaColor.IdTalla,
+                                                        BeProductoTallaColor.IdColor,
+                                                        BeProductoTallaColor.CodigoSKU))
+
+        If BeProductoTallaColor.IdTalla > 0 Then
+            pBeTransOcDet.Talla.IdTalla = BeProductoTallaColor.IdTalla
+            pBeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
+        End If
+
+        If BeProductoTallaColor.IdColor > 0 Then
+            pBeTransOcDet.Color.IdColor = BeProductoTallaColor.IdColor
+            pBeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
+        End If
+
+        If String.IsNullOrWhiteSpace(pBeTransOcDet.CodigoSKU) Then
+            pBeTransOcDet.CodigoSKU = BeProductoTallaColor.CodigoSKU
+        End If
+
+        System.Diagnostics.Debug.WriteLine(String.Format("[LLENADO][OC_DET][{0:yyyy-MM-dd HH:mm:ss.fff}] Fin AsegurarTallaColorDetalle IdOrdenCompraDet={1} IdProductoTallaColor={2} Talla={3}:{4} Color={5}:{6} SKU={7}",
+                                                        Date.Now,
+                                                        pBeTransOcDet.IdOrdenCompraDet,
+                                                        pBeTransOcDet.IdProductoTallaColor,
+                                                        If(pBeTransOcDet.Talla Is Nothing, 0, pBeTransOcDet.Talla.IdTalla),
+                                                        If(pBeTransOcDet.Talla Is Nothing, String.Empty, pBeTransOcDet.Talla.Codigo),
+                                                        If(pBeTransOcDet.Color Is Nothing, 0, pBeTransOcDet.Color.IdColor),
+                                                        If(pBeTransOcDet.Color Is Nothing, String.Empty, pBeTransOcDet.Color.Codigo),
+                                                        If(pBeTransOcDet.CodigoSKU, String.Empty)))
+
+    End Sub
+
     Private Shared Function OCReadModel_HasColumn(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
 
         Return pRow IsNot Nothing AndAlso
@@ -123,13 +195,7 @@ Partial Public Class clsLnTrans_oc_det
                         BeTransOcDet.Nombre_Embarcador = OCReadModel_String(lRow, "Embarcador_Nombre")
                     End If
 
-                    If BeTransOcDet.IdProductoTallaColor <> 0 Then
-                        BeTransOcDet.Talla.IdTalla = OCReadModel_Int(lRow, "IdTalla")
-                        BeTransOcDet.Talla.Codigo = OCReadModel_String(lRow, "codigo_talla")
-                        BeTransOcDet.Color.IdColor = OCReadModel_Int(lRow, "IdColor")
-                        BeTransOcDet.Color.Codigo = OCReadModel_String(lRow, "codigo_color")
-                        BeTransOcDet.CodigoSKU = OCReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
-                    End If
+                    AsegurarTallaColorDetalle(BeTransOcDet, lConnection, lTransaction)
 
                     BeTransOcDet.IsNew = False
 
@@ -1597,133 +1663,168 @@ Partial Public Class clsLnTrans_oc_det
 
         Actualiza_Cantidad_Recibida_OC = 0
 
-        Dim BePresentacion As New clsBeProducto_Presentacion()
-        Dim BeTransOcDet As New clsBeTrans_oc_det()
-
         Try
 
-            ''#EJC20171025_1220PM:Validar primero que tenga orden de compra antes de correr el proceso en Actualiza_Cantidad_Recibida_OC
-            If pRecOrdenCompra IsNot Nothing Then
+            '#CKFK260615_OC_INTERFACE_BATCH: cargamos una vez los datos que antes se consultaban por cada linea.
+            If pRecOrdenCompra Is Nothing OrElse pRecOrdenCompra.IdOrdenCompraEnc <= 0 Then Return 0
+            If pListRecDet Is Nothing OrElse pListRecDet.Count = 0 Then Return 0
+
+            Dim lDetalleOC As List(Of clsBeTrans_oc_det) = Get_All_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc, lConnection, lTransaction)
+
+            Dim lOcPorId As New Dictionary(Of Integer, clsBeTrans_oc_det)
+            Dim lOcPorLlaveBasica As New Dictionary(Of String, clsBeTrans_oc_det)
+            Dim lPresentacionesCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)
+            Dim lCantidadRecibidaActualPorDet As New Dictionary(Of Integer, Double)
+
+            If lDetalleOC IsNot Nothing Then
+                For Each BeOc As clsBeTrans_oc_det In lDetalleOC
+                    If BeOc Is Nothing Then Continue For
+
+                    If BeOc.IdOrdenCompraDet > 0 AndAlso Not lOcPorId.ContainsKey(BeOc.IdOrdenCompraDet) Then
+                        lOcPorId.Add(BeOc.IdOrdenCompraDet, BeOc)
+                    End If
+
+                    Dim vLlaveExacta As String = CrearLlaveOCParaActualizacion(BeOc.IdOrdenCompraEnc,
+                                                                               BeOc.IdProductoBodega,
+                                                                               BeOc.IdPresentacion,
+                                                                               BeOc.No_Linea)
+                    If Not lOcPorLlaveBasica.ContainsKey(vLlaveExacta) Then lOcPorLlaveBasica.Add(vLlaveExacta, BeOc)
+
+                    Dim vLlaveSinPres As String = CrearLlaveOCParaActualizacion(BeOc.IdOrdenCompraEnc,
+                                                                                BeOc.IdProductoBodega,
+                                                                                -1,
+                                                                                BeOc.No_Linea)
+                    If Not lOcPorLlaveBasica.ContainsKey(vLlaveSinPres) Then lOcPorLlaveBasica.Add(vLlaveSinPres, BeOc)
+                Next
+            End If
+
+            Dim vSqlCantidadRecibida As String = "SELECT IdRecepcionDet, ISNULL(SUM(cantidad_recibida),0) AS CantidadRecibidaActual " &
+                                                 "FROM trans_re_det " &
+                                                 "WHERE IdRecepcionEnc = @IdRecepcionEnc " &
+                                                 "GROUP BY IdRecepcionDet"
+
+            Using cmdCant As New SqlCommand(vSqlCantidadRecibida, lConnection, lTransaction)
+
+                cmdCant.CommandType = CommandType.Text
+                cmdCant.Parameters.AddWithValue("@IdRecepcionEnc", pListRecDet(0).IdRecepcionEnc)
+
+                Using drCant As SqlDataReader = cmdCant.ExecuteReader()
+                    While drCant.Read()
+                        Dim vIdRecepcionDet As Integer = If(drCant("IdRecepcionDet") Is DBNull.Value, 0, Convert.ToInt32(drCant("IdRecepcionDet")))
+                        Dim vCantidad As Double = If(drCant("CantidadRecibidaActual") Is DBNull.Value, 0, Convert.ToDouble(drCant("CantidadRecibidaActual")))
+                        If vIdRecepcionDet > 0 AndAlso Not lCantidadRecibidaActualPorDet.ContainsKey(vIdRecepcionDet) Then
+                            lCantidadRecibidaActualPorDet.Add(vIdRecepcionDet, vCantidad)
+                        End If
+                    End While
+                End Using
+            End Using
+
+            For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
+
+                If BeTransReDet Is Nothing Then Continue For
+
+                Dim BeTransOcDet As clsBeTrans_oc_det = Nothing
+
+                If BeTransReDet.IdOrdenCompraDet > 0 Then
+                    lOcPorId.TryGetValue(BeTransReDet.IdOrdenCompraDet, BeTransOcDet)
+                End If
+
+                If BeTransOcDet Is Nothing Then
+                    Dim vIdPresentacionLookup As Integer = BeTransReDet.IdPresentacion
+                    Dim vLlaveDetalle As String = CrearLlaveOCParaActualizacion(pRecOrdenCompra.IdOrdenCompraEnc,
+                                                                               BeTransReDet.IdProductoBodega,
+                                                                               vIdPresentacionLookup,
+                                                                               BeTransReDet.No_Linea)
+                    lOcPorLlaveBasica.TryGetValue(vLlaveDetalle, BeTransOcDet)
+
+                    If BeTransOcDet Is Nothing AndAlso vIdPresentacionLookup <> -1 Then
+                        vLlaveDetalle = CrearLlaveOCParaActualizacion(pRecOrdenCompra.IdOrdenCompraEnc,
+                                                                     BeTransReDet.IdProductoBodega,
+                                                                     -1,
+                                                                     BeTransReDet.No_Linea)
+                        lOcPorLlaveBasica.TryGetValue(vLlaveDetalle, BeTransOcDet)
+                    End If
+                End If
+
+                If BeTransOcDet Is Nothing Then
+                    BeTransOcDet = Get_Detalle_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
+                                                                   BeTransReDet.IdProductoBodega,
+                                                                   BeTransReDet.IdPresentacion,
+                                                                   BeTransReDet.No_Linea,
+                                                                   BeTransReDet.IdOrdenCompraDet,
+                                                                   lConnection,
+                                                                   lTransaction)
+                End If
+
+                If BeTransOcDet Is Nothing OrElse BeTransOcDet.IdOrdenCompraDet <= 0 Then
+                    Throw New Exception("ERROR_202210051048: No se obtuvo el objeto de detalle del documento de ingreso, no se podrá actualizar la cantidad recibida.")
+                End If
 
                 Dim CantidadRecibidaActual As Double = 0
+                If BeTransReDet.IdRecepcionDet > 0 Then
+                    lCantidadRecibidaActualPorDet.TryGetValue(BeTransReDet.IdRecepcionDet, CantidadRecibidaActual)
+                End If
 
-                If Not pListRecDet Is Nothing Then
+                Dim BePresentacion As clsBeProducto_Presentacion = Nothing
+                Dim Factor As Double = 0
 
-                    For Each BeTransReDet As clsBeTrans_re_det In pListRecDet
+                If BeTransReDet.IsNew Then
 
-                        If pRecOrdenCompra.IdOrdenCompraEnc > 0 Then
+                    If (BeTransReDet.IdPresentacion = 0 OrElse BeTransReDet.IdPresentacion = -1) Then
 
-                            CantidadRecibidaActual = clsLnTrans_re_enc.Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet.IdRecepcionEnc,
-                                                                                                                                         BeTransReDet.IdRecepcionDet,
-                                                                                                                                         lConnection,
-                                                                                                                                         lTransaction)
+                        If BeTransOcDet.IdPresentacion = 0 Then
+                            BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
+                        Else
+                            BePresentacion = ObtenerPresentacionCache(BeTransOcDet.IdPresentacion, lConnection, lTransaction, lPresentacionesCache)
 
-                            If BeTransReDet.IdPresentacion = 0 Then
-                                BeTransReDet.IdPresentacion = -1
-                            End If
-
-                            BeTransOcDet = Get_Detalle_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
-                                                                           BeTransReDet.IdProductoBodega,
-                                                                           BeTransReDet.IdPresentacion,
-                                                                           BeTransReDet.No_Linea,
-                                                                           BeTransReDet.IdOrdenCompraDet,
-                                                                           lConnection,
-                                                                           lTransaction)
-
-                            If BeTransOcDet IsNot Nothing Then
-
-                                If BeTransOcDet.IdOrdenCompraDet > 0 Then
-
-                                    Dim Factor As Double = 0
-
-                                    'resultado += " bo.Cantidad_recibida = " & BeTransOcDet.Cantidad_recibida.ToString
-                                    'resultado += " CantidadRecibidaActual = " & CantidadRecibidaActual.ToString
-                                    'resultado += " Obj1.cantidad_recibida = " & BeTransReDet.cantidad_recibida.ToString
-
-                                    If BeTransReDet.IsNew Then
-
-                                        '#EJC20220329: Validar la presentación por documento de liquidación de ruta MERCOPAN.
-                                        If (BeTransReDet.IdPresentacion = 0 OrElse BeTransReDet.IdPresentacion = -1) Then
-
-                                            If BeTransOcDet.IdPresentacion = 0 Then
-                                                BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
-                                                'resultado += " IsNew bo.Cantidad recibida actualizada = " & BeTransOcDet.Cantidad_recibida.ToString
-                                            Else
-                                                '#EJC20220329: La orden de compra, tiene presentación, pero la línea de recepción NO.
-                                                'Entonces dividir la cantidad que viene en la recepción en UMBAS por el factor de la presentación de la D.I.
-
-                                                BePresentacion = clsLnProducto_presentacion.GetSingle(BeTransOcDet.IdPresentacion,
-                                                                                                      lConnection,
-                                                                                                      lTransaction)
-
-                                                If Not BePresentacion Is Nothing Then
-                                                    If BePresentacion.Factor > 0 Then
-                                                        'resultado += " IsNew bo.Cantidad recibida SIN ACTUALIZAR = " & BeTransOcDet.Cantidad_recibida.ToString()
-                                                        BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.cantidad_recibida / BePresentacion.Factor, 6)
-                                                        'resultado += " IsNew bo.Cantidad recibida actualizada = " & BeTransOcDet.Cantidad_recibida.ToString
-                                                    Else
-                                                        Throw New Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.")
-                                                    End If
-                                                Else
-                                                    Throw New Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.")
-                                                End If
-
-                                            End If
-
-                                        Else
-                                            'la oc, dice 100 UN.
-                                            'la rec, dice 1 CJ
-                                            '#EJC20220329: La recepción está en presentación, pero el D.I. NO tiene presentación.
-                                            'Multiplicar lo que viene en la rec por el factor.
-                                            If Not BeTransOcDet.IdPresentacion = 0 Then
-
-                                                BePresentacion = clsLnProducto_presentacion.GetSingle(BeTransOcDet.IdPresentacion,
-                                                                                                      lConnection,
-                                                                                                      lTransaction)
-
-                                                If Not BePresentacion Is Nothing Then
-                                                    If BePresentacion.Factor > 0 Then
-                                                        BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
-                                                        'resultado += " IsNew bo.Cantidad recibida actualizada = " & BeTransOcDet.Cantidad_recibida.ToString
-                                                    Else
-                                                        Throw New Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.")
-                                                    End If
-                                                Else
-                                                    Throw New Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.")
-                                                End If
-
-                                            Else
-                                                BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.cantidad_recibida * BePresentacion.Factor, 6)
-                                                'resultado += " IsNew bo.Cantidad recibida actualizada = " & BeTransOcDet.Cantidad_recibida.ToString
-                                            End If
-
-                                        End If
-
-                                    Else
-
-                                        BeTransOcDet.Cantidad_recibida = BeTransOcDet.Cantidad_recibida - CantidadRecibidaActual
-                                        BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
-                                        'resultado += " Not IsNew bo.Cantidad recibida actualizada = " & BeTransOcDet.Cantidad_recibida.ToString
-
-                                    End If
-
-                                    Actualiza_Cantidad_Recibida_OC = Actualizar_Cantidad_Recibida(BeTransOcDet,
-                                                                                                  lConnection,
-                                                                                                  lTransaction)
-
+                            If Not BePresentacion Is Nothing Then
+                                If BePresentacion.Factor > 0 Then
+                                    BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.cantidad_recibida / BePresentacion.Factor, 6)
+                                Else
+                                    Throw New Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.")
                                 End If
-
                             Else
-                                Throw New Exception("ERROR_202210051048: No se obtuvo el objeto de detalle del documento de ingreso, no se podrá actualizar la cantidad recibida.")
+                                Throw New Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.")
                             End If
-
                         End If
 
-                    Next
+                    Else
+
+                        If Not BeTransOcDet.IdPresentacion = 0 Then
+                            BePresentacion = ObtenerPresentacionCache(BeTransOcDet.IdPresentacion, lConnection, lTransaction, lPresentacionesCache)
+
+                            If Not BePresentacion Is Nothing Then
+                                If BePresentacion.Factor > 0 Then
+                                    BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
+                                Else
+                                    Throw New Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.")
+                                End If
+                            Else
+                                Throw New Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.")
+                            End If
+
+                        Else
+                            BePresentacion = ObtenerPresentacionCache(BeTransReDet.IdPresentacion, lConnection, lTransaction, lPresentacionesCache)
+                            If BePresentacion Is Nothing Then
+                                Throw New Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.")
+                            End If
+                            BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.cantidad_recibida * BePresentacion.Factor, 6)
+                        End If
+
+                    End If
+
+                Else
+
+                    BeTransOcDet.Cantidad_recibida = BeTransOcDet.Cantidad_recibida - CantidadRecibidaActual
+                    BeTransOcDet.Cantidad_recibida += BeTransReDet.cantidad_recibida
 
                 End If
 
-            End If
+                Actualiza_Cantidad_Recibida_OC = Actualizar_Cantidad_Recibida(BeTransOcDet,
+                                                                              lConnection,
+                                                                              lTransaction)
+
+            Next
 
         Catch ex As Exception
             '#MECR03102025: Se agrego nueva bitacora de logs para OC
@@ -1733,6 +1834,46 @@ Partial Public Class clsLnTrans_oc_det
 
             Throw ex
         End Try
+
+    End Function
+
+    '#CKFK260615_OC_INTERFACE_BATCH: genera una llave simple para buscar el detalle ya cargado sin volver a SQL por cada linea.
+    Private Shared Function CrearLlaveOCParaActualizacion(ByVal pIdOrdenCompraEnc As Integer,
+                                                         ByVal pIdProductoBodega As Integer,
+                                                         ByVal pIdPresentacion As Integer,
+                                                         ByVal pNoLinea As Integer) As String
+
+        Return String.Format("{0}|{1}|{2}|{3}",
+                             pIdOrdenCompraEnc,
+                             pIdProductoBodega,
+                             pIdPresentacion,
+                             pNoLinea)
+
+    End Function
+
+    '#CKFK260615_OC_INTERFACE_BATCH: cachea la presentacion porque varias lineas repiten el mismo id y no hace falta leerlo otra vez.
+    Private Shared Function ObtenerPresentacionCache(ByVal pIdPresentacion As Integer,
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction,
+                                                    ByRef pCache As Dictionary(Of Integer, clsBeProducto_Presentacion)) As clsBeProducto_Presentacion
+
+        If pIdPresentacion <= 0 Then Return Nothing
+
+        Dim BePresentacion As clsBeProducto_Presentacion = Nothing
+
+        If pCache IsNot Nothing AndAlso pCache.TryGetValue(pIdPresentacion, BePresentacion) Then
+            Return BePresentacion
+        End If
+
+        BePresentacion = clsLnProducto_presentacion.GetSingle(pIdPresentacion, lConnection, lTransaction)
+
+        If BePresentacion IsNot Nothing Then
+            If pCache IsNot Nothing AndAlso Not pCache.ContainsKey(pIdPresentacion) Then
+                pCache.Add(pIdPresentacion, BePresentacion)
+            End If
+        End If
+
+        Return BePresentacion
 
     End Function
 
@@ -2454,20 +2595,7 @@ Partial Public Class clsLnTrans_oc_det
                                     BeTransOcDet.IdMotivoDevolucion = CType(lRow("IdMotivoDevolucion"), Integer)
                                 End If
 
-                                If BeTransOcDet.IdProductoTallaColor <> 0 Then
-                                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-                                    If Not BeProductoTallaColor Is Nothing Then
-                                        BeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
-                                                                                  lConnection,
-                                                                                  lTransaction)
-
-                                        BeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
-                                                                                  lConnection,
-                                                                                  lTransaction)
-                                    End If
-                                End If
+                                AsegurarTallaColorDetalle(BeTransOcDet, lConnection, lTransaction)
 
                                 BeTransOcDet.IsNew = False
 

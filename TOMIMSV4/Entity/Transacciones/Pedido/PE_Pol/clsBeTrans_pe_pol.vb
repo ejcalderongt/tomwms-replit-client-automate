@@ -52,8 +52,8 @@
     Public Property codigo_poliza() As String = ""
     Public Property ticket() As String = ""
     Public Property numero_orden() As String = ""
-    Public Property fecha_aceptacion() As DateTime = Now
-    Public Property fecha_llegada() As DateTime = Now
+    Public Property fecha_aceptacion() As Date = Date.Now
+    Public Property fecha_llegada() As Date = Date.Now
     Public Property total_otros() As Double = 0
 
     Public Property activo As Boolean = 0

@@ -480,6 +480,36 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Function
 
+    '#CKFK260615_AJUSTE_UNICIDAD_REFERENCIA: valida si ya existe un ajuste en WMS por la llave de negocio Referencia.
+    Public Shared Function AjusteYaExisteEnWMS(ByVal pReferencia As String,
+                                               ByVal pConnection As SqlConnection,
+                                               ByVal pTransaction As SqlTransaction) As Boolean
+
+        AjusteYaExisteEnWMS = False
+
+        Try
+
+            If String.IsNullOrWhiteSpace(pReferencia) Then Return False
+            If pConnection Is Nothing Then Throw New ArgumentNullException(NameOf(pConnection))
+
+            Dim vSQL As String = "SELECT TOP 1 1
+                                  FROM trans_ajuste_enc
+                                  WHERE ISNULL(LTRIM(RTRIM(referencia)), '') = @Referencia"
+
+            Using cmd As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+                cmd.Parameters.AddWithValue("@Referencia", pReferencia.Trim())
+                Dim vResultado As Object = cmd.ExecuteScalar()
+                AjusteYaExisteEnWMS = vResultado IsNot Nothing AndAlso vResultado IsNot DBNull.Value
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        End Try
+
+    End Function
+
     Public Shared Function Actualizar_Estado_Auditado(ByVal pIdAjusteEnc As Integer,
                                                       ByVal pAuditado As Boolean) As Integer
 

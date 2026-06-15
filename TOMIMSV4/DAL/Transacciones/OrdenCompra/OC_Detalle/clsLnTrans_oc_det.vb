@@ -68,7 +68,6 @@ Public Class clsLnTrans_oc_det
                 .Camas_Tarima = IIf(IsDBNull(dr.Item("Camas_Tarima")), 0, dr.Item("Camas_Tarima"))
                 .Cajas_Cama = IIf(IsDBNull(dr.Item("Cajas_Cama")), 0, dr.Item("Cajas_Cama"))
 
-
             End With
 
         Catch ex As Exception
