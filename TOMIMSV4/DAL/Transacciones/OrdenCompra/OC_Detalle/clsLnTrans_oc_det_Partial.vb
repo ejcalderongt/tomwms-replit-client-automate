@@ -7,6 +7,44 @@ Partial Public Class clsLnTrans_oc_det
     '#EJC20260522_OC_READMODEL: read-model batch para evitar roundtrips por linea al abrir frmOrdenCompra.
     Private Const SP_OC_READMODEL As String = "dbo.usp_wms_ordencompra_readmodel_v1"
 
+    '#CKFK260614_OC_TALLACOLOR: asegura la hidratacion del objeto de talla/color solo cuando el detalle trae IdProductoTallaColor.
+    Friend Shared Sub AsegurarTallaColorDetalle(ByRef pBeTransOcDet As clsBeTrans_oc_det,
+                                                ByRef lConnection As SqlConnection,
+                                                ByRef lTransaction As SqlTransaction)
+
+        If pBeTransOcDet Is Nothing OrElse pBeTransOcDet.IdProductoTallaColor <= 0 Then Exit Sub
+
+        If pBeTransOcDet.Talla Is Nothing Then pBeTransOcDet.Talla = New clsBeTalla()
+        If pBeTransOcDet.Color Is Nothing Then pBeTransOcDet.Color = New clsBeColor()
+
+        If pBeTransOcDet.Talla.IdTalla > 0 AndAlso
+           pBeTransOcDet.Color.IdColor > 0 AndAlso
+           Not String.IsNullOrWhiteSpace(pBeTransOcDet.Talla.Codigo) AndAlso
+           Not String.IsNullOrWhiteSpace(pBeTransOcDet.Color.Codigo) Then
+            Exit Sub
+        End If
+
+        Dim BeProductoTallaColor As clsBeProducto_talla_color = clsLnProducto_talla_color.GetSingle(pBeTransOcDet.IdProductoTallaColor,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+        If BeProductoTallaColor Is Nothing Then Exit Sub
+
+        If BeProductoTallaColor.IdTalla > 0 Then
+            pBeTransOcDet.Talla.IdTalla = BeProductoTallaColor.IdTalla
+            pBeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
+        End If
+
+        If BeProductoTallaColor.IdColor > 0 Then
+            pBeTransOcDet.Color.IdColor = BeProductoTallaColor.IdColor
+            pBeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
+        End If
+
+        If String.IsNullOrWhiteSpace(pBeTransOcDet.CodigoSKU) Then
+            pBeTransOcDet.CodigoSKU = BeProductoTallaColor.CodigoSKU
+        End If
+
+    End Sub
+
     Private Shared Function OCReadModel_HasColumn(ByVal pRow As DataRow, ByVal pColumnName As String) As Boolean
 
         Return pRow IsNot Nothing AndAlso
@@ -123,13 +161,7 @@ Partial Public Class clsLnTrans_oc_det
                         BeTransOcDet.Nombre_Embarcador = OCReadModel_String(lRow, "Embarcador_Nombre")
                     End If
 
-                    If BeTransOcDet.IdProductoTallaColor <> 0 Then
-                        BeTransOcDet.Talla.IdTalla = OCReadModel_Int(lRow, "IdTalla")
-                        BeTransOcDet.Talla.Codigo = OCReadModel_String(lRow, "codigo_talla")
-                        BeTransOcDet.Color.IdColor = OCReadModel_Int(lRow, "IdColor")
-                        BeTransOcDet.Color.Codigo = OCReadModel_String(lRow, "codigo_color")
-                        BeTransOcDet.CodigoSKU = OCReadModel_String(lRow, "ProductoTallaColor_CodigoSKU")
-                    End If
+                    AsegurarTallaColorDetalle(BeTransOcDet, lConnection, lTransaction)
 
                     BeTransOcDet.IsNew = False
 
@@ -2454,20 +2486,7 @@ Partial Public Class clsLnTrans_oc_det
                                     BeTransOcDet.IdMotivoDevolucion = CType(lRow("IdMotivoDevolucion"), Integer)
                                 End If
 
-                                If BeTransOcDet.IdProductoTallaColor <> 0 Then
-                                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-                                    If Not BeProductoTallaColor Is Nothing Then
-                                        BeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
-                                                                                  lConnection,
-                                                                                  lTransaction)
-
-                                        BeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
-                                                                                  lConnection,
-                                                                                  lTransaction)
-                                    End If
-                                End If
+                                AsegurarTallaColorDetalle(BeTransOcDet, lConnection, lTransaction)
 
                                 BeTransOcDet.IsNew = False
 

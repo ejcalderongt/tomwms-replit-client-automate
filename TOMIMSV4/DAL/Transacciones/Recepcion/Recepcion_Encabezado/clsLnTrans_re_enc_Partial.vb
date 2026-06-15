@@ -9393,6 +9393,9 @@ Partial Public Class clsLnTrans_re_enc
                 '#EJC20190719: Se verifica si en la lista de pedidos del despacho hay pedidos para sucursales WMS.
                 For Each BeOCDet As clsBeTrans_oc_det In BeOrdenCompraEnc.DetalleOC
 
+                    '#CKFK260614_REC_TALLACOLOR: si la OC trae IdProductoTallaColor, hidratamos talla/color antes de mapear la recepcion y stock.
+                    clsLnTrans_oc_det.AsegurarTallaColorDetalle(BeOCDet, lConnection, lTransaction)
+
                     Dim BeTransReDet As New clsBeTrans_re_det
                     Dim BeINavBarraPallet As New clsBeI_nav_barras_pallet
                     Dim BeINavBarraPalletOriginal As New clsBeI_nav_barras_pallet
@@ -9429,9 +9432,15 @@ Partial Public Class clsLnTrans_re_enc
                     BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
                     BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
                     BeTransReDet.IdJornadaSistema = 0
-                    BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
-                    BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
-                    BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    If BeOCDet.IdProductoTallaColor > 0 Then
+                        BeTransReDet.Talla.IdTalla = BeOCDet.Talla.IdTalla
+                        BeTransReDet.Color.IdColor = BeOCDet.Color.IdColor
+                        BeTransReDet.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                        BeTransReDet.Lote = (BeOCDet.Talla.Codigo & " " & BeOCDet.Color.Codigo).Trim()
+                    Else
+                        BeTransReDet.IdProductoTallaColor = 0
+                        BeTransReDet.Lote = ""
+                    End If
                     lBeRecDet.Add(BeTransReDet)
 
                     BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
@@ -9463,9 +9472,15 @@ Partial Public Class clsLnTrans_re_enc
                     BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
                     BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
                     BeStockRec.Pallet_No_Estandar = False
-                    BeStockRec.Talla = BeOCDet.Talla.Codigo
-                    BeStockRec.Color = BeOCDet.Color.Codigo
-                    BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    If BeOCDet.IdProductoTallaColor > 0 Then
+                        BeStockRec.Talla = BeOCDet.Talla.Codigo
+                        BeStockRec.Color = BeOCDet.Color.Codigo
+                        BeStockRec.IdProductoTallaColor = BeOCDet.IdProductoTallaColor
+                    Else
+                        BeStockRec.Talla = ""
+                        BeStockRec.Color = ""
+                        BeStockRec.IdProductoTallaColor = 0
+                    End If
                     lBeStockRec.Add(BeStockRec)
 
                 Next
