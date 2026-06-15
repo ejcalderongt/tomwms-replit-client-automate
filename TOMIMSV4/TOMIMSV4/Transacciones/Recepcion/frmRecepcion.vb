@@ -3280,6 +3280,15 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 BeStock_rec.IdPropietarioBodega = pIdPropietarioBodega
                 BeStock_rec.IdProductoBodega = pObjProducto.IdProductoBodega
                 BeStock_rec.No_linea = DgridDetalleRec.Rows(DgridDetalleRec.CurrentRow.Index).Cells("No_Linea").Value
+
+                If BeBodega.Control_Talla_Color AndAlso DgridDetalleRec.CurrentRow IsNot Nothing Then
+                    Dim vTalla As String = IIf(IsDBNull(DgridDetalleRec.Rows(DgridDetalleRec.CurrentRow.Index).Cells("Talla").Value), "", CStr(DgridDetalleRec.Rows(DgridDetalleRec.CurrentRow.Index).Cells("Talla").Value))
+                    Dim vColor As String = IIf(IsDBNull(DgridDetalleRec.Rows(DgridDetalleRec.CurrentRow.Index).Cells("Color").Value), "", CStr(DgridDetalleRec.Rows(DgridDetalleRec.CurrentRow.Index).Cells("Color").Value))
+                    ' CKFK260612RecepcionStockRec: asegurar variante en el alta manual de stock.
+                    BeStock_rec.Talla = vTalla
+                    BeStock_rec.Color = vColor
+                End If
+
                 pListBeStockRec.Add(BeStock_rec)
 
             End If
@@ -10256,9 +10265,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             Dim vIdPresentacion As Integer = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "IdPresentacion")), 0, View.GetRowCellValue(e.RowHandle, "IdPresentacion"))
             Dim vIsNewRow As Boolean = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "IsNewR")), False, View.GetRowCellValue(e.RowHandle, "IsNewR"))
             Dim vTieneBono As Boolean = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Bono")), False, View.GetRowCellValue(e.RowHandle, "Bono"))
-            Dim vTalla As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Talla")), False, View.GetRowCellValue(e.RowHandle, "Talla"))
-            Dim vColor As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Color")), False, View.GetRowCellValue(e.RowHandle, "Color"))
-            Dim vSKU As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "SKU")), False, View.GetRowCellValue(e.RowHandle, "SKU"))
+            Dim vTalla As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Talla")), "", View.GetRowCellValue(e.RowHandle, "Talla"))
+            Dim vColor As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Color")), "", View.GetRowCellValue(e.RowHandle, "Color"))
+            Dim vSKU As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "SKU")), "", View.GetRowCellValue(e.RowHandle, "SKU"))
 
             Dim Etapa_Uno_Correcta As Boolean = False
             Dim Etapa_Tres_Correcta As Boolean = False
@@ -11330,7 +11339,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     Dim vIdPresentacion As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdPresentacion")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdPresentacion"))
                     Dim vIdProductoEstado As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdProductoEstado")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdProductoEstado"))
                     Dim vTalla As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla"))
-                    Dim vColor As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "Color"))
+                    ' CKFK260612RecepcionStockRec: tomar Color desde su propia columna; evita vacíos por validar Talla por error.
+                    Dim vColor As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "Color")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "Color"))
 
                     BeStock_rec.Presentacion.IdPresentacion = 0
                     BeStock_rec.Lic_plate = vLic_plate
@@ -12047,6 +12057,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             Dim vobservacion As String = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "observacion")), "", view.GetRowCellValue(e.RowHandle, "observacion"))
             Dim vLicencia As String = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "lic_plate")), "", view.GetRowCellValue(e.RowHandle, "lic_plate"))
             Dim vatributo_variante_1 As String = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "atributo_variante_1")), "", view.GetRowCellValue(e.RowHandle, "atributo_variante_1"))
+            Dim vTalla As String = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "Talla")), "", view.GetRowCellValue(e.RowHandle, "Talla"))
+            Dim vColor As String = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "Color")), "", view.GetRowCellValue(e.RowHandle, "Color"))
             Dim vIdRecepcionEnc As Integer = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "IdRecepcionEnc")), 0, view.GetRowCellValue(e.RowHandle, "IdRecepcionEnc"))
             Dim vIdRecepcionDet As Integer = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "IdRecepcionDet")), 0, view.GetRowCellValue(e.RowHandle, "IdRecepcionDet"))
             Dim vIdMotivoDevolucion As Integer = IIf(IsDBNull(view.GetRowCellValue(e.RowHandle, "IdMotivoDevolucion")), 0, view.GetRowCellValue(e.RowHandle, "IdMotivoDevolucion"))
@@ -12068,6 +12080,17 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     pBeTransReDet.Atributo_Variante_1 = vatributo_variante_1
                     pBeTransReDet.IdRecepcionEnc = gBeRecepcionEnc.IdRecepcionEnc
                     pBeTransReDet.IdRecepcionDet = 0
+
+                    If BeBodega.Control_Talla_Color Then
+                        Dim BeProductoTallaColor As clsBeProducto_talla_color = clsLnProducto_talla_color.Get_Single_By_IdParameters(pBeTransReDet.Producto.IdProducto,
+                                                                                                                                vTalla,
+                                                                                                                                vColor,
+                                                                                                                                lConnection,
+                                                                                                                                lTransaction)
+                        If BeProductoTallaColor IsNot Nothing Then
+                            pBeTransReDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+                        End If
+                    End If
 
                     If pListBeStockRec Is Nothing Then
                         Throw New Exception("Algo hicimos mal.")
@@ -12462,6 +12485,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                                 BeStockRec.Cantidad = Math.Round((vCantidad), 6)
                                 BeStockRec.IdRecepcionDet = vIdRecepcionDet
+                                ' CKFK260612RecepcionStockRec: preservar talla/color antes del clone en finalización.
+                                BeStockRec.Talla = vTalla
+                                BeStockRec.Color = vColor
 
                                 Dim vBestockRec As New clsBeStock_rec()
                                 vBestockRec = BeStockRec.Clone()

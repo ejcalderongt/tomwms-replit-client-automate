@@ -642,9 +642,26 @@ Public Class clsSyncTransacWMS
                                                                             factura.Transfer_to_Code,
                                                                             listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
-                clsTrans.Begin_Transaction()
-
                 Try
+
+                    If PedidoYaExisteEnWMS(factura.No) Then
+                        ' CKFK260612IdempotenciaTransacWms: si el pedido ya existe en WMS, no se reinserta; solo reintentamos marcar en SAP.
+                        Dim pedidoMarcado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
+                                                                                                       vHanaService.SessionCookie,
+                                                                                                       BD.Instancia.HANA_SL)
+
+                        If pedidoMarcado Then
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "DUPLICADO_WMS", "El pedido ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El pedido ya existía en WMS; no se reimportó y se marcó en SAP.")
+                        Else
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El pedido ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El pedido ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
+                        End If
+
+                        Continue For
+                    End If
+
+                    clsTrans.Begin_Transaction()
 
 
                     '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
@@ -894,16 +911,33 @@ Public Class clsSyncTransacWMS
                 For Each BeINavPedCompra In lDevolucionesCliente
 
                     Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("DEVOLUCION_CLIENTE",
-                                                                                "17",
-                                                                                BeINavPedCompra.No,
-                                                                                BeINavPedCompra.Vendor_Invoice_No,
-                                                                                BeINavPedCompra.Location_Code,
-                                                                                BeINavPedCompra.Buy_From_Vendor_No,
-                                                                                BeINavPedCompra.DocEntriesTransacWms)
+                                                                            "17",
+                                                                            BeINavPedCompra.No,
+                                                                            BeINavPedCompra.Vendor_Invoice_No,
+                                                                            BeINavPedCompra.Location_Code,
+                                                                            BeINavPedCompra.Buy_From_Vendor_No,
+                                                                            BeINavPedCompra.DocEntriesTransacWms)
                     Dim clsTrans As New clsTransaccion
-                    clsTrans.Begin_Transaction()
-
                     Try
+
+                        If OrdenCompraYaExisteEnWMS(BeINavPedCompra.No, CInt(BeINavPedCompra.Document_Type), BeConfigEnc.Idbodega) Then
+                            ' CKFK260612IdempotenciaTransacWms: si la OC ya existe en WMS, no se reinserta; solo reintentamos marcar en SAP.
+                            Dim ocMarcada As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(BeINavPedCompra.DocEntriesTransacWms,
+                                                                                                       vHanaService.SessionCookie,
+                                                                                                       BD.Instancia.HANA_SL)
+
+                            If ocMarcada Then
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "DUPLICADO_WMS", "El documento ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
+                                clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó y se marcó en SAP.")
+                            Else
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El documento ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
+                                clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
+                            End If
+
+                            Continue For
+                        End If
+
+                        clsTrans.Begin_Transaction()
 
                         If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
 
@@ -1087,10 +1121,10 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Marcar_Transac_Wms_Por_DocEntries_SLAsync(docEntries As List(Of Integer),
-                                                                             sessionCookie As String,
-                                                                             baseUrl As String,
-                                                                             Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
-                                                                             Optional processResult As String = "OK") As Task(Of Boolean)
+                                                                              sessionCookie As String,
+                                                                              baseUrl As String,
+                                                                              Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
+                                                                              Optional processResult As String = "OK") As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 
@@ -1154,6 +1188,57 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             TrazaDebugTransacWms($"PATCH_EXCEPTION|EX={ex.GetType().FullName}|MSG={NormalizarMensajeError(ex)}")
             Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
+        End Try
+    End Function
+
+    Private Shared Function AjusteYaExisteEnWMS(referencia As String,
+                                                idBodega As Integer,
+                                                Optional fechaBase As Date? = Nothing) As Boolean
+        If String.IsNullOrWhiteSpace(referencia) OrElse idBodega <= 0 Then Return False
+
+        Try
+            Dim fechaReferencia As Date = If(fechaBase.HasValue, fechaBase.Value, Date.Now)
+            Dim desde As Date = fechaReferencia.AddYears(-5)
+            Dim hasta As Date = fechaReferencia.AddYears(5)
+            Dim dtAjustes As DataTable = clsLnTrans_ajuste_enc.Get_All_VW(desde, hasta, idBodega)
+
+            If dtAjustes Is Nothing OrElse dtAjustes.Rows.Count = 0 Then Return False
+
+            For Each row As DataRow In dtAjustes.Rows
+                Dim refActual As String = Convert.ToString(row("Referencia")).Trim()
+                If String.Equals(refActual, referencia.Trim(), StringComparison.OrdinalIgnoreCase) Then
+                    Return True
+                End If
+            Next
+
+            Return False
+        Catch ex As Exception
+            TrazaDebugTransacWms($"AJUSTE_EXISTE_WMS_FAIL|REF={referencia}|BODEGA={idBodega}|EX={NormalizarMensajeError(ex)}")
+            Throw New Exception($"No se pudo validar si el ajuste ya existía en WMS. Ref: {referencia}. {ex.Message}", ex)
+        End Try
+    End Function
+
+    Private Shared Function PedidoYaExisteEnWMS(referencia As String) As Boolean
+        If String.IsNullOrWhiteSpace(referencia) Then Return False
+
+        Try
+            Return clsLnTrans_pe_enc.Get_Single_By_Referencia(referencia) IsNot Nothing
+        Catch ex As Exception
+            TrazaDebugTransacWms($"PEDIDO_EXISTE_WMS_FAIL|REF={referencia}|EX={NormalizarMensajeError(ex)}")
+            Throw New Exception($"No se pudo validar si el pedido ya existía en WMS. Ref: {referencia}. {ex.Message}", ex)
+        End Try
+    End Function
+
+    Private Shared Function OrdenCompraYaExisteEnWMS(referencia As String,
+                                                     idTipoIngresoOC As Integer,
+                                                     idBodega As Integer) As Boolean
+        If String.IsNullOrWhiteSpace(referencia) OrElse idTipoIngresoOC <= 0 OrElse idBodega <= 0 Then Return False
+
+        Try
+            Return clsLnTrans_oc_enc.Get_Single_By_Referencia(referencia, idTipoIngresoOC, idBodega) IsNot Nothing
+        Catch ex As Exception
+            TrazaDebugTransacWms($"OC_EXISTE_WMS_FAIL|REF={referencia}|TIPO={idTipoIngresoOC}|BODEGA={idBodega}|EX={NormalizarMensajeError(ex)}")
+            Throw New Exception($"No se pudo validar si el documento ya existía en WMS. Ref: {referencia}. {ex.Message}", ex)
         End Try
     End Function
 
@@ -1614,9 +1699,35 @@ Public Class clsSyncTransacWMS
                                                                             "",
                                                                             listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
-                clsTrans.Begin_Transaction()
 
                 Try
+
+                    Dim fechaAjuste As Date = Date.Now
+                    If ajuste.Fecha <> Date.MinValue Then
+                        fechaAjuste = ajuste.Fecha
+                    End If
+
+                    Dim ajusteYaExiste As Boolean = AjusteYaExisteEnWMS(ajuste.Referencia, BeConfigEnc.Idbodega, fechaAjuste)
+
+                    If ajusteYaExiste Then
+                        ' CKFK260612AjusteIdempotencia: si el ajuste ya está en WMS, no se reinserta; solo reintentamos marcar en SAP.
+                        Dim ajusteMarcado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
+                                                                                                     vHanaService.SessionCookie,
+                                                                                                     BD.Instancia.HANA_SL)
+
+                        If ajusteMarcado Then
+                            RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "OK", "DUPLICADO_WMS", "El ajuste ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El ajuste ya existía en WMS; no se reimportó y se marcó en SAP.")
+                            ajustes_correctos += 1
+                        Else
+                            RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El ajuste ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El ajuste ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
+                        End If
+
+                        Continue For
+                    End If
+
+                    clsTrans.Begin_Transaction()
 
                     Dim pIdEmpresa As Integer = BeConfigEnc.Idempresa
                     Dim CreoAjuste As Boolean = clsLnTrans_ajuste_enc.Inserta_Stock_Y_Movimiento(ajuste,
@@ -1627,11 +1738,12 @@ Public Class clsSyncTransacWMS
                     If CreoAjuste Then
 
                         Dim trasladoSincronizado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
-                                                                                                               vHanaService.SessionCookie,
-                                                                                                               BD.Instancia.HANA_SL)
+                                                                                                                vHanaService.SessionCookie,
+                                                                                                                BD.Instancia.HANA_SL)
 
                         If trasladoSincronizado Then
                             clsTrans.Commit_Transaction()
+                            ' CKFK260612AjusteIdempotencia: el ajuste quedó aplicado y marcado en SAP para no volver a importarlo.
                             RegistrarTrazaTransacWms(ctx, "AJUSTE_APLICACION_WMS", "OK", "OK", "Documento procesado correctamente.")
                             clsPublic.Actualizar_Progreso(lblprg, "Documento procesado correctamente :) !")
                         Else
@@ -1977,9 +2089,26 @@ Public Class clsSyncTransacWMS
                                                                             anul_devol.Transfer_to_Code,
                                                                             listaDocEntryDistintos)
                 Dim clsTrans As New clsTransaccion
-                clsTrans.Begin_Transaction()
-
                 Try
+
+                    If OrdenCompraYaExisteEnWMS(anul_devol.No, CInt(anul_devol.Document_Type), BeConfigEnc.Idbodega) Then
+                        ' CKFK260612IdempotenciaTransacWms: si la OC ya existe en WMS, no se reinserta; solo reintentamos marcar en SAP.
+                        Dim ocMarcada As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
+                                                                                                   vHanaService.SessionCookie,
+                                                                                                   BD.Instancia.HANA_SL)
+
+                        If ocMarcada Then
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "DUPLICADO_WMS", "El documento ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó y se marcó en SAP.")
+                        Else
+                            RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El documento ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
+                            clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
+                        End If
+
+                        Continue For
+                    End If
+
+                    clsTrans.Begin_Transaction()
 
                     '#MECR 202508080524: Verifica si el cliente ya existe en WMS.
                     If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(anul_devol.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
@@ -2220,16 +2349,33 @@ Public Class clsSyncTransacWMS
                 For Each BeINavPedCompra In lAnulacionVenta
 
                     Dim ctx As TransacWmsTraceContext = CrearContextoTransacWms("ANULACION_VENTA",
-                                                                                "18",
-                                                                                BeINavPedCompra.No,
-                                                                                BeINavPedCompra.Vendor_Invoice_No,
-                                                                                BeINavPedCompra.Location_Code,
-                                                                                BeINavPedCompra.Buy_From_Vendor_No,
-                                                                                BeINavPedCompra.DocEntriesTransacWms)
+                                                                            "18",
+                                                                            BeINavPedCompra.No,
+                                                                            BeINavPedCompra.Vendor_Invoice_No,
+                                                                            BeINavPedCompra.Location_Code,
+                                                                            BeINavPedCompra.Buy_From_Vendor_No,
+                                                                            BeINavPedCompra.DocEntriesTransacWms)
                     Dim clsTrans As New clsTransaccion
-                    clsTrans.Begin_Transaction()
-
                     Try
+
+                        If OrdenCompraYaExisteEnWMS(BeINavPedCompra.No, CInt(BeINavPedCompra.Document_Type), BeConfigEnc.Idbodega) Then
+                            ' CKFK260612IdempotenciaTransacWms: si la OC ya existe en WMS, no se reinserta; solo reintentamos marcar en SAP.
+                            Dim ocMarcada As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(BeINavPedCompra.DocEntriesTransacWms,
+                                                                                                       vHanaService.SessionCookie,
+                                                                                                       BD.Instancia.HANA_SL)
+
+                            If ocMarcada Then
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "OK", "DUPLICADO_WMS", "El documento ya existía en WMS; se reintentó marcado en SAP sin reinserción.")
+                                clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó y se marcó en SAP.")
+                            Else
+                                RegistrarTrazaTransacWms(ctx, "APLICAR_WMS", "WARN", "DUPLICADO_WMS_SAP_FALLO", "El documento ya existía en WMS, pero no se pudo marcar nuevamente en SAP.")
+                                clsPublic.Actualizar_Progreso(lblprg, "El documento ya existía en WMS; no se reimportó, pero no se pudo marcar en SAP.")
+                            End If
+
+                            Continue For
+                        End If
+
+                        clsTrans.Begin_Transaction()
 
                         If Not clsLnProveedor.Existe_Proveedor(BeINavPedCompra.Buy_From_Vendor_No, clsTrans.lConnection, clsTrans.lTransaction) Then
 
