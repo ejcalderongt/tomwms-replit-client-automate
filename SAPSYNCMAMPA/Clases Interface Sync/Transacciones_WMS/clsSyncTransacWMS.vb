@@ -211,6 +211,48 @@ Public Class clsSyncTransacWMS
         End Try
     End Sub
 
+    Private Shared Sub ActualizarProgresoSeguro(lblprg As RichTextBox, mensaje As String)
+        Try
+            clsPublic.Actualizar_Progreso(lblprg, mensaje)
+        Catch
+        End Try
+    End Sub
+
+    Private Shared Function FiltrarArticulosServicioSV(allRows As JArray, lblprg As RichTextBox) As JArray
+        Try
+            If allRows Is Nothing OrElse allRows.Count = 0 Then Return allRows
+
+            Dim filasFiltradas As New JArray()
+            Dim eliminados As Integer = 0
+
+            For Each token As JToken In allRows
+                Dim row As JObject = TryCast(token, JObject)
+                If row Is Nothing Then
+                    filasFiltradas.Add(token)
+                    Continue For
+                End If
+
+                Dim itemNo As String = Convert.ToString(row("U_Item_No"))
+                If Not String.IsNullOrWhiteSpace(itemNo) AndAlso itemNo.StartsWith("SV", StringComparison.OrdinalIgnoreCase) Then
+                    eliminados += 1
+                    Continue For
+                End If
+
+                filasFiltradas.Add(row)
+            Next
+
+            If eliminados > 0 Then
+                ActualizarProgresoSeguro(lblprg, $"Se filtraron {eliminados} artículo(s) de servicio SV.")
+                TrazaDebugTransacWms($"FILTRO_SV|ELIMINADOS={eliminados}|TOTAL={allRows.Count}")
+            End If
+
+            Return filasFiltradas
+        Catch ex As Exception
+            TrazaDebugTransacWms($"FILTRO_SV_FAIL|EX={NormalizarMensajeError(ex)}")
+            Return allRows
+        End Try
+    End Function
+
     Private Shared Sub RegistrarTrazaTransacWms(ctx As TransacWmsTraceContext,
                                                 etapa As String,
                                                 resultado As String,
@@ -1086,10 +1128,11 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Marcar_Transac_Wms_Por_DocEntries_SLAsync(docEntries As List(Of Integer),
-                                                                             sessionCookie As String,
-                                                                             baseUrl As String,
-                                                                             Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
-                                                                             Optional processResult As String = "OK") As Task(Of Boolean)
+                                                                              sessionCookie As String,
+                                                                              baseUrl As String,
+                                                                              Optional estadoProcesado As Integer = TRANSAC_WMS_OK,
+                                                                              Optional processResult As String = "OK",
+                                                                              Optional validarPersistencia As Boolean = True) As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 
@@ -1119,7 +1162,7 @@ Public Class clsSyncTransacWMS
                         Using request As New HttpRequestMessage(httpPatch, fullUrl)
                             request.Headers.Add("Cookie", sessionCookie)
                             request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-                            request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+                            request.Content = New StringContent(payloadObj.ToString(Formatting.None), Encoding.UTF8, "application/json")
 
                             Dim response = Await client.SendAsync(request).ConfigureAwait(False)
 
@@ -1149,6 +1192,67 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             TrazaDebugTransacWms($"PATCH_EXCEPTION|EX={ex.GetType().FullName}|MSG={NormalizarMensajeError(ex)}")
             Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
+        End Try
+    End Function
+
+    Private Shared Function VerificarMarcadoTransacWmsSL(docEntries As List(Of Integer),
+                                                         sessionCookie As String,
+                                                         baseUrl As String,
+                                                         estadoProcesado As Integer,
+                                                         processResult As String) As Boolean
+        If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
+
+        Try
+            If Not baseUrl.EndsWith("/") Then
+                baseUrl &= "/"
+            End If
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    For Each docEntry In docEntries.Distinct()
+                        Dim requestUrl As String = $"TRANSAC_WMS('{docEntry}')"
+                        Dim fullUrl As String = baseUrl & requestUrl
+
+                        Using request As New HttpRequestMessage(HttpMethod.Get, fullUrl)
+                            request.Headers.Add("Cookie", sessionCookie)
+                            request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                            Dim response = client.SendAsync(request).GetAwaiter().GetResult()
+                            Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+
+                            If Not response.IsSuccessStatusCode Then
+                                TrazaDebugTransacWms($"PATCH_VERIFY_FAIL|DOCENTRY={docEntry}|STATUS={response.StatusCode}|DETAIL={json}")
+                                Return False
+                            End If
+
+                            Dim row As JObject = JObject.Parse(json)
+                            Dim valorProcesado As String = Convert.ToString(row("U_Procesado_WMS"))
+                            Dim valorResultado As String = Convert.ToString(row("U_Process_Result"))
+
+                            If Not String.Equals(valorProcesado, estadoProcesado.ToString(), StringComparison.OrdinalIgnoreCase) Then
+                                TrazaDebugTransacWms($"PATCH_VERIFY_MISMATCH|DOCENTRY={docEntry}|FIELD=U_Procesado_WMS|ESP={estadoProcesado}|ACT={valorProcesado}")
+                                Return False
+                            End If
+
+                            Dim resultadoEsperado As String = LimitarTexto(processResult, TRANSAC_WMS_PROCESS_RESULT_MAX)
+                            If Not String.Equals(valorResultado, resultadoEsperado, StringComparison.OrdinalIgnoreCase) Then
+                                TrazaDebugTransacWms($"PATCH_VERIFY_MISMATCH|DOCENTRY={docEntry}|FIELD=U_Process_Result|ESP={resultadoEsperado}|ACT={valorResultado}")
+                                Return False
+                            End If
+                        End Using
+                    Next
+                End Using
+            End Using
+
+            Return True
+
+        Catch ex As Exception
+            TrazaDebugTransacWms($"PATCH_VERIFY_EXCEPTION|EX={ex.GetType().FullName}|MSG={NormalizarMensajeError(ex)}")
+            Return False
         End Try
     End Function
 
@@ -1459,7 +1563,7 @@ Public Class clsSyncTransacWMS
                     beAjustes.IdBodega = BeBodega.IdBodega
                     beAjustes.IdProductoFamilia = 0
                     beAjustes.Enviado_A_ERP = False
-                    beAjustes.idPropietarioBodega = idPropietarioBodega
+                    beAjustes.IdPropietarioBodega = idPropietarioBodega
                     beAjustes.Ajuste_Por_Inventario = 0
                     beAjustes.IdCentroCosto = 0
                     beAjustes.Auditado = False
@@ -1601,7 +1705,7 @@ Public Class clsSyncTransacWMS
                         beAjusteDet.IdAjusteDet = nextIdAjusteDet
                         beAjusteDet.IdAjusteEnc = beAjustes.IdAjusteenc
                         beAjusteDet.IdStock = 0
-                        beAjusteDet.idPropietarioBodega = beAjustes.IdPropietarioBodega
+                        beAjusteDet.IdPropietarioBodega = beAjustes.IdPropietarioBodega
                         beAjusteDet.IdProductoBodega = vIdProductoBodega
                         beAjusteDet.IdProductoEstado = vIdProductoEstado
                         beAjusteDet.IdPresentacion = 0
@@ -1637,7 +1741,7 @@ Public Class clsSyncTransacWMS
                         nextIdAjusteDet += 1
 
                         If Not ajusteYaExiste Then
-                            Dim RowsDetalleAjuste As Integer = clsLnTrans_ajuste_det.Insertar(beAjusteDet)
+                            Dim RowsDetalleAjuste As Integer = clsLnTrans_ajuste_det.Insertar(beAjusteDet, lConnection, lTransaction)
 
                             If RowsDetalleAjuste = 0 Then
                                 Throw New Exception("No se pudo insertar el detalle del ajuste " & detalle.DocEntry)
