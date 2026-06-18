@@ -1,4 +1,4 @@
-id: traza-003-sapsyncmampa-interface
+﻿id: traza-003-sapsyncmampa-interface
 tipo: trace
 estado: vigente
 cliente: mampa
@@ -175,6 +175,7 @@ hilos_para_modificacion:
   - "Banderas de sincronizacion"
   - "Bitacora de ejecucion"
   - "Configuracion por bodega"
+  - "Productos SAP -> WMS performance: Importar_Productos_Desde_SAP_A_TablaIntermediaAsync ahora tiene traza/handoff en brain/handoffs/2026-06-18-mampa-productos-performance"
 
 referencias:
   traza_md: "brain/code-deep-flow/traza-003-sapsyncmampa-interface.md"
@@ -182,6 +183,9 @@ referencias:
   diff_base: "brain/code-deep-flow/DIFF-BOF-2023-VS-2028.md"
   client_index: "brain/client-index/mampa.yml"
   skill: "brain/skills/wms-mampa-interface/SKILL.md"
+  productos_performance_20260618: "brain/handoffs/2026-06-18-mampa-productos-performance/README.md"
+  productos_performance_trace: "brain/code-deep-flow/traza-004-sapsyncmampa-productos-performance.md"
+  sincronizacion_fina_trace: "brain/code-deep-flow/traza-005-sapsyncmampa-sincronizacion-fina.md"
 
 automatizacion:
   barrido_rapido: "brain/skills/wms-mampa-interface/scripts/wms-mampa-scan.ps1"

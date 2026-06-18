@@ -1,4 +1,4 @@
-# L-054 PROC MAMPA Interface Traza Fina y Automation
+﻿# L-054 PROC MAMPA Interface Traza Fina y Automation
 
 Fecha: 2026-06-15
 
@@ -27,6 +27,8 @@ Se agrego un mapa operativo y una skill especifica para MAMPA con:
 
 - `brain/code-deep-flow/traza-003-sapsyncmampa-interface.yml`
 - `brain/code-deep-flow/traza-003-sapsyncmampa-interface.md`
+- `brain/code-deep-flow/traza-004-sapsyncmampa-productos-performance.md`
+- `brain/code-deep-flow/traza-005-sapsyncmampa-sincronizacion-fina.md`
 - `brain/agents/domain-mampa.yml`
 - `brain/skills/wms-mampa-interface/SKILL.md`
 - `brain/skills/wms-mampa-interface/scripts/wms-mampa-scan.ps1`

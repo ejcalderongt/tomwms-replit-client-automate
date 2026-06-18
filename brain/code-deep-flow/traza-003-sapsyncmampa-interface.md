@@ -1,4 +1,4 @@
-# Traza 003 - Interface MAMPA (`SAPSYNCMAMPA`)
+﻿# Traza 003 - Interface MAMPA (`SAPSYNCMAMPA`)
 
 > Rama analizada: `dev_2028_merge`
 > Proyecto: `C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNCMAMPA`
@@ -113,6 +113,13 @@ Ademas, `MapearAAjustes` ya se considera un punto sensible de rendimiento y UX: 
 
 - `Bodegas`, `Proveedores`, `Clientes`, `Productos`, `Tallas`, `Colores`, `Centros de costo`, `Codigos de barra`
 - Estas rutas actualizan tablas maestras del WMS desde SAP HANA SL.
+
+#### Productos SAP -> WMS performance (2026-06-18)
+
+El flujo de productos queda trazado como ruta crítica de rendimiento:
+`frmEjecucion.mnuProductosI` -> `clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS` -> `Confirmar_Y_Llenar_Intermedia` -> `Importar_Productos_Desde_SAP_A_TablaIntermediaAsync` -> `Get_Productos_SAP_SL` -> `i_nav_producto` -> `ProcesarProductosDesdeSAP`.
+
+Puntos corregidos: paginación Service Layer de 100 a 500, `$select` explícito, eliminación del `Existe_Codigo` por producto durante lectura SAP, cache de lookups de catálogos por lote, cache producto-bodega y marcado SAP por lote con una sola sesión. Ademas, la sincronizacion de productos ahora deja una traza fina en archivo `trazas/mampa-productos-*.log` con UTF-8 BOM y pinta en rojo los rechazos de validacion como UMBas faltante para que la UI refleje el fallo sin esconderlo. Handoff: `brain/handoffs/2026-06-18-mampa-productos-performance/README.md`. SQL generado: `brain/handoffs/2026-06-18-mampa-productos-performance/sql/20260618_mampa_productos_performance.sql`. Trazas derivadas: `brain/code-deep-flow/traza-004-sapsyncmampa-productos-performance.md` y `brain/code-deep-flow/traza-005-sapsyncmampa-sincronizacion-fina.md`.
 
 ### 4.2 Ajustes WMS a SAP
 

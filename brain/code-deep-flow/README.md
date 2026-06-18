@@ -1,4 +1,4 @@
----
+﻿---
 id: README
 tipo: code-deep-flow
 estado: vigente
@@ -156,6 +156,9 @@ lo que toca el parametro en cuestion. El mapa macro general queda en
 |---|---|---|---|
 | 00 | Mapa de cajas macro (no es traza) | — | aplicado |
 | 01 | (pendiente eleccion Erik) | — | — |
+| 03 | Interface MAMPA `SAPSYNCMAMPA` | BOF / SAP Service Layer / SQL | aplicada |
+| 04 | Productos MAMPA | BOF / SAP Service Layer / SQL | aplicada |
+| 05 | Sincronizacion fina MAMPA | BOF / SAP Service Layer / SQL | aplicada |
 
 ---
 
