@@ -29,6 +29,10 @@ especialidad**:
 - **8 paquetes de cliente** (ya existian en `brain/client-index/*.yml`):
   flags, deuda, particularidades por instancia productiva.
 
+Esta estructura es la base operativa de la capa de "brain federado":
+un router local, dominios curados y overlays por cliente/repo. No depende de
+bridge/OpenClaw como infraestructura activa.
+
 El coordinador NO inlinea el contenido de los paquetes en sus YAMLs. Solo
 referencia los `.md` profundos via path relativo. Asi un cambio se hace en
 un solo lugar (el pattern o el handoff fuente) y se propaga al cargarlo.
@@ -124,7 +128,18 @@ extension_points:
 Estos YAMLs son **indice + entry-points**, NO contenido. Si te encontras
 inlinenando un pattern aca, parate y referencialo en lugar de copiarlo.
 
-## 7. Mantenimiento
+## 7. Criterio de federacion
+
+La federacion no significa duplicar archivos por repo ni crear agentes
+runtime separados para cada carpeta. Significa:
+
+1. Un coordinador unico que decide la carga minima.
+2. Domains chicos y sin solapamiento innecesario.
+3. Overlays por cliente o repo cuando aportan contexto real.
+4. Handoffs, patterns y atlas como capas de evidencia y curacion.
+5. Nada de bridge historico como dependencia obligatoria.
+
+## 8. Mantenimiento
 
 - Cada handoff resuelto debe agregar 1 entrada en `ejemplos_tareas_pasadas`
   del `domain-*.yml` que aplique.

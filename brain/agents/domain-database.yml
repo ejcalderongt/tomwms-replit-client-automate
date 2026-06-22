@@ -89,7 +89,12 @@ reglas_vinculantes:
   - "Outliers conocidos: trans_ajuste_det idajustedet=638 (4.8B UM mayo-2021, observacion 'sa') - excluir de agregados"
 
 scripts_dba:
-  ubicacion_externa: github ejcalderongt/DBA (no parte de este replit)
+  ubicacion_externa: github ejcalderongt/DBA
+  repo_local_canonico: C:\Users\yejc2\source\repos\DBA
+  repo_github_canonico: https://github.com/ejcalderongt/DBA
+  regla_publicacion: "Todo DDL, ALTER, CREATE TYPE, CREATE OR ALTER PROCEDURE, view, rollback y migration script debe vivir y publicarse en ejcalderongt/DBA. No usar TOMWMS_BOF ni mirrors temporales."
+  preflight_obligatorio: C:\Users\yejc2\source\repos\wms-brain\brain\skills\wms-db-brain\scripts\wms-db-brain-dba-route-check.ps1
+  snapshot_contexto: "origin/wms-db-brain:db-brain/ es solo lectura/catalogo; no es el repo de scripts DBA."
   scripts_en_brain:
     - brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/SCRIPT_AUDITORIA_REGULARIZACION_VERI_CANTIDAD_UMBAS.sql
     - brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/SCRIPT_AUDITORIA_REGULARIZACION_VERI_DUPLICADOS.sql

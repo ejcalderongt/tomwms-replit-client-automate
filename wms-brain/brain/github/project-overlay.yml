@@ -1,0 +1,34 @@
+version: 1
+project:
+  name: TOMWMS
+  repo_path: C:\Users\yejc2\source\repos\TOMWMS
+  stack: VB.NET + Java HH + SQL Server
+
+inherits:
+  router: C:\Users\yejc2\source\repos\brain-core\brain-router.yml
+
+always_load_local:
+  - C:\Users\yejc2\source\repos\TOMWMS\brain\agents\coordinator.yml
+
+domains_available:
+  - domain-bof
+  - domain-hh-android
+  - domain-reserva
+  - domain-database
+  - domain-integration-services
+  - domain-jira
+
+clients_available:
+  - la_cumbre
+  - killios
+  - colonial
+
+cross_project_links:
+  - RoadPOD
+  - MCP
+
+peer_contexts:
+  MCP:
+    live_context: C:\Users\yejc2\source\repos\MCP\mcp-context-brain
+    publishable_brain: C:\Users\yejc2\source\repos\MCP\mcp-brain
+    overlay: C:\Users\yejc2\source\repos\MCP\brain\project-overlay.yml

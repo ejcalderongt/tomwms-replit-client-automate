@@ -23,6 +23,9 @@
 > El cerebro paralelo del WMS legado. No es codigo de produccion. No despliega
 > nada. No ejecuta nada. **Solo aprende, documenta y cuestiona** — para que el
 > proximo agente que toque el motor de reserva no muera en el intento.
+>
+> Peers federados relevantes: `TOMWMS` para el WMS operativo y `MCP` para el
+> contexto PHP/mPos, con overlay local, brain vivo y brain publicable separados.
 
 [![rama](https://img.shields.io/badge/rama-wms--brain-1F4E79?style=flat-square)](#)
 [![bds](https://img.shields.io/badge/SQL_Server-3_BDs_PRD_(READ_ONLY)-C5504B?style=flat-square)](#)

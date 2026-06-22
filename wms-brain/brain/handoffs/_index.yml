@@ -1,0 +1,116 @@
+version: 1
+updated: "2026-06-15"
+purpose: >
+  Indice de handoffs para carga selectiva de evidencia operativa. Cada entrada
+  define cuando conviene cargar el handoff y cuando tratarlo como historico.
+
+default_policy:
+  load_by_default: false
+  max_handoffs_to_load: 2
+  sort_priority:
+    - relevance
+    - recency
+
+entries:
+  - id: fetch-impacto-cruzado-dev2028
+    path: brain/handoffs/2026-05-22-bof-dev2028-fetch-impacto-cruzado/ANALISIS_FETCH_DEV2028_MERGE_BOF.md
+    date: "2026-05-22"
+    domains: [bof, database]
+    tags: [fetch, impacto, merge, dev_2028]
+    symptoms:
+      - cambios cruzados en fetch
+      - dudas de impacto por merge
+      - trazabilidad de impacto VB
+    confidence: medium
+    stale_after_days: 90
+
+  - id: trans-movimientos-identity
+    path: brain/handoffs/2026-05-26-trans-movimientos-ididentity/README.md
+    date: "2026-05-26"
+    domains: [database, bof]
+    tags: [trans_movimientos, identity, ididentity]
+    symptoms:
+      - problemas de identidad en trans_movimientos
+      - inserciones duplicadas o huecos de id
+    confidence: medium
+    stale_after_days: 90
+
+  - id: sapsynccumbre-fine-trace
+    path: brain/handoffs/2026-06-02-sapsynccumbre/SAPSYNCCUMBRE-FINE-TRACE-2026-06-02.md
+    date: "2026-06-02"
+    domains: [bof, webapi, database]
+    tags: [sap, sync, ingreso, traslado, rollback]
+    symptoms:
+      - desalineacion sap vs wms
+      - dudas de rollback transaccional sap
+      - no_pase/docentry inconsistente
+    confidence: high
+    stale_after_days: 60
+
+  - id: frmdisenob-fine-trace
+    path: brain/handoffs/2026-06-03-frmdisenob/FINE-TRACE-FRMDISENOB-2026-06-03.md
+    date: "2026-06-03"
+    domains: [bof]
+    tags: [graficador, bodega, ui, render]
+    symptoms:
+      - dudas de dibujo de bodega
+      - problemas de render por sector/tramo/ubicacion
+      - evolucion a renderer v2
+    confidence: high
+    stale_after_days: 90
+
+  - id: inventario-inicial-import-performance
+    path: brain/handoffs/2026-06-06-inventario-inicial-import-performance/README.md
+    date: "2026-06-06"
+    domains: [bof, database]
+    tags: [inventario, importacion, performance, tvp, producto_lookup]
+    symptoms:
+      - importacion de inventario inicial lenta
+      - DAL_DETALLE_LOOP consume minutos en MsProductoDetalle
+      - grid o UI aparenta colgarse luego de validar/cargar inventario
+      - necesidad de TVP/SP para lookups masivos de producto
+    confidence: high
+    stale_after_days: 90
+
+  - id: operativo-hh-bof-etiquetas-reemplazo-tc
+    path: brain/handoffs/2026-06-11-operativo-hh-bof-etiquetas-reemplazo-tc/README.md
+    date: "2026-06-11"
+    domains: [hh, bof, database]
+    tags: [etiquetas, licencia, fardo, reemplazo, talla_color, tc, json, soap]
+    symptoms:
+      - talla y color no cargan al escanear licencia en hh
+      - reemplazo registra sin talla y color
+      - lista picking json llega sin idproductotallacolor
+      - mismatch de alias talla color entre vistas y mapeo
+    confidence: high
+    stale_after_days: 60
+
+  - id: mampa-interface-learning
+    path: brain/handoffs/2026-06-15-mampa-interface-learning/README.md
+    date: "2026-06-15"
+    domains: [bof, database]
+    tags: [mampa, interface, ajuste, talla_color, ingreso, sapsyncmampa]
+    symptoms:
+      - ajuste mampa pierde consistencia de talla y color en borrador
+      - interface de ingreso requiere validar contrato en el punto correcto
+      - contrato de producto_talla_color no debe depender de etiquetas visuales
+    confidence: high
+    stale_after_days: 60
+load_rules:
+  - Si el incidente coincide con sintomas/tags, cargar solo 1 handoff principal.
+  - Si hay cruce de capas (VB + SQL o API + SQL), permitir 2 handoffs maximo.
+  - Si el handoff esta stale, usarlo solo como referencia historica y revalidar.
+
+maintenance:
+  required_fields:
+    - id
+    - path
+    - date
+    - domains
+    - tags
+    - symptoms
+  add_new_handoff_checklist:
+    - Registrar en este indice el mismo dia.
+    - Definir sintomas concretos reutilizables.
+    - Definir stale_after_days segun volatilidad del tema.
+

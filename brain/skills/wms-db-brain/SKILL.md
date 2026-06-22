@@ -19,6 +19,25 @@ Do not merge `wms-db-brain` directly into `wms-brain`: the branches are orphan-s
 - Catalog size: 621 SQL objects
 - Object groups: `tables/`, `views/`, `sps/`, `functions/`, `parametrizacion/`, `_meta/`
 
+## DBA Script Repository Rule
+
+`#EJC20260615` Schema scripts, ALTERs, CREATE TYPE, CREATE OR ALTER PROCEDURE,
+views, rollback scripts, and migration files do not belong in TOMWMS_BOF or
+temporary GitHub mirrors. They must be routed to the canonical DBA repo:
+
+- Local repo: `C:/Users/yejc2/source/repos/DBA`
+- GitHub repo: `https://github.com/ejcalderongt/DBA`
+- Project overlay: `C:/Users/yejc2/source/repos/DBA/brain/project-overlay.yml`
+
+Before committing or pushing any database artifact, run:
+
+```powershell
+scripts/wms-db-brain-dba-route-check.ps1
+```
+
+Use `wms-db-brain` for catalog lookup and impact context; use `DBA` for the
+actual versioned scripts.
+
 ## Safety
 
 - Production DB is read-only from this agent.
@@ -54,5 +73,7 @@ Do not merge `wms-db-brain` directly into `wms-brain`: the branches are orphan-s
 - `scripts/wms-db-brain-find.ps1`: search object paths and optional content in the snapshot branch.
 - `scripts/wms-db-brain-show.ps1`: show one object or db-brain URI from the snapshot branch.
 - `scripts/wms-db-brain-materialize.ps1`: optional full local copy into `brain/db-brain/`.
+- `scripts/wms-db-brain-dba-route-check.ps1`: verify the canonical DBA repo,
+  remote, branch, and working-tree state before publishing SQL artifacts.
 
 Run scripts from `C:/Users/yejc2/source/repos/wms-brain` unless a script says otherwise.

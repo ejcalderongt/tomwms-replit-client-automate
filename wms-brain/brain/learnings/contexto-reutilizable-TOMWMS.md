@@ -10,12 +10,13 @@
 
 - **TOMWMS Brain API** (repositorio local: `C:\Users\yejc2\source\repos\wms-brain`)
   - El Brain es el indexador y coordinador de contexto cross-repo (VB, Java HH, SQL).
-  - Existe un Brain federado que permite consultas y sincronización de contexto entre múltiples repos y dominios, facilitando relaciones y dependencias cruzadas.
+  - La capa "brain federado" debe entenderse como una federación de overlays locales y dominios curados, no como un bridge runtime activo.
+  - La federación se materializa con `brain/agents/_index.yml`, `brain/agents/coordinator.yml`, `brain/atlas/index.yml` y los `domain-*.yml`/`client-*.yml` que correspondan al caso.
   - Endpoints GET: `/search`, `/impact`, `/dependencies`, `/writers`
   - Endpoints POST: `/import/sql-catalog`, `/index/vb`, `/index/java`, `/repos/sync`
   - Scripts para extracción y subida de catálogo SQL: `tools/sql-catalog/extract_sql_catalog.py`
   - Workflows detallados para cambios en SPs, métodos VB, renames de WebMethods, análisis de blast radius y dependencias.
-  - Para integración federada, se consulta el Brain principal y, si aplica, los contextos federados definidos en la configuración de `wms-brain`. Esto permite obtener relaciones y dependencias entre TOMWMS y otros sistemas conectados.
+  - Para integración federada, se consulta primero el router/coordinator local y luego se amplía solo con los dominios y clientes relevantes. Eso permite obtener relaciones y dependencias entre TOMWMS y otros sistemas conectados sin cargar todo el árbol.
 
 ## 3. Contexto incremental y traza viva
 
@@ -31,6 +32,8 @@
 ## 4. Gestión de contexto selectivo y modularidad
 
 - Modelo de agentes: coordinador + paquetes de contexto por dominio.
+  - Este es el mecanismo operativo de la capa federada.
+  - Si hace falta depurar o reestructurar, la regla es consolidar primero el router y luego desplazar contenido duplicado hacia el domain o handoff correcto.
   - `brain/agents/_index.yml`, `domain-*.yml`
   - Cargar solo los paquetes necesarios según el trigger del proceso.
 
