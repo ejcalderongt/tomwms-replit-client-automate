@@ -18,6 +18,7 @@ brains:
     purpose: Persistent WMS operational anchor.
     startup:
       - wms-brain/README.md
+      - wms-brain/bootstrap-session.ps1
       - MEMORY.md
       - memory/YYYY-MM-DD.md
   - id: mpos-brain

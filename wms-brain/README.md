@@ -33,6 +33,12 @@ Workspace anchor for WMS work.
 
 Read this file first, then `MEMORY.md`, then the current daily note when resuming WMS work.
 
+Primary bootstrap entry point:
+- `wms-brain/bootstrap-session.ps1` for WMS sessions
+- `scripts/bootstrap-session.ps1` for the federated root bootstrap
+
+When a new machine or environment is created, restore the repo and run the bootstrap from this anchor before touching task files.
+
 ## KPI Tuning
 
 - `picking` and `despacho` were tuned together because both hit `trans_picking_ubic` heavily.
