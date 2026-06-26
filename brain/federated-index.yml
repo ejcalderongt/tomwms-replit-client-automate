@@ -1,0 +1,68 @@
+version: 1
+workspace_root: C:\Users\yejc2\OpenClawWorkspace
+brains:
+  - id: workspace-core
+    path: .
+    kind: anchor
+    purpose: Root workspace anchors, memory, identity, and startup policy.
+    startup:
+      - AGENTS.md
+      - SOUL.md
+      - USER.md
+      - TOOLS.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+  - id: wms-brain
+    path: wms-brain
+    kind: root-brain
+    purpose: Persistent WMS operational anchor.
+    startup:
+      - wms-brain/README.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+  - id: mpos-brain
+    path: mpos-brain
+    kind: root-brain
+    purpose: Persistent mPos / MCP anchor.
+    startup:
+      - mpos-brain/README.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+  - id: brain-atlas
+    path: brain/atlas
+    kind: federated-map
+    purpose: Shared architecture and routing map for implosion and cross-brain context.
+    startup:
+      - brain/atlas/implosion-mapa.yml
+  - id: brain-wms-recepcion
+    path: brain/wms/recepcion
+    kind: domain-brain
+    purpose: WMS reception, LP, and implosion context.
+    startup:
+      - brain/wms/recepcion/README.md
+      - brain/wms/recepcion/lp-flujo-analisis.yml
+      - brain/wms/recepcion/lp-endpoints.yml
+      - brain/wms/recepcion/db-probes.yml
+      - brain/wms/recepcion/implosion/implosion-flujo.yml
+      - brain/wms/recepcion/implosion/implosion-trazas.yml
+routes:
+  default:
+    - workspace-core
+    - wms-brain
+    - mpos-brain
+  wms:
+    - workspace-core
+    - wms-brain
+    - brain-atlas
+    - brain-wms-recepcion
+  implosion:
+    - workspace-core
+    - wms-brain
+    - brain-atlas
+    - brain-wms-recepcion
+  mpos:
+    - workspace-core
+    - mpos-brain
+notes:
+  - The index is the single source of truth for federated startup routing.
+  - Extend this file first when a new persistent brain is added.

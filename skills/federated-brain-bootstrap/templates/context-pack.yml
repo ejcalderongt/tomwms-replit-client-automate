@@ -1,0 +1,18 @@
+workspace_root: C:\Users\yejc2\OpenClawWorkspace
+federated_index: brain/federated-index.yml
+active_brain: brain
+active_domain: unknown
+loaded_anchors:
+  - AGENTS.md
+  - SOUL.md
+  - USER.md
+  - TOOLS.md
+  - MEMORY.md
+  - brain/federated-index.yml
+loaded_brains:
+  - wms-brain/README.md
+  - mpos-brain/README.md
+loaded_task_files: []
+loaded_traces: []
+open_risks: []
+next_file_to_inspect: null

@@ -1,0 +1,47 @@
+# Flujo de Licencias en Recepción (HH + WS)
+version: 2026-06-24T17:55:00-06:00
+context:
+  objetivo:
+    - Bloquear auto-licencia cuando banderas están en OFF (producto.genera_lp=false y presentacion.genera_lp_auto=false)
+    - Evitar arrastres de LP (Caja Master / Pallet) cuando flags están OFF
+    - Alinear consulta de resolución (case=6) solo si lpPermitido=true
+    - Evitar cast indebidos en WS/DAL con LP alfanumérica (AG00028240)
+  alcance:
+    - HH Android TOMHH2025 (frm_recepcion_datos.java)
+    - WS ASMX TOMHHWS (Guardar_Recepcion_S)
+    - DAL Recepción (clsLnTrans_re_det_Partial.vb)
+resumen_cambios:
+  HH:
+    - Gating lpPermitido en todas las rutas que llamaban execws(6): Call_From_A/B/C/D, P2/P3/P4, reload_lp
+    - Bloqueo de MUTATION a txtNoLP por Caja Master y Pallet cuando flags off
+    - Limpieza defensiva de LP antes de Guardar_Recepcion cuando flags off (CLEANUP)
+    - Trazas en español: UI_DECISION.pre, AUTO_LP_REQUEST.autorizado|bloqueado, MUTATION|BLOCKED, CLEANUP
+  WS:
+    - Guardar_Recepcion_S con snapshot ampliado: idRes, lp_det, stockLpCount, STOCK_LPS
+    - Trazas BACKEND_ERROR/BACKEND_CAST_ERROR para detectar cast indebido de LP
+  DAL:
+    - Null-safe en Lic_plate (String.IsNullOrEmpty)
+    - Uso de Agregar_Error con argumentos por nombre (evitar desalineo de overloads)
+    - Blindaje del logger para que nunca tumbe la transacción
+lpPermitido:
+  expresion: |
+    Producto.Genera_lp
+    OR Presentacion.Genera_lp_auto (Get_Genera_Lp_Presentacion())
+    OR (Push_To_NAV AND TipoOC in {Orden_De_Produccion, Transferencia_de_Ingreso, Devolucion_Venta})
+trazas:
+  HH:
+    - TRACE_REC_LP UI_DECISION.pre
+    - TRACE_REC_LP AUTO_LP_REQUEST.autorizado | AUTO_LP_REQUEST.bloqueado
+    - WMS.REC_CM_SKU LP_TRACE (mutaciones de txtNoLP)
+    - TRACE_REC_LP CLEANUP (antes de Guardar_Recepcion)
+  WS:
+    - TRACE_REC_LP GUARDAR_REC_S (recEnc, ocEnc, bod, idRes, lp_det, stockLpCount)
+    - LP STOCK_LPS (lista de LP en pListStockRec)
+    - LP BACKEND_ERROR / BACKEND_CAST_ERROR
+riesgos_pendientes:
+  - En escenarios ON, correlativo podría no incrementarse si HH solo consulta resolución. Próximo: endpoint de asignación atómica en WS y consumo desde HH.
+  - Validar que otras pantallas que programen execws(6) respeten lpPermitido.
+validado_con:
+  - Logcat_20260624-2.txt y posteriores: se ve AUTO_LP_REQUEST.bloqueado con flags off
+  - WS trace: GUARDAR_REC_S con lp_det vacío y STOCK_LPS vacío cuando flags off
+  - Fix DAL evita “Conversion from string ... to Integer” al loguear AVISO_02122024

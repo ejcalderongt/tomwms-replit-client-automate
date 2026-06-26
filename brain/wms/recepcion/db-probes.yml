@@ -1,0 +1,41 @@
+# Probes SQL (PRD EC2) seguros para recepción/LP
+version: 2026-06-24T17:55:00-06:00
+conexion:
+  server: 52.41.114.122,1437
+  database: TOMWMS_BAGUTA_PRD
+  auth: sa / Admin1965!**
+  options:
+    - Encrypt=False
+    - TrustServerCertificate=True
+    - Connection Timeout=8
+    - READ UNCOMMITTED
+probes:
+  lp_compuestas:
+    descripcion: Licencias que contienen más de un IdProductoBodega (candidatas para implosión/split)
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT TOP 20
+             s.IdBodega,
+             s.IdUbicacion,
+             s.Lic_plate,
+             COUNT(DISTINCT s.IdProductoBodega) AS items
+      FROM   Stock_rec s WITH (NOLOCK)
+      WHERE  s.Lic_plate IS NOT NULL AND s.Lic_plate<>''
+      GROUP BY s.IdBodega, s.IdUbicacion, s.Lic_plate
+      HAVING COUNT(DISTINCT s.IdProductoBodega) > 1
+      ORDER BY items DESC;
+  flags_producto_presentacion:
+    descripcion: Verificar banderas LP por producto/presentación (diagnóstico de UI_DECISION)
+    query: |
+      -- Adaptar nombres reales en PRD si difieren
+      SELECT TOP 50 pb.IdProductoBodega, p.Codigo, p.Nombre,
+             ISNULL(p.Genera_lp, 0) AS ProdGeneraLP,
+             ISNULL(pp.Genera_lp_auto, 0) AS PresGeneraLPAuto,
+             pp.IdPresentacion
+      FROM Producto_bodega pb WITH (NOLOCK)
+      JOIN Producto p WITH (NOLOCK) ON p.IdProducto = pb.IdProducto
+      LEFT JOIN Producto_presentacion pp WITH (NOLOCK) ON pp.IdProducto = p.IdProducto
+      ORDER BY pb.IdProductoBodega DESC;
+notas:
+  - Ajustar nombres de tablas/columnas si PRD difiere (ya vimos diferencias en trans_re_det).
+  - Mantener TOP y NOLOCK; evitar ORDER BY sobre tablas grandes sin índice.

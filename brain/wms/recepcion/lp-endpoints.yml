@@ -1,0 +1,27 @@
+# Endpoints y métodos relevantes (Recepción)
+version: 2026-06-24T17:55:00-06:00
+hh:
+  casos_ws:
+    1: Get_Producto_By_IdProductoBodega
+    2: Get_Estados_By_IdPropietario_And_IdBodegaHH
+    4: Get_All_Codigos_Barra_By_IdProducto
+    5: Get_All_ProductoParametros_By_IdProducto_HH
+    6: Get_Resoluciones_Lp_By_IdOperador_And_IdBodega (auto-licencia; ahora gated por lpPermitido)
+    16: Guardar_Recepcion_S | Guardar_Recepcion_Sin_Presentacion (según flujo)
+    22: Get_All_BeTrasReDet_By_IdOrdenCompraEnc (precheck concurrencia)
+    27: Get_Tipo_Etiqueta_By_IdTipoEtiqueta
+  mutaciones_lp:
+    - Load.CajaMaster -> txtNoLP (bloqueado si flags off)
+    - processGetProductoByCodigoBarraPallet -> txtNoLP (bloqueado si flags off)
+ws:
+  asmx:
+    - Get_Resoluciones_Lp_By_IdOperador_And_IdBodega
+    - Existe_Lp / Existe_Lp_In_Stock (consultas varias)
+    - Guardar_Recepcion_S (flujo principal)
+    - Guardar_Recepcion_Sin_Presentacion (según UI)
+  trazas:
+    - TRACE_REC_LP RES_LP_BY_OP_BOD
+    - TRACE_REC_LP GUARDAR_REC_S (contexto ampliado)
+    - LP STOCK_LPS, BACKEND_ERROR, BACKEND_CAST_ERROR
+  proximo_endpoint:
+    - POST Asignar_Nueva_Licencia(pIdResolucionLp, contexto): atómico; devuelve LP asignada y mueve correlativo

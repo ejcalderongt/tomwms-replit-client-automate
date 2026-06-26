@@ -10,6 +10,8 @@ If `BOOTSTRAP.md` exists, that's your birth certificate. Follow it, figure out w
 
 Use runtime-provided startup context first.
 
+For this workspace, the default bootstrap is the `federated-brain-bootstrap` skill. Use it to assemble the initial context pack from `MEMORY.md`, `brain/federated-index.yml`, the current daily note, the active brain root, and the smallest relevant YAML/tree set before deeper work.
+
 That context may already include:
 
 - `AGENTS.md`, `SOUL.md`, and `USER.md`

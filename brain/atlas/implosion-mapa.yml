@@ -1,0 +1,28 @@
+# Atlas: Mapa de Implosión de Licencias en Recepción
+version: 2026-06-24T17:55:00-06:00
+componentes:
+  hh:
+    modulo: TOMHH2025 Recepción
+    clases:
+      - frm_recepcion_datos (base para recepción)
+      - nueva_pantalla_implosion (propuesta)
+  ws:
+    modulo: WSHHRN TOMHHWS.asmx
+    metodos_actuales:
+      - Existe_Lp / Get_Resoluciones_Lp_By_IdOperador_And_IdBodega
+      - Guardar_Recepcion_S / Guardar_Recepcion_Sin_Presentacion
+    propuestos:
+      - Recepcion_Implosion_Mover_Subconjunto
+  dal:
+    modulo: TOMIMSV4 Recepcion_Detalle
+    clases:
+      - clsLnTrans_re_det_Partial (inserción/actualización detalle)
+      - clsLnStock_rec (mutaciones de inventario)
+flujo:
+  - UI escanea SKU -> marca hijos -> arma payload -> WS mover_subconjunto -> DAL mueve items atómicamente
+observabilidad:
+  - HH TRACE_IMPLO*, WS TRACE_IMPLO*, DAL TRACE_IMPLO*
+riesgos:
+  - Concurrencia en la misma licencia origen
+  - Licencias ya asignadas/mixtas en otro proceso
+  - Cantidades con factor de presentación

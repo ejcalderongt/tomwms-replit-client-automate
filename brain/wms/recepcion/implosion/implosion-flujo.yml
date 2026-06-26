@@ -1,0 +1,52 @@
+# Flujo de Implosión (Split de Licencia Maestra -> Licencias de Caja)
+version: 2026-06-24T17:55:00-06:00
+objetivo_negocio:
+  - Recepcionar rápido agrupando todo bajo una licencia maestra (p.ej. CM-0000 / licencia única)
+  - Posteriormente, hacer split (implosión) hacia nuevas licencias por caja/variante (talla/color)
+  - Mantener trazabilidad y no romper flujos actuales
+estado_actual:
+  ui:
+    - La HH lista (Recycler/ListView) los productos contenidos en una licencia compuesta/mixta
+    - No existe interacción para marcar/escoger subconjunto por escaneo de SKU
+  server:
+    - WS/BOF soportan operaciones de LP; existen rutas con pEsImplosion=True (packing)
+    - No hay endpoint específico para "mover subconjunto" desde licencia A -> B en recepción
+brecha:
+  - Falta permitir al operador: escanear SKU y marcar elementos dentro de la licencia maestra para formar la licencia destino
+  - Falta endpoint que reciba el subconjunto (IdProductoBodega/IdTalla/IdColor/Cantidades) y realice el traspaso atómico de A -> B
+propuesta_ui:
+  pantallas:
+    - Implosión: Detalle de Licencia Maestra
+      elementos:
+        - Campo escaneo SKU/CB (acepta SKU, EAN, interno)
+        - Lista de productos hijos (sku, desc, talla, color, pendiente disponible)
+        - Checkbox/selector por ítem + input de cantidad (por defecto 1)
+        - Botón "Agregar a destino" (acumula en selección actual)
+        - Resumen destino (conteo ítems y total cantidades)
+        - Acciones: Generar nueva licencia destino | Asignar a licencia destino existente (scan LP)
+  reglas:
+    - Solo se puede seleccionar hasta la cantidad disponible en la licencia maestra
+    - Validar talla/color cuando aplique (MAMPA)
+    - Permitir licencias mixtas (diferentes SKUs) en destino si política lo autoriza
+propuesta_ws:
+  endpoint:
+    - POST /ws/recepcion/implosion/mover_subconjunto
+      request:
+        IdBodega, IdUbicacionOrigen, LicPlateOrigen, LicPlateDestino (opcional, si vacío -> generar),
+        Items: [ { IdProductoBodega, IdProductoTallaColor?, Cantidad } ]
+        Auditoria: IdOperadorBodega, IdRecepcionEnc?, IdOrdenCompraEnc?
+      reglas:
+        - Validar existencia en origen, cantidades, y bloqueo de inventario
+        - Si LicPlateDestino vacío: asignar nueva licencia (consumo correlativo) y retornar LP destino
+        - Movimiento atómico: descontar de origen y crear/acrecentar en destino, con Kardex
+      response:
+        Exito, LicPlateDestino, Movimientos, Mensajes
+trazas:
+  - HH: TRACE_IMPLO UI, SCAN, SELECT, BUILD_PAYLOAD, SUBMIT, RESULT
+  - WS: TRACE_IMPLO REQUEST payload-size y primer/último item; RESULT con LP destino y conteos
+  - DAL: TRACE_IMPLO MUTATIONS (origen->destino) por cada item
+escenarios:
+  - Licencia compuesta (mixta) con múltiples SKUs hijos (MAMPA talla/color)
+  - Caja Master CM-0000 -> splits a N licencias
+  - Validar licencias ya usadas/asignadas (EXISTE_LP)
+  - Errores parciales -> transacción aborta, se devuelve estado exacto

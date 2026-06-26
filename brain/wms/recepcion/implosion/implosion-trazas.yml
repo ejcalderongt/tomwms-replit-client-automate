@@ -1,0 +1,19 @@
+# Trazas para Implosión (HH/WS/DAL)
+version: 2026-06-24T17:55:00-06:00
+hh:
+  tags:
+    - TRACE_IMPLO UI: pantalla abierta, licencia origen
+    - TRACE_IMPLO SCAN: sku=..., result=OK/NO-EN-MAESTRA
+    - TRACE_IMPLO SELECT: idProdBod=..., talla=.., color=.., qty=..
+    - TRACE_IMPLO BUILD_PAYLOAD: items=n, qtyTotal=..
+    - TRACE_IMPLO SUBMIT: destino=(nueva|LP:xxx)
+    - TRACE_IMPLO RESULT: exito=.., lpDestino=.., itemsMov=..
+ws:
+  tags:
+    - TRACE_IMPLO REQUEST: licOrigen=.., idBod=.., idUbic=.., items=n, first=..
+    - TRACE_IMPLO RESULT: exito=.., lpDestino=.., movs=n
+    - TRACE_IMPLO ERROR: code=.., msg=..
+dal:
+  tags:
+    - TRACE_IMPLO MUT: licOrigen -> licDestino, idProdBod=.., qty=..
+    - TRACE_IMPLO INV: newStockDestino=.., restStockOrigen=..
