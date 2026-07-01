@@ -1,0 +1,40 @@
+version: 1
+projects:
+  - name: TOMWMS_BOF
+    priority: 100
+    path: C:\Users\yejc2\source\repos\TOMWMS
+    include:
+      - brain
+      - tools
+      - TOMIMSV4
+      - WMSWebAPI
+      - WSHHRN
+      - WmsBodegaApi
+      - WmsBodegaApi.WebApi
+    exclude:
+      - .git
+      - .vs
+      - bin
+      - obj
+      - node_modules
+      - packages
+  - name: TOMHH2025
+    priority: 80
+    path: C:\Users\yejc2\StudioProjects\TOMHH2025
+    include:
+      - app/src/main/java
+    exclude:
+      - .gradle
+      - build
+      - .idea
+      - .git
+  - name: wms-brain
+    priority: 90
+    path: C:\Users\yejc2\source\repos\wms-brain\wms-brain
+    include:
+      - brain
+      - tools
+    exclude:
+      - .git
+      - .venv
+      - __pycache__
