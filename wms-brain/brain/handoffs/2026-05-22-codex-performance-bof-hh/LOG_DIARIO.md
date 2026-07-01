@@ -330,3 +330,28 @@ Se corrigio perdida de `IdProductoTallaColor` en requests de reemplazo (picking/
 ### Documento de detalle
 
 - `brain/handoffs/2026-05-22-codex-performance-bof-hh/2026-06-11-hh-reemplazo-tc-request-guard.md`
+
+## 2026-07-01 - Guardrail de codificacion VB movido a Brain
+
+### Resumen
+
+Se movio el helper de verificacion de BOM fuera del repo de aplicacion y se
+centralizo en Brain para evitar mezclar herramientas de inspeccion con el
+codigo productivo de TOMWMS.
+
+### Cambios
+
+- Nuevo helper:
+  - `tools/wms-context/check-vb-bom.ps1`
+- Regla documentada:
+  - los archivos VB en TOMWMS deben mantenerse en UTF-8 con BOM.
+  - el modo por defecto valida solo los `.vb` modificados/relevantes.
+  - `-All` queda reservado para auditorias puntuales.
+- Aprendizaje actualizado:
+  - `brain/agents/domain-bof.yml`
+
+### Motivo
+
+Evitar que cambios mecanicos en archivos VB rompan tildes o `ñ` en Visual
+Studio y mantener la herramienta de validacion en el lugar correcto: Brain,
+no el repo de codigo.

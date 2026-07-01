@@ -56,3 +56,25 @@ mampa_interface_notes:
       the contract at the true entry point and avoid redundant guards that hide
       the upstream failure path. Preserve the real error when the payload is
       malformed.
+
+implosion_notes:
+  sku_resolution_and_umbas:
+    updated: "2026-06-30"
+    rule: >
+      In frmImplosion, treat the scan as a two-step validation: first resolve
+      the SKU against the master service, then match the local grid by
+      IdProductoTallaColor or IdProductoBodega before falling back to an exact
+      CodigoSKU compare. The objective quantity is UMBAS (CantidadUMBas with
+      CantidadPresentacion as fallback), so other BOF screens that scan or
+      compare stock should reuse the same exact-match-first pattern instead of
+      guessing by partial code or display text.
+
+vb_encoding_guardrail:
+  updated: "2026-07-01"
+  rule: >
+    When editing VB files in TOMWMS, keep them as UTF-8 with BOM. The helper
+    script lives in wms-brain/tools/wms-context/check-vb-bom.ps1 and should be
+    used to validate only the changed VB files by default. Use -All only for
+    explicit repo-wide audits; the legacy tree contains many historical files
+    outside BOM standard and should not be mass-converted without a dedicated
+    cleanup plan.
