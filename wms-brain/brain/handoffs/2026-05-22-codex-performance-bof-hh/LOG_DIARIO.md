@@ -355,3 +355,16 @@ codigo productivo de TOMWMS.
 Evitar que cambios mecanicos en archivos VB rompan tildes o `ñ` en Visual
 Studio y mantener la herramienta de validacion en el lugar correcto: Brain,
 no el repo de codigo.
+
+## 2026-07-01 - Limpieza de tools del repo TOMWMS
+
+### Resumen
+
+Se vacio `C:/Users/yejc2/source/repos/TOMWMS/tools` y el contenido historico
+se consolido en `C:/Users/yejc2/source/repos/wms-brain/wms-brain/tools/tomwms-legacy`.
+
+### Motivo
+
+La carpeta `tools` no debe permanecer en el repo de producto. El material
+operativo queda centralizado en Brain para reducir drift y evitar mezclar
+scripts/utilidades con el codigo de aplicacion.

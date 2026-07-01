@@ -1,0 +1,987 @@
+Usando la configuración de inicio de WMSWebAPI\Properties\launchSettings.json...
+[CHECKPOINT] 2026-05-20 19:54:21.619 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:54:21.633 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:21.636 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:54:21.699 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=7 → IdProducto=7
+[CHECKPOINT] 2026-05-20 19:54:21.700 - #MI3_VALIDATION_OK - Cantidad Solicitada: 10.000000
+[INFO] 2026-05-20 19:54:21.701 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=68 | PendingBefore=0.000000 | PendingAfter=10.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:21.702 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=10.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:21.703 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:54:21.899 - #CONVERSION_APPLIED | 10.000000 presentaciones x Factor: 96 = 960.000000 unidades
+[CHECKPOINT] 2026-05-20 19:54:21.900 - #MI3_ENTITY_LOADING_OK - Producto: 00020502, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:54:21.901 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=198 | PendingBefore=10.000000 | PendingAfter=960.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:21.901 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=960.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:21.903 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:54:22.210 - #MI3_PERF_SQL | Query=lStockPicking | Ms=305 | Rows=4
+[INFO] 2026-05-20 19:54:22.936 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=715 | Rows=4
+[INFO] 2026-05-20 19:54:23.216 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=269 | Rows=1
+[INFO] 2026-05-20 19:54:23.502 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=276 | Rows=1
+[CHECKPOINT] 2026-05-20 19:54:23.505 - #MI3_STOCK_QUERY_OK - Picking: 0, NonPicking: 0, Total: 0
+[INFO] 2026-05-20 19:54:23.505 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=1601 | Picking=0 | NonPicking=0 | Total=0
+[INFO] 2026-05-20 19:54:23.507 - #FAILURE_DETECTED: NO_STOCK
+[INFO] 2026-05-20 19:54:23.508 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=1606 | PendingBefore=960.000000 | PendingAfter=960.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:23.508 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=960.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:23.509 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:54:23.510 - #MI3_DATE_CALC_OK - Global: 1900-01-01, Picking: 1900-01-01, NonPicking: 1900-01-01
+[INFO] 2026-05-20 19:54:23.511 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 1900-01-01
+[INFO] 2026-05-20 19:54:23.511 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=3 | PendingBefore=960.000000 | PendingAfter=960.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:23.512 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=960.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:23.514 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:54:23.517 - #MI3_ITERATION_1 | Pendiente: 960.000000 | StateSeen=1 | State=P=960.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=False|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:23.518 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:23.521 - #CASO_1_SKIP - No stock en pallets completos
+[INFO] 2026-05-20 19:54:23.522 - #MI3_PERF_HANDLER | Handler=CompletePackagesHandler | Ms=1 | PendingBefore=960.000000 | PendingAfter=960.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:23.523 - #CompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:23.524 - #CASO_2_SKIP - No stock en pallets incompletos
+[INFO] 2026-05-20 19:54:23.525 - #MI3_PERF_HANDLER | Handler=IncompletePackagesHandler | Ms=1 | PendingBefore=960.000000 | PendingAfter=960.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:23.526 - #IncompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:23.527 - #CASO_3_SKIP - No stock en zona picking
+[INFO] 2026-05-20 19:54:23.527 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=1 | PendingBefore=960.000000 | PendingAfter=960.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:23.528 - #PickingZoneHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:23.530 - #CASO_4_SKIP - No stock en zonas no-picking
+[INFO] 2026-05-20 19:54:23.531 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=2 | PendingBefore=960.000000 | PendingAfter=960.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:23.532 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 11 | CaseCode: CASO_1+CASO_2+CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:54:23.532 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[INFO] 2026-05-20 19:54:23.533 - #EXPLOSION_ENABLED - Cantidad convertida de presentación (10.000000 × 96 = 960.000000u), disponible: 0.00u, buscando cajas para explosionar
+[CHECKPOINT] 2026-05-20 19:54:23.534 - #MI3_FALLBACK_EXPLOSION
+[INFO] 2026-05-20 19:54:24.464 - Re-query explosion: 0 registros (after subtracting 0 in-memory reservations)
+[INFO] 2026-05-20 19:54:24.465 - #MI3_PERF_REQUERY | Mode=Explosion | Ms=930 | Rows=0
+[INFO] 2026-05-20 19:54:24.466 - #MI3_PERF_ITERATION | Iteration=1 | Ms=950 | PendingBefore=960.000000 | PendingAfter=960.000000 | Progress=FallbackExplosion | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:24.466 - #MI3_ITERATION_2 | Pendiente: 960.000000 | StateSeen=1 | State=P=960.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=True|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:24.467 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:24.468 - #CASO_EXPLOSION_SKIP - Modo no habilitado o sin stock
+[INFO] 2026-05-20 19:54:24.469 - #MI3_PERF_HANDLER | Handler=UMBasExplosionHandler | Ms=1 | PendingBefore=960.000000 | PendingAfter=960.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:24.470 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 1 | CaseCode: CASO_EXPLOSION | Message: 
+[CHECKPOINT] 2026-05-20 19:54:24.470 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[CHECKPOINT] 2026-05-20 19:54:24.471 - #MI3_NO_MORE_OPTIONS
+[INFO] 2026-05-20 19:54:24.472 - #MI3_PERF_ITERATION | Iteration=2 | Ms=5 | PendingBefore=960.000000 | PendingAfter=960.000000 | Progress=False | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:24.472 - #MI3_LOOP_END | Iteraciones: 2 | Total Reservado: 0.000000 | LoopMs: 957
+[INFO] 2026-05-20 19:54:24.473 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=961 | PendingBefore=960.000000 | PendingAfter=960.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:24.474 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=960.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:24.476 - #MI3_POST_PROCESSING_START
+[WARNING] 2026-05-20 19:54:24.478 - EVENTO=NO_RESERVA | RESULTADO=NO_RESERVADO | TIPO_NO_RESERVA=SIN_STOCK_APLICABLE | PEDIDO=37322 | DETALLE=1133291 | LINEA=0 | ITEM=00020502 | CANTIDAD_PENDIENTE=960.000000 | MOTIVO=No hay stock disponible para el producto (ID: 7).
+[CHECKPOINT] 2026-05-20 19:54:24.479 - #MI3_SUMMARY - Solicitado: 960.000000, Reservado: 0.000000, Pendiente: 960.000000, Reservas creadas: 0
+[CHECKPOINT] 2026-05-20 19:54:24.481 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:54:24.482 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=7 | PendingBefore=960.000000 | PendingAfter=960.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:24.482 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:54:24.483 - #MI3_PERF_PIPELINE_TOTAL | Ms=2850 | Pending=960.000000 | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:24.484 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:54:25.848 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:54:25.858 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:25.858 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:54:25.920 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=403 → IdProducto=403
+[CHECKPOINT] 2026-05-20 19:54:25.922 - #MI3_VALIDATION_OK - Cantidad Solicitada: 125.000000
+[INFO] 2026-05-20 19:54:25.923 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=64 | PendingBefore=0.000000 | PendingAfter=125.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:25.923 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=125.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:25.924 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:54:26.111 - #CONVERSION_APPLIED | 125.000000 presentaciones x Factor: 12 = 1500.000000 unidades
+[CHECKPOINT] 2026-05-20 19:54:26.112 - #MI3_ENTITY_LOADING_OK - Producto: 00140702, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:54:26.113 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=189 | PendingBefore=125.000000 | PendingAfter=1500.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:26.113 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=1500.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:26.114 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:54:26.381 - #MI3_PERF_SQL | Query=lStockPicking | Ms=266 | Rows=8
+[INFO] 2026-05-20 19:54:27.544 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=1162 | Rows=8
+[INFO] 2026-05-20 19:54:27.811 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=257 | Rows=2
+[INFO] 2026-05-20 19:54:28.211 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=398 | Rows=2
+[CHECKPOINT] 2026-05-20 19:54:28.221 - #MI3_STOCK_QUERY_OK - Picking: 0, NonPicking: 0, Total: 0
+[INFO] 2026-05-20 19:54:28.221 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=2107 | Picking=0 | NonPicking=0 | Total=0
+[INFO] 2026-05-20 19:54:28.222 - #FAILURE_DETECTED: NO_STOCK
+[INFO] 2026-05-20 19:54:28.222 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=2108 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:28.223 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=1500.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:28.223 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:54:28.224 - #MI3_DATE_CALC_OK - Global: 1900-01-01, Picking: 1900-01-01, NonPicking: 1900-01-01
+[INFO] 2026-05-20 19:54:28.224 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 1900-01-01
+[INFO] 2026-05-20 19:54:28.224 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:28.225 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=1500.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:28.225 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:54:28.226 - #MI3_ITERATION_1 | Pendiente: 1500.000000 | StateSeen=1 | State=P=1500.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=False|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:28.226 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:28.227 - #CASO_1_SKIP - No stock en pallets completos
+[INFO] 2026-05-20 19:54:28.227 - #MI3_PERF_HANDLER | Handler=CompletePackagesHandler | Ms=0 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:28.227 - #CompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:28.228 - #CASO_2_SKIP - No stock en pallets incompletos
+[INFO] 2026-05-20 19:54:28.228 - #MI3_PERF_HANDLER | Handler=IncompletePackagesHandler | Ms=0 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:28.229 - #IncompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:28.229 - #CASO_3_SKIP - No stock en zona picking
+[INFO] 2026-05-20 19:54:28.229 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=0 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:28.230 - #PickingZoneHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:28.230 - #CASO_4_SKIP - No stock en zonas no-picking
+[INFO] 2026-05-20 19:54:28.231 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=0 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:28.231 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 4 | CaseCode: CASO_1+CASO_2+CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:54:28.232 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[INFO] 2026-05-20 19:54:28.232 - #EXPLOSION_ENABLED - Cantidad convertida de presentación (125.000000 × 12 = 1500.000000u), disponible: 0.00u, buscando cajas para explosionar
+[CHECKPOINT] 2026-05-20 19:54:28.233 - #MI3_FALLBACK_EXPLOSION
+[INFO] 2026-05-20 19:54:29.882 - Re-query explosion: 0 registros (after subtracting 0 in-memory reservations)
+[INFO] 2026-05-20 19:54:29.891 - #MI3_PERF_REQUERY | Mode=Explosion | Ms=1657 | Rows=0
+[INFO] 2026-05-20 19:54:29.891 - #MI3_PERF_ITERATION | Iteration=1 | Ms=1665 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | Progress=FallbackExplosion | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:29.892 - #MI3_ITERATION_2 | Pendiente: 1500.000000 | StateSeen=1 | State=P=1500.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=True|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:29.892 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:29.893 - #CASO_EXPLOSION_SKIP - Modo no habilitado o sin stock
+[INFO] 2026-05-20 19:54:29.893 - #MI3_PERF_HANDLER | Handler=UMBasExplosionHandler | Ms=0 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:29.894 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 0 | CaseCode: CASO_EXPLOSION | Message: 
+[CHECKPOINT] 2026-05-20 19:54:29.894 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[CHECKPOINT] 2026-05-20 19:54:29.895 - #MI3_NO_MORE_OPTIONS
+[INFO] 2026-05-20 19:54:29.895 - #MI3_PERF_ITERATION | Iteration=2 | Ms=3 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | Progress=False | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:29.896 - #MI3_LOOP_END | Iteraciones: 2 | Total Reservado: 0.000000 | LoopMs: 1669
+[INFO] 2026-05-20 19:54:29.896 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=1671 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:29.896 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=1500.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:29.897 - #MI3_POST_PROCESSING_START
+[WARNING] 2026-05-20 19:54:29.897 - EVENTO=NO_RESERVA | RESULTADO=NO_RESERVADO | TIPO_NO_RESERVA=SIN_STOCK_APLICABLE | PEDIDO=37322 | DETALLE=1133311 | LINEA=0 | ITEM=00140702 | CANTIDAD_PENDIENTE=1500.000000 | MOTIVO=No hay stock disponible para el producto (ID: 403).
+[CHECKPOINT] 2026-05-20 19:54:29.898 - #MI3_SUMMARY - Solicitado: 1500.000000, Reservado: 0.000000, Pendiente: 1500.000000, Reservas creadas: 0
+[CHECKPOINT] 2026-05-20 19:54:29.898 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:54:29.899 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=2 | PendingBefore=1500.000000 | PendingAfter=1500.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:29.899 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:54:29.900 - #MI3_PERF_PIPELINE_TOTAL | Ms=4042 | Pending=1500.000000 | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:29.900 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:54:31.290 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:54:31.299 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:31.300 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:54:31.364 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=1071 → IdProducto=588
+[CHECKPOINT] 2026-05-20 19:54:31.365 - #MI3_VALIDATION_OK - Cantidad Solicitada: 50.000000
+[INFO] 2026-05-20 19:54:31.366 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=66 | PendingBefore=0.000000 | PendingAfter=50.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:31.366 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=50.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:31.367 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:54:31.562 - #CONVERSION_APPLIED | 50.000000 presentaciones x Factor: 24 = 1200.000000 unidades
+[CHECKPOINT] 2026-05-20 19:54:31.563 - #MI3_ENTITY_LOADING_OK - Producto: 00174467, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:54:31.564 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=197 | PendingBefore=50.000000 | PendingAfter=1200.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:31.564 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=1200.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:31.565 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:54:31.841 - #MI3_PERF_SQL | Query=lStockPicking | Ms=275 | Rows=41
+[INFO] 2026-05-20 19:54:37.087 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=5245 | Rows=41
+[INFO] 2026-05-20 19:54:37.364 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=274 | Rows=16
+[INFO] 2026-05-20 19:54:39.442 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=2077 | Rows=16
+[CHECKPOINT] 2026-05-20 19:54:39.452 - #MI3_STOCK_QUERY_OK - Picking: 0, NonPicking: 0, Total: 0
+[INFO] 2026-05-20 19:54:39.452 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=7887 | Picking=0 | NonPicking=0 | Total=0
+[INFO] 2026-05-20 19:54:39.453 - #FAILURE_DETECTED: NO_STOCK
+[INFO] 2026-05-20 19:54:39.453 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=7889 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:39.454 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=1200.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:39.454 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:54:39.455 - #MI3_DATE_CALC_OK - Global: 1900-01-01, Picking: 1900-01-01, NonPicking: 1900-01-01
+[INFO] 2026-05-20 19:54:39.455 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 1900-01-01
+[INFO] 2026-05-20 19:54:39.456 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=2 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:39.456 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=1200.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:39.457 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:54:39.457 - #MI3_ITERATION_1 | Pendiente: 1200.000000 | StateSeen=1 | State=P=1200.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=False|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:39.458 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:39.458 - #CASO_1_SKIP - No stock en pallets completos
+[INFO] 2026-05-20 19:54:39.459 - #MI3_PERF_HANDLER | Handler=CompletePackagesHandler | Ms=0 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:39.459 - #CompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:39.460 - #CASO_2_SKIP - No stock en pallets incompletos
+[INFO] 2026-05-20 19:54:39.460 - #MI3_PERF_HANDLER | Handler=IncompletePackagesHandler | Ms=0 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:39.461 - #IncompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:39.461 - #CASO_3_SKIP - No stock en zona picking
+[INFO] 2026-05-20 19:54:39.462 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=0 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:39.462 - #PickingZoneHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:54:39.463 - #CASO_4_SKIP - No stock en zonas no-picking
+[INFO] 2026-05-20 19:54:39.463 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=0 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:39.464 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 5 | CaseCode: CASO_1+CASO_2+CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:54:39.464 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[INFO] 2026-05-20 19:54:39.465 - #EXPLOSION_ENABLED - Cantidad convertida de presentación (50.000000 × 24 = 1200.000000u), disponible: 0.00u, buscando cajas para explosionar
+[CHECKPOINT] 2026-05-20 19:54:39.465 - #MI3_FALLBACK_EXPLOSION
+[INFO] 2026-05-20 19:54:45.201 - Re-query explosion: 0 registros (after subtracting 0 in-memory reservations)
+[INFO] 2026-05-20 19:54:45.211 - #MI3_PERF_REQUERY | Mode=Explosion | Ms=5744 | Rows=0
+[INFO] 2026-05-20 19:54:45.211 - #MI3_PERF_ITERATION | Iteration=1 | Ms=5753 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | Progress=FallbackExplosion | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:45.212 - #MI3_ITERATION_2 | Pendiente: 1200.000000 | StateSeen=1 | State=P=1200.000000|Pick=0:0.000000|NonPick=0:0.000000|Exp=True|UMBas=False|MinP=19000101|MinNP=19000101|Res=0
+[CHECKPOINT] 2026-05-20 19:54:45.212 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:54:45.213 - #CASO_EXPLOSION_SKIP - Modo no habilitado o sin stock
+[INFO] 2026-05-20 19:54:45.213 - #MI3_PERF_HANDLER | Handler=UMBasExplosionHandler | Ms=0 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:54:45.213 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 0 | CaseCode: CASO_EXPLOSION | Message: 
+[CHECKPOINT] 2026-05-20 19:54:45.214 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[CHECKPOINT] 2026-05-20 19:54:45.214 - #MI3_NO_MORE_OPTIONS
+[INFO] 2026-05-20 19:54:45.215 - #MI3_PERF_ITERATION | Iteration=2 | Ms=2 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | Progress=False | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:45.215 - #MI3_LOOP_END | Iteraciones: 2 | Total Reservado: 0.000000 | LoopMs: 5757
+[INFO] 2026-05-20 19:54:45.215 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=5758 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:45.216 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=1200.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:45.216 - #MI3_POST_PROCESSING_START
+[WARNING] 2026-05-20 19:54:45.217 - EVENTO=NO_RESERVA | RESULTADO=NO_RESERVADO | TIPO_NO_RESERVA=SIN_STOCK_APLICABLE | PEDIDO=37322 | DETALLE=1133312 | LINEA=0 | ITEM=00174467 | CANTIDAD_PENDIENTE=1200.000000 | MOTIVO=No hay stock disponible para el producto (ID: 588).
+[CHECKPOINT] 2026-05-20 19:54:45.217 - #MI3_SUMMARY - Solicitado: 1200.000000, Reservado: 0.000000, Pendiente: 1200.000000, Reservas creadas: 0
+[CHECKPOINT] 2026-05-20 19:54:45.217 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:54:45.218 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=2 | PendingBefore=1200.000000 | PendingAfter=1200.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:45.218 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:54:45.219 - #MI3_PERF_PIPELINE_TOTAL | Ms=13919 | Pending=1200.000000 | Reservas=0
+[CHECKPOINT] 2026-05-20 19:54:45.219 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:54:46.581 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:54:46.591 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:46.591 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:54:46.666 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=10 → IdProducto=10
+[CHECKPOINT] 2026-05-20 19:54:46.667 - #MI3_VALIDATION_OK - Cantidad Solicitada: 5.083333
+[INFO] 2026-05-20 19:54:46.668 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=76 | PendingBefore=0.000000 | PendingAfter=5.083333 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:46.668 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=5.083333 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:46.668 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:54:46.867 - #CONVERSION_APPLIED | 5.083333 presentaciones x Factor: 12 = 60.999996 unidades
+[CHECKPOINT] 2026-05-20 19:54:46.868 - #MI3_ENTITY_LOADING_OK - Producto: 00025001, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:54:46.868 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=200 | PendingBefore=5.083333 | PendingAfter=60.999996 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:54:46.869 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=60.999996 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:54:46.869 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:54:47.151 - #MI3_PERF_SQL | Query=lStockPicking | Ms=280 | Rows=118
+[INFO] 2026-05-20 19:54:58.589 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=11428 | Rows=118
+[INFO] 2026-05-20 19:54:58.873 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=274 | Rows=47
+[INFO] 2026-05-20 19:55:02.178 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=3295 | Rows=47
+[INFO] 2026-05-20 19:55:02.180 - #EXPIRY_FILTER | Excluidos por vencimiento: Picking=1, NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:02.181 - #MI3_STOCK_QUERY_OK - Picking: 6, NonPicking: 25, Total: 31
+[INFO] 2026-05-20 19:55:02.181 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=15311 | Picking=6 | NonPicking=25 | Total=31
+[INFO] 2026-05-20 19:55:02.182 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=15313 | PendingBefore=60.999996 | PendingAfter=60.999996 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:02.182 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=60.999996 | Reservas=0 | Picking=6 | NonPicking=25
+[CHECKPOINT] 2026-05-20 19:55:02.182 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:55:02.184 - #MI3_DATE_CALC_OK - Global: 2026-05-24, Picking: 2026-05-24, NonPicking: 2026-07-05
+[INFO] 2026-05-20 19:55:02.184 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2026-07-05
+[INFO] 2026-05-20 19:55:02.185 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=2 | PendingBefore=60.999996 | PendingAfter=60.999996 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:02.185 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=60.999996 | Reservas=0 | Picking=6 | NonPicking=25
+[CHECKPOINT] 2026-05-20 19:55:02.186 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:55:02.186 - #MI3_ITERATION_1 | Pendiente: 60.999996 | StateSeen=1 | State=P=60.999996|Pick=6:1020.000000|NonPick=25:16464.000000|Exp=False|UMBas=False|MinP=20260524|MinNP=20260705|Res=0
+[INFO] 2026-05-20 19:55:02.187 - #FEFO_DECISION: Picking (2026-05-24) vence ANTES que NonPicking (2026-07-05) → INICIAR_EN_3
+[CHECKPOINT] 2026-05-20 19:55:02.188 - #MI3_STARTING_POINT_3 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:55:02.189 - #CASO_3_START
+[RESERVATION] 2026-05-20 19:55:02.191 - CASO_3 - IdStockRes: 0 - Picking zone | Stock: 775821 | Cantidad: 12.000000
+[RESERVATION] 2026-05-20 19:55:02.192 - CASO_3 - IdStockRes: 0 - Picking zone | Stock: 777975 | Cantidad: 24.000000
+[CHECKPOINT] 2026-05-20 19:55:02.193 - #CASO_3_END - Reservado: 36.000000
+[INFO] 2026-05-20 19:55:02.193 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=4 | PendingBefore=60.999996 | PendingAfter=60.999996 | ResultReserved=36.000000 | ResultReservas=2 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:55:02.194 - #PickingZoneHandler_PASS_TO_NEXT
+[CHECKPOINT] 2026-05-20 19:55:02.194 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:55:02.195 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 768973 | Cantidad: 60.999996
+[CHECKPOINT] 2026-05-20 19:55:02.196 - #CASO_4_END - Reservado: 60.999996
+[INFO] 2026-05-20 19:55:02.196 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=1 | PendingBefore=60.999996 | PendingAfter=60.999996 | ResultReserved=60.999996 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:55:02.197 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 96.999996 | Reservations.Count: 3 | HandlerMs: 7 | CaseCode: CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:55:02.197 - #WARNING_OVER_RESERVATION | ReservedQuantity=96.999996 > PreviousPending=60.999996 | Clamping to 60.999996
+[CHECKPOINT] 2026-05-20 19:55:02.198 - #ADJUSTING_RESERVATION | IdStock=768973 | Original=60.999996 | Adjusted=24.999996
+[CHECKPOINT] 2026-05-20 19:55:02.198 - #MI3_RESERVATIONS_ADDED | Count: 3 (of 3) | TotalInContext: 3
+[CHECKPOINT] 2026-05-20 19:55:02.199 - #MI3_PROGRESS | Reservado: 60.999996 (clamped from 96.999996) | Casos: CASO_3+CASO_4
+[INFO] 2026-05-20 19:55:02.199 - #MI3_PERF_ITERATION | Iteration=1 | Ms=13 | PendingBefore=60.999996 | PendingAfter=0.000000 | Progress=True | Reservas=3
+[CHECKPOINT] 2026-05-20 19:55:02.200 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 60.999996 | LoopMs: 13
+[INFO] 2026-05-20 19:55:02.200 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=15 | PendingBefore=60.999996 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=3
+[INFO] 2026-05-20 19:55:02.201 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:55:02.201 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=3 | Picking=6 | NonPicking=25
+[CHECKPOINT] 2026-05-20 19:55:02.201 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:55:02.202 - #MI3_INSERTING_STOCK_RES - Count: 3
+[CHECKPOINT] 2026-05-20 19:55:02.202 - #MI3_STOCK_RES_INSERTING - IdStock: 775821, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133313, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:55:02.332 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822048, IdStock: 775821, IdProductoBodega: 10, Cantidad: 12.000000, IdUbicacion: 7475, IdTransaccion: 37322, Identity: 822048
+[CHECKPOINT] 2026-05-20 19:55:02.333 - #MI3_STOCK_RES_INSERTING - IdStock: 777975, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133313, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:55:02.471 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822049, IdStock: 777975, IdProductoBodega: 10, Cantidad: 24.000000, IdUbicacion: 5042, IdTransaccion: 37322, Identity: 822049
+[CHECKPOINT] 2026-05-20 19:55:02.472 - #MI3_STOCK_RES_INSERTING - IdStock: 768973, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133313, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:55:02.606 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822050, IdStock: 768973, IdProductoBodega: 10, Cantidad: 24.999996, IdUbicacion: 9374, IdTransaccion: 37322, Identity: 822050
+[CHECKPOINT] 2026-05-20 19:55:02.675 - #MI3_TRASLADO_UPDATED - Cantidad: 5.083333
+[CHECKPOINT] 2026-05-20 19:55:02.677 - #MI3_SUMMARY - Solicitado: 60.999996, Reservado: 60.999996, Pendiente: 0.000000, Reservas creadas: 3
+[CHECKPOINT] 2026-05-20 19:55:02.677 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:55:02.678 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=476 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=3 | ReservasAfter=3
+[INFO] 2026-05-20 19:55:02.678 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:55:02.679 - #MI3_PERF_PIPELINE_TOTAL | Ms=16088 | Pending=0.000000 | Reservas=3
+[CHECKPOINT] 2026-05-20 19:55:02.679 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:55:03.891 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:55:03.901 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:03.901 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:55:03.973 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=13 → IdProducto=13
+[CHECKPOINT] 2026-05-20 19:55:03.973 - #MI3_VALIDATION_OK - Cantidad Solicitada: 1.291667
+[INFO] 2026-05-20 19:55:03.974 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=73 | PendingBefore=0.000000 | PendingAfter=1.291667 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:03.974 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=1.291667 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:03.975 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:55:04.171 - #CONVERSION_APPLIED | 1.291667 presentaciones x Factor: 48 = 62.000016 unidades
+[CHECKPOINT] 2026-05-20 19:55:04.172 - #MI3_ENTITY_LOADING_OK - Producto: 00025004, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:55:04.173 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=198 | PendingBefore=1.291667 | PendingAfter=62.000016 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:04.173 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=62.000016 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:04.173 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:55:04.449 - #MI3_PERF_SQL | Query=lStockPicking | Ms=274 | Rows=332
+[INFO] 2026-05-20 19:55:29.809 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=25358 | Rows=332
+[INFO] 2026-05-20 19:55:30.110 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=291 | Rows=179
+[INFO] 2026-05-20 19:55:40.113 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=9993 | Rows=179
+[INFO] 2026-05-20 19:55:40.114 - #EXPIRY_FILTER | Excluidos por vencimiento: Picking=1, NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:40.115 - #MI3_STOCK_QUERY_OK - Picking: 35, NonPicking: 106, Total: 141
+[INFO] 2026-05-20 19:55:40.115 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=35941 | Picking=35 | NonPicking=106 | Total=141
+[INFO] 2026-05-20 19:55:40.116 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=35942 | PendingBefore=62.000016 | PendingAfter=62.000016 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:40.116 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=62.000016 | Reservas=0 | Picking=35 | NonPicking=106
+[CHECKPOINT] 2026-05-20 19:55:40.116 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:55:40.117 - #MI3_DATE_CALC_OK - Global: 2027-04-13, Picking: 2027-04-13, NonPicking: 2027-04-14
+[INFO] 2026-05-20 19:55:40.117 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-04-14
+[INFO] 2026-05-20 19:55:40.118 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=62.000016 | PendingAfter=62.000016 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:40.118 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=62.000016 | Reservas=0 | Picking=35 | NonPicking=106
+[CHECKPOINT] 2026-05-20 19:55:40.118 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:55:40.119 - #MI3_ITERATION_1 | Pendiente: 62.000016 | StateSeen=1 | State=P=62.000016|Pick=35:92880.000000|NonPick=106:377040.000000|Exp=False|UMBas=False|MinP=20270413|MinNP=20270414|Res=0
+[INFO] 2026-05-20 19:55:40.119 - #FEFO_DECISION: Picking (2027-04-13) vence ANTES que NonPicking (2027-04-14) → INICIAR_EN_3
+[CHECKPOINT] 2026-05-20 19:55:40.120 - #MI3_STARTING_POINT_3 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:55:40.120 - #CASO_3_START
+[RESERVATION] 2026-05-20 19:55:40.121 - CASO_3 - IdStockRes: 0 - Picking zone | Stock: 754729 | Cantidad: 62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.121 - #CASO_3_END - Reservado: 62.000016
+[INFO] 2026-05-20 19:55:40.122 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=1 | PendingBefore=62.000016 | PendingAfter=62.000016 | ResultReserved=62.000016 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:55:40.123 - #PickingZoneHandler_PASS_TO_NEXT
+[CHECKPOINT] 2026-05-20 19:55:40.123 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:55:40.124 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755426 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.124 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755427 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.125 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755431 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.125 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755433 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.126 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755446 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.126 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755460 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.127 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755461 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.127 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755463 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.127 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755462 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.128 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755464 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.128 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755470 | Cantidad: 62.000016
+[RESERVATION] 2026-05-20 19:55:40.129 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 755569 | Cantidad: 62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.129 - #CASO_4_END - Reservado: 744.000192
+[INFO] 2026-05-20 19:55:40.129 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=6 | PendingBefore=62.000016 | PendingAfter=62.000016 | ResultReserved=744.000192 | ResultReservas=12 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:55:40.130 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 806.000208 | Reservations.Count: 13 | HandlerMs: 9 | CaseCode: CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:55:40.130 - #WARNING_OVER_RESERVATION | ReservedQuantity=806.000208 > PreviousPending=62.000016 | Clamping to 62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.130 - #DISCARDING_EXCESS_RESERVATION | IdStock=755426 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.131 - #DISCARDING_EXCESS_RESERVATION | IdStock=755427 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.131 - #DISCARDING_EXCESS_RESERVATION | IdStock=755431 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.131 - #DISCARDING_EXCESS_RESERVATION | IdStock=755433 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.132 - #DISCARDING_EXCESS_RESERVATION | IdStock=755446 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.132 - #DISCARDING_EXCESS_RESERVATION | IdStock=755460 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.133 - #DISCARDING_EXCESS_RESERVATION | IdStock=755461 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.133 - #DISCARDING_EXCESS_RESERVATION | IdStock=755463 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.134 - #DISCARDING_EXCESS_RESERVATION | IdStock=755462 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.134 - #DISCARDING_EXCESS_RESERVATION | IdStock=755464 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.134 - #DISCARDING_EXCESS_RESERVATION | IdStock=755470 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.135 - #DISCARDING_EXCESS_RESERVATION | IdStock=755569 | Cantidad=62.000016 | CumulativeAlready=62.000016 >= Allowed=62.000016
+[CHECKPOINT] 2026-05-20 19:55:40.135 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 13) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:55:40.136 - #MI3_PROGRESS | Reservado: 62.000016 (clamped from 806.000208) | Casos: CASO_3+CASO_4
+[INFO] 2026-05-20 19:55:40.136 - #MI3_PERF_ITERATION | Iteration=1 | Ms=17 | PendingBefore=62.000016 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:55:40.136 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 62.000016 | LoopMs: 17
+[INFO] 2026-05-20 19:55:40.137 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=18 | PendingBefore=62.000016 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:55:40.137 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:55:40.138 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=35 | NonPicking=106
+[CHECKPOINT] 2026-05-20 19:55:40.138 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:55:40.138 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:55:40.139 - #MI3_STOCK_RES_INSERTING - IdStock: 754729, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133314, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:55:40.269 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822051, IdStock: 754729, IdProductoBodega: 13, Cantidad: 62.000016, IdUbicacion: 6987, IdTransaccion: 37322, Identity: 822051
+[CHECKPOINT] 2026-05-20 19:55:40.339 - #MI3_TRASLADO_UPDATED - Cantidad: 1.291667
+[CHECKPOINT] 2026-05-20 19:55:40.339 - #MI3_SUMMARY - Solicitado: 62.000016, Reservado: 62.000016, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:55:40.340 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:55:40.340 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=202 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:55:40.341 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:55:40.341 - #MI3_PERF_PIPELINE_TOTAL | Ms=36440 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:55:40.342 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:55:41.544 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:55:41.546 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:41.546 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:55:41.609 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=14 → IdProducto=14
+[CHECKPOINT] 2026-05-20 19:55:41.610 - #MI3_VALIDATION_OK - Cantidad Solicitada: 1.312500
+[INFO] 2026-05-20 19:55:41.611 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=64 | PendingBefore=0.000000 | PendingAfter=1.312500 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:41.611 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=1.312500 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:41.612 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:55:41.805 - #CONVERSION_APPLIED | 1.312500 presentaciones x Factor: 48 = 63.000000 unidades
+[CHECKPOINT] 2026-05-20 19:55:41.806 - #MI3_ENTITY_LOADING_OK - Producto: 00025005, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:55:41.806 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=195 | PendingBefore=1.312500 | PendingAfter=63.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:55:41.807 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=63.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:55:41.807 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:55:42.221 - #MI3_PERF_SQL | Query=lStockPicking | Ms=412 | Rows=292
+[INFO] 2026-05-20 19:56:13.281 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=31049 | Rows=292
+[INFO] 2026-05-20 19:56:13.707 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=424 | Rows=137
+[INFO] 2026-05-20 19:56:25.926 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=12209 | Rows=137
+[INFO] 2026-05-20 19:56:25.927 - #EXPIRY_FILTER | Excluidos por vencimiento: Picking=0, NonPicking=1
+[CHECKPOINT] 2026-05-20 19:56:25.927 - #MI3_STOCK_QUERY_OK - Picking: 14, NonPicking: 44, Total: 58
+[INFO] 2026-05-20 19:56:25.928 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=44120 | Picking=14 | NonPicking=44 | Total=58
+[INFO] 2026-05-20 19:56:25.928 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=44121 | PendingBefore=63.000000 | PendingAfter=63.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:25.929 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=63.000000 | Reservas=0 | Picking=14 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:56:25.929 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:56:25.930 - #MI3_DATE_CALC_OK - Global: 2027-05-07, Picking: 2027-08-18, NonPicking: 2027-05-07
+[INFO] 2026-05-20 19:56:25.930 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-05-07
+[INFO] 2026-05-20 19:56:25.930 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=63.000000 | PendingAfter=63.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:25.931 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=63.000000 | Reservas=0 | Picking=14 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:56:25.931 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:56:25.932 - #MI3_ITERATION_1 | Pendiente: 63.000000 | StateSeen=1 | State=P=63.000000|Pick=14:242304.000000|NonPick=44:344784.000000|Exp=False|UMBas=False|MinP=20270818|MinNP=20270507|Res=0
+[INFO] 2026-05-20 19:56:25.932 - #FEFO_DECISION: NonPicking (2027-05-07) vence ANTES que Picking (2027-08-18) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:56:25.933 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:56:25.933 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:56:25.934 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 770454 | Cantidad: 63.000000
+[CHECKPOINT] 2026-05-20 19:56:25.934 - #CASO_4_END - Reservado: 63.000000
+[INFO] 2026-05-20 19:56:25.935 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=1 | PendingBefore=63.000000 | PendingAfter=63.000000 | ResultReserved=63.000000 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:56:25.935 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 63.000000 | Reservations.Count: 1 | HandlerMs: 1 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:56:25.936 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 1) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:56:25.936 - #MI3_PROGRESS | Reservado: 63.000000 (clamped from 63.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:56:25.937 - #MI3_PERF_ITERATION | Iteration=1 | Ms=5 | PendingBefore=63.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:25.937 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 63.000000 | LoopMs: 5
+[INFO] 2026-05-20 19:56:25.937 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=6 | PendingBefore=63.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:56:25.938 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:56:25.938 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=14 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:56:25.939 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:56:25.939 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:56:25.939 - #MI3_STOCK_RES_INSERTING - IdStock: 770454, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133315, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:56:26.069 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822052, IdStock: 770454, IdProductoBodega: 14, Cantidad: 63.000000, IdUbicacion: 1391, IdTransaccion: 37322, Identity: 822052
+[CHECKPOINT] 2026-05-20 19:56:26.137 - #MI3_TRASLADO_UPDATED - Cantidad: 1.312500
+[CHECKPOINT] 2026-05-20 19:56:26.137 - #MI3_SUMMARY - Solicitado: 63.000000, Reservado: 63.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:56:26.138 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:56:26.138 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=199 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:56:26.139 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:56:26.139 - #MI3_PERF_PIPELINE_TOTAL | Ms=44593 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:26.140 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:56:27.302 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:56:27.303 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:27.304 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:56:27.368 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=19 → IdProducto=19
+[CHECKPOINT] 2026-05-20 19:56:27.369 - #MI3_VALIDATION_OK - Cantidad Solicitada: 10.666667
+[INFO] 2026-05-20 19:56:27.370 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=66 | PendingBefore=0.000000 | PendingAfter=10.666667 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:27.370 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=10.666667 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:27.371 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:56:27.577 - #CONVERSION_APPLIED | 10.666667 presentaciones x Factor: 6 = 64.000002 unidades
+[CHECKPOINT] 2026-05-20 19:56:27.578 - #MI3_ENTITY_LOADING_OK - Producto: 00050608, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:56:27.578 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=208 | PendingBefore=10.666667 | PendingAfter=64.000002 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:27.579 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=64.000002 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:27.579 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:56:27.845 - #MI3_PERF_SQL | Query=lStockPicking | Ms=265 | Rows=35
+[INFO] 2026-05-20 19:56:32.528 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=4682 | Rows=35
+[INFO] 2026-05-20 19:56:32.796 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=257 | Rows=10
+[INFO] 2026-05-20 19:56:34.190 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=1392 | Rows=10
+[CHECKPOINT] 2026-05-20 19:56:34.199 - #MI3_STOCK_QUERY_OK - Picking: 0, NonPicking: 1, Total: 1
+[INFO] 2026-05-20 19:56:34.200 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=6619 | Picking=0 | NonPicking=1 | Total=1
+[INFO] 2026-05-20 19:56:34.200 - #FAILURE_WARNING: NO_PICKING_STOCK
+[INFO] 2026-05-20 19:56:34.201 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=6621 | PendingBefore=64.000002 | PendingAfter=64.000002 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:34.201 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=64.000002 | Reservas=0 | Picking=0 | NonPicking=1
+[CHECKPOINT] 2026-05-20 19:56:34.202 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:56:34.202 - #MI3_DATE_CALC_OK - Global: 2027-01-20, Picking: 1900-01-01, NonPicking: 2027-01-20
+[INFO] 2026-05-20 19:56:34.203 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-01-20
+[INFO] 2026-05-20 19:56:34.204 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=2 | PendingBefore=64.000002 | PendingAfter=64.000002 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:34.204 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=64.000002 | Reservas=0 | Picking=0 | NonPicking=1
+[CHECKPOINT] 2026-05-20 19:56:34.205 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:56:34.205 - #MI3_ITERATION_1 | Pendiente: 64.000002 | StateSeen=1 | State=P=64.000002|Pick=0:0.000000|NonPick=1:42.000000|Exp=False|UMBas=False|MinP=19000101|MinNP=20270120|Res=0
+[CHECKPOINT] 2026-05-20 19:56:34.205 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:56:34.206 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:56:34.206 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 781957 | Cantidad: 42.000000
+[CHECKPOINT] 2026-05-20 19:56:34.207 - #CASO_4_END - Reservado: 42.000000
+[INFO] 2026-05-20 19:56:34.207 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=1 | PendingBefore=64.000002 | PendingAfter=64.000002 | ResultReserved=42.000000 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:56:34.208 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 42.000000 | Reservations.Count: 1 | HandlerMs: 1 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:56:34.208 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 1) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:56:34.209 - #MI3_PROGRESS | Reservado: 42.000000 (clamped from 42.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:56:34.210 - #MI3_PERF_ITERATION | Iteration=1 | Ms=5 | PendingBefore=64.000002 | PendingAfter=22.000002 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:34.211 - #MI3_ITERATION_2 | Pendiente: 22.000002 | StateSeen=1 | State=P=22.000002|Pick=0:0.000000|NonPick=0:0.000000|Exp=False|UMBas=False|MinP=19000101|MinNP=19000101|Res=1
+[CHECKPOINT] 2026-05-20 19:56:34.211 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:56:34.211 - #CASO_1_SKIP - No stock en pallets completos
+[INFO] 2026-05-20 19:56:34.212 - #MI3_PERF_HANDLER | Handler=CompletePackagesHandler | Ms=0 | PendingBefore=22.000002 | PendingAfter=22.000002 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:56:34.212 - #CompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:56:34.213 - #CASO_2_SKIP - No stock en pallets incompletos
+[INFO] 2026-05-20 19:56:34.213 - #MI3_PERF_HANDLER | Handler=IncompletePackagesHandler | Ms=0 | PendingBefore=22.000002 | PendingAfter=22.000002 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:56:34.214 - #IncompletePackagesHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:56:34.214 - #CASO_3_SKIP - No stock en zona picking
+[INFO] 2026-05-20 19:56:34.214 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=0 | PendingBefore=22.000002 | PendingAfter=22.000002 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:56:34.215 - #PickingZoneHandler_PASS_TO_NEXT
+[INFO] 2026-05-20 19:56:34.215 - #CASO_4_SKIP - No stock en zonas no-picking
+[INFO] 2026-05-20 19:56:34.216 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=0 | PendingBefore=22.000002 | PendingAfter=22.000002 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:56:34.216 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 4 | CaseCode: CASO_1+CASO_2+CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:56:34.216 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[INFO] 2026-05-20 19:56:34.217 - #EXPLOSION_ENABLED - Cantidad convertida de presentación (10.666667 × 6 = 22.000002u), disponible: 0.00u, buscando cajas para explosionar
+[CHECKPOINT] 2026-05-20 19:56:34.217 - #MI3_FALLBACK_EXPLOSION
+[INFO] 2026-05-20 19:56:39.682 - Re-query explosion: 0 registros (after subtracting 1 in-memory reservations)
+[INFO] 2026-05-20 19:56:39.683 - #MI3_PERF_REQUERY | Mode=Explosion | Ms=5465 | Rows=0
+[INFO] 2026-05-20 19:56:39.684 - #MI3_PERF_ITERATION | Iteration=2 | Ms=5473 | PendingBefore=22.000002 | PendingAfter=22.000002 | Progress=FallbackExplosion | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:39.684 - #MI3_ITERATION_3 | Pendiente: 22.000002 | StateSeen=1 | State=P=22.000002|Pick=0:0.000000|NonPick=0:0.000000|Exp=True|UMBas=False|MinP=19000101|MinNP=19000101|Res=1
+[CHECKPOINT] 2026-05-20 19:56:39.685 - #MI3_STARTING_POINT_0 | DecisionMs=0
+[INFO] 2026-05-20 19:56:39.685 - #CASO_EXPLOSION_SKIP - Modo no habilitado o sin stock
+[INFO] 2026-05-20 19:56:39.686 - #MI3_PERF_HANDLER | Handler=UMBasExplosionHandler | Ms=0 | PendingBefore=22.000002 | PendingAfter=22.000002 | ResultReserved=0.000000 | ResultReservas=0 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:56:39.686 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 0.000000 | Reservations.Count: 0 | HandlerMs: 0 | CaseCode: CASO_EXPLOSION | Message: 
+[CHECKPOINT] 2026-05-20 19:56:39.686 - #WARNING_RESULT_REJECTED | Success=True | ReservedQuantity=0.000000 | Reason: ReservedQuantity <= 0
+[CHECKPOINT] 2026-05-20 19:56:39.687 - #MI3_NO_MORE_OPTIONS
+[INFO] 2026-05-20 19:56:39.687 - #MI3_PERF_ITERATION | Iteration=3 | Ms=2 | PendingBefore=22.000002 | PendingAfter=22.000002 | Progress=False | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:39.688 - #MI3_LOOP_END | Iteraciones: 3 | Total Reservado: 42.000000 | LoopMs: 5482
+[INFO] 2026-05-20 19:56:39.688 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=5484 | PendingBefore=64.000002 | PendingAfter=22.000002 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:56:39.689 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=22.000002 | Reservas=1 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:39.689 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:56:39.689 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:56:39.690 - #MI3_STOCK_RES_INSERTING - IdStock: 781957, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133316, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:56:39.827 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822053, IdStock: 781957, IdProductoBodega: 19, Cantidad: 42.000000, IdUbicacion: 10350, IdTransaccion: 37322, Identity: 822053
+[CHECKPOINT] 2026-05-20 19:56:39.899 - #MI3_TRASLADO_UPDATED - Cantidad: 7.000000
+[WARNING] 2026-05-20 19:56:39.900 - EVENTO=NO_RESERVA | RESULTADO=NO_RESERVADO | TIPO_NO_RESERVA=SOLO_NO_PICKING_SIN_EXPLOSION | PEDIDO=37322 | DETALLE=1133316 | LINEA=0 | ITEM=00050608 | CANTIDAD_PENDIENTE=22.000002 | MOTIVO=Stock disponible solo en zona de almacenaje (no picking).
+[CHECKPOINT] 2026-05-20 19:56:39.901 - #MI3_SUMMARY - Solicitado: 64.000002, Reservado: 42.000000, Pendiente: 22.000002, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:56:39.901 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:56:39.902 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=213 | PendingBefore=22.000002 | PendingAfter=22.000002 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:56:39.902 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:56:39.903 - #MI3_PERF_PIPELINE_TOTAL | Ms=12599 | Pending=22.000002 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:56:39.903 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:56:41.115 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:56:41.116 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:41.117 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:56:41.177 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=32 → IdProducto=32
+[CHECKPOINT] 2026-05-20 19:56:41.178 - #MI3_VALIDATION_OK - Cantidad Solicitada: 5.416667
+[INFO] 2026-05-20 19:56:41.179 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=62 | PendingBefore=0.000000 | PendingAfter=5.416667 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:41.179 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=5.416667 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:41.179 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:56:41.375 - #CONVERSION_APPLIED | 5.416667 presentaciones x Factor: 12 = 65.000004 unidades
+[CHECKPOINT] 2026-05-20 19:56:41.375 - #MI3_ENTITY_LOADING_OK - Producto: 00053325, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:56:41.376 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=197 | PendingBefore=5.416667 | PendingAfter=65.000004 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:41.377 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=65.000004 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:41.377 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:56:41.709 - #MI3_PERF_SQL | Query=lStockPicking | Ms=331 | Rows=57
+[INFO] 2026-05-20 19:56:48.926 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=7216 | Rows=57
+[INFO] 2026-05-20 19:56:49.253 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=317 | Rows=15
+[INFO] 2026-05-20 19:56:51.307 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=2052 | Rows=15
+[INFO] 2026-05-20 19:56:51.308 - #EXPIRY_FILTER | Excluidos por vencimiento: Picking=1, NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:51.308 - #MI3_STOCK_QUERY_OK - Picking: 2, NonPicking: 3, Total: 5
+[INFO] 2026-05-20 19:56:51.309 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=9931 | Picking=2 | NonPicking=3 | Total=5
+[INFO] 2026-05-20 19:56:51.309 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=9932 | PendingBefore=65.000004 | PendingAfter=65.000004 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:51.310 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=65.000004 | Reservas=0 | Picking=2 | NonPicking=3
+[CHECKPOINT] 2026-05-20 19:56:51.310 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:56:51.311 - #MI3_DATE_CALC_OK - Global: 2026-06-12, Picking: 2026-06-12, NonPicking: 2026-08-29
+[INFO] 2026-05-20 19:56:51.311 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2026-08-29
+[INFO] 2026-05-20 19:56:51.312 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=65.000004 | PendingAfter=65.000004 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:51.312 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=65.000004 | Reservas=0 | Picking=2 | NonPicking=3
+[CHECKPOINT] 2026-05-20 19:56:51.313 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:56:51.313 - #MI3_ITERATION_1 | Pendiente: 65.000004 | StateSeen=1 | State=P=65.000004|Pick=2:324.000000|NonPick=3:1872.000000|Exp=False|UMBas=False|MinP=20260612|MinNP=20260829|Res=0
+[INFO] 2026-05-20 19:56:51.313 - #FEFO_DECISION: Picking (2026-06-12) vence ANTES que NonPicking (2026-08-29) → INICIAR_EN_3
+[CHECKPOINT] 2026-05-20 19:56:51.314 - #MI3_STARTING_POINT_3 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:56:51.314 - #CASO_3_START
+[RESERVATION] 2026-05-20 19:56:51.315 - CASO_3 - IdStockRes: 0 - Picking zone | Stock: 776118 | Cantidad: 12.000000
+[CHECKPOINT] 2026-05-20 19:56:51.315 - #CASO_3_END - Reservado: 12.000000
+[INFO] 2026-05-20 19:56:51.315 - #MI3_PERF_HANDLER | Handler=PickingZoneHandler | Ms=1 | PendingBefore=65.000004 | PendingAfter=65.000004 | ResultReserved=12.000000 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:56:51.316 - #PickingZoneHandler_PASS_TO_NEXT
+[CHECKPOINT] 2026-05-20 19:56:51.316 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:56:51.317 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 764495 | Cantidad: 65.000004
+[RESERVATION] 2026-05-20 19:56:51.317 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 764643 | Cantidad: 65.000004
+[RESERVATION] 2026-05-20 19:56:51.318 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 764644 | Cantidad: 65.000004
+[CHECKPOINT] 2026-05-20 19:56:51.318 - #CASO_4_END - Reservado: 195.000012
+[INFO] 2026-05-20 19:56:51.319 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=2 | PendingBefore=65.000004 | PendingAfter=65.000004 | ResultReserved=195.000012 | ResultReservas=3 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:56:51.320 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 207.000012 | Reservations.Count: 4 | HandlerMs: 5 | CaseCode: CASO_3+CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:56:51.320 - #WARNING_OVER_RESERVATION | ReservedQuantity=207.000012 > PreviousPending=65.000004 | Clamping to 65.000004
+[CHECKPOINT] 2026-05-20 19:56:51.321 - #ADJUSTING_RESERVATION | IdStock=764495 | Original=65.000004 | Adjusted=53.000004
+[CHECKPOINT] 2026-05-20 19:56:51.321 - #DISCARDING_EXCESS_RESERVATION | IdStock=764643 | Cantidad=65.000004 | CumulativeAlready=65.000004 >= Allowed=65.000004
+[CHECKPOINT] 2026-05-20 19:56:51.322 - #DISCARDING_EXCESS_RESERVATION | IdStock=764644 | Cantidad=65.000004 | CumulativeAlready=65.000004 >= Allowed=65.000004
+[CHECKPOINT] 2026-05-20 19:56:51.322 - #MI3_RESERVATIONS_ADDED | Count: 2 (of 4) | TotalInContext: 2
+[CHECKPOINT] 2026-05-20 19:56:51.323 - #MI3_PROGRESS | Reservado: 65.000004 (clamped from 207.000012) | Casos: CASO_3+CASO_4
+[INFO] 2026-05-20 19:56:51.323 - #MI3_PERF_ITERATION | Iteration=1 | Ms=10 | PendingBefore=65.000004 | PendingAfter=0.000000 | Progress=True | Reservas=2
+[CHECKPOINT] 2026-05-20 19:56:51.324 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 65.000004 | LoopMs: 11
+[INFO] 2026-05-20 19:56:51.325 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=12 | PendingBefore=65.000004 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=2
+[INFO] 2026-05-20 19:56:51.325 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:56:51.326 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=2 | Picking=2 | NonPicking=3
+[CHECKPOINT] 2026-05-20 19:56:51.326 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:56:51.326 - #MI3_INSERTING_STOCK_RES - Count: 2
+[CHECKPOINT] 2026-05-20 19:56:51.327 - #MI3_STOCK_RES_INSERTING - IdStock: 776118, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133317, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:56:51.472 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822054, IdStock: 776118, IdProductoBodega: 32, Cantidad: 12.000000, IdUbicacion: 4304, IdTransaccion: 37322, Identity: 822054
+[CHECKPOINT] 2026-05-20 19:56:51.473 - #MI3_STOCK_RES_INSERTING - IdStock: 764495, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133317, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:56:51.625 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822055, IdStock: 764495, IdProductoBodega: 32, Cantidad: 53.000004, IdUbicacion: 9607, IdTransaccion: 37322, Identity: 822055
+[CHECKPOINT] 2026-05-20 19:56:51.698 - #MI3_TRASLADO_UPDATED - Cantidad: 5.416667
+[CHECKPOINT] 2026-05-20 19:56:51.699 - #MI3_SUMMARY - Solicitado: 65.000004, Reservado: 65.000004, Pendiente: 0.000000, Reservas creadas: 2
+[CHECKPOINT] 2026-05-20 19:56:51.700 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:56:51.700 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=374 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=2 | ReservasAfter=2
+[INFO] 2026-05-20 19:56:51.701 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:56:51.701 - #MI3_PERF_PIPELINE_TOTAL | Ms=10585 | Pending=0.000000 | Reservas=2
+[CHECKPOINT] 2026-05-20 19:56:51.702 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:56:52.964 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:56:52.965 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:52.965 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:56:53.040 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=43 → IdProducto=43
+[CHECKPOINT] 2026-05-20 19:56:53.041 - #MI3_VALIDATION_OK - Cantidad Solicitada: 5.000000
+[INFO] 2026-05-20 19:56:53.041 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=76 | PendingBefore=0.000000 | PendingAfter=5.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:53.042 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=5.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:53.042 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:56:53.260 - #CONVERSION_APPLIED | 5.000000 presentaciones x Factor: 24 = 120.000000 unidades
+[CHECKPOINT] 2026-05-20 19:56:53.270 - #MI3_ENTITY_LOADING_OK - Producto: 00080707, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:56:53.270 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=228 | PendingBefore=5.000000 | PendingAfter=120.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:56:53.271 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=120.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:56:53.271 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:56:53.550 - #MI3_PERF_SQL | Query=lStockPicking | Ms=278 | Rows=127
+[INFO] 2026-05-20 19:57:03.771 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=10211 | Rows=127
+[INFO] 2026-05-20 19:57:04.042 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=261 | Rows=56
+[INFO] 2026-05-20 19:57:05.876 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=1823 | Rows=56
+[CHECKPOINT] 2026-05-20 19:57:05.877 - #MI3_STOCK_QUERY_OK - Picking: 8, NonPicking: 44, Total: 52
+[INFO] 2026-05-20 19:57:05.878 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=12605 | Picking=8 | NonPicking=44 | Total=52
+[INFO] 2026-05-20 19:57:05.878 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=12607 | PendingBefore=120.000000 | PendingAfter=120.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:05.879 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=120.000000 | Reservas=0 | Picking=8 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:57:05.879 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:57:05.879 - #MI3_DATE_CALC_OK - Global: 2027-05-07, Picking: 2027-06-04, NonPicking: 2027-05-07
+[INFO] 2026-05-20 19:57:05.880 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-05-07
+[INFO] 2026-05-20 19:57:05.880 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=120.000000 | PendingAfter=120.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:05.881 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=120.000000 | Reservas=0 | Picking=8 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:57:05.881 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:57:05.882 - #MI3_ITERATION_1 | Pendiente: 120.000000 | StateSeen=1 | State=P=120.000000|Pick=8:12024.000000|NonPick=44:100416.000000|Exp=False|UMBas=False|MinP=20270604|MinNP=20270507|Res=0
+[INFO] 2026-05-20 19:57:05.882 - #FEFO_DECISION: NonPicking (2027-05-07) vence ANTES que Picking (2027-06-04) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:57:05.883 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:57:05.884 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:57:05.884 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771296 | Cantidad: 120.000000
+[RESERVATION] 2026-05-20 19:57:05.885 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 772014 | Cantidad: 120.000000
+[CHECKPOINT] 2026-05-20 19:57:05.885 - #CASO_4_END - Reservado: 240.000000
+[INFO] 2026-05-20 19:57:05.887 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=3 | PendingBefore=120.000000 | PendingAfter=120.000000 | ResultReserved=240.000000 | ResultReservas=2 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:57:05.887 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 240.000000 | Reservations.Count: 2 | HandlerMs: 3 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:57:05.888 - #WARNING_OVER_RESERVATION | ReservedQuantity=240.000000 > PreviousPending=120.000000 | Clamping to 120.000000
+[CHECKPOINT] 2026-05-20 19:57:05.888 - #DISCARDING_EXCESS_RESERVATION | IdStock=772014 | Cantidad=120.000000 | CumulativeAlready=120.000000 >= Allowed=120.000000
+[CHECKPOINT] 2026-05-20 19:57:05.889 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 2) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:57:05.889 - #MI3_PROGRESS | Reservado: 120.000000 (clamped from 240.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:57:05.889 - #MI3_PERF_ITERATION | Iteration=1 | Ms=7 | PendingBefore=120.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:57:05.890 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 120.000000 | LoopMs: 8
+[INFO] 2026-05-20 19:57:05.890 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=9 | PendingBefore=120.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:57:05.890 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:57:05.891 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=8 | NonPicking=44
+[CHECKPOINT] 2026-05-20 19:57:05.891 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:57:05.891 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:57:05.892 - #MI3_STOCK_RES_INSERTING - IdStock: 771296, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133318, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:57:06.029 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822056, IdStock: 771296, IdProductoBodega: 43, Cantidad: 120.000000, IdUbicacion: 6699, IdTransaccion: 37322, Identity: 822056
+[CHECKPOINT] 2026-05-20 19:57:06.095 - #MI3_TRASLADO_UPDATED - Cantidad: 5.000000
+[CHECKPOINT] 2026-05-20 19:57:06.096 - #MI3_SUMMARY - Solicitado: 120.000000, Reservado: 120.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:57:06.097 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:57:06.097 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=206 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:57:06.097 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:57:06.098 - #MI3_PERF_PIPELINE_TOTAL | Ms=13133 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:57:06.098 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:57:07.313 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:57:07.314 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:07.314 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:57:07.377 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=55 → IdProducto=55
+[CHECKPOINT] 2026-05-20 19:57:07.378 - #MI3_VALIDATION_OK - Cantidad Solicitada: 2.000000
+[INFO] 2026-05-20 19:57:07.379 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=64 | PendingBefore=0.000000 | PendingAfter=2.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:07.379 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=2.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:07.380 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:57:07.592 - #CONVERSION_APPLIED | 2.000000 presentaciones x Factor: 12 = 24.000000 unidades
+[CHECKPOINT] 2026-05-20 19:57:07.593 - #MI3_ENTITY_LOADING_OK - Producto: 00084423, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:57:07.593 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=214 | PendingBefore=2.000000 | PendingAfter=24.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:07.594 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=24.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:07.594 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:57:07.871 - #MI3_PERF_SQL | Query=lStockPicking | Ms=276 | Rows=101
+[INFO] 2026-05-20 19:57:18.319 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=10437 | Rows=101
+[INFO] 2026-05-20 19:57:18.576 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=248 | Rows=19
+[INFO] 2026-05-20 19:57:19.550 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=963 | Rows=19
+[INFO] 2026-05-20 19:57:19.551 - #EXPIRY_FILTER | Excluidos por vencimiento: Picking=2, NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:19.551 - #MI3_STOCK_QUERY_OK - Picking: 7, NonPicking: 14, Total: 21
+[INFO] 2026-05-20 19:57:19.552 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=11956 | Picking=7 | NonPicking=14 | Total=21
+[INFO] 2026-05-20 19:57:19.552 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=11958 | PendingBefore=24.000000 | PendingAfter=24.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:19.552 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=24.000000 | Reservas=0 | Picking=7 | NonPicking=14
+[CHECKPOINT] 2026-05-20 19:57:19.553 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:57:19.553 - #MI3_DATE_CALC_OK - Global: 2027-04-23, Picking: 2027-06-17, NonPicking: 2027-04-23
+[INFO] 2026-05-20 19:57:19.554 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-04-23
+[INFO] 2026-05-20 19:57:19.554 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=24.000000 | PendingAfter=24.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:19.555 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=24.000000 | Reservas=0 | Picking=7 | NonPicking=14
+[CHECKPOINT] 2026-05-20 19:57:19.555 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:57:19.555 - #MI3_ITERATION_1 | Pendiente: 24.000000 | StateSeen=1 | State=P=24.000000|Pick=7:5580.000000|NonPick=14:57564.000000|Exp=False|UMBas=False|MinP=20270617|MinNP=20270423|Res=0
+[INFO] 2026-05-20 19:57:19.556 - #FEFO_DECISION: NonPicking (2027-04-23) vence ANTES que Picking (2027-06-17) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:57:19.556 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:57:19.557 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:57:19.557 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763041 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.557 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763048 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.558 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763049 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.558 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763053 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.559 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763054 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.559 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763058 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.559 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763059 | Cantidad: 24.000000
+[RESERVATION] 2026-05-20 19:57:19.560 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 763063 | Cantidad: 24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.560 - #CASO_4_END - Reservado: 192.000000
+[INFO] 2026-05-20 19:57:19.561 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=4 | PendingBefore=24.000000 | PendingAfter=24.000000 | ResultReserved=192.000000 | ResultReservas=8 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:57:19.561 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 192.000000 | Reservations.Count: 8 | HandlerMs: 4 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:57:19.561 - #WARNING_OVER_RESERVATION | ReservedQuantity=192.000000 > PreviousPending=24.000000 | Clamping to 24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.562 - #DISCARDING_EXCESS_RESERVATION | IdStock=763048 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.562 - #DISCARDING_EXCESS_RESERVATION | IdStock=763049 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.563 - #DISCARDING_EXCESS_RESERVATION | IdStock=763053 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.563 - #DISCARDING_EXCESS_RESERVATION | IdStock=763054 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.563 - #DISCARDING_EXCESS_RESERVATION | IdStock=763058 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.564 - #DISCARDING_EXCESS_RESERVATION | IdStock=763059 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.564 - #DISCARDING_EXCESS_RESERVATION | IdStock=763063 | Cantidad=24.000000 | CumulativeAlready=24.000000 >= Allowed=24.000000
+[CHECKPOINT] 2026-05-20 19:57:19.564 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 8) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:57:19.565 - #MI3_PROGRESS | Reservado: 24.000000 (clamped from 192.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:57:19.566 - #MI3_PERF_ITERATION | Iteration=1 | Ms=10 | PendingBefore=24.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:57:19.566 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 24.000000 | LoopMs: 10
+[INFO] 2026-05-20 19:57:19.567 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=11 | PendingBefore=24.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:57:19.567 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:57:19.568 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=7 | NonPicking=14
+[CHECKPOINT] 2026-05-20 19:57:19.568 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:57:19.569 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:57:19.569 - #MI3_STOCK_RES_INSERTING - IdStock: 763041, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133319, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:57:19.701 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822057, IdStock: 763041, IdProductoBodega: 55, Cantidad: 24.000000, IdUbicacion: 9357, IdTransaccion: 37322, Identity: 822057
+[CHECKPOINT] 2026-05-20 19:57:19.767 - #MI3_TRASLADO_UPDATED - Cantidad: 2.000000
+[CHECKPOINT] 2026-05-20 19:57:19.768 - #MI3_SUMMARY - Solicitado: 24.000000, Reservado: 24.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:57:19.769 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:57:19.769 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=201 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:57:19.770 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:57:19.770 - #MI3_PERF_PIPELINE_TOTAL | Ms=12456 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:57:19.770 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:57:20.999 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:57:21.000 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:21.001 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:57:21.068 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=132 → IdProducto=132
+[CHECKPOINT] 2026-05-20 19:57:21.069 - #MI3_VALIDATION_OK - Cantidad Solicitada: 7.562500
+[INFO] 2026-05-20 19:57:21.069 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=69 | PendingBefore=0.000000 | PendingAfter=7.562500 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:21.070 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=7.562500 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:21.070 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:57:21.288 - #CONVERSION_APPLIED | 7.562500 presentaciones x Factor: 16 = 121.000000 unidades
+[CHECKPOINT] 2026-05-20 19:57:21.297 - #MI3_ENTITY_LOADING_OK - Producto: 00193250, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:57:21.298 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=227 | PendingBefore=7.562500 | PendingAfter=121.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:21.298 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=121.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:57:21.299 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:57:21.726 - #MI3_PERF_SQL | Query=lStockPicking | Ms=426 | Rows=799
+[INFO] 2026-05-20 19:57:49.852 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=28125 | Rows=799
+[INFO] 2026-05-20 19:57:50.215 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=361 | Rows=625
+[INFO] 2026-05-20 19:57:59.473 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=9248 | Rows=625
+[CHECKPOINT] 2026-05-20 19:57:59.484 - #MI3_STOCK_QUERY_OK - Picking: 30, NonPicking: 557, Total: 587
+[INFO] 2026-05-20 19:57:59.485 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=38185 | Picking=30 | NonPicking=557 | Total=587
+[INFO] 2026-05-20 19:57:59.485 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=38186 | PendingBefore=121.000000 | PendingAfter=121.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:59.486 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=121.000000 | Reservas=0 | Picking=30 | NonPicking=557
+[CHECKPOINT] 2026-05-20 19:57:59.486 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:57:59.487 - #MI3_DATE_CALC_OK - Global: 2026-12-03, Picking: 2026-12-08, NonPicking: 2026-12-03
+[INFO] 2026-05-20 19:57:59.487 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2026-12-03
+[INFO] 2026-05-20 19:57:59.488 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=121.000000 | PendingAfter=121.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:57:59.488 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=121.000000 | Reservas=0 | Picking=30 | NonPicking=557
+[CHECKPOINT] 2026-05-20 19:57:59.488 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:57:59.489 - #MI3_ITERATION_1 | Pendiente: 121.000000 | StateSeen=1 | State=P=121.000000|Pick=30:23888.000000|NonPick=557:544144.000000|Exp=False|UMBas=False|MinP=20261208|MinNP=20261203|Res=0
+[INFO] 2026-05-20 19:57:59.489 - #FEFO_DECISION: NonPicking (2026-12-03) vence ANTES que Picking (2026-12-08) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:57:59.490 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:57:59.490 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:57:59.491 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 732988 | Cantidad: 112.000000
+[CHECKPOINT] 2026-05-20 19:57:59.491 - #CASO_4_END - Reservado: 112.000000
+[INFO] 2026-05-20 19:57:59.491 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=1 | PendingBefore=121.000000 | PendingAfter=121.000000 | ResultReserved=112.000000 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:57:59.492 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 112.000000 | Reservations.Count: 1 | HandlerMs: 1 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:57:59.492 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 1) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:57:59.493 - #MI3_PROGRESS | Reservado: 112.000000 (clamped from 112.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:57:59.493 - #RECALC MinExpPickingZone: 2026-12-08
+[INFO] 2026-05-20 19:57:59.494 - #RECALC MinExpNonPickingZones: 2026-12-08
+[INFO] 2026-05-20 19:57:59.495 - #MI3_PERF_ITERATION | Iteration=1 | Ms=5 | PendingBefore=121.000000 | PendingAfter=9.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:57:59.495 - #MI3_ITERATION_2 | Pendiente: 9.000000 | StateSeen=1 | State=P=9.000000|Pick=30:23888.000000|NonPick=556:544032.000000|Exp=False|UMBas=False|MinP=20261208|MinNP=20261208|Res=1
+[INFO] 2026-05-20 19:57:59.497 - #CLAVAUD_EVAL | Fecha común: 2026-12-08 | Solicitado: 9.00 | Picking disponible: 1904.00 | Almacenaje disponible: 7648.00 | Buffer factor: 1
+[INFO] 2026-05-20 19:57:59.497 - #CLAVAUD_DECISION: Picking tiene suficiente (1904.00 >= 9.00) → Usar ALMACENAJE primero para conservar picking → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:57:59.497 - #MI3_STARTING_POINT_4 | DecisionMs=1
+[CHECKPOINT] 2026-05-20 19:57:59.498 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:57:59.498 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 753579 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.499 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 753592 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.499 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 761737 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.499 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 753432 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.500 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 749356 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.500 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 748841 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.501 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 735275 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.501 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766280 | Cantidad: 9.000000
+[RESERVATION] 2026-05-20 19:57:59.502 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 758885 | Cantidad: 9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.502 - #CASO_4_END - Reservado: 81.000000
+[INFO] 2026-05-20 19:57:59.503 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=4 | PendingBefore=9.000000 | PendingAfter=9.000000 | ResultReserved=81.000000 | ResultReservas=9 | ContextReservasBefore=1 | ContextReservasAfter=1
+[CHECKPOINT] 2026-05-20 19:57:59.503 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 81.000000 | Reservations.Count: 9 | HandlerMs: 5 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:57:59.503 - #WARNING_OVER_RESERVATION | ReservedQuantity=81.000000 > PreviousPending=9.000000 | Clamping to 9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.504 - #DISCARDING_EXCESS_RESERVATION | IdStock=753592 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.504 - #DISCARDING_EXCESS_RESERVATION | IdStock=761737 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.504 - #DISCARDING_EXCESS_RESERVATION | IdStock=753432 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.505 - #DISCARDING_EXCESS_RESERVATION | IdStock=749356 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.505 - #DISCARDING_EXCESS_RESERVATION | IdStock=748841 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.506 - #DISCARDING_EXCESS_RESERVATION | IdStock=735275 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.506 - #DISCARDING_EXCESS_RESERVATION | IdStock=766280 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.506 - #DISCARDING_EXCESS_RESERVATION | IdStock=758885 | Cantidad=9.000000 | CumulativeAlready=9.000000 >= Allowed=9.000000
+[CHECKPOINT] 2026-05-20 19:57:59.507 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 9) | TotalInContext: 2
+[CHECKPOINT] 2026-05-20 19:57:59.507 - #MI3_PROGRESS | Reservado: 9.000000 (clamped from 81.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:57:59.508 - #MI3_PERF_ITERATION | Iteration=2 | Ms=12 | PendingBefore=9.000000 | PendingAfter=0.000000 | Progress=True | Reservas=2
+[CHECKPOINT] 2026-05-20 19:57:59.508 - #MI3_LOOP_END | Iteraciones: 2 | Total Reservado: 121.000000 | LoopMs: 19
+[INFO] 2026-05-20 19:57:59.509 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=20 | PendingBefore=121.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=2
+[INFO] 2026-05-20 19:57:59.509 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:57:59.509 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=2 | Picking=30 | NonPicking=556
+[CHECKPOINT] 2026-05-20 19:57:59.510 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:57:59.510 - #MI3_INSERTING_STOCK_RES - Count: 2
+[CHECKPOINT] 2026-05-20 19:57:59.510 - #MI3_STOCK_RES_INSERTING - IdStock: 732988, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133320, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:57:59.643 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822058, IdStock: 732988, IdProductoBodega: 132, Cantidad: 112.000000, IdUbicacion: 5650, IdTransaccion: 37322, Identity: 822058
+[CHECKPOINT] 2026-05-20 19:57:59.644 - #MI3_STOCK_RES_INSERTING - IdStock: 753579, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133320, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:57:59.774 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822059, IdStock: 753579, IdProductoBodega: 132, Cantidad: 9.000000, IdUbicacion: 8050, IdTransaccion: 37322, Identity: 822059
+[CHECKPOINT] 2026-05-20 19:57:59.842 - #MI3_TRASLADO_UPDATED - Cantidad: 7.562500
+[CHECKPOINT] 2026-05-20 19:57:59.843 - #MI3_SUMMARY - Solicitado: 121.000000, Reservado: 121.000000, Pendiente: 0.000000, Reservas creadas: 2
+[CHECKPOINT] 2026-05-20 19:57:59.844 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:57:59.844 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=335 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=2 | ReservasAfter=2
+[INFO] 2026-05-20 19:57:59.845 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:57:59.845 - #MI3_PERF_PIPELINE_TOTAL | Ms=38845 | Pending=0.000000 | Reservas=2
+[CHECKPOINT] 2026-05-20 19:57:59.846 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:58:01.028 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:58:01.038 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:58:01.038 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:58:01.106 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=134 → IdProducto=134
+[CHECKPOINT] 2026-05-20 19:58:01.107 - #MI3_VALIDATION_OK - Cantidad Solicitada: 3.750000
+[INFO] 2026-05-20 19:58:01.107 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=69 | PendingBefore=0.000000 | PendingAfter=3.750000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:58:01.108 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=3.750000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:58:01.108 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:58:01.307 - #CONVERSION_APPLIED | 3.750000 presentaciones x Factor: 4 = 15.000000 unidades
+[CHECKPOINT] 2026-05-20 19:58:01.308 - #MI3_ENTITY_LOADING_OK - Producto: 00194250, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:58:01.308 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=200 | PendingBefore=3.750000 | PendingAfter=15.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:58:01.309 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=15.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:58:01.309 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:58:01.651 - #MI3_PERF_SQL | Query=lStockPicking | Ms=340 | Rows=802
+[INFO] 2026-05-20 19:59:02.653 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=61001 | Rows=802
+[INFO] 2026-05-20 19:59:03.018 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=364 | Rows=554
+[INFO] 2026-05-20 19:59:36.651 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=33631 | Rows=554
+[CHECKPOINT] 2026-05-20 19:59:36.661 - #MI3_STOCK_QUERY_OK - Picking: 30, NonPicking: 308, Total: 338
+[INFO] 2026-05-20 19:59:36.661 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=95351 | Picking=30 | NonPicking=308 | Total=338
+[INFO] 2026-05-20 19:59:36.662 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=95352 | PendingBefore=15.000000 | PendingAfter=15.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:59:36.662 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=15.000000 | Reservas=0 | Picking=30 | NonPicking=308
+[CHECKPOINT] 2026-05-20 19:59:36.662 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 19:59:36.663 - #MI3_DATE_CALC_OK - Global: 2027-01-15, Picking: 2027-01-29, NonPicking: 2027-01-15
+[INFO] 2026-05-20 19:59:36.663 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-01-15
+[INFO] 2026-05-20 19:59:36.664 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=15.000000 | PendingAfter=15.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:59:36.664 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=15.000000 | Reservas=0 | Picking=30 | NonPicking=308
+[CHECKPOINT] 2026-05-20 19:59:36.665 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 19:59:36.665 - #MI3_ITERATION_1 | Pendiente: 15.000000 | StateSeen=1 | State=P=15.000000|Pick=30:5524.000000|NonPick=308:80116.000000|Exp=False|UMBas=False|MinP=20270129|MinNP=20270115|Res=0
+[INFO] 2026-05-20 19:59:36.666 - #FEFO_DECISION: NonPicking (2027-01-15) vence ANTES que Picking (2027-01-29) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 19:59:36.666 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 19:59:36.667 - #CASO_4_START
+[RESERVATION] 2026-05-20 19:59:36.668 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 757275 | Cantidad: 15.000000
+[CHECKPOINT] 2026-05-20 19:59:36.668 - #CASO_4_END - Reservado: 15.000000
+[INFO] 2026-05-20 19:59:36.669 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=1 | PendingBefore=15.000000 | PendingAfter=15.000000 | ResultReserved=15.000000 | ResultReservas=1 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 19:59:36.669 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 15.000000 | Reservations.Count: 1 | HandlerMs: 2 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 19:59:36.670 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 1) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 19:59:36.670 - #MI3_PROGRESS | Reservado: 15.000000 (clamped from 15.000000) | Casos: CASO_4
+[INFO] 2026-05-20 19:59:36.670 - #MI3_PERF_ITERATION | Iteration=1 | Ms=5 | PendingBefore=15.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 19:59:36.671 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 15.000000 | LoopMs: 5
+[INFO] 2026-05-20 19:59:36.671 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=7 | PendingBefore=15.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 19:59:36.672 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 19:59:36.672 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=30 | NonPicking=308
+[CHECKPOINT] 2026-05-20 19:59:36.673 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 19:59:36.673 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 19:59:36.674 - #MI3_STOCK_RES_INSERTING - IdStock: 757275, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133321, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 19:59:36.805 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822060, IdStock: 757275, IdProductoBodega: 134, Cantidad: 15.000000, IdUbicacion: 4217, IdTransaccion: 37322, Identity: 822060
+[CHECKPOINT] 2026-05-20 19:59:36.963 - #MI3_TRASLADO_UPDATED - Cantidad: 3.750000
+[CHECKPOINT] 2026-05-20 19:59:36.964 - #MI3_SUMMARY - Solicitado: 15.000000, Reservado: 15.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 19:59:36.965 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 19:59:36.965 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=292 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 19:59:36.966 - Post-procesamiento completado.
+[INFO] 2026-05-20 19:59:36.966 - #MI3_PERF_PIPELINE_TOTAL | Ms=95928 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 19:59:36.967 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 19:59:39.404 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 19:59:39.414 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:59:39.415 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 19:59:39.484 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=135 → IdProducto=135
+[CHECKPOINT] 2026-05-20 19:59:39.485 - #MI3_VALIDATION_OK - Cantidad Solicitada: 2.125000
+[INFO] 2026-05-20 19:59:39.485 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=71 | PendingBefore=0.000000 | PendingAfter=2.125000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:59:39.486 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=2.125000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:59:39.486 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 19:59:39.689 - #CONVERSION_APPLIED | 2.125000 presentaciones x Factor: 8 = 17.000000 unidades
+[CHECKPOINT] 2026-05-20 19:59:39.690 - #MI3_ENTITY_LOADING_OK - Producto: 00194450, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 19:59:39.690 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=204 | PendingBefore=2.125000 | PendingAfter=17.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 19:59:39.691 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=17.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 19:59:39.691 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 19:59:40.158 - #MI3_PERF_SQL | Query=lStockPicking | Ms=466 | Rows=295
+[INFO] 2026-05-20 20:00:01.317 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=21158 | Rows=295
+[INFO] 2026-05-20 20:00:01.608 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=281 | Rows=161
+[INFO] 2026-05-20 20:00:07.492 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=5874 | Rows=161
+[CHECKPOINT] 2026-05-20 20:00:07.501 - #MI3_STOCK_QUERY_OK - Picking: 15, NonPicking: 121, Total: 136
+[INFO] 2026-05-20 20:00:07.502 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=27809 | Picking=15 | NonPicking=121 | Total=136
+[INFO] 2026-05-20 20:00:07.502 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=27811 | PendingBefore=17.000000 | PendingAfter=17.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:07.503 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=17.000000 | Reservas=0 | Picking=15 | NonPicking=121
+[CHECKPOINT] 2026-05-20 20:00:07.503 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 20:00:07.504 - #MI3_DATE_CALC_OK - Global: 2027-01-01, Picking: 2027-01-02, NonPicking: 2027-01-01
+[INFO] 2026-05-20 20:00:07.504 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-01-01
+[INFO] 2026-05-20 20:00:07.505 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=17.000000 | PendingAfter=17.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:07.505 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=17.000000 | Reservas=0 | Picking=15 | NonPicking=121
+[CHECKPOINT] 2026-05-20 20:00:07.506 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 20:00:07.506 - #MI3_ITERATION_1 | Pendiente: 17.000000 | StateSeen=1 | State=P=17.000000|Pick=15:5424.000000|NonPick=121:58336.000000|Exp=False|UMBas=False|MinP=20270102|MinNP=20270101|Res=0
+[INFO] 2026-05-20 20:00:07.507 - #FEFO_DECISION: NonPicking (2027-01-01) vence ANTES que Picking (2027-01-02) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 20:00:07.507 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 20:00:07.507 - #CASO_4_START
+[RESERVATION] 2026-05-20 20:00:07.508 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771564 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.508 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771566 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.509 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 746764 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.510 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 746811 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.510 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 746816 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.510 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 746871 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.511 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 747065 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.512 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 747067 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.512 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 772471 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.513 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 762589 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.513 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 762594 | Cantidad: 17.000000
+[RESERVATION] 2026-05-20 20:00:07.513 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 758542 | Cantidad: 17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.514 - #CASO_4_END - Reservado: 204.000000
+[INFO] 2026-05-20 20:00:07.514 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=6 | PendingBefore=17.000000 | PendingAfter=17.000000 | ResultReserved=204.000000 | ResultReservas=12 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 20:00:07.515 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 204.000000 | Reservations.Count: 12 | HandlerMs: 7 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 20:00:07.515 - #WARNING_OVER_RESERVATION | ReservedQuantity=204.000000 > PreviousPending=17.000000 | Clamping to 17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.516 - #DISCARDING_EXCESS_RESERVATION | IdStock=771566 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.516 - #DISCARDING_EXCESS_RESERVATION | IdStock=746764 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.517 - #DISCARDING_EXCESS_RESERVATION | IdStock=746811 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.517 - #DISCARDING_EXCESS_RESERVATION | IdStock=746816 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.518 - #DISCARDING_EXCESS_RESERVATION | IdStock=746871 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.518 - #DISCARDING_EXCESS_RESERVATION | IdStock=747065 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.519 - #DISCARDING_EXCESS_RESERVATION | IdStock=747067 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.519 - #DISCARDING_EXCESS_RESERVATION | IdStock=772471 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.520 - #DISCARDING_EXCESS_RESERVATION | IdStock=762589 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.520 - #DISCARDING_EXCESS_RESERVATION | IdStock=762594 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.521 - #DISCARDING_EXCESS_RESERVATION | IdStock=758542 | Cantidad=17.000000 | CumulativeAlready=17.000000 >= Allowed=17.000000
+[CHECKPOINT] 2026-05-20 20:00:07.521 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 12) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 20:00:07.522 - #MI3_PROGRESS | Reservado: 17.000000 (clamped from 204.000000) | Casos: CASO_4
+[INFO] 2026-05-20 20:00:07.522 - #MI3_PERF_ITERATION | Iteration=1 | Ms=16 | PendingBefore=17.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 20:00:07.522 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 17.000000 | LoopMs: 16
+[INFO] 2026-05-20 20:00:07.523 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=17 | PendingBefore=17.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 20:00:07.523 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 20:00:07.524 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=15 | NonPicking=121
+[CHECKPOINT] 2026-05-20 20:00:07.524 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 20:00:07.525 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 20:00:07.525 - #MI3_STOCK_RES_INSERTING - IdStock: 771564, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133322, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 20:00:07.660 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822061, IdStock: 771564, IdProductoBodega: 135, Cantidad: 17.000000, IdUbicacion: 8704, IdTransaccion: 37322, Identity: 822061
+[CHECKPOINT] 2026-05-20 20:00:07.728 - #MI3_TRASLADO_UPDATED - Cantidad: 2.125000
+[CHECKPOINT] 2026-05-20 20:00:07.729 - #MI3_SUMMARY - Solicitado: 17.000000, Reservado: 17.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 20:00:07.730 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 20:00:07.731 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=206 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 20:00:07.731 - Post-procesamiento completado.
+[INFO] 2026-05-20 20:00:07.732 - #MI3_PERF_PIPELINE_TOTAL | Ms=28317 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 20:00:07.732 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 20:00:08.899 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 20:00:08.900 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:08.900 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 20:00:08.971 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=350 → IdProducto=350
+[CHECKPOINT] 2026-05-20 20:00:08.972 - #MI3_VALIDATION_OK - Cantidad Solicitada: 17.000000
+[INFO] 2026-05-20 20:00:08.972 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=72 | PendingBefore=0.000000 | PendingAfter=17.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:08.973 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=17.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:08.973 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 20:00:09.162 - #CONVERSION_APPLIED | 17.000000 presentaciones x Factor: 24 = 408.000000 unidades
+[CHECKPOINT] 2026-05-20 20:00:09.163 - #MI3_ENTITY_LOADING_OK - Producto: 00194473, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 20:00:09.163 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=190 | PendingBefore=17.000000 | PendingAfter=408.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:09.164 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=408.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:09.164 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 20:00:09.574 - #MI3_PERF_SQL | Query=lStockPicking | Ms=409 | Rows=185
+[INFO] 2026-05-20 20:00:24.547 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=14964 | Rows=185
+[INFO] 2026-05-20 20:00:24.840 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=291 | Rows=117
+[INFO] 2026-05-20 20:00:31.091 - #MI3_PERF_SQL | Query=RestarStockReservadoNonPicking | Ms=6249 | Rows=117
+[CHECKPOINT] 2026-05-20 20:00:31.092 - #MI3_STOCK_QUERY_OK - Picking: 1, NonPicking: 73, Total: 74
+[INFO] 2026-05-20 20:00:31.093 - #MI3_PERF_STOCK_QUERY_TOTAL | Ms=21927 | Picking=1 | NonPicking=73 | Total=74
+[INFO] 2026-05-20 20:00:31.093 - #MI3_PERF_STEP_END | Step=StockQueryStep | Ms=21929 | PendingBefore=408.000000 | PendingAfter=408.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:31.093 - #MI3_PERF_STEP_START | Step=DateCalculationStep | Pending=408.000000 | Reservas=0 | Picking=1 | NonPicking=73
+[CHECKPOINT] 2026-05-20 20:00:31.094 - #MI3_DATE_CALC_START
+[CHECKPOINT] 2026-05-20 20:00:31.094 - #MI3_DATE_CALC_OK - Global: 2027-02-03, Picking: 2027-06-16, NonPicking: 2027-02-03
+[INFO] 2026-05-20 20:00:31.095 - Clavaud - CompletePallets: 1900-01-01, IncompletePallets: 2027-02-03
+[INFO] 2026-05-20 20:00:31.095 - #MI3_PERF_STEP_END | Step=DateCalculationStep | Ms=1 | PendingBefore=408.000000 | PendingAfter=408.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:31.095 - #MI3_PERF_STEP_START | Step=ReservationLoopStep | Pending=408.000000 | Reservas=0 | Picking=1 | NonPicking=73
+[CHECKPOINT] 2026-05-20 20:00:31.096 - #MI3_LOOP_START
+[CHECKPOINT] 2026-05-20 20:00:31.096 - #MI3_ITERATION_1 | Pendiente: 408.000000 | StateSeen=1 | State=P=408.000000|Pick=1:360.000000|NonPick=73:101592.000000|Exp=False|UMBas=False|MinP=20270616|MinNP=20270203|Res=0
+[INFO] 2026-05-20 20:00:31.097 - #FEFO_DECISION: NonPicking (2027-02-03) vence ANTES que Picking (2027-06-16) → INICIAR_EN_4
+[CHECKPOINT] 2026-05-20 20:00:31.097 - #MI3_STARTING_POINT_4 | DecisionMs=0
+[CHECKPOINT] 2026-05-20 20:00:31.097 - #CASO_4_START
+[RESERVATION] 2026-05-20 20:00:31.098 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766215 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.098 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766245 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.099 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766246 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.099 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766273 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.100 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766291 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.100 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766313 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.100 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771484 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.101 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771683 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.101 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 772144 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.102 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 772085 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.102 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 771561 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.102 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766567 | Cantidad: 408.000000
+[RESERVATION] 2026-05-20 20:00:31.103 - CASO_4 - IdStockRes: 0 - Non-picking zone | Stock: 766569 | Cantidad: 408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.103 - #CASO_4_END - Reservado: 5304.000000
+[INFO] 2026-05-20 20:00:31.104 - #MI3_PERF_HANDLER | Handler=NonPickingZoneHandler | Ms=6 | PendingBefore=408.000000 | PendingAfter=408.000000 | ResultReserved=5304.000000 | ResultReservas=13 | ContextReservasBefore=0 | ContextReservasAfter=0
+[CHECKPOINT] 2026-05-20 20:00:31.104 - #DEBUG_HANDLER_RESULT | Success: True | ReservedQuantity: 5304.000000 | Reservations.Count: 13 | HandlerMs: 6 | CaseCode: CASO_4 | Message: 
+[CHECKPOINT] 2026-05-20 20:00:31.104 - #WARNING_OVER_RESERVATION | ReservedQuantity=5304.000000 > PreviousPending=408.000000 | Clamping to 408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.105 - #DISCARDING_EXCESS_RESERVATION | IdStock=766245 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.105 - #DISCARDING_EXCESS_RESERVATION | IdStock=766246 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.106 - #DISCARDING_EXCESS_RESERVATION | IdStock=766273 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.106 - #DISCARDING_EXCESS_RESERVATION | IdStock=766291 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.106 - #DISCARDING_EXCESS_RESERVATION | IdStock=766313 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.107 - #DISCARDING_EXCESS_RESERVATION | IdStock=771484 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.107 - #DISCARDING_EXCESS_RESERVATION | IdStock=771683 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.108 - #DISCARDING_EXCESS_RESERVATION | IdStock=772144 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.108 - #DISCARDING_EXCESS_RESERVATION | IdStock=772085 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.108 - #DISCARDING_EXCESS_RESERVATION | IdStock=771561 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.109 - #DISCARDING_EXCESS_RESERVATION | IdStock=766567 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.109 - #DISCARDING_EXCESS_RESERVATION | IdStock=766569 | Cantidad=408.000000 | CumulativeAlready=408.000000 >= Allowed=408.000000
+[CHECKPOINT] 2026-05-20 20:00:31.110 - #MI3_RESERVATIONS_ADDED | Count: 1 (of 13) | TotalInContext: 1
+[CHECKPOINT] 2026-05-20 20:00:31.110 - #MI3_PROGRESS | Reservado: 408.000000 (clamped from 5304.000000) | Casos: CASO_4
+[INFO] 2026-05-20 20:00:31.110 - #MI3_PERF_ITERATION | Iteration=1 | Ms=14 | PendingBefore=408.000000 | PendingAfter=0.000000 | Progress=True | Reservas=1
+[CHECKPOINT] 2026-05-20 20:00:31.111 - #MI3_LOOP_END | Iteraciones: 1 | Total Reservado: 408.000000 | LoopMs: 14
+[INFO] 2026-05-20 20:00:31.111 - #MI3_PERF_STEP_END | Step=ReservationLoopStep | Ms=15 | PendingBefore=408.000000 | PendingAfter=0.000000 | ReservasBefore=0 | ReservasAfter=1
+[INFO] 2026-05-20 20:00:31.112 - Cantidad completamente reservada. Ejecutando post-procesamiento...
+[INFO] 2026-05-20 20:00:31.112 - #MI3_PERF_STEP_START | Step=PostProcessingStep | Pending=0.000000 | Reservas=1 | Picking=1 | NonPicking=73
+[CHECKPOINT] 2026-05-20 20:00:31.112 - #MI3_POST_PROCESSING_START
+[CHECKPOINT] 2026-05-20 20:00:31.113 - #MI3_INSERTING_STOCK_RES - Count: 1
+[CHECKPOINT] 2026-05-20 20:00:31.113 - #MI3_STOCK_RES_INSERTING - IdStock: 766215, IdTransaccion: 37322, IdPedido: 37322, IdPedidoDet: 1133323, Indicador: PED, Estado: UNCOMMITED
+[CHECKPOINT] 2026-05-20 20:00:31.262 - #MI3_STOCK_RES_INSERTED - IdStockRes: 822062, IdStock: 766215, IdProductoBodega: 350, Cantidad: 408.000000, IdUbicacion: 10086, IdTransaccion: 37322, Identity: 822062
+[CHECKPOINT] 2026-05-20 20:00:31.332 - #MI3_TRASLADO_UPDATED - Cantidad: 17.000000
+[CHECKPOINT] 2026-05-20 20:00:31.333 - #MI3_SUMMARY - Solicitado: 408.000000, Reservado: 408.000000, Pendiente: 0.000000, Reservas creadas: 1
+[CHECKPOINT] 2026-05-20 20:00:31.334 - #MI3_POST_PROCESSING_END
+[INFO] 2026-05-20 20:00:31.334 - #MI3_PERF_STEP_END | Step=PostProcessingStep | Ms=222 | PendingBefore=0.000000 | PendingAfter=0.000000 | ReservasBefore=1 | ReservasAfter=1
+[INFO] 2026-05-20 20:00:31.335 - Post-procesamiento completado.
+[INFO] 2026-05-20 20:00:31.335 - #MI3_PERF_PIPELINE_TOTAL | Ms=22435 | Pending=0.000000 | Reservas=1
+[CHECKPOINT] 2026-05-20 20:00:31.336 - === FIN PIPELINE RESERVA ===
+[CHECKPOINT] 2026-05-20 20:00:32.480 - === INICIO PIPELINE RESERVA ===
+[INFO] 2026-05-20 20:00:32.490 - #MI3_PERF_STEP_START | Step=ValidationStep | Pending=0.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:32.490 - #MI3_VALIDATION_START
+[INFO] 2026-05-20 20:00:32.555 - #MI3_PRODUCTID_RESOLVED: IdProductoBodega=820 → IdProducto=416
+[CHECKPOINT] 2026-05-20 20:00:32.556 - #MI3_VALIDATION_OK - Cantidad Solicitada: 12.000000
+[INFO] 2026-05-20 20:00:32.557 - #MI3_PERF_STEP_END | Step=ValidationStep | Ms=67 | PendingBefore=0.000000 | PendingAfter=12.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:32.558 - #MI3_PERF_STEP_START | Step=EntityLoadingStep | Pending=12.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:32.558 - #MI3_ENTITY_LOADING_START
+[INFO] 2026-05-20 20:00:32.758 - #CONVERSION_APPLIED | 12.000000 presentaciones x Factor: 48 = 576.000000 unidades
+[CHECKPOINT] 2026-05-20 20:00:32.759 - #MI3_ENTITY_LOADING_OK - Producto: 00194476, Bodega: BA0002, Presentacion defecto: Si
+[INFO] 2026-05-20 20:00:32.759 - #MI3_PERF_STEP_END | Step=EntityLoadingStep | Ms=201 | PendingBefore=12.000000 | PendingAfter=576.000000 | ReservasBefore=0 | ReservasAfter=0
+[INFO] 2026-05-20 20:00:32.760 - #MI3_PERF_STEP_START | Step=StockQueryStep | Pending=576.000000 | Reservas=0 | Picking=0 | NonPicking=0
+[CHECKPOINT] 2026-05-20 20:00:32.760 - #MI3_STOCK_QUERY_START
+[INFO] 2026-05-20 20:00:33.118 - #MI3_PERF_SQL | Query=lStockPicking | Ms=357 | Rows=471
+[INFO] 2026-05-20 20:00:55.938 - #MI3_PERF_SQL | Query=RestarStockReservadoPicking | Ms=22818 | Rows=471
+[INFO] 2026-05-20 20:00:56.429 - #MI3_PERF_SQL | Query=lStockNonPicking | Ms=482 | Rows=405

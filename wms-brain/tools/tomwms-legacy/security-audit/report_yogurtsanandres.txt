@@ -1,0 +1,23 @@
+Target: https://yogurtsanandres.com
+Timestamp UTC: 2026-06-05T22:13:41.162074+00:00
+Root status: 200
+WP login status: 200
+Server: nginx
+TLS version: TLSv1.3
+
+Security headers:
+- Strict-Transport-Security: MISSING
+- Content-Security-Policy: MISSING
+- X-Frame-Options: MISSING
+- X-Content-Type-Options: OK
+- Referrer-Policy: MISSING
+- Permissions-Policy: OK
+
+Risk summary:
+- Falta HSTS: riesgo de downgrade/SSL stripping en primeras conexiones.
+- Falta CSP: mayor exposición a XSS en contenido dinámico.
+- Falta X-Frame-Options: posible clickjacking.
+- Cookie sin SameSite detectada.
+- readme.html público: posible fuga de versión/metadatos.
+
+Notice: No se realizaron ataques activos, bypass de auth ni fuerza bruta.
