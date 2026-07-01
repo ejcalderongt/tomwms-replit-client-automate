@@ -46,6 +46,13 @@ brains:
       - brain/wms/recepcion/db-probes.yml
       - brain/wms/recepcion/implosion/implosion-flujo.yml
       - brain/wms/recepcion/implosion/implosion-trazas.yml
+  - id: brain-wms-verificacion
+    path: brain/wms/verificacion
+    kind: domain-brain
+    purpose: WMS verification HH context, scan rules, and end-to-end flow.
+    startup:
+      - brain/wms/verificacion/README.md
+      - brain/wms/verificacion/flow.yml
 routes:
   default:
     - workspace-core
@@ -61,6 +68,10 @@ routes:
     - wms-brain
     - brain-atlas
     - brain-wms-recepcion
+  verificacion:
+    - workspace-core
+    - wms-brain
+    - brain-wms-verificacion
   mpos:
     - workspace-core
     - mpos-brain

@@ -1,0 +1,35 @@
+version: 2026-06-25T22:15:00-06:00
+proceso: Verificacion HH
+objetivo: Confirmar cantidades en HH con control de talla/color, lote, vencimiento, fotos y reemplazos.
+flujo:
+  - cargar detalle del pedido y del producto
+  - resolver codigo operativo:
+      - si Control_Talla_Color: CodigoSKU
+      - si no: Codigo
+  - validar cantidad ingresada contra pendiente
+  - confirmar con el operador
+  - guardar verificacion via WS
+  - opcional: fotos, reemplazo, verificacion consolidada
+reglas:
+  - La cantidad ingresada no puede superar la pendiente.
+  - En talla/color, la HH debe trabajar con CodigoSKU como llave operativa.
+  - En consolidada, el filtro de líneas puede ser por codigo o SKU.
+  - En no consolidada, el filtro incluye lote y fecha de vencimiento.
+ws:
+  - Get_Verificacion_By_Producto_And_Pedido
+  - Actualiza_Cant_Peso_Verificacion
+  - Guardar_Fotos_Verificacion
+  - Get_All_Imagen_Verificacion
+  - Get_Resoluciones_Lp_By_IdOperador_And_IdBodega
+ui:
+  - frm_verificacion_datos
+  - frm_list_prod_reemplazo_verif
+  - frm_danado_verificacion
+  - frm_verificacion_consolidada_detalle
+trazas:
+  - TRACE_VERIF UI scan, confirm, guardado, reemplazo, fotos
+  - TRACE_VERIF WS request, response, validacion de cantidad
+  - TRACE_VERIF PICK pending lines y resolución de sku
+notas:
+  - El flujo debe permanecer separado de Packing e Inventario Cíclico.
+  - `CodigoSKU` es la llave operativa cuando hay talla/color.

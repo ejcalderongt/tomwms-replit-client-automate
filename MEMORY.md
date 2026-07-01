@@ -16,12 +16,14 @@
 - For MCP work, the durable brain/source of truth is `mcp-brain` on GitHub, not the local WMS brain; do not mix MCP context with WMS/QAS when validating `mposbi` inventory reports.
 - Federated startup now has a single manifest at `brain/federated-index.yml` and an executable bootstrap script at `scripts/bootstrap-session.ps1`; routing should extend there first when adding persistent brains.
 - `wms-brain` now owns a visible WMS bootstrap entry point at `wms-brain/bootstrap-session.ps1`; use that anchor for WMS sessions and machine/environment restores.
+- Canonical GitHub home for `wms-brain` is `https://github.com/ejcalderongt/tomwms-replit-client-automate`; treat that as the source of truth when backing up or restoring WMS brain context.
 - MCP cost structure is hybrid: `T_costo`/`D_costo` keep the event trail, `p_producto.costo` stays the operational current cost, and sales reports currently read the master cost at query time unless a policy toggle is introduced.
 - In `mPos2026` (`dev495b`), `P_PRODUCTO.METODO_COSTO` was added to the local model and `GetP_PRODUCTO` sync; `InvRecep`, `InvTrans`, and `WSEnv` now use it to decide whether to overwrite `P_PRODUCTO.COSTO`, with `P_PARAMEXT.ID=197` left only as legacy fallback when the field is empty.
 - In `SapDescuentoController`, `SaveChangesAsync()` persists everything tracked in the `DbContext`; for escala batches, validate composite-key duplicates in memory and against DB before save, and translate SQL 2601/2627 into a friendly 409.
 - Combo SAP on `SapDescuentoController` can fail because stale rows remain in `P_DESCUENTO_COMBO_DET` for the same `CODDESC`; `reemplazarExistente=true` must clear detail by `CODDESC` even if the header is missing.
 - In `SapDescuentoController`, `reemplazarExistente=true` now applies to simple, escalas, and combo flows; when replacing, clear by `CODDESC` even if the commercial key changed, and return explicit 409s when an existing `CODDESC` would otherwise be silently upserted.
 - Kelvyn rule: keep brain folders for context, documentation, learning, and reusable instructions only; do not mix application code into `brain/`, `docs/`, `learning/`, or `agents/`.
+- In TOMHH2025 HH inventory cyclic, `frm_detalle_gondola` now resolves and shows the human-readable `nombre_completo` de ubicación via `Get_Ubicacion_By_Codigo_Barra_And_IdBodega`, with `NombreCompleto`/`Descripcion` as display fallback and a top `Cont. X` label derived from `ListaConteo`.
 
 ## Preferences
 
