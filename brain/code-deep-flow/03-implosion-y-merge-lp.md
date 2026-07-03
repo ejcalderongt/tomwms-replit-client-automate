@@ -16,6 +16,12 @@
 3. **2028 unifica los tres**: el "cambio de ubicación" pasa a contemplar nativamente que si la ubicación destino tiene un producto B con LP `f(z)`, entonces el LP origen `f(y)` deja de existir y todo el stock pasa a `f(z)`. El log queda en `trans_movimientos` con el rastro `f(y) → f(z)`.
 4. **Esto resuelve la pregunta abierta hace meses**: *"¿cuándo deja de existir un LP?"*. Respuesta: **al ser implosionado/mergeado en otro LP destino**. El LP no se borra físicamente, queda histórico en `trans_movimientos.lic_plate` y `barra_pallet` para trazabilidad.
 
+### SKU validation path
+
+Para `frm_Packing`, el flujo viejo seguia siendo medio "lazy": primero resolvia producto y luego hacia match local contra la lista.
+La ruta nueva debe resolver el SKU/barcode desde `VW_ProductoSI` y validar contra la fila antes de incrementar `imploSelQty`.
+El endpoint de apoyo ya existe en el WS como `Validar_Sku_Implosion_JSON`, apoyado por `Get_BeProducto_By_Codigo_Or_Sku_For_HH`.
+
 ---
 
 ## Contexto: por qué esta traza importa

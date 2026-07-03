@@ -55,6 +55,21 @@ If ObjM.TipoTarea = clsDataContractDI.tTipoTarea.INVE Then
 
 **Pendiente confirmar**: validar comportamiento en cliente con inventarios cíclicos.
 
+## Regla de diseño para reportes de detalle
+
+Cuando un reporte de stock usa `VW_Stock_Res` como base, **no** debe asumir que ahí vienen los ajustes históricos. Si el reporte necesita mostrar `Ajustes_Positivos` y `Ajustes_Negativos`, la fuente canónica es `VW_Movimientos_N` agregada por la misma llave del stock:
+
+- `IdProductoBodega`
+- `IdEstadoOrigen`
+- `IdPresentacion`
+- `IdUnidadMedida`
+- `Lote`
+- `Fecha_Vence`
+- `Talla`
+- `Color`
+
+Si la vista por talla/color omite esa agregación, el síntoma típico es `0.00` en las columnas de ajustes aunque sí existan movimientos `AJCANTP`, `AJCANTPI`, `AJCANTN` o `AJCANTNI` en MPos.
+
 ## Diferencia con `frmMovimiento_Reporte`
 
 `frmMovimiento_Reporte.vb:188-201` tiene el mismo switch, **pero con diferencias**:
