@@ -69,6 +69,41 @@ implosion_notes:
       compare stock should reuse the same exact-match-first pattern instead of
       guessing by partial code or display text.
 
+stock_explosion_notes:
+  frm_stock_por_lote_manual_explosion:
+    updated: "2026-07-02"
+    files:
+      - "TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote/frmStockPorLote.vb"
+      - "TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote/frmExplosionBOF.vb"
+      - "TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb"
+    rule: >
+      BOF manual stock explosion from frmStockPorLote must resolve the selected
+      grid row back to a current VW_Stock_Res stock row before applying changes.
+      Explosionable stock follows the HH-compatible base rule: IdPresentacion >
+      0, Factor > 0, and Disponible_UMBas > 0. The operator can enter quantity
+      in presentation units in the BOF UI, but the apply path must convert to
+      UMBAS (cantidad_presentacion * Factor) before touching stock/stock_res or
+      trans_movimientos.
+    movement_contract: >
+      Use the existing movement application path
+      clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic with
+      IdTipoTarea = clsDataContractDI.tTipoTarea.EXPLOSION instead of direct
+      UPDATEs to stock. The movement should preserve origin stock identity and
+      audit IdUbicacionOrigen/IdUbicacionDestino, IdEstadoOrigen/IdEstadoDestino,
+      IdOperadorBodega, lote, fecha_vence, lic_plate/barra_pallet, recepcion
+      references, and UMBAS quantity. This allows a single EXPLOSION movement to
+      represent presentation removal plus optional destination location/state
+      change in an auditable way.
+    ui_guardrail: >
+      Reuse the visual controls in frmExplosionBOF when the designer is inherited
+      from frmCambioUbicacion; do not overlay dynamic controls on top of the
+      form. txtCantidad must clamp min/max from the resolved stock availability,
+      and the "Nueva Cantidad" label should recalculate dynamically so the user
+      sees the UMBAS result and the remaining origin quantity before applying.
+    encoding_guardrail: >
+      frmExplosionBOF.vb, its Designer, and related VB files must stay UTF-8 with
+      BOM because the screen contains Spanish labels/messages with accents.
+
 vb_encoding_guardrail:
   updated: "2026-07-01"
   rule: >
