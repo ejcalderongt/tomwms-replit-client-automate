@@ -204,6 +204,50 @@ quick_wins:
   - "Preferir endpoint Lite cuando el siguiente paso no necesita detalle completo."
   - "Agregar guardas inFlight en pantallas de recepción con alto input scanner."
 
+actualizacion_2026_07_02_entarimado_fallback:
+  contexto:
+    - "La estiba de recepción HH estaba definida primero por presentación de producto."
+    - "Si la presentación no trae camas/cajas, el flujo ahora usa el fallback de trans_oc_det (Camas_Tarima / Cajas_Cama) para la misma línea OC."
+  impacto:
+    - "La tabla de estiba deja de ocultarse cuando el detalle de ingreso sí define tarima pero la presentación no."
+    - "La cantidad sugerida por tarima se calcula con la configuración efectiva (presentación o detalle OC)."
+  archivo:
+    - "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+
+actualizacion_2026_07_02_recepcion_factor_umbas:
+  contexto:
+    - "En Continua_Guardando_Rec_Nueva la cantidad recibida ahora se normaliza con un unico factor efectivo."
+    - "Si existe presentacion, stock se persiste como cantidad_ingresada * factor_efectivo; si no existe, se conserva la cantidad base."
+    - "El detalle documental conserva la unidad capturada; el ajuste a UMBAS queda en el stock."
+  impacto:
+    - "Evita que merges o reasignaciones posteriores rompan la conversion a UMBAS."
+    - "Homogeneiza el comportamiento con otros flujos de recepcion que ya usan factor al persistir stock."
+  archivo:
+    - "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+
+actualizacion_2026_07_02_impresion_licencia_homologada_bof:
+  contexto:
+    - "La impresora de licencia en HH debe alinearse al contrato de BOF para evitar plantillas ZPL incompatibles."
+    - "La plantilla de BD solo se aplica si el contrato de placeholders coincide exactamente con 9 campos legacy o 10 campos con peso."
+    - "Si la plantilla de BD trae otra cantidad o un hueco numerico, se conserva el fallback legacy."
+    - "Cuando el producto controla peso, el campo 9 puede alimentar Peso_Licencia desde el peso capturado en la recepción."
+  contrato_campos:
+    - "0: bodega"
+    - "1: empresa"
+    - "2: producto"
+    - "3: licencia / codigo de barras"
+    - "4: usuario y fecha"
+    - "5: lote"
+    - "6: fecha de vencimiento"
+    - "7: presentacion"
+    - "8: cantidad recibida"
+    - "9: peso capturado (solo si la plantilla de BD usa 10 campos y el producto controla peso)"
+  impacto:
+    - "Homologa HH con la secuencia y los parametros visibles en BOF."
+    - "Protege la impresion ante templates viejos o incompletos en la BD."
+  archivo:
+    - "C:/Users/yejc2/StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java"
+
 validacion_post_fix:
   checklist:
     - "Entrar desde lista de tareas recepción y abrir detalle sin error XMLObject."

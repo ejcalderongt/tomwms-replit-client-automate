@@ -140,6 +140,12 @@ Resumen:
 - DAL: 4 metodos puntuales (`GetOcByReferencia`, `GetLineasOc`, `GetRecepcionesByOc`, `GetTareasHHByRecepciones`).
 - EntityCore: `OrdenCompraEnc`, `OrdenCompraDet`, `RecepcionAgregado`, `TareaHH`, `EstatusLineaOcDto`, `TareaHHDto`.
 
+## Nota de persistencia de lotes
+
+- El peso fisico del pallet viaja como `pallet_Weight` en MI3 y debe persistirse de forma simetrica en `i_nav_ped_compra_det_lote` y `trans_oc_det_lote`.
+- Regla de cierre aprendida el 2026-07-02: si `trans_oc_det_lote` hace `Insertar` con `peso_licencia`, entonces `Actualizar` y `Cargar` tambien deben mapearlo. Si no, el grid termina mostrando `0` aunque el payload traiga peso real.
+- Para OC con multiples bobinas/lotes por la misma linea, la llave funcional debe distinguir cada lote fisico por `IdOrdenCompraDetLote` y no por solo `no_linea + codigo_producto`.
+
 ## Referencias
 
 - Capas: `code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md`

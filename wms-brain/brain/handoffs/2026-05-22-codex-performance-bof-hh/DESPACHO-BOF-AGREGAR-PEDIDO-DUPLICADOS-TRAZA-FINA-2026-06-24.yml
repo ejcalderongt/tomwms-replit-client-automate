@@ -1,0 +1,123 @@
+meta:
+  nombre: "Despacho BOF - traza fina de duplicados y detalle vacío al agregar pedido"
+  fecha: "2026-06-24"
+  autor: "Codex + EJC"
+  objetivo:
+    - "Aislar por qué Agregar_Pedido deja el despacho sin detalle visible o duplica filas."
+    - "Distinguir reentrada UI/callback de una limpieza prematura del estado en memoria."
+    - "Tener una ruta única para escanear el flujo antes de tocar más lógica."
+  alcance:
+    repo_bof: "C:/Users/yejc2/source/repos/TOMWMS"
+    formulario: "TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+    proceso: "Despacho"
+
+contexto_sintoma:
+  descripcion: >
+    Al agregar un pedido en frmDespacho aparecen filas duplicadas en la pestaña
+    Pedido, pero el detalle de picking/despacho/stockres no se materializa y el
+    usuario queda sin poder despachar.
+  evidencia_visual:
+    - "Grid Pedido contiene el mismo IdPedidoEnc dos veces."
+    - "Grid Ubicación Picking queda vacío aunque la operación avanzó."
+    - "Grid Detalle Producto no refleja líneas esperadas."
+  hipotesis_principal:
+    - "El mismo alta entra dos veces por callback/UI y la segunda pasada pisa o limpia el estado."
+    - "Una limpieza aplicada al arrancar la carga borra restos necesarios antes de que termine el armado."
+    - "El pedido sí existe en memoria, pero la ruta visual no termina de bindear la tabla de stockres/picking."
+
+flujo_a_escanear:
+  entrada:
+    - id: "DESPACHO.UI.ABRIR"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "frmDespacho_Shown / CargarDatos"
+      observar:
+        - "Cuándo se crea BeDespachoEnc."
+        - "Si el pedido viene pre-cargado desde picking."
+        - "Si se llama Agregar_Pedido(BePedidoEnc) automáticamente."
+
+  alta_manual:
+    - id: "DESPACHO.UI.AGREGAR_PEDIDO"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "Agregar_Pedido()"
+      observar:
+        - "pListaPedidos que viaja al buscador."
+        - "Si el formulario retorna el mismo pedido repetido."
+        - "Si el botón se deshabilita o reentra mientras sigue cargando."
+
+  alta_principal:
+    - id: "DESPACHO.UI.AGREGAR_PEDIDO_BE"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "Agregar_Pedido(ByVal pBePedidoEnc As clsBeTrans_pe_enc)"
+      observar:
+        - "Entrada repetida del mismo IdPedidoEnc."
+        - "Agregar_Pedido_En_Proceso."
+        - "BeDespachoEnc.ListaPedidos.Any(IdPedidoEnc)."
+        - "Si la limpieza previa corre cuando no debe."
+        - "Si pBePedidoEnc.Detalle viene cargado o vacío."
+
+  detalle_pedido:
+    - id: "DESPACHO.DETALLE.SETPRODUCTO"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "SetProducto(...)"
+      observar:
+        - "lTransPickingDet.Count antes del FindIndex."
+        - "Si el mismo IdPedidoDet se agrega dos veces."
+        - "Si la excepción 'El Producto ya fue agregado.' corta el resto del lote."
+
+    - id: "DESPACHO.DETALLE.SETPRODUCTO_UBIC"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "SetProducto_By_Lista_PickingUbic(...)"
+      observar:
+        - "Cantidad de ubicaciones recibidas."
+        - "Si Adicionar_Producto_A_Detalle_Despacho se invoca por cada fila esperada."
+        - "Si DTStockRes termina con filas pero el grid no se refresca."
+
+  packing:
+    - id: "DESPACHO.PACKING"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "Llena_Packing(...) / Llena_Packing_By_Despacho(...)"
+      observar:
+        - "Si packing se vuelve a cargar sobre el mismo pedido/despacho."
+        - "Si el merge duplica filas al reentrar."
+        - "Si la ruta packing limpia o agrega summaries de más."
+
+  visualizacion:
+    - id: "DESPACHO.UI.GRID_PEDIDO"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "Mostrar_Pedidos_Asociados()"
+      observar:
+        - "Si pListaPedidos se recalcula desde ListaDetalle."
+        - "Si se pintan filas duplicadas a partir de ListaDetalle."
+
+    - id: "DESPACHO.UI.GRID_UBIC"
+      archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/TOMIMSV4/Transacciones/Despacho/frmDespacho.vb"
+      metodo: "grdvPickingUbic / DTStockRes"
+      observar:
+        - "RowCount real del GridView."
+        - "Si DataSource se asigna a Nothing antes de volver a cargar."
+        - "Si el problema es de bind y no de datos."
+
+señales_clave:
+  duplicado_real:
+    - "Agregar_Pedido_En_Proceso = False al entrar dos veces."
+    - "El mismo IdPedidoEnc aparece dos veces en pListaPedidos o ListaPedidos."
+    - "grdPedido.Rows.Count crece sin que cambie el pedido."
+  detalle_cortado:
+    - "SetProducto lanza excepción antes de completar el lote."
+    - "lTransPickingDet queda parcial pero DTStockRes no se repinta."
+  detalle_vacio:
+    - "DTStockRes.Rows.Count = 0 después de SetProducto_By_Lista_PickingUbic."
+    - "grdvPickingUbic.RowCount = 0 aunque hubo ubicaciones."
+    - "El pedido está en ListaPedidos pero las otras grillas no acompañan."
+
+probes_recomendados:
+  - "Log temporal por Debug.WriteLine con IdPedidoEnc, conteo de detalle y conteo de ubicaciones antes y después de cada bloque."
+  - "Capturar si Agregar_Pedido(ByVal) reentra sin salir de la primera pasada."
+  - "Verificar si la limpieza de estado ocurre antes o después de poblar detalle."
+  - "Comparar lista de pedido vs detalle vs stockres después de la carga."
+
+criterio_de_cierre:
+  - "Un mismo pedido entra una sola vez."
+  - "grdPedido, grdProducto y DTStockRes quedan alineados."
+  - "No hay borrado de estado necesario antes del Commit."
+  - "El usuario puede despachar sin volver a tocar la UI."
