@@ -87,6 +87,27 @@ knowledge_packages:
     freshness_days: 60
     owner: bof
     tags: [mampa, interface, ajuste, talla_color, ingreso]
+  learning_carolina_vector_index:
+    path: brain/learnings/contexto-reutilizable-TOMWMS.md
+    type: learning
+    priority: p1
+    freshness_days: 30
+    owner: wms-core
+    tags: [carolina, erik, brain, embeddings, vector_index, aprendizaje]
+  learning_hh_java_safe_edit:
+    path: brain/learnings/L-058-hh-java-safe-edit-encoding-y-doble-call.md
+    type: learning
+    priority: p1
+    freshness_days: 60
+    owner: hh
+    tags: [hh, java, encoding, utf8, bom, mojibake, doble_enter, procesando]
+  skill_tomwms_java_safe_edit:
+    path: brain/skills/tomwms-java-safe-edit/SKILL.md
+    type: skill
+    priority: p1
+    freshness_days: 90
+    owner: hh
+    tags: [hh, java, safe_edit, encoding, logcat, gradle]
 
 skills_backup:
   path: brain/skills

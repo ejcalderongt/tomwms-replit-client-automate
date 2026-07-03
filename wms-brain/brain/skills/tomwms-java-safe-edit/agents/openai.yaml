@@ -1,0 +1,3 @@
+display_name: TOMWMS Java Safe Edit
+short_description: Preserve encoding while editing TOMWMS Java.
+default_prompt: Use tomwms-java-safe-edit to inspect and safely modify a TOMWMS Java file.

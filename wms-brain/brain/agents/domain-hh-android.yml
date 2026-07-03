@@ -37,6 +37,8 @@ reglas_vinculantes:
   - "REGLA 6 ter: CamasPorTarima y CajasPorCama si vienen null/0 son palletizado nuevo definido - NO defaultear a 1 ni abortar"
   - "REGLA 7: En HH, blindar fronteras WS/estado vivo antes de usar objetos globales, .items.get(0), .items, Stock/Detalle/Presentaciones o strings de WS. Si el contexto quedo obsoleto por refresco/reintento, mostrar recarga operativa y no continuar con datos viejos."
   - "REGLA 8: Consulta de existencias HH no debe paginar. WSHHRN Get_Stock_Consulta_CI_Json devuelve todos los registros filtrados en Items; si se optimiza, mantener JSON sin TOP/OFFSET/FETCH y ordenar estable para totales HH."
+  - "REGLA 9: Para editar Java HH, usar skill tomwms-java-safe-edit; preservar UTF-8 sin BOM/EOL existente, evitar patches contra texto mojibakeado y validar con compileDebugJavaWithJavac."
+  - "REGLA 10: En flujos HH asincronos, no liberar guards de proceso por temporizador fijo; liberar procesando=false solo por callback final, error controlado o retorno real al usuario."
 
 patrones_brain:
   - brain/code-changes/HH/  # carpeta - listar contenido
@@ -63,6 +65,7 @@ cross_refs:
   - domain-database              # cuando se diagnostica via SQL los efectos del HH
 
 entry_points:
+  preflight_java_safe_edit: "Antes de editar Java HH con encoding sensible, cargar brain/skills/tomwms-java-safe-edit/SKILL.md y ejecutar Inspect-JavaEncoding.ps1."
   preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
   preflight_concurrencia_cache_sync: "Si el síntoma es desfasaje/concurrencia entre HHs, cargar brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md (plantillas SQL + checklist + tags de logcat)."
   bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
