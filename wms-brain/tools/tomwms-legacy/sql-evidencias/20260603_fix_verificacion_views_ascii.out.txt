@@ -1,0 +1,12 @@
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion, Line 50
+Invalid column name 'dañado_verificacion'.
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion, Line 51
+Invalid column name 'dañado_picking'.
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion, Line 61
+Invalid column name 'dañado_verificacion'.
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion_Detallado_Sin_Licencia, Line 50
+Invalid column name 'dañado_verificacion'.
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion_Detallado_Sin_Licencia, Line 51
+Invalid column name 'dañado_picking'.
+Msg 207, Level 16, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion_Detallado_Sin_Licencia, Line 61
+Invalid column name 'dañado_verificacion'.

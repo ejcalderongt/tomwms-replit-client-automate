@@ -45,6 +45,26 @@ Si no tiene presentacion: se guarda en UMBAS.
 - Mensajes al operador en HH.
 - Reportes orientados a usuario final.
 
+### Caso especifico HH picking detalle
+
+En `frm_picking_datos` el valor de UMBas llega en `ProductoUnidadMedida` desde
+WS/DAL, pero la fila del layout que contiene `txtUniBas` viene oculta por
+defecto. Si `IdPresentacion = 0`, la pantalla debe mostrar la fila UMBas
+aunque no exista presentacion real, porque ese es el fallback correcto del
+dominio.
+
+Regla operativa:
+- lista HH: si hay presentacion, mostrar `ProductoPresentacion`.
+- lista HH: si no hay presentacion, mostrar `ProductoUnidadMedida`.
+- detalle HH: si no hay presentacion, hacer visible la fila UMBas y pintar
+  `ProductoUnidadMedida`.
+
+Huellas utiles:
+- `frm_picking_datos.java`
+- `activity_frm_picking_datos.xml`
+- `clsLnTrans_picking_ubic_Partial.vb`
+- `TOMHHWS.asmx.vb`
+
 ## Casos borde confirmados por Erik
 
 ### Producto sin presentacion

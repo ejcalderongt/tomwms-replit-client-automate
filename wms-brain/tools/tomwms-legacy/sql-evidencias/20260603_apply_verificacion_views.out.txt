@@ -1,0 +1,4 @@
+Msg 102, Level 15, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion, Line 32
+Incorrect syntax near '±'.
+Msg 102, Level 15, State 1, Server EC2AMAZ-ULD1A11, Procedure VW_Verificacion, Line 36
+Incorrect syntax near ')'.

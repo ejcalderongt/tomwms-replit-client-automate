@@ -1,127 +1,194 @@
-# Catalogo maestro de paquetes de contexto del brain
-# Lectura: el coordinador matchea la tarea contra `triggers` de cada paquete
-# y carga solo los que aplican.
-meta:
-  version: 1
-  fecha: 2026-05-20
-  autor: Replit Agent
-  ratificado_por: Erik Calderon
-  branch: wms-brain
-  modelo: coordinador-central + paquetes-de-contexto
+version: 1
+updated: "2026-06-15"
+purpose: >
+  Context router for local WMS agents. Load the coordinator first, then only the
+  domain packages whose triggers match the task.
 
-coordinator:
-  slug: coordinator
-  archivo: brain/agents/coordinator.yml
-  rol: Recibir tarea, decidir paquetes, orquestar respuesta.
+atlas:
+  index: brain/atlas/index.yml
+  handoffs_index: brain/handoffs/_index.yml
+  note: >
+    Use atlas as master discovery map. Router stays lightweight and delegates
+    historical evidence lookup to handoffs_index.
+
+always_load:
+  - brain/agents/coordinator.yml
 
 domains:
-  - slug: domain-bof
-    archivo: brain/agents/domain-bof.yml
-    proposito: Backend VB.NET TOMIMSV4 (winforms + DAL + Entity + reglas negocio)
+  reserva:
+    file: brain/agents/domain-reserva.yml
     triggers:
-      keywords: [frmPedido, frmRecepcion, frmAjuste, TOMIMSV4, winforms, VB.NET, m_Global, Conn.ini]
-      paths: [TOMIMSV4/, DAL/, Entity/]
-      tareas_tipicas: [bug-ui-bof, ajuste-stock-export, indicador-pedido, regla-negocio-vb]
-
-  - slug: domain-integration-services
-    archivo: brain/agents/domain-integration-services.yml
-    proposito: Superficies de integracion (WSHHRN .asmx, WMSWebAPI Core, MI3 legacy, SAP, NAV, DMS)
+      - reserva
+      - no reserva
+      - stock_res
+      - Reserva_Stock_From_MI3
+      - MI3 salida
+      - i_nav_ped_traslado
+      - EA-
+      - Qty_to_Receive
+      - Quantity_Reserved_WMS
+      - picking vs almacenaje
+      - FEFO
+      - presentacion CJ
+      - performance reserva
+    also_load:
+      - brain/agents/domain-database.yml
+      - brain/agents/domain-webapi.yml
+      - brain/agents/domain-performance.yml
+  database:
+    file: brain/agents/domain-database.yml
     triggers:
-      keywords: [WSHHRN, WebService, WMSWebAPI, MI3, SyncSalidas, SyncSAP, NAV, DMS, .asmx, controller, endpoint, Process_Result]
-      paths: [WSHHRN/, WMSWebAPI/, MDynamicsNavInterface/, WMS.DALCore/, WMS.EntityCore/]
-      tareas_tipicas: [nuevo-endpoint, integracion-erp, sync-sap, sync-nav, json-xml-migracion]
-
-  - slug: domain-hh-android
-    archivo: brain/agents/domain-hh-android.yml
-    proposito: Aplicacion Handheld Android Java (TOMHH2025, com.dts.tom)
+      - SQL
+      - tabla
+      - SP
+      - vista
+      - stock
+      - trans_pe_det
+      - trans_pe_enc
+      - i_nav
+      - log_error_wms
+      - identidad
+      - identity
+  bof:
+    file: brain/agents/domain-bof.yml
     triggers:
-      keywords: [HH, handheld, Android, activity, WebService.java, recepcion, picking-hh, verificacion-hh, ZPL]
-      paths: [TOMHH2025/, app/src/main/java/com/dts/tom/]
-      tareas_tipicas: [bug-hh, nueva-pantalla-hh, parsing-soap-hh, presentacion-cantidad]
-
-  - slug: domain-database
-    archivo: brain/agents/domain-database.yml
-    proposito: Esquema SQL Server, SPs, views, perfiles por cliente, scripts DBA
+      - VB
+      - WinForms
+      - legacy
+      - DynamicsNavInterface
+      - SAPSYNCMAMPA
+      - MAMPA
+      - mampa interface
+      - ajuste talla color
+      - TOMWMS_BOF
+      - frmEjecucion
+      - Reference.vb
+    also_load:
+      - brain/agents/domain-database.yml
+  hh_android:
+    file: brain/agents/domain-hh-android.yml
     triggers:
-      keywords: [SQL Server, schema, SP, view, stored procedure, VW_, trans_, stock_, query, tabla, columna, drop, alter, cliente_bodega, integridad]
-      paths: [DBA/, scripts/sql/]
-      tareas_tipicas: [diagnostico-sql, vista-nueva, script-auditoria, regularizacion-data, performance-query]
-
-  - slug: domain-reserva
-    archivo: brain/agents/domain-reserva.yml
-    proposito: Motor de reserva MI3 (legacy VB 8337 lineas) y motor Core .NET con paridad
+      - HH
+      - Android
+      - picking
+      - verificacion
+      - reemplazo
+      - talla
+      - color
+      - talla color
+      - licencia
+      - fardo
+      - etiqueta
+      - zpl
+      - recepcion
+      - escaneo
+      - tc
+    also_load:
+      - brain/agents/domain-bof.yml
+      - brain/agents/domain-database.yml
+  webapi:
+    file: brain/agents/domain-webapi.yml
     triggers:
-      keywords: [reserva, stock_res, MI3, Reserva_Stock_From_MI3, ReservationFailureCode, FEFO, Clavaud, no reserva, picking zone, ReservationContext]
-      paths: [DAL/Transacciones/Stock_Reservado/, WMS.DALCore/Reserva_Stock/]
-      tareas_tipicas: [no-reserva-mi3, diff-paridad-legacy-core, performance-reserva, log-reserva, fefo-vencimiento]
-
-  - slug: domain-portal
-    archivo: brain/agents/domain-portal.yml
-    proposito: WikiHub Portal tomwms-wikidev.replit.app (catalogo humano + API REST)
+      - WebAPI
+      - API
+      - endpoint
+      - controller
+      - service
+      - SyncSalidasService
+      - /api/sync/salidas/mi3/insertar
+      - payload
+      - appsettings
+      - swagger
+      - HTTP 200
+      - curl
+  performance:
+    file: brain/agents/domain-performance.yml
     triggers:
-      keywords: [portal, wikihub, /api/release-notes, /api/modules, /api/stats, /jira, /changelog, /db-changes, /tech-docs]
-      paths: [tomwms-wikidev/, portal/]
-      tareas_tipicas: [endpoint-portal, kpi-portal, reverse-engineer-portal, release-notes]
-
-  - slug: domain-indicadores
-    archivo: brain/agents/domain-indicadores.yml
-    proposito: KPIs operativos cross-dominio (dashboard, by-month, by-cliente) - Modo B sobre WMSWebAPI
-    triggers:
-      keywords: [KPI, indicador, dashboard, by-month, by-cliente, reservas-fallidas, outbox-stuck, tareas-hh, danos-vs-ajustes]
-      paths: [WMSWebAPI/Indicadores/, portal/api/stats/]
-      tareas_tipicas: [kpi-nuevo, dashboard-operativo, agregacion-multi-cliente]
+      - performance
+      - rendimiento
+      - lento
+      - timeout
+      - 2 minutos
+      - roundtrip
+      - trace
+      - tracelog
+      - "#MI3_PERF"
+      - Stopwatch
+      - optimizacion
+      - benchmark
+      - baseline
 
 clients:
-  # NO se duplican aca - viven en brain/client-index/*.yml con shape propio (cliente, bd, estructura, bugs, etc)
-  # El coordinator carga el .yml del client-index segun el slug.
-  index_path: brain/client-index/
-  archivos:
-    - { slug: becofarma, archivo: brain/client-index/becofarma.yml, estado: PRODUCTIVO, rama: dev_2023_estable }
-    - { slug: byb,       archivo: brain/client-index/byb.yml,       estado: HISTORICO,  rama: dev_2023_estable }
-    - { slug: cealsa,    archivo: brain/client-index/cealsa.yml,    estado: QAS,         rama: dev_2023_estable }
-    - { slug: killios,   archivo: brain/client-index/killios.yml,   estado: PRODUCTIVO, rama: dev_2023_estable }
-    - { slug: mampa,     archivo: brain/client-index/mampa.yml,     estado: PRUEBAS,     rama: dev_2028_merge }
-    - { slug: mercopan,  archivo: brain/client-index/mercopan.yml,  estado: PRODUCTIVO, rama: dev_2028_merge }
-    - { slug: merhonsa,  archivo: brain/client-index/merhonsa.yml,  estado: PRE-PRODUCTIVO, rama: dev_2028_merge }
-  faltantes:
-    - { slug: lacumbre,  rama: dev_2028_Cumbre, motivo: "Rama dedicada HH; YAML pendiente de crear" }
-    - { slug: mhs,       rama: dev_2028_merge,  motivo: "Cliente B2B nuevo via WMSWebAPI; no en EC2 - su propio entorno" }
-    - { slug: idealsa,   rama: pendiente,       motivo: "Holding; opera directo CD Escuintla GT sin BD propia en EC2" }
+  byb:
+    file: brain/agents/client-byb.yml
+    triggers:
+      - BYB
+      - IMS4MB_BYB_QAS2
+      - EA-153304
+      - EA-153305
+      - BA0002
+      - DILMAR
+      - MEGA AHORRO
 
-cross_dominio:
-  # Tareas que requieren multiples paquetes cargados a la vez
-  - tarea: no-reserva-mi3-en-cliente-X
-    cargar: [coordinator, domain-reserva, domain-database, client-<X>]
-  - tarea: nuevo-endpoint-kpi
-    cargar: [coordinator, domain-indicadores, domain-integration-services, domain-database]
-  - tarea: bug-hh-recepcion
-    cargar: [coordinator, domain-hh-android, domain-integration-services, domain-database, client-<X>]
-  - tarea: feature-cliente-nuevo
-    cargar: [coordinator, domain-bof, client-<X>]
-  - tarea: kpi-portal
-    cargar: [coordinator, domain-portal, domain-indicadores]
-  - tarea: incidente-operativo-repetitivo
-    cargar: [coordinator, domain-hh-android, domain-bof, domain-integration-services, domain-database, client-<X>]
-    preflight_extra:
-      - brain/handoffs/2026-06-06-operativo-reusable-map/README.md
-      - brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml
-      - brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md
-  - tarea: pedido-mi3-cliente-no-visible
-    cargar: [coordinator, domain-bof, domain-integration-services, domain-database, client-<X>]
-    preflight_extra:
-      - brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md
+rules:
+  selection:
+    - Load client context when a trigger matches a named client or a known reference document.
+    - For reservation investigations, domain-reserva plus domain-database is mandatory.
+    - For WebAPI reservation investigations, add domain-webapi and domain-performance.
+    - For legacy WinForms/UI reserve traces, add domain-bof.
+    - For MAMPA interface / ajuste talla-color work, add domain-bof plus domain-database.
+    - For HH incidents (picking/verificacion/reemplazo/impresion), load domain-hh-android first, then BOF/DB as needed.
+    - Load handoffs only when symptoms/tags match entries in brain/handoffs/_index.yml.
+    - For publish/sync work, run orchestration double-check from coordinator.yml.
+  context_budget:
+    - Do not load all brain files by default.
+    - Prefer the listed entry points and only expand to source files required by the current hypothesis.
+    - Prefer atlas metadata (priority/freshness) before loading historical handoffs.
 
-triggers_conflicto:
-  # Cuando un keyword puede pertenecer a varios dominios, regla de desempate.
-  - keyword: stock_res
-    primario: domain-reserva
-    secundario: [domain-database]
-  - keyword: Process_Result
-    primario: domain-integration-services
-    secundario: [domain-reserva]
-  - keyword: trans_pe_det
-    primario: domain-bof
-    secundario: [domain-database, domain-reserva]
-  - keyword: WSHHRN
-    primario: domain-integration-services
-    secundario: [domain-hh-android]
+codex_skills:
+  installed_path: C:/Users/yejc2/.codex/skills
+  backup_path: brain/skills
+  available:
+    wms-reserva-diagnostics:
+      installed: C:/Users/yejc2/.codex/skills/wms-reserva-diagnostics/SKILL.md
+      backup: brain/skills/wms-reserva-diagnostics/SKILL.md
+      primary_domains:
+        - reserva
+        - database
+        - webapi
+        - performance
+      triggers:
+        - reserva MI3
+        - no reserva
+        - stock_res
+        - EA-153304
+        - EA-153305
+        - BYB
+        - FEFO
+        - CJ
+    wms-webapi-debug:
+      installed: C:/Users/yejc2/.codex/skills/wms-webapi-debug/SKILL.md
+      backup: brain/skills/wms-webapi-debug/SKILL.md
+      primary_domains:
+        - webapi
+        - database
+      triggers:
+        - WebAPI
+        - endpoint
+        - payload
+        - curl
+        - timeout 120
+        - SyncSalidasService
+    wms-bof-hh-guardrails:
+      installed: C:/Users/yejc2/.codex/skills/wms-bof-hh-guardrails/SKILL.md
+      backup: brain/skills/wms-bof-hh-guardrails/SKILL.md
+      primary_domains:
+        - bof
+        - database
+      triggers:
+        - BOF
+        - WinForms
+        - HH
+        - Android
+        - Reference.vb
+        - WebMethod

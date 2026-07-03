@@ -1,86 +1,115 @@
-slug: domain-bof
-nombre: Backend BOF — VB.NET TOMIMSV4 (winforms + DAL + Entity)
-proposito: Logica de negocio winforms del WMS legacy. Solo cosas que NO sean reserva, integracion ni base de datos pura.
-estado: vigente
-ramas_relevantes: [dev_2023_estable, dev_2028_merge]
-runtime: .NET Framework 4.8 / VB.NET / WinForms
+version: 1
+updated: "2026-06-15"
+domain: bof
+scope: "Legacy VB.NET/WinForms context for WMS reservation and interface work."
 
-solution_layout:
-  proyecto_principal: TOMIMSV4
-  proyectos_relacionados:
-    - Entity            # POCO/DTO legacy VB
-    - DAL               # Acceso datos legacy VB
-    - WSHHRN            # WebService .asmx (ver domain-integration-services)
-    - WMSWebAPI         # API .NET Core (ver domain-integration-services)
-    - WMS.EntityCore    # POCO/DTO Core (ver domain-integration-services)
-    - WMS.DALCore       # Acceso datos Core (ver domain-integration-services)
-    - MDynamicsNavInterface  # Interface NAV
-  ide: Visual Studio 2022, target framework .NET Framework 4.8
+rules:
+  - Do not edit Reference.vb; generated SOAP proxies are not implementation.
+  - Keep VB files as UTF-8 with BOM.
+  - Debug first and preserve existing business branches.
+  - When enriching WinForms UI, keep operational logs useful and avoid hiding failure detail.
 
-archivos_clave:
-  configuracion:
-    - { path: TOMIMSV4/Conn.ini, rol: "Connection string + flags arranque" }
-    - { path: TOMIMSV4/Clases_AP/m_Global.vb, rol: "Estado global aplicacion, sesion operador, parametros runtime" }
-  pedido:
-    - { path: TOMIMSV4/Transacciones/Pedido/frmPedido.vb, rol: "Form principal pedido outbound; merge inserts/updates ERP" }
-    - { path: TOMIMSV4/Transacciones/Pedido/frmPedido_List.vb, rol: "Listado pedidos + indicador rapido (modificado 906 lineas en 5ffe278e)" }
-  recepcion:
-    - { path: TOMIMSV4/Transacciones/Recepcion/frmRecepcion*.vb, rol: "Forms recepcion OC" }
-  ajuste:
-    - { path: TOMIMSV4/Transacciones/Ajuste/frmAjusteStock.vb, rol: "Ajuste manual stock + export Excel (ver pattern AJUSTE-STOCK-EXPORT-EXCEL)" }
-  picking:
-    - { path: TOMIMSV4/Transacciones/Picking/frmPicking*.vb, rol: "Forms picking BOF (escritorio)" }
+reservation_ui_notes:
+  frmEjecucion:
+    file: DynamicsNavInterface/Formas/frmEjecucion.vb
+    method: Importar_Envio_Almacen_Desde_Tabla_Intermedia_A_Tabla_TOMIMS
+    visual_feedback: >
+      RichTextBox progress can be colored by reservation result: green for
+      complete, red for under-reserved/error, neutral for informational steps.
+      The visual layer must not replace Process_Result or DB logs.
+  progress_helper:
+    note: >
+      Reuse the existing progress state/helper pattern when available instead
+      of embedding ad-hoc RichTextBox coloring in business logic.
 
-patrones_brain:
-  - brain/code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md
-  - brain/code-changes/BOF/PATTERNS-PICKING-VERI.md
-  - brain/code-changes/BOF/PATTERNS-OC-MI3.md
-  - brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/README.md
-  - brain/code-changes/INDICADOR-AJUSTE-PROVEEDOR/  # carpeta - revisar contenido
+legacy_as_oracle:
+  - If Erik marks a legacy reservation as correct, snapshot it before deleting.
+  - Capture interface lines, trans_pe_det and stock_res with per-line reservation detail.
+  - Use that snapshot as the oracle for Core parity.
 
-tablas_bd_principales:
-  - trans_pe_enc, trans_pe_det              # pedido
-  - trans_oc_enc, trans_oc_det              # orden compra
-  - trans_re_oc                             # recepcion OC
-  - trans_picking_ubic                      # picking
-  - trans_ajuste_enc, trans_ajuste_det      # ajustes
-  - trans_movimientos                       # log movimientos
-  - i_nav_config_enc                        # 69 flags configurables
-  - i_nav_ped_traslado_enc, i_nav_ped_traslado_det  # interface NAV
+verification_movements:
+  veri_duplicate_case:
+    handoff: "brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados"
+    symptom: "Exact duplicate VERI movements and VERI quantity stored in presentation instead of UMBAS."
+    guardrail: >
+      VERI insert logic must stay idempotent by business key before inserting
+      trans_movimientos. When a verification quantity is distributed across
+      multiple trans_picking_ubic rows, movement quantity must use the applied
+      line quantity (CantPendiente), not the original remaining request.
+    quantity_rule: >
+      trans_movimientos.cantidad for VERI must be stored in UMBAS. Callers that
+      already pass UMBAS must declare it explicitly; presentation quantities are
+      normalized in the common VERI insert path.
 
-glosario:
-  UMBAS: Unidad de Medida Basica (cantidad siempre se persiste en UMBAS)
-  IdPresentacion: FK a producto_presentacion; si > 0 hay conversion
-  IdOperadorBodega_Pickeo: operador que ejecuto el pickeo
-  AJCANTN: tipo de ajuste cantidad negativo
-  IMS4MB: genealogia BD vieja (BECOFARMA/BYB/CEALSA/MAMPA)
+mampa_interface_notes:
+  ajuste_talla_color:
+    handoff: "brain/handoffs/2026-06-15-mampa-interface-learning/README.md"
+    rule: >
+      For MAMPA ajuste/interfaz work, prefer the typed product-talla-color
+      dataset and keep the contract consistent across BOF and interface code.
+      Do not infer TC from display labels when the source query already exposes
+      IdTalla/IdColor, and do not copy destination TC into borrador records
+      before confirmation.
+  ingreso_contract:
+    rule: >
+      If the interface caller already constructs the request object, validate
+      the contract at the true entry point and avoid redundant guards that hide
+      the upstream failure path. Preserve the real error when the payload is
+      malformed.
 
-reglas_operativas:
-  - "#EJC20260527: En picking/no-pickeado, si se elimina trans_picking_ubic con cantidad no ejecutada, primero limpiar trans_picking_ubic_stock y trans_movimientos usando el IdMovimiento identity guardado en el puente. Evitar borrar movimientos por MaxID o solo por filtros semanticos."
+implosion_notes:
+  sku_resolution_and_umbas:
+    updated: "2026-06-30"
+    rule: >
+      In frmImplosion, treat the scan as a two-step validation: first resolve
+      the SKU against the master service, then match the local grid by
+      IdProductoTallaColor or IdProductoBodega before falling back to an exact
+      CodigoSKU compare. The objective quantity is UMBAS (CantidadUMBas with
+      CantidadPresentacion as fallback), so other BOF screens that scan or
+      compare stock should reuse the same exact-match-first pattern instead of
+      guessing by partial code or display text.
 
-huerfanos_evitar:
-  - { path: TOMIMSV4/Transacciones/Pedido/frmPedido_OBSOLETO*, motivo: "Versiones viejas" }
-  - { path: "*.bak, *.orig, *.old", motivo: "Files de backup no productivos" }
+stock_explosion_notes:
+  frm_stock_por_lote_manual_explosion:
+    updated: "2026-07-02"
+    files:
+      - "TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote/frmStockPorLote.vb"
+      - "TOMIMSV4/TOMIMSV4/Reportes/Stock/StockPorLote/frmExplosionBOF.vb"
+      - "TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb"
+    rule: >
+      BOF manual stock explosion from frmStockPorLote must resolve the selected
+      grid row back to a current VW_Stock_Res stock row before applying changes.
+      Explosionable stock follows the HH-compatible base rule: IdPresentacion >
+      0, Factor > 0, and Disponible_UMBas > 0. The operator can enter quantity
+      in presentation units in the BOF UI, but the apply path must convert to
+      UMBAS (cantidad_presentacion * Factor) before touching stock/stock_res or
+      trans_movimientos.
+    movement_contract: >
+      Use the existing movement application path
+      clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic with
+      IdTipoTarea = clsDataContractDI.tTipoTarea.EXPLOSION instead of direct
+      UPDATEs to stock. The movement should preserve origin stock identity and
+      audit IdUbicacionOrigen/IdUbicacionDestino, IdEstadoOrigen/IdEstadoDestino,
+      IdOperadorBodega, lote, fecha_vence, lic_plate/barra_pallet, recepcion
+      references, and UMBAS quantity. This allows a single EXPLOSION movement to
+      represent presentation removal plus optional destination location/state
+      change in an auditable way.
+    ui_guardrail: >
+      Reuse the visual controls in frmExplosionBOF when the designer is inherited
+      from frmCambioUbicacion; do not overlay dynamic controls on top of the
+      form. txtCantidad must clamp min/max from the resolved stock availability,
+      and the "Nueva Cantidad" label should recalculate dynamically so the user
+      sees the UMBAS result and the remaining origin quantity before applying.
+    encoding_guardrail: >
+      frmExplosionBOF.vb, its Designer, and related VB files must stay UTF-8 with
+      BOM because the screen contains Spanish labels/messages with accents.
 
-cross_refs:
-  - domain-integration-services    # cuando el form llama a WSHHRN/WebAPI
-  - domain-reserva                 # cuando toca stock_res
-  - domain-database                # cuando se inventa una nueva query
-  - domain-hh-android              # contraparte mobile
-
-entry_points:
-  bug_form_ui: "Buscar frmXxxx.vb en TOMIMSV4/Transacciones/, ver eventos Click/Load"
-  ajuste_export_excel: "leer brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/v2-2026-05-13/README.md primero"
-  indicador_pedido: "frmPedido_List.vb - cambios mas recientes en commit 5ffe278e"
-  oc_mi3_estatus: "leer brain/code-changes/BOF/PATTERNS-OC-MI3.md - estatus por trans_oc_enc.Referencia NO IdOrdenCompraEnc"
-
-ejemplos_tareas_pasadas:
-  - { fecha: 2026-05-13, caso: "Ajuste stock export Excel v2", pattern: brain/code-changes/AJUSTE-STOCK-EXPORT-EXCEL/v2-2026-05-13/ }
-  - { fecha: 2026-05-19, caso: "Veri movimientos duplicados regularizacion", handoff: brain/handoffs/2026-05-19-codex-learning-bof-veri-movimientos-duplicados/ }
-  - { fecha: 2026-05-19, caso: "Mejora visual documento ERP byb (frmPedido.vb)", commit: c0c112a7 }
-  - { fecha: 2026-05-19, caso: "Indicador rapido pedido (frmPedido_List.vb)", commit: 5ffe278e }
-
-extension_points:
-  - "Falta documentar el modulo de Verificacion BOF detalladamente"
-  - "Falta inventario completo de forms en TOMIMSV4/Transacciones/"
-  - "Pattern para flow Despacho->Outbox no esta escrito todavia"
+vb_encoding_guardrail:
+  updated: "2026-07-01"
+  rule: >
+    When editing VB files in TOMWMS, keep them as UTF-8 with BOM. The helper
+    script lives in wms-brain/tools/wms-context/check-vb-bom.ps1 and should be
+    used to validate only the changed VB files by default. Use -All only for
+    explicit repo-wide audits; the legacy tree contains many historical files
+    outside BOM standard and should not be mass-converted without a dedicated
+    cleanup plan.

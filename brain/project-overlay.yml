@@ -10,3 +10,10 @@ inherits:
 domains_available:
   - domain-database
   - domain-jira
+
+federated_peers:
+  - name: MCP
+    repo_path: C:\Users\yejc2\source\repos\MCP
+    overlay_entry: C:\Users\yejc2\source\repos\MCP\brain\project-overlay.yml
+    live_context: C:\Users\yejc2\source\repos\MCP\mcp-context-brain
+    publishable_brain: C:\Users\yejc2\source\repos\MCP\mcp-brain
