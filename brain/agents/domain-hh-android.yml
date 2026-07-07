@@ -65,6 +65,7 @@ cross_refs:
 entry_points:
   preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
   bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
+  inv_ciclico_exact_key: "Leer brain/handoffs/2026-07-06-hh-inventario-ciclico-asmx-validaciones/ y brain/learnings/L-058-arch-hh-asmx-no-webapi.md antes de tocar validacion o lista."
   parsing_soap: "WebService.java - parseo respuestas WSHHRN. Cuidar .replace(N,n) linea 352"
   nueva_activity: "Seguir patron de activities existentes en mismo modulo (recepcion/picking/etc)"
   cliente_cumbre: "rama dedicada dev_2028_Cumbre - NO mezclar con dev_2028_merge"
@@ -75,6 +76,7 @@ ejemplos_tareas_pasadas:
   - { fecha: 2026-05-26, caso: "HH cambio ubicacion: foco destino desde recepcion", nota: "Fix en frm_cambio_ubicacion_ciega con tag #EJC20260526; no tocar recepcion detalle para este sintoma." }
   - { fecha: 2026-05-27, caso: "HH blindaje nulos/listas estrategico", nota: "Patron #EJC20260527 aplicado en cambio ubicacion, consulta existencias detalle y verificacion consolidada; extender por frontera WS, no masivo." }
   - { fecha: 2026-05-27, caso: "HH consulta existencias sin paginacion", nota: "Get_Stock_Consulta_CI_Json debe retornar Items completos acorde filtros; Total=RegistrosDevueltos y SinPaginacion=True." }
+  - { fecha: 2026-07-06, caso: "HH inventario ciclico exact key ubicacion + gondola", handoff: brain/handoffs/2026-07-06-hh-inventario-ciclico-asmx-validaciones/, status: "documentado", nota: "No confundir WSHHRN/TOMHHWS.asmx.vb con WebAPI; lista solo por llave exacta." }
 
 extension_points:
   - "Falta inventario de las 55 activities con su flujo y endpoint WSHHRN consumido"

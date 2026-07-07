@@ -37,6 +37,25 @@
   - `brain/agents/_index.yml`, `domain-*.yml`
   - Cargar solo los paquetes necesarios según el trigger del proceso.
 
+## 4.2 Continuidad HH inventario ciclico
+
+- Para este flujo, arrancar desde `brain/agents/domain-hh-android.yml` y el
+  handoff `brain/handoffs/2026-07-06-hh-inventario-ciclico-asmx-validaciones/`.
+- La referencia de backend real es `C:\Users\carol\source\repos\TOMWMS_BOF\WSHHRN\TOMHHWS.asmx.vb`.
+- La llave operativa es `ubicacion + gondola`; no mezclar listas de otra
+  ubicacion aunque la gondola coincida.
+- Si el metodo JSON no esta publicado o el runtime devuelve nombre invalido,
+  dejar constancia del gap y mantener el camino estable de SOAP hasta que la
+  publicacion quede verificada.
+
+## 4.1 Aprendizaje Carolina y busqueda vectorial
+
+- Erik confirma, via Carolina, que el conocimiento descubierto en sesiones de trabajo debe mapearse al brain siguiendo las reglas de aprendizaje.
+- Con la incorporacion de `tools/wms-embeddings`, los aprendizajes durables deben quedar en formato atomico y conectados a paquetes que el indexador pueda recorrer.
+- Regla practica: crear o actualizar el aprendizaje humano en `brain/learnings/L-###-*.md` y reflejar el punto reusable en `wms-brain/brain/atlas`, `handoffs`, `code-changes` o `learnings` segun el dominio.
+- Antes de integrar conocimiento nuevo: hacer fetch/sync comprensivo de GitHub, preservar cambios locales, y despues escribir contra la estructura actual.
+- No asumir que el indice vectorial esta fresco; si el endpoint de embeddings no esta disponible, dejar reindexado como pendiente explicito.
+
 ## 5. Skills explícitos y flujos reutilizables
 
 - Extracción y subida de catálogo SQL.

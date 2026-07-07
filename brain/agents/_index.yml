@@ -43,9 +43,9 @@ domains:
     archivo: brain/agents/domain-hh-android.yml
     proposito: Aplicacion Handheld Android Java (TOMHH2025, com.dts.tom)
     triggers:
-      keywords: [HH, handheld, Android, activity, WebService.java, recepcion, picking-hh, verificacion-hh, ZPL]
+      keywords: [HH, handheld, Android, activity, WebService.java, recepcion, picking-hh, verificacion-hh, ZPL, inventario ciclico, gondola, ubicacion + gondola]
       paths: [TOMHH2025/, app/src/main/java/com/dts/tom/]
-      tareas_tipicas: [bug-hh, nueva-pantalla-hh, parsing-soap-hh, presentacion-cantidad]
+      tareas_tipicas: [bug-hh, nueva-pantalla-hh, parsing-soap-hh, presentacion-cantidad, inventario-ciclico]
 
   - slug: domain-database
     archivo: brain/agents/domain-database.yml
@@ -103,6 +103,8 @@ cross_dominio:
   - tarea: nuevo-endpoint-kpi
     cargar: [coordinator, domain-indicadores, domain-integration-services, domain-database]
   - tarea: bug-hh-recepcion
+    cargar: [coordinator, domain-hh-android, domain-integration-services, domain-database, client-<X>]
+  - tarea: inventario-ciclico-hh
     cargar: [coordinator, domain-hh-android, domain-integration-services, domain-database, client-<X>]
   - tarea: feature-cliente-nuevo
     cargar: [coordinator, domain-bof, client-<X>]
