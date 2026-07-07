@@ -3,7 +3,9 @@
 ## Branches and repos
 
 - `main` = repo de intercambio, bundles, logs y contrato operativo.
-- `wms-brain` = conocimiento compartido del agente.
+- `wms-brain` = conocimiento compartido del agente (WMS).
+- `mcp-brain` = brain del proyecto MCP (https://github.com/ejcalderongt/mcp-brain) — cada proyecto tiene su propio brain/repo.
+- `mpos-brain` = brain del proyecto mPos (placeholder local). Si existe repo dedicado, enlazar (p.ej. https://github.com/ejcalderongt/mpos-brain).
 - `openclaw-control-ui` = MVP de bootstrap/control/brain-up.
 
 ## Paths

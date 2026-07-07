@@ -1,0 +1,57 @@
+version: 1
+workspace_root: C:\Users\yejc2\OpenClawWorkspace
+
+brains:
+  - id: workspace-core
+    path: .
+    kind: anchor
+    purpose: Root workspace anchors, memory, identity, and startup policy.
+    startup:
+      - AGENTS.md
+      - SOUL.md
+      - USER.md
+      - TOOLS.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+
+  - id: mcp-brain
+    path: mcp-brain
+    kind: root-brain
+    purpose: Persistent MCP anchor (separate brain repo per proyecto).
+    startup:
+      - mcp-brain/README.md
+      - mcp-brain/brains/mcp-context/README.md
+      - mcp-brain/brains/mcp-context/AGENT.md
+      - mcp-brain/brains/mcp-context/project-index.md
+      - mcp-brain/brains/mcp-context/project-card.yml
+      - mcp-brain/brains/mcp-context/templates/handoff-template.md
+      - mcp-brain/brains/mcp-context/maps/project-navigation-playbook.md
+      - mcp-brain/brains/mcp-context/maps/variant-aware-report-contract.md
+      - mcp-brain/brains/mcp-context/maps/printagent-driver-trace.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+
+  - id: mpos-brain
+    path: mpos-brain
+    kind: root-brain
+    purpose: MCP sub-brain for mPos (local folder for now; switch to dedicated repo when provided).
+    startup:
+      - mpos-brain/README.md
+      - MEMORY.md
+      - memory/YYYY-MM-DD.md
+
+routes:
+  default:
+    - workspace-core
+    - mcp-brain
+  mcp:
+    - workspace-core
+    - mcp-brain
+  mpos:
+    - workspace-core
+    - mpos-brain
+
+notes:
+  - Cada proyecto tiene su propio brain/repo. MCP usa https://github.com/ejcalderongt/mcp-brain.
+  - Para mPos, usar repo dedicado si existe (p.ej. https://github.com/ejcalderongt/mpos-brain). Mientras, apuntamos al folder local mpos-brain.
+  - Extiende este índice primero cuando agregues un nuevo brain persistente.
