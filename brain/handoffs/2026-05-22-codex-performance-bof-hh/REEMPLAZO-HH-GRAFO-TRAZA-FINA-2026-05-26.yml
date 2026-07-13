@@ -1,5 +1,5 @@
 meta:
-  fecha_actualizacion: "2026-07-10"
+  fecha_actualizacion: "2026-07-13"
   nombre: "Reemplazo HH (Picking/Verificación) - Grafo y traza fina"
   fecha: "2026-05-26"
   objetivo:
@@ -153,6 +153,26 @@ casos_confirmados:
     tags_codigo:
       - "#EJC20260710_VERIF_DIALOG_PROGRESS"
 
+  - id: "LA_CUMBRE_QA_PICKING_4031_FANOUT_LINEA_EXACTA"
+    fecha: "2026-07-13"
+    picking: 4031
+    codigo: "7410030503700"
+    id_stock_origen: 820916
+    pedidos_afectados: [8339, 8340]
+    sintoma: "Al reemplazar 3 y luego 5, el DAL genero lineas dañadas en ambos pedidos en vez de detenerse en la cantidad completada."
+    evidencia_bd:
+      - "La misma llave operativa compartia dos IdPedidoDet: 502969 y 503128, con cantidades 28 y 16 sobre el mismo IdStock 820916."
+      - "Las nuevas lineas 687760/687761 y 687762/687763 quedaron distribuidas por ambos pedidos, reflejando fan-out de la misma cantidad sobre pedidos hermanos."
+    causa_raiz: "La capa DAL resolvia un conjunto de trans_picking_ubic por stock/pedido_hermano y luego iteraba sobre la lista completa, en lugar de anclar el reemplazo a la linea exacta seleccionada por HH."
+    correccion: "Resolver primero la linea exacta por IdPickingUbic o IdPickingDet y operar solo sobre esa linea; si el contexto exacto no llega, emitir traza de fallback para detectar el desvio."
+    tags_codigo:
+      - "#EJC20260713_REEMPL_LINEA_EXACTA"
+    validacion_final:
+      - "Picking con reemplazo: validado sin duplicacion."
+      - "Picking sin existencia/no encontrado: validado con corte correcto por cantidad."
+      - "Verificacion con reemplazo: validado tras preservar la linea exacta cuando el filtro funcional vacia la lista."
+    estado: "validado"
+
 reglas_aprendidas:
   - "#EJC20260710: Antes de abrir un dialogo de decision desde un callback WS, cerrar el loader de la operacion terminada; superponer AlertDialog no cambia el estado del ProgressDialog subyacente."
   - "#EJC20260710: Toda Function Boolean transaccional debe asignar/devolver True en su ruta exitosa; un False implicito no debe usarse como exito silencioso."
@@ -167,6 +187,8 @@ reglas_aprendidas:
   - "#EJC20260710: La reserva de reemplazo es temporalmente adicional a la reserva original; no debe aplicarse el tope general del pedido antes de completar la sustitucion transaccional."
   - "#EJC20260710: En REEMP_BE_PICK, REEMP_ME_PICK, REEMP_NE_PICK y REEMP_ME_VERI, trans_movimientos debe persistir IdOperadorBodega normalizado; si el contexto HH trae IdOperador, resolver el operador de bodega antes de grabar para no mezclar identidad de login con la de bodega."
   - "#EJC20260711: Si el operador selecciona una linea candidata de reemplazo, ConExistencia debe volver a true en la UI antes de invocar el WS; asi se limpia el estado de 'sin existencia' y la rama correcta sigue siendo la de reemplazo con stock."
+  - "#EJC20260713: Si una transaccion de reemplazo toca pedidos hermanos sobre el mismo IdStock, el DAL debe resolver la linea exacta de picking_ubic y cortar por cantidad completada; el agrupamiento por stock compartido no debe multiplicar efectos entre IdPedidoDet distintos."
+  - "#EJC20260713: En verificacion, si el filtro funcional deja la lista vacia pero HH envio una linea exacta valida, el DAL debe preservar esa linea exacta antes de abortar; el vaciado del filtro no debe bloquear un reemplazo correctamente contextualizado."
 
 quick_wins:
   - "Registrar estado pre/post de cantidad_solicitada/cantidad_pickeada por línea."
