@@ -1,4 +1,5 @@
 meta:
+  fecha_actualizacion: "2026-07-10"
   nombre: "Reemplazo HH (Picking/Verificación) - Grafo y traza fina"
   fecha: "2026-05-26"
   objetivo:
@@ -25,6 +26,9 @@ nodos:
   - id: "DAL.REEMP"
     capa: "DAL"
     archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb"
+  - id: "DAL.REEMP.STOCK_RES"
+    capa: "DAL"
+    archivo: "TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb"
 
 riesgos_principales:
   - "Conflicto CHECK non-negative por ajuste de cantidad_solicitada."
@@ -36,8 +40,137 @@ mejoras_ya_existentes_detectadas:
   - "Fixes recientes para evitar caída por constraint en reemplazo/no encontrado."
   - "Soporte funcional para marcar no apto sin sustituto en escenario opcional."
 
+casos_confirmados:
+  - id: "LA_CUMBRE_QA_PICKING_4034"
+    fecha: "2026-07-09"
+    pedido: 8343
+    picking: 4034
+    id_pedido_det: 503298
+    id_picking_ubic: 687697
+    id_producto_bodega: 47865
+    sintoma: "No se genero stock reservado para el reemplazo."
+    evidencia_hh:
+      - "REEMPL_T selecciono ubicacion 54, licencia QW000005257, cantidad agrupada 6 y solicito reemplazar 1."
+      - "WMS-T registro una sola llamada Reservar_Stock_By_Stock; no hubo doble Enter ni overlap."
+    evidencia_bd:
+      - "La ubicacion 54 tenia tres IdStock (580414, 821588, 821589), cantidad 2 cada uno, sin reservas: disponible total 6."
+      - "El pedido detalle solicitaba 1 y conservaba stock_res 103491 por 1; Ajustar_Cantidad_Maxima_PedidoDet calculaba pendiente 0."
+      - "log_error_wms_pick IdError 2049 confirmo Reservar_Stock_By_Stock -> Reemplazar_IdStock_By_Stock."
+    causa_raiz: "El merge 140cad1e combino EsReservaNueva y pOmitirAjustePedidoDet en la firma de Insertar. Inserta_Stock_Reservado seguia pasando el cuarto booleano por posicion, por lo que True se asignaba a EsReservaNueva y la omision quedaba False."
+    correccion: "Pasar EsReservaNueva:=True y pOmitirAjustePedidoDet:=pOmitirAjustePedidoDet por nombre."
+    alcance: "BOF/WSHHRN; no requiere cambio de APK HH ni regularizacion manual de stock."
+
+  - id: "LA_CUMBRE_QA_VERIFICACION_4031_CTX_VACIO"
+    fecha: "2026-07-10"
+    pedido: 8338
+    picking: 4031
+    id_pedido_det: 502765
+    id_picking_ubic: 687598
+    id_producto_bodega: 2820
+    sintoma: "Al confirmar no reemplazar y marcar como danado, case 2 enviaba plistPickingUbi e IdPickingEnc en cero."
+    evidencia_hh:
+      - "REEMPL_T reporto base=1 para pedido 8338/detalle 502765, pero WS_PAYLOAD envio Pick{IdPickEnc=0, IdPedidoEnc=0, IdPedidoDet=0, IdUM=0, IdUbic=0}."
+      - "El request sin contexto produjo esperas de 5 a 60 segundos y overlaps al abandonar la pantalla."
+    evidencia_bd:
+      - "La linea real 687598 existe con IdPickingEnc 4031, IdPickingDet 489637, IdPedidoEnc 8338, IdPedidoDet 502765, owner 3, UM 1, ubicacion 2613 y estado 3."
+    causa_raiz: "BePickingUbic se inicializaba con new clsBeTrans_picking_ubic(). Como no era null, case 2 lo aceptaba y no ejecutaba el fallback hacia pSubListPickingU; Marcar_Danado tampoco asignaba la linea seleccionada antes de execws(2)."
+    correccion: "Inicializar BePickingUbic en null, seleccionar la linea objetivo en Marcar_Danado, revalidar el contexto minimo antes del WebMethod y enviar pCantLinea coherente con la traza."
+    tags_codigo:
+      - "#EJC20260710_REEMPL_VERIF_CTX"
+    compatibilidad: "La ruta con stock conserva Continua_procesando_registro; la ruta sin sustituto solo agrega resolucion explicita, validacion local y trazas."
+
+  - id: "LA_CUMBRE_QA_PICKING_4031_DOBLE_DANADO"
+    fecha: "2026-07-10"
+    picking: 4031
+    pedidos_afectables: [8338, 8340]
+    id_producto_bodega: 4134
+    codigo: "033844005351"
+    id_stock_origen: 820745
+    cantidad_solicitada_reemplazo: 3
+    sintoma: "Una confirmacion exitosa sin producto sustituto redujo 6 unidades del stock bueno y creo dos stocks de mal estado por 3."
+    evidencia_hh:
+      - "REEMPL_T registro una sola llamada Reemplazar_ListaPu_By_Stock con CantSol=3, CantidadTotal=3 y ConExistencia=false."
+      - "El DTO resumido llego con IdPickingDet=0, IdPedidoEnc=0 e IdPedidoDet=0, pero con picking 4031, licencia JJ000022927 y producto 4134."
+    evidencia_bd:
+      - "El mismo stock/licencia/producto estaba ligado a IdPickingUbic 686970 (pedido 8338) y 687359 (pedido 8340)."
+      - "Stock 820745 paso de 18 a 12 y aparecieron los stocks 821636 y 821638, ambos estado 4 y cantidad 3."
+    causa_raiz: "Reemplazar_ListaPu_By_Stock_Sin_Exist guardaba el Boolean devuelto por Generar_Tarea_Cambio_Estado_Sin_Exist en un String. El valor se convertia en 'True', por lo que la condicion result = '' nunca cortaba el For al completar CantTotal y repetia CantSol sobre la siguiente linea coincidente."
+    correccion:
+      - "BOF: separar resultCambioEstado Boolean del result String usado por No Encontrado y cortar al alcanzar CantTotal cuando la operacion correspondiente termina bien."
+      - "HH: evaluar requestEnCurso antes del bypass de autorizacion y tambien al entrar a Marcar_Danado/Marcar_No_Encontrado."
+    tags_codigo:
+      - "#EJC20260710_PICK_REEMPL_IDEMP"
+    compatibilidad: "El picking resumido puede seguir distribuyendo una cantidad entre varias lineas; solo se impide superar CantidadTotal o lanzar un segundo request mientras el primero sigue activo."
+
+  - id: "LA_CUMBRE_QA_PICKING_4031_DOBLE_NO_ENCONTRADO"
+    fecha: "2026-07-10"
+    picking: 4031
+    pedidos_afectables: [8338, 8339]
+    id_producto_bodega: 4140
+    codigo: "033844005399"
+    id_stock_origen: 820747
+    cantidad_solicitada_no_encontrado: 3
+    sintoma: "Una sola confirmacion No Encontrado redujo 6 del stock bueno y creo dos stocks estado 5 por 3."
+    evidencia_hh:
+      - "REEMPL_T y WMS-T registraron una sola llamada Reemplazar_ListaPu_By_Stock con Tipo=2, CantSol=3 y CantidadTotal=3."
+    evidencia_bd:
+      - "Las lineas 687058/pedido 8338 y 687248/pedido 8339 compartian stock 820747, producto 4140 y licencia JJ000022927."
+      - "Stock 820747 quedo en 6 y se crearon 821647 y 821648, ambos estado 5 y cantidad 3."
+    causa_raiz: "El limite del For dependia del resultado textual/booleano de la operacion. CantTotal se decrementaba, pero el Exit For no era una invariancia directa e independiente del tipo de proceso."
+    correccion: "Validar CantTotal antes de cada iteracion, exigir exito de la operacion y de Modificar_PickingUbic_By_Reem, decrementar una sola vez y ejecutar Exit For inmediatamente cuando CantTotal llega a cero."
+    tags_codigo:
+      - "#EJC20260710_PICK_REEMPL_IDEMP"
+    nota_despliegue: "La correccion esta en DAL/WSHHRN; probar requiere publicar el BOF compilado. Instalar solo la APK no cambia este ciclo servidor."
+
+  - id: "LA_CUMBRE_QA_PICKING_4031_RETORNO_FALSO_687022"
+    fecha: "2026-07-10"
+    picking: 4031
+    id_picking_ubic: 687022
+    pedido: 8338
+    id_producto_bodega: 4206
+    codigo: "033844006747"
+    id_stock_origen: 820768
+    cantidad_solicitada_no_encontrado: 2
+    sintoma: "El limite duro revirtio la operacion con el mensaje No se pudo completar la linea de reemplazo/no encontrado: 687022."
+    evidencia:
+      - "Logcat registro una sola llamada Tipo=2 por 2 unidades."
+      - "Despues del error, stock 820768 permanecio unico, estado 3 y cantidad 16; no hubo efecto parcial."
+    causa_raiz: "Modificar_PickingUbic_By_Reem estaba declarada Boolean e inicializaba False, ejecutaba sus actualizaciones, pero terminaba sin Return True."
+    correccion: "Devolver True solo al final exitoso del metodo; las excepciones siguen propagandose y la transaccion externa revierte."
+    tags_codigo:
+      - "#EJC20260710_PICK_REEMPL_IDEMP"
+
+  - id: "LA_CUMBRE_QA_VERIFICACION_DIALOGO_CANCELAR_LOADER"
+    fecha: "2026-07-10"
+    formulario: "frm_list_prod_reemplazo_verif"
+    codigo: "025293003651"
+    cantidad_reemplazar: 15
+    sintoma: "Sin existencias, al responder No a marcar danado y luego No a cancelar, reaparecia Listando existencias y la pantalla quedaba bloqueada."
+    evidencia_hh:
+      - "processListStockRes registro DT.count=0; no existio una segunda llamada WS despues de los dialogos."
+    causa_raiz: "El ProgressDialog abierto en onCreate seguia activo cuando processListStockRes mostraba el primer dialogo. Los AlertDialog solo lo ocultaban y, al cerrarse el ultimo, el loader volvia a quedar visible."
+    correccion: "Cerrar el progreso antes del dialogo sin stock y defensivamente en las respuestas que abren/cancelan la confirmacion de salida. Responder No a cancelar conserva la pantalla sin ejecutar otra consulta."
+    tags_codigo:
+      - "#EJC20260710_VERIF_DIALOG_PROGRESS"
+
+reglas_aprendidas:
+  - "#EJC20260710: Antes de abrir un dialogo de decision desde un callback WS, cerrar el loader de la operacion terminada; superponer AlertDialog no cambia el estado del ProgressDialog subyacente."
+  - "#EJC20260710: Toda Function Boolean transaccional debe asignar/devolver True en su ruta exitosa; un False implicito no debe usarse como exito silencioso."
+  - "#EJC20260710: El corte de cantidad en un ciclo transaccional no debe depender del formato del retorno de la operacion; CantTotal debe ser una invariancia dura antes y despues de cada linea."
+  - "#EJC20260710: En ciclos transaccionales VB, no almacenar retornos Boolean en String; las comparaciones de exito pueden impedir el corte y multiplicar efectos sobre lineas hermanas."
+  - "#EJC20260710: En picking resumido, IdPickingDet=0 puede ser valido para distribuir entre pedidos, por lo que el DAL debe imponer CantidadTotal como limite duro del ciclo."
+  - "#EJC20260710: La guarda requestEnCurso debe ejecutarse antes de cualquier bypass de autorizacion; un permiso previamente concedido no concede reentrada al WebMethod."
+  - "#EJC20260710: Un DTO Java construido pero sin identidad no equivale a contexto valido. Los fallbacks HH deben validar IDs de negocio, no solo null."
+  - "#EJC20260710: En verificacion sin sustituto, resolver plistPickingUbi antes de limpiar el stock candidato; ConExistencia=false no elimina la necesidad de IdPickingEnc, UM, ubicacion y estado para el DAL."
+  - "#EJC20260710: En firmas VB con dos o mas booleanos opcionales, los callers de frontera deben usar argumentos nombrados. Revisar especialmente merges que agregan un parametro antes de otro existente."
+  - "#EJC20260710: La cantidad agrupada mostrada por reemplazo puede representar varios IdStock con la misma llave operativa; validar disponibilidad por IdStock antes de diagnosticar stock fantasma."
+  - "#EJC20260710: La reserva de reemplazo es temporalmente adicional a la reserva original; no debe aplicarse el tope general del pedido antes de completar la sustitucion transaccional."
+  - "#EJC20260710: En REEMP_BE_PICK, REEMP_ME_PICK, REEMP_NE_PICK y REEMP_ME_VERI, trans_movimientos debe persistir IdOperadorBodega normalizado; si el contexto HH trae IdOperador, resolver el operador de bodega antes de grabar para no mezclar identidad de login con la de bodega."
+  - "#EJC20260711: Si el operador selecciona una linea candidata de reemplazo, ConExistencia debe volver a true en la UI antes de invocar el WS; asi se limpia el estado de 'sin existencia' y la rama correcta sigue siendo la de reemplazo con stock."
+
 quick_wins:
   - "Registrar estado pre/post de cantidad_solicitada/cantidad_pickeada por línea."
   - "Regla explícita de recálculo de pendiente en WS antes de responder a HH."
   - "Checklist de regresión en casos: dañado, no encontrado, reemplazo opcional ON/OFF."
   - "#EJC20260527: Validar login/cambio de bodega copiando bodega.Reemplazo_Opcional a appGlobals antes de abrir reemplazo."
+  - "Agregar prueba de regresion para pedido totalmente reservado: reemplazar 1 UMBAS debe crear un IdStockRes nuevo antes de sustituir la reserva original."
