@@ -1,86 +1,103 @@
 # LC0002 - inventario cíclico por categoría con producto multiubicación
 
-Estado: diagnóstico confirmado por recorrido de código; fix pendiente de una
-siguiente pasada. No interpretar este documento como implementación aplicada.
+Estado: fix BOF/DAL implementado el 2026-07-16 en el working tree
+`dev_2028_merge`. El código TOMWMS queda sin commit para revisión de Erik.
 
-Caso: inventario cíclico 293, producto `7500435126144`, congelado con 12
-unidades en ubicación 2249 y 12 en ubicación 2501.
+Caso: inventario cíclico 293, producto `7500435126144`, con 12 unidades
+congeladas en ubicación 2249 y 12 en ubicación 2501.
 
-## Cadena causal
+## Evidencia de La Cumbre QA
 
-1. `trans_inv_stock` conserva correctamente cada existencia congelada por
-   `IdStock + IdUbicacion`.
-2. La pantalla BOF construye nodos distintos por producto y ubicación, pero el
-   `Tag` del nodo solo conserva `IdProductoBodega`.
-3. `cmdAsignaOpProd_Click` reconstruye `IdUbicacion` separando por `#` el texto
-   visible de la ubicación.
-4. Seleccionar un producto dentro del filtro de categoría asigna únicamente el
-   nodo producto-ubicación marcado; no expande el producto a todas sus
-   ubicaciones congeladas.
-5. Si la ubicación 2501 no quedó en `trans_inv_ciclico`, la HH reutiliza la fila
-   esperada de 2249 y envía 2501 como `IdUbicacion_nuevo`.
-6. El DAL interpreta la diferencia como cambio de ubicación e inserta una
-   línea con `Cant_stock = 0`; regularización la muestra como sobrante aunque
-   las 12 unidades ya existían en el congelado de 2501.
+Validado con consultas de solo lectura en `TOMWMS_LA_CUMBRE_QA`:
 
-## Paths de entrada
+- `trans_inv_stock`: `IdStock=632822`, ubicación 2249, cantidad 12.
+- `trans_inv_stock`: `IdStock=651892`, ubicación 2501, cantidad 12.
+- `trans_inv_ciclico`: la fila de 2249 conservó `Cant_stock=12`.
+- `trans_inv_ciclico`: el conteo de `IdStock=651892` quedó con origen 2501,
+  destino 2249, `Cant_stock=0`, cantidad 12 y `Regularizar=1`.
 
-BOF, carga y asignación:
+El congelado era correcto. La anomalía se introdujo al seleccionar/asignar y
+al tratar posteriormente una existencia congelada como conteo no asignado.
+El inventario 293 observado en esta restauración QA tiene fecha 2026-04-08;
+por ello los IDs y datos prueban la mecánica, pero deben volver a correlacionarse
+si se valida contra otra restauración del incidente.
 
-`TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventario.vb`
+## Causa fina
 
-- `Listar_Productos_Asignados`
-- `tlProductosInventario_AfterCheckNode`
-- `cmdAsignaOpProd_Click`
+### 1. Selección BOF con filtro
 
-DAL de conteo y cambio de ubicación:
+En `frmInventarioProductos.vb`, el checkbox invertía el valor de la fila
+enfocada en vez de persistir el valor real del editor. Además, `Marcar todos`
+recorría enteros `0..DataRowCount-1` como si fueran row handles consecutivos.
+Esa suposición no es segura con filtros de categoría y podía omitir una fila
+visible o modificar una oculta, creando una asignación parcial silenciosa.
 
+### 2. Conteo no asignado sin reconciliar congelado
+
+`Agregar_Conteo` insertaba directamente la captura como existencia nueva. Si
+la ubicación omitida sí estaba en `trans_inv_stock`, la línea quedaba con
+`Cant_stock=0` y podía representarse como sobrante/cambio de ubicación aunque
+la existencia ya formaba parte del congelado.
+
+## Fix implementado
+
+### BOF - selección filtrada determinística
+
+Tag: `#EJC20260716_LC0002_INV_CICLICO_SELECCION_FILTRO`
+
+Path:
+`TOMIMSV4/TOMIMSV4/Transacciones/Inventario/frmInventarioProductos.vb`
+
+- El checkbox guarda `ritem.Checked`; ya no invierte la fila enfocada.
+- `Marcar todos` recorre `GetVisibleRowHandle` y solo modifica data rows
+  visibles.
+- Se publica el editor y se valida que ninguna fila visible quede sin marcar
+  antes de continuar.
+
+### DAL - resolver identidad congelada exacta
+
+Tag: `#EJC20260716_LC0002_INV_CICLICO_CONGELADO_EXACTO`
+
+Path:
 `TOMIMSV4/DAL/Inventario/InvCiclico/clsLnTrans_inv_ciclico_Partial.vb`
 
-- `Get_Inventario_Ciclico`
-- `Actualiza_Conteo_Ciclico_HH`
-- inserción con `Cant_stock = 0` cuando se interpreta un cambio real
+Antes de insertar un conteo no asignado, se consulta el congelado por:
 
-HH:
+`IdInventarioEnc + IdProductoBodega + IdUbicacion`
 
-`app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java`
+Cuando los datos recibidos lo permiten, también se restringe por `IdStock`,
+licencia, vencimiento, estado, presentación y talla/color. Solo si queda una
+coincidencia única se hidratan la identidad y cantidades teóricas congeladas,
+se limpia `IdUbicacion_nuevo` y se desactivan `EsNuevo/Regularizar`.
 
-- forma el payload con `IdUbicacion` original e `IdUbicacion_nuevo` capturado.
+Si no existe coincidencia o hay más de una, se conserva el flujo anterior.
+Esta regla evita resolver por aproximación una licencia/lote equivocado.
 
-## Identidad canónica
+## Regla reusable
 
-Para asignación y conteo no basta `IdProductoBodega`. Debe conservarse:
+En inventario cíclico, la identidad mínima de reconciliación es:
 
 `IdInventarioEnc + IdProductoBodega + IdStock + IdUbicacion`
 
-Lote, estado, presentación, licencia y talla/color deben mantenerse cuando
-formen parte de la granularidad del stock.
+La selección visual debe operar sobre las filas visibles reales, no sobre
+índices supuestamente equivalentes a row handles. Un conteo no asignado no es
+automáticamente un sobrante: primero debe descartarse una fila congelada exacta
+en la ubicación capturada.
 
-## Diseño candidato para la siguiente pasada
+## Validación y riesgos residuales
 
-1. BOF: guardar `IdUbicacion` numérico en el nodo y eliminar el parseo del
-   texto visible.
-2. BOF: en modo producto/categoría expandir cada producto seleccionado a todas
-   sus filas congeladas `IdStock + IdUbicacion`.
-3. WS/DAL: antes de crear un supuesto cambio con `Cant_stock = 0`, buscar una
-   fila congelada/no asignada para el producto en `IdUbicacion_nuevo`; si
-   existe, vincular el conteo a esa identidad real.
-4. HH: al capturar ubicación, resolver primero la tarea exacta
-   producto-ubicación y no reutilizar silenciosamente otra ubicación como
-   origen.
-5. Pre-cierre: reconciliar `trans_inv_stock` contra `trans_inv_ciclico` por la
-   identidad canónica y alertar por ubicaciones congeladas sin tarea.
+- `DAL.vbproj`: compilación limpia, 0 errores y 0 advertencias.
+- Se preservó UTF-8 con BOM en ambos archivos VB.
+- La compilación completa de `WMS.vbproj` está bloqueada por dependencias
+  históricas ajenas al cambio (`SAPSYNCMAMPA`, recursos pre-serializados y
+  referencias externas). El compile parcial no reportó errores en el form
+  modificado.
+- El audit gate emitió WARN únicamente porque omitió lookup DB; la correlación
+  QA se ejecutó manualmente con SELECT y queda documentada arriba.
+- Falta prueba funcional BOF: filtro por categoría, marcar individual/marcar
+  todos y confirmar que todas las ubicaciones del SKU generan tarea.
+- Falta prueba funcional DAL: conteo exacto congelado, coincidencia ambigua y
+  ubicación realmente inexistente.
 
-## Evidencia DB esperada antes del fix
-
-- Congelado: filas 2249 = 12 y 2501 = 12.
-- Cíclico asignado: fila esperada únicamente para 2249.
-- Conteo adicional: origen 2249, destino 2501, `Cant_stock = 0`, cantidad 12.
-
-Validar con consultas de solo lectura en la BD correcta de La Cumbre antes de
-modificar código. No usar KILLIOS ni inferir su esquema/datos para este caso.
-
-## Separación de cambios
-
-El fix BOF/VB y cualquier protección HH/Java deben implementarse y validarse en
-cambios separados. No tocar `Reference.vb`.
+No se modificó HH/Java ni `Reference.vb`. Cualquier mejora HH debe viajar en
+un cambio separado.
