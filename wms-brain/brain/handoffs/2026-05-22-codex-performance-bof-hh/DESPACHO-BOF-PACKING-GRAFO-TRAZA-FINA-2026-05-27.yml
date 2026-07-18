@@ -67,3 +67,28 @@ checklist_regresion:
   - "Comparar total Cant_Veri_UMBas - Cant_Desp_UMBas contra Packing/cantidad_bultos_packing."
   - "Si hay diferencia real, validar que aparezca mensaje con pedido y totales."
   - "Si no hay diferencia real, Guardar debe continuar y generar despacho."
+
+blindaje_integridad_2026_07_17:
+  caso: "La Cumbre pedido 5874 / picking 2542 / despacho 7815"
+  objetivo: "Impedir commit de DD/OUT cuando pedido, picking, stock o stock_res no reflejan el mismo delta."
+  tags:
+    - "#EJC20260717_DSP_TX_READCOMMITTED"
+    - "#EJC20260717_DSP_GUARD_SNAPSHOT_FRESCO"
+    - "#EJC20260717_DSP_GUARD_DELTA"
+    - "#EJC20260717_DSP_FIX_ACUMULADOR"
+    - "#EJC20260717_DSP_FIX_DELTA_RESERVA"
+    - "#EJC20260717_DSP_GUARD_EXECUTE"
+    - "#EJC20260717_DSP_GUARD_STOCK_EXECUTE"
+    - "#EJC20260717_DSP_GUARD_PRECOMMIT"
+    - "#EJC20260717_DSP_TRACE_CORRELACION"
+  reglas:
+    - "La transacción BOF propia usa ReadCommitted; UPDLOCK/HOLDLOCK se limita a picking_ubic, pedido_det, stock_res y stock involucrados."
+    - "Antes de insertar despacho se refrescan desde BD los campos persistidos que gobiernan el delta; no se confía en el snapshot de pantalla/HH."
+    - "Delta por ubicación = verificada - despachada en unidad operativa: presentación si IdPresentacion<>0, UMBAS si IdPresentacion=0."
+    - "trans_despacho_det conserva la unidad operativa del PickingUbic; trans_pe_det acumula en la unidad del documento."
+    - "stock_res.cantidad se trata siempre en UMBAS; la conversión por factor ocurre una sola vez al cruzar desde una ubicación con presentación."
+    - "stock.cantidad se valida en la unidad persistida por la fila; no se compara ciegamente contra UMBAS, sólo se exige rebaja o eliminación dentro de la transacción."
+    - "Actualizar stock/reserva debe afectar la fila esperada o lanzar excepción; no se permiten Exit Sub ni reserva ausente silenciosos."
+    - "Antes de retornar/commit se valida DD por PickingUbic, PickingUbic post, delta de pedido, rebaja/eliminación de stock_res, disminución/eliminación de stock y DD=OUT."
+    - "Las comparaciones usan delta y conversión por factor para soportar parciales/presentaciones."
+  auditoria_readonly: "DBA/20260717_auditoria_coherencia_despacho_readonly.sql"
