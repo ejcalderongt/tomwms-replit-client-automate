@@ -92,3 +92,33 @@ blindaje_integridad_2026_07_17:
     - "Antes de retornar/commit se valida DD por PickingUbic, PickingUbic post, delta de pedido, rebaja/eliminación de stock_res, disminución/eliminación de stock y DD=OUT."
     - "Las comparaciones usan delta y conversión por factor para soportar parciales/presentaciones."
   auditoria_readonly: "DBA/20260717_auditoria_coherencia_despacho_readonly.sql"
+
+ajuste_snapshot_solo_verificado_2026_07_17:
+  caso: "La Cumbre pedido 8484 / picking 4107"
+  evidencia:
+    - "27 ubicaciones de picking: 19 con delta verificado pendiente y 8 todavía sin cantidad verificada."
+    - "IdPickingUbic 699893 tiene cantidad_verificada=0 y cantidad_despachada=0; debe excluirse, no abortar el despacho."
+    - "trans_pe_det.IdPresentacion puede ser NULL; semánticamente equivale a sin presentación/UMBAS."
+  reglas:
+    - "El snapshot incluye únicamente ubicaciones cuyo delta cantidad_verificada-cantidad_despachada sea mayor que cero."
+    - "Las ubicaciones no verificadas o ya despachadas se omiten silenciosamente porque no participan en la operación actual."
+    - "Sólo una ubicación despachable exige IdPedidoEnc, IdPedidoDet, IdStock, IdStockRes e IdProductoBodega válidos."
+    - "IdPresentacion y cantidades/pesos NULL se normalizan a cero antes de evaluar el delta; no se realizan casts directos de DBNull."
+    - "Si ninguna ubicación queda elegible, se informa que no existen ubicaciones verificadas con saldo pendiente."
+  tags:
+    - "#EJC20260717_DSP_GUARD_SOLO_VERIFICADO"
+    - "#EJC20260717_DSP_GUARD_SNAPSHOT_NULL"
+
+fecha_despacho_picking_ubic_2026_07_17:
+  caso: "La Cumbre despacho 10931 / pedido 8484"
+  evidencia:
+    - "19 ubicaciones quedaron con cantidad_despachada>0 pero fecha_despachado=1900-01-01."
+    - "DD, movimientos y OUT cuadraron en 19 filas / 984 UMBAS; el defecto era de trazabilidad temporal."
+  fix:
+    - "Cada variante de Guarda_Trans_Despacho_Stock asigna una única fecha del servidor a las ubicaciones que confirma."
+    - "La guarda precommit exige fecha_despachado válida junto con cantidad_despachada coherente."
+  tag: "#EJC20260717_DSP_FECHA_PICKINGUBIC"
+  stock_res_identity:
+    - "La Cumbre QA: IdStockRes es IDENTITY(1,1), PK única."
+    - "DAL compilado omite IdStockRes del INSERT, usa SQLIdentity y devuelve el ID generado."
+    - "Los MaxID hallados están en una copia huérfana de frmAjusteStock fuera del árbol incluido por WMS.vbproj."
