@@ -96,6 +96,18 @@ entries:
       - contrato de producto_talla_color no debe depender de etiquetas visuales
     confidence: high
     stale_after_days: 60
+  - id: hh-packing-lupa-licencia-bof
+    path: brain/handoffs/2026-07-31-hh-packing-lupa-licencia-bof/README.md
+    date: "2026-07-31"
+    domains: [hh, integration-services]
+    tags: [packing, lupa, licencia_bof, callback, branch_port]
+    symptoms:
+      - lupa de packing queda bloqueada
+      - no se pueden empacar productos despues de buscar
+      - busqueda vacia no muestra pendientes
+      - licencia de empaque BOF se reemplaza durante recarga
+    confidence: high
+    stale_after_days: 90
 load_rules:
   - Si el incidente coincide con sintomas/tags, cargar solo 1 handoff principal.
   - Si hay cruce de capas (VB + SQL o API + SQL), permitir 2 handoffs maximo.

@@ -108,6 +108,13 @@ knowledge_packages:
     freshness_days: 90
     owner: hh
     tags: [hh, java, safe_edit, encoding, logcat, gradle]
+  handoff_hh_packing_lupa_licencia_bof:
+    path: brain/handoffs/2026-07-31-hh-packing-lupa-licencia-bof/README.md
+    type: handoff
+    priority: p1
+    freshness_days: 90
+    owner: hh
+    tags: [hh, packing, lupa, licencia_bof, callback, dev_2026_estable, dev_2028_merge]
 
 skills_backup:
   path: brain/skills

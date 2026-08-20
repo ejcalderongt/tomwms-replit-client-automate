@@ -39,6 +39,7 @@ reglas_vinculantes:
   - "REGLA 8: Consulta de existencias HH no debe paginar. WSHHRN Get_Stock_Consulta_CI_Json devuelve todos los registros filtrados en Items; si se optimiza, mantener JSON sin TOP/OFFSET/FETCH y ordenar estable para totales HH."
   - "REGLA 9: Para editar Java HH, usar skill tomwms-java-safe-edit; preservar UTF-8 sin BOM/EOL existente, evitar patches contra texto mojibakeado y validar con compileDebugJavaWithJavac."
   - "REGLA 10: En flujos HH asincronos, no liberar guards de proceso por temporizador fijo; liberar procesando=false solo por callback final, error controlado o retorno real al usuario."
+  - "REGLA 11: Un control HH se deshabilita solo si se encolo una solicitud real y todos sus cierres lo liberan. En packing, lupa vacia ejecuta verLista() sin bloqueo; la licencia BOF validada se conserva durante Load()."
 
 patrones_brain:
   - brain/code-changes/HH/  # carpeta - listar contenido
@@ -69,6 +70,7 @@ entry_points:
   preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
   preflight_concurrencia_cache_sync: "Si el síntoma es desfasaje/concurrencia entre HHs, cargar brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md (plantillas SQL + checklist + tags de logcat)."
   bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
+  packing_lupa_licencia_bof: "Cargar brain/handoffs/2026-07-31-hh-packing-lupa-licencia-bof/README.md antes de tocar btnBuscars, procesarLicencia, Load o Validar_Licencia_Empaque_Para_Packing."
   parsing_soap: "WebService.java - parseo respuestas WSHHRN. Cuidar .replace(N,n) linea 352"
   nueva_activity: "Seguir patron de activities existentes en mismo modulo (recepcion/picking/etc)"
   cliente_cumbre: "rama dedicada dev_2028_Cumbre - NO mezclar con dev_2028_merge"
