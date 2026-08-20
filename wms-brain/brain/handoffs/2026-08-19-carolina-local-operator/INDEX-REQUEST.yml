@@ -1,0 +1,42 @@
+schema_version: 1
+kind: embeddings_index_request
+id: IDX-CAROLINA-LOCAL-OPERATOR-20260819
+status: ready_for_erik_pc
+requested_by: Erik
+prepared_on: "2026-08-19"
+source:
+  branch: wms-brain
+  base_commit: 6d0532790c5b382dcc4d06ced3e0bd783c29f22f
+  request_commit: resolve_from_git_history_after_base
+  documents:
+    - brain/learnings/L-062-proc-carolina-topologia-local-y-preflight-seguro.md
+    - wms-brain/brain/handoffs/2026-08-19-carolina-local-operator/README.md
+    - wms-brain/brain/handoffs/2026-08-19-carolina-local-operator/INDEX-REQUEST.yml
+target:
+  station: erik_pc
+  repo_tree: wms-brain
+  preserve_station_manifest: true
+  expected_api:
+    models: /models
+    embeddings: /embeddings
+index:
+  command: python .\tools\wms-embeddings\wms_embeddings.py index --incremental
+  incremental: true
+  partial_index_allowed: false
+verification:
+  queries:
+    - Carolina topologia local preflight seguro
+    - rutas BOF HH Carolina y manifiesto por estacion
+    - bundle dry-run brain bridge no-push
+  expected_sources:
+    - 2026-08-19-carolina-local-operator/README.md
+    - L-062-proc-carolina-topologia-local-y-preflight-seguro.md
+  export_command: python .\tools\wms-embeddings\wms_embeddings.py export-html
+guardrails:
+  - do_not_copy_carolina_paths_into_erik_manifest
+  - do_not_store_secrets_or_connection_strings
+  - do_not_generate_partial_index_when_endpoint_is_unavailable
+  - do_not_push_or_merge_without_separate_authorization
+notes:
+  - Curacion e indexado son estados independientes.
+  - La ausencia de embeddings locales en Carolina no bloquea esta entrega.

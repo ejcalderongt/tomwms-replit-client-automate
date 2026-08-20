@@ -1,6 +1,6 @@
 ---
 slug: 2026-08-19-carolina-local-operator
-estado: vigente
+estado: listo_para_indexar_en_pc_erik
 fecha: "2026-08-19"
 owner: core
 clientes: [CORE]
@@ -58,7 +58,8 @@ topologia y los guardrails sean recuperables por busqueda semantica.
 
 ## Entrega para indexado en la PC de Erik
 
-Despues de recibir este commit en su checkout `wms-brain`, Erik puede ejecutar
+La solicitud legible por maquina vive en `INDEX-REQUEST.yml`. Despues de
+recibir los commits fuente en su checkout `wms-brain`, Erik puede ejecutar
 desde el arbol anidado `wms-brain`:
 
 ```powershell
@@ -70,3 +71,12 @@ python .\tools\wms-embeddings\wms_embeddings.py export-html
 La primera consulta debe recuperar este handoff o el learning `L-062`. Si el
 endpoint local no expone `/models` y `/embeddings`, conservar la anotacion como
 pendiente y no generar un indice parcial.
+
+## Estado de entrega
+
+- Contexto humano: completo.
+- Paquete vectorizable: completo.
+- Solicitud de indexado: preparada.
+- Indexado en Carolina: no requerido por instruccion de Erik.
+- Indexado en PC de Erik: pendiente de recepcion/publicacion de los commits.
+- Push: no realizado; requiere autorizacion separada.

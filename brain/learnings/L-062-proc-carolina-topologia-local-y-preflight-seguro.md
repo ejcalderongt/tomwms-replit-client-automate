@@ -2,6 +2,7 @@
 id: L-062
 tipo: learning
 estado: vigente
+revision: 2
 titulo: "Carolina: topologia local verificada y preflight seguro"
 clientes: [CORE]
 ramas: [wms-brain, dev_2026_estable]
@@ -45,6 +46,9 @@ por estacion pertenece a un overlay local o a documentacion indexable.
 8. No versionar rutas de Carolina sobre el manifiesto operativo de Erik. Enviar
    el contexto mediante learning/handoff para que Erik lo indexe con su propio
    manifiesto.
+9. La falta de endpoint de embeddings en Carolina no bloquea la curacion. El
+   resultado valido es dejar documentos fuente completos mas una solicitud de
+   indexado para la estacion que si dispone del servicio.
 
 ## Evidencia
 
@@ -56,11 +60,18 @@ por estacion pertenece a un overlay local o a documentacion indexable.
   la estacion de Erik; se preservo sin cambios para su reindexado.
 - Instruccion de Erik: enviar el contexto y la documentacion necesarios para
   indexarlos en su PC o dejar la anotacion correspondiente.
+- Reconfirmacion de Erik del 2026-08-19: repetir la actualizacion del brain con
+  los cambios recientes, respetando vectores y formatos.
+- Solicitud estructurada de indexado:
+  `wms-brain/brain/handoffs/2026-08-19-carolina-local-operator/INDEX-REQUEST.yml`.
 
 ## Implicaciones
 
 - Erik puede indexar este handoff desde su estacion sin adoptar paths de
   Carolina.
+- El estado de la curacion y el estado del indice son independientes: los
+  documentos pueden estar versionados y listos aunque la materializacion del
+  indice se ejecute despues en otra PC.
 - Los agentes deben separar topologia local verificada de rutas historicas
   documentadas en otros equipos.
 - Un preflight con advertencias no autoriza limpiar, resetear ni descartar el
@@ -70,6 +81,7 @@ por estacion pertenece a un overlay local o a documentacion indexable.
 
 - `wms-brain/tools/wms-federation.yml`
 - `wms-brain/brain/handoffs/2026-08-19-carolina-local-operator/README.md`
+- `wms-brain/brain/handoffs/2026-08-19-carolina-local-operator/INDEX-REQUEST.yml`
 - `brain/learnings/L-057-proc-carolina-vector-index-y-saludo-erik.md`
 
 ## Q abiertas
