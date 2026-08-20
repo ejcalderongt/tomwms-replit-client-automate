@@ -1,0 +1,42 @@
+meta:
+  fecha: 2026-07-10
+  modulo: inventario_ciclico_hh
+  pantalla: frm_inv_cic_add
+  tipo: bugfix_ui_fecha
+  tag: "#CKFK20260710"
+
+sintoma:
+  fecha_esperada: "31-7-2026"
+  fecha_observada: "31-7-2,026"
+  ubicacion_esperada: "Ubic # 1164"
+  ubicacion_observada: "Ubic # 1,164"
+
+causa_raiz:
+  archivo: app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_add.java
+  metodo: ChangeDate
+  detalle: "SafeFormat y MessageFormat aplican agrupacion regional a argumentos Integer usados como texto."
+  regresion_introducida_por: "ff09513e (#CKFK20260706 Correccion al formato de numeros)"
+
+correccion:
+  alcance: "Solo HH; sin cambio de contrato WS, DAL o BD."
+  acciones:
+    - "Construir dia-mes-anio por concatenacion en el callback del DatePicker."
+    - "Construir el titulo Ubic # por concatenacion directa del identificador."
+  referencias_estables:
+    - origin/dev_2023_estable
+    - origin/dev_2026_mampa
+    - app/src/main/java/com/dts/tom/Transacciones/InventarioCiclico/frm_inv_cic_guardar.java
+
+validacion:
+  java_edit: pass
+  gradle_compile_debug_java: pass
+  encoding: "UTF-8 sin BOM, CRLF"
+  sibling_scan: "Los otros callbacks DatePicker encontrados ya concatenan los componentes de fecha."
+
+riesgo_residual:
+  nivel: bajo
+  detalle: "Pendiente confirmacion visual en dispositivo/emulador; la conversion y persistencia de fecha no fueron modificadas."
+
+referencias_brain:
+  - brain/handoffs/2026-05-22-codex-performance-bof-hh/INV-CIC-GRAFO-TRAZA-FINA-2026-05-26.yml
+  - brain/agents/domain-hh-android.yml
