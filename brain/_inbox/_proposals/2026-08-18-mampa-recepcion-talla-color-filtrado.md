@@ -1,6 +1,6 @@
 # MAMPA: filtrar talla/color al abrir detalle de recepcion
 
-Fecha: 2026-08-18  
+Fecha: 2026-08-18
 Tag: #EJC20260818
 
 ## Incidente
