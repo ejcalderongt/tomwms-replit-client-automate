@@ -29,6 +29,18 @@ riesgos_principales:
   - "Ambigüedad de filtro por licencia (stock LL/WE vs packing MM)."
   - "Sobrecarga de consultas cuando se filtra y refresca lista en ciclos rápidos."
   - "Callbacks no serializados en pantallas de packing."
+  - "Lupa bloqueada si btnBuscars se deshabilita antes de validar y no se encola callback."
+
+traza_lupa_licencia_bof_2026_07_31:
+  entrada: "btnBuscars.onClick -> doList -> procesarLicencia"
+  campo_vacio: "procesarLicencia -> verLista; no deshabilitar la lupa"
+  producto_o_lp_legado: "esCriterioProductoPendiente -> verLista"
+  candidato_licencia_bof: "set validandoLicenciaEmpaque=true -> disable btnBuscars -> execws(8)"
+  backend: "Validar_Licencia_Empaque_Para_Packing"
+  cierre: "processValidacionLicenciaEmpaque finally -> enable btnBuscars"
+  recarga: "licenciaEmpaqueBofSeleccionada=true conserva pNumeroLP y ejecuta execws(1)"
+  commits: [c189d431, 9760ae35]
+  regla: "No crear estados UI que dependan de un callback cuando no se envio ninguna solicitud."
 
 mejoras_ya_existentes_detectadas:
   - "Se ajustó filtro de licencia para usar licencia packing MM en preparación."

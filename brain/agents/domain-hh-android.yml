@@ -37,6 +37,7 @@ reglas_vinculantes:
   - "REGLA 6 ter: CamasPorTarima y CajasPorCama si vienen null/0 son palletizado nuevo definido - NO defaultear a 1 ni abortar"
   - "REGLA 7: En HH, blindar fronteras WS/estado vivo antes de usar objetos globales, .items.get(0), .items, Stock/Detalle/Presentaciones o strings de WS. Si el contexto quedo obsoleto por refresco/reintento, mostrar recarga operativa y no continuar con datos viejos."
   - "REGLA 8: Consulta de existencias HH no debe paginar. WSHHRN Get_Stock_Consulta_CI_Json devuelve todos los registros filtrados en Items; si se optimiza, mantener JSON sin TOP/OFFSET/FETCH y ordenar estable para totales HH."
+  - "REGLA 9: En controles HH asincronos, deshabilitar solo despues de encolar una solicitud real y liberar en callback/error. En packing, lupa vacia debe ejecutar verLista() sin quedar bloqueada."
 
 patrones_brain:
   - brain/code-changes/HH/  # carpeta - listar contenido
@@ -66,6 +67,7 @@ entry_points:
   preflight_trazas_operativas: "Leer primero brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml y luego la traza específica del proceso."
   bug_recepcion_pallet: "leer brain/handoffs/2026-05-20-hh-recepcion-pallet-presentacion-cantidad/ - audit cantidad UMBAS"
   inv_ciclico_exact_key: "Leer brain/handoffs/2026-07-06-hh-inventario-ciclico-asmx-validaciones/ y brain/learnings/L-058-arch-hh-asmx-no-webapi.md antes de tocar validacion o lista."
+  packing_lupa_licencia_bof: "Leer brain/learnings/L-061-proc-hh-packing-lupa-y-licencia-bof.md y el handoff 2026-07-31-hh-packing-lupa-licencia-bof antes de tocar btnBuscars, Load o Validar_Licencia_Empaque_Para_Packing."
   parsing_soap: "WebService.java - parseo respuestas WSHHRN. Cuidar .replace(N,n) linea 352"
   nueva_activity: "Seguir patron de activities existentes en mismo modulo (recepcion/picking/etc)"
   cliente_cumbre: "rama dedicada dev_2028_Cumbre - NO mezclar con dev_2028_merge"
