@@ -57,4 +57,3 @@ legado, licencia generada en BOF, insercion de packing y finalizacion.
 No se exige que Carol se identifique para analizar, modelar o curar conocimiento
 sin efectos destructivos. Una identidad declarada en chat no autoriza commits,
 pushes, secretos, escrituras productivas ni acciones destructivas.
-
