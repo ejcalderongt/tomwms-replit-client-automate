@@ -72,21 +72,48 @@ Se elimino el N+1 de validacion por producto existente para `producto_bodega`:
 - antes: una consulta por producto
 - ahora: precarga por lote en chunks
 
+### 3.4 Validacion visible en UI
+
+Cuando un producto falla por UM faltante, la UI no debe cargar todo el texto tecnico.
+La preferencia operativa es:
+
+- mensaje corto y claro en progreso
+- detalle completo en la traza fina
+- error visible sin abortar la corrida
+
+Ejemplo de resumen UI:
+
+- `No esta definida la UM del producto en SAP`
+
+### 3.5 Instrumentacion de frontera SAP
+
+Cuando la conexion SAP se queda "conectando" o falla sin aviso util, el siguiente paso no es mas ruido sino frontera medible:
+
+- inicio de login
+- fin de login con duracion
+- inicio de primera pagina
+- fin de cada pagina con duracion
+- timeout o cancelacion con causa visible
+
+Este patron se reutiliza en otras interfaces que consumen Service Layer y presenten el mismo sintoma.
+
 ## 4. N+1 que seguian visibles
 
-### 4.1 Lookup de producto existente
+### 4.1 Lookup de producto existente - resuelto 2026-06-18
 
-`PrepararCachesProducto` sigue llamando `clsLnProducto.Existe(codigo, lConnection, lTransaction)` por cada codigo del lote.
+`PrepararCachesProducto` ya no llama `clsLnProducto.Existe(codigo, lConnection, lTransaction)` por cada codigo del lote.
 
-Riesgo:
+Cambio aplicado:
 
-- si el lote es grande, esa es la siguiente fuente de costo repetitivo
-- la traza dira si esto domina el tiempo total
+- se agrego `PrepararCacheProductosExistentes`
+- consulta `producto` por chunks de 500 codigos con parametros SQL
+- llena `ProductosExistentesCache` desde un resultset por chunk
+- mapea solo campos necesarios para actualizar producto existente: `IdProducto`, `codigo`, `largo`, `ancho`, `alto`, `control_peso`, `IdTipoRotacion`, `IdIndiceRotacion`
 
-Siguiente mejora probable:
+Validacion:
 
-- reemplazar el lookup por una consulta batch de `producto` por lista de codigos
-- poblar `ProductosExistentesCache` desde un solo resultset
+- `SAPSYNCMAMPA.vbproj` compila en Debug/AnyCPU con MSBuild 2022.
+- Binario generado: `TOMIMSV4/TOMIMSV4/SAPBOSyncMampa.exe`.
 
 ### 4.2 Marcado en SAP
 
@@ -116,7 +143,7 @@ La traza actual sirve para ver si el volumen real de nuevos catalogos es bajo o 
 
 - comparar tiempo de lectura SAP por pagina
 - comparar tiempo total de staging vs procesamiento WMS
-- revisar si el costo principal sigue en `clsLnProducto.Existe`
+- revisar si el costo principal se movio despues de eliminar `clsLnProducto.Existe` por producto
 - revisar cuantos productos se marcan en SAP y cuanto cuesta el `PATCH`
 
 ## 6. Riesgos
@@ -128,5 +155,4 @@ La traza actual sirve para ver si el volumen real de nuevos catalogos es bajo o 
 ## 7. Conclusión
 
 La traza de productos ya quedo lista para medir corridas reales.
-El siguiente N+1 mas claro a atacar, si la traza lo confirma, es `clsLnProducto.Existe` dentro de `PrepararCachesProducto`.
-
+El N+1 de `clsLnProducto.Existe` dentro de `PrepararCachesProducto` ya fue reemplazado por lookup batch. La siguiente corrida debe confirmar si el costo principal se movio al marcado `PATCH` de SAP o a altas de catalogos nuevos.
