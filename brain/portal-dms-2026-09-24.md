@@ -15,3 +15,5 @@
 El mapa de archivos, flujo IIS/API/SQL, estrategia de traslado a Azure DevOps y diseño de permisos está documentado en `docs/PORTAL_ARCHITECTURE.md` de `ejcalderongt/tomwmsreact`, rama `dev_replit`.
 
 Hallazgo prioritario: el menú React es fijo y `PrivateRoute` solo comprueba la presencia de sesión. El login de propietario emite `rol=admin` fijo. Las listas de ingresos y salidas y la consulta de stock devolvieron HTTP 200 sin token; los permisos de menú requieren control en la API antes de considerarse restricciones de acceso. Las tablas `rol`, `menu_sistema` y `menu_rol` existentes pertenecen al menú legacy; React no las usa.
+
+Tras autenticación, se creó y verificó `dev_replit` en Azure DevOps desde el commit GitHub `edeab60`, sin modificar Azure `main`. El checkout local ahora sigue `origin/dev_replit`. Azure DevOps pasa a ser la fuente principal del código React y GitHub queda como espejo de esa rama. El documento de arquitectura en React registra el flujo de publicación.
