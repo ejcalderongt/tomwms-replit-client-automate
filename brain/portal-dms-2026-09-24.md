@@ -9,3 +9,9 @@
 - Código React local: `TOMWMSReact`, inicialmente en `main` con remoto Azure. GitHub `ejcalderongt/tomwmsreact`, rama `dev_replit`, es la referencia solicitada. Al comparar, `dev_replit` en `70a4b4a` era ancestro de `main` local en `f7b247f`; había 239 commits posteriores en local.
 - Se quitaron los dos bindings HTTP de `PortalDMS` y el binding comodín `*:80:` de `Default Web Site`. La comprobación posterior: HTTP puerto 80 agotó el tiempo de conexión; HTTPS puerto 443 devolvió 200. Los puertos internos 8091 y 8097 permanecieron en sus sitios IIS.
 - GitHub `dev_replit` se avanzó sin reescribir historia hasta `f7b247f` y el checkout local cambió a esa rama, que sigue `github/dev_replit`. Azure `origin/main` local está en el mismo commit; la consulta remota Azure pidió autenticación y no pudo verificarse en esta sesión.
+
+## Análisis de código y permisos
+
+El mapa de archivos, flujo IIS/API/SQL, estrategia de traslado a Azure DevOps y diseño de permisos está documentado en `docs/PORTAL_ARCHITECTURE.md` de `ejcalderongt/tomwmsreact`, rama `dev_replit`.
+
+Hallazgo prioritario: el menú React es fijo y `PrivateRoute` solo comprueba la presencia de sesión. El login de propietario emite `rol=admin` fijo. Las listas de ingresos y salidas y la consulta de stock devolvieron HTTP 200 sin token; los permisos de menú requieren control en la API antes de considerarse restricciones de acceso. Las tablas `rol`, `menu_sistema` y `menu_rol` existentes pertenecen al menú legacy; React no las usa.
