@@ -24,3 +24,12 @@ Los endpoints legacy de datos siguen aceptando llamadas anónimas. Por eso la re
 ## Validación y activación
 
 Compilar `WMSWebAPI/WMSWebAPI.csproj` y React; aplicar SQL en QAS, publicar API y React en una ventana coordinada, y verificar login del propietario, creación de un delegado, revocación de un permiso y desactivación de Kairos. No publicar el React nuevo antes de la API, porque el login usa el endpoint nuevo.
+
+## Publicación y prueba del 2026-09-24
+
+- Se aplicaron los tres scripts en `IMS4MB_CEALSA_QAS`. Las tres tablas existen; el propietario 1 tiene siete módulos habilitados.
+- Se publicaron WMSWebAPI2 en `C:\inetpub\wwwroot\WMSWebAPI2` y React en `C:\Sites\PortalDMS`. La configuración activa de IIS y la conexión QAS se conservaron. Respaldo local previo: `deploy-backup-20260924-permisos` en el directorio de trabajo de Codex; contiene secretos de configuración y debe mantenerse privado.
+- `https://existenciasenlinea.com.gt/login` y el asset React respondieron 200. El login de Manuchar respondió con propietario 1, siete módulos y trece permisos. El endpoint `me` y la consulta de módulos respondieron correctamente.
+- Una consulta real de salidas de agosto de 2026 devolvió cinco documentos. El rango 24/01/2021–24/09/2026 de ingresos devolvió cero, consistente con la base. HTTP en puerto 80 no respondió.
+- Se probó la cuenta interna deshabilitando Kairos de forma temporal: el permiso efectivo desapareció. Se restauró Kairos y quedaron los siete módulos y trece permisos originales. Un usuario delegado temporal pudo autenticarse con un permiso y recibió 403 al intentar administrar usuarios; luego fue desactivado y eliminado de QAS. No quedaron usuarios de prueba.
+- La limitación de autorización de endpoints legacy descrita arriba sigue vigente.
