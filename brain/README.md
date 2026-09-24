@@ -24,6 +24,8 @@ Snapshot: 2026-04-27. Mantenedor: agente Replit por encargo de Erik Calderón.
 
 ---
 
+Guía vigente del portal TOMWMSUX, permisos y publicación: [portal-operacion-permisos.md](portal-operacion-permisos.md). Historial de implementación y pruebas: [portal-permisos-2026-09-24.md](portal-permisos-2026-09-24.md).
+
 ## Mapa de las cuatro ramas del repositorio
 
 | Rama | Propósito | Tamaño | README |

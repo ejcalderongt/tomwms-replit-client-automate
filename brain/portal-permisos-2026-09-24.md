@@ -1,5 +1,7 @@
 # Permisos del portal TOMWMSUX
 
+Guía de operación y mantenimiento: [portal-operacion-permisos.md](portal-operacion-permisos.md).
+
 ## Fuentes y despliegue
 
 - React: `TOMWMSReact`, rama `dev_replit`; Azure DevOps `TOMWMSReact` es la fuente principal y GitHub `ejcalderongt/tomwmsreact` es espejo.
