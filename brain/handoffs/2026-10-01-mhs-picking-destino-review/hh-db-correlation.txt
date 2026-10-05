@@ -1,0 +1,7 @@
+check: db_correlation
+tokens:
+  - stock
+  - stock_nonnegative
+  - VW_ProductoSI
+db_exists: []
+note: DB lookup skipped (missing credentials or no tokens).

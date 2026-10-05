@@ -1,0 +1,45 @@
+id: rg-footprint-20261001-101239
+tag: '#EJC20261001'
+process: picking
+fix_scope:
+  files:
+    - 'TOMIMSV4/DAL/Transacciones/Despacho/clsLnTrans_despacho_enc_Partial.vb'
+    - 'TOMIMSV4/DAL/Transacciones/Picking/Trans_Picking_Stock/clsLnTrans_picking_ubic_stock.vb'
+    - 'TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic.vb'
+    - 'TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb'
+    - 'TOMIMSV4/DAL/Transacciones/TipoPedido/clsLnTrans_pe_tipo.vb'
+    - 'TOMIMSV4/Entity/Transacciones/Pedido/TipoPedido/clsBeTrans_pe_tipo.vb'
+    - 'TOMIMSV4/Entity/Transacciones/Picking/Trans_Picking_Stock/clsBeTrans_picking_ubic_stock.vb'
+    - 'TOMIMSV4/Entity/Transacciones/Picking/Trans_Picking_Ubic/clsBeTrans_picking_ubic_Partial.vb'
+    - 'TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Salida/frmTipoDocumentoSalida.vb'
+    - 'WSHHRN/TOMHHWS.asmx.vb'
+    - 'app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_ubic.java'
+    - 'app/src/main/java/com/dts/classes/Transacciones/TipoPedido/clsBeTrans_pe_tipo.java'
+    - 'app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java'
+  methods:
+    - 'Prevalidar_Ubicacion_Destino_Picking'
+    - 'Validar_Ubicacion_Destino_Picking_Mhs'
+    - 'Actualizar_Destino_Picking'
+    - 'Guardar_Despacho_Stock'
+    - 'Guarda_Trans_Despacho_Stock_Recepcion_Auto_En_Destino'
+  tables:
+    - 'trans_pe_tipo'
+    - 'trans_picking_ubic'
+    - 'trans_picking_ubic_stock'
+    - 'trans_oc_det_lote'
+    - 'i_nav_barras_pallet'
+    - 'trans_re_enc'
+    - 'trans_re_det'
+    - 'stock'
+    - 'stock_res'
+  flags:
+    - 'requiere_ubicacion_destino_picking'
+    - 'trasladar_lotes_doc_ingreso'
+    - 'generar_recepcion_auto_bodega_destino'
+    - 'recibir_producto_auto_bodega_destino'
+  states:
+    - 'picking_confirmado'
+    - 'despachado'
+    - 'recibido_destino'
+failure_class: ''
+notes: ''

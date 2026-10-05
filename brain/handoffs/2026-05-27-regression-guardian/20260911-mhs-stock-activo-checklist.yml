@@ -1,0 +1,7 @@
+process: recepcion
+tag: '#EJC20260527'
+checklist:
+  - 'Finalizacion sin NullPointer/NullReference en campos opcionales.'
+  - 'Datos guardados consistentes con cantidades de entrada.'
+  - 'Reconsulta inmediata refleja estado actualizado.'
+result: pending

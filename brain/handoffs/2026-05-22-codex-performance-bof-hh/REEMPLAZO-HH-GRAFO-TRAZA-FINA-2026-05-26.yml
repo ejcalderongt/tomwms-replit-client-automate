@@ -41,6 +41,20 @@ mejoras_ya_existentes_detectadas:
   - "Soporte funcional para marcar no apto sin sustituto en escenario opcional."
 
 casos_confirmados:
+  - id: "PICKING_REEMPLAZO_AUTOMATICO_TALLA_COLOR"
+    fecha: "2026-08-28"
+    sintoma: "La licencia alterna se validaba solo por producto/bodega y el reemplazo automatico no filtraba IdProductoTallaColor."
+    causa_raiz: "La HH no enviaba IdProductoTallaColor y Get_Stock_Reemplazo_Automatico filtraba producto, licencia, lote, vencimiento y presentacion, pero no la variante talla/color."
+    correccion:
+      - "HH usa un WebMethod aditivo de validacion por producto/bodega/IdProductoTallaColor solo cuando Control_Talla_Color esta activo."
+      - "BOF deriva la variante desde la linea exacta de picking y la revalida dentro de la transaccion, incluso para APK antiguas."
+      - "Bodegas sin Control_Talla_Color conservan el endpoint y consulta legacy sin filtro adicional."
+    tags_codigo:
+      - "#EJC20260828_PICK_REEMPL_AUTO_TC"
+    validacion:
+      - "TOMHH2025 :app:compileDebugJavaWithJavac exitoso."
+      - "WSHHRN.vbproj Debug exitoso, 0 errores y 0 advertencias."
+
   - id: "LA_CUMBRE_QA_PICKING_4034"
     fecha: "2026-07-09"
     pedido: 8343
@@ -174,6 +188,7 @@ casos_confirmados:
     estado: "validado"
 
 reglas_aprendidas:
+  - "#EJC20260828: En reemplazo automatico de licencia, Control_Talla_Color debe bifurcar explicitamente el contrato: validar y reservar por IdProductoTallaColor; sin control, mantener el comportamiento legacy. BOF debe derivar la variante desde trans_picking_ubic y no confiar solo en el DTO HH."
   - "#EJC20260710: Antes de abrir un dialogo de decision desde un callback WS, cerrar el loader de la operacion terminada; superponer AlertDialog no cambia el estado del ProgressDialog subyacente."
   - "#EJC20260710: Toda Function Boolean transaccional debe asignar/devolver True en su ruta exitosa; un False implicito no debe usarse como exito silencioso."
   - "#EJC20260710: El corte de cantidad en un ciclo transaccional no debe depender del formato del retorno de la operacion; CantTotal debe ser una invariancia dura antes y despues de cada linea."

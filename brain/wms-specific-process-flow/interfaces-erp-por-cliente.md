@@ -45,6 +45,9 @@ implementa el consumidor.
 - Primer caso productivo: MHS (Molinos Harineros Sula).
 - Tendencia evolutiva: las empresas con equipo de desarrollo migran a este
   modelo porque simplifica y optimiza el proceso.
+- Para ingresos MHS, el código observado expone `POST /api/sync/ingresos/documento-ingreso`
+  y recibe un arreglo `OrdenCompra_3plDto`; ver `brain/skills/wms-mhs-webapi/references/ingresos.md`.
+  Confirmar siempre el commit desplegado porque este mapa proviene del checkout local. `#EJC20260824`
 
 ## Mapeo cliente → interface (lo que tengo de Erik)
 

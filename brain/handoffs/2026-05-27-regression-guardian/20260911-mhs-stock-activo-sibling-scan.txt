@@ -1,0 +1,28 @@
+=== PATTERN: CopyObject\(objStockOrigen ===
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11343:                            clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11562:                            clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11891:                        clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11920:                            clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:11970:                    clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12018:                        clsPublic.CopyObject(objStockOrigen, objStockHist)
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12073:            clsPublic.CopyObject(objStockOrigen,
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12198:            clsPublic.CopyObject(objStockOrigen,
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:16025:            clsPublic.CopyObject(objStockOrigen,
+
+=== PATTERN: CopyObject\(objStockDestino ===
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12272:                clsPublic.CopyObject(objStockDestino,
+
+=== PATTERN: BeStockRec\.Activo ===
+.\TOMIMSV4\Transacciones\Recepcion\frmCapturaParametroRecepcionS.vb:357:                        BeStockRec.Activo = True
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12276:                BeStockRec.Activo = True
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:4147:                    If pBeStockRec.Activo = False Then 'Bandera para saber si el pallet ya fue recibido (en su totalidad).
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:4221:                        pBeStockRec.Activo = True
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:4295:                    If Not pBeStockRec.Activo Then 'Bandera para saber si el pallet ya fue recibido (en su totalidad).
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:4546:                        pBeStockRec.Activo = True
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:8741:                            BeStockRec.Activo = 1
+.\TOMIMSV4\DAL\Transacciones\Recepcion\Recepcion_Encabezado\clsLnTrans_re_enc_Partial.vb:9524:                    BeStockRec.Activo = 1
+.\TOMIMSV4\TOMIMSV4\Transacciones\Recepcion\frmCapturaParametroRecepcionS.vb:357:                        BeStockRec.Activo = True
+
+=== PATTERN: objStockDestino\.Activo ===
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12120:                objStockDestino.Activo = False
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12249:                objStockDestino.Activo = True

@@ -1,0 +1,58 @@
+=== PATTERN: Requiere_Ubicacion_Destino_Picking ===
+.\WSHHRN\TOMHHWS.asmx.vb:20238:            If pedido Is Nothing OrElse pedido.TipoPedido Is Nothing OrElse Not pedido.TipoPedido.Requiere_Ubicacion_Destino_Picking Then
+.\TOMIMSV4\DAL\Transacciones\TipoPedido\clsLnTrans_pe_tipo.vb:43:                .Requiere_Ubicacion_Destino_Picking = IIf(IsDBNull(dr.Item("requiere_ubicacion_destino_picking")), False, dr.Item("requiere_ubicacion_destino_picking"))
+.\TOMIMSV4\DAL\Transacciones\TipoPedido\clsLnTrans_pe_tipo.vb:153:            cmd.Parameters.Add(New SqlParameter("@REQUIERE_UBICACION_DESTINO_PICKING", oBeTrans_pe_tipo.Requiere_Ubicacion_Destino_Picking))
+.\TOMIMSV4\DAL\Transacciones\TipoPedido\clsLnTrans_pe_tipo.vb:276:            cmd.Parameters.Add(New SqlParameter("@REQUIERE_UBICACION_DESTINO_PICKING", oBeTrans_pe_tipo.Requiere_Ubicacion_Destino_Picking))
+.\TOMIMSV4\DAL\Transacciones\TipoPedido\clsLnTrans_pe_tipo.vb:563:        If pTipo Is Nothing OrElse Not pTipo.Requiere_Ubicacion_Destino_Picking Then Return
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:814:                        BeTipoDocumentoSalida.Requiere_Ubicacion_Destino_Picking
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:2649:                                        If BePedidoEnc.TipoPedido.Requiere_Ubicacion_Destino_Picking Then
+.\TOMIMSV4\Entity\Transacciones\Pedido\TipoPedido\clsBeTrans_pe_tipo.vb:82:    Public Property Requiere_Ubicacion_Destino_Picking As Boolean = False
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2066:        If pedido Is Nothing OrElse pedido.TipoPedido Is Nothing OrElse Not pedido.TipoPedido.Requiere_Ubicacion_Destino_Picking Then Return
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Tipos_Documento\Salida\frmTipoDocumentoSalida.vb:126:                    chkRequiereUbicacionDestinoPicking.IsOn = pObjPT.Requiere_Ubicacion_Destino_Picking
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Tipos_Documento\Salida\frmTipoDocumentoSalida.vb:191:            objPe_Tipo.Requiere_Ubicacion_Destino_Picking = chkRequiereUbicacionDestinoPicking.IsOn
+.\TOMIMSV4\TOMIMSV4\Mantenimientos\Tipos_Documento\Salida\frmTipoDocumentoSalida.vb:245:                pObjPT.Requiere_Ubicacion_Destino_Picking = chkRequiereUbicacionDestinoPicking.IsOn
+
+=== PATTERN: IdUbicacionBodegaDestino ===
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:2651:                                               BePickingUbic.IdUbicacionBodegaDestino <= 0 Then
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:2656:                                            IdUbicacionRecBodDest = BePickingUbic.IdUbicacionBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:48:                If dr.Table.Columns.Contains("IdUbicacionBodegaDestino") AndAlso Not IsDBNull(dr.Item("IdUbicacionBodegaDestino")) Then
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:49:                    .IdUbicacionBodegaDestino = dr.Item("IdUbicacionBodegaDestino")
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:106:            Ins.Add("IdUbicacionBodegaDestino", "@IdUbicacionBodegaDestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:162:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONBODEGADESTINO", oBeTrans_picking_ubic_stock.IdUbicacionBodegaDestino))
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:232:            Upd.Add("IdUbicacionBodegaDestino", "@IdUbicacionBodegaDestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\Trans_Picking_Stock\clsLnTrans_picking_ubic_stock.vb:288:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONBODEGADESTINO", oBeTrans_picking_ubic_stock.IdUbicacionBodegaDestino))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:133:                If dr.Table.Columns.Contains("IdUbicacionBodegaDestino") AndAlso Not IsDBNull(dr.Item("IdUbicacionBodegaDestino")) Then
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:134:                    .IdUbicacionBodegaDestino = dr.Item("IdUbicacionBodegaDestino")
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2083:        If pPickingSolicitado.IdUbicacionBodegaDestino <= 0 Then
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2088:        If Not clsLnBodega_ubicacion.Existe_By_IdUbicacion_And_IdBodega(pPickingSolicitado.IdUbicacionBodegaDestino,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2099:                                                                       pPickingSolicitado.IdUbicacionBodegaDestino,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2108:                                   pPickingSolicitado.IdUbicacionBodegaDestino,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2303:            BeTransPickingUbicStock.IdUbicacionBodegaDestino = pBeTrans_picking_ubic.IdUbicacionBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:2662:            BeTransPickingUbicStock.IdUbicacionBodegaDestino = oBeTrans_picking_ubic.IdUbicacionBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:3218:                    BeTransPickingUbicStock.IdUbicacionBodegaDestino = oBeTrans_picking_ubic.IdUbicacionBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic_Partial.vb:6544:                vBePickingUbic.IdUbicacionBodegaDestino = pBePickingUbic.IdUbicacionBodegaDestino
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:71:                If dr.Table.Columns.Contains("IdUbicacionBodegaDestino") AndAlso Not IsDBNull(dr.Item("IdUbicacionBodegaDestino")) Then
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:72:                    .IdUbicacionBodegaDestino = dr.Item("IdUbicacionBodegaDestino")
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:245:            Ins.Add("IdUbicacionBodegaDestino", "@IdUbicacionBodegaDestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:320:                cmd.Parameters.Add(New SqlParameter("@IDUBICACIONBODEGADESTINO", oBeTrans_picking_ubic.IdUbicacionBodegaDestino))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:730:            Upd.Add("IdUbicacionBodegaDestino", "@IdUbicacionBodegaDestino", DataType.Parametro)
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:750:            cmd.Parameters.Add(New SqlParameter("@IDUBICACIONBODEGADESTINO", oBeTrans_picking_ubic.IdUbicacionBodegaDestino))
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1441:                                                       ByVal pIdUbicacionBodegaDestino As Integer,
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1446:                              "IdUbicacionBodegaDestino=@IdUbicacionBodegaDestino, fec_mod=GETDATE() " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1449:                              "AND (ISNULL(IdUbicacionBodegaDestino,0)=0 OR " &
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1450:                              "(IdBodegaDestino=@IdBodegaDestino AND IdUbicacionBodegaDestino=@IdUbicacionBodegaDestino))"
+.\TOMIMSV4\DAL\Transacciones\Picking\clsLnTrans_picking_ubic.vb:1454:            cmd.Parameters.Add("@IdUbicacionBodegaDestino", SqlDbType.Int).Value = pIdUbicacionBodegaDestino
+.\TOMIMSV4\Entity\Transacciones\Picking\Trans_Picking_Ubic\clsBeTrans_picking_ubic_Partial.vb:39:    Public Property IdUbicacionBodegaDestino As Integer = 0
+.\TOMIMSV4\Entity\Transacciones\Picking\Trans_Picking_Stock\clsBeTrans_picking_ubic_stock.vb:42:    Public Property IdUbicacionBodegaDestino() As Integer = 0
+
+=== PATTERN: Guardar_Despacho_Stock ===
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:686:            Guardar_Despacho_Stock(pBeDespachoEnc,
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:768:    Private Shared Function Guardar_Despacho_Stock(ByVal BeDespachoEnc As clsBeTrans_despacho_enc,
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:776:        Guardar_Despacho_Stock = False : OutBePedidoCompraEnc = Nothing
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:1474:            Guardar_Despacho_Stock = resultado
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:3190:            Guardar_Despacho_Stock(pBeDespachoEnc,
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:3877:            If Guardar_Despacho_Stock(pBeDespachoEnc,
+
+=== PATTERN: Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino ===
+.\TOMIMSV4\DAL\Transacciones\Stock\clsLnStock_Partial.vb:12175:    Public Shared Sub Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino(ByRef pBePickingUbic As clsBeTrans_picking_ubic,
+.\TOMIMSV4\DAL\Transacciones\Despacho\clsLnTrans_despacho_enc_Partial.vb:2809:                                            clsLnStock.Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino(BePickingUbic,

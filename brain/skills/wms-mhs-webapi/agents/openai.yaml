@@ -1,0 +1,7 @@
+interface:
+  display_name: "MHS WMSWebAPI"
+  short_description: "Diagnóstico de la interfaz REST de MHS"
+  default_prompt: "Usa $wms-mhs-webapi para diagnosticar un documento de ingreso rechazado por WMSWebAPI."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,21 @@
+id: rg-footprint-20260911-175846
+tag: '#EJC20260527'
+process: recepcion
+fix_scope:
+  files:
+    - 'TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb'
+  methods:
+    - 'Actualizar_Stock_Por_Traslado'
+    - 'Actualizar_Stock_Por_Traslado_Con_Recepcion_En_Destino'
+  tables:
+    - 'stock'
+    - 'stock_rec'
+    - 'stock_transito'
+  flags:
+    - 'generar_recepcion_auto_bodega_destino'
+    - 'recibir_producto_auto_bodega_destino'
+  states:
+    - 'transito_inactivo'
+    - 'recepcion_automatica_activa'
+failure_class: ''
+notes: ''

@@ -1,12 +1,23 @@
 ---
 name: wms-mampa-interface
-description: MAMPA BOF interface tracing and change workflow for SAPSYNCMAMPA, clsSyncTransacWMS, Service Layer filters, ajuste idempotency by Referencia, talla/color, stock_rec, UI progress, and fine debug traces. Use when modifying or diagnosing the MAMPA interface or when creating structured traces and knowledge notes for that flow.
+description: MAMPA SAP Business One synchronization tracing and change workflow for SAPSYNCMAMPA on dev_2026_estable, SAPBOSyncMampa, clsSyncTransacWMS, Get_Traslados_SAP_SL, Get_Bodegas_SAP, Service Layer filters and errors, ajuste idempotency by Referencia, talla/color, stock_rec, UI progress, and fine debug traces. Use whenever MAMPA, SAPSYNCMAMPA, its SAP interface, or these methods are mentioned. Do not route this project to ROAD/Toledano.
 ---
 
 # WMS MAMPA Interface
 
 Use this skill for the MAMPA interface only. Keep the scope on
 `SAPSYNCMAMPA` and the related DAL callers.
+
+## Project identity
+
+- Client: MAMPA.
+- ERP: SAP Business One through Service Layer.
+- Synchronization project: `SAPSYNCMAMPA` / `SAPBOSyncMampa`.
+- Carolina's target final/stable branch: `dev_2026_estable`.
+- Erik's active MHS branch: `dev_2028_merge`.
+- Treat both branches as active. Confirm the requested client, scope, operator, and checked-out branch before changing code.
+- Never confuse this project with ROAD/Toledano.
+- Verify the checked-out repository and branch before changing code.
 
 ## First read
 
@@ -54,4 +65,3 @@ The script reports:
 - `brain/code-deep-flow/traza-003-sapsyncmampa-interface.yml`
 - `brain/code-deep-flow/traza-003-sapsyncmampa-interface.md`
 - `brain/learnings/` entries for new findings
-

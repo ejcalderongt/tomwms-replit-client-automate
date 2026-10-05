@@ -75,7 +75,9 @@ Este Replit es el **entorno de trabajo del agente** para el proyecto **TOM WMS**
 | **MA** | Marcela Álvarez | `#MA DDMMAAAA` o `#MADDMMAAAA` |
 | **AT** | Anderly Teleguario | `#AT DDMMAAAA` |
 | **MECR** | Melvin Cojtí | `#MECR DDMMAAAA` |
-| **CF** | Carolina Fuentes (vista en WikiHub) | (formato por confirmar) |
+| **CKFK** | Carolina Fuentes Kemp | `#CKFKYYYYMMDD_<MODULO>_<MOTIVO>` |
+
+**Regla de autoria de tags (`#CKFK20260924`):** la sigla corresponde a la persona responsable del cambio, no al agente que edita. Si Carolina solicita/realiza el cambio, usar `CKFK`; si Erik lo solicita/realiza, usar `EJC`; para cualquier otra persona, usar su sigla registrada en esta tabla. No reutilizar `CKFK` por defecto fuera de cambios de Carolina.
 
 Para identificar autor de cualquier convención particular (ej. reglas en `WebService.java`), buscar el prefijo en comentarios.
 

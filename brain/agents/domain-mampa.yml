@@ -6,7 +6,10 @@ proposito: |
   trazas finas, Service Layer, idempotencia por Referencia,
   talla/color o progreso seguro de UI.
 estado: vigente
-ramas_relevantes: [dev_2028_merge]
+ramas_relevantes:
+  final_estable_carolina: dev_2026_estable
+  activa_mhs_erik: dev_2028_merge
+  nota: "Erik mantiene trabajo de MHS en dev_2028_merge. Carolina consolida tambien esos cambios en dev_2026_estable con el objetivo de dejarla como rama final estable. Ambas ramas estan activas; verificar alcance y operador antes de modificar."
 runtime: .NET Framework 4.8 / VB.NET / WinForms / SAP Service Layer
 
 solution_layout:
@@ -42,6 +45,10 @@ triggers:
     - stock_rec
     - Service Layer
     - MAMPA
+    - Get_Traslados_SAP_SL
+    - Get_Bodegas_SAP
+    - SAPBOSyncMampa
+    - dev_2026_estable
   paths:
     - SAPSYNCMAMPA/
     - TOMIMSV4/DAL/Mantenimientos/Ajustes/
@@ -72,6 +79,8 @@ hilos_para_modificacion:
   - "Bitacora, trazas y progreso UI"
 
 reglas_operativas:
+  - "Confirmar repositorio, alcance y rama antes de modificar: Carolina trabaja la consolidacion final en dev_2026_estable; Erik usa dev_2028_merge para MHS. No tratar ninguna de las dos como historica."
+  - "MAMPA y SAPSYNCMAMPA pertenecen a la integracion SAP Business One de MAMPA; no enrutar a ROAD/Toledano."
   - "No mover validaciones de la interface a clases del ciclico si el alcance es MAMPA."
   - "Validar por Referencia cuando el documento se escribe en trans_ajuste_enc."
   - "Mantener traza tecnica interna y mensaje humano breve."

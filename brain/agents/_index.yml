@@ -27,7 +27,7 @@ domains:
     archivo: brain/agents/domain-mampa.yml
     proposito: Interface MAMPA SAPSYNCMAMPA + clsSyncTransacWMS + trazas finas
     triggers:
-      keywords: [SAPSYNCMAMPA, clsSyncTransacWMS, Procesar_Ajustes_SAP, AjusteYaExisteEnWMS, Referencia, stock_rec, talla, color, Service Layer]
+      keywords: [MAMPA, SAPSYNCMAMPA, SAPBOSyncMampa, clsSyncTransacWMS, Procesar_Ajustes_SAP, AjusteYaExisteEnWMS, Get_Traslados_SAP_SL, Get_Bodegas_SAP, Referencia, stock_rec, talla, color, Service Layer, dev_2026_estable]
       paths: [SAPSYNCMAMPA/, TOMIMSV4/DAL/Mantenimientos/Ajustes/, TOMIMSV4/DAL/Transacciones/Stock_Recepcion/]
       tareas_tipicas: [mampa-ajustes-idempotencia, mampa-recepcion-tallacolor, mampa-filtro-sv, mampa-traza-fina]
 
@@ -88,7 +88,7 @@ clients:
     - { slug: byb,       archivo: brain/client-index/byb.yml,       estado: HISTORICO,  rama: dev_2023_estable }
     - { slug: cealsa,    archivo: brain/client-index/cealsa.yml,    estado: QAS,         rama: dev_2023_estable }
     - { slug: killios,   archivo: brain/client-index/killios.yml,   estado: PRODUCTIVO, rama: dev_2023_estable }
-    - { slug: mampa,     archivo: brain/client-index/mampa.yml,     estado: PRUEBAS,     rama: dev_2028_merge }
+    - { slug: mampa,     archivo: brain/client-index/mampa.yml,     estado: ESTABILIZACION, rama_final: dev_2026_estable, rama_paralela_mhs: dev_2028_merge }
     - { slug: mercopan,  archivo: brain/client-index/mercopan.yml,  estado: PRODUCTIVO, rama: dev_2028_merge }
     - { slug: merhonsa,  archivo: brain/client-index/merhonsa.yml,  estado: PRE-PRODUCTIVO, rama: dev_2028_merge }
   faltantes:

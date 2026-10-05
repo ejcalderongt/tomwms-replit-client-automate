@@ -89,6 +89,7 @@ Read these only when needed:
 - `references/brain-governance.md`: direct Brain governance, context tiers, historical bridge/OpenClaw caveats, and handoff intake.
 - `references/health-and-performance.md`: maintenance rhythm, cleanup rules, and context performance guidance.
 - `../wms-db-brain/SKILL.md`: SQL catalog and parametrizacion lookup from `origin/wms-db-brain`.
+- `../wms-mhs-webapi/SKILL.md`: MHS REST integration and inbound document diagnostics through WMSWebAPI.
 - `../wms-root-cause-accelerator/SKILL.md`: fast causal diagnosis workflow (trace2path, drift guard, null scan, post-fix verification).
 - `../wms-regression-guardian/SKILL.md`: post-fix regression prevention workflow (footprint, sibling scan, residual-risk report).
 - `../wms-state-machine-auditor/SKILL.md`: canonical state-machine extraction and validation across BOF/HH/WS/SQL.

@@ -41,7 +41,7 @@ Branch activa: `dev_2028_merge`.
 
 ### Equipo
 
-EJC (Erik), GT, AG, MA, AT, MECR, CF.
+EJC (Erik), GT, AG, MA, AT, MECR, CKFK (Carolina).
 
 ---
 

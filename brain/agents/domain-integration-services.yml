@@ -21,6 +21,8 @@ componentes:
     runtime: .NET 8.0
     archivos_clave:
       - { path: WMSWebAPI/Controllers/, rol: "HTTP routing" }
+      - { path: WMSWebAPI/Controllers/SyncIngresosController.cs, rol: "Entrada REST de documentos de ingreso MHS/3PL" }
+      - { path: WMSWebAPI/Services/Ingresos/SyncIngresosService.cs, rol: "Orquestación transaccional de ingresos" }
       - { path: WMSWebAPI/Services/Salidas/SyncSalidasService.cs, rol: "Sync salidas Core, tocado en commits cb4726b9 + 68045f09" }
       - { path: WMSWebAPI/Services/Indicadores/, rol: "Endpoints KPI (ver domain-indicadores)" }
     patron: "DALCore (query puntual) -> EntityCore (DTO) -> Services (composicion) -> Controller (HTTP)"
@@ -80,6 +82,7 @@ cross_refs:
 
 entry_points:
   nuevo_endpoint: "Leer PATTERNS-WMSWEBAPI-LAYERS.md, ubicar Controller correspondiente, agregar DTO en EntityCore"
+  incidente_ingreso_mhs: "Usar brain/skills/wms-mhs-webapi/SKILL.md; capturar payload/respuesta/timestamp y trazar Controller -> Service -> Mapping -> LN/DAL -> SQL"
   json_migracion: "Solo si la funcionalidad es NUEVA. Forma A. Mantener legacy en paralelo."
   sync_nav_envio: "clsSyncNavEnvioAlm.vb es el punto canonico"
   homologar_motivos_legacy_core: "Ver commit cb4726b9 como ejemplo - TIPO_NO_RESERVA legacy <-> ReservationFailureCode Core"

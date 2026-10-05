@@ -3,6 +3,14 @@ slug: mampa
 genealogia: TOMWMS  # nombre IDs sugiere instalacion mas reciente que IMS4MB
 estado: QA  # rango muy reciente y poco volumen, parece QA fresco
 
+codigo:
+  proyecto_sync: SAPSYNCMAMPA
+  erp: SAP Business One
+  rama_final_objetivo_carolina: dev_2026_estable
+  rama_activa_mhs_erik: dev_2028_merge
+  estrategia_ramas: "Mantener los cambios requeridos tambien en dev_2026_estable como rama final, mientras Erik trabaja MHS en dev_2028_merge."
+  etapa: estabilizacion y consolidacion
+
 bd:
   server: 52.41.114.122,1437
   nombre: TOMWMS_MAMPA_QA
