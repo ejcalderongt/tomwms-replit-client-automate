@@ -1,0 +1,38 @@
+tag: '#EJC20261026_MHS_TARIMA_COMPLETA'
+implementation_status: PASS
+operational_validation: WARN
+root_cause: 'La generación anterior solo creaba LP nuevas; no registraba tarimas completas.'
+null_safety:
+  status: PASS
+  evidence: null-safety.txt
+  review: 'First() está dentro de GroupBy; lista de solicitudes validada antes de indexar; lectura con rd.Read; cortocircuito de Nullable.'
+business_rules:
+  status: PASS
+  evidence: business-rules.txt
+  scope: 'Bodega + pedido + picking; Tarima; contenido completo en UM base; cantidades adicionales independientes.'
+state_machine:
+  status: PASS
+  matrix:
+    new_recycled: 'GENERADA, sin detalle packing ni impresión simulada'
+    same_order_generated_or_associated: 'reutiliza el mismo ID'
+    inactive_annulled_dispatched_received_foreign: 'bloquea; no reactiva ni reasigna'
+    dispatched_picking: 'bloquea reciclaje'
+db_correlation:
+  status: PASS
+  database: TOMWMS_MHS_DEV
+  evidence: validacion-dev.log
+  writes: [trans_licencia_empaque, Resolucion_lp_usuario]
+  reads: [trans_pe_enc, trans_picking_enc, trans_picking_ubic, stock_rec, trans_re_det, producto_presentacion, stock, stock_res, trans_packing_enc]
+  atomicity: 'Una transacción ReadCommitted con UPDLOCK/HOLDLOCK, UQ global LicPlate y rollback en error.'
+regression:
+  status: PASS
+  evidence: validacion-dev.log
+  preserved: 'Generación tradicional sin contexto y Granel; contratos SOAP/packing existentes.'
+telemetry:
+  snapshot: 'MH07 -> pedido126 -> picking88 -> recepción102 -> det801/JM000144/250 y det802/JM000141/1900'
+  entry: 'GenerarLicencias -> GenerarLoteDesdeSolicitudes -> GenerarEnTransaccion -> RegistrarTarimasCompletas -> Insertar'
+residual:
+  - 'UI/impresora física no ejecutadas; no se afirma impresión real.'
+  - 'Sin estrés concurrente ni medición de carga; comparación con HOLDLOCK puede aumentar contención en grandes bodegas.'
+  - 'Migración requerida en otras bases antes de desplegar el nuevo DAL.'
+  - 'Brain remoto 404; reindexación no disponible.'

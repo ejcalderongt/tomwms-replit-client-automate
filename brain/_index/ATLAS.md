@@ -181,3 +181,8 @@ clsBENotificacionCola.vb
 - F3 flags i_nav_config_enc: patrones no encontrados en código → revisar tabla `i_nav_config_det` directamente en BD
 - Cherry-pick 4 commits BUG-002 a `dev_2026_mampa` (awaiting EJC)
 - Verificar `GuardarHH_S` y `GuardarHH_CM` para FK recepción
+## MHS empaque — release #EJC20261027
+
+- [Publicación tageada y revisiones BOF/DBA](../handoffs/2026-10-27-mhs-release-cleanup/README.md).
+- [Reciclaje de tarimas completas y persistencia de preparación](../handoffs/2026-10-26-mhs-tarimas-completas/README.md).
+- [Visor de licencias y contenido: Empaque - X Lic](../handoffs/2026-10-26-picking-visor-empaque/README.md).
