@@ -20,6 +20,8 @@
 
 # tomwms-replit-client-automate · brain
 
+**Versión 2.0.0** · 2026-10-27. [Cambios y validación](CHANGELOG.md) · [Herramientas locales](tools/brain-quality/README.md)
+
 > El cerebro paralelo del WMS legado. No es codigo de produccion. No despliega
 > nada. No ejecuta nada. **Solo aprende, documenta y cuestiona** — para que el
 > proximo agente que toque el motor de reserva no muera en el intento.

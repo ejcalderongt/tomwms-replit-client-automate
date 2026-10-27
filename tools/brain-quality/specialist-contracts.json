@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "tag": "#EJC20261027_BRAIN_AGENTS",
+  "adoption_status": "experimental-opt-in; aggregate gains did not eliminate holdout completeness regression",
+  "execution_surface": "Available collaboration tools in the active coding agent session; no standalone unattended runtime assumed",
+  "authorization": "Dispatch only when user or applicable instructions authorize specialist-agent work",
+  "state_machine": ["planned", "independent_discovery", "bounded_followup", "synthesis", "independent_verification", "accepted_or_returned_for_correction"],
+  "limits": {"parallel_specialists": 3, "followup_rounds": 1, "followup_requests": 2, "verification_correction_passes": 1},
+  "shared_rules": [
+    "No WMS code changes, database connections, commit/push or external messages during analysis evaluation",
+    "Preserve client/branch scope; unknown is not universal",
+    "Do not expose secrets or full SQL definitions",
+    "Cite exact source spans with SHA256; preserve immutable git_ref for historical branches",
+    "Treat graph edges as possible syntax dependencies, not runtime proof",
+    "Do not read evaluation oracles when generating findings/answers",
+    "State evidence gaps and contradictions; do not resolve by majority vote",
+    "Use narrow source reads and selective graph queries"
+  ],
+  "roles": {
+    "code": {"focus": ["caller/callee path", "compiled file membership", "guards", "branch drift"], "output": "code-findings.json"},
+    "sql": {"focus": ["schema age", "stock versus reservation", "units", "identity", "transactions", "alternative DDL"], "output": "sql-findings.json"},
+    "functional": {"focus": ["business states", "units", "scope", "historical versus current behavior", "pending validation"], "output": "functional-findings.json"},
+    "coordinator": {"focus": ["task scope", "evidence reconciliation", "bounded missing-evidence requests", "source-grounded synthesis"], "output": "coordinated-answers.json"},
+    "verifier": {"focus": ["claim support", "contradictions", "scope correctness", "diagnosis", "dependency coverage", "unsupported claims"], "output": "verification.json"}
+  },
+  "acceptance": [
+    "All source hashes and literal spans validate",
+    "Every material factual claim has reviewed evidence",
+    "Unknown applicability and unresolved contradictions remain explicit",
+    "Generated answer quality is compared against a frozen baseline",
+    "Resource overhead and missing cost data are reported",
+    "Do not promote workflow merely because more agents ran"
+  ]
+}

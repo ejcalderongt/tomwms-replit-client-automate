@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "tag": "#EJC20261027_BRAIN_GOVERNANCE",
+  "root_resolution": "manifest_parent_parent_parent",
+  "knowledge_roots": ["brain", "wms-brain/brain"],
+  "canonical_policy": "unique-content-or-identical-hash; divergent copies require explicit review",
+  "governance": "AGENTS.md",
+  "historical_governance": "brain/replit.md",
+  "historical_transport": ["OpenClaw", "bridge", "Replit"],
+  "claim_required_fields": ["id", "kind", "statement", "sources", "clients", "branches", "validated_at", "status"],
+  "claim_kinds": ["fact", "hypothesis", "decision"],
+  "claim_statuses": ["draft", "verified", "superseded", "disputed"],
+  "source_required_fields": ["path", "commit", "sha256"],
+  "stages": ["governance", "baseline", "hybrid-retrieval", "functional-graph", "specialist-agents"]
+}

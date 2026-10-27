@@ -367,6 +367,8 @@ def load_chunks(repo_root: Path) -> list[Chunk]:
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
+    if not a or not b or len(a) != len(b):
+        raise ValueError('Embedding dimensions differ or vector is empty')
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(y * y for y in b))
@@ -459,7 +461,12 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
     out_dir.mkdir(parents=True, exist_ok=True)
     previous = {row.get("digest"): row for row in load_existing_rows(repo_root)} if incremental else {}
     state = load_state(repo_root) if incremental else {}
-    previous_files = state.get("files") or {}
+    # #EJC20261027_BRAIN_CACHE: content identity alone cannot identify a vector space.
+    cache_compatible = (state.get('model') == model
+                        and state.get('base_url', '').rstrip('/') == base_url.rstrip('/')
+                        and state.get('cache_version') == 2)
+    if not cache_compatible:
+        previous = {}
     chunks = load_chunks(repo_root)
 
     rows: list[dict] = []
@@ -470,7 +477,8 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
     for chunk in chunks:
         digest = chunk_digest(chunk)
         file_key = f"{chunk.project}|{chunk.root}|{chunk.path}"
-        current_files[file_key] = {"digest": digest, "language": chunk.language, "priority": chunk.priority}
+        file_state = current_files.setdefault(file_key, {"digests": [], "language": chunk.language, "priority": chunk.priority})
+        file_state['digests'].append(digest)
         row = {
             "digest": digest,
             "path": chunk.path,
@@ -484,7 +492,7 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
             "priority": chunk.priority,
         }
         cached = previous.get(digest)
-        if incremental and previous_files.get(file_key, {}).get("digest") == digest and cached and cached.get("embedding"):
+        if incremental and cached and cached.get("embedding"):
             row["embedding"] = cached["embedding"]
             rows.append(row)
             continue
@@ -497,6 +505,12 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
             batch_texts = pending_texts[start : start + batch_size]
             batch_rows = pending_rows[start : start + batch_size]
             embeddings = openai_embeddings(base_url, model, batch_texts, timeout)
+            if len(embeddings) != len(batch_rows):
+                raise ValueError('Embedding provider returned an incomplete batch')
+            expected_dimension = next((len(r['embedding']) for r in rows if r.get('embedding')), None)
+            dimensions = {len(vector) for vector in embeddings}
+            if 0 in dimensions or len(dimensions) != 1 or (expected_dimension and dimensions != {expected_dimension}):
+                raise ValueError('Embedding provider changed vector dimensions')
             for row, embedding in zip(batch_rows, embeddings):
                 row["embedding"] = embedding
             write_chunks_rows(repo_root, rows)
@@ -505,11 +519,12 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
                 {
                     "generated_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
                     "model": model,
+                    "cache_version": 2,
                     "base_url": base_url,
                     "chunks": len(rows),
                     "incremental": incremental,
-                    "cache_hits": len(rows) - len(pending_rows[: start + len(batch_rows)]),
-                    "cache_misses": len(pending_rows[: start + len(batch_rows)]),
+                    "cache_hits": len(rows) - len(pending_rows),
+                    "cache_misses": len(pending_rows),
                     "projects": sorted({row["project"] for row in rows}),
                     "files": current_files,
                 },
@@ -521,6 +536,7 @@ def index_chunks(repo_root: Path, base_url: str, model: str, timeout: int, incre
         {
             "generated_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
             "model": model,
+            "cache_version": 2,
             "base_url": base_url,
             "chunks": len(rows),
             "incremental": incremental,
@@ -560,6 +576,9 @@ def search_local(repo_root: Path, query: str, top_k: int, base_url: str, model: 
     resolved_model = model or discover_model(base_url, timeout)
     if not resolved_model:
         return []
+    state = load_state(repo_root)
+    if state.get('model') != resolved_model or state.get('base_url', '').rstrip('/') != base_url.rstrip('/'):
+        raise ValueError('Query model/provider differs from indexed model; reindex first')
     q_embedding = openai_embeddings(base_url, resolved_model, [query], timeout)[0]
     return search(rows, q_embedding, top_k)
 

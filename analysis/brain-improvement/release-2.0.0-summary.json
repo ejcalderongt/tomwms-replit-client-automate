@@ -1,0 +1,149 @@
+{
+  "objective": "Mejoramiento del brain TOMWMS en cinco etapas",
+  "status": "implemented-and-evaluated-with-limitations",
+  "stages": [
+    {
+      "stage": 1,
+      "result": "Gobernanza local, rutas verificadas, catálogo con hashes y alcance desconocido explícito; divergencias conservadas o revisadas sin elevarlas a hechos de negocio",
+      "evidence": [
+        "source-catalog.json"
+      ],
+      "limitation": "Conocimiento histórico no validado funcionalmente en su totalidad"
+    },
+    {
+      "stage": 2,
+      "result": "25 casos congelados, 20 desarrollo y 5 holdout; recuperación y respuestas evaluadas por separado",
+      "evidence": [
+        "current-bm25-regression.json",
+        "answer-comparison.json"
+      ],
+      "limitation": "Muestra pequeña de incidentes documentados; juez del mismo modelo en contexto independiente"
+    },
+    {
+      "stage": 3,
+      "result": "BM25 predeterminado; reranking local opcional; caché incremental corregido y probado; semántica e híbrida evaluadas y no promovidas",
+      "metrics": {
+        "bm25_hit_at_5": 0.96,
+        "bm25_mrr_at_5": 0.88,
+        "bm25_rerank_hit_at_5": 0.96,
+        "bm25_rerank_mrr_at_5": 0.94
+      },
+      "evidence": [
+        "current-bm25-regression.json"
+      ],
+      "limitation": "Reranking sin caché cuesta decenas de segundos; calidad documental no prueba razonamiento"
+    },
+    {
+      "stage": 4,
+      "result": "Grafo de sintaxis HH → WebMethod → DAL → SP → tabla y candidatos de reglas con fuentes; consulta de dependencias e impacto",
+      "evidence": [
+        "functional-graph.json",
+        "ubicacion-sugerida-path.json",
+        "graph-rule-functional-review.json"
+      ],
+      "limitation": "593 scripts SQL, 497 parseados y 96 aislados por errores; no binding completo, ejecución ni esquema desplegado"
+    },
+    {
+      "stage": 5,
+      "result": "Contratos, ejecución acotada y comparación ciega de coordinador/código/SQL/funcional/verificador; una ronda de evidencia y una de corrección",
+      "adoption": "experimental-opt-in",
+      "evidence": [
+        "answer-comparison.json",
+        "final-answer-integrity.json"
+      ],
+      "limitation": "Mejor promedio, pero regresión de completitud en holdout; no adopción automática ni prueba causal de superioridad multiagente"
+    }
+  ],
+  "verification": {
+    "unit_tests_passed": 38,
+    "skill_validation": "passed",
+    "final_answers": 25,
+    "final_answer_citation_integrity": "passed",
+    "runtime_skill": "canonical files installed; doctor warning only uncommitted changes"
+  },
+  "cost_measurement": {
+    "retrieval": "local wall/process measurements available",
+    "llm_tokens": null,
+    "llm_total_latency": null,
+    "llm_monetary_cost": null,
+    "reason": "Not exposed reliably; artifact-generation duration must not be interpreted as inference time"
+  },
+  "followup_candidates": [
+    "Human review on new unseen operational cases",
+    "Instrument full inference usage and latency before promoting specialist orchestration",
+    "Validate graph candidates against authorized runtime evidence when needed"
+  ],
+  "release": "2.0.0",
+  "release_date": "2026-10-27",
+  "artifact_policy": "Raw source extracts, generated graphs, catalogs, answer packets and review mappings remain local; regenerate with tools/brain-quality and the original authorized source repositories.",
+  "reproducibility_limit": "The 25-case experiment used local handoffs, including knowledge not committed in this release. Frozen input hashes detect missing or changed evidence; a fresh checkout alone does not reproduce all reported measurements.",
+  "answer_scores": {
+    "baseline": {
+      "cases": 25,
+      "scores_0_to_2": {
+        "diagnosis": 1.76,
+        "dependencies": 1.76,
+        "scope_correctness": 2
+      },
+      "by_split": {
+        "development": {
+          "diagnosis": 1.7,
+          "dependencies": 1.7,
+          "scope_correctness": 2
+        },
+        "holdout": {
+          "diagnosis": 2,
+          "dependencies": 2,
+          "scope_correctness": 2
+        }
+      }
+    },
+    "coordinated_first_pass": {
+      "cases": 25,
+      "scores_0_to_2": {
+        "diagnosis": 1.92,
+        "dependencies": 1.96,
+        "scope_correctness": 1.92
+      },
+      "by_split": {
+        "development": {
+          "diagnosis": 1.95,
+          "dependencies": 2,
+          "scope_correctness": 1.9
+        },
+        "holdout": {
+          "diagnosis": 1.8,
+          "dependencies": 1.8,
+          "scope_correctness": 2
+        }
+      }
+    },
+    "coordinated_after_review": {
+      "cases": 25,
+      "scores_0_to_2": {
+        "diagnosis": 1.96,
+        "dependencies": 1.96,
+        "scope_correctness": 2
+      },
+      "by_split": {
+        "development": {
+          "diagnosis": 2,
+          "dependencies": 2,
+          "scope_correctness": 2
+        },
+        "holdout": {
+          "diagnosis": 1.8,
+          "dependencies": 1.8,
+          "scope_correctness": 2
+        }
+      }
+    }
+  },
+  "answer_evaluation_limitations": [
+    "One same-model independent-context judge, not human or cross-model validation",
+    "Corrected results are post-feedback, not a fresh held-out experiment",
+    "Retrieval, specialist evidence and synthesis changed together; no causal attribution to agent count alone",
+    "Full LLM latency and monetary/token costs are unavailable; artifact-only timings are not reasoning latency",
+    "Results apply to 25 documented cases and do not prove current deployment behavior"
+  ]
+}

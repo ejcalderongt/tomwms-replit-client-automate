@@ -6,18 +6,23 @@ autores: [erik]
 
 ## Repos
 
-- TOMWMS/BOF/WS: `C:/Users/yejc2/source/repos/TOMWMS`
-- HH Android: `C:/Users/yejc2/StudioProjects/TOMHH2025`
-- wms-brain: `C:/Users/yejc2/source/repos/wms-brain/wms-brain`
+Run `../scripts/resolve-wms-paths.ps1 -AsJson` first. Its output is authoritative
+for this workstation. The manifest is relative to BrainRoot; the installer
+stores a local locator outside the repository. Pass `-BrainRoot`, `-RepoRoot`
+and `-HhRoot` explicitly to legacy helpers instead of trusting their old defaults.
+
+- BOF/WS: resolved `RepoRoot` (currently `USERPROFILE/source/repos/TOMWMS_BOF`).
+- HH: resolved `HhRoot` (currently `USERPROFILE/source/repos/TOMHH2025`).
+- Brain: resolved `BrainRoot`; do not infer it from an obsolete clone path.
 
 ## Brain
 
 - Base URL: `https://a5b1339e-a6ee-4eb8-bed1-c2bf8103da79-00-2i7pdom0xaba6.janeway.replit.dev/api/brain`
 - Token env var: `BRAIN_IMPORT_TOKEN`
 - Governance, when synchronized locally:
-  - `C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/replit.md`
-  - `C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/BRIDGE.md` (historical/forensic only; no active send workflow)
-  - `C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/_index/ATLAS.md`
+  - `BrainRoot/AGENTS.md` is the current entry point.
+  - `BrainRoot/brain/replit.md` and `BrainRoot/brain/BRIDGE.md` are historical where they conflict with current governance.
+  - `BrainRoot/brain/_index/ATLAS.md` is a discovery map; use the source catalog for duplicate/disputed material.
 - Reindex VB: `POST /index/vb` with `{"repos":["TOMWMS_BOF"]}`
 - Reindex Java: `POST /index/java` with `{"repos":["TOMHH2025"]}`
 
@@ -30,7 +35,7 @@ BOF/WS:
 
 HH:
 ```powershell
-cd C:/Users/yejc2/StudioProjects/TOMHH2025
+Set-Location $paths.HhRoot # $paths is the object returned by resolve-wms-paths.ps1
 ./gradlew.bat :app:compileDebugJavaWithJavac
 ```
 
@@ -64,5 +69,5 @@ powershell -ExecutionPolicy Bypass -File brain/skills/wms-operational-agent/scri
 ## Operational Trace Index
 
 ```text
-C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml
+BrainRoot/brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml
 ```

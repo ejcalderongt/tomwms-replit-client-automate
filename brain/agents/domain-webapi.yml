@@ -1,0 +1,16 @@
+#EJC20261027_BRAIN_ROUTING
+version: 1
+slug: domain-webapi
+kind: navigation
+status: draft
+validated_at: null
+scope: WMSWebAPI; las reglas funcionales se comprueban por cliente y rama.
+purpose: Resolver la referencia colgante del router de junio sin duplicar reglas.
+entry_points:
+  - agents/domain-integration-services.yml
+  - code-changes/BOF/PATTERNS-WMSWEBAPI-LAYERS.md
+  - handoffs/2026-05-19-codex-analysis-webapi-reserva-paridad-mi3/ANALISIS.md
+rules:
+  - Resolver entry_points como IDs del catálogo; leer ambas fuentes si hay conflicto.
+  - Validar código actual y contrato antes de trasladar conclusiones históricas.
+  - No asumir que la HH usa WebAPI; comprobar su WebMethod o caller real.

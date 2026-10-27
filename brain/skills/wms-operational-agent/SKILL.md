@@ -26,12 +26,16 @@ Always preserve Erik's workflow:
 ## Required Preflight
 
 1. Read repo-local `AGENTS.md` or equivalent instructions.
-2. If present in wms-brain, read Tier 0 governance before process work:
-   - `brain/replit.md`
+2. Resolve current paths with `scripts/resolve-wms-paths.ps1 -AsJson`.
+   Treat its `BrainRoot`, `RepoRoot` and `HhRoot` as the local paths; pass them
+   explicitly to older scripts whose defaults refer to a previous workstation.
+   Read `BrainRoot/AGENTS.md` and its manifest before historical governance:
+   - `brain/replit.md` as historical context where it conflicts with current local governance.
    - `brain/BRIDGE.md` only as historical protocol/context, not as an active send/apply workflow.
 3. If present, use `brain/_index/ATLAS.md` as the Tier 1 table of contents. Load topic files only after matching frontmatter/triggers.
 4. For operational processes, read:
-   `C:/Users/yejc2/source/repos/wms-brain/wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml`
+   `BrainRoot/brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml`
+   Resolve duplicate or disputed traces through `tools/brain-quality/resolve.py` and the source catalog.
 5. If a trace exists for the process, load it. If not, create a focused trace before patching.
 6. Load `brain/agents/_index.yml` and `brain/agents/coordinator.yml` only for complex or cross-domain work, then only the relevant `domain-*.yml`.
 7. Check worktree status before edits and do not revert user changes.
@@ -83,6 +87,7 @@ Avoid context bloat:
 ## Useful References
 
 Read these only when needed:
+- `references/local-brain.md`: current local retrieval, source provenance, dependency graph, and bounded specialist mode.
 - `references/architecture.md`: how this skill is versioned, installed, and recovered.
 - `references/checklists.md`: operational checklist by task type.
 - `references/paths.md`: known local repo paths and build commands.

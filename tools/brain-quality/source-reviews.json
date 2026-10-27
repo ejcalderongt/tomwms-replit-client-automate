@@ -1,0 +1,160 @@
+[
+  {
+    "id": "_index/AGENT-ROUTING-INDEX.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "exclude-derived-index",
+    "reason": "Ambos son derivados desactualizados: 33 y 296 entradas; una copia contiene mojibake. El catalogo nuevo sustituye su funcion de descubrimiento, no sus fuentes.",
+    "source_hashes": {
+      "brain/_index/AGENT-ROUTING-INDEX.yml": "fc4e185a4cd105a25d004ecd9f66bdae39fbf714e79ef42b9dadaf9b9692b6f8",
+      "wms-brain/brain/_index/AGENT-ROUTING-INDEX.yml": "e9e11eb1daae9a3287c568ea6dd3ce2350bcd73bcb73ab72aaf33de20f73d914"
+    }
+  },
+  {
+    "id": "agents/_README.md",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "La ampliacion de federacion cambia secciones y encabezados. AGENTS.md raiz gobierna; conservar ambos documentos de arquitectura como evidencia historica.",
+    "source_hashes": {
+      "brain/agents/_README.md": "3f9a851a1e564a7807f2b44f3eed190f740e325377d20e7c040c2367bb90f8fc",
+      "wms-brain/brain/agents/_README.md": "3c4bc0859a72e4df03f98f3652fbb5d5c5ea50b95fcf45020d0b3ead235f25bc"
+    }
+  },
+  {
+    "id": "agents/_index.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "Esquemas distintos: lista de dominios/clientes y mapa con also_load. resolve.py une ambos sin descartar MAMPA ni contexto nuevo.",
+    "source_hashes": {
+      "brain/agents/_index.yml": "f5220cf682cb6e4a13ba6bd3e1b3ebe60fafa7fdc90e3ec612385d72a37bf8a2",
+      "wms-brain/brain/agents/_index.yml": "bd58265cd9debb796cce57655581777caae48460e133e653e4e0fe490e2908a0"
+    }
+  },
+  {
+    "id": "agents/coordinator.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "Una copia conserva MAMPA; otra agrega mapa reutilizable y guardrail cliente_bodega. Retener ambas rutas; gobierno local en AGENTS.md tiene precedencia.",
+    "source_hashes": {
+      "brain/agents/coordinator.yml": "2f49b4e8c539594f93e74802ac8b8b45157cab7be52d652a76cd7dd333e15e70",
+      "wms-brain/brain/agents/coordinator.yml": "1c86972573df17970148242b7351492acb589659b876ef73cb78624ce61c470d"
+    }
+  },
+  {
+    "id": "agents/domain-bof.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "La version extensa conserva mapa legacy; la otra agrega notas reserva, VERI, implosion y explosion. Son contextos complementarios con alcance no universal.",
+    "source_hashes": {
+      "brain/agents/domain-bof.yml": "ca465867fce820eaeddfdc1492a994581a8c0ce94f208d4d50897761fc593f88",
+      "wms-brain/brain/agents/domain-bof.yml": "db3678186701a8f7486bb39eb1173a423207ee7a2acdc1a20c8e46558ee393ea"
+    }
+  },
+  {
+    "id": "agents/domain-database.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "La ampliacion agrega guardrail cliente_bodega y diagnostico reutilizable; tambien introduce direccion de infraestructura. No trasladar valores de conexion al contexto general.",
+    "source_hashes": {
+      "brain/agents/domain-database.yml": "63156849dafcf3fd943ba6a1c7cdd6c7c1fc23d9868b3f5c3ef18fd0125e2e9c",
+      "wms-brain/brain/agents/domain-database.yml": "590d9a742c20cfe72d31152c96537811dfd6ef0314c93224ee622f39e04598ae"
+    }
+  },
+  {
+    "id": "agents/domain-hh-android.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "Diferencias en guard asincrono, edicion segura y referencias L-058/L-061. Conservar ambas; validar caller y rama antes de promover reglas.",
+    "source_hashes": {
+      "brain/agents/domain-hh-android.yml": "e49cea20527a9ca3f8eefc6ab118fd77db510a2fc8586ab961c7c934eb70b534",
+      "wms-brain/brain/agents/domain-hh-android.yml": "6208d72a5a499f3d0277c0c026e4c1c95a3d9b7123c67ec757c6d24c0258f714"
+    }
+  },
+  {
+    "id": "agents/domain-integration-services.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "Una copia agrega ingresos REST; otra agrega referencias historicas. Mantener contratos y procedencia separados.",
+    "source_hashes": {
+      "brain/agents/domain-integration-services.yml": "299a5d279e118bc253af2960655041b0976dbfa85f6233ebc850b9ee80e3bd17",
+      "wms-brain/brain/agents/domain-integration-services.yml": "03b17be32257e031e7f765ba1f46be687df8e99a3cacc8e5be0384b73e0d9890"
+    }
+  },
+  {
+    "id": "code-changes/HH/PATTERNS-PACKING-MATCHING.md",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "La copia raiz documenta complementariedad pick.items/savedList y commits adicionales; la otra contiene descripcion mas corta. No se comprobo codigo actual: conservar alternativas.",
+    "source_hashes": {
+      "brain/code-changes/HH/PATTERNS-PACKING-MATCHING.md": "5eeb99fee0b809ae123e1dbe9b6ea7e80a386747c2e4718a9d4b25b65ea13f60",
+      "wms-brain/brain/code-changes/HH/PATTERNS-PACKING-MATCHING.md": "6724f82f9b5fa5cf0d1df1bed866892ff1b36ddaedf296ec62dabc2230551398"
+    }
+  },
+  {
+    "id": "handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml",
+    "kind": "decision",
+    "status": "disputed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "retain-alternatives",
+    "reason": "La raiz contiene incidentes octubre; la copia anidada agrega concurrencia y pedido MI3 junio. Necesaria union de referencias, no eleccion por fecha.",
+    "source_hashes": {
+      "brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml": "27cd0f40fee0f4bc2382147d432649c60acdbd26e92ed8ef0c10d8addebaa906",
+      "wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/TRAZAS-FINAS-OPERATIVAS-INDEX-2026-05-26.yml": "58d11b7cdbea45acc5b3b1428f5cbcbf1438b50198ab9e16f6b598ed8dbcf11f"
+    }
+  },
+  {
+    "id": "skills/wms-operational-agent/SKILL.md",
+    "kind": "decision",
+    "status": "source-reviewed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "prefer-reviewed-source",
+    "selected_path": "brain/skills/wms-operational-agent/SKILL.md",
+    "reason": "Canonical local skill now resolves tested Brain/BOF/HH paths and routes to provenance-bearing local tools. Runtime copy matches canonical SHA256. Nested historical copy is preserved as evidence; this selection validates integration paths, not all business claims.",
+    "source_hashes": {
+      "brain/skills/wms-operational-agent/SKILL.md": "b10cd54ab602eac100d35e9100558d00997a67ce4c43380f25c85bfc7225b195",
+      "wms-brain/brain/skills/wms-operational-agent/SKILL.md": "d480d3bdf95fd9709f3cad2c72cf26b1c6a276ff0937ffc80adb54c9a23cc771"
+    }
+  },
+  {
+    "id": "skills/wms-operational-agent/references/paths.md",
+    "kind": "decision",
+    "status": "source-reviewed",
+    "reviewed_at": "2026-10-27",
+    "functional_validation": false,
+    "action": "prefer-reviewed-source",
+    "selected_path": "brain/skills/wms-operational-agent/references/paths.md",
+    "reason": "Canonical local skill now resolves tested Brain/BOF/HH paths and routes to provenance-bearing local tools. Runtime copy matches canonical SHA256. Nested historical copy is preserved as evidence; this selection validates integration paths, not all business claims.",
+    "source_hashes": {
+      "brain/skills/wms-operational-agent/references/paths.md": "a9f33f5af374fcb559480fdac50b2e9d70f68af23573a8f2e328f38b800bcb91",
+      "wms-brain/brain/skills/wms-operational-agent/references/paths.md": "7057ad91195f764643a056ecd44e5a78e29b6b2d61c08e238ec5b5bbbf518545"
+    }
+  }
+]

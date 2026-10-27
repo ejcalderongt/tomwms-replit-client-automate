@@ -1,10 +1,14 @@
 param(
-    [string]$BrainRoot = "C:/Users/yejc2/source/repos/wms-brain/wms-brain",
-    [string]$TomwmsRoot = "C:/Users/yejc2/source/repos/TOMWMS",
+    [string]$BrainRoot = '',
+    [string]$TomwmsRoot = '',
     [string]$CodexHome = $(if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME ".codex" })
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot 'resolve-wms-paths.ps1')
+$resolved = Resolve-WmsPaths -BrainRoot $BrainRoot -RepoRoot $TomwmsRoot
+$BrainRoot = $resolved.BrainRoot
+$TomwmsRoot = $resolved.RepoRoot
 
 $script:HasFail = $false
 $script:HasWarn = $false

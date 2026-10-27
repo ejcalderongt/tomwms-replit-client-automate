@@ -1,0 +1,19 @@
+#EJC20261027_BRAIN_ROUTING
+version: 1
+slug: domain-performance
+kind: navigation
+status: draft
+validated_at: null
+scope: Diagnóstico de rendimiento; no implica una mejora medida.
+purpose: Resolver la referencia colgante del router de junio con evidencia existente.
+entry_points:
+  - agents/domain-reserva.yml
+  - skills/wms-operational-agent/references/health-and-performance.md
+  - code-deep-flow/traza-004-sapsyncmampa-productos-performance.md
+  - handoffs/2026-05-19-codex-analysis-webapi-reserva-paridad-mi3/ANALISIS.md
+rules:
+  - Resolver entry_points como IDs del catálogo; leer ambas fuentes si hay conflicto.
+  - Diferenciar rendimiento de recuperación del brain y rendimiento operativo WMS.
+  - Medir antes y después con igual entrada, cliente, rama y estado comparable.
+  - Registrar tiempos, llamadas, filas y limitaciones; no inventar porcentajes.
+  - Las trazas de un cliente no demuestran rendimiento de otro.

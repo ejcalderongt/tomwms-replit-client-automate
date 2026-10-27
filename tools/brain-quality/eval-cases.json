@@ -1,0 +1,1034 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "WMS-EVAL-01",
+      "query": "Al abrir el picking 100 sin pedidos ocurre un error de índice; ¿dónde falta el guard y qué no sabemos de la causa histórica?",
+      "client": "MHS",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-05-27-root-cause-accelerator/20261022-picking100-sin-pedidos/README.md"
+      ],
+      "expected_concepts": [
+        "lPedidosPicking(0)",
+        "Cargar_Datos",
+        "causa histórica no demostrada"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-05-27-root-cause-accelerator/20261022-picking100-sin-pedidos/README.md",
+          "sha256": "bc33e20d8d1917f4bf871e22d281de378c4bf2f02999016857bc5b08462a4c52",
+          "metadata": {
+            "clients": [
+              "MHS"
+            ],
+            "branches": [
+              "dev_2028_merge"
+            ],
+            "scope_state": "declared",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "fix_compilado_regresion_pasada_pendiente_prueba_ui",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-02",
+      "query": "La HH mezcla respuestas y muestra XMLObject Unexpected token durante cambio de ubicación; ¿qué estado compartido hay que revisar?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-06-03-hh-reemplazo-verificacion-ws-race/README.md"
+      ],
+      "expected_concepts": [
+        "callback",
+        "xmlresult",
+        "snapshot por request"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-06-03-hh-reemplazo-verificacion-ws-race/README.md",
+          "sha256": "c6d017e7db58ce2455a55a15216d04d63d1c5094fd597234caf98f9c937c51f2",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-03",
+      "query": "Dos HH reciben la misma orden y una valida cantidades antiguas; ¿qué memoria y refresco deben correlacionarse?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md"
+      ],
+      "expected_concepts": [
+        "gl.gpListDetalleOC",
+        "Cantidad_recibida",
+        "recarga"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-06-05-hh-concurrencia-cache-sync/README.md",
+          "sha256": "3d975d8a6518bfca842bc7e755ac265963cdbeb0c54956fba621a79ee5c304d6",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-04",
+      "query": "El pedido CSFA02-36522 tiene IdCliente pero BOF muestra cliente vacío; ¿qué relación falta?",
+      "client": "MHS",
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md"
+      ],
+      "expected_concepts": [
+        "cliente_bodega",
+        "IdBodega",
+        "Inserta_Encabezado"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-06-10-pedido-mi3-cliente-bodega-guardrail/README.md",
+          "sha256": "a46afd24b5a15a502f500c057451ae50905c43469b50a813a6d26b80120e5dde",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-05",
+      "query": "En ajustes MAMPA talla color el borrador hereda el destino antes de confirmar; ¿qué contrato debe conservarse?",
+      "client": "MAMPA",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-06-15-mampa-interface-learning/README.md"
+      ],
+      "expected_concepts": [
+        "IdTalla",
+        "IdColor",
+        "borrador"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-06-15-mampa-interface-learning/README.md",
+          "sha256": "5574080a1d53edeb87b250ba698878dec17eec751e44b437150785fdcea90f19",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "holdout"
+    },
+    {
+      "id": "WMS-EVAL-06",
+      "query": "La importación SAP de productos MAMPA es lenta; ¿qué consultas repetidas y logins explican los roundtrips?",
+      "client": "MAMPA",
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-06-18-mampa-productos-performance/README.md"
+      ],
+      "expected_concepts": [
+        "$select",
+        "cache",
+        "login"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-06-18-mampa-productos-performance/README.md",
+          "sha256": "817e9ba9afe299632ce7acae05811cff52e71f67d854d785cf2c85962619b847",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-07",
+      "query": "La ubicación sugerida falla por scope de CTE; ¿cómo se conectan preload, Indice_X y el WS v2?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-07-03-ubicacion-sugerida-preload-traza/README.md"
+      ],
+      "expected_concepts": [
+        "#temp",
+        "Indice_X",
+        "ml_get_ubicacion_sugerida_v2_JSON"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-03-ubicacion-sugerida-preload-traza/README.md",
+          "sha256": "96608d95c80126c6a2a819c60cf64acd98f1a9e3aec3428fd3f89402c5986f14",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-08",
+      "query": "Al aumentar y reducir una línea MI3, ¿qué delta de reserva cambia y por qué no debe cambiar el stock físico?",
+      "client": null,
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-07-12-mi3-update-reserva-lifecycle/README.md"
+      ],
+      "expected_concepts": [
+        "stock_res",
+        "stock.cantidad",
+        "delta"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-12-mi3-update-reserva-lifecycle/README.md",
+          "sha256": "0f5944a81d458f8afc15b7800d9d5a4bf2eb4bf618948b47ee2211abe588dc01",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-09",
+      "query": "M002 muestra 1.5 bultos y selección de 2 pares de forma ambigua; ¿cómo debe expresar cantidades y admitir fracciones?",
+      "client": "BAGUTA",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-07-14-m002-hh-implosion-recepcion-um/README.md"
+      ],
+      "expected_concepts": [
+        "Bulto10",
+        "UMBAS",
+        "enteras"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-14-m002-hh-implosion-recepcion-um/README.md",
+          "sha256": "7396e46983152e32dfdd54262e454238123ec76d1d70cfcf2c4c9e4c8160e85d",
+          "metadata": {
+            "clients": [
+              "BAGUTA"
+            ],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "aplicado-local",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-10",
+      "query": "Una solicitud 10.05 F30 con factor 60 reserva 603 unidades pero la fracción no tiene stock físico; ¿qué debe crear la explosión?",
+      "client": "MHS",
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-07-14-mi3-explosion-decimal-stock-fisico/README.md"
+      ],
+      "expected_concepts": [
+        "600",
+        "3",
+        "57",
+        "IdStock"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-14-mi3-explosion-decimal-stock-fisico/README.md",
+          "sha256": "9b43763653078db6051d93033e3ca72fe746156bee2aa0b83dd9808cdb26cd42",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "holdout"
+    },
+    {
+      "id": "WMS-EVAL-11",
+      "query": "El picking BOF terminó al cien por ciento pero la tarea HH sigue activa; ¿cuándo cerrar tarea_hh y en qué transacción?",
+      "client": null,
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-07-16-lc0001-picking-bof-close/README.md"
+      ],
+      "expected_concepts": [
+        "Get_All_PickingUbic_Pendientes_HH_By_IdPickingEnc",
+        "IdEstado = 4",
+        "transacción"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-16-lc0001-picking-bof-close/README.md",
+          "sha256": "a7f24eb17b8225c37d34ef00648f1f9ee76d83cd59c6a7d14acf62dfe9e99d78",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-12",
+      "query": "Inventario cíclico 293 genera sobrante aunque las dos ubicaciones estaban congeladas; ¿qué falla entre selección filtrada y Agregar_Conteo?",
+      "client": "La Cumbre",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-07-16-lc0002-inventario-ciclico-multubicacion/README.md"
+      ],
+      "expected_concepts": [
+        "GetVisibleRowHandle",
+        "trans_inv_stock",
+        "Cant_stock=0"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-16-lc0002-inventario-ciclico-multubicacion/README.md",
+          "sha256": "e5e0b6d2d6d73938ef98e6c364cc6637095468d9bc722da0f3bd8c3fb6e1c46f",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-13",
+      "query": "¿Cómo evitar duplicar la asociación virtual de dos bodegas y qué identidad de ubicación debe coincidir?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-07-21-bodega-asociacion-ubicaciones-virtuales/README.md"
+      ],
+      "expected_concepts": [
+        "IdBodegaOrigen < IdBodegaDestino",
+        "IdUbicacion",
+        "activas"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-21-bodega-asociacion-ubicaciones-virtuales/README.md",
+          "sha256": "ad8da61d4132fa13c373b59f8e34e25180b45b7059f0e4a3460281eaaffd1e96",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-14",
+      "query": "BIT omite una línea y renumera Line_No en update MI3; ¿cómo reconciliar sin confundir productos ni borrar una línea operada?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-07-21-mi3-update-reconciliacion-expedita/README.md"
+      ],
+      "expected_concepts": [
+        "identidad funcional",
+        "REQUIERE_REVERSION_FASE2",
+        "LINEA_NUEVA_REQUIERE_INSERT"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-21-mi3-update-reconciliacion-expedita/README.md",
+          "sha256": "17baad86441998ee2795d69a41dfc0f3c6828964fec3b42f3abf59fa9b306586",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-15",
+      "query": "¿Qué snapshot gobierna verificación packing y cuál es la unidad atómica de confirmación antes de despacho?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-07-23-packing-entrega/README.md"
+      ],
+      "expected_concepts": [
+        "trans_pe_enc.confirmar_packing_entrega",
+        "IdPedidoEnc + no_linea",
+        "transacción"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-23-packing-entrega/README.md",
+          "sha256": "f5dd6a4c8989473a395fd51574526eceece71f6a6229c6164597e1a5688e64a3",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "holdout"
+    },
+    {
+      "id": "WMS-EVAL-16",
+      "query": "La lupa de preparación packing queda bloqueada con LP vacía; ¿por qué no hay callback y cómo preservar la licencia BOF en Load?",
+      "client": "MHS",
+      "branch": "dev_2026_estable",
+      "expected_sources": [
+        "handoffs/2026-07-31-hh-packing-lupa-licencia-bof/README.md"
+      ],
+      "expected_concepts": [
+        "verLista()",
+        "licenciaEmpaqueBofSeleccionada",
+        "asincrona"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-07-31-hh-packing-lupa-licencia-bof/README.md",
+          "sha256": "b437ebebd542016ba94890c04a5a3f9953183c8a515c1942728d65d7881d2918",
+          "metadata": {
+            "clients": [
+              "CORE",
+              "MHS"
+            ],
+            "branches": [
+              "dev_2026_estable",
+              "dev_2028_merge"
+            ],
+            "scope_state": "declared",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "aplicado_local_sin_commit",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-17",
+      "query": "¿La preimpresión OC crea el lote o consume uno existente y dónde persiste la licencia física?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-08-18-preimpresion-oc-bof/README.md"
+      ],
+      "expected_concepts": [
+        "IdOrdenCompraDetLote",
+        "Guardar_Pallet_PreImpresion",
+        "i_nav_barras_pallet"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-08-18-preimpresion-oc-bof/README.md",
+          "sha256": "d7f25c7701a2eaeaf9a5d0a59cae38fb466a0508ab33a7494eed4eacada08b36",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-18",
+      "query": "IDEALSA recibe Variant_Code pero la OC pierde presentación y queda importación parcial; ¿qué contrato y atomicidad deben revisarse?",
+      "client": "IDEALSA",
+      "branch": "dev_2026_estable",
+      "expected_sources": [
+        "handoffs/2026-08-20-idealsa-mi3-ingreso-presentacion-atomicidad/README.md"
+      ],
+      "expected_concepts": [
+        "Variant_Code",
+        "producto_presentacion",
+        "Nothing"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-08-20-idealsa-mi3-ingreso-presentacion-atomicidad/README.md",
+          "sha256": "c82d481f6b24c1ee89d582e04d91ffa1a396ac97f0cadd96dcf4fbb68b5200b9",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-19",
+      "query": "¿Qué distingue conversión de presentación de consolidación de licencia en implosión BOF y cómo se rechaza un plan obsoleto?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-09-02-implosion-bof-atomic/README.md"
+      ],
+      "expected_concepts": [
+        "disponibilidad neta",
+        "serializable",
+        "remanente"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-09-02-implosion-bof-atomic/README.md",
+          "sha256": "5f32ac96d4fd1123c0b5586b0a03d9c6ef1245f1a35e3219520441156bb1dc32",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-20",
+      "query": "El actualizador deja IdIndiceRotacion fuera aunque la brecha es Alta; ¿qué contrato de esquema y repetición debe verificarse?",
+      "client": "BECOFARMA",
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-10-12-actualizador-bd-contratos/README.md"
+      ],
+      "expected_concepts": [
+        "i_nav_config_enc",
+        "int NOT NULL DEFAULT (0)",
+        "cero aplicaciones"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "wms-brain/brain/handoffs/2026-10-12-actualizador-bd-contratos/README.md",
+          "sha256": "c1442bdaf67850d5b4f57e6fde78562a47d1c6207c722a5cc7789e920228b22a",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "holdout"
+    },
+    {
+      "id": "WMS-EVAL-21",
+      "query": "Para etiqueta de empaque MHS, ¿origen y destino son bodegas o cliente y qué evidencia prevalece sobre el resumen de reunión?",
+      "client": "MHS",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-10-22-mhs-etiqueta-empaque/README.md"
+      ],
+      "expected_concepts": [
+        "origen",
+        "cliente",
+        "instrucción"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-10-22-mhs-etiqueta-empaque/README.md",
+          "sha256": "fda2d80fba776c32d78e4ba8debeec7fc5db2204497868c941e23f28c0adfc04",
+          "metadata": {
+            "clients": [
+              "MHS"
+            ],
+            "branches": [
+              "dev_2028_merge"
+            ],
+            "scope_state": "declared",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "codigo_y_bd_verificados_pendiente_prueba_fisica",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-22",
+      "query": "Una tarima íntegra cambió de ubicación; ¿puede reutilizar su LP de recepción y qué evita imprimirla como nueva?",
+      "client": "MHS",
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-10-26-mhs-tarimas-completas/README.md"
+      ],
+      "expected_concepts": [
+        "EsRecicladaRecepcion",
+        "stock_rec",
+        "solo nuevas"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-10-26-mhs-tarimas-completas/README.md",
+          "sha256": "4f29068acecf3ccec513b5caf26d1afb1ec4a09c561a815c6522d08f2372f4d9",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-23",
+      "query": "¿Cuándo habilitar Etiquetas de empaque desde picking y cómo afectan las casillas Granel y Tarima sin guardar automáticamente?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-10-26-picking-etiquetas-empaque/README.md"
+      ],
+      "expected_concepts": [
+        "IdPickingEnc > 0",
+        "Granel",
+        "Tarima"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-10-26-picking-etiquetas-empaque/README.md",
+          "sha256": "ede1c7386005aa3756f07ff4a5e94b5cea2c0af0851abe6192846113cd0a33ee",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-24",
+      "query": "¿Se puede inferir tiempo efectivo de empaque o instante de finalización con fec_mod en el visor por licencia?",
+      "client": null,
+      "branch": null,
+      "expected_sources": [
+        "handoffs/2026-10-26-picking-visor-empaque/README.md"
+      ],
+      "expected_concepts": [
+        "fec_mod",
+        "timestamp",
+        "tiempo efectivo"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-10-26-picking-visor-empaque/README.md",
+          "sha256": "fb1e523114d19e1e7e4d6433f01bf796d2651b764a503bf2a17783f623178a5f",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "development"
+    },
+    {
+      "id": "WMS-EVAL-25",
+      "query": "¿Qué revisiones de BOF y DBA se publicaron para empaque MHS y qué cambios locales quedaron fuera?",
+      "client": "MHS",
+      "branch": "dev_2028_merge",
+      "expected_sources": [
+        "handoffs/2026-10-27-mhs-release-cleanup/README.md"
+      ],
+      "expected_concepts": [
+        "9a493e5194ecb7481428a2b7eacabd76614c50ba",
+        "59557ee24f297a7c0ed5492f27a80e3b2edfb6d3",
+        "Conn.ini"
+      ],
+      "oracle_scope": "documented incident; current runtime not independently revalidated",
+      "oracle_sources": [
+        {
+          "path": "brain/handoffs/2026-10-27-mhs-release-cleanup/README.md",
+          "sha256": "3bc213f049cf19dce3908ee3f57124d9d9e09846be342f7ae825408493065754",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "1c7799df55415511e106a64e600f6d73fdc3af1c",
+          "checkout_dirty": true
+        }
+      ],
+      "rubric": {
+        "diagnosis": "Explain causal point and evidence, not only symptom",
+        "dependencies": "Identify relevant caller/persistence path where evidenced",
+        "scope": "State unknown scope; do not generalize to another client or branch",
+        "unsupported_claims": "Every material factual assertion needs a source; preserve pending validation"
+      },
+      "split": "holdout"
+    }
+  ],
+  "metrics": [
+    "hit@5",
+    "mrr@5",
+    "evidence-recall@5",
+    "scope-correctness",
+    "diagnosis",
+    "dependencies",
+    "unsupported-claim-rate",
+    "latency-ms",
+    "cost"
+  ],
+  "generation_scoring": "requires generated answer and source-by-source adjudication; not inferred from retrieval score"
+}

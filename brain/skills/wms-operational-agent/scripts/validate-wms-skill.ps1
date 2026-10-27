@@ -8,6 +8,8 @@ $required = @(
     "references/checklists.md",
     "references/health-and-performance.md",
     "references/paths.md",
+    "references/local-brain.md",
+    "scripts/resolve-wms-paths.ps1",
     "scripts/install-skill.ps1",
     "scripts/wms-preflight.ps1",
     "scripts/wms-patch-check.ps1",
