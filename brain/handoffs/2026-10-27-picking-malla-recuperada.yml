@@ -1,0 +1,39 @@
+id: picking-malla-recuperada-20261027
+tipo: recovery-handoff
+estado: source-validated-visual-pending
+tag: '#EJC20261027_PICKING_RECUPERACION'
+repo: TOMWMS_BOF
+rama: dev_2028_merge
+stash_origen: 8bb8537c9520263b919debec2c32a5993eee4e50
+sesion_original: 01a130fd-62b3-7f72-86ff-508c6513bf01
+rama_sesion_original: dev_2028_merge
+fecha_sesion_original: '2026-10-12'
+formulario_recuperado: 15 diffs FileChange exitosos reconstruidos sobre la base Git, sin ejecutar comandos historicos
+cliente: desconocido
+flujo:
+  - frmDiseñoB.ConfigurarEdicionExoesqueleto agrega botones originales de editar, conectar, guardar y recargar.
+  - cmdDibujarGrid_Click carga red guardada o genera propuesta mediante clsGeneradorExoesqueletoBodega.
+  - ctlExoesqueletoBodega conserva clic derecho, arrastre, conexion y Ctrl+Z.
+  - ConfigurarPlanoCartesiano configura cuadricula metrica y ajuste manual.
+  - ConvertirAEntidadPersistente transforma coordenadas y enlaces; GuardarBorrador persiste mediante DAL.
+  - CargarExoesqueletoParaEdicion usa Listar y Obtener; ConvertirAGrafoVisual reconstruye referencias.
+recuperacion:
+  archivos_originales: ocho clases VB y docs/picking/EXOESQUELETO_BODEGA_FASES.md
+  integracion: formulario original restaurado y Compile en WMS, DAL y Entity
+  correccion: retirada la integracion parcial creada en la primera recuperacion; respaldo fuera del repo
+  stash_conservado: true
+  otros_modulos_del_stash: no aplicados; permanecen en stash y bundle local
+validacion:
+  build: WMS correcto en salida aislada, con advertencias de dependencias y DevExpress
+  sintetica: dimensiones invalidas, determinismo, limites y render fuera de pantalla
+  red_sintetica: 37 nodos y 38 enlaces
+  interacciones: arrastre de nodo, conexion por arrastre, destino inferido y deshacer atomico probados
+  entity: coordenadas y enlaces ida/vuelta, token de concurrencia del borrador y clonacion de aprobado probados
+  botones_originales: instanciados sin mostrar el formulario ni ejecutar Shown
+  llamadas_bd_en_pruebas: 0
+limites:
+  - Prueba visual sobre bodega real pendiente.
+  - Guardado y recarga conectados en codigo; persistencia real pendiente de prueba y esquema seleccionado no comprobado.
+  - Contrato SQL en DBA/20261012_wms_exoesqueleto_versionado_proposal.sql; existencia local no acredita despliegue.
+  - Dijkstra/A* y asignacion operativa de pedidos no estaban implementados en el material recuperado.
+  - Sin escrituras a BD, cambios HH ni modificaciones a Reference.vb.

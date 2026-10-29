@@ -1,0 +1,24 @@
+[
+  {
+    "path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Mantenimientos\\Bodega_Graficador\\clsExoesqueletoBodega.vb",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "504cd41c039c667b3c89cc5d455cb7094aad8abb6548fc01a86a696c4b4491cc",
+    "content_state": "worktree-uncommitted"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Mantenimientos\\Bodega_Graficador\\clsDiagnosticoExoesqueleto.vb",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "287af62d03069a555ffb0d00e3a4527e9da855e46131aedcd03ef1ae52ffb945",
+    "content_state": "worktree-uncommitted"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\OneDrive\\Documents\\ChatGPT\\TOMWMS\\.federation\\wms-brain\\brain\\handoffs\\2026-10-28-mhs-mh05-corredores\\scripts\\Test-HilerasExoesqueleto.ps1",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "24a922e2718963eacc60988b77c0dcfe0b285ba9b8dc0f3dc2fc5bbdd25642d0",
+    "content_state": "brain-worktree-uncommitted",
+    "previous_path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\tools\\picking\\Test-HilerasExoesqueleto.ps1"
+  }
+]

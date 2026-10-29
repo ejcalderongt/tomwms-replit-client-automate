@@ -16,6 +16,20 @@ y `source/repos/wms-brain` son referencias históricas y deben comprobarse.
 - La gestión del brain es local. No usar bridge/OpenClaw ni `_inbox` como
   transporte activo. Replit puede aportar evidencia histórica; no es una
   dependencia obligatoria.
+- #EJC20261028: por instrucción explícita de Erik, los repositorios fuente son
+  solo para código y pruebas. No dejar allí trazas, notas, informes de auditoría
+  ni otros archivos del Brain; guardarlos en este checkout de conocimiento.
+
+- #EJC20261029: los scripts de diagnóstico, replay y validación operativa creados
+  por el agente pertenecen al Brain, incluso si ejecutan pruebas del código.
+  No ubicarlos en tools/ de BOF/HH ni asumir una excepción por llamarse Test-*.
+  Conservar en los repositorios fuente únicamente los cambios propios del producto
+  y sus pruebas de proyecto expresamente acordadas. No migrar archivos históricos
+  versionados sin revisar su alcance con Erik.
+
+- #EJC20261029: la orden de Erik `go sync` significa commit y push del Brain.
+  Publicar los cambios del Brain correspondientes a la tarea, preservando cambios
+  ajenos; no interpretarla como autorización de commit/push de BOF, HH ni DBA.
 
 ## Resolver conocimiento
 
