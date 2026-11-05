@@ -1,0 +1,27 @@
+{
+  "tag": "EJC20261105_PORTAL_PORTABLE",
+  "date": "2026-11-05",
+  "scope": "Instalacion nueva y separada en la estacion de Erik; no ejecutado en la PC de Carol",
+  "sources": {"react": "05586ceaa25686f55250b7c7fd6489fa3fc427ec", "api": "aeace3d300c556ef441fbd3dbcd78a947c83b914"},
+  "checks": {
+    "clone_pinned_sources_from_azure": "passed",
+    "npm_ci_new_node_modules": "passed",
+    "vite_production_build": "passed; warning de bundle grande y Browserslist antiguo",
+    "dotnet_publish_win_x64_self_contained": "passed; un warning CS8602 preexistente en clsLnStock.cs",
+    "sql_mapping_windows_authentication": "passed; SELECT de existencia de objetos y usuario activo",
+    "dpapi_encryption_and_current_user_acl": "passed",
+    "inherited_appsettings_sanitized": "passed; configuracion propia en ejecucion",
+    "loopback_only": "passed; puertos de prueba 5274 y 5297",
+    "react_html_and_anonymous_me_401": "passed",
+    "repeated_start_same_process_ids": "passed",
+    "foreign_ports_rejected": "passed; servicios originales preservados",
+    "windows_powershell_5_start": "passed",
+    "portal_login_me_bodegas_stock": "HTTP 200",
+    "kpi_picking_september_2026": "HTTP 200",
+    "kpi_recepcion_september_2026": "HTTP 200",
+    "inventory_owner_pagination": "401 anonimo; 403 otro propietario; 400 pagina invalida; filtro de bodega OK",
+    "inventory_totals": "6513 filas en cuatro paginas; disponible 542124 igual SQL"
+  },
+  "not_validated": ["winget en PC limpia", "credenciales SQL diferentes de Windows", "PC o conectividad de Carol", "esquema y permisos de otra BD", "acceso LAN o productivo"],
+  "database_mutations": "Ninguna migracion, provisionamiento ni transaccion operativa ejecutada por este flujo"
+}

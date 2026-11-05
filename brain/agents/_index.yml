@@ -63,6 +63,14 @@ domains:
       paths: [DAL/Transacciones/Stock_Reservado/, WMS.DALCore/Reserva_Stock/]
       tareas_tipicas: [no-reserva-mi3, diff-paridad-legacy-core, performance-reserva, log-reserva, fefo-vencimiento]
 
+  - slug: domain-portal-runtime
+    archivo: brain/agents/domain-portal-runtime.yml
+    proposito: Instalar y configurar TOMWMSReact y WMSWebAPI en otra PC Windows
+    triggers:
+      keywords: [instala el portal, configura de forma interactiva, portal CAREMED, portal React, PC de Carol, instalar portal, Start-Portal]
+      paths: [tools/portal/, TOMWMSReact/]
+      tareas_tipicas: [portal-instalacion, portal-configuracion-bd, portal-arranque-local]
+
   - slug: domain-portal
     archivo: brain/agents/domain-portal.yml
     proposito: WikiHub Portal tomwms-wikidev.replit.app (catalogo humano + API REST)

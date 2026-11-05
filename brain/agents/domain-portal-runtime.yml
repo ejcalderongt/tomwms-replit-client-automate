@@ -1,0 +1,23 @@
+---
+#EJC20261105_PORTAL_PORTABLE
+slug: domain-portal-runtime
+nombre: Portal operativo React en Windows
+cliente: CAREMED
+ramas_afectadas: [wms-brain, codex/portal-portable-20261105]
+runbook: brain/runbooks/portal-react-instalacion-otra-pc.md
+entrada: tools/portal/Install-Portal.ps1
+configuracion: tools/portal/Configure-Portal.ps1
+arranque: tools/portal/Start-Portal.ps1
+parada: tools/portal/Stop-Portal.ps1
+versiones: tools/portal/release.json
+disparadores:
+  - instala el portal y configura de forma interactiva
+  - instala el portal en la PC de Carol
+  - levantar CAREMED React
+reglas:
+  - Resolver requisitos y continuar con instalacion y pruebas; pedir solo datos realmente faltantes.
+  - La conexion se pregunta en destino y se cifra con DPAPI del usuario Windows local.
+  - No copiar BD ni claves de Erik, no aplicar DDL ni provisionar usuarios sin alcance explicito.
+  - Instalar aparte del BOF y HH existentes, no cambiar sus ramas ni configuracion.
+  - WikiHub/Replit y MI3 no forman parte de este despliegue.
+  - No prometer acceso LAN; el arranque portable usa exclusivamente loopback.

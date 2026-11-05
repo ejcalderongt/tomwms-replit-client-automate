@@ -6,6 +6,20 @@ Este checkout contiene el conocimiento WMS. Resolver todas las rutas desde
 la carpeta de este archivo; las rutas absolutas antiguas de Replit, OpenClaw
 y `source/repos/wms-brain` son referencias históricas y deben comprobarse.
 
+## Portal React en otra PC
+
+<!-- #EJC20261105_PORTAL_PORTABLE -->
+Ante «instala el portal y configura de forma interactiva», «portal en la PC de
+Carol» o «levantar CAREMED», leer primero
+`brain/runbooks/portal-react-instalacion-otra-pc.md` y ejecutar el flujo de
+`tools/portal/`. Detectar requisitos, instalar los faltantes, preguntar servidor,
+base y tipo de autenticación y continuar hasta las comprobaciones de acceso.
+Usar el usuario Windows de destino para guardar la conexión privada.
+No confundir este portal operativo con WikiHub/Replit ni con MI3 legacy.
+No copiar credenciales, bases, IP ni rutas de Erik. No aplicar DDL ni crear
+usuarios SQL/portal automáticamente. El runbook detalla cómo resolver un
+esquema o usuario faltante sin modificar una base productiva por inferencia.
+
 ## Gobierno
 
 - Las instrucciones del usuario tienen precedencia.

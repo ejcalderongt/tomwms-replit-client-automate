@@ -1,0 +1,5 @@
+{
+  "tag": "EJC20261105_PORTAL_PORTABLE",
+  "react": {"url": "https://dev.azure.com/ejcalderon0892/TOMWMSReact/_git/TOMWMSReact", "branch": "codex/portal-portable-20261105", "commit": "05586ceaa25686f55250b7c7fd6489fa3fc427ec"},
+  "api": {"url": "https://dev.azure.com/ejcalderon0892/TOMWMS_BOF/_git/TOMWMS_BOF", "branch": "codex/portal-portable-20261105", "commit": "aeace3d300c556ef441fbd3dbcd78a947c83b914"}
+}

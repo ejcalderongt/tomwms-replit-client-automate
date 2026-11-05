@@ -8,6 +8,9 @@ ramas_afectadas: [dev_2023_estable, dev_2028_merge]
 
 ## Índice
 
+<!-- #EJC20261105_PORTAL_PORTABLE -->
+Portal React en otra PC o PC de Carol: [instalación interactiva y arranque](../runbooks/portal-react-instalacion-otra-pc.md).
+
 | Sección | Path | Estado |
 |---|---|---|
 | F1: Inventario de código | `code-deep-flow/INVENTARIO-STATS.md` | DONE |
