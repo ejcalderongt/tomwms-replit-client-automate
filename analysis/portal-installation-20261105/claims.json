@@ -1,0 +1,63 @@
+[
+  {
+    "kind": "fact",
+    "statement": "El flujo portable se construyo desde las revisiones fijadas y se valido en una instalacion separada en la estacion de Erik: conexion Windows, arranque, login, inventario y KPIs. La PC de Carol, SQL auth y winget en PC limpia no se validaron.",
+    "sources": [
+      {
+        "content_state": "committed",
+        "path": "tools/portal/Install-Portal.ps1",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "6fbe5d4b18c7abb558440f7a3c8c02a726c11ab8af69ecf3a02f1ae06fd98e6f"
+      },
+      {
+        "content_state": "committed",
+        "path": "tools/portal/Configure-Portal.ps1",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "5638c803fe86d54f5a00a4886fee380e7b9d2f988740d9415524fb5717f09fba"
+      },
+      {
+        "content_state": "committed",
+        "path": "tools/portal/Start-Portal.ps1",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "efd3adfebc8456237e13713c8df23144093a01526725a0502899c708d3940cc4"
+      },
+      {
+        "content_state": "committed",
+        "path": "tools/portal/Stop-Portal.ps1",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "65756e7ce6036ef31dead9ec937583ce59f40ce53573e1bb24b67015c11c35d3"
+      },
+      {
+        "content_state": "committed",
+        "path": "tools/portal/Test-Portal.ps1",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "394db66791679862153565716520274d19281d56bbc162c4966e7e4b6e143bcc"
+      },
+      {
+        "content_state": "committed",
+        "path": "tools/portal/release.json",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "6e1d14068f10c5b98747f212840704b6d7a5c282ad3fc85ab6d96fc97d11a383"
+      },
+      {
+        "content_state": "committed",
+        "path": "analysis/portal-installation-20261105/validation.json",
+        "commit": "f49a9ac676efa820ae6edd1e6cb09f9a34494f8b",
+        "sha256": "8cc5c00cf28be3c9eedd64a83a253655c72a754e950926eda49d3a4ac77c96d9"
+      }
+    ],
+    "branches": [
+      "wms-brain",
+      "codex/portal-portable-20261105"
+    ],
+    "id": "EJC20261105-PORTAL-PORTABLE-LOCAL",
+    "status": "verified",
+    "validated_at": "2026-11-05",
+    "validation_evidence": [
+      "analysis/portal-installation-20261105/validation.json"
+    ],
+    "clients": [
+      "CAREMED"
+    ]
+  }
+]
