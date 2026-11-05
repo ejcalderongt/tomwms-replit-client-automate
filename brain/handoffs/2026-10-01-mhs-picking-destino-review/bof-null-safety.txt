@@ -1,0 +1,1308 @@
+check: null_safety
+file: TOMIMSV4/DAL/Transacciones/Despacho/clsLnTrans_despacho_enc_Partial.vb
+  27:                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  120:        GetSingle = Nothing
+  148:                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  155:                            If lRow("IdPiloto") IsNot DBNull.Value AndAlso lRow("IdPiloto") IsNot Nothing Then
+  160:                            If lRow("IdVehiculo") IsNot DBNull.Value AndAlso lRow("IdVehiculo") IsNot Nothing Then
+  165:                            If lRow("IdRuta") IsNot DBNull.Value AndAlso lRow("IdRuta") IsNot Nothing Then
+  198:        GetSingle = Nothing
+  221:                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  228:                    If lRow("IdPiloto") IsNot DBNull.Value AndAlso lRow("IdPiloto") IsNot Nothing Then
+  233:                    If lRow("IdVehiculo") IsNot DBNull.Value AndAlso lRow("IdVehiculo") IsNot Nothing Then
+  240:                    If lRow("IdRuta") IsNot DBNull.Value AndAlso lRow("IdRuta") IsNot Nothing Then
+  355:        If pBeDespachoEnc Is Nothing OrElse pBeDespachoEnc.ListaPedidos Is Nothing OrElse pBeDespachoEnc.ListaDetalle Is Nothing Then
+  362:            If vPedidoEnc Is Nothing Then Continue For
+  371:            If vPedidoEnc.Detalle Is Nothing Then Continue For
+  374:                If vPedidoDet Is Nothing Then Continue For
+  375:                If vPedidoDet.ListaPickingUbic Is Nothing Then Continue For
+  378:                    If vPickingPayload Is Nothing Then Continue For
+  381:                    Dim vDetalleSolicitado = pBeDespachoEnc.ListaDetalle.Where(Function(x) x IsNot Nothing AndAlso x.IdPickingUbic = vPickingPayload.IdPickingUbic).ToList()
+  477:                        If vValor Is Nothing OrElse vValor Is DBNull.Value Then
+  494:                        If vValor Is Nothing OrElse vValor Is DBNull.Value Then
+  599:                    If vValor IsNot Nothing AndAlso vValor IsNot DBNull.Value Then Throw New Exception("#EJC20260717_DSP_GUARD_PRECOMMIT: stock_res debió eliminarse. IdStockRes=" & vPar.Key)
+  600:                ElseIf vValor Is Nothing OrElse vValor Is DBNull.Value OrElse Math.Abs(CDbl(vValor) - vEsperado) > vTolerancia Then
+  611:                If vValor IsNot Nothing AndAlso vValor IsNot DBNull.Value AndAlso CDbl(vValor) >= vPar.Value - vTolerancia Then
+  621:        If pBeDespachoEnc Is Nothing Then Return "Despacho=NULL"
+  627:        If pBeDespachoEnc.ListaPedidos IsNot Nothing Then
+  630:        If pBeDespachoEnc.ListaDetalle IsNot Nothing Then
+  645:        Dim lTransaction As SqlTransaction = Nothing
+  730:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  734:            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+  776:        Guardar_Despacho_Stock = False : OutBePedidoCompraEnc = Nothing
+  787:            If BeDespachoEnc IsNot Nothing Then
+  806:                    If Not BeInterfaceConfig Is Nothing Then
+  942:                            If BePedidoCompraEnc.ObjPoliza Is Nothing Then
+  1081:                                    If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  1086:                                        If Not lPickingUbicVerificados Is Nothing Then
+  1142:                                                        If Not BeINavBarraPalletOriginal Is Nothing Then
+  1176:                                                            If Not BeProductoPallet Is Nothing Then
+  1203:                                                                If Not BeStock Is Nothing Then
+  1255:                            If Not OutBePedidoCompraEnc Is Nothing Then
+  1598:            If Not BeDespachoEnc Is Nothing Then
+  1617:                        If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  1631:                            If Not lPickingUbicVerificados Is Nothing Then
+  1730:                                    If Not lDespachoDetByPedidoDet Is Nothing Then
+  1736:                                            If Not BeDespachoDet Is Nothing Then
+  1845:            If Not BeDespachoEnc Is Nothing Then
+  1847:                If Not BeDespachoEnc.ListaPedidos Is Nothing Then
+  1865:                                    If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  1871:                                        If Not lPickingUbicVerificados Is Nothing Then
+  2134:            If Not BePedidoEnc Is Nothing Then
+  2140:                    If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  2145:                        If Not lPickingUbicVerificados Is Nothing AndAlso lPickingUbicVerificados.Count > 0 Then
+  2299:                    If Not BePedidoDet Is Nothing Then
+  2479:        Get_Single_By_IdPedidoEnc = Nothing
+  2514:                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  2544:        Get_Single_By_IdPedidoEnc = Nothing
+  2575:                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  2623:            If Not BePedidoEnc Is Nothing Then
+  2629:                    If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  2634:                        If Not lPickingUbicVerificados Is Nothing Then
+  2648:                                    If Not BePedidoEnc.TipoPedido Is Nothing Then
+  2713:                                        If BeProductoEstado Is Nothing Then
+  2751:                                        If Not BeTransOCDet Is Nothing Then
+  3003:            If Not BePedidoEnc Is Nothing Then
+  3011:                    If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  3016:                        If Not lPickingUbicVerificados Is Nothing Then
+  3245:            If Not BePedidoEnc Is Nothing Then
+  3272:                    If Not BeProducto Is Nothing Then
+  3284:                        BePedidoDetWMS.Variant_Code = Nothing
+  3328:            If Not BePedidoEnc Is Nothing Then
+  3354:                    If Not BeProducto Is Nothing Then
+  3366:                        BePedidoDetWMS.Variant_Code = Nothing
+  3401:        Get_All_By_IdPedidoEnc = Nothing
+  3435:                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  3475:                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  3498:                                                           Optional ByVal pConection As SqlConnection = Nothing,
+  3499:                                                           Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  3502:        Dim lTransaction As SqlTransaction = Nothing
+  3513:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  3534:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  3538:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  3539:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  3546:                                              Optional ByVal pConection As SqlConnection = Nothing,
+  3547:                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  3550:        Dim lTransaction As SqlTransaction = Nothing
+  3561:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  3582:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  3586:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  3587:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  3593:        ' Validamos que el valor no sea Nothing ni vacío
+  3623:            If ObjEnc IsNot Nothing Then
+  3631:                        If Not BePedidoDet.ListaPickingUbic Is Nothing Then
+  3644:                            If Not lPickingUbicVerificados Is Nothing Then
+  3708:                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  3760:            If Not pListBePickingUbic Is Nothing Then
+  3790:            If BeDespachoEnc.ListaDetalle IsNot Nothing AndAlso BeDespachoEnc.ListaDetalle.Count > 0 Then
+  3926:            If ObjEnc IsNot Nothing Then
+
+file: TOMIMSV4/DAL/Transacciones/Picking/Trans_Picking_Stock/clsLnTrans_picking_ubic_stock.vb
+  59:    Public Shared Function Insertar(ByRef oBeTrans_picking_ubic_stock As clsBeTrans_picking_ubic_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  62:        Dim lTransaction As SqlTransaction = Nothing
+  114:            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+  176:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  180:            If Not lConnection Is Nothing Then lConnection.Dispose()
+  181:            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+  186:    Public Shared Function Actualizar(ByRef oBeTrans_picking_ubic_stock As clsBeTrans_picking_ubic_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  189:        Dim lTransaction As SqlTransaction = Nothing
+  239:            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+  301:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  305:            If Not lConnection Is Nothing Then lConnection.Dispose()
+  306:            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+  312:    Public Shared Function Eliminar(ByRef oBeTrans_picking_ubic_stock As clsBeTrans_picking_ubic_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  315:        Dim lTransaction As SqlTransaction = Nothing
+  324:            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+  344:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  348:            If Not lConnection Is Nothing Then lConnection.Dispose()
+  349:            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+  357:        Dim lTransaction As SqlTransaction = Nothing
+  373:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  377:            If Not lConnection Is Nothing Then lConnection.Dispose()
+  378:            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+  453:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  490:                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  516:        Get_Single_By_IdPickingUbic_And_IdStock = Nothing
+  544:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  571:        Get_Single_By_IdPickingUbic_And_IdStock = Nothing
+  593:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+file: TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic.vb
+  176:                                    Optional ByVal pConection As SqlConnection = Nothing,
+  177:                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  180:        Dim lTransaction As SqlTransaction = Nothing
+  182:        Dim esRemota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  275:                cmd.Parameters.Add(New SqlParameter("@LOTE", If(oBeTrans_picking_ubic.Lote Is Nothing, DBNull.Value, oBeTrans_picking_ubic.Lote)))
+  276:                cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", If(oBeTrans_picking_ubic.Fecha_Vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_Vence)))
+  277:                cmd.Parameters.Add(New SqlParameter("@FECHA_MINIMA", If(oBeTrans_picking_ubic.Fecha_minima = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_minima)))
+  278:                cmd.Parameters.Add(New SqlParameter("@SERIAL", If(oBeTrans_picking_ubic.Serial = Nothing, DBNull.Value, oBeTrans_picking_ubic.Serial)))
+  292:                cmd.Parameters.Add(New SqlParameter("@FECHA_REAL_VENCE", If(oBeTrans_picking_ubic.Fecha_real_vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_real_vence)))
+  293:                cmd.Parameters.Add(New SqlParameter("@NO_PACKING", If(oBeTrans_picking_ubic.No_packing Is Nothing, DBNull.Value, oBeTrans_picking_ubic.No_packing)))
+  294:                cmd.Parameters.Add(New SqlParameter("@FECHA_PICKING", If(oBeTrans_picking_ubic.Fecha_picking = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_picking)))
+  295:                cmd.Parameters.Add(New SqlParameter("@FECHA_VERIFICADO", If(oBeTrans_picking_ubic.Fecha_verificado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_verificado)))
+  296:                cmd.Parameters.Add(New SqlParameter("@FECHA_PACKING", If(oBeTrans_picking_ubic.Fecha_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_packing)))
+  297:                cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHADO", If(oBeTrans_picking_ubic.Fecha_despachado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_despachado)))
+  325:                If newIdObj Is Nothing OrElse newIdObj Is DBNull.Value Then
+  337:            If Not esRemota AndAlso lTransaction IsNot Nothing Then
+  344:                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  345:                If lConnection IsNot Nothing Then
+  353:    Public Shared Function Actualizar(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  356:        Dim lTransaction As SqlTransaction = Nothing
+  417:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  441:            cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeTrans_picking_ubic.Lote Is Nothing, DBNull.Value, oBeTrans_picking_ubic.Lote)))
+  442:            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeTrans_picking_ubic.Fecha_Vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_Vence)))
+  443:            cmd.Parameters.Add(New SqlParameter("@FECHA_MINIMA", IIf(oBeTrans_picking_ubic.Fecha_minima = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_minima)))
+  444:            cmd.Parameters.Add(New SqlParameter("@SERIAL", IIf(oBeTrans_picking_ubic.Serial = Nothing, DBNull.Value, oBeTrans_picking_ubic.Serial)))
+  456:            cmd.Parameters.Add(New SqlParameter("@FECHA_REAL_VENCE", IIf(oBeTrans_picking_ubic.Fecha_real_vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_real_vence)))
+  457:            cmd.Parameters.Add(New SqlParameter("@NO_PACKING", IIf(oBeTrans_picking_ubic.No_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.No_packing)))
+  458:            cmd.Parameters.Add(New SqlParameter("@FECHA_PICKING", IIf(oBeTrans_picking_ubic.Fecha_picking = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_picking)))
+  459:            cmd.Parameters.Add(New SqlParameter("@FECHA_VERIFICADO", IIf(oBeTrans_picking_ubic.Fecha_verificado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_verificado)))
+  460:            cmd.Parameters.Add(New SqlParameter("@FECHA_PACKING", IIf(oBeTrans_picking_ubic.Fecha_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_packing)))
+  461:            cmd.Parameters.Add(New SqlParameter("@FECHA_DESPACHADO", IIf(oBeTrans_picking_ubic.Fecha_despachado = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_despachado)))
+  491:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  494:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  498:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  499:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  504:    Public Shared Function Eliminar(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  507:        Dim lTransaction As SqlTransaction = Nothing
+  514:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  537:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  540:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  544:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  545:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  554:                                              Optional ByVal pConection As SqlConnection = Nothing,
+  555:                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  558:        Dim lTransaction As SqlTransaction = Nothing
+  568:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  594:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  597:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  601:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  602:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  608:    Public Shared Function GetSingle(ByRef pBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional pConnection As SqlConnection = Nothing, Optional pTransaction As SqlTransaction = Nothing) As Boolean
+  611:        Dim lTransaction As SqlTransaction = Nothing
+  620:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  649:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  653:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  663:                                              Optional ByVal pConection As SqlConnection = Nothing,
+  664:                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  667:        Dim lTransaction As SqlTransaction = Nothing
+  678:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  705:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  708:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  712:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  713:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  719:                                                          Optional ByVal pConection As SqlConnection = Nothing,
+  720:                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  723:        Dim lTransaction As SqlTransaction = Nothing
+  735:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  762:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  765:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  769:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  770:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  776:                                                     Optional ByVal pConection As SqlConnection = Nothing,
+  777:                                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  780:        Dim lTransaction As SqlTransaction = Nothing
+  804:                    Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  842:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  845:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  849:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  850:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  856:                                                          Optional ByVal pConection As SqlConnection = Nothing,
+  857:                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  860:        Dim lTransaction As SqlTransaction = Nothing
+  876:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  905:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  908:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  912:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  913:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  923:                                                                Optional ByVal pConection As SqlConnection = Nothing,
+  924:                                                                Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  927:        Dim lTransaction As SqlTransaction = Nothing
+  941:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  966:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  969:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  973:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  974:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  980:                                                        Optional ByVal pConection As SqlConnection = Nothing,
+  981:                                                        Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  984:        Dim lTransaction As SqlTransaction = Nothing
+  1019:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  1036:            cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeTrans_picking_ubic.Lote Is Nothing, DBNull.Value, oBeTrans_picking_ubic.Lote)))
+  1037:            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeTrans_picking_ubic.Fecha_Vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_Vence)))
+  1038:            cmd.Parameters.Add(New SqlParameter("@FECHA_MINIMA", IIf(oBeTrans_picking_ubic.Fecha_minima = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_minima)))
+  1039:            cmd.Parameters.Add(New SqlParameter("@SERIAL", IIf(oBeTrans_picking_ubic.Serial = Nothing, DBNull.Value, oBeTrans_picking_ubic.Serial)))
+  1050:            cmd.Parameters.Add(New SqlParameter("@FECHA_REAL_VENCE", IIf(oBeTrans_picking_ubic.Fecha_real_vence = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_real_vence)))
+  1051:            cmd.Parameters.Add(New SqlParameter("@FECHA_PICKING", IIf(oBeTrans_picking_ubic.Fecha_picking = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_picking)))
+  1070:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1073:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1077:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  1078:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  1084:                                                   Optional ByVal pConection As SqlConnection = Nothing,
+  1085:                                                   Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  1088:        Dim lTransaction As SqlTransaction = Nothing
+  1098:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  1111:            cmd.Parameters.Add(New SqlParameter("@FECHA_PACKING", IIf(oBeTrans_picking_ubic.Fecha_packing = Nothing, DBNull.Value, oBeTrans_picking_ubic.Fecha_packing)))
+  1122:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1125:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1129:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  1130:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  1136:                                                     Optional ByVal pConection As SqlConnection = Nothing,
+  1137:                                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  1140:        Dim lTransaction As SqlTransaction = Nothing
+  1155:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  1181:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1184:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1188:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  1189:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  1194:    Public Shared Function Actualizar_No_Verificado(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  1197:        Dim lTransaction As SqlTransaction = Nothing
+  1211:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  1238:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1241:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  1245:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  1246:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  1256:        Dim lTransaction As SqlTransaction = Nothing
+  1302:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  1305:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  1317:        Get_Diferencias_Despacho_Packing = Nothing
+  1320:        Dim lTransaction As SqlTransaction = Nothing
+  1426:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  1429:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+
+file: TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb
+  299:                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  397:        Get_All_PickingUbic_Despachado_By_IdPedidoDet = Nothing
+  399:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  413:            If Not BeBodega Is Nothing Then
+  443:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  506:        Get_All_PickingUbic_Despachado_By_IdPedidoDet = Nothing
+  508:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  532:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  584:        Get_All_PickingUbic_By_IdPedidoDet = Nothing
+  586:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  598:            If Not BeBodega Is Nothing Then
+  622:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  692:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  755:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  846:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  944:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1028:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1113:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1177:            If Not BeBodega Is Nothing Then
+  1200:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1297:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1402:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1433:        Dim oReturn As clsBeTrans_picking_ubic = Nothing
+  1452:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1510:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1589:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1685:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1757:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1841:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1898:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  1925:        Get_All_IdStocks_PickingUbic_By_IdPickingUbic = Nothing
+  1927:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  1953:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  2007:                                              Optional ByVal pConection As SqlConnection = Nothing,
+  2008:                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As String
+  2010:        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  2012:        Dim lTransaction As SqlTransaction = Nothing
+  2051:            If Not Es_Transaccion_Remota Then If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  2055:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  2056:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  2066:        If pedido Is Nothing OrElse pedido.TipoPedido Is Nothing OrElse Not pedido.TipoPedido.Requiere_Ubicacion_Destino_Picking Then Return
+  2080:        If pedido.Cliente Is Nothing OrElse pedido.Cliente.IdUbicacionVirtual <= 0 Then
+  2118:                                              Optional ByVal pConnection As SqlConnection = Nothing,
+  2119:                                              Optional ByVal pTransaction As SqlTransaction = Nothing) As String
+  2121:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  2123:        Dim lTransaction As SqlTransaction = Nothing
+  2182:                If Not BeBodegaMuelle Is Nothing Then
+  2183:                    If Not BeBodegaMuelle Is Nothing Then
+  2241:            If BeStockActual Is Nothing OrElse BeStockActual.IdStock = 0 Then
+  2512:            If Not Es_Transaccion_Remota Then If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  2516:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  2527:                                                                 Optional ByVal pConnection As SqlConnection = Nothing,
+  2528:                                                                 Optional ByVal pTransaction As SqlTransaction = Nothing) As String
+  2530:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  2532:        Dim lTransaction As SqlTransaction = Nothing
+  2562:                If Not BeBodegaMuelle Is Nothing Then
+  2563:                    If Not BeBodegaMuelle Is Nothing Then
+  2709:                If BeStockActual IsNot Nothing Then
+  2778:                            If Not BeStockResActual Is Nothing Then
+  2831:                            If Not BeStockResActual Is Nothing Then
+  2906:                If BeStockActual IsNot Nothing Then
+  2931:                    If Not BeStockResActual Is Nothing Then
+  2988:                    If Not BeStockResActual Is Nothing Then
+  3045:            If Not Es_Transaccion_Remota Then If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  3049:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  3061:                                                                Optional ByVal pConnection As SqlConnection = Nothing,
+  3062:                                                                Optional ByVal pTransaction As SqlTransaction = Nothing) As String
+  3064:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  3066:        Dim lTransaction As SqlTransaction = Nothing
+  3096:                If Not BeBodegaMuelle Is Nothing Then
+  3097:                    If Not BeBodegaMuelle Is Nothing Then
+  3126:            If BeOnTablePickingUbic IsNot Nothing Then
+  3134:                If BeStockActual IsNot Nothing Then
+  3299:                                If Not BeStockResActual Is Nothing Then
+  3351:                                If Not BeStockResActual Is Nothing Then
+  3441:                            If Not BeStockResActual Is Nothing Then
+  3498:                            If Not BeStockResActual Is Nothing Then
+  3577:            If Not Es_Transaccion_Remota Then If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  3581:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  3588:                                                                   Optional ByRef pCantidad As Double = Nothing,
+  3589:                                                                   Optional ByRef pPeso As Double = Nothing,
+  3590:                                                                   Optional ByRef pConection As SqlConnection = Nothing,
+  3591:                                                                   Optional ByRef pTransaction As SqlTransaction = Nothing) As String
+  3593:        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  3595:        Dim lTransaction As SqlTransaction = Nothing
+  3660:                If BeStock Is Nothing AndAlso oBeTrans_picking_ubic.IdStock > 0 Then
+  3673:                If BeStock Is Nothing Then
+  3713:            If Not Es_Transaccion_Remota AndAlso Not lTransaction Is Nothing Then lTransaction.Rollback()
+  3717:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  3718:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  3760:                                                 Optional ByVal pConnection As SqlConnection = Nothing,
+  3761:                                                 Optional ByVal pTransaction As SqlTransaction = Nothing)
+  3763:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  3765:        Dim ltransaction As SqlTransaction = Nothing
+  3847:                            If BePickingDet Is Nothing Then
+  3909:                            If BeStockResActual Is Nothing Then
+  3915:                            If BeStockOriginal Is Nothing Then
+  4198:                If lPickingUbicPendientes IsNot Nothing AndAlso lPickingUbicPendientes.Count = 0 Then
+  4225:            If Not Es_Transaccion_Remota AndAlso ltransaction IsNot Nothing Then ltransaction.Rollback()
+  4230:                If ltransaction IsNot Nothing Then ltransaction.Dispose()
+  4231:                If lConnection IsNot Nothing Then lConnection.Dispose()
+  4242:                                                      Optional ByVal pConection As SqlConnection = Nothing,
+  4243:                                                      Optional ByVal pTransaction As SqlTransaction = Nothing)
+  4245:        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  4248:        Dim ltransaction As SqlTransaction = Nothing
+  4276:                    If BeStock IsNot Nothing Then
+  4316:            If Not Es_Transaccion_Remota AndAlso Not ltransaction Is Nothing Then ltransaction.Rollback()
+  4320:            If ltransaction IsNot Nothing Then ltransaction.Dispose()
+  4321:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  4328:                                                                          Optional ByVal pConnection As SqlConnection = Nothing,
+  4329:                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  4333:        If pBePickingUbic Is Nothing Then Return 0
+  4340:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  4342:        Dim lTransaction As SqlTransaction = Nothing
+  4403:            If BeStockActual Is Nothing Then
+  4433:            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then lTransaction.Rollback()
+  4437:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  4445:                                               Optional ByVal pConnection As SqlConnection = Nothing,
+  4446:                                               Optional ByVal pTransaction As SqlTransaction = Nothing)
+  4448:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  4450:        Dim lTransaction As SqlTransaction = Nothing
+  4543:            If Not BeTransPickingUbicStockExistente Is Nothing Then
+  4550:                If Not BeStockActualPickeado Is Nothing AndAlso Not vPickingParcial Then
+  4573:                If Not BeMovimientoPicking Is Nothing Then
+  4601:            If Not Es_Transaccion_Remota AndAlso lTransaction IsNot Nothing Then lTransaction.Rollback()
+  4612:                                                 Optional ByVal pConnection As SqlConnection = Nothing,
+  4613:                                                 Optional ByVal pTransaction As SqlTransaction = Nothing)
+  4615:        Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  4617:        Dim ltransaction As SqlTransaction = Nothing
+  4632:            If pBePickingUbic Is Nothing Then
+  4684:            If Not BeTransPickingUbicStockExistente Is Nothing Then
+  4704:                If Not BeMovimientoPicking Is Nothing Then
+  4717:            If Not Es_Transaccion_Remota Then If Not ltransaction Is Nothing Then ltransaction.Rollback()
+  4728:                                                   Optional ByVal pConection As SqlConnection = Nothing,
+  4729:                                                   Optional ByVal pTransaction As SqlTransaction = Nothing)
+  4733:        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  4735:        Dim ltrans As SqlTransaction = Nothing
+  4769:            If Not Es_Transaccion_Remota Then If Not ltrans Is Nothing Then ltrans.Rollback()
+  5064:            If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
+  5140:            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+  5154:            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+  5248:            If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
+  5309:            If pListBePickingUbic Is Nothing OrElse pListBePickingUbic.Count = 0 Then
+  5320:            If lBeStockAReservar Is Nothing OrElse lBeStockAReservar.Count = 0 Then
+  5379:    '    Dim lTransaction As SqlTransaction = Nothing
+  5394:    '        If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
+  5465:    '        If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  5469:    '        If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  5484:                                                Optional ByRef pConnection As SqlConnection = Nothing,
+  5485:                                                Optional ByRef pTransaction As SqlTransaction = Nothing,
+  5487:                                                Optional ByVal pHostSolicita As String = Nothing) As String
+  5490:        Dim lTransaction As SqlTransaction = Nothing
+  5491:        Dim Es_Transaccion_Remota As Boolean = Not (pConnection Is Nothing AndAlso pTransaction Is Nothing)
+  5546:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  5550:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  5568:                                              Optional ByRef pConnection As SqlConnection = Nothing,
+  5569:                                              Optional ByRef pTransaction As SqlTransaction = Nothing,
+  5573:        Dim lTransaction As SqlTransaction = Nothing
+  5574:        Dim Es_Transaccion_Remota As Boolean = Not (pConnection Is Nothing AndAlso pTransaction Is Nothing)
+  5600:            If beBodega IsNot Nothing Then
+  5636:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  5640:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  5660:            If vOperadorBodega IsNot Nothing AndAlso vOperadorBodega.IdOperadorBodega > 0 Then
+  5699:                                                         Optional ByRef pConnection As SqlConnection = Nothing,
+  5700:                                                         Optional ByRef pTransaction As SqlTransaction = Nothing) As Boolean
+  5806:                beTareaHH.IdMuelle = Nothing
+  5895:                                                                               Nothing,
+  5900:                                                                               Nothing,
+  5901:                                                                               Nothing,
+  5955:        Dim lTransaction As SqlTransaction = Nothing
+  5966:            If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
+  6056:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  6060:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  6082:        Dim lTransaction As SqlTransaction = Nothing
+  6094:            If lBeStockAReservar IsNot Nothing AndAlso lBeStockAReservar.Count > 0 Then
+  6156:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  6160:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  6212:        Dim lTransaction As SqlTransaction = Nothing
+  6214:        Get_All_PickingUbic_By_IdPickingEnc_Tipo = Nothing
+  6238:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  6261:        Dim lTransaction As SqlTransaction = Nothing
+  6343:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  6367:        Dim tmpBeListPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
+  6376:            pBePickingUbicList = Nothing
+  6391:                If BeBodega IsNot Nothing Then
+  6509:        Dim lTransaction As SqlTransaction = Nothing
+  6634:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  6655:        Dim lTransaction As SqlTransaction = Nothing
+  6718:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  6722:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  6771:                If lBeStockResAux IsNot Nothing Then
+  6855:            If Not data Is Nothing Then
+  6880:        Dim lTransaction As SqlTransaction = Nothing
+  6922:                        If lBeStockResAux IsNot Nothing Then
+  6985:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  6989:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  7005:        Dim lTransaction As SqlTransaction = Nothing
+  7051:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  7055:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  7188:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7291:                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7371:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7407:                                                 Optional pConnection As SqlConnection = Nothing,
+  7408:                                                 Optional pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_ubic
+  7411:        Dim lTransaction As SqlTransaction = Nothing
+  7414:        Get_Single_By_IdStock = Nothing
+  7420:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  7446:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  7450:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  7481:            'If Not BeBodega Is Nothing Then
+  7514:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7572:        Dim lTransaction As SqlTransaction = Nothing
+  7578:            If Not pListaPickingUbic Is Nothing Then
+  7593:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  7645:        Get_All_PickingUbic_By_IdStockRes_And_IdStock = Nothing
+  7647:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  7667:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7696:        Get_All_PickingUbic_Despachado_By_IdPedidoEnc = Nothing
+  7698:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  7720:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7769:    Public Shared Function InsertarTmp(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  7772:        Dim lTransaction As SqlTransaction = Nothing
+  7786:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  7819:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  7822:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  7826:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  7827:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  7837:        Get_All_PickingUbic_By_IdPedidoDet = Nothing
+  7839:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  7863:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  7914:                                                Optional pConnection As SqlConnection = Nothing,
+  7915:                                                Optional pTransaction As SqlTransaction = Nothing) As Boolean
+  7918:        Dim lTransaction As SqlTransaction = Nothing
+  7927:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  7948:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  7952:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  7987:                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+  8020:        Get_Reporte_Resumen_Pickings_By_Fechas = Nothing
+  8083:        Get_Reporte_Detalle_Pedidos_By_Fechas = Nothing
+  8151:    Public Shared Function Actualizar_IdStock(ByRef oBeTrans_picking_ubic As clsBeTrans_picking_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  8154:        Dim lTransaction As SqlTransaction = Nothing
+  8165:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  8189:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8192:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8196:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  8197:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  8250:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8306:                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  8360:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8431:            If Not BeBodega Is Nothing Then
+  8456:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8547:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8595:                                                 Optional ByVal pConection As SqlConnection = Nothing,
+  8596:                                                 Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  8599:        Dim lTransaction As SqlTransaction = Nothing
+  8600:        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  8628:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8631:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8636:                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  8637:                If lConnection IsNot Nothing Then lConnection.Dispose()
+  8646:                                                                     Optional pConnection As SqlConnection = Nothing,
+  8647:                                                                     Optional pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_ubic
+  8650:        Dim lTransaction As SqlTransaction = Nothing
+  8653:        Get_Single_By_IdStockRes_And_IdPickingEnc = Nothing
+  8660:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  8687:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8691:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  8697:                                                                Optional pConnection As SqlConnection = Nothing,
+  8698:                                                                Optional pTransaction As SqlTransaction = Nothing) As String
+  8701:        Dim lTransaction As SqlTransaction = Nothing
+  8712:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  8735:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  8739:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  8748:        Get_All_PickingUbic_Despachado_By_NoDocExterno = Nothing
+  8750:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  8768:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8827:        Get_All_PickingUbic_By_IdPedidoEnc = Nothing
+  8829:        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+  8840:            If Not BeBodega Is Nothing Then
+  8863:                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+  8925:        Dim tmpBeListPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
+  8932:            pBePickingUbicList = Nothing
+  9011:                                                                   Optional pConnection As SqlConnection = Nothing,
+  9012:                                                                   Optional pTransaction As SqlTransaction = Nothing) As String
+  9015:        Dim lTransaction As SqlTransaction = Nothing
+  9026:            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+  9049:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  9053:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+
+file: TOMIMSV4/DAL/Transacciones/TipoPedido/clsLnTrans_pe_tipo.vb
+  60:    Public Shared Function Insertar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  63:        Dim lTransaction As SqlTransaction = Nothing
+  111:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  168:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  171:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  175:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  176:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  181:    Public Shared Function Actualizar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  184:        Dim lTransaction As SqlTransaction = Nothing
+  233:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  291:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  294:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  298:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  299:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  305:    Public Shared Function Eliminar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  308:        Dim lTransaction As SqlTransaction = Nothing
+  314:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  336:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  339:            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+  343:            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+  344:            If lConnection IsNot Nothing Then lConnection.Dispose()
+  349:    Public Shared Function EliminarTodos(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+  352:        Dim lTransaction As SqlTransaction = Nothing
+  358:            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+  483:        Dim lTransaction As SqlTransaction = Nothing
+  506:            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+  536:                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+  563:        If pTipo Is Nothing OrElse Not pTipo.Requiere_Ubicacion_Destino_Picking Then Return
+
+file: TOMIMSV4/Entity/Transacciones/Pedido/TipoPedido/clsBeTrans_pe_tipo.vb
+
+file: TOMIMSV4/Entity/Transacciones/Picking/Trans_Picking_Stock/clsBeTrans_picking_ubic_stock.vb
+
+file: TOMIMSV4/Entity/Transacciones/Picking/Trans_Picking_Ubic/clsBeTrans_picking_ubic_Partial.vb
+
+file: TOMIMSV4/TOMIMSV4/Mantenimientos/Tipos_Documento/Salida/frmTipoDocumentoSalida.vb
+  74:                    If OpcionesMenu IsNot Nothing Then
+  298:                        If InvokeListarProductoTipo IsNot Nothing Then
+  326:            If InvokeListarProductoTipo IsNot Nothing Then
+  345:        '            If InvokeListarProductoTipo IsNot Nothing Then
+  354:        '            If InvokeListarProductoTipo IsNot Nothing Then
+  385:            If Not fila Is Nothing Then
+  391:            If lBeProductoEstado IsNot Nothing AndAlso lBeProductoEstado.Count > 0 Then
+
+file: WSHHRN/TOMHHWS.asmx.vb
+  74:        If value IsNot Nothing Then
+  82:            If value IsNot Nothing Then
+  88:            If value IsNot Nothing Then
+  91:                             Nothing,
+  106:        If pRow Is Nothing OrElse Not pRow.Table.Columns.Contains(pColumna) Then
+  112:        If value Is Nothing OrElse value Is DBNull.Value Then
+  179:        If pRow Is Nothing OrElse pColumnas Is Nothing Then
+  185:            If pRow.Table IsNot Nothing AndAlso pRow.Table.Columns.Contains(columna) Then
+  187:                If value IsNot Nothing AndAlso value IsNot DBNull.Value Then
+  216:        If pRow Is Nothing OrElse pUbicacion <= 0 Then
+  235:        If pRow Is Nothing Then
+  259:        Dim dtSalida As DataTable = If(pDT IsNot Nothing, pDT.Clone(), New DataTable("DetalleGondola"))
+  260:        If pDT Is Nothing OrElse pDT.Rows.Count = 0 Then
+  265:            If row Is Nothing Then Continue For
+  351:                                  If menuRol Is Nothing Then
+  597:            If lPedidos Is Nothing OrElse lPedidos.Count = 0 Then Return
+  604:                If ped Is Nothing Then Continue For
+  639:        Get_Empresa_By_Codigo_And_Clave = Nothing
+  655:            If mArch IsNot Nothing Then
+  683:        Get_List_Empresas_For_HH = Nothing
+  700:            If mArch IsNot Nothing Then
+  728:        Get_Bodegas_By_IdEmpresa_For_HH = Nothing
+  745:            If mArch IsNot Nothing Then
+  773:        Android_Get_Bodegas_By_IdEmpresa = Nothing
+  790:            If mArch IsNot Nothing Then
+  818:        Get_Productos_By_IdBodega_For_HH = Nothing
+  833:            If mArch IsNot Nothing Then
+  861:        Get_Propietarios_By_IdBodega_For_HH = Nothing
+  878:            If mArch IsNot Nothing Then
+  906:        Get_All_Reglas_Recepcion_For_HH = Nothing
+  924:            If mArch IsNot Nothing Then
+  952:        Get_Clientes_By_IdBodega_For_HH = Nothing
+  969:            If mArch IsNot Nothing Then
+  997:        Get_Proveedores_By_Bodega_For_HH = Nothing
+  1014:            If mArch IsNot Nothing Then
+  1042:        Get_All_By_IdBodega_HH_Filtro = Nothing
+  1057:            If mArch IsNot Nothing Then
+  1085:        Get_Motivo_Anulacion_By_IdBodega_For_HH = Nothing
+  1100:            If mArch IsNot Nothing Then
+  1128:        Get_Motivos_Anulacion_By_IdBodega_For_HH = Nothing
+  1143:            If mArch IsNot Nothing Then
+  1171:        Get_Motivos_Devolucion_By_IdBodega_For_HH = Nothing
+  1186:            If mArch IsNot Nothing Then
+  1214:        Get_Motivos_Devolucion_Bodega_By_IdBodega_For_HH = Nothing
+  1229:            If mArch IsNot Nothing Then
+  1257:        Get_Motivos_Ubicacion_For_HH = Nothing
+  1274:            If mArch IsNot Nothing Then
+  1316:        Get_Operadores_By_IdBodega_For_HH = Nothing
+  1323:            If Not lReturnlIst Is Nothing Then
+  1338:            If mArch IsNot Nothing Then
+  1366:        Get_Menu_Rol_Op_For_HH = Nothing
+  1381:            If mArch IsNot Nothing Then
+  1424:            If mArch IsNot Nothing Then
+  1459:            If dtSesion Is Nothing OrElse dtSesion.Rows.Count = 0 Then
+  1534:        GetSis_estado_tarea_hh = Nothing
+  1551:            If mArch IsNot Nothing Then
+  1579:        GetTarea_HH = Nothing
+  1596:            If mArch IsNot Nothing Then
+  1624:        Get_Tipo_Recepcion = Nothing
+  1642:            If mArch IsNot Nothing Then
+  1670:        Get_Recepciones_By_IdBodega = Nothing
+  1686:            If mArch IsNot Nothing Then
+  1733:            If mArch IsNot Nothing Then
+  1761:        Get_Menu_By_IdRolOperador_For_HH = Nothing
+  1776:            If mArch IsNot Nothing Then
+  1804:        Get_All_Recepciones_For_HH_By_IdBodega = Nothing
+  1820:            If mArch IsNot Nothing Then
+  1848:        Get_All_Recepciones_For_HH_By_IdBodega_By_Operador = Nothing
+  1864:            If mArch IsNot Nothing Then
+  1921:        Get_All_Rec_Ciegas_For_HH_By_IdBodega = Nothing
+  1936:            If mArch IsNot Nothing Then
+  1964:        Get_All_Trans_Re_Tr_For_HH = Nothing
+  1981:            If mArch IsNot Nothing Then
+  2009:        Get_All_Empresas_For_HH = Nothing
+  2028:        Get_All_Filtro_TransOCTipo_For_HH = Nothing
+  2045:            If mArch IsNot Nothing Then
+  2073:        GetSingleRec = Nothing
+  2089:            If mArch IsNot Nothing Then
+  2191:        Get_BeTransOcEnc_By_IdOrdenCompraEnc = Nothing
+  2206:            If mArch IsNot Nothing Then
+  2251:            If mArch IsNot Nothing Then
+  2279:        Get_BeRolOPerador_By_IdRolOperador = Nothing
+  2294:            If mArch IsNot Nothing Then
+  2322:        Get_All_Impresora_By_IdEmpresa_And_IdBodega = Nothing
+  2337:            If mArch IsNot Nothing Then
+  2365:        Get_All_Impresora_By_IdEmpresa_And_IdBodega_Dt = Nothing
+  2380:            If mArch IsNot Nothing Then
+  2408:        Get_BeTransReEnc_By_IdREcepcionEnc_For_HH = Nothing
+  2424:            If mArch IsNot Nothing Then
+  2452:        Get_Producto_By_IdProductoBodega = Nothing
+  2467:            If mArch IsNot Nothing Then
+  2513:            If mArch IsNot Nothing Then
+  2542:        Get_Estados_By_IdPropietario_And_IdBodegaHH = Nothing
+  2559:            If mArch IsNot Nothing Then
+  2587:        Get_Estados_By_IdPropietario_And_IdBodega = Nothing
+  2602:            If mArch IsNot Nothing Then
+  2636:            ConvertirListasVaciasANothing(resultado)
+  2660:            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+  2687:        Get_Estados_By_IdPropietario = Nothing
+  2704:            If mArch IsNot Nothing Then
+  2748:            If mArch IsNot Nothing Then
+  2776:        Get_Single_By_IdEstado = Nothing
+  2791:            If mArch IsNot Nothing Then
+  2834:            If mArch IsNot Nothing Then
+  2877:            If mArch IsNot Nothing Then
+  2920:            If mArch IsNot Nothing Then
+  2964:            If mArch IsNot Nothing Then
+  3007:            If mArch IsNot Nothing Then
+  3049:            If mArch IsNot Nothing Then
+  3091:            If mArch IsNot Nothing Then
+  3134:            If mArch IsNot Nothing Then
+  3178:            If mArch IsNot Nothing Then
+  3207:        ' Get_BeProducto_By_Codigo_For_HH = Nothing
+  3214:            ConvertirListasVaciasANothing(producto)
+  3237:            If mArch IsNot Nothing Then
+  3290:            If producto Is Nothing Then
+  3304:                If ptc IsNot Nothing Then
+  3340:            If mArch IsNot Nothing Then
+  3379:        Get_List_Product_By_CodigoBarra_By_Picking = Nothing
+  3394:            If mArch IsNot Nothing Then
+  3422:        Get_BeProducto_By_Codigo_Or_Licencia = Nothing
+  3437:            If mArch IsNot Nothing Then
+  3467:        Get_List_Product_By_CodigoBarra_By_OrdenCompraEnc = Nothing
+  3482:            If mArch IsNot Nothing Then
+  3513:        Get_BeProducto_By_LP_For_HH = Nothing
+  3527:            If Not pBeStockRec Is Nothing OrElse Not BeProducto Is Nothing Then
+  3540:            If mArch IsNot Nothing Then
+  3584:            If mArch IsNot Nothing Then
+  3655:            If pRecEnc IsNot Nothing Then vIdRecepcionEnc = pRecEnc.IdRecepcionEnc
+  3661:            If mArch IsNot Nothing Then
+  3727:            If mArch IsNot Nothing Then
+  3793:            If pRecEnc IsNot Nothing Then vIdRecepcionEnc = pRecEnc.IdRecepcionEnc
+  3799:            If mArch IsNot Nothing Then
+  3830:        Get_Detalle_By_IdRecepcionDet_HH = Nothing
+  3845:            If mArch IsNot Nothing Then
+  3874:        Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodega = Nothing
+  3891:            If mArch IsNot Nothing Then
+  3920:        Get_All_By_IDPickingEnc = Nothing
+  3937:            If mArch IsNot Nothing Then
+  3965:    '    Get_All_By_IDPickingEnc = Nothing
+  3977:    '        If mArch IsNot Nothing Then
+  4014:        Get_All_PickingUbic_By_IdPickingEnc = Nothing
+  4033:            If mArch IsNot Nothing Then
+  4071:        Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion = Nothing
+  4089:            If mArch IsNot Nothing Then
+  4127:        Get_All_PickingUbic_By_IdPickingEnc_Tipo = Nothing
+  4146:            If mArch IsNot Nothing Then
+  4175:        Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc = Nothing
+  4190:            If mArch IsNot Nothing Then
+  4218:        Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDet = Nothing
+  4234:            If mArch IsNot Nothing Then
+  4262:        Get_Stock_Rec_By_IdRecepcionEnc = Nothing
+  4278:            If mArch IsNot Nothing Then
+  4308:        Get_All_By_Barra_Proveedor_Cliente = Nothing
+  4323:            If mArch IsNot Nothing Then
+  4351:        Get_Detalle_By_IdRecepcionEnc = Nothing
+  4367:            If mArch IsNot Nothing Then
+  4422:            If mArch IsNot Nothing Then
+  4465:            If mArch IsNot Nothing Then
+  4507:            If mArch IsNot Nothing Then
+  4535:        Get_All_Codigos_Barra_By_IdProducto = Nothing
+  4550:            If mArch IsNot Nothing Then
+  4591:            If mArch IsNot Nothing Then
+  4632:            If mArch IsNot Nothing Then
+  4677:            If mArch IsNot Nothing Then
+  4706:        Get_Detalle_OC_By_IdOrdenCompraEnc_HH = Nothing
+  4723:            If mArch IsNot Nothing Then
+  4766:            If mArch IsNot Nothing Then
+  4811:            If mArch IsNot Nothing Then
+  4861:            If mArch IsNot Nothing Then
+  4937:            If mArch IsNot Nothing Then
+  5009:            If mArch IsNot Nothing Then
+  5083:            If mArch IsNot Nothing Then
+  5152:    '        If mArch IsNot Nothing Then
+  5221:            If mArch IsNot Nothing Then
+  5288:            If mArch IsNot Nothing Then
+  5361:            If mArch IsNot Nothing Then
+  5438:            If mArch IsNot Nothing Then
+  5519:                                                  If(BePickingUbic IsNot Nothing, BePickingUbic.IdPickingUbic, 0)))
+  5541:            If mArch IsNot Nothing Then
+  5589:            If pBeStockRes Is Nothing OrElse pBeStockRes.IdPropietarioBodega <= 0 Then
+  5639:            If mArch IsNot Nothing Then
+  5672:        Reemplazo_Automatico = Nothing
+  5726:            If mArch IsNot Nothing Then
+  5770:            If mArch IsNot Nothing Then
+  5863:            If mArch IsNot Nothing Then
+  5905:            If mArch IsNot Nothing Then
+  5947:            If mArch IsNot Nothing Then
+  5989:            If mArch IsNot Nothing Then
+  6032:            If mArch IsNot Nothing Then
+  6077:            If mArch IsNot Nothing Then
+  6105:        Get_All_Producto_Imagen = Nothing
+  6119:            If mArch IsNot Nothing Then
+  6145:        Get_All_Imagen_Recepcion = Nothing
+  6161:            If mArch IsNot Nothing Then
+  6187:        Get_All_Imagen_Verificacion = Nothing
+  6205:            If mArch IsNot Nothing Then
+  6234:        Get_All_Reemplazo_By_IdPedidoDet = Nothing
+  6258:            If mArch IsNot Nothing Then
+  6303:            If mArch IsNot Nothing Then
+  6346:            If mArch IsNot Nothing Then
+  6391:            If mArch IsNot Nothing Then
+  6420:        Get_All_Cambio_Ubic_By_IdBodega_And_IdOperador = Nothing
+  6440:            If mArch IsNot Nothing Then
+  6468:        Get_All_By_IdTransUbicEnc_And_IdOperador = Nothing
+  6483:            If mArch IsNot Nothing Then
+  6539:            Return Nothing 'retorno en éxito
+  6549:            If mArch IsNot Nothing Then
+  6566:            Return Nothing
+  6600:            Return Nothing
+  6610:            If mArch IsNot Nothing Then
+  6625:            Return Nothing
+  6642:            If pMovimiento Is Nothing Then
+  6676:            If mArch IsNot Nothing Then
+  6719:            If mArch IsNot Nothing Then
+  6788:            If mArch IsNot Nothing Then
+  6837:            If mArch IsNot Nothing Then
+  6915:            If mArch IsNot Nothing Then
+  6972:            If mArch IsNot Nothing Then
+  7007:            If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
+  7012:                If stockRes Is Nothing OrElse stockRes.Movimiento Is Nothing Then
+  7051:            If mArch IsNot Nothing Then
+  7098:            If mArch IsNot Nothing Then
+  7142:            If mArch IsNot Nothing Then
+  7192:            If mArch IsNot Nothing Then
+  7231:            If mArch IsNot Nothing Then
+  7285:            If mArch IsNot Nothing Then
+  7301:            Return Nothing
+  7313:        ' Get_Productos_By_IdUbicacion_Existencias = Nothing
+  7324:                ConvertirListasVaciasANothing(prod)
+  7343:            If mArch IsNot Nothing Then
+  7373:        Get_Productos_By_IdUbicacion_Existencias = Nothing
+  7389:            If mArch IsNot Nothing Then
+  7417:        Get_Productos_By_StockResCI = Nothing
+  7432:            If mArch IsNot Nothing Then
+  7467:        'Get_Productos_By_IdUbicacion_And_LicPlate = Nothing
+  7479:                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock IsNot Nothing Then
+  7480:                    If prod.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+  7481:                        prod.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+  7485:                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking IsNot Nothing Then
+  7486:                    prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking = Nothing
+  7508:            If mArch IsNot Nothing Then
+  7536:        Get_Productos_By_IdUbicacion_And_LicPlate = Nothing
+  7563:            If mArch IsNot Nothing Then
+  7592:        Get_Stock_Por_Producto_Ubicacion = Nothing
+  7609:            If mArch IsNot Nothing Then
+  7641:        Get_Stock_Por_Producto_Ubicacion_CI = Nothing
+  7662:            If mArch IsNot Nothing Then
+  7691:        Get_Stock_Por_Pallet = Nothing
+  7706:            If mArch IsNot Nothing Then
+  7735:        Get_Stock_Por_Pallet_CI = Nothing
+  7750:            If mArch IsNot Nothing Then
+  7782:        Get_Stock_Por_Pallet_By_IdUbicacion_CI = Nothing
+  7801:            If mArch IsNot Nothing Then
+  7831:        Get_All_Stock_Especifico_HH = Nothing
+  7848:            If mArch IsNot Nothing Then
+  7878:        Get_All_Stock_Especifico_By_IdPedidoDet = Nothing
+  7898:            If mArch IsNot Nothing Then
+  7927:        Get_All_Stock_Res_By_IdPedidoDet = Nothing
+  7944:            If mArch IsNot Nothing Then
+  8017:        Get_All_Inventario_By_IdBodega_And_IdOperador = Nothing
+  8033:            If mArch IsNot Nothing Then
+  8061:        Get_All_Inventario_Tramos_By_IdTarea = Nothing
+  8076:            If mArch IsNot Nothing Then
+  8127:            If mArch IsNot Nothing Then
+  8154:        Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProducto = Nothing
+  8167:            If mArch IsNot Nothing Then
+  8198:        Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEnc = Nothing
+  8216:            If mArch IsNot Nothing Then
+  8244:        InventarioInicialVerGet = Nothing
+  8261:            If mArch IsNot Nothing Then
+  8289:        InventarioInicialDetGet = Nothing
+  8305:            If mArch IsNot Nothing Then
+  8344:            If mArch IsNot Nothing Then
+  8395:            If mArch IsNot Nothing Then
+  8437:            If mArch IsNot Nothing Then
+  8479:            If mArch IsNot Nothing Then
+  8507:        Get_BeProducto_By_IdProducto = Nothing
+  8526:            If mArch IsNot Nothing Then
+  8571:            If mArch IsNot Nothing Then
+  8613:            If mArch IsNot Nothing Then
+  8643:        Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramo = Nothing
+  8661:            If mArch IsNot Nothing Then
+  8691:        UbicacionVecina = Nothing
+  8711:            If mArch IsNot Nothing Then
+  8758:            If mArch IsNot Nothing Then
+  8806:            If mArch IsNot Nothing Then
+  8848:            If mArch IsNot Nothing Then
+  8925:            If IsNothing(ubic) Then Return 0
+  8938:            If IsNothing(items) Then Return 0
+  8999:        Inventario_Ciclico_ReConteos = Nothing
+  9012:            If mArch IsNot Nothing Then
+  9040:        InventarioCiclicoListaConteo = Nothing
+  9053:            If mArch IsNot Nothing Then
+  9081:        Inventario_Ciclico_Listar_Conteo = Nothing
+  9096:            If mArch IsNot Nothing Then
+  9139:            If mArch IsNot Nothing Then
+  9168:        Get_Stock_Congelado = Nothing
+  9182:            If mArch IsNot Nothing Then
+  9210:        InventarioCiclicoPaletConteo = Nothing
+  9225:            If mArch IsNot Nothing Then
+  9266:            If mArch IsNot Nothing Then
+  9321:            If mArch IsNot Nothing Then
+  9375:            If mArch IsNot Nothing Then
+  9418:            If mArch IsNot Nothing Then
+  9464:            If mArch IsNot Nothing Then
+  9512:            If mArch IsNot Nothing Then
+  9563:            If mArch IsNot Nothing Then
+  9591:        GetSingleProductoTarima = Nothing
+  9606:            If mArch IsNot Nothing Then
+  9634:        Get_Licenses_Plates_By_IdRecepcionEnc = Nothing
+  9650:            If mArch IsNot Nothing Then
+  9698:            If mArch IsNot Nothing Then
+  9753:            If Not BeTransOCEnc Is Nothing Then
+  9787:            If mArch IsNot Nothing Then
+  9841:            If mArch IsNot Nothing Then
+  9901:            If mArch IsNot Nothing Then
+  9930:        Get_Picking_By_IdPickingEnc = Nothing
+  9947:            If mArch IsNot Nothing Then
+  9977:        Get_Tipo_Etiqueta_By_IdTipoEtiqueta = Nothing
+  9992:            If mArch IsNot Nothing Then
+  10027:                pBeStock_res = Nothing
+  10039:            If mArch IsNot Nothing Then
+  10067:        Get_Single_Trans_Picking_Ubic = Nothing
+  10077:                Get_Single_Trans_Picking_Ubic = Nothing
+  10091:            If mArch IsNot Nothing Then
+  10152:            If mArch IsNot Nothing Then
+  10186:        Dim oBeTrans_picking_ubic As clsBeTrans_picking_ubic = Nothing
+  10187:        Dim vIdPickingEnc As Integer = If(pListaPicking IsNot Nothing AndAlso pListaPicking.Count > 0, pListaPicking(0).IdPickingEnc, 0)
+  10247:            If mArch IsNot Nothing Then
+  10323:            If mArch IsNot Nothing Then
+  10389:            If mArch IsNot Nothing Then
+  10439:            If mArch IsNot Nothing Then
+  10486:            If mArch IsNot Nothing Then
+  10546:            If mArch IsNot Nothing Then
+  10574:        If flujo Is Nothing OrElse flujo.Count = 0 Then
+  10620:            If mArch IsNot Nothing Then
+  10665:            If mArch IsNot Nothing Then
+  10708:            If mArch IsNot Nothing Then
+  10736:        Get_All_Pedidos_A_Verificar_By_IdBodega = Nothing
+  10753:            If mArch IsNot Nothing Then
+  10781:        Get_Pedido_A_Verificar_By_LP = Nothing
+  10798:            If mArch IsNot Nothing Then
+  10826:        Get_Detalle_By_IdPedidoEnc = Nothing
+  10843:            If mArch IsNot Nothing Then
+  10870:        Get_Detalle_Verificacion_Consolidada = Nothing
+  10887:            If mArch IsNot Nothing Then
+  10918:        Get_Detalle_Verificacion_Consolidada_LFV = Nothing
+  10937:            If mArch IsNot Nothing Then
+  10966:        Get_Reemplazo_Producto_By_IdPedidoEnc = Nothing
+  10983:            If mArch IsNot Nothing Then
+  11011:        Get_Single_By_IdPedidoEnc = Nothing
+  11028:            If mArch IsNot Nothing Then
+  11073:            If mArch IsNot Nothing Then
+  11135:            If mArch IsNot Nothing Then
+  11183:            If mArch IsNot Nothing Then
+  11211:        Get_All_Barras_Pallet_By_IdRecepcionEnc = Nothing
+  11227:            If mArch IsNot Nothing Then
+  11256:        Get_Inventario_Teorico_By_Codigo = Nothing
+  11271:            If mArch IsNot Nothing Then
+  11314:            If mArch IsNot Nothing Then
+  11344:        Get_Pallet_Ingreso_By_Barra = Nothing
+  11361:            If mArch IsNot Nothing Then
+  11391:        Get_All_Pallet_Ingreso_By_Barra = Nothing
+  11408:            If mArch IsNot Nothing Then
+  11436:        Get_Configuracion_Barra_Pallet_By_IdConfiguracion = Nothing
+  11451:            If mArch IsNot Nothing Then
+  11494:            If mArch IsNot Nothing Then
+  11544:            If mArch IsNot Nothing Then
+  11591:            If mArch IsNot Nothing Then
+  11634:            If mArch IsNot Nothing Then
+  11677:            If mArch IsNot Nothing Then
+  11720:            If mArch IsNot Nothing Then
+  11763:            If mArch IsNot Nothing Then
+  11806:            If mArch IsNot Nothing Then
+  11836:        'Get_Stock_By_Lic_Plate = Nothing
+  11848:            ConvertirListasVaciasANothing(productos)
+  11864:                If items IsNot Nothing AndAlso items.Type = JTokenType.Array Then
+  11866:                        If item("RellenadoPorUbicacionDePicking") IsNot Nothing AndAlso item("RellenadoPorUbicacionDePicking").Type = JTokenType.Array Then
+  11867:                            item("RellenadoPorUbicacionDePicking") = Nothing
+  11886:                Dim countItems As Integer = If(ObjProducto IsNot Nothing, ObjProducto.Count, 0)
+  11904:            If mArch IsNot Nothing Then
+  11928:        Get_Stock_By_Lic_Plate = Nothing
+  11946:            If mArch IsNot Nothing Then
+  11975:    '    Get_Stock_By_Lic_Plate_And_IdUbicacion = Nothing
+  11992:    '        If mArch IsNot Nothing Then
+  12022:        Get_Stock_By_Lic_Plate_And_Codigo = Nothing
+  12039:            If mArch IsNot Nothing Then
+  12072:        Get_All_Productos_By_ImpresionBarras = Nothing
+  12092:            If mArch IsNot Nothing Then
+  12120:        Get_All_Propietarios_By_IdEmpresa = Nothing
+  12135:            If mArch IsNot Nothing Then
+  12163:        Get_All_Clasificacion_By_IdPropietario = Nothing
+  12178:            If mArch IsNot Nothing Then
+  12231:            If mArch IsNot Nothing Then
+  12274:            If mArch IsNot Nothing Then
+  12309:            If BeNavConfigEnc IsNot Nothing Then
+  12324:            If mArch IsNot Nothing Then
+  12359:            If BeNavConfigEnc IsNot Nothing Then
+  12375:            If mArch IsNot Nothing Then
+  12418:            If mArch IsNot Nothing Then
+  12461:            If mArch IsNot Nothing Then
+  12489:        Get_BeImpresora_By_IdImpresora = Nothing
+  12504:            If mArch IsNot Nothing Then
+  12547:            If mArch IsNot Nothing Then
+  12590:            If mArch IsNot Nothing Then
+  12620:        Android_Get_All_Empresas = Nothing
+  12637:            If mArch IsNot Nothing Then
+  12705:            If mArch IsNot Nothing Then
+  12748:            If mArch IsNot Nothing Then
+  12793:            If mArch IsNot Nothing Then
+  12829:        ' ml_get_ubicacion_sugerida = Nothing
+  12843:            If listaUbicaciones Is Nothing Then
+  12875:            If mArch IsNot Nothing Then
+  12899:        If listaUbicaciones IsNot Nothing Then
+  12903:                If ubicacion.lUbicacionesVacias IsNot Nothing Then
+  12969:                            " items=" & If(listaUbicaciones IsNot Nothing, listaUbicaciones.Count, 0))
+  12975:                            " jsonLen=" & If(json IsNot Nothing, json.Length, 0))
+  12999:            If mArch IsNot Nothing Then
+  13026:        ml_get_ubicacion_sugerida = Nothing
+  13053:            If mArch IsNot Nothing Then
+  13093:            If pBePickingUbicList IsNot Nothing Then
+  13115:            If mArch IsNot Nothing Then
+  13188:            If mArch IsNot Nothing Then
+  13258:            If mArch IsNot Nothing Then
+  13321:            If mArch IsNot Nothing Then
+  13350:        Get_Familia_Inv = Nothing
+  13364:            If mArch IsNot Nothing Then
+  13392:        Get_Clasificacion_Inv = Nothing
+  13406:            If mArch IsNot Nothing Then
+  13434:        Get_Marca_Inv = Nothing
+  13449:            If mArch IsNot Nothing Then
+  13477:        Get_Tipo_Inv = Nothing
+  13492:            If mArch IsNot Nothing Then
+  13520:        Get_UMbas_Inv = Nothing
+  13535:            If mArch IsNot Nothing Then
+  13585:            If mArch IsNot Nothing Then
+  13629:            If mArch IsNot Nothing Then
+  13690:            If mArch IsNot Nothing Then
+  13733:            If mArch IsNot Nothing Then
+  13781:            If mArch IsNot Nothing Then
+  13825:            If mArch IsNot Nothing Then
+  13868:            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+  13941:            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+  13971:            If mArch IsNot Nothing Then
+  14013:            If mArch IsNot Nothing Then
+  14080:            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+  14112:            If Not mArch Is Nothing Then
+  14155:            If Not mArch Is Nothing Then
+  14199:            If Not mArch Is Nothing Then
+  14243:            If Not mArch Is Nothing Then
+  14323:            If mArch IsNot Nothing Then
+  14364:            If Not mArch Is Nothing Then
+  14412:        Push_Recepcion_To_NAV_For_BYB = Nothing
+  14505:                    If Not BeINavTransaccionesPush Is Nothing Then
+  14538:                If Not mArch Is Nothing Then
+  14561:                Return Nothing
+  14616:            If Not UbicarAlmacen Is Nothing Then
+  14642:                    If Not BeINavTransaccionesPush Is Nothing Then
+  14684:                If Not mArch Is Nothing Then
+  14746:            If Not mArch Is Nothing Then
+  14851:        If Not NavPedCompra Is Nothing Then
+  14852:            If Not NavPedCompra.PurchLines Is Nothing Then
+  14862:            If Not RecepcionAlmacen Is Nothing Then
+  14930:                If Not BeINavTransaccionesPush Is Nothing Then
+  14967:                If Not mArch Is Nothing Then
+  15063:            If Not NavDevolucionVenta Is Nothing Then
+  15065:                If Not NavDevolucionVenta.SalesLines Is Nothing Then
+  15073:                    If Not RecepcionAlmacen Is Nothing Then
+  15120:                        If Not BeINavTransaccionesPush Is Nothing Then
+  15164:                If Not mArch Is Nothing Then
+  15275:        If Not NavPedTransferencia Is Nothing Then
+  15276:            If Not NavPedTransferencia.TransferLines Is Nothing Then
+  15286:            If Not RecepcionAlmacen Is Nothing Then
+  15368:                If Not BeINavTransaccionesPush Is Nothing Then
+  15403:                If Not mArch Is Nothing Then
+  15469:            If Not RecepcionAlmacen Is Nothing Then
+  15507:                If Not RecepcionAlmacen Is Nothing Then
+  15509:                    If Not RecepcionAlmacen.WhseReceiptLines Is Nothing Then
+  15545:            If Not mArch Is Nothing Then
+  15607:            If Not mArch Is Nothing Then
+  15635:        Android_Get_All_Versiones = Nothing
+  15652:            If mArch IsNot Nothing Then
+  15681:        Get_Resoluciones_Lp_By_IdOperador_And_IdBodega = Nothing
+  15705:            If mArch IsNot Nothing Then
+  15734:        Get_All_Picking_Para_Empaque_By_IdBodega = Nothing
+  15751:            If mArch IsNot Nothing Then
+  15794:        Get_All_PickingUbic_By_PickingEnc = Nothing
+  15811:            If mArch IsNot Nothing Then
+  15839:        Get_All_PickingUbic_By_PickingEnc_Group = Nothing
+  15856:            If mArch IsNot Nothing Then
+  15903:            If mArch IsNot Nothing Then
+  15947:            If flujo Is Nothing OrElse flujo.Count = 0 Then
+  15973:            If mArch IsNot Nothing Then
+  16031:            If mArch IsNot Nothing Then
+  16060:        Get_All_Packing_By_IdPicking = Nothing
+  16076:            If mArch IsNot Nothing Then
+  16122:            If mArch IsNot Nothing Then
+  16169:            If mArch IsNot Nothing Then
+  16203:        Get_Ubicacion_Recepcion_By_Codigo_Barra_And_IdBodega = Nothing
+  16219:            If mArch IsNot Nothing Then
+  16259:            If Not BeTransOcDetLote Is Nothing Then
+  16271:            If mArch IsNot Nothing Then
+  16306:        Get_ListOrdenCompraEnc_By_Codigo_Producto = Nothing
+  16314:            If Not Lista Is Nothing Then
+  16329:            If mArch IsNot Nothing Then
+  16380:            If mArch IsNot Nothing Then
+  16411:        Get_Inventario_Teorico_By_Codigo_O_Licencia = Nothing
+  16426:            If mArch IsNot Nothing Then
+  16469:            If mArch IsNot Nothing Then
+  16499:        Get_All_Codigos_By_IdInventario_And_IdBodega = Nothing
+  16514:            If mArch IsNot Nothing Then
+  16547:        Get_CantidadInvConteo_By_Producto = Nothing
+  16562:            If mArch IsNot Nothing Then
+  16596:        Get_CantidadInvVer_By_Producto = Nothing
+  16609:            If mArch IsNot Nothing Then
+  16640:        Get_InventarioItem_By_Licencia = Nothing
+  16653:            If mArch IsNot Nothing Then
+  16703:            If mArch IsNot Nothing Then
+  16734:        Actualizar_Ubicaciones_Reservadas_By_IdStock = Nothing
+  16753:            If mArch IsNot Nothing Then
+  16812:            If mArch IsNot Nothing Then
+  16844:        Actualizar_Ubicaciones_Reservadas_By_StockRes = Nothing
+  16863:            If mArch IsNot Nothing Then
+  16892:        Existe_Conteo = Nothing
+  16907:            If mArch IsNot Nothing Then
+  16938:        Existe_Verificacion = Nothing
+  16953:            If mArch IsNot Nothing Then
+  16984:        Valida_Unico_Producto = Nothing
+  16999:            If mArch IsNot Nothing Then
+  17031:        Crear_Linea_Unidades = Nothing
+  17048:            If mArch IsNot Nothing Then
+  17093:            If mArch IsNot Nothing Then
+  17121:        Get_Codigo_By_CodigoBarra = Nothing
+  17135:            If mArch IsNot Nothing Then
+  17165:        Get_Codigo_By_CodigoBarra_By_Picking = Nothing
+  17181:            If mArch IsNot Nothing Then
+  17211:        Get_Lista_Codigos_By_CodigoBarra_By_Picking = Nothing
+  17227:            If mArch IsNot Nothing Then
+  17273:            If mArch IsNot Nothing Then
+  17305:        Get_Stock_Res_By_Codigo_And_IdUbicacion = Nothing
+  17323:            If mArch IsNot Nothing Then
+  17354:        Get_All_Products_For_Reabastecimiento = Nothing
+  17370:            If mArch IsNot Nothing Then
+  17417:            If BeRecDet Is Nothing Then Throw New Exception("Guardar_Recepcion_S: BeRecDet vacío.")
+  17418:            If pListRecDetParam Is Nothing Then pListRecDetParam = New List(Of clsBeTrans_re_det_parametros)
+  17419:            If pListStockRecSer Is Nothing Then pListStockRecSer = New List(Of clsBeStock_se_rec)
+  17420:            If pListStockRec Is Nothing Then pListStockRec = New List(Of clsBeStock_rec)
+  17421:            If pListProductoPallet Is Nothing Then pListProductoPallet = New List(Of clsBeProducto_pallet)
+  17428:                Dim lpDet As String = If(BeRecDet IsNot Nothing, BeRecDet.Lic_plate, "")
+  17429:                Dim lpCount As Integer = If(pListStockRec IsNot Nothing, pListStockRec.Count, 0)
+  17431:                If pListStockRec IsNot Nothing AndAlso pListStockRec.Count > 0 Then
+  17448:                If lpList IsNot Nothing AndAlso lpList.Count > 0 Then
+  17496:            If mArch IsNot Nothing Then
+  17569:            If pItems Is Nothing OrElse pItems.Count = 0 Then Throw New Exception("IMPL-VAL-003: Items vacíos")
+  17652:        Get_Detalle_OC_By_IdOrdenCompraEnc_HH2 = Nothing
+  17669:            If mArch IsNot Nothing Then
+  17698:        Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH = Nothing
+  17715:            If mArch IsNot Nothing Then
+  17745:        Get_Stock_By_Lic_Plate_And_Codigo2 = Nothing
+  17764:            If mArch IsNot Nothing Then
+  17792:        Get_Stock_By_Lic_Plate2 = Nothing
+  17808:            If mArch IsNot Nothing Then
+  17859:            If Not BeTransOCEnc Is Nothing Then
+  17907:            If mArch IsNot Nothing Then
+  17958:            If mArch IsNot Nothing Then
+  18050:            If lStock Is Nothing Then
+  18100:            Dim lStock As List(Of clsBeVW_stock_res_CI) = Nothing
+  18118:            If lStock Is Nothing Then
+  18181:            If mArch IsNot Nothing Then
+  18216:        Obtener_Picking_Det_By_IdPickingEnc_And_IdPickingDet = Nothing
+  18232:            If mArch IsNot Nothing Then
+  18260:        Get_Single_StockRes_By_IdBodega_And_IdStockRes = Nothing
+  18274:            If mArch IsNot Nothing Then
+  18303:        Get_Picking_By_IdPickingEncJson = Nothing
+  18312:            If Not pBePicking Is Nothing Then
+  18354:            If mArch IsNot Nothing Then
+  18505:            If mArch IsNot Nothing Then
+  18542:    '        Dim jsonResponse As JObject = Nothing
+  18575:    '        ElseIf Not IsNothing(jsonResponse) Then
+  18611:            If mArch IsNot Nothing Then
+  18640:        Get_Tipo_Etiqueta_By_IdTipoEtiqueta_Json = Nothing
+  18669:            If mArch IsNot Nothing Then
+  18773:            If raiz Is Nothing OrElse String.IsNullOrWhiteSpace(ruta) Then Exit Sub
+  18780:                If siguiente Is Nothing OrElse siguiente.Type <> JTokenType.Object Then
+  18788:            If valorActual Is Nothing Then Exit Sub
+  18792:                If obj("items") IsNot Nothing Then Exit Sub
+  18816:            If ubicacionesSugeridas Is Nothing Then
+  18817:                clsLnLog_error_wms.Agregar_Error("Sugerir_Ubicaciones devolvió Nothing")
+  18824:            If Not ubicacionesSugeridas Is Nothing Then
+  18851:            If mArch IsNot Nothing Then
+  18892:        Get_Ubicacion_Sugerida = Nothing
+  18902:            If Not ubicacionesSugeridas Is Nothing Then
+  18929:            If mArch IsNot Nothing Then
+  18980:            If Not BeINavConfig Is Nothing Then
+  18986:                If Not BePedidoEnc Is Nothing Then
+  19024:                                If Not Detalle.ListaPickingUbic Is Nothing Then
+  19046:                                        If Not BeINavConfig Is Nothing Then
+  19119:            If mArch IsNot Nothing Then
+  19156:            If BeDespachoEnc.ListaDetalle IsNot Nothing AndAlso BeDespachoEnc.ListaDetalle.Count > 0 Then
+  19197:        Get_Value_From_Script = Nothing
+  19215:            If mArch IsNot Nothing Then
+  19243:        Get_LicenciasPacking_Cerrado = Nothing
+  19260:            If mArch IsNot Nothing Then
+  19289:        Get_Verificacion_By_Producto_And_Pedido = Nothing
+  19306:            If mArch IsNot Nothing Then
+  19342:        Dim vLista As List(Of clsBeTrans_picking_ubic) = Nothing
+  19353:            If Not vLista Is Nothing Then
+  19373:            If mArch IsNot Nothing Then
+  19401:            Dim vPedido As clsBeTrans_pe_enc = Nothing
+  19407:            If Not vPedido Is Nothing Then
+  19416:                If objPedido("Picking")("ListaPickingUbic") IsNot Nothing Then
+  19445:            If mArch IsNot Nothing Then
+  19473:        Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido = Nothing
+  19496:            If mArch IsNot Nothing Then
+  19527:        pTipoPedido = Nothing
+  19535:            If Not pTipoPedido Is Nothing Then
+  19555:            If mArch IsNot Nothing Then
+  19594:            If mArch IsNot Nothing Then
+  19622:        Get_Presentacion_Defecto_By_Producto = Nothing
+  19637:            If mArch IsNot Nothing Then
+  19665:        Get_All_By_IdUbicacion_And_LicPlate = Nothing
+  19680:            If mArch IsNot Nothing Then
+  19738:            If mArch IsNot Nothing Then
+  19789:            If mArch IsNot Nothing Then
+  19833:            If mArch IsNot Nothing Then
+  19881:            If mArch IsNot Nothing Then
+  19911:        'Get_Detalle_Rec_By_IdCompra_Licencia_ = Nothing
+  19941:            If mArch IsNot Nothing Then
+  19984:            If mArch IsNot Nothing Then
+  20027:            If pListaStockRec Is Nothing Then pListaStockRec = New List(Of clsBeStock_rec)
+  20028:            If pListaDetLote Is Nothing Then pListaDetLote = New List(Of clsBeTrans_oc_det_lote)
+  20029:            If pListaRecDet Is Nothing Then pListaRecDet = New List(Of clsBeTrans_re_det)
+  20054:            If mArch IsNot Nothing Then
+  20115:            If mArch IsNot Nothing Then
+  20140:    '    Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+  20156:    '        If mArch IsNot Nothing Then
+  20184:        Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+  20201:            If mArch IsNot Nothing Then
+  20238:            If pedido Is Nothing OrElse pedido.TipoPedido Is Nothing OrElse Not pedido.TipoPedido.Requiere_Ubicacion_Destino_Picking Then
+  20241:            If pedido.Cliente Is Nothing OrElse pedido.Cliente.IdUbicacionVirtual <= 0 Then
+  20247:            If ubicacion Is Nothing OrElse ubicacion.IdUbicacion <= 0 Then
+  20269:        Get_BeProducto_By_Codigo_For_HH = Nothing
+  20284:            If mArch IsNot Nothing Then
+  20321:            If mArch IsNot Nothing Then
+  20341:                    Return Nothing ' ✅ por consistencia (aunque End() corta la ejecución)
+  20345:            Return Nothing ' ✅ si no hay mArch, igual retornar algo
+  20359:            If BeOperador IsNot Nothing Then
+  20373:            If mArch IsNot Nothing Then
+  20453:            If mArch IsNot Nothing Then
+  20489:        Get_BeProducto_By_Codigo_Or_Sku_For_HH = Nothing
+  20497:            If mArch IsNot Nothing Then
+  20525:        Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
+  20529:            If vProducto IsNot Nothing Then
+  20538:            If mArch IsNot Nothing Then
+  20580:            If mArch IsNot Nothing Then
+  20593:                    Return Nothing
+  20607:        Guardar_Encabezado_RFID = Nothing
+  20623:            If mArch IsNot Nothing Then
+  20663:            If mArch IsNot Nothing Then
+  20706:            If mArch IsNot Nothing Then
+  20750:            If mArch IsNot Nothing Then
+  20763:                    Return Nothing
+  20786:            If lStock Is Nothing Then
+  20815:            If mArch IsNot Nothing Then
+  20832:            Return Nothing
+  20881:            Return Nothing
+  20891:            If mArch IsNot Nothing Then
+  20908:            Return Nothing
+  20953:            Return Nothing
+  20962:            If mArch IsNot Nothing Then
+  20979:            Return Nothing
+  21076:            If mArch IsNot Nothing Then
+  21102:    Public Sub ConvertirListasVaciasANothing(obj As Object)
+  21103:        If obj Is Nothing Then Return
+  21121:            Dim valor As Object = prop.GetValue(obj, Nothing)
+  21126:                If valor IsNot Nothing Then
+  21130:                        prop.SetValue(obj, Nothing, Nothing)
+  21133:                            ConvertirListasVaciasANothing(item)
+  21144:                If valor IsNot Nothing Then
+  21145:                    ConvertirListasVaciasANothing(valor)
+  21161:            If pStockResList Is Nothing OrElse pStockResList.Count = 0 Then
+  21170:            If primeraLinea.Movimiento Is Nothing Then
+  21209:            If mArch IsNot Nothing Then
+  21234:        Get_All_Inventario_RFID_By_IdBodega_And_IdOperador = Nothing
+  21251:            If mArch IsNot Nothing Then
+  21280:        Get_All_Pallet_Ingreso_By_IdOrdenCompraEnc_Det = Nothing
+  21296:            If mArch IsNot Nothing Then
+  21336:            If mArch IsNot Nothing Then
+  21377:            If mArch IsNot Nothing Then
+  21409:        Get_List_Product_By_CodigoBarra_By_Ciclico = Nothing
+  21424:            If mArch IsNot Nothing Then
+  21466:            If mArch IsNot Nothing Then
+  21495:        Get_Detalle_Ciclic_By_Gondola = Nothing
+  21510:            If mArch IsNot Nothing Then
+  21592:                            " rowsFuente=" & If(dtFuente Is Nothing, 0, dtFuente.Rows.Count) &
+  21593:                            " rowsExacta=" & If(dtExacta Is Nothing, 0, dtExacta.Rows.Count) &
+  21594:                            " gondolasUbic=" & If(dtGondolas Is Nothing, 0, dtGondolas.Rows.Count) &
+  21609:                .Total = If(dtExacta IsNot Nothing, dtExacta.Rows.Count, 0),
+  21619:            If mArch IsNot Nothing AndAlso mArch.Tipo = "WM" Then
+  15897:                                                  pIdBodega:=pTrans_packing_enc.FirstOrDefault().Idbodega,

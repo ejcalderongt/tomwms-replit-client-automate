@@ -1,9 +1,9 @@
 # Traza 005 - HH Packing implosion
 
 > Rama analizada: `dev_2028_merge`
-> Proyecto: `C:\Users\carol\StudioProjects\TOMHH2025`
+> Proyecto: `TOMHH2025`
 > Enfoque: dejar visible el camino de implosion en `frm_Packing`
-> Relacionado con: [L-060 - HH Packing implosion con trazas finas completas](C:\Users\carol\Documents\wms-brain\brain\learnings\L-060-proc-hh-packing-implosion-trazas-finas.md)
+> Relacionado con: [L-060 - HH Packing implosion con trazas finas completas](../learnings/L-060-proc-hh-packing-implosion-trazas-finas.md)
 
 ## 0. Proposito
 
@@ -55,7 +55,7 @@ La secuencia correcta para revisar un caso es:
 
 ## 4. Archivo clave
 
-- `C:\Users\carol\StudioProjects\TOMHH2025\app\src\main\java\com\dts\tom\Transacciones\Packing\frm_Packing.java`
+- `app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java`
 
 ## 5. Verificacion
 

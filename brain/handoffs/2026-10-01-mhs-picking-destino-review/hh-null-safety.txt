@@ -1,0 +1,199 @@
+check: null_safety
+file: app/src/main/java/com/dts/classes/Transacciones/Picking/clsBeTrans_picking_ubic.java
+
+file: app/src/main/java/com/dts/classes/Transacciones/TipoPedido/clsBeTrans_pe_tipo.java
+
+file: app/src/main/java/com/dts/tom/Transacciones/Picking/frm_picking_datos.java
+  250:            if (gl.autoLoad && licenciaEscaneada != null && !licenciaEscaneada.trim().isEmpty()) {
+  252:                if (gBePickingUbic.Lic_plate == null || gBePickingUbic.Lic_plate.trim().isEmpty()) {
+  304:                            if (!gBePickingUbic.Lic_plate.isEmpty() && !gBePickingUbic.Lic_plate.equals("0")) {
+  327:                            if (!gBePickingUbic.Lote.isEmpty()) {
+  337:                            if (!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()) {
+  376:        if (umBas.isEmpty()) umBas = "UNI"; // fallback seguro
+  399:                        if (!txtLicencia.getText().toString().isEmpty()) {
+  446:                        if (!txtLicencia.getText().toString().isEmpty()) {
+  487:                            if(gl.IdUbicacionMuelle==0 || gl.Codigo_Barra_Muelle.isEmpty() || gBePicking.IdBodegaMuelle==0){
+  507:                        if(gl.IdUbicacionMuelle==0 || gl.Codigo_Barra_Muelle.isEmpty() || gBePicking.IdBodegaMuelle==0){
+  557:            if (!CodigoProd.isEmpty()) {
+  629:                if (!gBePickingUbic.Lic_plate.isEmpty()) {
+  669:                            !gBeProducto.Presentaciones.items.isEmpty()) {
+  676:                        if (!filteredList.isEmpty()) {
+  710:        if (licencia.isEmpty() && gBePickingUbic.Lic_plate != null) {
+  713:        if (licencia.isEmpty()) return;
+  727:            if (!gBePickingUbic.Lic_plate.isEmpty()) {
+  753:            if (vUnidadMedida == null || vUnidadMedida.isEmpty()) {
+  760:            if (gBePickingUbic.IdPresentacion > 0 && gBeProducto != null && gBeProducto.Presentaciones != null && gBeProducto.Presentaciones.items != null && !gBeProducto.Presentaciones.items.isEmpty()) {
+  765:                        if (presentacion.Nombre != null && !presentacion.Nombre.isEmpty()) {
+  801:            if (!EstadoList.isEmpty()) cmbEstado.setSelection(0);
+  815:                if (txtLicencia.getText().toString().isEmpty()){
+  871:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+  895:            if (!txtLicencia.getText().toString().isEmpty()) {
+  943:        if(!pLP.isEmpty() && !pLP.equals("0")){
+  950:            if (!AuxList.isEmpty()) {
+  971:            if (!txtCodigoProducto.getText().toString().isEmpty()) {
+  1028:            if (valorIngresado.isEmpty()) {
+  1057:                if (valorIngresado.isEmpty()) {
+  1104:                    if (!gBePickingUbic.Lic_plate.isEmpty()){
+  1292:                }else if ((!Escaneo_Pallet) && (!gBePickingUbic.Lic_plate.isEmpty()) &&
+  1303:                    if (pCodigo.isEmpty()){
+  1315:                    if (!gBePickingUbic.Lic_plate.isEmpty()){
+  1506:                }else if ((!Escaneo_Pallet) && (!gBePickingUbic.Lic_plate.isEmpty()) &&
+  1521:                    if (pCodigo.isEmpty()){
+  1685:            if (!txtCodigoProducto.getText().toString().isEmpty()){
+  1698:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+  1713:                if (pCodigo.isEmpty()){
+  1835:            if(!gBePickingUbic.Fecha_Vence.equals("01-01-1900") && !gBePickingUbic.Fecha_Vence.isEmpty()){
+  1856:                String um = (vUnidadMedida != null && !vUnidadMedida.trim().isEmpty()) ? vUnidadMedida.trim() : "UNI";
+  1994:        if (licencia.isEmpty()) {
+  1999:        if (codigoProducto.isEmpty()) {
+  2043:            if (!sCant.isEmpty() && Double.parseDouble(sCant) != 0){
+  2125:            if (barra.isEmpty()) {
+  2189:                if (gBePickingUbic.Fecha_Vence.isEmpty()){
+  2227:            if (!txtLicencia.getText().toString().isEmpty() || !txtCodigoProducto.getText().toString().isEmpty()) {
+  2231:                        txtCantidadPick.getText().toString().isEmpty() ||
+  2232:                        txtCantidadPick.getText().toString().isEmpty()) {
+  2261:                if (trLP.getVisibility() == View.VISIBLE && txtLicencia.getText().toString().isEmpty()) {
+  2275:                if (trLP.getVisibility() == View.GONE && txtCodigoProducto.getText().toString().isEmpty()) {
+  2402:        if (usuario.isEmpty()) {
+  2406:        if (clave.isEmpty()) {
+  2821:                if (op.Codigo == null || op.Codigo.isEmpty() ||
+  2822:                    op.Clave == null || op.Clave.isEmpty()) {
+  3043:                    if (!gBePickingUbic.Lic_plate.isEmpty()) {
+  3069:                    !gBeProducto.Presentaciones.items.isEmpty()) {
+  3103:            if (!gBePickingUbic.Lic_plate.isEmpty()) {
+  3278:            if (lpickingubic != null && !lpickingubic.items.isEmpty()) {
+  3283:                    if (!lpickingubic.items.get(0).Lic_plate.isEmpty()) {
+  3406:            String um = (vUnidadMedida != null && !vUnidadMedida.trim().isEmpty()) ? vUnidadMedida.trim() : "UNI";
+  3620:                && !gBePickingUbic.Fecha_Vence.isEmpty()
+  3624:                && !gBePickingUbic.Lote.isEmpty();
+  252:                if (gBePickingUbic.Lic_plate == null || gBePickingUbic.Lic_plate.trim().isEmpty()) {
+  370:        if (txtUniBas == null || trUniBas == null || gBePickingUbic == null) {
+  707:        if (!gl.autoLoad || txtLicencia == null || gBePickingUbic == null) return;
+  753:            if (vUnidadMedida == null || vUnidadMedida.isEmpty()) {
+  1707:            if (gBeProducto==null){
+  2762:                    if (destino == null || destino.IdUbicacion <= 0) {
+  2821:                if (op.Codigo == null || op.Codigo.isEmpty() ||
+  2822:                    op.Clave == null || op.Clave.isEmpty()) {
+  3337:        if (it == null) return "item=null";
+  3348:                " T=" + (it.Codigo_Talla == null ? "" : it.Codigo_Talla) +
+  3349:                " C=" + (it.Codigo_Color == null ? "" : it.Codigo_Color) +
+  3686:        if (msg == null) return false;
+  3698:        if (msg == null) return false;
+  3705:        String m = detalle == null ? "" : detalle.toLowerCase();
+  244:        if (selitem != null) {
+  250:            if (gl.autoLoad && licenciaEscaneada != null && !licenciaEscaneada.trim().isEmpty()) {
+  375:        String umBas = gBePickingUbic.ProductoUnidadMedida != null ? gBePickingUbic.ProductoUnidadMedida.trim() : "";
+  385:            if (gBePickingUbic.IdPresentacion == 0 && lblCantidad != null) {
+  394:            if (txtLicencia !=null){
+  419:            if (txtLicEscaneada !=null){
+  435:            assert txtLicencia != null;
+  667:                    if (gBeProducto != null && gBeProducto.Presentaciones != null &&
+  668:                            gBeProducto.Presentaciones.items != null &&
+  677:                            vUnidadMedida = filteredList.get(0).Nombre != null ? filteredList.get(0).Nombre : "";
+  710:        if (licencia.isEmpty() && gBePickingUbic.Lic_plate != null) {
+  754:                vUnidadMedida = gBePickingUbic.ProductoUnidadMedida != null
+  760:            if (gBePickingUbic.IdPresentacion > 0 && gBeProducto != null && gBeProducto.Presentaciones != null && gBeProducto.Presentaciones.items != null && !gBeProducto.Presentaciones.items.isEmpty()) {
+  765:                        if (presentacion.Nombre != null && !presentacion.Nombre.isEmpty()) {
+  1053:                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+  1108:                            if (ListBeStockPalletEscaneado.items != null) {
+  1112:                                if (BeStockPallet != null) {
+  1163:                                    if (BeStockPallet != null) {
+  1319:                            if (ListBeStockPalletEscaneado.items != null) {
+  1323:                                if (BeStockPallet != null) {
+  1373:                                    if (BeStockPallet != null) {
+  1754:                if (LProductoEstadoIngreso!=null){
+  1761:                        if (item != null && item.equals(gBePickingUbic.ProductoEstado)) {
+  1856:                String um = (vUnidadMedida != null && !vUnidadMedida.trim().isEmpty()) ? vUnidadMedida.trim() : "UNI";
+  2154:                if (view != null) {
+  2298:            if (beListProductoImagen != null) {
+  2299:                if (beListProductoImagen.items != null) {
+  2643:                                " remPTC=" + (remPickingUbic != null ? remPickingUbic.IdProductoTallaColor : -1) +
+  2644:                                " stockPTC=" + (pStockRes != null ? pStockRes.IdProductoTallaColor : -1));
+  2666:                        Log.d("TC_TRACE", "[PICK_DAT] ws16 Guardar_Picking_Cm lineas=" + (listaPickingFiltrada != null ? listaPickingFiltrada.size() : -1) +
+  2807:                if (dialogSupervisor != null && dialogSupervisor.isShowing()) {
+  2846:            if (gBeProducto!=null){
+  2871:                    if (gBeProducto.Presentaciones!=null){
+  2873:                        if (gBeProducto.Presentaciones.items!=null){
+  2947:                    if (gBeProducto.Presentaciones.items!=null){
+  3035:            if (gBeProducto.Presentaciones!=null){
+  3037:                if (gBeProducto.Presentaciones.items!=null){
+  3067:            if (gl.autoLoad && !RemAuto && gBeProducto.Presentaciones != null &&
+  3068:                    gBeProducto.Presentaciones.items != null &&
+  3134:            if (tmpgBeProducto!=null){
+  3168:            if(BePickingDet!=null){
+  3209:            if (BeStockRes!=null){
+  3214:                                " ubicNivel=" + (gBePickingUbic != null && gBePickingUbic.Ubicacion != null ? gBePickingUbic.Ubicacion.Nivel : -1));
+  3273:            Log.d("REEMPL_T","[PICK] processReemplazoAuto items="+(lpickingubic!=null?lpickingubic.items.size():"null"));
+  3276:                    " pStockResLic="+(pStockRes!=null?pStockRes.Lic_plate:"null")+
+  3277:                    " pStockResPTC="+(pStockRes!=null?pStockRes.IdProductoTallaColor:-1));
+  3278:            if (lpickingubic != null && !lpickingubic.items.isEmpty()) {
+  3365:                            " idPickingUbic=" + (gBePickingUbic != null ? gBePickingUbic.IdPickingUbic : -1) +
+  3366:                            " sol=" + (gBePickingUbic != null ? gBePickingUbic.Cantidad_Solicitada : -1) +
+  3367:                            " rec=" + (gBePickingUbic != null ? gBePickingUbic.Cantidad_Recibida : -1) +
+  3368:                            " lic=" + (gBePickingUbic != null ? gBePickingUbic.Lic_plate : "null"));
+  3383:            if (gBeProducto.Presentaciones!=null){
+  3384:                if (gBeProducto.Presentaciones.items!=null){
+  3406:            String um = (vUnidadMedida != null && !vUnidadMedida.trim().isEmpty()) ? vUnidadMedida.trim() : "UNI";
+  3591:            if(progress!=null){
+  3594:                    if(txtMensajeDialog!=null){
+  3618:        boolean tieneVence = gBePickingUbic != null
+  3619:                && gBePickingUbic.Fecha_Vence != null
+  3622:        boolean tieneLote = gBePickingUbic != null
+  3623:                && gBePickingUbic.Lote != null
+  3644:            if (txtMensajeDialog != null) {
+  3650:            if (progress != null && progress.isShowing()) {
+  3664:            if(txtMensajeDialog!=null){
+  3726:            if (btnConfirmarPk != null && !isFinishing() && !isDestroyed()) {
+  351:                } catch (Exception e) {
+  388:        } catch (Exception ignored) {}
+  529:        } catch (Exception e) {
+  548:        } catch (Exception e) {
+  576:        } catch (Exception e) {
+  599:        }catch (Exception ex){
+  701:        } catch (Exception e) {
+  780:        } catch (Exception e) {
+  804:        } catch (Exception e) {
+  849:        } catch (Exception e) {
+  885:        } catch (Exception e) {
+  934:        } catch (Exception e) {
+  986:        } catch (Exception e) {
+  1531:        }catch (Exception e){
+  1553:        }catch (Exception e){
+  1583:        }catch (Exception e){
+  1614:        }catch (Exception e){
+  1801:        }catch (Exception e){
+  1902:        }catch (Exception e){
+  2091:        }catch (Exception e){
+  2214:        }catch (Exception e){
+  2284:        } catch (Exception e) {
+  2322:        } catch (Exception e) {
+  2340:        } catch (Exception e) {
+  2429:        } catch (Exception e) {
+  2462:        } catch (Exception e) {
+  2498:        }catch (Exception e){
+  2516:        }catch (Exception e){
+  2534:        }catch (Exception e){
+  2683:            } catch (Exception e) {
+  2772:        } catch (Exception e) {
+  2833:        } catch (Exception e) {
+  3018:        }catch (Exception e){
+  3073:        }catch (Exception e){
+  3123:        }catch (Exception e){
+  3157:        }catch (Exception e){
+  3196:        }catch (Exception e){
+  3228:        }catch (Exception e){
+  3260:        }catch (Exception e){
+  3300:        }catch (Exception e){
+  3325:        } catch (Exception e) {
+  3375:        } catch (Exception ex) {
+  3427:        }catch (Exception e){
+  3447:        }catch (Exception e){
+  3463:        }catch (Exception e){
+  3523:        }catch (Exception e){
+  3538:        }catch (Exception e){
+  3553:        }catch (Exception e){
+  3571:        }catch (Exception e){
+  3603:        } catch (Exception e) {
+  3647:        } catch (Exception ignored) { }
+  3653:        } catch (Exception ignored) { }
+  3740:        } catch (Exception e) {

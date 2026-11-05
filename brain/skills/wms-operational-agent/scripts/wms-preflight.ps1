@@ -3,12 +3,17 @@ param(
     [ValidateSet("recepcion", "picking", "packing", "verificacion", "reemplazo", "existencias", "inventario", "inventario_ciclico", "cambio_ubicacion")]
     [string]$Process,
 
-    [string]$RepoRoot = "C:/Users/yejc2/source/repos/TOMWMS",
-    [string]$HhRoot = "C:/Users/yejc2/StudioProjects/TOMHH2025",
-    [string]$BrainRoot = "C:/Users/yejc2/source/repos/wms-brain/wms-brain"
+    [string]$RepoRoot = '',
+    [string]$HhRoot = '',
+    [string]$BrainRoot = ''
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot 'resolve-wms-paths.ps1')
+$resolved = Resolve-WmsPaths -BrainRoot $BrainRoot -RepoRoot $RepoRoot -HhRoot $HhRoot
+$BrainRoot = $resolved.BrainRoot
+$RepoRoot = $resolved.RepoRoot
+$HhRoot = $resolved.HhRoot
 
 function Write-Section($title) {
     Write-Output ""

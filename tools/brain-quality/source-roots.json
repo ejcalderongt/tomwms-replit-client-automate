@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "roots": {
+    "bof": "${USERPROFILE}/source/repos/TOMWMS_BOF",
+    "hh": "${USERPROFILE}/source/repos/TOMHH2025",
+    "dba": "${USERPROFILE}/source/repos/DBA",
+    "db_snapshot": "../wms-db-brain"
+  }
+}

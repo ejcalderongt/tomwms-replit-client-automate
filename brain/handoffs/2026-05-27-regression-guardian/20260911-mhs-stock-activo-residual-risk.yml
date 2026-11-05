@@ -1,0 +1,10 @@
+id: rg-risk-20260911-175847
+tag: '#EJC20260527'
+process: recepcion
+risk_level: low
+open_risks: []
+evidence:
+  footprint: 'brain/handoffs/2026-05-27-regression-guardian/20260911-mhs-stock-activo-footprint.yml'
+  sibling_scan: 'brain/handoffs/2026-05-27-regression-guardian/20260911-mhs-stock-activo-sibling-scan.txt'
+  checklist: 'brain/handoffs/2026-05-27-regression-guardian/20260911-mhs-stock-activo-checklist.yml'
+recommendation: 'Validar transferencia con y sin recepcion automatica; mantener Activo del DTO en ingresos WebAPI y no forzar el valor en persistencia compartida.'

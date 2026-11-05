@@ -51,7 +51,7 @@ Erik puede abrir la HH en su PC y seguir el ciclo completo de implosion sin tene
 
 ## Evidencia tecnica
 
-- HH Android: `C:\Users\carol\StudioProjects\TOMHH2025\app\src\main\java\com\dts\tom\Transacciones\Packing\frm_Packing.java`
+- HH Android: `app/src/main/java/com/dts/tom/Transacciones/Packing/frm_Packing.java`
 - Grafo de Packing: `brain/handoffs/2026-05-22-codex-performance-bof-hh/PACKING-HH-GRAFO-TRAZA-FINA-2026-05-26.yml`
 - Validacion ejecutada: `:app:compileDebugJavaWithJavac`
 

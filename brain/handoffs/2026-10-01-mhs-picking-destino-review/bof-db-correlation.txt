@@ -1,0 +1,35 @@
+check: db_correlation
+tokens:
+  - stock
+  - stock_res
+  - trans_despacho_det
+  - trans_despacho_enc
+  - trans_movimientos
+  - trans_oc_det
+  - trans_packing_enc
+  - trans_pe_det
+  - trans_pe_enc
+  - trans_pe_tipo
+  - trans_picking_det
+  - trans_picking_enc
+  - trans_picking_ubic
+  - trans_picking_ubic_stock
+  - VW_Despacho
+  - VW_Despacho_Rep_DyD
+  - VW_Despacho_rep_res
+  - VW_Get_All_PickingUbic_By_IdPickingEnc_Consolidado
+  - VW_Get_All_PickingUbic_By_IdPickingEnc_Detallado
+  - VW_PACKING
+  - VW_PickingUbic_By_IdPedidoDet
+  - VW_PickingUbic_By_IdPickingDet
+  - VW_PickingUbic_By_IdPickingEnc
+  - VW_PickingUbic_Desp_By_IdDespachoEnc
+  - VW_PickingUbic_Desp_By_IdPedidoDet
+  - VW_PickingUbic_Despachado_By_IdPedidoDet
+  - VW_PickingUbicacion
+  - VW_ProductoSI
+  - VW_Progreso_Picking_By_Operador
+  - VW_Ubicaciones_Picking_Resumido
+  - VW_UbicacionPicking
+db_exists: []
+note: DB lookup skipped (missing credentials or no tokens).

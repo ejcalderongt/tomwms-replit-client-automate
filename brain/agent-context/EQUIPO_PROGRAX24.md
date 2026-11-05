@@ -12,11 +12,12 @@
 - Responsable del brain externo (`tomwms-replit-client-automate`, rama `wms-brain`).
 - Voz narrativa de `naked-erik-anatomy/`.
 
-### CF / CKFK — Carolina Fuentes Kemp
+### CKFK — Carolina Fuentes Kemp
 - Co-líder del WMS junto a EJC.
 - **El corazón de WMS** (ver `naked-erik-anatomy/003-2026-04-30-para-carol.md`, escrito a mano por Erik).
 - Interlocutora principal del cuestionario Wave 10 (`CUESTIONARIO_CAROLINA.md`).
 - Conocimiento operativo profundo de los clientes en producción.
+- Firma de cambios en código: `#CKFKYYYYMMDD_<MODULO>_<MOTIVO>`; no abreviar como `CF`.
 
 ### GT — Efrén Gustavo
 - Origen: Chimaltenango, San Lucas.
@@ -39,8 +40,9 @@
 ## Notas de uso para el agente
 
 1. Cuando aparezca una sigla en commits, ramas o comentarios (`'#GT2025-...`, `'#AT2024-...`, etc.), resolverla contra esta tabla.
-2. Si una sigla **no** está en esta tabla, marcarla como desconocida en el `architecture_inbox/` y pedir confirmación a EJC o CF antes de asumir autoría.
+2. Si una sigla **no** está en esta tabla, marcarla como desconocida en el `architecture_inbox/` y pedir confirmación a EJC o CKFK antes de asumir autoría.
 3. Esta tabla es **append-only**: si entra alguien nuevo se agrega; si alguien sale, se marca con fecha de salida pero **no se borra** (el código histórico sigue firmado con su sigla).
+4. La firma pertenece a la persona responsable del cambio, no al agente que edita: usar `CKFK` solamente para cambios solicitados/realizados por Carolina, `EJC` para los de Erik y la sigla registrada correspondiente para los demás usuarios.
 
 ## Pendientes
 

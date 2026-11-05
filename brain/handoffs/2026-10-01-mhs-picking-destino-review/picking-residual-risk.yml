@@ -1,0 +1,10 @@
+id: rg-risk-20261001-101247
+tag: '#EJC20260527'
+process: picking
+risk_level: medium
+open_risks: []
+evidence:
+  footprint: 'brain/handoffs/2026-10-01-mhs-picking-destino-review/picking-footprint.yml'
+  sibling_scan: 'brain/handoffs/2026-10-01-mhs-picking-destino-review/picking-sibling-scan.txt'
+  checklist: 'brain/handoffs/2026-10-01-mhs-picking-destino-review/picking-checklist.yml'
+recommendation: 'Validar compilacion, migracion idempotente y prueba QA de despacho con bandera encendida y apagada.'

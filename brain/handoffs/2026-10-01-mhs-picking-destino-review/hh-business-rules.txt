@@ -1,0 +1,6 @@
+check: business_rules
+Requiere_Ubicacion_Destino_Picking=2
+IdBodegaDestino=2
+IdUbicacionBodegaDestino=2
+Prevalidar_Ubicacion_Destino_Picking=2
+Guardar_Picking=7

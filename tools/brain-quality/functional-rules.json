@@ -1,0 +1,75 @@
+[
+  {
+    "id": "preload-base-bodega-tramo",
+    "kind": "fact",
+    "status": "draft",
+    "statement": "En el script inspeccionado, el conjunto base de ubicaciones se restringe por IdBodega e IdTramo recibidos como parametros. No demuestra el despliegue del SP en una base concreta.",
+    "scope": {
+      "clients": [],
+      "unknown": [
+        "clients",
+        "deployed_database"
+      ],
+      "branches": [
+        "dba:master"
+      ],
+      "validation": "source-only"
+    },
+    "targets": [
+      "sql:dbo.ml_get_ubicacion_sugerida_preload_tramo"
+    ],
+    "sources": [
+      {
+        "repo": "dba",
+        "path": "20260703_ml_get_ubicacion_sugerida_preload_tramo.sql",
+        "sha256": "4de6614c0fad4f251df833592f5241d91b9678215b666b862731f7ac887b7db2",
+        "quote": "WHERE v.IdBodega = @IdBodega\n      AND v.IdTramo = @IdTramo;",
+        "line": 43,
+        "checkout_commit": "024c78aecc7e434b6c9d6400a4fb539ceb4dac59",
+        "checkout_branch": "master"
+      }
+    ]
+  },
+  {
+    "id": "preload-contrato-indice-x",
+    "kind": "fact",
+    "status": "draft",
+    "statement": "El script del preload exporta el alias Indice_X y la DAL inspeccionada usa ese nombre al asignar Columna, incluyendo referencia alternativa a indice_x. No se afirma compatibilidad con cualquier esquema ni ejecucion exitosa.",
+    "scope": {
+      "clients": [],
+      "unknown": [
+        "clients",
+        "deployed_database"
+      ],
+      "branches": [
+        "dba:master",
+        "bof:dev_2028_merge"
+      ],
+      "validation": "source-only"
+    },
+    "targets": [
+      "sql:dbo.ml_get_ubicacion_sugerida_preload_tramo",
+      "clsLnTransUbicSugerida2.Get_Preload_Tramo_Ubicaciones"
+    ],
+    "sources": [
+      {
+        "repo": "dba",
+        "path": "20260703_ml_get_ubicacion_sugerida_preload_tramo.sql",
+        "sha256": "4de6614c0fad4f251df833592f5241d91b9678215b666b862731f7ac887b7db2",
+        "quote": "v.indice_x AS Indice_X",
+        "line": 34,
+        "checkout_commit": "024c78aecc7e434b6c9d6400a4fb539ceb4dac59",
+        "checkout_branch": "master"
+      },
+      {
+        "repo": "bof",
+        "path": "TOMIMSV4/DAL/Transacciones/Movimiento/clsLnTransUbicSugerida2.vb",
+        "sha256": "198872958954fae50c7ff9dc41ec88cb72e6c7721509e84fbd51d3e9737b8fb2",
+        "quote": "obj.Columna = IIf(IsDBNull(lRow.Item(\"Indice_X\")), IIf(IsDBNull(lRow.Item(\"indice_x\")), 0, lRow.Item(\"indice_x\")), lRow.Item(\"Indice_X\"))",
+        "line": 1513,
+        "checkout_commit": "9a493e5194ecb7481428a2b7eacabd76614c50ba",
+        "checkout_branch": "dev_2028_merge"
+      }
+    ]
+  }
+]

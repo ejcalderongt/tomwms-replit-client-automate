@@ -1,0 +1,7 @@
+process: picking
+tag: '#EJC20260527'
+checklist:
+  - 'Verificar que linea corregida no desaparece incorrectamente tras procesar.'
+  - 'Confirmar habilitacion correcta de acciones segun estado (no bloquear en Procesado/Verificado, bloquear en Despachado).'
+  - 'Validar que movimiento asociado guarda destino y no deja nulos.'
+result: pending

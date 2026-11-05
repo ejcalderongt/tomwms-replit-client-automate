@@ -1,0 +1,7 @@
+check: business_rules
+Requiere_Ubicacion_Destino_Picking=12
+Trasladar_Lotes_Doc_Ingreso=10
+Generar_Recepcion_Auto_Bodega_Destino=12
+Recibir_Producto_Auto_Bodega_Destino=15
+IdBodegaDestino=40
+IdUbicacionBodegaDestino=31

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "tag": "#EJC20261027_BRAIN_SEARCH_POLICY",
+  "default": "bm25",
+  "deep_analysis": "bm25-rerank",
+  "decision_scope": "retrieval quality only; not proof of improved LLM diagnosis",
+  "evidence": {
+    "bm25": {
+      "hit_at_5": 0.96,
+      "mrr_at_5": 0.88,
+      "report": "analysis/brain-improvement/bm25-baseline.json"
+    },
+    "bm25-rerank": {
+      "hit_at_5": 0.96,
+      "mrr_at_5": 0.94,
+      "holdout_regression": false,
+      "report": "analysis/brain-improvement/bm25-vs-reranker.json",
+      "latency_note": "three uncached development probes: 28.3-32.1s wall; repeated cached queries:55-78ms; process CPU recorded",
+      "timing_report": "analysis/brain-improvement/retrieval-timing-profile.json"
+    }
+  },
+  "experimental": {
+    "semantic": "lower observed recall; not selected",
+    "hybrid": "same recall but lower MRR; not selected",
+    "hybrid-rerank": "same quality as bm25-rerank; no additional benefit observed"
+  },
+  "source_validation": "historical documents remain unvalidated/disputed as cataloged",
+  "model_data_flow": "local CPU inference; remote downloads contain model artifacts only",
+  "specialist_mode": {
+    "status": "experimental-opt-in",
+    "report": "analysis/brain-improvement/answer-comparison.json",
+    "reason": "Better average diagnosis/dependency scores, but a heldout completeness regression; no automatic default promotion",
+    "cost_limitations": "Total LLM timing and token/dollar costs unavailable; reported artifact-only intervals are not analysis latency"
+  }
+}

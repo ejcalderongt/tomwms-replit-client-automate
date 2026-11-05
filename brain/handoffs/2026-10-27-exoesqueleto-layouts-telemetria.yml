@@ -1,0 +1,64 @@
+id: exoesqueleto-layouts-telemetria-20261027
+tag: '#EJC20261027_EXO_LAYOUT'
+estado: codigo-validado-operacion-pendiente-datos
+repo: TOMWMS_BOF
+rama: dev_2028_merge
+perfil: operador-a-pie
+parametros:
+  ancho_pasillo_m: 1.2
+  margen_seguridad_m: 0.25
+causas_corregidas:
+  - El dibujo asignaba pixeles a Ancho y Margen_izquierdo del tramo real por alias BeTramoAnterior; ahora usa clon.
+  - Cargar red antes de generar fallaba si no existia esquema; ahora consulta disponibilidad y permite generar en memoria.
+  - Accesos validaban solo punto medio; ahora valida segmento completo.
+  - Se filtran candidatos fuera de limites o con colision y se parten solapamientos colineales.
+  - Reconexion conservadora por codos con holgura; no cruza paredes ni aprueba nodos exclusivos de candidatos.
+persistencia:
+  script: DBA/20261012_wms_exoesqueleto_versionado_proposal.sql
+  ejecutor: DBA/tools/Invoke-ExoesqueletoSchema.ps1
+  caremed_prd: cuatro tablas aplicadas tras dry-run revertido, por solicitud explicita del usuario
+  datos_negocio_modificados: false
+  prueba_dal: guardar-recargar-actualizar-eliminar borrador sintetico en SQL Express local
+  parametros_json: conserva perfil y parametros conocidos; no inventa los historicos
+medicion:
+  salida: 'C:\TOM\Logs\exoesqueleto\*.json y *.txt'
+  campos: ejecucion, bodega, version binario, hash entrada, parametros, descartes, nodos, enlaces, colisiones y picking sin base
+  cobertura_ubicaciones: no-medida
+  metricas_no_equivalentes: longitud de red no es distancia de pedidos; accesos son segmentos
+corpus:
+  herramientas: tools/picking/Export-LayoutBodega.ps1, Replay-LayoutBodega.ps1, evaluar-layouts.py, validar-recorridos.py
+  formato: snapshot version 1 con revisiones_humanas y expectativas
+  caremed_01:
+    pares_con_camino: 20/20
+    colisiones: 0
+    nodos_fuera: 0
+    picking_elegibles: 2259
+    picking_sin_geometria: 697
+    detalle: 696 en tramo 19 y una en tramo 15
+  mhs_mh08_dev:
+    pares_con_camino: 5/20
+    componentes_incluyendo_aislados: 20
+    picking_sin_geometria: ubicacion 51, tramo 51 sin dimensiones
+  sinteticos: horizontal, vertical y mixto; expectativas y 20/20 pares cada uno
+limites:
+  - Sin aprobacion operativa; completar o clasificar datos geometricos y validar caras/accesos fisicos.
+  - Aprendizaje por casos revisados y regresiones; no hay entrenamiento automatico ni cambios silenciosos de pesos.
+  - Build aislado; interfaz real posterior al cambio pendiente de prueba del usuario.
+  - Sin commits/push, cambios HH o Reference.vb; INI del usuario preservado.
+revision_humana_tramo_19:
+  fecha: '2026-10-27'
+  fuente: confirmacion explicita del usuario en este chat
+  alcance: TOMWMS_CAREMED_PRD, bodega 1, tramo 19
+  clasificacion: ZONA_PISO
+  ubicaciones_asociadas: 696
+  geometria: pendiente; no inferir dimensiones ni nodos independientes por registro
+  evidencia: tools/picking/layout-reviews.json y variante local caremed-layout-reviewed-zona-piso.json
+  efecto: reclasificacion semantica; no cambia SQL ni geometria del grafo todavia
+publicacion_dba:
+  remoto: https://github.com/ejcalderongt/DBA
+  rama_remota: master
+  commit: 288cfcef667204a6d5ad7a1f9cda8cf58a128c87
+  archivos: esquema exoesqueleto, reparacion columna CAREMED, ejecutor y documento de alcance/pruebas
+  control: wms-db-brain-dba-route-check ejecutado antes de commit y push; checkout de publicacion limpio
+  aislamiento: basado en origin/master para preservar cambios ajenos del checkout DBA principal
+  siguiente_contrato: persistir relacion IdBodega-IdUbicacion con IdVersion-IdNodoAcceso y simular un picking sin cambiar sus asignaciones ni estados

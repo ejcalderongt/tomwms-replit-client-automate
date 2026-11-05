@@ -1,0 +1,37 @@
+[
+  {
+    "path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Mantenimientos\\Bodega_Graficador\\clsDiagnosticoExoesqueleto.vb",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "0c136ea19f7f24649c123c39ce08f1f2f47414806627c3ce631bca5260049701",
+    "content_state": "worktree-uncommitted"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Mantenimientos\\Bodega_Graficador\\ctlExoesqueletoBodega.vb",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "b2a1eab93c4c369a088a41f2df708131141a4aba00bddaf41f958734b4d287d5",
+    "content_state": "worktree-uncommitted"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Mantenimientos\\Bodega_Graficador\\frmDiseñoB.vb",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "a705437d25ac584b7375c4a4af443402fddd591aced78f32cf245f7c2ca332f5",
+    "content_state": "worktree-uncommitted"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\OneDrive\\Documents\\ChatGPT\\TOMWMS\\.federation\\wms-brain\\brain\\handoffs\\2026-10-29-exoesqueleto-componentes\\scripts\\Test-ComponentesExoesqueleto.ps1",
+    "commit": null,
+    "checkout_commit": "4dee3e2c7687d6acd0926c0b540503ce3dc447e2",
+    "sha256": "e96d0a887a75f253a348981cc5797e63fdb41d50fd193734f89b32c759fd8fa1",
+    "content_state": "brain-worktree-uncommitted",
+    "previous_path": "C:\\Users\\yejc2\\source\\repos\\TOMWMS_BOF\\tools\\picking\\Test-ComponentesExoesqueleto.ps1"
+  },
+  {
+    "path": "C:\\Users\\yejc2\\Downloads\\20261028-221858-831_B1_e62dacc1eaa44ef7a55b29c79ba62a3e_ada2ca81.json",
+    "commit": null,
+    "sha256": "46596efc95dceae1a9eea6083a7c257c5561fb7e909fdef6be5d5f11177d8f96",
+    "content_state": "user-provided-telemetry"
+  }
+]

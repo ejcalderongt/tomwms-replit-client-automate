@@ -1,0 +1,2 @@
+fastembed==0.9.1
+PyYAML==6.0.3
