@@ -1,4 +1,4 @@
-kind,target,metric,attempts,successes,failures,failurePercent,samples,p50,p95,p99,max,interpretacion
+﻿kind,target,metric,attempts,successes,failures,failurePercent,samples,p50,p95,p99,max,interpretacion
 icmp,gateway,totalMs,240,240,0,0,240,3,15,46,66,sonda_red_valida
 icmp,sql,totalMs,240,240,0,0,240,5,18,43,45,sonda_red_valida
 sql,sql_tls,totalMs,4,0,4,100,0,,,,,fallo_certificado_TLS
