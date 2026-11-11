@@ -8,6 +8,9 @@ ramas_afectadas: [dev_2023_estable, dev_2028_merge]
 
 ## Índice
 
+<!-- #EJC20261111_CUMBRE_NETWORK_DIAGNOSTICS -->
+La Cumbre, lentitud y diagnóstico en red del cliente: [suite portable, prompt y procedimiento](../runbooks/cumbre-diagnostico-latencia-en-sitio.md). Preparado; mediciones del cliente pendientes.
+
 <!-- #EJC20261105_PORTAL_PORTABLE -->
 Portal React en otra PC o PC de Carol: [instalación interactiva y arranque](../runbooks/portal-react-instalacion-otra-pc.md).
 

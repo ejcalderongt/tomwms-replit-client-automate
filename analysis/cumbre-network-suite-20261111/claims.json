@@ -1,0 +1,50 @@
+[
+  {
+    "id": "CUMBRE-NET-20261111-SUITE",
+    "kind": "decision",
+    "statement": "Preparar una suite portable de diagnóstico de baja frecuencia para una PC en la red de La Cumbre; mediciones del cliente aún pendientes.",
+    "sources": [
+      {
+        "path": "tools/network-diagnostics/README.md",
+        "commit": null,
+        "sha256": "b9243e0d32f1fcf3250a06eb9edb4b84fb277414b4001449ebc120f3452a7866",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "tools/network-diagnostics/PROMPT-AGENTE.md",
+        "commit": null,
+        "sha256": "bcfdc7f32326f7ef78bbbd4a7579215884888d35fcc2b9320dbc36cdddaa2a3a",
+        "content_state": "working-tree"
+      }
+    ],
+    "clients": [
+      "CUMBRE"
+    ],
+    "branches": [
+      "wms-brain"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "CUMBRE-NET-20261111-LOCAL-TESTS",
+    "kind": "fact",
+    "statement": "Las sesiones sintéticas locales pasaron en Windows PowerShell 5.1 y PowerShell 7 según validation.json; no prueban causa raíz ni conectividad real de La Cumbre.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-network-suite-20261111/validation.json",
+        "commit": null,
+        "sha256": "28d8f1d715d05a11b541df753a2dd3958ff073a2ab1fb979a1687deba4fdb4b0",
+        "content_state": "working-tree"
+      }
+    ],
+    "clients": [
+      "CUMBRE"
+    ],
+    "branches": [
+      "wms-brain"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

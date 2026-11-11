@@ -1,0 +1,2 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:05.7529849Z","http","post","True","http_ok","27.875","0.081","24","0","1","26.2","2","200","127.0.0.1",,,""

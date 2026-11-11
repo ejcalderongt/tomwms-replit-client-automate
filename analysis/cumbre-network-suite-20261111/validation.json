@@ -1,0 +1,42 @@
+[
+  {
+    "engine": "powershell.exe",
+    "session": "analysis/cumbre-network-suite-20261111/synthetic-evidence/powershell",
+    "status": "passed",
+    "checks": [
+      "HTTP success",
+      "HTTP 503",
+      "SOAP Fault",
+      "content mismatch",
+      "HTTP timeout",
+      "POST read-only",
+      "ICMP",
+      "TCP open/refused",
+      "SQL connection failure",
+      "percentiles and failure denominator",
+      "incident marker",
+      "snapshot exclusion",
+      "unapproved HTTP rejected"
+    ]
+  },
+  {
+    "engine": "pwsh.exe",
+    "session": "analysis/cumbre-network-suite-20261111/synthetic-evidence/pwsh",
+    "status": "passed",
+    "checks": [
+      "HTTP success",
+      "HTTP 503",
+      "SOAP Fault",
+      "content mismatch",
+      "HTTP timeout",
+      "POST read-only",
+      "ICMP",
+      "TCP open/refused",
+      "SQL connection failure",
+      "percentiles and failure denominator",
+      "incident marker",
+      "snapshot exclusion",
+      "unapproved HTTP rejected"
+    ]
+  }
+]

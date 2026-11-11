@@ -1,0 +1,4 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:01.1637052Z","tcp","open","True","connected","138.548",,,,,,,,"::ffff:127.0.0.1",,,""
+"2026-11-11T16:26:02.2120201Z","tcp","open","True","connected","3.279",,,,,,,,"::ffff:127.0.0.1",,,""
+"2026-11-11T16:26:03.2227439Z","tcp","open","True","connected","4.01",,,,,,,,"::ffff:127.0.0.1",,,""

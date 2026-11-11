@@ -1,0 +1,2 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:06.4179177Z","sql","sql","False","sql_10061","2283.687",,,,,,,,,,,"System.Management.Automation.MethodInvocationException"
