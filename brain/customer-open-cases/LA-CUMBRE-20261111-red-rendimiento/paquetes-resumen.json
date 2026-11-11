@@ -1,0 +1,71 @@
+{
+  "packets": 2468,
+  "tcp_packets": 2188,
+  "tcp_streams": 57,
+  "icmp_packets": 228,
+  "arp_packets": 16,
+  "dns_response_codes": {
+    "0": 18
+  },
+  "truncated_packets": 1197,
+  "indicators": {
+    "tcp.analysis.retransmission": 3,
+    "tcp.analysis.fast_retransmission": 0,
+    "tcp.analysis.spurious_retransmission": 1,
+    "tcp.analysis.lost_segment": 0,
+    "tcp.analysis.duplicate_ack": 0,
+    "tcp.analysis.zero_window": 1,
+    "tcp.analysis.window_full": 0,
+    "tcp.analysis.out_of_order": 0,
+    "tcp.flags.reset": 1
+  },
+  "http_ttfb_ms": {
+    "p50": 55.07,
+    "p95": 95.064,
+    "p99": 127.039,
+    "max": 127.039
+  },
+  "tcp_handshake_ms": {
+    "p50": 4.889,
+    "p95": 13.329,
+    "p99": 34.1,
+    "max": 34.1
+  },
+  "stream_server_ports": {
+    "80": 57
+  },
+  "wifi_counter_deltas": {
+    "ReceivedPacketErrors": 0,
+    "OutboundPacketErrors": 0,
+    "ReceivedDiscardedPackets": 0,
+    "OutboundDiscardedPackets": 0
+  },
+  "wlan_events": 0,
+  "arp_macs": {
+    "10.12.2.3": [
+      "80:80:2c:61:19:55"
+    ],
+    "10.12.2.157": [
+      "9c:b1:50:12:7f:9b"
+    ],
+    "10.12.2.155": [
+      "26:c9:b0:64:44:4e"
+    ]
+  },
+  "capture_drop_log": [
+    "Packets received/dropped on interface 'Wi-Fi': 2468/0 (pcap:0/dumpcap:0/flushed:0/ps_ifdrop:0) (100.0%)"
+  ],
+  "receive_segment_coalescing": {
+    "Name": "Wi-Fi",
+    "IPv4Enabled": true,
+    "IPv6Enabled": true,
+    "IPv4OperationalState": true,
+    "IPv6OperationalState": true
+  },
+  "pcaps": [
+    {
+      "path": "C:\\WMSBrain\\analysis\\cumbre-network\\2026-11-11\\packet-study\\capture\\capture-20261111-112842_00001_20261111112842.pcapng",
+      "sha256": "c8b7c7b2d0ab769b2703787f541aaaac53a66fb14e0552548b4ea1ebdda5b8b7"
+    }
+  ]
+}

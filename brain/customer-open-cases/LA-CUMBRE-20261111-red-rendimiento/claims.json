@@ -1,0 +1,27 @@
+[
+  {
+    "id": "CUMBRE-CASO-20261111-001",
+    "kind": "fact",
+    "statement": "En la ventana 12:21–12:26 local se observaron 136 POST de 15 IP con HTTP 200, mediana IIS 50 ms, p95 117 ms y máximo 373 ms; CPU media 1.04% y máxima 8%. No determina causa raíz ni éxito funcional SOAP.",
+    "sources": [
+      {
+        "path": "brain/customer-open-cases/LA-CUMBRE-20261111-red-rendimiento/correlacion-servidor-la-cumbre.html",
+        "commit": null,
+        "sha256": "1796bb8e28a6257d1f1efc9e2bc485be0c2a29aed8b64f426c271aad4eb23f91"
+      },
+      {
+        "path": "brain/customer-open-cases/LA-CUMBRE-20261111-red-rendimiento/servidor-resumen.json",
+        "commit": null,
+        "sha256": "ac451f03f468d714c1b75efa6d276473497118e905bb66102222d24b338f9ded"
+      }
+    ],
+    "clients": [
+      "CUMBRE"
+    ],
+    "branches": [
+      "UNKNOWN: despliegue productivo no verificado"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]
