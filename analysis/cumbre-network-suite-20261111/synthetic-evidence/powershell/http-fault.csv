@@ -1,0 +1,2 @@
+﻿"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:25:34.9535988Z","http","fault","False","soap_fault","8.311","0.125","1","0","5","6.545","2","200","127.0.0.1",,,""

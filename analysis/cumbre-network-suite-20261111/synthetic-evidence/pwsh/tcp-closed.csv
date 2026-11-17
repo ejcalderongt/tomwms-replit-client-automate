@@ -1,0 +1,3 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:01.8322632Z","tcp","closed","False","timeout","1198.755",,,,,,,,,,,"System.TimeoutException"
+"2026-11-11T16:26:03.1067789Z","tcp","closed","False","timeout","1014.359",,,,,,,,,,,"System.TimeoutException"

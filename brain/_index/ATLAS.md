@@ -14,6 +14,9 @@ por tema: [consolidación CKFK](../handoffs/2026-11-17-ckfk-pendientes/README.md
 Recepción 28335, caja master J100000635: [causa, corrección y recuperación
 confirmada por CKFK](../handoffs/2026-11-17-ckfk-recepcion-28335/README.md).
 
+<!-- #EJC20261111_CUMBRE_NETWORK_DIAGNOSTICS -->
+La Cumbre, lentitud y diagnóstico en red del cliente: [suite portable, prompt y procedimiento](../runbooks/cumbre-diagnostico-latencia-en-sitio.md). Preparado; mediciones del cliente pendientes.
+
 <!-- #EJC20261105_PORTAL_PORTABLE -->
 Portal React en otra PC o PC de Carol: [instalación interactiva y arranque](../runbooks/portal-react-instalacion-otra-pc.md).
 

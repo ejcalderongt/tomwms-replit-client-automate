@@ -1,0 +1,2 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:05.1227994Z","http","slow","False","curl_28","1003.207","0.11","1","0","0","0","1003","000","127.0.0.1",,,""

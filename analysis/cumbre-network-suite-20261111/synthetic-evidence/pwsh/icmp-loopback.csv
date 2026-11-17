@@ -1,0 +1,5 @@
+"timestampUtc","kind","target","success","status","totalMs","dnsMs","tcpMs","tlsMs","waitFirstByteMs","ttfbMs","downloadMs","httpStatus","remoteIp","connectMs","queryMs","detail"
+"2026-11-11T16:26:00.5153422Z","icmp","loopback","True","Success","0",,,,,,,,"127.0.0.1",,,""
+"2026-11-11T16:26:01.5743396Z","icmp","loopback","True","Success","0",,,,,,,,"127.0.0.1",,,""
+"2026-11-11T16:26:02.5848436Z","icmp","loopback","True","Success","0",,,,,,,,"127.0.0.1",,,""
+"2026-11-11T16:26:03.5972067Z","icmp","loopback","True","Success","0",,,,,,,,"127.0.0.1",,,""

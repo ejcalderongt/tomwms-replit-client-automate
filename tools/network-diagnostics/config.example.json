@@ -1,0 +1,20 @@
+{
+  "site": "La Cumbre",
+  "scenario": "wifi-zona-pendiente",
+  "durationSeconds": 1800,
+  "intervalSeconds": 5,
+  "timeoutSeconds": 3,
+  "icmp": [],
+  "dns": [],
+  "tcp": [],
+  "http": [],
+  "sql": {
+    "enabled": false,
+    "server": "",
+    "database": "",
+    "authentication": "Windows",
+    "encrypt": true,
+    "trustServerCertificate": false,
+    "intervalSeconds": 15
+  }
+}

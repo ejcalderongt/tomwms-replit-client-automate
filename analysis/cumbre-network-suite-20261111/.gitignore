@@ -1,0 +1,6 @@
+# Local fixtures/inventory are not publication evidence.
+/powershell/
+/pwsh/
+__pycache__/
+finalize.py
+package-validation.json

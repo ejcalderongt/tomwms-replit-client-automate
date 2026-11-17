@@ -1,0 +1,5 @@
+# Provenance JSON and portable synthetic evidence use stable line endings.
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.csv text eol=lf
