@@ -1,0 +1,62 @@
+MHS - Cambio de lote y vencimiento en recepcion
+Fecha: 29/10/2026
+Rama de ambos repositorios: dev_2028_merge
+
+IMPLEMENTADO
+- trans_oc_ti.permitir_cambiar_lote_vencimiento, bit NOT NULL DEFAULT(0).
+- Lectura, insercion y actualizacion en DAL/Entity VB y DALCore/EntityCore.
+- Toggle del mantenimiento creado en frmTipoDocumentoIngreso.Designer.vb,
+  y conectado a carga, guardar y actualizar. Posicion 159,412; no superpone
+  los parametros existentes. No se crea ningun control nuevo por codigo
+  en el formulario del mantenimiento.
+- HH: boton y dialogo definidos en XML. Aceptar, cancelar y restablecer.
+- Captura nueva estandar de devolucion con lotes pendientes; no modifica
+  recepciones ya guardadas. Quedan fuera pallet escaneado, caja master y
+  talla/color, conservando sus flujos actuales.
+- El detalle de lote de origen se conserva por ID aunque se cambien los
+  valores reales. El envio usa una copia independiente para no alterar
+  el contador compartido ni corromper reintentos.
+- El servidor vuelve a consultar el permiso y valida el origen y pendiente
+  con bloqueo de fila dentro de la transaccion de recepcion.
+- trans_oc_det conserva el control total existente del producto.
+- trans_oc_det_lote conserva lote/vencimiento esperados y solo incrementa
+  cantidad_recibida del detalle seleccionado. No toca los no recibidos.
+- Recepcion/stock/etiquetas usan los datos capturados por el operador.
+- Auditoria: Observacion contiene 'LV origen #ID'; ese ID conserva los
+  valores originales. La recepcion conserva valores reales, usuario y fecha.
+
+VALIDACIONES COMPLETADAS
+- Compilacion BOF: OK (avisos existentes de DevExpress/obsolescencia).
+- Compilacion WSHHRN con Entity y DAL: OK.
+- Compilacion DALCore con EntityCore: OK (un aviso existente en clsLnStock).
+- Compilacion HH Java + recursos XML: OK.
+- 22 pruebas aisladas sobre las reglas compiladas: OK. Sin conexion SQL.
+  Incluyen: parcial, solo lote/vence, cantidad ya recibida, permiso apagado,
+  excedente segun permiso, origen agotado, captura ajena, lote invalido,
+  vencido segun permiso, fecha actual, captura guardada, observacion y
+  compatibilidad de clientes anteriores sin marcador nuevo.
+- Revision de diff y codificacion: VB UTF-8 con BOM; Java UTF-8 sin BOM,
+  CRLF conservado. Sin cambios a versiones ni proxies Reference.vb.
+- Auditoria automatizada: WARN exclusivamente porque se omitio consulta
+  a base real. Aceptado para esta entrega de codigo y script sin ejecucion.
+- Se restauraron las dos copias XML de documentacion que MSBuild genero;
+  los archivos preexistentes no relacionados del usuario se conservaron.
+
+ENTREGA Y ORDEN PARA PRUEBAS
+1. Erik aplica manualmente el script SQL en la base del cliente.
+2. Publicar BOF/WS actualizados y distribuir HH actualizada.
+3. Habilitar el parametro solo en el tipo de devolucion autorizado MHS.
+4. Probar recepcion parcial 8/20 (12 pendientes), multiples lotes, cancelar,
+   restablecer, reintento tras error y dos operadores concurrentes.
+5. Revisar stock, etiquetas y datos de salida de integracion MHS.
+6. Probar B&B y otro tipo de documento con parametro desactivado.
+
+NO REALIZADO
+- No se ejecuto el SQL ni se altero ninguna base de datos.
+- No se ejecuto la aplicacion, ni se guardaron recepciones reales.
+- No se publico ni se distribuyo APK.
+- No se hicieron commits, push o cambios de rama.
+- Prueba operativa e integracion MHS pendientes en ambiente de pruebas.
+
+SCRIPT
+C:\Users\carol\source\repos\TOMWMS_BOF\tools\sql-deliverables\20261029_trans_oc_ti_permitir_cambiar_lote_vencimiento.sql

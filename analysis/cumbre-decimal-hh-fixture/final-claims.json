@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EJC20261110_CUMBRE_HH_03_DESPACHO",
+    "kind": "fact",
+    "statement": "La prueba local reportada por la usuaria para LABDEC0003 termino con pedido 8979 y picking 4409 Despachado, despacho 11534 Finalizado, piezas 0.1 y 0.2 completas en picking/verificacion/despacho, y sin stock ni reservas remanentes de esa licencia. Validez limitada a este escenario de laboratorio.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-decimal-hh-fixture/final-validation.txt",
+        "sha256": "ab3c320f01ccba80ea64fc21812ac8ee12362dd371758378ffb5053f1069caa1",
+        "commit": null,
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

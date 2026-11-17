@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EJC20261110_CUMBRE_8978_ESTADO",
+    "kind": "fact",
+    "statement": "En el laboratorio, la sobrecarga Actualizar_Estado_Pendiente llamada al guardar BOF reproduce Pickeado a Pendiente sin cambiar cantidades. El boton Actualizar invoca ese guardado; no se acredita que la usuaria lo haya pulsado.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-8978-state-evidence.json",
+        "commit": null,
+        "sha256": "1666fc66a9596cfbf2aee5f0d252be39d39195ef8f539ad6ad9e71ce2c32471a",
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

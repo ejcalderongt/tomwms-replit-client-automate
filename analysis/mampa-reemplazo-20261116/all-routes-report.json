@@ -1,0 +1,101 @@
+{
+  "scope": "Replacement size/color preservation in dev_2026_estable; not a full WMS functional certification",
+  "code_commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+  "routes": [
+    {
+      "route": "manual_stock",
+      "chain": "Get_Stock_Para_Reserva -> Reservar_Stock_By_Stock_Reem -> Get_All_Reemplazo_By_IdsStockRes -> Reemplazo_Producto_En_Picking",
+      "review": "Fixed missing stock variant mapping and added requested-variant filter; compiled selectors and reservation mapper tested read-only.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "stock_id",
+      "chain": "Three Reservar_Stock_By_IdStock overloads -> GetSingle/Get_Single_By_IdStock -> Copiar_Variante_Stock_Reemplazo",
+      "review": "Reviewed all three reservation producers; both real stock readers tested. Previous fix is in baseline commit.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "automatic",
+      "chain": "Reemplazo_Automatico / Reemplazo_Automatico_Conso / ReemplazarAuto_IdStock_By_Stock -> Get_Stock_Reemplazo_Automatico -> shared reservation/picking builders",
+      "review": "Reviewed warehouse functional Control_Talla_Color and variant filter; actual automatic selector tested.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "consolidated",
+      "chain": "Reemplazar_ListaPu_By_Stock -> Reemplazar_IdStock_By_Stock -> shared reservation/picking builders",
+      "review": "Reviewed delegation; added guard preventing a logical replacement from combining distinct variants. No persisted full transaction executed.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "verification",
+      "chain": "Reemplazo_Verificacion_By_ListPickingUbic / damaged-stock variants -> shared replacement producers; Actualizar_PickingUbic_Por_Verificacion",
+      "review": "Reviewed both replacement and confirmation stages. Confirmation now preserves persisted picking variant; helper tested against real row and incomplete/conflicting payload.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "confirmation_split",
+      "chain": "Actualizar_Picking and both Actualizar_Picking_Desde_Consolidado overloads -> split stock/reservation/picking",
+      "review": "All three call the same persisted-variant protection before cloning incoming objects; tested protection with zero/wrong inbound variant and wrong row.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "pallet",
+      "chain": "Actualizar_Picking overload called by Actualizar_Picking_Con_Reemplazo_De_Pallet",
+      "review": "New preparation reads actual stock and picking; rejects wrong product/variant; fills reservation from stock. Tested real stock, wrong variant and missing stock without persistence.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "order_alternate",
+      "chain": "Pedido detail calls Insertar_PickingUbic",
+      "review": "Fixed alternate reservation-to-picking builder missing IdProductoTallaColor; source review and compilation only.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "no_stock_found",
+      "chain": "Reemplazar_ListaPu_By_Stock_Sin_Exist / Marcar_No_Encontrado",
+      "review": "Reviewed: no new stock reservation is produced in the no-stock branch; existing-line updates do not require inventing a replacement variant.",
+      "full_persisted_execution": false
+    },
+    {
+      "route": "downstream",
+      "chain": "Picking reload -> despacho -> i_nav_transacciones_out -> SAP Color+Talla",
+      "review": "Reviewed existing mapping of variant ID and master-derived size/color. No new SAP send or dispatch executed.",
+      "full_persisted_execution": false
+    }
+  ],
+  "build": {
+    "DAL": "PASS",
+    "WSHHRN Release": "PASS with x64 MSBuild/SGen tools",
+    "warning": "Existing MSB3270: AnyCPU Web Service references x64 SAPSYNCMAMPA; target service process architecture must be compatible. Project configuration was not modified."
+  },
+  "tested_artifact": {
+    "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\WSHHRN\\bin\\DAL.dll",
+    "sha256": "e7a068ca106424a47fb05864d6462e643826953b483a418071b45226c3eba1f2"
+  },
+  "limitations": [
+    "No deployment, no database updates, no SAP send.",
+    "Read-only SQL and compiled component tests are not complete HH end-to-end persisted transactions.",
+    "Guardar_Stock_Res_Reemplazo_Picking has no statically located caller in checkout; not activated/rewritten. Reflection or external callers are not ruled out.",
+    "CAG static report WARN because automated DB catalog lookup omitted; actual reader and catalog data tested against QA."
+  ],
+  "sources": [
+    {
+      "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Stock\\clsLnStock_Partial.vb",
+      "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+      "sha256": "c9b337467d7c3bc0930dac076a98557d4955778796561e61cc5614142767d747",
+      "content_state": "working-tree"
+    },
+    {
+      "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Picking\\clsLnTrans_picking_ubic_Partial.vb",
+      "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+      "sha256": "dbe707c47393433720785e2a0b7af4d882041f5431b65deb3092a412aea869b2",
+      "content_state": "working-tree"
+    },
+    {
+      "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Stock_Reservado\\clsLnStock_res_Partial.vb",
+      "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+      "sha256": "cd3480f105c554fbc038dc192a6e3b8e84f1107747a4ba612cb059e7fc17d5b2",
+      "content_state": "working-tree"
+    }
+  ]
+}

@@ -37,6 +37,7 @@ nodos:
     archivo: "C:/Users/yejc2/source/repos/TOMWMS/TOMIMSV4/DAL/Transacciones/Stock/clsLnStock_Partial.vb"
 
 riesgos_principales:
+  - "#CKFK20261020: cuando la lista HH queda realmente vacia, solicitar cierre automatico por Actualizar_PickingEnc_Procesado_Andr; nunca cerrar solo por la lista local. El DAL Get_Wms_Flow_Reconciliation debe validar lineas invalidas y pendiente picking antes de cambiar estados."
   - "Doble trigger de scanner/enter en HH produce overlap de callbacks."
   - "Reemplazo/no encontrado puede intentar actualizar cantidades fuera de rango (constraint non-negative)."
   - "Secuencia de movimientos y actualización stock puede quedar incoherente si no hay guardas."

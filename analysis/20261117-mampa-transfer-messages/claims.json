@@ -1,0 +1,33 @@
+[
+  {
+    "id": "EJC20261117_TRASLADO_MENSAJES",
+    "kind": "decision",
+    "statement": "Por solicitud de Carolina, conservar no_linea al recargar detalles para picking; diagnosticar ausencia física de stock por bodega/producto/talla-color mediante SELECT tras una reserva fallida; evitar clasificar el mensaje genérico como error de estado; informar pedido no completado ante líneas fallidas o descartadas. No cambia los parámetros ni las reglas de reserva o transacción.",
+    "sources": [
+      {
+        "path": "analysis/20261117-mampa-transfer-messages/evidence/clsLnI_nav_ped_traslado_enc_Partial.vb",
+        "commit": "4f64edecee30af4207d4dd63dd963b53e9080b32",
+        "sha256": "6b62226660917abe46d543f3fed5b9e794324de704c556f5f02b6d8a60f247a6",
+        "content_state": "worktree-snapshot",
+        "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Interface\\Pedido_Traslado\\Pedido_Traslado_Enc\\clsLnI_nav_ped_traslado_enc_Partial.vb",
+        "repository": "TOMWMS_BOF"
+      },
+      {
+        "path": "analysis/20261117-mampa-transfer-messages/evidence/clsLnTrans_pe_det_Partial.vb",
+        "commit": "4f64edecee30af4207d4dd63dd963b53e9080b32",
+        "sha256": "c41b4e2b5de4dc552ace466c0001d224f870fe2015c3dae5de481028ce75b81e",
+        "content_state": "worktree-snapshot",
+        "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Pedido\\clsLnTrans_pe_det_Partial.vb",
+        "repository": "TOMWMS_BOF"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

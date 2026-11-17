@@ -1,0 +1,29 @@
+[
+  {
+    "statement": "En la traza del incidente 8981 la HH usa verificacion consolidada, muestra 40 pendientes y devuelve cero filas al guardar: el detalle conserva fecha 1900 y lote MP-L2401 mientras picking trae fecha 2000. El filtro por lote/fecha del codigo local explica la exclusion.",
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "id": "EJC20261117-VERI8981-FILTRO-FECHA",
+    "status": "draft",
+    "clients": [
+      "unknown"
+    ],
+    "sources": [
+      {
+        "path": "analysis/20261117-verificacion-8981/evidence.json",
+        "commit": null,
+        "content_state": "local-evidence",
+        "sha256": "ef5cf6a1794aed0d3ffb0dafbee32fd85d59227bccfbefa25ab3616a18090ec1"
+      },
+      {
+        "path": "analysis/20261117-verificacion-8981/trace.log",
+        "commit": null,
+        "content_state": "local-evidence",
+        "sha256": "51d0c89ec87e6b2ae4c56a5ebe71d0d48d5a925a86efeeb50451cb429ce920b1"
+      }
+    ],
+    "validated_at": null,
+    "kind": "fact"
+  }
+]

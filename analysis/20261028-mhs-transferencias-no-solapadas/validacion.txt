@@ -1,0 +1,69 @@
+MHS - Restricción de ubicaciones origen solapadas en transferencias con picking
+#EJC20261028_MHS_PICKING_NO_SOLAPADO
+
+Repositorio: C:\Users\carol\source\repos\TOMWMS_BOF
+Rama: dev_2028_merge
+Estado: código local aplicado, sin commit ni push. No se modificó ninguna BD.
+
+REGLA
+Las modalidades requiere_ubicacion_destino_picking y despacho_directo_picking
+(documentos 17 y 18 de MHS) excluyen las posiciones origen compartidas con
+la bodega destino del cliente del pedido persistido.
+Se reconocen asociaciones virtuales activas en ambos sentidos e IdUbicacion
+existentes en ambas bodegas. No depende de ocupación ni de nombres similares.
+Una asociación con una tercera bodega no excluye el stock del traslado actual.
+La transferencia virtual sin esas modalidades conserva su comportamiento.
+
+COBERTURA
+BOF: lStock y lStock_DT filtran la consulta y su fecha base FEFO.
+Core: lStock aplica la misma política; caché separada por pedido/detalle.
+Reserva: inserción y actualización validan stock positivo UNCOMMITED/UNCOMMITED HH,
+incluidos ambos overloads de inserción Core.
+Picking: inserción, actualización pendiente, ejecución detallada, consolidada,
+BOF y reemplazo validan origen antes de mover el producto.
+Los intentos bloqueados indican utilizar Transferencia interna WMS
+(desde Bodega Virtual). No se convierten documentos automáticamente.
+Las cantidades compartidas y las que requieren movimiento físico se tramitan
+en sus documentos respectivos; el filtro no modifica cantidades solicitadas.
+
+VALIDACIÓN REALIZADA
+- Compilación DAL.vbproj con MSBuild: correcta.
+- Compilación WMS.DALCore.csproj net8.0: correcta, sin errores.
+  Queda una advertencia de nulabilidad en lógica anterior de clsLnStock.cs.
+- 15 comprobaciones sobre el helper Core real, enlazado a un transporte SQL
+  aislado: correctas. No son una prueba de conexión con SQL Server.
+- 19 comprobaciones de las consultas SQL reales de ambos helpers, cuya
+  identidad se verifica, sobre fixtures relacionales aislados SQLite: correctas.
+  Incluyen direcciones inversas, tercera bodega, asociación inactiva,
+  identidad pedido/detalle, stock mixto, posición vacía y fecha base FEFO.
+- git diff --check: correcto.
+- VB conservado UTF-8 con BOM y CRLF; no se modificó Android ni proxies SOAP.
+- Brain remoto no disponible: se utilizó su fallback local con búsqueda de código.
+
+PENDIENTE DE QA OPERATIVO MHS
+1. Documento 17, origen compartido con destino: no reservar/asignar ese stock.
+2. Documento 18, misma condición: mismo bloqueo.
+3. Stock mixto: reservar solo posiciones no compartidas; mantener faltante
+   visible para tramitar la cantidad compartida mediante transferencia virtual.
+4. Origen compartido únicamente con una tercera bodega: permitir traslado actual.
+5. Asociación de bodegas invertida y equivalencia con IDs diferentes: bloquear.
+6. Reserva/picking anterior o reemplazo manual en posición compartida: bloquear
+   antes del movimiento y mostrar alternativa de transferencia virtual.
+7. Transferencia virtual habitual: comprobar cambio de bodega sin picking físico.
+8. Probar volumen real de pedidos y asociaciones para medir tiempo de reserva.
+
+RIESGO RESIDUAL
+No hubo prueba contra la base MHS ni ejecución de HH/BOF con operadores.
+La validación de asociaciones reutiliza la conexión/transacción del llamador;
+no cambia el aislamiento existente ni instala un trigger de integridad.
+No se liberan automáticamente reservas ni pickings existentes: si son rechazados,
+se deben corregir/reasignar mediante los procedimientos habituales de WMS.
+La clave del caché Core incluye pedido y detalle para evitar mezclar exclusiones;
+esto reduce reutilización de stock entre detalles del mismo pedido y requiere
+comprobar rendimiento con el volumen real en QA.
+
+ARCHIVOS Y EVIDENCIA
+change.diff: diferencia completa, incluido MhsTransferPickingPolicy.cs nuevo.
+footprint.json: archivos, métodos, tablas y validaciones.
+build-dal.log / build-core.log: resultados de compilación.
+policy-tests.log / relational-tests.log: resultados de pruebas aisladas.

@@ -1,0 +1,44 @@
+{
+  "tag": "#EJC20261116_PEDIDO_PRESENTACION",
+  "code_repository": "C:/Users/carol/source/repos/TOMWMS_BOF",
+  "code_branch": "dev_2028_merge",
+  "code_head": "f0d5f667b551ca9ee0fe03811db328f9335691bb",
+  "code_file": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\TOMIMSV4\\Transacciones\\Pedido\\frmPedido.vb",
+  "code_sha256": "f7df03d6c80d60cc73938fe61b8773696b47c04d906ad2c2210e1faaabb55100",
+  "code_state": "modified-not-committed",
+  "checks": {
+    "source_matches_tested_candidate": true,
+    "utf8_bom": true,
+    "crlf_preserved": true,
+    "winforms_cases_passed": 8,
+    "bof_build_exit": 0,
+    "project_references_rebuilt": false,
+    "database_writes": false,
+    "end_to_end_ui_test": false,
+    "deployed": false
+  },
+  "database_snapshot": {
+    "scope": "development order 171, SELECT only",
+    "rows": [
+      {
+        "IdPedidoDet": 1009,
+        "no_linea": 1,
+        "IdPresentacion": null,
+        "Cantidad": 12,
+        "IdStock": 841,
+        "reservation_IdPresentacion": 0,
+        "reservation_Cantidad": 12
+      },
+      {
+        "IdPedidoDet": 1010,
+        "no_linea": 2,
+        "IdPresentacion": 9,
+        "nom_presentacion": "CAJA",
+        "Cantidad": 88,
+        "IdStock": 1509,
+        "reservation_IdPresentacion": 9,
+        "reservation_Cantidad": 1760
+      }
+    ]
+  }
+}

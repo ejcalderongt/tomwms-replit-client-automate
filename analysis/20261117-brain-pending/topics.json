@@ -1,0 +1,585 @@
+[
+  {
+    "id": "rec28335",
+    "title": "Recepción 28335: cierre confirmado por CKFK",
+    "summary": "Caja master J100000635, SKU AG00034526041365, OC 28359 detalle 2: referencia compartida convirtió 4/3 en 3/3; se corrigieron copias, saldos, temporales e incremento por PK en HH/servicio. Se preparó conciliación de seis unidades ya registradas para recibir una por HH. CKFK confirmó el resultado satisfactorio.",
+    "limits": "Confirmación operativa del chat, sin SELECT posterior ni hashes de los binarios instalados. El agente no ejecutó DML. BOF está limpio al inventariar; HH y script DBA siguen pendientes.",
+    "sources": [
+      "brain/handoffs/2026-11-17-ckfk-recepcion-28335/README.md",
+      "analysis/20261117-recepcion-28335/confirmacion-ckfk.md",
+      "analysis/20261117-recepcion-28335/resumen-evidencia.json"
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "bodega-xml",
+    "title": "Contrato XML de bodega entre ramas",
+    "summary": "El servicio devolvía permitir_abrir_recepcion_enviada, ausente en clsBeBodega de HH estable y presente en dev_2028_merge. Se incorporó Element opcional false y accesores con CKFK. Clase real/parser aceptan true, false y ausencia; APK generado.",
+    "limits": "No desactivar validación XML ni activar parámetros en BD por inferencia. Publicación e instalación no se deducen de compilar.",
+    "sources": [
+      "analysis/20261117-recepcion-28335/bodega-compat-claims.json",
+      "analysis/20261117-recepcion-28335/bodega-xml-test.txt"
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "sap-reserva",
+    "title": "Facturas de reserva SAP: traza y aislamiento por documento",
+    "summary": "Se instrumentó WarehouseCode y se revisó el caso DocEntry 137463/DocNum 31080, IdWMS 28360. No se demostró carrera por depuración: el lector espera respuesta y contenido. Un documento con bodega inválida se omite con motivo y se continúa el lote; si no hay aptas se retorna antes de limpiar intermedias.",
+    "limits": "Fixtures y compilación reportados, no lectura HTTP/SAP integral ni prueba real del lote mixto. No reemplazar bodega faltante ni insertar esperas sin evidencia.",
+    "sources": [
+      "analysis/20261117-sap-reserva-trace/README.md",
+      "analysis/20261117-sap-reserva-trace/batch-claims.json"
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "reemplazo-variante",
+    "title": "Variante de producto en reemplazo, reserva y picking",
+    "summary": "Los reportes describen reparación en QA de 44 picking/39 despachos/39 salidas y causa de recurrencia en reserva 210071/picking 30168: se perdía variante entre stock, reserva, lectores y confirmaciones. Se cubrieron helpers y rutas normal/consolidada/verificación.",
+    "limits": "El propio reporte distingue reparaciones ya observadas y otro script de dos filas entregado sin ejecutar. No atribuir despliegue ni cierre operativo completo HH; conservar las limitaciones de cada afirmación.",
+    "sources": [
+      "analysis/mampa-reemplazo-20261116/claims.json",
+      "analysis/mampa-reemplazo-20261116/all-routes-report.json"
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "traslado-mensajes",
+    "title": "Traslados: numeración y mensajes de faltantes",
+    "summary": "Conservar no_linea al recargar para picking; tras reserva fallida consultar ausencia física por bodega/producto/variante; preservar motivos específicos y usar fallback neutro. Informar pedido no completado si hay fallos o descartes.",
+    "limits": "No cambia reglas de reserva ni parámetros. El diagnóstico de stock es temporal; no se reimportó pedido ni se escribieron datos en la validación documentada.",
+    "sources": [
+      "analysis/20261117-mampa-transfer-messages/claims.json",
+      "analysis/20261117-mampa-transfer-messages/report.json"
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "hh-ubicacion",
+    "title": "Cambio de ubicación HH: aviso y bloqueo parametrizados",
+    "summary": "El reporte describe consulta de reglas en ambos modos: incompatible permite continuar/cancelar con restrictivo apagado y bloquea con restrictivo activo. Caso MP-002/964.",
+    "limits": "Pruebas aisladas y compilación documentadas; prueba en dispositivo/servicio pendiente en esa fuente. La identidad del cliente no decide la regla.",
+    "sources": [
+      "analysis/20261117-hh-ubicacion-warning/claims.json"
+    ],
+    "clients": [
+      "POLINDUSTRIAS (alcance declarado del reporte)"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "verificacion8981",
+    "title": "Verificación consolidada HH: selección por pendiente",
+    "summary": "Incidente 8981: fechas agrupadas 1900/2000 impedían selección. La rama consolidada sin talla/color selecciona por producto, presentación y pendiente aunque el fallback complete lote/LP; conserva pTipo=1 y otros recorridos.",
+    "limits": "El reporte acredita nueve escenarios y compilación con dobles UI/servicio, sin guardar el pedido real. Cliente no identificado de manera independiente.",
+    "sources": [
+      "analysis/20261117-verificacion-8981/correccion.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "pedido171",
+    "title": "Pedido 171: presentación visual al editar",
+    "summary": "Detalle 1009 con NULL y reserva sin presentación; 1010 CAJA factor 20. La UI elegía la primera presentación antes de leer la recibida. Se conserva cero explícito y positivo disponible; -1 significa argumento omitido; kits quedaron fuera del recorrido observado.",
+    "limits": "Ocho pruebas WinForms y BOF compilado según traza. No convertir datos por una discrepancia visual ni asumir guardar/reservar operativo validado.",
+    "sources": [
+      "analysis/20261116-pedido171-presentacion/traza.md",
+      "analysis/20261116-pedido171-presentacion/validation.json"
+    ],
+    "clients": [
+      "desconocido (base de desarrollo de la fuente)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "packing-estado",
+    "title": "Packing 5314/10575: conservar estado al acumular",
+    "summary": "El snapshot distingue packing de 300 en estado 3 frente a pendiente de 60 en estado 5. Se agregó estado a selección, acumulación y DTO de HH para evitar mezclar identidades.",
+    "limits": "Reporte draft, cinco comprobaciones y compilación. No se modificó producción; conciliación y despliegue no confirmados.",
+    "sources": [
+      "analysis/20261109-packing-estado/claims.json"
+    ],
+    "clients": [
+      "La Cumbre (bodega 89 en el snapshot)"
+    ],
+    "branches": [
+      "dev_2026_estable_prd"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "despacho-parcial",
+    "title": "Despacho parcial y packing consistente",
+    "summary": "La adición a la propuesta indica consultar trans_pe_tipo.permitir_despacho_parcial: recibido distinto de verificado no bloquea cuando se permite parcial; verificado distinto de empacado conserva PACKING_NO_CUADRA.",
+    "limits": "Documento histórico modificado, no validación independiente del código actual ni del despliegue.",
+    "sources": [
+      "brain/_proposals/20260728-verificacion-despacho-parcial.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "desconocida en la adición"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-estado",
+    "title": "La Cumbre: pedido 8978 cambia de estado al guardar BOF",
+    "summary": "El laboratorio reprodujo transición Pickeado a Pendiente desde Actualizar_Estado_Pendiente sin cambiar cantidades. El botón Actualizar invoca el guardado, pero no acredita que se pulsara en el incidente.",
+    "limits": "Causalidad de código en laboratorio, no atribución de acción a la operadora.",
+    "sources": [
+      "analysis/cumbre-8978-state-claims.json",
+      "analysis/cumbre-order-state-fix/tests.txt"
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-decimal",
+    "title": "La Cumbre: residuos decimales y laboratorio HH",
+    "summary": "El candidato de picking corrige rechazos por residuos reproducidos. LABDEC0003 recibió confirmación de operación local: pedido 8979/picking 4409 Despachado, despacho 11534 Finalizado; piezas 0.1/0.2 sin stock ni reservas remanentes de esa LP.",
+    "limits": "Separar hipótesis de suficiencia productiva de confirmación del escenario de laboratorio. No sumar ambos como validación de todos los casos decimales.",
+    "sources": [
+      "analysis/cumbre-decimal-lab-claims.json",
+      "analysis/cumbre-decimal-hh-fixture/final-claims.json"
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-picking-decimales",
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-sap-duplicado",
+    "title": "Pedido 10512: tres traslados SAP y marcado WMS",
+    "summary": "Cierre aportado: WMS completo una vez, SAP completo tres veces, 640 líneas/539 productos. Se perdió correspondencia al usar contador de línea SAP para marcar filas WMS. La versión posterior conserva IDs originales, huella por pedido/despacho, recuperación de marcas y control transaccional, SIN tabla nueva.",
+    "limits": "La propuesta con tabla/journal fue retirada y no debe aplicarse. Pruebas de adaptadores no sustituyen DI API/SQL reales; no prometer exactly-once ni transacción distribuida. Alcance histórico declarado por ruta; requiere revisión antes de generalizar.",
+    "sources": [
+      "analysis/20261114-cumbre-despachos/cierre-integridad.txt",
+      "analysis/20261114-cumbre-despachos/prevencion-sin-tabla.txt"
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-sap-ingreso",
+    "title": "Ingreso SAP: orden base, cantidades y cierre transaccional",
+    "summary": "Casos OC WMS 12077: comprobar BaseType/BaseEntry de toda entrada SAP antes de aceptar referencia, no solo DocEntry/DocNum. Errores de cierre/update y transacción SAP inactiva detienen el flujo; distinguir commit SAP de commit SQL y conciliar antes de reenviar.",
+    "limits": "No se probó el origen histórico de la referencia ajena. No hay transacción distribuida ni limpieza automática de marcas previas; pruebas e integración pendientes según cada documento.",
+    "sources": [
+      "analysis/20261024-sap-ingreso-referencia-ajena.md",
+      "analysis/20261024-sap-ingreso-cierre-rollback-correccion.md"
+    ],
+    "clients": [
+      "desconocido (no inferido del proyecto SAPSYNCCUMBRE)"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-traslado",
+    "title": "Traslado SAP: comparación decimal y continuidad del lote",
+    "summary": "Sumar como Decimal y comparar a seis posiciones evita posibles falsos excesos Double. El error conserva progreso/log y devuelve False para continuar con otros pedidos, sin cambiar la ruta de éxito.",
+    "limits": "Caso pedido 10332/despacho 13308 pendiente de prueba SAP. La causa numérica es compatible con evidencia, no se comprobaron los valores productivos internos.",
+    "sources": [
+      "analysis/20261029-cumbre-traslados-correccion.md"
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "dev_2026_estable_prd"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "cumbre-performance",
+    "title": "Trazas y rendimiento: medir antes de atribuir",
+    "summary": "Resumen de recepción: 33 llamadas completadas, suma de tiempos cliente 8113 ms, sin errores ni advertencias de solapamiento en ese registro. El paquete de trazas desactivadas documenta compilación HH/servicio/DAL/SAP/BOF.",
+    "limits": "La suma de tiempos no es latencia total ni comparación causal de rendimiento. Revisiones de producción y despliegue no verificados.",
+    "sources": [
+      "analysis/cumbre-performance-20261105/reception-summary.txt",
+      "analysis/cumbre-performance-20261105/no-traces-verification.txt"
+    ],
+    "clients": [
+      "desconocido (no inferido de la rama de trazas)"
+    ],
+    "branches": [
+      "codex/cumbre-trazas-desactivadas"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "killios-aceite",
+    "title": "Killios: +3 documental y defensa de reserva",
+    "summary": "WMS282 presenta existencia tres UN mayor que kardex, no prueba de faltante físico. Reproducción del motor de reserva demuestra 9→12 frente al corregido 9→9; corrección en 15 bloques y preservación de reservas documentada.",
+    "limits": "Reproducir el mecanismo no demuestra que originó históricamente el +3. QAS con rollback puede consumir identities y dejar logs por conexiones independientes. Sin ajuste productivo automático.",
+    "sources": [
+      "analysis/20261026-killios-aceite/informe.md",
+      "analysis/20261026-killios-aceite/correccion-estable.md"
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "killios-cest",
+    "title": "Cambio de estado: captura, fragmentos y cantidades son defectos distintos",
+    "summary": "Distinguir captura cajas/UN, fragmentos que conservan presentación y conversión que fabrica unidades. WMS272 conserva total mientras se fragmenta; backend documenta bloqueo/validación y normalización de residuos; 44 escenarios reportados tras recuperar QAS.",
+    "limits": "Los 44 escenarios no son prueba desde pantalla/HTTP de la versión desplegada. No truncar o redondear producción por inferencia; conservar medias/cuarto de caja válidos cuando su resultado en UN sea entero.",
+    "sources": [
+      "analysis/20261026-killios-aceite/decimales-unidades-wms272.md",
+      "analysis/20261026-killios-aceite/cambio-estado-backend-final.md",
+      "analysis/20261026-killios-aceite/stock-transformer-presentacion.md"
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "dev_2026_estable",
+      "codex/killios-decimales-estados"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "killios-publicacion",
+    "title": "Matriz Killios y scripts de conciliación",
+    "summary": "La matriz separa evidencia histórica, fixture sintético, fuente/ensamblado y validación antes de publicar. DBA conserva propuestas de cajas/UN, presentación y aceite; su existencia no acredita ejecución.",
+    "limits": "No es autorización de publicación. Los scripts se revisan individualmente, con alcance de inventario y aprobación explícita; no ejecutar el lote de pendientes como paquete.",
+    "sources": [
+      "analysis/killios-validacion-20261110/matriz.md"
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "codex/killios-decimales-estados"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "picking-rack",
+    "title": "Implosión automática al devolver picking a rack",
+    "summary": "Caso LP MP000023581: Ubic_Implosion_Auto y destino rack pueden activar consolidación aunque el operador solicite ubicación. El filtro exige disponibilidad y varias dimensiones de identidad; stock existente no garantiza que aparezca en VW_Stock_Res.",
+    "limits": "Diagnóstico estático sin reproducir con BD del cliente; el mensaje existe en más de una ruta. Contrastar reservas, vista y llamada real antes de corregir datos.",
+    "sources": [
+      "analysis/20261024-la-cumbre-picking-rack/DIAGNOSTICO.md"
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "ubic-duplicado",
+    "title": "Listado BOF de ubicaciones duplicadas",
+    "summary": "La vista/listado puede multiplicar filas por relaciones de usuarios/roles. Se documentó SELECT DISTINCT para filas exactamente iguales sin descartar tareas distintas; no prueba movimientos duplicados persistidos.",
+    "limits": "Compilación documentada; grid operativo/DAL instalada pendientes en esa fuente. Filas distintas en campos ocultos no se fusionan.",
+    "sources": [
+      "analysis/20261028-ubic-duplicado/diagnostico.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "desconocida en el informe"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "mhs-origen",
+    "title": "Transferencias: evitar posiciones origen compartidas con destino",
+    "summary": "requiere_ubicacion_destino_picking y despacho_directo_picking activan política por funcionalidad. Reconocer asociaciones virtuales activas en ambos sentidos e identidad de ubicación entre bodegas, sin depender de ocupación o nombres; tercera bodega no debe excluir stock.",
+    "limits": "Cobertura documentada BOF/Core/reserva/picking y pruebas aisladas; QA operativo pendiente. No inferir el estado actual por fecha del archivo.",
+    "sources": [
+      "analysis/20261028-mhs-transferencias-no-solapadas/validacion.txt"
+    ],
+    "clients": [
+      "MHS (evidencia delimitada)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "lote-vencimiento",
+    "title": "Cambiar lote/vencimiento sin perder el origen documental",
+    "summary": "Parámetro funcional trans_oc_ti.permitir_cambiar_lote_vencimiento, copia independiente y validación del saldo/origen por ID en servidor; recepción, stock y etiqueta usan captura real, lote OC conserva esperado. No aplica automáticamente a caja master/talla-color/pallet.",
+    "limits": "Documento de entrega histórico: SQL no ejecutado ni operación real validada en esa etapa. Ruta de script histórica debe verificarse; no mover scripts ni aplicar DDL durante esta consolidación.",
+    "sources": [
+      "analysis/20261029-mhs-lote-vencimiento/ENTREGA.txt"
+    ],
+    "clients": [
+      "MHS (caso documentado)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "navsync-recibido",
+    "title": "NavSync: no reducir cantidad recibida al reimportar",
+    "summary": "Compra, devolución y traslado existentes solo aceptan Quantity_Received si supera lo ya recibido; conservar demás actualizaciones y nuevas inserciones. Protección localizada en importadores, no en DAL compartida.",
+    "limits": "Compilación y revisión documentadas; prueba SQL/NAV y concurrencia pendientes. No reconstruye cantidades históricas sobreescritas.",
+    "sources": [
+      "analysis/20261029-navsync-conservar-recibido.md"
+    ],
+    "clients": [
+      "desconocido (no inferido del nombre de rama)"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "navsync-duplicado",
+    "title": "NavSync: identidad de devolución e idempotencia",
+    "summary": "Buscar con tipo WMS 12, no Document_Type NAV. Conservar encabezado existente, bloquear importación compartida, rechazar múltiples coincidencias y no reactivar anulados/cerrados por reimportación.",
+    "limits": "No limpia duplicados históricos. No equivale a unicidad global para escritores externos. Prueba SQL/NAV no ejecutada en la fuente.",
+    "sources": [
+      "analysis/20261029-navsync-devolucion-duplicada.md"
+    ],
+    "clients": [
+      "desconocido (no inferido del nombre de rama)"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "navsync-designer",
+    "title": "Diseñador Visual Studio: hipótesis y correcciones descartadas",
+    "summary": "Caché de diseño DevExpress 25.2 frente a proyecto 26.1; tipos compilados no eran System.Void. Retirar caché y mover Inherits no resolvieron según Carolina; se revirtió el movimiento de herencia y se conservaron correcciones funcionales.",
+    "limits": "Compilar/reflexión no verifica diseñador. Conservar resultados negativos y respaldos; no volver a presentar esos intentos como solución confirmada.",
+    "sources": [
+      "analysis/20261029-navsync-designer-cache.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "oc-vacia",
+    "title": "Eliminar ingreso: encabezado vacío no equivale a detalle cero",
+    "summary": "Cualquier fila de trans_re_det, incluso cantidad cero o recepción anulada, impide eliminar. Permitir ingreso NUEVA sin filas de detalle; preservar encabezados compartidos y transacción/bitácora consistentes.",
+    "limits": "No cambió Tiene_Recepciones compartido ni se borraron documentos reales; pruebas y build son del entorno documentado.",
+    "sources": [
+      "analysis/20261029-ingreso-recepcion-vacia.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "webapi-ajustes",
+    "title": "WebAPI ajustes: unidad de ajuste y datos del encabezado",
+    "summary": "Endpoint pendientes-envio full/minimal incorpora fecha/usuario de encabezado y distingue PRESENTACION por IdPresentacion distinto de cero, no por factor. DAL carga nombre/ID de presentación; cantidades/UMBas se conservan. Replica documentada en tom_2028_prd.",
+    "limits": "El GET puede tener efectos de estado existentes: no invocarlo como diagnóstico inocuo. Mapper/controlador simulados y compilación no prueban despliegue.",
+    "sources": [
+      "analysis/20261105-webapi-ajustes/README.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2028_merge",
+      "tom_2028_prd"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "monitor-ocupacion",
+    "title": "Monitor: área/general y ubicaciones bloqueadas",
+    "summary": "Conservar estado actual del selector al terminar carga asíncrona, limpiar enlaces de series al volver a general; modo Bloqueadas excluyente usa identidad IdBodega+IdUbicacion sin filtrar ocupación. Cursor/selector se restauran en Finally, sin pausa artificial.",
+    "limits": "Documento histórico no confirma UI contra cliente ni distribución del ejecutable; compilación final pudo quedar bloqueada por aplicación en uso.",
+    "sources": [
+      "outputs/20260911-ocupacion-bloqueadas/resultado.md"
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "monitor-readmodel",
+    "title": "Readmodel de tareas: identidad compuesta de ubicación",
+    "summary": "Validación del laboratorio: recepción 10182/tarea 14876, vista una fila y procedimiento dos; la ubicación 9 existe en dos bodegas. SELECT corregido devuelve una al usar identidad de bodega y ubicación.",
+    "limits": "alter_executed=false. La tarea cambió de estado durante diagnóstico; no se alteraron datos/objetos. El procedimiento pendiente requiere revisión, no aplicar automáticamente.",
+    "sources": [
+      "analysis/20261113-monitor-tareas/validacion-readmodel.json"
+    ],
+    "clients": [
+      "desconocido (entorno TOMWMS_CUMBRE_DECIMAL_LAB declarado)"
+    ],
+    "branches": [
+      "desconocida en el resultado"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "portal",
+    "title": "Portal portable: preservar alcance de instalación validada",
+    "summary": "El registro existente declara instalación separada en estación de Erik: autenticación Windows, arranque, login, inventario y KPIs; el runbook local gobierna otra PC.",
+    "limits": "No se validaron PC de Carol, SQL auth ni winget en PC limpia. Mantener estado verificado original como declaración de esa fuente, sin otorgarlo a esta síntesis ni copiar credenciales.",
+    "sources": [
+      "analysis/portal-installation-20261105/claims.json",
+      "brain/runbooks/portal-react-instalacion-otra-pc.md"
+    ],
+    "clients": [
+      "CAREMED"
+    ],
+    "branches": [
+      "wms-brain",
+      "codex/portal-portable-20261105"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "go-live",
+    "title": "Entregables MHS e IODESA: scripts preparados no son operaciones",
+    "summary": "MHS: diagnóstico por defecto para identities/correlativos. IODESA: DOWN conserva IDs actuales pero no recupera IDs originales ya reasignados por un UP sin respaldo.",
+    "limits": "Revisar cada script, respaldar/probar y autorizar explícitamente. No interpretar inventario de scripts como prueba de ejecución ni como paquete listo para aplicar.",
+    "sources": [
+      "deliverables/MHS_go_live/README.md",
+      "deliverables/IODESA_identity_down/README.md"
+    ],
+    "clients": [
+      "MHS",
+      "IODESA"
+    ],
+    "branches": [
+      "desconocida en los entregables"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "gobierno",
+    "title": "Gobierno pendiente: firma, funcionalidad, rutas y SQL primero",
+    "summary": "AGENTS pendiente incorpora CKFK para Carolina, reglas por funcionalidad sin identidad de empresa, carpetas habituales sin worktrees automáticos y script concreto antes de DML. Se conserva historia y autoría ajena; no se hace commit/push en esta actualización.",
+    "limits": "La autorización para documentar no autoriza publicar, mezclar HH/BOF, modificar datos ni adoptar experimentos como política estable.",
+    "sources": [
+      "AGENTS.md"
+    ],
+    "clients": [
+      "desconocido (regla de trabajo local, no regla de cliente)"
+    ],
+    "branches": [
+      "wms-brain"
+    ],
+    "status": "draft",
+    "review": "report-content-reviewed; not independently revalidated"
+  }
+]

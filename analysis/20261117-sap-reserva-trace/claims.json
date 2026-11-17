@@ -1,0 +1,33 @@
+[
+  {
+    "id": "EJC20261117-SAP-RESERVA-TRACE",
+    "kind": "decision",
+    "statement": "Agregar diagnóstico al lector de facturas de reserva usado por la importación para comparar WarehouseCode recibido y previo a validación; causa intermitente pendiente de evidencia SAP.",
+    "sources": [
+      {
+        "path": "analysis/20261117-sap-reserva-trace/evidence/clsSyncSapFacturaReserva.vb",
+        "commit": "31c73d606d4c0d47c6015e8e5f1c68b779ead6b2",
+        "sha256": "94d46550c12ff1403333e1a2633fccdce2bcc17359d620ee5b35f57e54c63b27",
+        "content_state": "worktree-snapshot",
+        "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\SAPSYNCMAMPA\\Clases Interface Sync\\Factura_Reserva\\clsSyncSapFacturaReserva.vb",
+        "repository": "TOMWMS_BOF"
+      },
+      {
+        "path": "analysis/20261117-sap-reserva-trace/evidence/FacturaReservaMapper.vb",
+        "commit": "31c73d606d4c0d47c6015e8e5f1c68b779ead6b2",
+        "sha256": "17d4fc83983223afc99329db8f1c526cca0c5bf76dd7bb0e425da9b729dd36e7",
+        "content_state": "worktree-snapshot",
+        "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\SAPSYNCMAMPA\\Clases Interface Sync\\Factura_Reserva\\FacturaReservaMapper.vb",
+        "repository": "TOMWMS_BOF"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

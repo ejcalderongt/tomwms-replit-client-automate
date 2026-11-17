@@ -1,0 +1,1273 @@
+{
+  "tag": "#CKFK20261117_BRAIN_AFIRMACIONES",
+  "status": "draft",
+  "policy": "Preserve declared scope/status as historical source data. Missing clients/branches remain unknown. No operational claim independently verified by this index.",
+  "documents": [
+    {
+      "source": {
+        "path": "analysis/20261105-webapi-ajustes/claims-prd.json",
+        "commit": null,
+        "sha256": "6a1b4f7610cf3eee1f6c60c14bb41c38f2c514df56f5c3ecde67c94b284ddb8e",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105_AJUSTES_API_PRD",
+          "kind": "fact",
+          "statement": "Cambio local de ajustes replicado exclusivamente en cuatro archivos: fecha del encabezado, usuario User_agr, indicador PRESENTACION o UNIDAD y nombre de presentacion en respuestas full y minimal.",
+          "clients": [
+            "no-identificado; alcance limitado al codigo local"
+          ],
+          "branches": [
+            "tom_2028_prd"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261105-webapi-ajustes/claims.json",
+        "commit": null,
+        "sha256": "ec04a719ec1b3d5a83453457c404bdc4a3fad8bfafeb9259d4374e934e64e7e3",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105_AJUSTES_API",
+          "kind": "fact",
+          "statement": "Cambio local: fecha del encabezado, usuario User_agr y tipo PRESENTACION si IdPresentacion no es cero, UNIDAD en otro caso, con nombre de presentacion; expuestos en respuestas full y minimal.",
+          "clients": [
+            "no-identificado; alcance de codigo local, sin generalizacion funcional por cliente"
+          ],
+          "branches": [
+            "dev_2028_merge"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261109-packing-estado/claims.json",
+        "commit": null,
+        "sha256": "c8745fe71f4d967fd07a2ff44a8d403c74ddbaa39ba6ca51b488a14824fddeb2",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261109-PACKING-5314-ESTADO",
+          "kind": "fact",
+          "statement": "Snapshot del picking 5314 pedido 10575: MI PASTA 23054 JJ000030013 vence 2028-10-04 sin lote: packing 584161 estado 3 cantidad 300; pendiente estado 5 cantidad verificada 60. HH omitia estado al seleccionar y acumular; parche agrega estado a ambos filtros y al DTO de seleccion. No se modificaron datos productivos.",
+          "clients": [
+            "La Cumbre (contexto HH; alcance del snapshot bodega 89)"
+          ],
+          "branches": [
+            "dev_2026_estable_prd"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "limitations": [
+            "Sin despliegue ni prueba de escritura en produccion",
+            "Requiere reconciliacion autorizada de los datos ya acumulados",
+            "No sustituye una verificacion independiente"
+          ]
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-codigo.json",
+        "commit": null,
+        "sha256": "8d3540d1ac9f60ee74d09fce82c984c0b656a2cbca03df4d1ce60d7efc6bc071",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-01",
+          "kind": "fact",
+          "statement": "La ruta directa compara no_linea WMS con el nuevo contador SAP ya incrementado para elegir filas a marcar.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-02",
+          "kind": "fact",
+          "statement": "La ruta directa agrega StockTransfer antes del marcado WMS, sin iniciar una transaccion SAP ni buscar un documento SAP existente.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-03",
+          "kind": "fact",
+          "statement": "El helper Open_Connection abre conexion sin BeginTransaction; rollback/commit no actuan si lTransaction es Nothing.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-04",
+          "kind": "fact",
+          "statement": "El resultado del marcado de cola solo se rechaza si es cero; no se verifica cobertura exacta.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-05",
+          "kind": "fact",
+          "statement": "La cabecera se actualiza despues del retorno exitoso y en una transaccion diferente, marcando por defecto todas las filas del pedido.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-06",
+          "kind": "fact",
+          "statement": "Con referencia no vacia la sublista se selecciona solo por No_pedido; dos pedidos con igual referencia pueden mezclarse.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-07",
+          "kind": "fact",
+          "statement": "El metodo directo suma cantidades pendientes; no contiene incremento acumulativo por intento ni asignacion de precio.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-08",
+          "kind": "hypothesis",
+          "statement": "El pedido 10512 pudo quedar pendiente por una lista vacia o incompleta al marcar filas despues del Add; requiere datos y bitacora del incidente.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-09",
+          "kind": "fact",
+          "statement": "El monitor de progreso se recorta despues de 50000 caracteres y no equivale a un archivo persistente de traza.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-10",
+          "kind": "decision",
+          "statement": "La correccion debe conservar IDs exactos, conciliar SAP antes de repetir y coordinar concurrencia y recuperacion; dos commits locales no garantizan atomicidad distribuida.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-evidencia.json",
+        "commit": null,
+        "sha256": "b00793eb8b3649199cd6f2be1c2de93d7d9b53041f0c4a8eb1a272adbddf8dbc",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-11",
+          "kind": "fact",
+          "statement": "Las imagenes muestran pedido 10512 con indicador No Enviado y tres renglones SAP con igual referencia e importes absolutos distintos; no muestran DocEntry ni cantidades.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-12",
+          "kind": "hypothesis",
+          "statement": "La variacion monetaria puede depender de valoracion SAP o de cambios en filas/cantidades; la captura no distingue estas causas.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-integridad.json",
+        "commit": null,
+        "sha256": "a4a4503c40727182bd240e0ffee82c165ba7fef91f9efb6ef5f16e809a56e278",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-26",
+          "kind": "fact",
+          "statement": "Las 640 lineas solicitadas del pedido 10512 coinciden por IdPedidoDet y cantidad con el unico despacho finalizado 13520 y con sus filas de interface.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-27",
+          "kind": "fact",
+          "statement": "Los tres documentos SAP 71872,72820,72821 contienen los mismos 539 productos y todas las cantidades solicitadas del pedido 10512; estos resultados no evidencian un envio parcial.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-28",
+          "kind": "fact",
+          "statement": "El tipo 6 del caso tiene genera_guia_remision=1, Marcar_Registros_Enviados_MI3=0 y permitir_despacho_parcial=1; Enviado_A_ERP y Sync_MI3 estan en 0.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-29",
+          "kind": "fact",
+          "statement": "Precio, Costo y Total_linea son cero en las 640 lineas del pedido aportadas; esos campos no proporcionan un importe WMS esperado para comparar con la valoracion SAP de este caso.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-prevencion.json",
+        "commit": null,
+        "sha256": "e9205a0f15abce9bda36cc444818c6fd3cb73c3a31d2ce4486f595598e4496ef",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-30",
+          "kind": "fact",
+          "statement": "El cambio para transferencias directas 09 hacia 89 conserva IDs WMS exactos y no depende de una tabla nueva ni migracion.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-20"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-31",
+          "kind": "fact",
+          "statement": "El motor inicia transaccion SAP antes de Add, prepara las marcas SQL sin commit, confirma SAP y luego WMS, e intenta rollback ante errores.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-21"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-32",
+          "kind": "fact",
+          "statement": "Antes de crear consulta la clave SAP existente y valida huella, cantidades y bodegas para recuperar marcas sin repetir un traslado identificado.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": []
+        },
+        {
+          "id": "EJC20261114-CUMBRE-33",
+          "kind": "decision",
+          "statement": "Se retiro el journal durable WMS por peticion de Carolina; las transacciones locales y la consulta SAP no se presentan como garantia absoluta ante todo resultado desconocido.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-24"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-34",
+          "kind": "fact",
+          "statement": "Se conservan la regla de genera_guia_remision, el tratamiento de varios despachos y el flujo legacy de las otras rutas.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-23",
+            "EJC20261114-CUMBRE-25"
+          ]
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-resultados.json",
+        "commit": null,
+        "sha256": "9b1ba3634ae366cbe2ae1b277d99c8e512b87405d34900dc7c5aaa80909f7736",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-13",
+          "kind": "fact",
+          "statement": "Los resultados WMS aportados contienen 640 filas SALIDA tipo 6 del pedido 10512/despacho 13520, todas pendientes y agrupables en 539 productos.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-14",
+          "kind": "fact",
+          "statement": "Los tres documentos SAP 71872/72820/72821 contienen los mismos 539 productos y las mismas cantidades por producto, coincidentes con las filas y detalles WMS aportados.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-15",
+          "kind": "fact",
+          "statement": "OINM confirma por producto los mismos movimientos de cantidad en 09 y 89 en los tres traslados; varian sus TransValue.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-16",
+          "kind": "fact",
+          "statement": "La diferencia de valoracion de 0.35 LPS entre 72820 y 72821 procede de los productos 044000032111 (0.19) y 028400564656 (0.16); no hay diferencia de cantidades.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-12"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-17",
+          "kind": "fact",
+          "statement": "Hay tres errores de la ruta directa con el mensaje de SAP enviado y marcado WMS fallido, con referencia vacia, en las fechas de los tres traslados.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-18",
+          "kind": "fact",
+          "statement": "El orden persistido WTR1.LineNum en cada uno de los tres documentos produce cero coincidencias con el predicado de marcado WMS: mismo producto y no_linea igual a LineNum SAP mas uno. El orden por Idtransaccion del volcado produciria dos y no reproduce el orden emitido.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261114-CUMBRE-19",
+          "kind": "fact",
+          "statement": "La duplicacion esta confirmada por tres DocEntry no anulados, cantidades identicas por producto, movimientos OINM coincidentes y referencia del mismo pedido/despacho. El mecanismo de marcado vacio se reproduce usando el orden persistido en cada traslado SAP.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261114-cumbre-despachos/afirmaciones-sin-tabla.json",
+        "commit": null,
+        "sha256": "e9205a0f15abce9bda36cc444818c6fd3cb73c3a31d2ce4486f595598e4496ef",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261114-CUMBRE-30",
+          "kind": "fact",
+          "statement": "El cambio para transferencias directas 09 hacia 89 conserva IDs WMS exactos y no depende de una tabla nueva ni migracion.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-20"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-31",
+          "kind": "fact",
+          "statement": "El motor inicia transaccion SAP antes de Add, prepara las marcas SQL sin commit, confirma SAP y luego WMS, e intenta rollback ante errores.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-21"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-32",
+          "kind": "fact",
+          "statement": "Antes de crear consulta la clave SAP existente y valida huella, cantidades y bodegas para recuperar marcas sin repetir un traslado identificado.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": []
+        },
+        {
+          "id": "EJC20261114-CUMBRE-33",
+          "kind": "decision",
+          "statement": "Se retiro el journal durable WMS por peticion de Carolina; las transacciones locales y la consulta SAP no se presentan como garantia absoluta ante todo resultado desconocido.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-24"
+          ]
+        },
+        {
+          "id": "EJC20261114-CUMBRE-34",
+          "kind": "fact",
+          "statement": "Se conservan la regla de genera_guia_remision, el tratamiento de varios despachos y el flujo legacy de las otras rutas.",
+          "clients": [
+            "La Cumbre"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "supersedes": [
+            "EJC20261114-CUMBRE-23",
+            "EJC20261114-CUMBRE-25"
+          ]
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261116-pedido171-presentacion/claims.json",
+        "commit": null,
+        "sha256": "3bca1d84ba141f0386e58db024db54cd0c9a59613309a5d84cf8146a8eac297f",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261116-PEDIDO171-PRESENTACION",
+          "kind": "fact",
+          "statement": "En la lectura del pedido 171, el detalle 1009 tiene IdPresentacion NULL y reserva 0; el detalle 1010 tiene presentacion 9 CAJA. El selector anterior sustituye el valor de las lineas al cargar en modo Editar.",
+          "clients": [
+            "MHS DEV pedido 171"
+          ],
+          "branches": [
+            "dev_2028_merge"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261116-PEDIDO-PRESENTACION-DECISION",
+          "kind": "decision",
+          "statement": "Conservar cero explicito como unidad basica y el ID disponible recibido; permitir presentacion por defecto solo para argumento omitido (-1). El cambio es visual y no convierte cantidades ni modifica datos existentes.",
+          "clients": [
+            "MHS DEV pedido 171"
+          ],
+          "branches": [
+            "dev_2028_merge"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-hh-ubicacion-warning/claims.json",
+        "commit": null,
+        "sha256": "c04d57dced382b22e9fc5f3fe01d3b57174327a44d0368fa7305eaeab5f6ec19",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261117-HH-UBICACION-ADVERTENCIA",
+          "kind": "fact",
+          "statement": "El cambio local hace que Cambio de ubicacion consulte las reglas en ambos modos. La respuesta incompatible conserva el aviso con continuar/cancelar cuando restrictivo esta apagado y el bloqueo cuando esta encendido. Compilacion Java Android y pruebas aisladas satisfactorias; pendiente prueba en dispositivo y servicio desplegado.",
+          "clients": [
+            "POLINDUSTRIAS: caso MP-002/964; sin condicion por identidad de cliente"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-mampa-transfer-messages/claims.json",
+        "commit": null,
+        "sha256": "21f8bfa694db1d7164af6df72bdf481fefbc1ef7c49174cd61cd0540eea83a98",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261117_TRASLADO_MENSAJES",
+          "kind": "decision",
+          "statement": "Por solicitud de Carolina, conservar no_linea al recargar detalles para picking; diagnosticar ausencia física de stock por bodega/producto/talla-color mediante SELECT tras una reserva fallida; evitar clasificar el mensaje genérico como error de estado; informar pedido no completado ante líneas fallidas o descartadas. No cambia los parámetros ni las reglas de reserva o transacción.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-recepcion-28335/bodega-compat-claims.json",
+        "commit": null,
+        "sha256": "bf239d97edd4cb8c642bd5a6dfc227d5c144ca29994dbaa5d163c820f59babca",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "CKFK20261117-BODEGA-XML-COMPAT",
+          "kind": "fact",
+          "statement": "El campo permitir_abrir_recepcion_enviada existia en dev_2028_merge (4d8be015) y faltaba en HEAD c497abb de dev_2026_estable. Se incorporo localmente como Element opcional false; el parser real acepta true, false y ausencia del campo; assembleDebug satisfactorio.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-recepcion-28335/claims.json",
+        "commit": null,
+        "sha256": "165cbe9e6fa87a3c36499a5049bb1d0030a6af7251adac908b0f3763d9e08c68",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "CKFK20261117-REC28335-REFERENCE",
+          "kind": "fact",
+          "statement": "El codigo local de Procesa_Caja_Master reutiliza el mismo objeto OC; la secuencia 4,3 produce dos cantidades 3 en el replay aislado.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "CKFK20261117-REC28335-DATA",
+          "kind": "fact",
+          "statement": "En QA, OC 28359 detalle 2 espera 7 y registra 6; recepcion 28335 contiene detalles 46491/46492 de 3 y existencias ambas ligadas a 46491; lotes 1348/1349 siguen en recibido 0.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "CKFK20261117-REC28335-CAUSE",
+          "kind": "hypothesis",
+          "statement": "La reutilizacion de referencia explica el 3+3 observado; LP vacia frente a J100000635 impide la correlacion de lotes del servicio y mantiene el requerimiento de escanear CM. Falta identificar hashes de APK y servicio desplegados.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-recepcion-28335/fix-claims.json",
+        "commit": null,
+        "sha256": "6eaf89bc572d188be98ed7cba3fa2d599078e5ae5a031a08a771075b495d1b39",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "CKFK20261117-REC28335-FIX-LOCAL",
+          "kind": "fact",
+          "statement": "Se corrigio localmente HH y GuardarHH_CM en dev_2026_estable; pruebas de fragmentos reales en memoria y compilaciones HH/WS satisfactorias. No demuestra funcionamiento desplegado.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "CKFK20261117-REC28335-RECOVERY-PREPARED",
+          "kind": "decision",
+          "statement": "Preparar conciliacion de cinco filas conservando seis unidades y dejando una pendiente para el flujo normal HH; no ejecutar hasta revision y autorizacion explicita. Script con vista previa y confirmacion de HH/servicio instalados. Sin cambios de datos realizados.",
+          "clients": [
+            "MAMPA_QA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-sap-reserva-trace/batch-claims.json",
+        "commit": null,
+        "sha256": "7716312e257338ecb01bae27e916fcde23058312dc5a4804f1057c0e366789f5",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "CKFK261117ReservaLote",
+          "kind": "decision",
+          "statement": "Ante el caso de importación sin documento informado por Carolina, aislar los rechazos de validación de bodega por factura, informar DocNum y DocEntry, continuar las demás y resumir las omitidas; otras excepciones mantienen interrupción. Prueba real SAP pendiente.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-sap-reserva-trace/claims.json",
+        "commit": null,
+        "sha256": "46d0d502576086679f7f626e75084665ddf2ad4726086b0995aa14e6315b8976",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261117-SAP-RESERVA-TRACE",
+          "kind": "decision",
+          "statement": "Agregar diagnóstico al lector de facturas de reserva usado por la importación para comparar WarehouseCode recibido y previo a validación; causa intermitente pendiente de evidencia SAP.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-verificacion-8981/claims.json",
+        "commit": null,
+        "sha256": "251d03491da068d0dc49977d3a41b97ee5770f0268b300e447c15664aa342be4",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261117-VERI8981-FILTRO-FECHA",
+          "kind": "fact",
+          "statement": "En la traza del incidente 8981 la HH usa verificacion consolidada, muestra 40 pendientes y devuelve cero filas al guardar: el detalle conserva fecha 1900 y lote MP-L2401 mientras picking trae fecha 2000. El filtro por lote/fecha del codigo local explica la exclusion.",
+          "clients": [
+            "unknown"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/20261117-verificacion-8981/fix-claims.json",
+        "commit": null,
+        "sha256": "d00b101b53209d48da7257c6c756132872010703ba30e4e10d560de86f48b8cc",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261117-VERI8981-FIX",
+          "kind": "fact",
+          "statement": "El cambio local HH dev_2026_estable elimina filtro lote/fecha de la rama consolidada sin talla/color al guardar, preservando producto, presentacion, pendiente y pTipo. Compila y supera nueve escenarios con dobles; no fue validado guardando un pedido real.",
+          "clients": [
+            "unknown"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-8978-state-claims.json",
+        "commit": null,
+        "sha256": "c17d8f7848290327f0721a1401e3eed5e5672a103f4f411a3ff3a9e5a83491a1",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_CUMBRE_8978_ESTADO",
+          "kind": "fact",
+          "statement": "En el laboratorio, la sobrecarga Actualizar_Estado_Pendiente llamada al guardar BOF reproduce Pickeado a Pendiente sin cambiar cantidades. El boton Actualizar invoca ese guardado; no se acredita que la usuaria lo haya pulsado.",
+          "clients": [
+            "LA CUMBRE"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-decimal-hh-fixture/12038-claims.json",
+        "commit": null,
+        "sha256": "f7dbe122576197b13a970ba1b3b7691e13a26ac6e1a2e5c5d380a4a451cd61df",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_CUMBRE_HH_12038",
+          "kind": "fact",
+          "statement": "Pedido 8980/picking 4410 de laboratorio: 120.37 y 0.01 completos en picking, verificacion y despacho; despacho 11535 Finalizado; no quedan stock ni reservas de los IDs/licencia revisados. Auditoria registra HH Pendiente a Pickeado con cero pendientes y despues Verificado a Despachado. No hay evento de actualizacion BOF posterior al cierre en la bitacora consultada, por lo que no acredita por si sola el estado inmediatamente despues de esa accion.",
+          "clients": [
+            "LA CUMBRE"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-decimal-hh-fixture/final-claims.json",
+        "commit": null,
+        "sha256": "d6e3b5033025b222a3e89c9dabcdcc26d27e53333792c27131214941b933c268",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_CUMBRE_HH_03_DESPACHO",
+          "kind": "fact",
+          "statement": "La prueba local reportada por la usuaria para LABDEC0003 termino con pedido 8979 y picking 4409 Despachado, despacho 11534 Finalizado, piezas 0.1 y 0.2 completas en picking/verificacion/despacho, y sin stock ni reservas remanentes de esa licencia. Validez limitada a este escenario de laboratorio.",
+          "clients": [
+            "LA CUMBRE"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-decimal-lab-claims.json",
+        "commit": null,
+        "sha256": "2cb996005036e64a1d6be6735c23377440ba3279e61d725d2d611f751b4bd5aa",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_CUMBRE_DECIMALES_LAB",
+          "kind": "hypothesis",
+          "statement": "El candidato de picking normal corrige los rechazos reproducidos por residuos decimales en el laboratorio actualizado; la suficiencia para produccion permanece sin validar.",
+          "clients": [
+            "LA CUMBRE"
+          ],
+          "branches": [
+            "codex/cumbre-picking-decimales"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-order-state-fix/claims.json",
+        "commit": null,
+        "sha256": "a4bf5426aef12d2375dc993910bcbbbc071bcddd1b7eae335a90815a5d174070",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_CUMBRE_PICK_ESTADO_GUARD",
+          "kind": "decision",
+          "statement": "Proteger la actualizacion ordinaria del detalle de picking para conservar estados avanzados, diferenciandola de nuevas lineas y reaperturas explicitas. La reproduccion local paso; la verificacion del despliegue queda pendiente.",
+          "clients": [
+            "LA CUMBRE"
+          ],
+          "branches": [
+            "codex/cumbre-decimales-y-trazas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-performance-20261105/claims-bof.json",
+        "commit": null,
+        "sha256": "897b124476b4e54d5739fb2711579d72a5215c80dffb4652e6ecb8471a2d52f6",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105-CUMBRE-BOF-TRACE",
+          "kind": "fact",
+          "statement": "El código BOF local activa traza fina WS en Application_Start y contiene escritores sincronizados con AutoFlush, también en DAL. SapSyncCumbre usa clsTransaccion instrumentada; no se ha medido el impacto.",
+          "clients": [
+            "La Cumbre (investigation target; deployed artifacts unverified)"
+          ],
+          "branches": [
+            "tom_2028_prd"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-performance-20261105/claims-hh.json",
+        "commit": null,
+        "sha256": "eee879ed44cbf922062b267aa22e55809e85bececb790c1765e55c66d8c7a032",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105-CUMBRE-HH-TRACE",
+          "kind": "fact",
+          "statement": "El código HH local incluye WmsTrace activo y trazas específicas de recepción; su costo en dispositivo no se ha medido.",
+          "clients": [
+            "La Cumbre (investigation target; deployed artifacts unverified)"
+          ],
+          "branches": [
+            "codex/killios-decimales-estados"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-performance-20261105/claims-measurements.json",
+        "commit": null,
+        "sha256": "b13e6efd765c33702e369341182dd0cfa340c7d769f3fb6833f5f98d99189045",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105-CUMBRE-EMULATOR-RECEPTION-MEASUREMENT",
+          "kind": "fact",
+          "statement": "Una captura de recepción HH 8.9.75 contiene 33 llamadas WS completadas en la ventana analizada, dos Guardar_Recepcion_S de 1276 y 249 ms y Finalizar_Recepcion_S de 498 ms. No demuestra costo de trazas ni rendimiento productivo.",
+          "clients": [
+            "La Cumbre (prueba solicitada; destino QAS no verificado independientemente)"
+          ],
+          "branches": [
+            "installed HH 8.9.75; exact commit unknown"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-performance-20261105/claims-no-traces-branches.json",
+        "commit": null,
+        "sha256": "12bac651a1b8f994b3a268bac9595cccf833b691903305d08bc7f843d8128002",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105-CUMBRE-TRACE-BRANCH-HH",
+          "kind": "decision",
+          "statement": "Rama local de diagnóstico HH 8.9.75: desactivar trazas detalladas para comparar rendimiento, preservando errores. No se afirma mejora medida ni equivalencia con producción.",
+          "clients": [
+            "La Cumbre (QAS diagnostic target)"
+          ],
+          "branches": [
+            "codex/cumbre-trazas-desactivadas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        },
+        {
+          "id": "EJC20261105-CUMBRE-TRACE-BRANCH-BOF",
+          "kind": "decision",
+          "statement": "Rama local de diagnóstico BOF/WS/SapSync dev_2026_estable_prd: desactivar trazas detalladas para comparar rendimiento, preservando errores. No se afirma mejora medida ni equivalencia con producción.",
+          "clients": [
+            "La Cumbre (QAS diagnostic target)"
+          ],
+          "branches": [
+            "codex/cumbre-trazas-desactivadas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/cumbre-performance-20261105/claims-second-run.json",
+        "commit": null,
+        "sha256": "3f5db593123bea4c76848bd1eeba332c4303156590cc2072f46d72d9c1865679",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261105-CUMBRE-SECOND-RECEPTION",
+          "kind": "fact",
+          "statement": "El APK instalado y el preparado sin trazas contienen los mismos 20 archivos DEX; la captura filtrada del segundo proceso quedó vacía. No se obtuvo una comparación cuantitativa de duración.",
+          "clients": [
+            "La Cumbre (emulator test target)"
+          ],
+          "branches": [
+            "codex/cumbre-trazas-desactivadas"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/killios-validacion-20261110/claims.json",
+        "commit": null,
+        "sha256": "5074692a1d58f1440298fa7782b4ee3eb540652be7df0e818e890b3d06811230",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261110_KILLIOS_PLAN_VALIDACION_LOCAL",
+          "kind": "decision",
+          "statement": "Revalidar el paquete Killios con la matriz local; la evidencia historica y el helper aislado no habilitan publicar. La copia local es candidata de laboratorio pendiente de aislamiento.",
+          "clients": [
+            "KILLIOS"
+          ],
+          "branches": [
+            "codex/killios-decimales-estados"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    },
+    {
+      "source": {
+        "path": "analysis/mampa-reemplazo-20261116/claims.json",
+        "commit": null,
+        "sha256": "d6f2eb0d9040db3574f4e45ca0169cb5b691bd93fdb11652963923a9d2b99399",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+        "content_state": "historical-local-declaration"
+      },
+      "review_status": "declarations-indexed-not-revalidated",
+      "declared_claims": [
+        {
+          "id": "EJC20261116_MAMPA_REEMPLAZO_VARIANTE_REPAIR",
+          "kind": "fact",
+          "statement": "En TOMWMS_MAMPA_QA se corrigieron 44 picking (5 pedido 128, 15 pedido 30185, 24 pedido 30186), 39 despachos y 39 transacciones de salida. La consulta independiente posterior devuelve cero picking con variante cero. Se agrego la copia de IdProductoTallaColor desde la reserva en ambas sobrecargas de Reemplazo_Producto_En_Picking; DAL compilo con referencias. No se desplego ni se envio a SAP.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "limitations": [
+            "Registro local no commiteado; draft segun contrato de procedencia.",
+            "Las 5 filas antiguas del pedido 128 no conservan stock; se contrastaron con pedido, variante unica de picking original y movimientos historicos consistentes.",
+            "Stock original de los 39 casos de octubre coincide con pedido y catalogo; el stock reemplazado ya fue eliminado y su historial conserva cero.",
+            "No se modificaron movimientos ni stock_hist.",
+            "CAG WARN por lookup de catalogo omitido; se verifico estructura y datos de QA directamente."
+          ]
+        },
+        {
+          "id": "EJC20261116_REEMPLAZO_VARIANTE_STOCK",
+          "kind": "fact",
+          "statement": "La recurrencia corresponde al picking 30168, pedido 30185, picking_ubic 201301, reserva 210071. El stock 649815 conserva variante 40170; la reserva tiene variante/talla/color nulos y el picking cero. Reservar_Stock_By_Stock_Reem omitia copiar variante de stock a reserva. Se agrego un helper comun a esa ruta y las tres sobrecargas por IdStock. DAL compilo; prueba del helper compilado en memoria con lecturas de QA paso para variante real, sin variante y catalogo inexistente. Reparacion SQL de dos filas entregada sin ejecutar; no hay despliegue ni prueba operativa completa HH.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null,
+          "limitations": [
+            "Prueba operativa completa desde HH y despliegue pendientes.",
+            "CAG WARN por lookup de catalogo omitido; correlacion stock-reserva comprobada con lectura QA.",
+            "No se verifico que DLL estaba desplegada al ocurrir la recurrencia."
+          ]
+        },
+        {
+          "id": "EJC20261116_REEMPLAZO_AUDIT_RUTAS",
+          "kind": "fact",
+          "statement": "Se reprodujo perdida de variante en lector real Get_Stock_Para_Reserva (stocks 649815 y 649816); corregidos lector, filtro de variante, confirmaciones normal/consolidada/verificacion, ruta alterna desde reserva, guardia de mezcla y preparacion de pallet. Lectores y helpers compilados probados con QA en solo lectura; WSHHRN Release compilo usando herramientas SGen x64. Sin despliegue ni nuevas escrituras SQL. No constituye prueba operativa completa HH.",
+          "clients": [
+            "MAMPA"
+          ],
+          "branches": [
+            "dev_2026_estable"
+          ],
+          "status": "draft",
+          "validated_at": null
+        }
+      ]
+    }
+  ],
+  "omissions": []
+}

@@ -1,0 +1,4513 @@
+[
+  {
+    "repository": "brain",
+    "group": ".codex-build/rollback-tomwms",
+    "count": 8535,
+    "categories": {
+      "runtime-generated-or-cache": 8535
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-finalizer/Plan_Rollback_TOMWMS_dev_2026_estable.validation.json",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-finalizer/Plan_Rollback_TOMWMS_dev_2026_estable_Cliente.validation.json",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-finalizer/rollback-tomwms-candidate.pptx",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-finalizer/rollback-tomwms-candidate.pptx.inspect.ndjson",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-tmp/msbuild-generated-backup-20260929",
+    "count": 2,
+    "categories": {
+      "runtime-generated-or-cache": 2
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-tmp/python-deps",
+    "count": 44,
+    "categories": {
+      "runtime-generated-or-cache": 44
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-tmp/sap-trace-deps",
+    "count": 44,
+    "categories": {
+      "runtime-generated-or-cache": 44
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".codex-tmp/sapsync-log-fix",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/erp-presentation-build-final.log",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/erp-presentation-build.log",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/erp-presentation-callers.txt",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/fix-erp-presentation.py",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/isolate-erp-presentation.py",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/killios-validation-deps",
+    "count": 44,
+    "categories": {
+      "runtime-generated-or-cache": 44
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/portal-update-20261105",
+    "count": 450,
+    "categories": {
+      "runtime-generated-or-cache": 450
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": ".tmp/release-notes-killios",
+    "count": 54,
+    "categories": {
+      "runtime-generated-or-cache": 54
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "01. Script_BD_IODESA.corregido.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "07.DOWN_trans_pe_det.corregido.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "AGENTS.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "gobierno"
+    ],
+    "disposition": "Síntesis de fuentes: gobierno; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "Release Notes TOMWMS Documento Maestro Octubre 2026.docx",
+    "count": 1,
+    "categories": {
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/AGENTS.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/README.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/config",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/maps",
+    "count": 2,
+    "categories": {
+      "knowledge-evidence-or-log": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/mhs-eat-validacion-20261030.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/notes",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "WMS/outputs",
+    "count": 537,
+    "categories": {
+      "other": 3,
+      "source-script-or-query": 17,
+      "knowledge-evidence-or-log": 6,
+      "runtime-generated-or-cache": 509,
+      "binary-or-deliverable": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261024-la-cumbre-picking-rack",
+    "count": 4,
+    "categories": {
+      "knowledge-evidence-or-log": 3,
+      "source-script-or-query": 1
+    },
+    "topics": [
+      "picking-rack"
+    ],
+    "disposition": "Síntesis de fuentes: picking-rack; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261024-sap-ingreso-cierre-rollback-correccion.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "cumbre-sap-ingreso"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-sap-ingreso; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261024-sap-ingreso-referencia-ajena.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "cumbre-sap-ingreso"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-sap-ingreso; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261026-killios-aceite",
+    "count": 1390,
+    "categories": {
+      "knowledge-evidence-or-log": 165,
+      "source-script-or-query": 377,
+      "other": 156,
+      "binary-or-deliverable": 368,
+      "private-or-config-content-not-read": 2,
+      "runtime-generated-or-cache": 322
+    },
+    "topics": [
+      "killios-aceite",
+      "killios-cest"
+    ],
+    "disposition": "Síntesis de fuentes: killios-aceite, killios-cest; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261027-byb-verificacion-unidad",
+    "count": 13,
+    "categories": {
+      "source-script-or-query": 7,
+      "other": 2,
+      "knowledge-evidence-or-log": 4
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261027-ramas-estable",
+    "count": 7,
+    "categories": {
+      "knowledge-evidence-or-log": 2,
+      "source-script-or-query": 3,
+      "other": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261028-mhs-transferencias-no-solapadas",
+    "count": 83,
+    "categories": {
+      "source-script-or-query": 32,
+      "knowledge-evidence-or-log": 20,
+      "other": 4,
+      "private-or-config-content-not-read": 1,
+      "runtime-generated-or-cache": 26
+    },
+    "topics": [
+      "mhs-origen"
+    ],
+    "disposition": "Síntesis de fuentes: mhs-origen; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261028-ubic-duplicado",
+    "count": 61,
+    "categories": {
+      "knowledge-evidence-or-log": 2,
+      "runtime-generated-or-cache": 58,
+      "other": 1
+    },
+    "topics": [
+      "ubic-duplicado"
+    ],
+    "disposition": "Síntesis de fuentes: ubic-duplicado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-cumbre-traslados-correccion.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "cumbre-traslado"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-traslado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-ingreso-recepcion-vacia.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "oc-vacia"
+    ],
+    "disposition": "Síntesis de fuentes: oc-vacia; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-mhs-lote-vencimiento",
+    "count": 30,
+    "categories": {
+      "source-script-or-query": 21,
+      "knowledge-evidence-or-log": 9
+    },
+    "topics": [
+      "lote-vencimiento"
+    ],
+    "disposition": "Síntesis de fuentes: lote-vencimiento; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-navsync-conservar-recibido.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "navsync-recibido"
+    ],
+    "disposition": "Síntesis de fuentes: navsync-recibido; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-navsync-designer-cache.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "navsync-designer"
+    ],
+    "disposition": "Síntesis de fuentes: navsync-designer; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-navsync-devolucion-duplicada.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "navsync-duplicado"
+    ],
+    "disposition": "Síntesis de fuentes: navsync-duplicado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261029-verificacion-etiqueta",
+    "count": 751,
+    "categories": {
+      "binary-or-deliverable": 118,
+      "other": 12,
+      "knowledge-evidence-or-log": 8,
+      "source-script-or-query": 611,
+      "runtime-generated-or-cache": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261030-mhs-calendario",
+    "count": 4,
+    "categories": {
+      "knowledge-evidence-or-log": 2,
+      "source-script-or-query": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261102-despacho-packing",
+    "count": 12,
+    "categories": {
+      "source-script-or-query": 4,
+      "knowledge-evidence-or-log": 8
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261105-webapi-ajustes",
+    "count": 143,
+    "categories": {
+      "source-script-or-query": 1,
+      "knowledge-evidence-or-log": 3,
+      "other": 1,
+      "runtime-generated-or-cache": 138
+    },
+    "topics": [
+      "webapi-ajustes"
+    ],
+    "disposition": "Síntesis de fuentes: webapi-ajustes; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261109-Get_All_Packing_By_IdPicking.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261109-Get_All_PickingUbic_By_PickingEnc.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261109-packing-estado",
+    "count": 7,
+    "categories": {
+      "other": 5,
+      "source-script-or-query": 1,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "packing-estado"
+    ],
+    "disposition": "Síntesis de fuentes: packing-estado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261109-packing-wsdl.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261112-mhs-corregir-alias-destino.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261112-mhs-destino-diagnostico.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261112-mhs-destino-log.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261112-mhs-destino-probar-ws.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261113-monitor-tareas",
+    "count": 4,
+    "categories": {
+      "source-script-or-query": 3,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "monitor-readmodel"
+    ],
+    "disposition": "Síntesis de fuentes: monitor-readmodel; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261114-cumbre-despachos",
+    "count": 230,
+    "categories": {
+      "source-script-or-query": 71,
+      "knowledge-evidence-or-log": 58,
+      "binary-or-deliverable": 34,
+      "private-or-config-content-not-read": 1,
+      "other": 22,
+      "runtime-generated-or-cache": 44
+    },
+    "topics": [
+      "cumbre-sap-duplicado"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-sap-duplicado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261114-cumbre-stock-traces",
+    "count": 4,
+    "categories": {
+      "source-script-or-query": 1,
+      "knowledge-evidence-or-log": 3
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261116-pedido171-presentacion",
+    "count": 10,
+    "categories": {
+      "other": 2,
+      "source-script-or-query": 3,
+      "knowledge-evidence-or-log": 5
+    },
+    "topics": [
+      "pedido171"
+    ],
+    "disposition": "Síntesis de fuentes: pedido171; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-brain-pending-routing.json",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-hh-ubicacion-warning",
+    "count": 17,
+    "categories": {
+      "other": 15,
+      "source-script-or-query": 1,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "hh-ubicacion"
+    ],
+    "disposition": "Síntesis de fuentes: hh-ubicacion; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-mampa-transfer-messages",
+    "count": 66,
+    "categories": {
+      "knowledge-evidence-or-log": 4,
+      "runtime-generated-or-cache": 58,
+      "other": 2,
+      "source-script-or-query": 2
+    },
+    "topics": [
+      "traslado-mensajes"
+    ],
+    "disposition": "Síntesis de fuentes: traslado-mensajes; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-recepcion-28335",
+    "count": 54,
+    "categories": {
+      "source-script-or-query": 8,
+      "runtime-generated-or-cache": 22,
+      "knowledge-evidence-or-log": 22,
+      "other": 2
+    },
+    "topics": [
+      "bodega-xml",
+      "rec28335"
+    ],
+    "disposition": "Síntesis de fuentes: bodega-xml, rec28335; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-sap-reserva-trace",
+    "count": 104,
+    "categories": {
+      "knowledge-evidence-or-log": 5,
+      "other": 6,
+      "runtime-generated-or-cache": 89,
+      "source-script-or-query": 4
+    },
+    "topics": [
+      "sap-reserva"
+    ],
+    "disposition": "Síntesis de fuentes: sap-reserva; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/20261117-verificacion-8981",
+    "count": 32,
+    "categories": {
+      "knowledge-evidence-or-log": 8,
+      "runtime-generated-or-cache": 12,
+      "other": 11,
+      "source-script-or-query": 1
+    },
+    "topics": [
+      "verificacion8981"
+    ],
+    "disposition": "Síntesis de fuentes: verificacion8981; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/CumbreDecimalReplay.exe",
+    "count": 1,
+    "categories": {
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/CumbreDecimalReplay.exe.config",
+    "count": 1,
+    "categories": {
+      "private-or-config-content-not-read": 1
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/ajuste-reporte-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/check-navsync-designers-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/check-navsync-form-types-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-8978-state-claims.json",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "cumbre-estado"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-estado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-8978-state-evidence.json",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-8978-state-regression.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-baseline-cases.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-candidate-bulk.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-candidate-cases.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-hh-fixture",
+    "count": 5,
+    "categories": {
+      "knowledge-evidence-or-log": 5
+    },
+    "topics": [
+      "cumbre-decimal"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-decimal; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-lab-claims.json",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "cumbre-decimal"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-decimal; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-decimal-lab-evidence.json",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-order-state-fix",
+    "count": 8,
+    "categories": {
+      "source-script-or-query": 2,
+      "knowledge-evidence-or-log": 6
+    },
+    "topics": [
+      "cumbre-estado"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-estado; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-performance-20261105",
+    "count": 31,
+    "categories": {
+      "knowledge-evidence-or-log": 21,
+      "other": 5,
+      "binary-or-deliverable": 5
+    },
+    "topics": [
+      "cumbre-performance"
+    ],
+    "disposition": "Síntesis de fuentes: cumbre-performance; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/cumbre-unified-checkout",
+    "count": 18,
+    "categories": {
+      "other": 4,
+      "knowledge-evidence-or-log": 4,
+      "source-script-or-query": 10
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/decimal-baseline-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/decimal-candidate-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/fix-ingreso-recepcion-vacia-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/fix-navsync-codedom-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/fix-navsync-conservar-recibido-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/fix-navsync-duplicate-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/ingreso-recepcion-vacia-build",
+    "count": 408,
+    "categories": {
+      "binary-or-deliverable": 199,
+      "private-or-config-content-not-read": 8,
+      "other": 45,
+      "source-script-or-query": 156
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/ingreso-recepcion-vacia-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/ingreso-recepcion-vacia-obj",
+    "count": 500,
+    "categories": {
+      "source-script-or-query": 8,
+      "binary-or-deliverable": 7,
+      "other": 474,
+      "knowledge-evidence-or-log": 8,
+      "private-or-config-content-not-read": 3
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/killios-validacion-20261110",
+    "count": 11,
+    "categories": {
+      "knowledge-evidence-or-log": 9,
+      "other": 2
+    },
+    "topics": [
+      "killios-publicacion"
+    ],
+    "disposition": "Síntesis de fuentes: killios-publicacion; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/mampa-reemplazo-20261116",
+    "count": 66,
+    "categories": {
+      "source-script-or-query": 22,
+      "knowledge-evidence-or-log": 41,
+      "other": 3
+    },
+    "topics": [
+      "reemplazo-variante"
+    ],
+    "disposition": "Síntesis de fuentes: reemplazo-variante; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/mercosal-diagrama-mi3",
+    "count": 6,
+    "categories": {
+      "binary-or-deliverable": 4,
+      "source-script-or-query": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-codedom-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-conservar-build",
+    "count": 247,
+    "categories": {
+      "binary-or-deliverable": 114,
+      "private-or-config-content-not-read": 6,
+      "other": 34,
+      "source-script-or-query": 93
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-conservar-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-conservar-obj",
+    "count": 50,
+    "categories": {
+      "source-script-or-query": 6,
+      "binary-or-deliverable": 5,
+      "other": 34,
+      "knowledge-evidence-or-log": 5
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-designer-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-designer-cache-backup-20261029",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-designtime-diagnostic.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-duplicate-build",
+    "count": 247,
+    "categories": {
+      "binary-or-deliverable": 114,
+      "private-or-config-content-not-read": 6,
+      "other": 34,
+      "source-script-or-query": 93
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-duplicate-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-duplicate-obj",
+    "count": 50,
+    "categories": {
+      "source-script-or-query": 6,
+      "binary-or-deliverable": 5,
+      "other": 34,
+      "knowledge-evidence-or-log": 5
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-fresh-cache-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/navsync-solution-cache-backup-20261029-163941",
+    "count": 200,
+    "categories": {
+      "source-script-or-query": 6,
+      "binary-or-deliverable": 116,
+      "other": 70,
+      "knowledge-evidence-or-log": 7,
+      "private-or-config-content-not-read": 1
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-Get_All_By_IDPickingEnc.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-Get_All_Packing_By_IdPicking.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-Get_All_PickingUbic_By_IdPickingEnc_Tipo.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-Get_Single_By_IdPedidoEnc.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-arroz-res.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-detallepedido.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-group.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-method-original.vb",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-reconciliation.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-ubic.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-5275-wsdl.xml",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/packing-expiry-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/reset-navsync-solution-cache-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/revert-navsync-codedom-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/road-reception-fix",
+    "count": 19,
+    "categories": {
+      "source-script-or-query": 8,
+      "other": 10,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "analysis/test-ingreso-recepcion-vacia-20261029.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "brain/_inbox",
+    "count": 2,
+    "categories": {
+      "knowledge-evidence-or-log": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "brain/_proposals",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "despacho-parcial"
+    ],
+    "disposition": "Síntesis de fuentes: despacho-parcial; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "brain/code-deep-flow",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "brain/handoffs",
+    "count": 25,
+    "categories": {
+      "knowledge-evidence-or-log": 25
+    },
+    "topics": [
+      "rec28335"
+    ],
+    "disposition": "Síntesis de fuentes: rec28335; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "brain/skills",
+    "count": 2,
+    "categories": {
+      "knowledge-evidence-or-log": 2
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "build_iodesa_01.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "complete-mhs-validation.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "deliverables/B_and_B",
+    "count": 3,
+    "categories": {
+      "binary-or-deliverable": 3
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "deliverables/IODESA_identity_down",
+    "count": 10,
+    "categories": {
+      "source-script-or-query": 9,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "go-live"
+    ],
+    "disposition": "Síntesis de fuentes: go-live; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "deliverables/MHS_go_live",
+    "count": 3,
+    "categories": {
+      "source-script-or-query": 2,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [
+      "go-live"
+    ],
+    "disposition": "Síntesis de fuentes: go-live; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "fix-mhs-proveedor.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "mhs-proveedor-bof-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "mhs-proveedor-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "mhs-stock-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "mhs-stock-business-rules.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "mhs-stock-null-safety.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/.modules.yaml",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/.package-map.json",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/.pnpm",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/.pnpm-workspace-state-v1.json",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@img",
+    "count": 14,
+    "categories": {
+      "runtime-generated-or-cache": 14
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@napi-rs",
+    "count": 14,
+    "categories": {
+      "runtime-generated-or-cache": 14
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@oai",
+    "count": 215,
+    "categories": {
+      "runtime-generated-or-cache": 215
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@pdf-lib",
+    "count": 60,
+    "categories": {
+      "runtime-generated-or-cache": 60
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@types",
+    "count": 91,
+    "categories": {
+      "runtime-generated-or-cache": 91
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/@viz-js",
+    "count": 13,
+    "categories": {
+      "runtime-generated-or-cache": 13
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/accepts",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/anymatch",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/apache-crypt",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/apache-md5",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/arr-diff",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/arr-flatten",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/arr-union",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/array-unique",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/assign-symbols",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/async-each",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/atob",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/base",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/basic-auth",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/batch",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/bcryptjs",
+    "count": 28,
+    "categories": {
+      "runtime-generated-or-cache": 28
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/binary-extensions",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/bmp-js",
+    "count": 35,
+    "categories": {
+      "runtime-generated-or-cache": 35
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/braces",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/cache-base",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/chokidar",
+    "count": 15,
+    "categories": {
+      "runtime-generated-or-cache": 15
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/class-utils",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/collection-visit",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/colors",
+    "count": 21,
+    "categories": {
+      "runtime-generated-or-cache": 21
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/component-emitter",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/connect",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/copy-descriptor",
+    "count": 3,
+    "categories": {
+      "runtime-generated-or-cache": 3
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/core-util-is",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/cors",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/debug",
+    "count": 21,
+    "categories": {
+      "runtime-generated-or-cache": 21
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/decode-uri-component",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/define-property",
+    "count": 15,
+    "categories": {
+      "runtime-generated-or-cache": 15
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/depd",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/detect-libc",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/docx",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/duplexer",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/ee-first",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/encodeurl",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/escape-html",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/etag",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/event-stream",
+    "count": 21,
+    "categories": {
+      "runtime-generated-or-cache": 21
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/expand-brackets",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/extend-shallow",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/extglob",
+    "count": 14,
+    "categories": {
+      "runtime-generated-or-cache": 14
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/faye-websocket",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/fill-range",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/finalhandler",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/for-in",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/fragment-cache",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/fresh",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/from",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/function-bind",
+    "count": 12,
+    "categories": {
+      "runtime-generated-or-cache": 12
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/get-value",
+    "count": 3,
+    "categories": {
+      "runtime-generated-or-cache": 3
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/glob-parent",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/graceful-fs",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/has-value",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/has-values",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/hash.js",
+    "count": 19,
+    "categories": {
+      "runtime-generated-or-cache": 19
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/hasown",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/http-auth",
+    "count": 16,
+    "categories": {
+      "runtime-generated-or-cache": 16
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/http-errors",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/http-parser-js",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/https",
+    "count": 1,
+    "categories": {
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/idb-keyval",
+    "count": 12,
+    "categories": {
+      "runtime-generated-or-cache": 12
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/image-size",
+    "count": 56,
+    "categories": {
+      "runtime-generated-or-cache": 56
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/immediate",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/inherits",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-accessor-descriptor",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-binary-path",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-buffer",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-data-descriptor",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-descriptor",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-extendable",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-extglob",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-glob",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-number",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-plain-object",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-url",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-windows",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/is-wsl",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/isarray",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/isobject",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/jpeg-js",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/jszip",
+    "count": 54,
+    "categories": {
+      "runtime-generated-or-cache": 54
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/kind-of",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/lie",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/live-server",
+    "count": 33,
+    "categories": {
+      "runtime-generated-or-cache": 33
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/lucide",
+    "count": 3418,
+    "categories": {
+      "runtime-generated-or-cache": 3418
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/map-cache",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/map-stream",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/map-visit",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/marked",
+    "count": 12,
+    "categories": {
+      "runtime-generated-or-cache": 12
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/micromatch",
+    "count": 29,
+    "categories": {
+      "runtime-generated-or-cache": 29
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/mime-db",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/mime-types",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/minimalistic-assert",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/mixin-deep",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/morgan",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/ms",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/nanoid",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/nanomatch",
+    "count": 28,
+    "categories": {
+      "runtime-generated-or-cache": 28
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/negotiator",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/node-fetch",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/node-readable-to-web-readable-stream",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/normalize-path",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/object-assign",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/object-copy",
+    "count": 3,
+    "categories": {
+      "runtime-generated-or-cache": 3
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/object-visit",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/object.pick",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/on-finished",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/on-headers",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/opencollective-postinstall",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/opn",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pako",
+    "count": 27,
+    "categories": {
+      "runtime-generated-or-cache": 27
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/parseurl",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pascalcase",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/path-dirname",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/path-is-absolute",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pause-stream",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pdf-lib",
+    "count": 1542,
+    "categories": {
+      "runtime-generated-or-cache": 1542
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pdfjs-dist",
+    "count": 489,
+    "categories": {
+      "runtime-generated-or-cache": 489
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pixelmatch",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/playwright",
+    "count": 62,
+    "categories": {
+      "runtime-generated-or-cache": 62
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/playwright-core",
+    "count": 111,
+    "categories": {
+      "runtime-generated-or-cache": 111
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pngjs",
+    "count": 27,
+    "categories": {
+      "runtime-generated-or-cache": 27
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pnpm",
+    "count": 451,
+    "categories": {
+      "runtime-generated-or-cache": 451
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/posix-character-classes",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/pptxgenjs",
+    "count": 125,
+    "categories": {
+      "runtime-generated-or-cache": 125
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/process-nextick-args",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/proxy-middleware",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/queue",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/range-parser",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/readable-stream",
+    "count": 24,
+    "categories": {
+      "runtime-generated-or-cache": 24
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/readdirp",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/regenerator-runtime",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/regex-not",
+    "count": 13,
+    "categories": {
+      "runtime-generated-or-cache": 13
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/remove-trailing-separator",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/repeat-element",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/repeat-string",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/resolve-url",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/ret",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/safe-buffer",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/safe-regex",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/sax",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/semver",
+    "count": 53,
+    "categories": {
+      "runtime-generated-or-cache": 53
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/send",
+    "count": 27,
+    "categories": {
+      "runtime-generated-or-cache": 27
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/serve-index",
+    "count": 110,
+    "categories": {
+      "runtime-generated-or-cache": 110
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/set-value",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/setimmediate",
+    "count": 3,
+    "categories": {
+      "runtime-generated-or-cache": 3
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/setprototypeof",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/sharp",
+    "count": 47,
+    "categories": {
+      "runtime-generated-or-cache": 47
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/snapdragon",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/snapdragon-node",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/snapdragon-util",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/source-map",
+    "count": 19,
+    "categories": {
+      "runtime-generated-or-cache": 19
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/source-map-resolve",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/source-map-url",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/split",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/split-string",
+    "count": 13,
+    "categories": {
+      "runtime-generated-or-cache": 13
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/static-extend",
+    "count": 3,
+    "categories": {
+      "runtime-generated-or-cache": 3
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/statuses",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/stream-combiner",
+    "count": 7,
+    "categories": {
+      "runtime-generated-or-cache": 7
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/string_decoder",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/tesseract.js",
+    "count": 79,
+    "categories": {
+      "runtime-generated-or-cache": 79
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/tesseract.js-core",
+    "count": 22,
+    "categories": {
+      "runtime-generated-or-cache": 22
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/through",
+    "count": 11,
+    "categories": {
+      "runtime-generated-or-cache": 11
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/to-object-path",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/to-regex",
+    "count": 18,
+    "categories": {
+      "runtime-generated-or-cache": 18
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/to-regex-range",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/toidentifier",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/tr46",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/tslib",
+    "count": 13,
+    "categories": {
+      "runtime-generated-or-cache": 13
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/undici-types",
+    "count": 47,
+    "categories": {
+      "runtime-generated-or-cache": 47
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/union-value",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/unix-crypt-td-js",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/unpipe",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/unset-value",
+    "count": 16,
+    "categories": {
+      "runtime-generated-or-cache": 16
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/upath",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/urix",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/use",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/util-deprecate",
+    "count": 6,
+    "categories": {
+      "runtime-generated-or-cache": 6
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/utils-merge",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/uuid",
+    "count": 19,
+    "categories": {
+      "runtime-generated-or-cache": 19
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/vary",
+    "count": 5,
+    "categories": {
+      "runtime-generated-or-cache": 5
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/wasm-feature-detect",
+    "count": 9,
+    "categories": {
+      "runtime-generated-or-cache": 9
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/webidl-conversions",
+    "count": 4,
+    "categories": {
+      "runtime-generated-or-cache": 4
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/websocket-driver",
+    "count": 17,
+    "categories": {
+      "runtime-generated-or-cache": 17
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/websocket-extensions",
+    "count": 12,
+    "categories": {
+      "runtime-generated-or-cache": 12
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/whatwg-url",
+    "count": 8,
+    "categories": {
+      "runtime-generated-or-cache": 8
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/xml",
+    "count": 10,
+    "categories": {
+      "runtime-generated-or-cache": 10
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/xml-js",
+    "count": 22,
+    "categories": {
+      "runtime-generated-or-cache": 22
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "node_modules/zlibjs",
+    "count": 34,
+    "categories": {
+      "runtime-generated-or-cache": 34
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "output/Plan_Rollback_TOMWMS_dev_2026_estable.pptx",
+    "count": 1,
+    "categories": {
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "output/Plan_Rollback_TOMWMS_dev_2026_estable_Cliente.pptx",
+    "count": 1,
+    "categories": {
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "output/mhs-picking-output-into-20261030.txt",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "output/mhs-picking-output-into-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "outputs/20260911-ocupacion-bloqueadas",
+    "count": 19,
+    "categories": {
+      "source-script-or-query": 9,
+      "knowledge-evidence-or-log": 9,
+      "other": 1
+    },
+    "topics": [
+      "monitor-ocupacion"
+    ],
+    "disposition": "Síntesis de fuentes: monitor-ocupacion; demás archivos: evidencia auxiliar registrada"
+  },
+  {
+    "repository": "brain",
+    "group": "outputs/20261030-transferencia-14-7",
+    "count": 4,
+    "categories": {
+      "source-script-or-query": 4
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "outputs/byb-dynamics-nav-interface-scan-20260724",
+    "count": 9,
+    "categories": {
+      "other": 4,
+      "binary-or-deliverable": 5
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "patches/frmBodega-solapado-designer.patch",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "recovered/20260707_ml_get_ubicacion_sugerida_preload_tramo_temp_tables.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/20261024-sap-ingreso",
+    "count": 93,
+    "categories": {
+      "source-script-or-query": 8,
+      "other": 20,
+      "knowledge-evidence-or-log": 3,
+      "runtime-generated-or-cache": 61,
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/20261024-sap-ingreso-fix",
+    "count": 147,
+    "categories": {
+      "other": 39,
+      "knowledge-evidence-or-log": 9,
+      "runtime-generated-or-cache": 78,
+      "source-script-or-query": 16,
+      "binary-or-deliverable": 5
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/20261116-ajuste2109",
+    "count": 89,
+    "categories": {
+      "source-script-or-query": 6,
+      "runtime-generated-or-cache": 83
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_compact.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_compact.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_discovery.py",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_discovery.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_errors.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_errors.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_orders.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_orders.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_relevant_logs.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_trace.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_alcaparra_trace.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_179382_reservas.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_179382_reservas.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_179382_trace.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_179382_trace.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_orfano_4um.out",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/killios_stock_orfano_4um.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "scratch/pedido171-runtime",
+    "count": 44,
+    "categories": {
+      "source-script-or-query": 18,
+      "runtime-generated-or-cache": 18,
+      "other": 7,
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp/clsSyncSAPSSolicitudTraslado.fixed.vb",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp/cumbre-fix",
+    "count": 68,
+    "categories": {
+      "runtime-generated-or-cache": 68
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp/cumbre-fix-build.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp/ixqic-unsafe-check",
+    "count": 13,
+    "categories": {
+      "source-script-or-query": 10,
+      "binary-or-deliverable": 2,
+      "private-or-config-content-not-read": 1
+    },
+    "topics": [],
+    "disposition": "Contenido privado/configuración: no consultado ni copiado"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp/pdfs",
+    "count": 5,
+    "categories": {
+      "binary-or-deliverable": 5
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/02.DOWN_trans_picking_ubic.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/03.DOWN_trans_re_det.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/04.DOWN_trans_pe_det.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/05.DOWN_stock_res.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/06.DOWN_stock.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/07.DOWN_i_nav_transacciones_out.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/08.DOWN_stock_rec.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/09.DOWN_Tablas_Ejecucion_Interface.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/10.DOWN_trans_movimientos.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_down_fix/build_down_04.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/04.Identity_trans_pe_det.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/06.Identity_stock.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/08.Identities_stock_rec.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/09.script_llaves_constraint_index.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/12.Procedimientos_Optimizacion.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tmp_iodesa_fix/make_09_idempotent.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tools/brain-quality",
+    "count": 26,
+    "categories": {
+      "source-script-or-query": 26
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tools/diagnostics",
+    "count": 13,
+    "categories": {
+      "source-script-or-query": 13
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "tools/generate_byb_documents.py",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "validate-mhs-proveedor.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "brain",
+    "group": "wms-brain/tools",
+    "count": 2,
+    "categories": {
+      "source-script-or-query": 1,
+      "runtime-generated-or-cache": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  },
+  {
+    "repository": "hh",
+    "group": "RFIDAPI3Library.rar",
+    "count": 1,
+    "categories": {
+      "binary-or-deliverable": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "RFIDAPI3Library/build",
+    "count": 217,
+    "categories": {
+      "runtime-generated-or-cache": 217
+    },
+    "topics": [],
+    "disposition": "Dependencias/generados/respaldo: registrados sin validación funcional"
+  },
+  {
+    "repository": "hh",
+    "group": "RFIDAPI3Library/build.gradle",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "app/build.gradle",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "app/src",
+    "count": 10,
+    "categories": {
+      "source-script-or-query": 10
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "automation/run-test-hh.ps1",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "hs_err_pid49564.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "hh",
+    "group": "replay_pid49564.log",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260803_mhs_espacios_virtuales_capacidad_tramo.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260826_mampa_i_nav_ejecucion_det_error_talla_color.down.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260826_mampa_i_nav_ejecucion_det_error_talla_color.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260930_mhs_ubicacion_destino_picking.rollback.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260930_mhs_ubicacion_destino_picking.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20260930_mhs_ubicacion_destino_picking.validacion.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261001_agregar_destino_picking_dos_tablas.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261012_crear_dos_tipos_salida_mhs.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261019_mhs_corregir_lote_licencia_preimpresion.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_01_cumbre_trans_ajuste_det_origen.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_02_cumbre_trans_ajuste_det_borrador_origen.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_03_cumbre_ajustes_origen_validacion.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_cumbre_recuperar_origen_ajuste_1270.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_cumbre_reporte_ingresos_ubicaciones.rollback.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261023_cumbre_reporte_ingresos_ubicaciones.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_cajas_y_un_LEEME.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_consultar_presentacion_no_multiplo.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_consultar_un_decimales.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_correcciones_LEEME.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_corregir_decimales_wms272.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_corregir_presentaciones_cajas_y_un.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_corregir_presentaciones_no_multiplos.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_corregir_sobrante3_wms282.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261027_ckfk_killios_presentaciones_LEEME.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261028_ckfk_killios_aceite_buen_estado_LEEME.md",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261028_ckfk_killios_aceite_menos3_buen_estado.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261030_mhs_pedido_confirmar_packing_vista.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "20261117_recuperar_producto_recepcion_28335.sql",
+    "count": 1,
+    "categories": {
+      "source-script-or-query": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "bodega_asociacion_virtual",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "dba",
+    "group": "usp_wms_principal02_tareas_readmodel_v1",
+    "count": 1,
+    "categories": {
+      "other": 1
+    },
+    "topics": [],
+    "disposition": "Cambio o artefacto pendiente: inventariado; no autorizado para publicar/ejecutar por este registro"
+  },
+  {
+    "repository": "exchange",
+    "group": "entregables_ajuste/2026-04-25",
+    "count": 1,
+    "categories": {
+      "knowledge-evidence-or-log": 1
+    },
+    "topics": [],
+    "disposition": "Registrado sin interpretación funcional; revisar fuentes antes de afirmar causa, vigencia o ejecución"
+  }
+]

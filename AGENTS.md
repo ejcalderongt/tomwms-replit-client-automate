@@ -23,10 +23,37 @@ esquema o usuario faltante sin modificar una base productiva por inferencia.
 ## Gobierno
 
 - Las instrucciones del usuario tienen precedencia.
+- Autoría: Carolina firma `#CKFKYYYYMMDD_<MODULO>_<MOTIVO>`, nunca EJC ni CF.
+  Consultar `brain/agent-context/EQUIPO_PROGRAX24.md` antes de atribuir cambios;
+  la firma corresponde a la persona responsable, no al agente que edita.
+- #EJC20261115_FUNCIONALIDAD_NO_EMPRESA: por instrucción explícita de Carolina,
+  ninguna regla, validación, mensaje, botón o flujo puede activarse o cambiar
+  por el nombre, ID, alias u otra identidad de una empresa/cliente. Todo
+  comportamiento debe depender de parametrización que indique la funcionalidad
+  y de las condiciones funcionales del proceso/documento. No usar constantes
+  de empresa, comparaciones de nombres ni listas de clientes como sustituto de
+  un parámetro funcional. Esta regla aplica a HH, BOF, servicios e integraciones.
+  Reutilizar y verificar los parámetros existentes; si falta uno, definir su
+  alcance funcional antes de implementar, sin inferirlo por empresa ni modificar
+  producción automáticamente. En revisión, rechazar condiciones por empresa
+  aunque reproduzcan el caso solicitado. Los nombres de clientes sirven para
+  delimitar evidencia, no para decidir el comportamiento del producto.
+  Ejemplo: la restricción de recibir por SKU y el mensaje de escanear licencia
+  de packing dependen de bodega sin control talla/color y documento de tipo
+  Transferencia de Ingreso con Packing (17), nunca de que la empresa sea MHS.
+- #EJC20261110: por instrucción explícita de Carolina, trabajar las ramas en
+  sus carpetas habituales. No crear worktrees, checkouts ni carpetas adicionales
+  para aislar cambios salvo que ella lo solicite expresamente. No cambiar de
+  rama ni mover cambios cuando pida únicamente instrucciones para hacerlo ella.
 - No realizar commit/push sin autorización explícita de Erik.
 - No modificar `Reference.vb`; preservar UTF-8 con BOM al editar VB.
 - No mezclar HH y BOF en un mismo cambio/commit.
 - Producción es solo lectura. No revelar secretos ni definiciones SQL sensibles.
+- #EJC20261116_SQL_SCRIPT_PRIMERO: por instrucción explícita de Carolina,
+  antes de modificar datos de una base, entregar el script concreto para revisión,
+  avisar el alcance y esperar autorización explícita para ejecutar ese script.
+  Una solicitud general de corregir datos no autoriza ejecución directa.
+  Las consultas de solo lectura pueden continuar durante la preparación.
 - La gestión del brain es local. No usar bridge/OpenClaw ni `_inbox` como
   transporte activo. Replit puede aportar evidencia histórica; no es una
   dependencia obligatoria.

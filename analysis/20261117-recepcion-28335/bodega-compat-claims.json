@@ -1,0 +1,41 @@
+[
+  {
+    "id": "CKFK20261117-BODEGA-XML-COMPAT",
+    "kind": "fact",
+    "statement": "El campo permitir_abrir_recepcion_enviada existia en dev_2028_merge (4d8be015) y faltaba en HEAD c497abb de dev_2026_estable. Se incorporo localmente como Element opcional false; el parser real acepta true, false y ausencia del campo; assembleDebug satisfactorio.",
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "sources": [
+      {
+        "path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/classes/Mantenimientos/Bodega/clsBeBodega.java",
+        "commit": null,
+        "sha256": "937e297608e4075a10f0eee9735690f97ee94d9c80b967b70bfe5c11b55e6af0",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/TestBodegaXml.java",
+        "commit": null,
+        "sha256": "9f71e9b5bc9552f9a1b5ce89c413ff8906d7269b4a42409eff5ad4b037883df5",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/bodega-xml-test.txt",
+        "commit": null,
+        "sha256": "cb51a27ba95d609b7ee0ea1940c6ac061227f6877bbbcfff08e643efd0009923",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/hh-bodega-compat-build.log",
+        "commit": null,
+        "sha256": "a5ed10993fa12a3d6abbfdb640d31622f69def3cdbd735b264b5135d7f8c0ead",
+        "content_state": "local-uncommitted"
+      }
+    ]
+  }
+]

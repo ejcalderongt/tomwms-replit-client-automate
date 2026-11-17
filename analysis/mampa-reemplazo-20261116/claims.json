@@ -1,0 +1,205 @@
+[
+  {
+    "id": "EJC20261116_MAMPA_REEMPLAZO_VARIANTE_REPAIR",
+    "kind": "fact",
+    "statement": "En TOMWMS_MAMPA_QA se corrigieron 44 picking (5 pedido 128, 15 pedido 30185, 24 pedido 30186), 39 despachos y 39 transacciones de salida. La consulta independiente posterior devuelve cero picking con variante cero. Se agrego la copia de IdProductoTallaColor desde la reserva en ambas sobrecargas de Reemplazo_Producto_En_Picking; DAL compilo con referencias. No se desplego ni se envio a SAP.",
+    "sources": [
+      {
+        "path": "analysis/mampa-reemplazo-20261116/source-validation.json",
+        "commit": null,
+        "sha256": "79a5695cad0ce62b2a3381c155a664b35e7fdbcd01b5f2ba5ea2f482c598b21b",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/20261116-084644-apply.xml",
+        "commit": null,
+        "sha256": "4f19476c118bcc74c97016811f45bfcf184a2741e2b27f8d15a80655dcfb2058",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/verification.json",
+        "commit": null,
+        "sha256": "0af22fc9a4e044c8ebbb9a81d52bdd11bba031ea23f68ccfbe315531a5994aa5",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/replacement.patch",
+        "commit": null,
+        "sha256": "279bcdfd8d2ecfcc3866ca9df3e5f1912bb06800ea9bba8b1387b2d5e40f62ab",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/code-edit.json",
+        "commit": null,
+        "sha256": "4f0fc54f5bc391c127dca641ee70e488c82f3dc1c67d88bd2364f51a5852d574",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/build.log",
+        "commit": null,
+        "sha256": "ccfd3398055200db08e8c8df5d3bcf2c8675acff66074dd80c23b6cf77631c5f",
+        "content_state": "working-tree"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "validation_evidence": [
+      "verification.json: consulta SQL independiente posterior al COMMIT",
+      "build.log: compilacion DAL y dependencias completada"
+    ],
+    "limitations": [
+      "Registro local no commiteado; draft segun contrato de procedencia.",
+      "Las 5 filas antiguas del pedido 128 no conservan stock; se contrastaron con pedido, variante unica de picking original y movimientos historicos consistentes.",
+      "Stock original de los 39 casos de octubre coincide con pedido y catalogo; el stock reemplazado ya fue eliminado y su historial conserva cero.",
+      "No se modificaron movimientos ni stock_hist.",
+      "CAG WARN por lookup de catalogo omitido; se verifico estructura y datos de QA directamente."
+    ],
+    "code_origin": {
+      "repo": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF",
+      "commit": "22d3ed69b4399d17d82e96123ac95939da88f89b",
+      "path": "TOMIMSV4/DAL/Transacciones/Picking/clsLnTrans_picking_ubic_Partial.vb",
+      "content_state": "working-tree",
+      "sha256": "737ad2a47534f5c4aa28474064a97d029c810b12543ee6fc7050f6a6018ff256"
+    }
+  },
+  {
+    "id": "EJC20261116_REEMPLAZO_VARIANTE_STOCK",
+    "kind": "fact",
+    "statement": "La recurrencia corresponde al picking 30168, pedido 30185, picking_ubic 201301, reserva 210071. El stock 649815 conserva variante 40170; la reserva tiene variante/talla/color nulos y el picking cero. Reservar_Stock_By_Stock_Reem omitia copiar variante de stock a reserva. Se agrego un helper comun a esa ruta y las tres sobrecargas por IdStock. DAL compilo; prueba del helper compilado en memoria con lecturas de QA paso para variante real, sin variante y catalogo inexistente. Reparacion SQL de dos filas entregada sin ejecutar; no hay despliegue ni prueba operativa completa HH.",
+    "sources": [
+      {
+        "path": "analysis/mampa-reemplazo-20261116/recurrence-210071.json",
+        "commit": null,
+        "sha256": "004b4273b7a2cb9defab3ea66dc1ca15f66c6c45225310b5b0201432735f819a",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/reservation-variant.patch",
+        "commit": null,
+        "sha256": "d7ae745764b7b19c7dfc4b58d894539c24391a8f75a581c5dc440b0e5a33f5cf",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/test-reservation-variant.log",
+        "commit": null,
+        "sha256": "b601999637845a5ca1f4dc845957a72add1c93e2670bea96dde4f531151a32c8",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/build-reservation.log",
+        "commit": null,
+        "sha256": "ccfd3398055200db08e8c8df5d3bcf2c8675acff66074dd80c23b6cf77631c5f",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/repair-reserva-210071.sql",
+        "commit": null,
+        "sha256": "a04736e746b3f398b08de51b8cb9a333994bfc416fa41741ce887f208ca2ffca",
+        "content_state": "working-tree"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "code_origin": {
+      "repo": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF",
+      "path": "TOMIMSV4/DAL/Transacciones/Stock_Reservado/clsLnStock_res_Partial.vb",
+      "commit": "6adbe01eefb8106a77f7718817de7d06fa59eb75",
+      "sha256": "a10ff3854b8ecc9f7e78d08ed845bf9b10c73d045780d5714c8d47f58b109a3f",
+      "content_state": "working-tree"
+    },
+    "limitations": [
+      "Prueba operativa completa desde HH y despliegue pendientes.",
+      "CAG WARN por lookup de catalogo omitido; correlacion stock-reserva comprobada con lectura QA.",
+      "No se verifico que DLL estaba desplegada al ocurrir la recurrencia."
+    ]
+  },
+  {
+    "id": "EJC20261116_REEMPLAZO_AUDIT_RUTAS",
+    "kind": "fact",
+    "statement": "Se reprodujo perdida de variante en lector real Get_Stock_Para_Reserva (stocks 649815 y 649816); corregidos lector, filtro de variante, confirmaciones normal/consolidada/verificacion, ruta alterna desde reserva, guardia de mezcla y preparacion de pallet. Lectores y helpers compilados probados con QA en solo lectura; WSHHRN Release compilo usando herramientas SGen x64. Sin despliegue ni nuevas escrituras SQL. No constituye prueba operativa completa HH.",
+    "sources": [
+      {
+        "path": "analysis/mampa-reemplazo-20261116/all-routes-final.patch",
+        "commit": null,
+        "sha256": "52db92facb640aa4798e3e032dd8db5eab12bb3bfc26935cb4451db721733070",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/all-routes-report.json",
+        "commit": null,
+        "sha256": "635ff638767af51bf00f07e56c7061d60972d67523276f571e1a36ae5b1dc490",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/stock-loader-before.log",
+        "commit": null,
+        "sha256": "8b04ccd70f6d141af123410f271409cb7763f1d76c478b9ba1cb7ab37caa45a9",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/webservice-final-route-tests.log",
+        "commit": null,
+        "sha256": "65bf22f4e915d7ea60c3154fa5762eaf0d0cd0c22aefe63628659593dee88bd0",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/build-webservice-final.log",
+        "commit": null,
+        "sha256": "53983de876002d3e7a21042c607c0bc86b4bbf3c0231b380f8841d6e533029f1",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/latest-missing-30168.json",
+        "commit": null,
+        "sha256": "6142432d07d865201d57dd2598673764bd5c99c4fb72352a74ceb90d763a3409",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/APLICAR-reserva-210072-picking-201302.sql",
+        "commit": null,
+        "sha256": "4aab9766e044a270de677b144454a72aa9ac92015d4f05389b21fcd4660f85dc",
+        "content_state": "working-tree"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "code_sources": [
+      {
+        "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Stock\\clsLnStock_Partial.vb",
+        "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+        "sha256": "c9b337467d7c3bc0930dac076a98557d4955778796561e61cc5614142767d747",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Picking\\clsLnTrans_picking_ubic_Partial.vb",
+        "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+        "sha256": "dbe707c47393433720785e2a0b7af4d882041f5431b65deb3092a412aea869b2",
+        "content_state": "working-tree"
+      },
+      {
+        "path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Stock_Reservado\\clsLnStock_res_Partial.vb",
+        "commit": "5a4ad5dcd471594ac66435de4a0976d2795dd184",
+        "sha256": "cd3480f105c554fbc038dc192a6e3b8e84f1107747a4ba612cb059e7fc17d5b2",
+        "content_state": "working-tree"
+      }
+    ]
+  }
+]

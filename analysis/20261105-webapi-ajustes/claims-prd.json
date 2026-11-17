@@ -1,0 +1,41 @@
+[
+  {
+    "id": "EJC20261105_AJUSTES_API_PRD",
+    "statement": "Cambio local de ajustes replicado exclusivamente en cuatro archivos: fecha del encabezado, usuario User_agr, indicador PRESENTACION o UNIDAD y nombre de presentacion en respuestas full y minimal.",
+    "status": "draft",
+    "clients": [
+      "no-identificado; alcance limitado al codigo local"
+    ],
+    "sources": [
+      {
+        "sha256": "0b72d676a99adf3b616798094100df86a9cf928a47796ba78fc013487ea2b9fb",
+        "path": "WMS.DALCore/Ajustes/clsLn_vw_ajustes.cs",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "sha256": "b7deac34453b2569669729c8afaeab4c05f3d63dafc0b6fdafea27f119b247a7",
+        "path": "WMS.EntityCore/Dtos/Ajustes/clsBeAjustesMI3.cs",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "sha256": "4434b300651bd001f90d47ce45ec9c5df483a7b03d8ed796455f7a5e6bf05547",
+        "path": "WMSWebAPI/Controllers/AjusteController.cs",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "sha256": "6408cfbc5b7b70a09dca4cc2ac9145b0f62d88879ae6114a167bdc9a71a583f8",
+        "path": "WMSWebAPI/Services/Ajustes/AjustesEnvioService.cs",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "content_state": "working-tree-modified"
+      }
+    ],
+    "branches": [
+      "tom_2028_prd"
+    ],
+    "validated_at": null,
+    "kind": "fact"
+  }
+]

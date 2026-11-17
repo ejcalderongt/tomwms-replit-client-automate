@@ -1,0 +1,32 @@
+[
+  {
+    "id": "EJC20261105-CUMBRE-SECOND-RECEPTION",
+    "kind": "fact",
+    "statement": "El APK instalado y el preparado sin trazas contienen los mismos 20 archivos DEX; la captura filtrada del segundo proceso quedó vacía. No se obtuvo una comparación cuantitativa de duración.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-performance-20261105/installed-test.apk",
+        "commit": null,
+        "sha256": "921e0bca20ad04f190ac206082a6507e7fa6f54246dbd9670f2b4228c0418fd3"
+      },
+      {
+        "path": "analysis/cumbre-performance-20261105/qas-artifacts/TOMHH-8.9.75-sin-trazas-QAS.apk",
+        "commit": null,
+        "sha256": "0129ec0528e680cd44189d52de41e84fe3e8cce111c1b5d5b80c245b89f90c19"
+      },
+      {
+        "path": "analysis/cumbre-performance-20261105/emulator-no-traces-reception-completed.log",
+        "commit": null,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "clients": [
+      "La Cumbre (emulator test target)"
+    ],
+    "branches": [
+      "codex/cumbre-trazas-desactivadas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "EJC20261105-CUMBRE-TRACE-BRANCH-HH",
+    "kind": "decision",
+    "statement": "Rama local de diagnóstico HH 8.9.75: desactivar trazas detalladas para comparar rendimiento, preservando errores. No se afirma mejora medida ni equivalencia con producción.",
+    "sources": [
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/base/WebService.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "207a2bbe4712595d7331b96e7328d9a61e14235d39fe29bb3584a64d717adb12",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/base/WmsTrace.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "e0f9dccc202c267d638b7595d9bb3f0427bde315da9869a4557ea80e2a96438b",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "fe552dfc75ef79eccf03e55f391cf9b22c20ef18da6122780e41fdb12a9ee8b2",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "d6c374eb9c1334afec13604554847c5325c51d808d1cc4539b79b16ef702b5b2",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "661d8866828a02dab6f9431e56a8066510ee377f60a580ad333a7bba0b558273",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-hh/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+        "commit": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+        "sha256": "9ff91cf567d4d5529f4b1f12d1100697149e9836b22fbae10ee2a058200306e1",
+        "content_state": "working-tree-modified"
+      }
+    ],
+    "clients": [
+      "La Cumbre (QAS diagnostic target)"
+    ],
+    "branches": [
+      "codex/cumbre-trazas-desactivadas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261105-CUMBRE-TRACE-BRANCH-BOF",
+    "kind": "decision",
+    "statement": "Rama local de diagnóstico BOF/WS/SapSync dev_2026_estable_prd: desactivar trazas detalladas para comparar rendimiento, preservando errores. No se afirma mejora medida ni equivalencia con producción.",
+    "sources": [
+      {
+        "path": ".worktrees/cumbre-sin-trazas-bof/TOMIMSV4/DAL/General/Servidor/WmsTrace.vb",
+        "commit": "bdd4284126f10ed5e15189966ec87ddf0ab9223e",
+        "sha256": "3c3a438fd13b653d9042235518f68d2dc57f64ed4e40313a97799c7edf585fb5",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-bof/WSHHRN/Global.asax.vb",
+        "commit": "bdd4284126f10ed5e15189966ec87ddf0ab9223e",
+        "sha256": "19bb2d5b495dc97a5c9fb14bb2b31f8b3f6ac3a651a7252e55b4966572483a2e",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": ".worktrees/cumbre-sin-trazas-bof/WSHHRN/WmsTraceWS.vb",
+        "commit": "bdd4284126f10ed5e15189966ec87ddf0ab9223e",
+        "sha256": "8c594c02c1a27a16d21ed4a5a81d1ae4e4a1b0ab6d9601cd82bef54a5b5ee3a2",
+        "content_state": "working-tree-modified"
+      }
+    ],
+    "clients": [
+      "La Cumbre (QAS diagnostic target)"
+    ],
+    "branches": [
+      "codex/cumbre-trazas-desactivadas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

@@ -1,0 +1,179 @@
+{
+  "recepcion": [
+    {
+      "IdRecepcionEnc": 28335,
+      "estado": "Pendiente",
+      "activo": true,
+      "Habilitar_Stock": true,
+      "IdBodega": 31,
+      "bloqueada": false,
+      "fec_agr": "2026-11-17T12:58:39.273",
+      "fec_mod": "2026-11-17T12:58:39.29"
+    }
+  ],
+  "detalle": [
+    {
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46491,
+      "IdOrdenCompraEnc": 28359,
+      "IdOrdenCompraDet": 2,
+      "No_Linea": 1,
+      "codigo_producto": "AG00034526041365",
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad_recibida": 3.0,
+      "lic_plate": "",
+      "fec_agr": "2026-11-17T13:17:25.93"
+    },
+    {
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46492,
+      "IdOrdenCompraEnc": 28359,
+      "IdOrdenCompraDet": 2,
+      "No_Linea": 1,
+      "codigo_producto": "AG00034526041365",
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad_recibida": 3.0,
+      "lic_plate": "",
+      "fec_agr": "2026-11-17T13:17:25.93"
+    }
+  ],
+  "lotes": [
+    {
+      "IdOrdenCompraEnc": 28359,
+      "IdOrdenCompraDet": 2,
+      "IdOrdenCompraDetLote": 1348,
+      "no_linea": 1,
+      "codigo_producto": "AG00034526041365",
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "Talla": "365",
+      "Color": "041",
+      "cantidad": 4.0,
+      "cantidad_recibida": 0.0,
+      "lic_plate": "J100000635"
+    },
+    {
+      "IdOrdenCompraEnc": 28359,
+      "IdOrdenCompraDet": 2,
+      "IdOrdenCompraDetLote": 1349,
+      "no_linea": 1,
+      "codigo_producto": "AG00034526041365",
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "Talla": "365",
+      "Color": "041",
+      "cantidad": 3.0,
+      "cantidad_recibida": 0.0,
+      "lic_plate": "J100000635"
+    }
+  ],
+  "orden": {
+    "IdOrdenCompraEnc": 28359,
+    "IdOrdenCompraDet": 2,
+    "No_Linea": 1,
+    "codigo_producto": "AG00034526041365",
+    "IdProductoBodega": 1431878,
+    "IdProductoTallaColor": 40159,
+    "cantidad": 7.0,
+    "cantidad_recibida": 6.0
+  },
+  "stockRec": [
+    {
+      "IdStockRec": 48381,
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "Talla": "365",
+      "Color": "041",
+      "cantidad": 3.0,
+      "lic_plate": "",
+      "IdUbicacion": 747,
+      "regularizado": null,
+      "activo": true
+    },
+    {
+      "IdStockRec": 48382,
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "Talla": "365",
+      "Color": "041",
+      "cantidad": 3.0,
+      "lic_plate": "",
+      "IdUbicacion": 747,
+      "regularizado": null,
+      "activo": true
+    }
+  ],
+  "stock": [
+    {
+      "IdStock": 649921,
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad": 3.0,
+      "lic_plate": "",
+      "IdUbicacion": 747,
+      "IdPickingEnc": null,
+      "IdPedidoEnc": null,
+      "IdDespachoEnc": null,
+      "activo": true
+    },
+    {
+      "IdStock": 649920,
+      "IdRecepcionEnc": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad": 3.0,
+      "lic_plate": "",
+      "IdUbicacion": 747,
+      "IdPickingEnc": null,
+      "IdPedidoEnc": null,
+      "IdDespachoEnc": null,
+      "activo": true
+    }
+  ],
+  "movimientos": [
+    {
+      "IdMovimiento": 856572,
+      "IdTransaccion": 28335,
+      "IdRecepcion": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad": 3.0,
+      "cantidad_hist": 0.0,
+      "lic_plate": "",
+      "IdUbicacionOrigen": 747,
+      "IdUbicacionDestino": 747,
+      "fecha": "2026-11-17T13:17:26.367"
+    },
+    {
+      "IdMovimiento": 856573,
+      "IdTransaccion": 28335,
+      "IdRecepcion": 28335,
+      "IdRecepcionDet": 46491,
+      "IdProductoBodega": 1431878,
+      "IdProductoTallaColor": 40159,
+      "cantidad": 3.0,
+      "cantidad_hist": 3.0,
+      "lic_plate": "",
+      "IdUbicacionOrigen": 747,
+      "IdUbicacionDestino": 747,
+      "fecha": "2026-11-17T13:17:26.383"
+    }
+  ],
+  "bodega": [
+    {
+      "IdBodega": 31,
+      "Control_Talla_Color": true,
+      "bloquear_lp_hh": false
+    }
+  ]
+}

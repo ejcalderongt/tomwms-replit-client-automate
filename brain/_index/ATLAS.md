@@ -8,6 +8,12 @@ ramas_afectadas: [dev_2023_estable, dev_2028_merge]
 
 ## Índice
 
+<!-- #CKFK20261117_BRAIN_PENDIENTES -->
+Trabajo local pendiente de commit, con cobertura de siete repositorios y límites
+por tema: [consolidación CKFK](../handoffs/2026-11-17-ckfk-pendientes/README.md).
+Recepción 28335, caja master J100000635: [causa, corrección y recuperación
+confirmada por CKFK](../handoffs/2026-11-17-ckfk-recepcion-28335/README.md).
+
 <!-- #EJC20261105_PORTAL_PORTABLE -->
 Portal React en otra PC o PC de Carol: [instalación interactiva y arranque](../runbooks/portal-react-instalacion-otra-pc.md).
 

@@ -1,0 +1,211 @@
+[
+  {
+    "id": "EJC20261114-CUMBRE-30",
+    "kind": "fact",
+    "statement": "El cambio para transferencias directas 09 hacia 89 conserva IDs WMS exactos y no depende de una tabla nueva ni migracion.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "eff0d5a04a3cf4e58074296197f0aae42d8f6769d01a798a240a77802155f907",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsCumbreTransferenciaDirecta.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b82e11b97618920930d6218f7564be990331e289354c0ae9ddeefd2e745e9409",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/SAPSYNCCUMBRE.vbproj",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "5f2c47fda414f88797212615fa930cbc0f8f28b289dc5654c95293879bd58c68",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": [
+      "EJC20261114-CUMBRE-20"
+    ]
+  },
+  {
+    "id": "EJC20261114-CUMBRE-31",
+    "kind": "fact",
+    "statement": "El motor inicia transaccion SAP antes de Add, prepara las marcas SQL sin commit, confirma SAP y luego WMS, e intenta rollback ante errores.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "eff0d5a04a3cf4e58074296197f0aae42d8f6769d01a798a240a77802155f907",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsCumbreTransferenciaDirecta.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b82e11b97618920930d6218f7564be990331e289354c0ae9ddeefd2e745e9409",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/SAPSYNCCUMBRE.vbproj",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "5f2c47fda414f88797212615fa930cbc0f8f28b289dc5654c95293879bd58c68",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": [
+      "EJC20261114-CUMBRE-21"
+    ]
+  },
+  {
+    "id": "EJC20261114-CUMBRE-32",
+    "kind": "fact",
+    "statement": "Antes de crear consulta la clave SAP existente y valida huella, cantidades y bodegas para recuperar marcas sin repetir un traslado identificado.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "eff0d5a04a3cf4e58074296197f0aae42d8f6769d01a798a240a77802155f907",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsCumbreTransferenciaDirecta.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b82e11b97618920930d6218f7564be990331e289354c0ae9ddeefd2e745e9409",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/SAPSYNCCUMBRE.vbproj",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "5f2c47fda414f88797212615fa930cbc0f8f28b289dc5654c95293879bd58c68",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": []
+  },
+  {
+    "id": "EJC20261114-CUMBRE-33",
+    "kind": "decision",
+    "statement": "Se retiro el journal durable WMS por peticion de Carolina; las transacciones locales y la consulta SAP no se presentan como garantia absoluta ante todo resultado desconocido.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "eff0d5a04a3cf4e58074296197f0aae42d8f6769d01a798a240a77802155f907",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsCumbreTransferenciaDirecta.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b82e11b97618920930d6218f7564be990331e289354c0ae9ddeefd2e745e9409",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/SAPSYNCCUMBRE.vbproj",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "5f2c47fda414f88797212615fa930cbc0f8f28b289dc5654c95293879bd58c68",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": [
+      "EJC20261114-CUMBRE-24"
+    ]
+  },
+  {
+    "id": "EJC20261114-CUMBRE-34",
+    "kind": "fact",
+    "statement": "Se conservan la regla de genera_guia_remision, el tratamiento de varios despachos y el flujo legacy de las otras rutas.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "eff0d5a04a3cf4e58074296197f0aae42d8f6769d01a798a240a77802155f907",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsCumbreTransferenciaDirecta.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b82e11b97618920930d6218f7564be990331e289354c0ae9ddeefd2e745e9409",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/SAPSYNCCUMBRE.vbproj",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "5f2c47fda414f88797212615fa930cbc0f8f28b289dc5654c95293879bd58c68",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "utf8_bom": true,
+        "only_crlf": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": [
+      "EJC20261114-CUMBRE-23",
+      "EJC20261114-CUMBRE-25"
+    ]
+  }
+]

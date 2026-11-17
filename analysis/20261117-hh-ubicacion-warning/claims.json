@@ -1,0 +1,30 @@
+[
+  {
+    "source_root": "C:\\Users\\carol\\StudioProjects\\TOMHH2025",
+    "validation_scope": "Pruebas aisladas de metodos reales con dobles de UI/servicio; sin SQL, sin prueba de dispositivo",
+    "validated_at": null,
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "sources": [
+      {
+        "sha256": "39476798b45120c4c9785aa2a79d0a55cef509f04365ed7c1b7cfb0d6d23bf83",
+        "content_state": "worktree-modified",
+        "path": "app/src/main/java/com/dts/tom/Transacciones/CambioUbicacion/frm_cambio_ubicacion_ciega.java",
+        "commit": "d47bf4ced95f3cd1d67bed7470c226abdffccc86",
+        "note": "El commit identifica la base del repositorio HH; no contiene estos bytes modificados."
+      }
+    ],
+    "statement": "El cambio local hace que Cambio de ubicacion consulte las reglas en ambos modos. La respuesta incompatible conserva el aviso con continuar/cancelar cuando restrictivo esta apagado y el bloqueo cuando esta encendido. Compilacion Java Android y pruebas aisladas satisfactorias; pendiente prueba en dispositivo y servicio desplegado.",
+    "status": "draft",
+    "clients": [
+      "POLINDUSTRIAS: caso MP-002/964; sin condicion por identidad de cliente"
+    ],
+    "validation_evidence": [
+      "tools/diagnostics/check_hh_ubicacion_warning_20261117.py: PASS en ambos modos, destino compatible, aviso, cancelar, continuar y bloqueo; control negativo reproduce fallo previo",
+      ":app:compileDebugJavaWithJavac: BUILD SUCCESSFUL"
+    ],
+    "id": "EJC20261117-HH-UBICACION-ADVERTENCIA",
+    "kind": "fact"
+  }
+]

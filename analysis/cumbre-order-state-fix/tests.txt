@@ -1,0 +1,5 @@
+ASSEMBLY C:\Users\carol\source\repos\TOMWMS_BOF\WSHHRN\bin\DAL.dll
+UNIT PASS: 12 boundary cases and 30 repeated partial quantities
+STATE GUARD PASS: six advanced states protected, three initial states allowed, explicit reopen retained
+HH STATE UPDATE + BOF DETAIL SAVE PASS: state=Pickeado; received=10.020000; no stock confirmation replayed
+All state guard scenarios rolled back.

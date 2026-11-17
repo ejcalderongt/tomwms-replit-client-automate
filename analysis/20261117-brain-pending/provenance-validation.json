@@ -1,0 +1,138 @@
+{
+  "claims": 33,
+  "invalid": 0,
+  "results": [
+    {
+      "id": "CKFK20261117-PENDING-REC28335",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-BODEGA-XML",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-SAP-RESERVA",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-REEMPLAZO-VARIANTE",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-TRASLADO-MENSAJES",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-HH-UBICACION",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-VERIFICACION8981",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-PEDIDO171",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-PACKING-ESTADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-DESPACHO-PARCIAL",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-ESTADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-DECIMAL",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-SAP-DUPLICADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-SAP-INGRESO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-TRASLADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-CUMBRE-PERFORMANCE",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-KILLIOS-ACEITE",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-KILLIOS-CEST",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-KILLIOS-PUBLICACION",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-PICKING-RACK",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-UBIC-DUPLICADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-MHS-ORIGEN",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-LOTE-VENCIMIENTO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-NAVSYNC-RECIBIDO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-NAVSYNC-DUPLICADO",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-NAVSYNC-DESIGNER",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-OC-VACIA",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-WEBAPI-AJUSTES",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-MONITOR-OCUPACION",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-MONITOR-READMODEL",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-PORTAL",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-GO-LIVE",
+      "issues": []
+    },
+    {
+      "id": "CKFK20261117-PENDING-GOBIERNO",
+      "issues": []
+    }
+  ]
+}

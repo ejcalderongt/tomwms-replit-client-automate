@@ -1,0 +1,33 @@
+{
+  "tag": "#EJC20261117",
+  "branch": "dev_2026_estable",
+  "baseline_commit": "4f64edecee30af4207d4dd63dd963b53e9080b32",
+  "validation": {
+    "build": "DAL Debug AnyCPU compila; dependencias locales, salida aislada en Brain",
+    "qa_read_only": "validation.log: faltante bodega 30, preservación de motivo específico con stock, fallback neutro y numeración de cuatro detalles existentes",
+    "diff_check": "dos archivos sin errores; UTF-8 BOM y CRLF conservados"
+  },
+  "limitations": [
+    "No se reimportó el pedido ni se ejecutaron escrituras en QA.",
+    "DLL compilada para validación; no se reemplazó la aplicación instalada.",
+    "El diagnóstico refleja el stock al consultar; no garantiza disponibilidad futura."
+  ],
+  "sources": [
+    {
+      "path": "analysis/20261117-mampa-transfer-messages/evidence/clsLnI_nav_ped_traslado_enc_Partial.vb",
+      "commit": "4f64edecee30af4207d4dd63dd963b53e9080b32",
+      "sha256": "6b62226660917abe46d543f3fed5b9e794324de704c556f5f02b6d8a60f247a6",
+      "content_state": "worktree-snapshot",
+      "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Interface\\Pedido_Traslado\\Pedido_Traslado_Enc\\clsLnI_nav_ped_traslado_enc_Partial.vb",
+      "repository": "TOMWMS_BOF"
+    },
+    {
+      "path": "analysis/20261117-mampa-transfer-messages/evidence/clsLnTrans_pe_det_Partial.vb",
+      "commit": "4f64edecee30af4207d4dd63dd963b53e9080b32",
+      "sha256": "c41b4e2b5de4dc552ace466c0001d224f870fe2015c3dae5de481028ce75b81e",
+      "content_state": "worktree-snapshot",
+      "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\TOMIMSV4\\DAL\\Transacciones\\Pedido\\clsLnTrans_pe_det_Partial.vb",
+      "repository": "TOMWMS_BOF"
+    }
+  ]
+}

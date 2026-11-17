@@ -1,0 +1,47 @@
+[
+  {
+    "clients": [
+      "unknown"
+    ],
+    "id": "EJC20261117-VERI8981-FIX",
+    "validated_at": null,
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "kind": "fact",
+    "status": "draft",
+    "sources": [
+      {
+        "content_state": "local-evidence",
+        "sha256": "cae0e4628162dcd7dc64f4ad32fcbffccb585631406f62fa93b19ba08d8939ba",
+        "commit": null,
+        "path": "analysis/20261117-verificacion-8981/fix-evidence.json"
+      },
+      {
+        "content_state": "local-evidence",
+        "sha256": "0739cdd7a178c1b147bc01c768bf14ad6695c5be0e0e6b879d2c45bdc349aa3a",
+        "commit": null,
+        "path": "analysis/20261117-verificacion-8981/correccion.md"
+      },
+      {
+        "content_state": "local-evidence",
+        "sha256": "ace92948d060db77198cf00e44dbacb955562ac59d264c5801290625a421a7b6",
+        "commit": null,
+        "path": "analysis/20261117-verificacion-8981/replay.log"
+      },
+      {
+        "content_state": "local-evidence",
+        "sha256": "f9fa04d5571379d2828d8ccd640bb516f16b090f48e8c39c240f8ee15b17a1f7",
+        "commit": null,
+        "path": "tools/diagnostics/check_verificacion_consolidada_20261117.py"
+      },
+      {
+        "sha256": "ec6bf12ab29bd45b9c3790affa356da8449d0ef03811bd616a20aa8783faf997",
+        "path": "analysis/20261117-verificacion-8981/compile.log",
+        "content_state": "local-evidence",
+        "commit": null
+      }
+    ],
+    "statement": "El cambio local HH dev_2026_estable elimina filtro lote/fecha de la rama consolidada sin talla/color al guardar, preservando producto, presentacion, pendiente y pTipo. Compila y supera nueve escenarios con dobles; no fue validado guardando un pedido real."
+  }
+]

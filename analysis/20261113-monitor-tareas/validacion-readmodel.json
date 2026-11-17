@@ -1,0 +1,27 @@
+{
+  "tag": "CKFK20261113",
+  "database": "TOMWMS_CUMBRE_DECIMAL_LAB",
+  "reception": 10182,
+  "task": 14876,
+  "view_rows": 1,
+  "installed_procedure_rows": 2,
+  "corrected_select_rows": 1,
+  "alter_executed": false,
+  "join_evidence": [
+    {
+      "IdRecepcionEnc": 10182,
+      "BodegaRecepcion": 89,
+      "IdUbicacionRecepcion": 9,
+      "BodegaUbicacion": 9,
+      "descripcion": "PRODUCTO NE B09"
+    },
+    {
+      "IdRecepcionEnc": 10182,
+      "BodegaRecepcion": 89,
+      "IdUbicacionRecepcion": 9,
+      "BodegaUbicacion": 89,
+      "descripcion": "RECEPCIÓN"
+    }
+  ],
+  "validation_note": "La tarea cambio a IdEstado=4 durante el diagnostico. Se reprodujo con SELECT derivado de la vista incluyendo exclusivamente IdTareaHH=14876 aun cerrado; no se modificaron datos ni objetos."
+}

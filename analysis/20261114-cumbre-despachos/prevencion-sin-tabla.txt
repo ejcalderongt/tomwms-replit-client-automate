@@ -1,0 +1,74 @@
+#EJC20261114_CUMBRE_SIN_DDL
+VERSION ACTUAL: SIN TABLA NUEVA NI MIGRACION DE ESQUEMA.
+Reemplaza la propuesta previa con i_sap_cumbre_despacho_envio, retirada sin aplicar.
+
+La tabla no era necesaria para corregir el defecto demostrado. Era una ampliacion
+para conservar el estado de cada intento ante resultados desconocidos. Se retiro
+esa ampliacion a peticion de Carolina para mantener el cambio sin DDL.
+
+CORRECCION CONSERVADA
+
+- Solo transferencias directas 09/9 hacia 89. Las otras rutas conservan el envio
+  anterior, verificado contra la copia previa. La identidad sigue siendo por
+  pedido y despacho: admite varios despachos del mismo pedido.
+- Se conservan los Idtransaccion de las filas originales. Se agrupan cantidades
+  por producto para SAP sin usar el numero de linea SAP para identificar WMS.
+- Antes de enviar se valida la identidad, unicidad y cantidad de todas las filas.
+- La transaccion SAP se inicia antes del Add. WMS prepara las marcas exactas y
+  comprueba su cobertura dentro de una transaccion SQL real.
+- Si falla la preparacion de marcas antes de confirmar SAP, se intenta revertir
+  tanto WMS como SAP. SAP puede haber revertido automaticamente al rechazar Add;
+  el adaptador comprueba InTransaction para no pedir un segundo rollback COM.
+- Se confirma SAP y luego WMS. Si SAP ya quedo confirmado y falla el commit WMS,
+  un siguiente intento busca el documento SAP existente y valida su huella,
+  cantidades y bodegas antes de recuperar marcas, sin otro Add.
+- La clave y huella van en Comments SAP, campo existente; el memo existente
+  identifica pedido y despacho. Se mantienen guardas para referencias historicas,
+  varios candidatos, anulaciones, cambios de IDs/cantidades y otras rutas.
+- La clave usa la identidad del servidor SQL y DB_NAME, no un alias diferente
+  que cada equipo pueda tener en su cadena de conexion.
+- Se mantiene el bloqueo de sesion sp_getapplock de SQL Server, que ya existe
+  en el sistema. No se crea ningun procedimiento, tabla, campo o trigger.
+- Se conserva la regla completa de genera_guia_remision y la marca administrativa
+  de cabecera. La completitud real se calcula por pendientes/reservas, por separado;
+  una marca administrativa no cierra la solicitud de un despacho parcial.
+- Fallos de monitor, bitacora, cierre accesorio o desconexion no convierten un
+  resultado confirmado en una nueva orden de crear SAP.
+
+LIMITE QUE CAMBIA AL RETIRAR LA TABLA
+
+SQL Server y SAP conservan transacciones locales separadas. No se afirma una
+transaccion distribuida ni una garantia absoluta exactly-once. La consulta por
+clave/memo SAP protege reintentos donde el documento ya resulta identificable.
+Al retirar el registro durable WMS ya no queda una barrera persistente del intento
+si se pierde el proceso y el resultado de SAP no puede establecerse. Ante rollback
+o commit no confirmados, el error indica la fase y requiere verificar SAP antes
+de repetir. Una ausencia temporal de respuesta no demuestra que no se haya creado
+el traslado. No presentar esta version como equivalente a un journal durable.
+
+VALIDACION
+
+Compilacion Release SAPSYNCCUMBRE.vbproj: correcta con DLL locales existentes.
+20 escenarios del motor real compilado con adaptadores SQL/SAP simulados:
+ IDs exactos y reintento; fallo de marcado y rollback SAP; Add sin respuesta;
+ fallos antes/despues de commit SAP; fallos antes/despues de commit WMS;
+ rollback no confirmado visible; historico intacto; bloqueo de segundo proceso;
+ errores accesorios; cambios de cantidad/IDs; SAP anulado/varios candidatos;
+ cantidades SAP incorrectas; entrada invalida; alcance 09 a 89; regla de guia;
+ marca administrativa parcial; tres despachos; 640 filas reales y 539 productos.
+Los tres ordenes SAP del caso marcan las 640 filas y conservan las cantidades,
+con un unico traslado confirmado al repetir la llamada.
+9 consultas SQL del producto pasan ScriptDom; no se ejecutaron contra una base.
+No se ejecutaron SQL ni SAP DI API reales. Falta validar en QAS transacciones,
+permisos, bloqueos entre instancias, cortes de conexion y recuperacion.
+
+La migracion propia, no versionada y nunca ejecutada, se retiro del checkout DBA
+tras comprobar su hash. Se conserva solo como evidencia historica marcada RETIRADA.
+No aplicar ni distribuir aquel script. Los paquetes actuales no lo incluyen.
+No se modifica el pedido 10512 ni inventario, banderas o triggers productivos.
+No se hicieron commits, pushes ni despliegues.
+
+Artefactos vigentes: prevencion-sin-tabla.txt, sin-tabla-test-resultados.txt,
+sin-tabla-validacion-sql.txt, build-sin-tabla.log y paquete-prevencion.zip.
+Las pruebas/propuestas anteriores con tabla quedan como evidencia historica y
+no son requisitos de instalacion de esta version.

@@ -43,6 +43,7 @@ traza_lupa_licencia_bof_2026_07_31:
   regla: "No crear estados UI que dependan de un callback cuando no se envio ninguna solicitud."
 
 mejoras_ya_existentes_detectadas:
+  - "#CKFK20261020: el filtro por producto conserva la fila resumen de cada licencia packing con coincidencias; la licencia de stock se muestra en el detalle y la licencia packing en el agrupador existente."
   - "Se ajustó filtro de licencia para usar licencia packing MM en preparación."
 
 quick_wins:

@@ -1,0 +1,95 @@
+{
+  "branch": "codex/cumbre-trazas-desactivadas",
+  "scope": "diagnostic QAS builds; no deployment, commit or push",
+  "builds": {
+    "HH_APK": "passed",
+    "WSHHRN": "passed",
+    "DAL": "passed",
+    "SAPSYNCCUMBRE": "passed",
+    "BOF_WMS": "passed"
+  },
+  "build_warnings": [
+    "BOF DevExpress Dashboard evaluation warning",
+    "SapSync SAP interop architecture warning"
+  ],
+  "hh_base": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+  "bof_base": "bdd4284126f10ed5e15189966ec87ddf0ab9223e",
+  "bof_base_note": "dev_2026_estable_prd; exact installed production BOF/SapSync revision unverified",
+  "checks": [
+    {
+      "path": "app/src/main/java/com/dts/base/WebService.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "app/src/main/java/com/dts/base/WmsTrace.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod_detalle.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_lista_tareas_recepcion.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+      "only_trace_guards_changed": true,
+      "errors_preserved": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "TOMIMSV4/DAL/General/Servidor/WmsTrace.vb",
+      "utf8_bom": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "WSHHRN/Global.asax.vb",
+      "utf8_bom": true,
+      "crlf_preserved": true
+    },
+    {
+      "path": "WSHHRN/WmsTraceWS.vb",
+      "utf8_bom": true,
+      "crlf_preserved": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "analysis\\cumbre-performance-20261105\\qas-artifacts\\TOMHH-8.9.75-sin-trazas-QAS.apk",
+      "sha256": "0129ec0528e680cd44189d52de41e84fe3e8cce111c1b5d5b80c245b89f90c19"
+    },
+    {
+      "path": "analysis\\cumbre-performance-20261105\\qas-artifacts\\WSHHRN.dll",
+      "sha256": "015b5b116d1f6cd80728834c595daceb037e5f1948bf4dcf7a6b12548c4cb467"
+    },
+    {
+      "path": "analysis\\cumbre-performance-20261105\\qas-artifacts\\DAL.dll",
+      "sha256": "100515ac73f98ca9d7680e9886589decac7047c110114d70bd2113a77ddcda54"
+    },
+    {
+      "path": "analysis\\cumbre-performance-20261105\\qas-artifacts\\SAPBOSyncCumbre.exe",
+      "sha256": "803e88b72fbd201706e8baee8d2f6b08037f2cfba733ff751f30725579f5ce5a"
+    }
+  ],
+  "limits": [
+    "Reception and central WmsTrace disabled; other modules may have direct diagnostic logs",
+    "Existing error logs retained; WS routine daily log disabled but HTTP errors retained",
+    "Performance benefit not yet measured with these builds",
+    "Server binaries require matching stable-branch dependencies; not a full deployment package"
+  ]
+}

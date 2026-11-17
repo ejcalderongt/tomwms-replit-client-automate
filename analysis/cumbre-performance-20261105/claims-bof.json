@@ -1,0 +1,42 @@
+[
+  {
+    "id": "EJC20261105-CUMBRE-BOF-TRACE",
+    "kind": "fact",
+    "statement": "El código BOF local activa traza fina WS en Application_Start y contiene escritores sincronizados con AutoFlush, también en DAL. SapSyncCumbre usa clsTransaccion instrumentada; no se ha medido el impacto.",
+    "sources": [
+      {
+        "path": "WSHHRN/Global.asax.vb",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "sha256": "3dc60641b6380334f4015dfacfa3ac43b5a44335748b3e37da9e238cff17253e"
+      },
+      {
+        "path": "WSHHRN/WmsTraceWS.vb",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "sha256": "31f225180cdd7119b9fa52706609726c0a723e26cead91506dd3f5effb235520"
+      },
+      {
+        "path": "TOMIMSV4/DAL/General/Servidor/WmsTrace.vb",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "sha256": "029fdfb112a2080806e89cfa65f0f40d8412c25200154356ffda1fffb60a96f4"
+      },
+      {
+        "path": "TOMIMSV4/DAL/General/clsTransaccion.vb",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "sha256": "2bd7fbdecf1b702e36585be24e78a0a58279e3420ebe9ebe0b7771ea1d21f9e4"
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Pedido_Compra/clsSyncSAPPedidoCompra.vb",
+        "commit": "cc41eebf107017e97e226ba2ad327793d6ff175f",
+        "sha256": "534e520e757c2dcec9e846869b184ccee5516e2b53fad0c4375576b3cad3142c"
+      }
+    ],
+    "clients": [
+      "La Cumbre (investigation target; deployed artifacts unverified)"
+    ],
+    "branches": [
+      "tom_2028_prd"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

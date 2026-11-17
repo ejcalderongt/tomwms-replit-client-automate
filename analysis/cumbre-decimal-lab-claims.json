@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EJC20261110_CUMBRE_DECIMALES_LAB",
+    "kind": "hypothesis",
+    "statement": "El candidato de picking normal corrige los rechazos reproducidos por residuos decimales en el laboratorio actualizado; la suficiencia para produccion permanece sin validar.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-decimal-lab-evidence.json",
+        "commit": null,
+        "sha256": "0e0fe0c3f79aca8fb40964b600125be7198d6989d89d409450445c9f7e20ca0d",
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-picking-decimales"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

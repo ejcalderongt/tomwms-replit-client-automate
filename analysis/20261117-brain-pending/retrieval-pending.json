@@ -1,0 +1,139 @@
+{
+  "query": "CKFK todo trabajo pendiente commit consolidacion",
+  "method": "bm25",
+  "experimental": false,
+  "scope_policy": "strict-declared; missing metadata does not imply applicability",
+  "warning": "Sources are evidence candidates. Validate current code/data before treating historical claims as current facts.",
+  "results": [
+    {
+      "id": "handoffs/2026-11-17-ckfk-pendientes/README.md",
+      "path": "brain/handoffs/2026-11-17-ckfk-pendientes/README.md",
+      "score": 19.122415656695807,
+      "metadata": {
+        "clients": [],
+        "branches": [
+          "codex/mhs-despacho-directo-picking",
+          "dev_2026_estable",
+          "main",
+          "wms-brain"
+        ],
+        "scope_state": "incomplete",
+        "kind": "fact",
+        "validated_at": null,
+        "declared_status": "draft",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/handoffs/2026-11-17-ckfk-pendientes/README.md",
+          "sha256": "8777f1fd28b4395169544ea9ac8f1768b5094fa96e54e1a04cbb7f7392a1f3df",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [
+              "codex/mhs-despacho-directo-picking",
+              "dev_2026_estable",
+              "main",
+              "wms-brain"
+            ],
+            "scope_state": "incomplete",
+            "kind": "fact",
+            "validated_at": null,
+            "declared_status": "draft",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "_conventions/nomenclatura.md",
+      "path": "brain/_conventions/nomenclatura.md",
+      "score": 16.18893302291918,
+      "metadata": {
+        "clients": [],
+        "branches": [],
+        "scope_state": "incomplete",
+        "kind": "unclassified",
+        "validated_at": null,
+        "declared_status": "ratificado",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/_conventions/nomenclatura.md",
+          "sha256": "a8caa2a761c9523aeaa5ffe008fb47c248ceeb9b605698609a62820de70e275c",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "ratificado",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "_index/ATLAS.md",
+      "path": "brain/_index/ATLAS.md",
+      "score": 15.171659211913685,
+      "metadata": {
+        "clients": [],
+        "branches": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "scope_state": "incomplete",
+        "kind": "unclassified",
+        "validated_at": null,
+        "declared_status": "unknown",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/_index/ATLAS.md",
+          "sha256": "f1c0026fc88a935e660eecf0c74f3733c4177814f225845a2c4b30068270cb61",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [
+              "dev_2023_estable",
+              "dev_2028_merge"
+            ],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    }
+  ]
+}

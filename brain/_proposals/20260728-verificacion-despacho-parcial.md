@@ -40,3 +40,14 @@ HH-BOF y no requiere nueva APK.
 
 `#EJC20260728_PACKING_PENDIENTE` bloquea solamente cuando
 `PendientePacking > 0.000001`.
+
+## Correccion en despacho BOF
+
+`#EJC20261021_DESPACHO_PARCIAL` ajusta
+`clsLnTrans_picking_ubic.Get_Diferencias_Despacho_Packing` para consultar
+`trans_pe_tipo.permitir_despacho_parcial` por el tipo del pedido.
+
+- Con despacho parcial permitido, `cantidad_recibida <> cantidad_verificada`
+  no se reporta como diferencia.
+- `cantidad_verificada <> cantidad_empacada` siempre se mantiene como
+  `PACKING_NO_CUADRA` y bloquea el despacho.

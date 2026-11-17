@@ -1,0 +1,27 @@
+[
+  {
+    "id": "EJC20261105-CUMBRE-HH-TRACE",
+    "kind": "fact",
+    "statement": "El código HH local incluye WmsTrace activo y trazas específicas de recepción; su costo en dispositivo no se ha medido.",
+    "sources": [
+      {
+        "path": "app/src/main/java/com/dts/base/WmsTrace.java",
+        "commit": "e5a16a9b7023b12def51f8832e62025f92a77fd9",
+        "sha256": "e78638236fa470412bada75e016a3ce6f86aab2a69ac1012394adf17ebea4db5"
+      },
+      {
+        "path": "app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+        "commit": "e5a16a9b7023b12def51f8832e62025f92a77fd9",
+        "sha256": "5ea6b3b3ad81600cf4a5370694aba48c69678351d5159dcbffe651388d1967d4"
+      }
+    ],
+    "clients": [
+      "La Cumbre (investigation target; deployed artifacts unverified)"
+    ],
+    "branches": [
+      "codex/killios-decimales-estados"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

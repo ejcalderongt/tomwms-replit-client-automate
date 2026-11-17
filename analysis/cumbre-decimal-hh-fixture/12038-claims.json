@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EJC20261110_CUMBRE_HH_12038",
+    "kind": "fact",
+    "statement": "Pedido 8980/picking 4410 de laboratorio: 120.37 y 0.01 completos en picking, verificacion y despacho; despacho 11535 Finalizado; no quedan stock ni reservas de los IDs/licencia revisados. Auditoria registra HH Pendiente a Pickeado con cero pendientes y despues Verificado a Despachado. No hay evento de actualizacion BOF posterior al cierre en la bitacora consultada, por lo que no acredita por si sola el estado inmediatamente despues de esa accion.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-decimal-hh-fixture/12038-validation.txt",
+        "sha256": "3c353b4aa9a5f71d29d4847c7bdcd8a6a95990442f31dd3bcefedb5865b60be8",
+        "commit": null,
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

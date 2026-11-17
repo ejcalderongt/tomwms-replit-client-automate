@@ -1,0 +1,68 @@
+[
+  {
+    "id": "EJC20261114-CUMBRE-11",
+    "kind": "fact",
+    "statement": "Las imagenes muestran pedido 10512 con indicador No Enviado y tres renglones SAP con igual referencia e importes absolutos distintos; no muestran DocEntry ni cantidades.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Captura.JPG",
+        "commit": null,
+        "sha256": "ac6dd2c104010f0254df078b38fb6d5ad3d17ec6c7cc812925a42368e26cb199",
+        "content_state": "user-attachment"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Estatus.jpeg",
+        "commit": null,
+        "sha256": "cbf8feab707b6979e020fcfe562736ac69e8bedf495f8d971f1cf411b010e955",
+        "content_state": "user-attachment"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Registro en SAP.png",
+        "commit": null,
+        "sha256": "ab6aecb4f8a98d31016f80b1865740b3c382c1afc8fb0b991f612686bec33f68",
+        "content_state": "user-attachment"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-12",
+    "kind": "hypothesis",
+    "statement": "La variacion monetaria puede depender de valoracion SAP o de cambios en filas/cantidades; la captura no distingue estas causas.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Captura.JPG",
+        "commit": null,
+        "sha256": "ac6dd2c104010f0254df078b38fb6d5ad3d17ec6c7cc812925a42368e26cb199",
+        "content_state": "user-attachment"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Estatus.jpeg",
+        "commit": null,
+        "sha256": "cbf8feab707b6979e020fcfe562736ac69e8bedf495f8d971f1cf411b010e955",
+        "content_state": "user-attachment"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/Registro en SAP.png",
+        "commit": null,
+        "sha256": "ab6aecb4f8a98d31016f80b1865740b3c382c1afc8fb0b991f612686bec33f68",
+        "content_state": "user-attachment"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

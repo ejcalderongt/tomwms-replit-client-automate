@@ -1,0 +1,96 @@
+[
+  {
+    "id": "CKFK20261117-REC28335-FIX-LOCAL",
+    "kind": "fact",
+    "statement": "Se corrigio localmente HH y GuardarHH_CM en dev_2026_estable; pruebas de fragmentos reales en memoria y compilaciones HH/WS satisfactorias. No demuestra funcionamiento desplegado.",
+    "sources": [
+      {
+        "path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/classes/Transacciones/OrdenCompra/Trans_oc_det/clsBeTrans_oc_det.java",
+        "commit": null,
+        "sha256": "ba5ff9ba88d65fe08a3cc812f0cb11e6d633a22edb5d0ce2fef8f90c867a1d10",
+        "content_state": "local-uncommitted",
+        "checkout_commit": "c497abbba4597e4304856f8e8ec2d49064079484"
+      },
+      {
+        "path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "commit": null,
+        "sha256": "8415560ffaa5f1aa7add247e5b15d04c4014776801b78e1ea48b7e32d83b633f",
+        "content_state": "local-uncommitted",
+        "checkout_commit": "c497abbba4597e4304856f8e8ec2d49064079484"
+      },
+      {
+        "path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+        "commit": null,
+        "sha256": "2a7c16c499e9511e5d0a761ea92ca50cb5f2d6eccc2b9bcf43acbe11320e39f9",
+        "content_state": "local-uncommitted",
+        "checkout_commit": "c497abbba4597e4304856f8e8ec2d49064079484"
+      },
+      {
+        "path": "source/repos/TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Encabezado/clsLnTrans_re_enc_Partial.vb",
+        "commit": null,
+        "sha256": "5f5e664b4509b2db291fd2963c5af59669f8096b86f62a462084a7702af48f28",
+        "content_state": "local-uncommitted",
+        "checkout_commit": "33fd7795390bc1bd80970c8b83307d57bfdc3374"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/regression.log",
+        "commit": null,
+        "sha256": "a12dabaffea6e9fe94c69cd74f95d77c6b27145afeed1237e60503cb737c4303",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/hh-apk-build.log",
+        "commit": null,
+        "sha256": "faa2e481f9851cb9e37cc92d6a2ba21f7581f0cd9227072fd4b3601fb0ddfd52",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/bof-build.log",
+        "commit": null,
+        "sha256": "9fbf3a42b61dac18124e6c56619a48728869f53c07af23b91ca2073e2e0df8bc",
+        "content_state": "local-uncommitted"
+      }
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "CKFK20261117-REC28335-RECOVERY-PREPARED",
+    "kind": "decision",
+    "statement": "Preparar conciliacion de cinco filas conservando seis unidades y dejando una pendiente para el flujo normal HH; no ejecutar hasta revision y autorizacion explicita. Script con vista previa y confirmacion de HH/servicio instalados. Sin cambios de datos realizados.",
+    "sources": [
+      {
+        "path": "source/repos/DBA/20261117_recuperar_producto_recepcion_28335.sql",
+        "commit": null,
+        "sha256": "e7501cf276fe5374b328c30f26d26f7585fc9851af187f6c290c22595513b842",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/sql-parse.json",
+        "commit": null,
+        "sha256": "6195d42c79cfe8d03ed196fee21de415e410ea5a4cb49fd871b7ae2042d47a64",
+        "content_state": "local-uncommitted"
+      },
+      {
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/recovery-guards.json",
+        "commit": null,
+        "sha256": "9ed2fc0f6ac32ffd92aede5e13b0aaa40c1218e3de958770a16260011c5ae048",
+        "content_state": "local-uncommitted"
+      }
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

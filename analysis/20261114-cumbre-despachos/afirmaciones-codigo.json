@@ -1,0 +1,296 @@
+[
+  {
+    "id": "EJC20261114-CUMBRE-01",
+    "kind": "fact",
+    "statement": "La ruta directa compara no_linea WMS con el nuevo contador SAP ya incrementado para elegir filas a marcar.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-02",
+    "kind": "fact",
+    "statement": "La ruta directa agrega StockTransfer antes del marcado WMS, sin iniciar una transaccion SAP ni buscar un documento SAP existente.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/General/clsTransaccion.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "2bd7fbdecf1b702e36585be24e78a0a58279e3420ebe9ebe0b7771ea1d21f9e4",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-03",
+    "kind": "fact",
+    "statement": "El helper Open_Connection abre conexion sin BeginTransaction; rollback/commit no actuan si lTransaction es Nothing.",
+    "sources": [
+      {
+        "path": "TOMIMSV4/DAL/General/clsTransaccion.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "2bd7fbdecf1b702e36585be24e78a0a58279e3420ebe9ebe0b7771ea1d21f9e4",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-04",
+    "kind": "fact",
+    "statement": "El resultado del marcado de cola solo se rechaza si es cero; no se verifica cobertura exacta.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/Interface/Transacciones_Out/clsLnI_nav_transacciones_out_partial.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "91acb18aa10c49d15166f1c9c107904616abafbaee396edf26e9e3a16bbfa9de",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": false
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-05",
+    "kind": "fact",
+    "statement": "La cabecera se actualiza despues del retorno exitoso y en una transaccion diferente, marcando por defecto todas las filas del pedido.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/Transacciones/Pedido/clsLnTrans_pe_enc_Partial.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b8f420a48f03ec43251d0725fbab17ad2695ecd470a25c594e85475c366f0a92",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-06",
+    "kind": "fact",
+    "statement": "Con referencia no vacia la sublista se selecciona solo por No_pedido; dos pedidos con igual referencia pueden mezclarse.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-07",
+    "kind": "fact",
+    "statement": "El metodo directo suma cantidades pendientes; no contiene incremento acumulativo por intento ni asignacion de precio.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-08",
+    "kind": "hypothesis",
+    "statement": "El pedido 10512 pudo quedar pendiente por una lista vacia o incompleta al marcar filas despues del Add; requiere datos y bitacora del incidente.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/Interface/Transacciones_Out/clsLnI_nav_transacciones_out_partial.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "91acb18aa10c49d15166f1c9c107904616abafbaee396edf26e9e3a16bbfa9de",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": false
+      },
+      {
+        "path": "TOMIMSV4/DAL/Transacciones/Pedido/clsLnTrans_pe_enc_Partial.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b8f420a48f03ec43251d0725fbab17ad2695ecd470a25c594e85475c366f0a92",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-09",
+    "kind": "fact",
+    "statement": "El monitor de progreso se recorta despues de 50000 caracteres y no equivale a un archivo persistente de traza.",
+    "sources": [
+      {
+        "path": "AppGlobal/TOM/clsPublic.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "dbfddb42825d850e12143e2f211d52b6ecedf99168cb316b5658b45552a311e9",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-10",
+    "kind": "decision",
+    "statement": "La correccion debe conservar IDs exactos, conciliar SAP antes de repetir y coordinar concurrencia y recuperacion; dos commits locales no garantizan atomicidad distribuida.",
+    "sources": [
+      {
+        "path": "SAPSYNCCUMBRE/Clases Interface Sync/Solicitud_Traslado/clsSyncSAPSSolicitudTraslado.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "46ff061122e66f956e5b905fb04fe2737a457217c3c8b7bca84a07170dc008e7",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "SAPSYNCCUMBRE/Clases/clsSAPTransaction.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "67681dd4832ba80ee178d4061045d664fe7bf3a4539f7250788bf2681a926cf3",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/General/clsTransaccion.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "2bd7fbdecf1b702e36585be24e78a0a58279e3420ebe9ebe0b7771ea1d21f9e4",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      },
+      {
+        "path": "TOMIMSV4/DAL/Transacciones/Pedido/clsLnTrans_pe_enc_Partial.vb",
+        "commit": "696b4a50ff2497a148754dd631a638f7ed542ca1",
+        "sha256": "b8f420a48f03ec43251d0725fbab17ad2695ecd470a25c594e85475c366f0a92",
+        "content_state": "working-tree-snapshot-not-attributed",
+        "matches_commit_bytes": false,
+        "matches_commit_after_newline_normalization": true
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

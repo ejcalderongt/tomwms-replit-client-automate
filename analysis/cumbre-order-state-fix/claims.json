@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EJC20261110_CUMBRE_PICK_ESTADO_GUARD",
+    "kind": "decision",
+    "statement": "Proteger la actualizacion ordinaria del detalle de picking para conservar estados avanzados, diferenciandola de nuevas lineas y reaperturas explicitas. La reproduccion local paso; la verificacion del despliegue queda pendiente.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-order-state-fix/evidence.json",
+        "sha256": "d5df2fbb8c399bbe64a90ff969c104f02b70d41a26ffbc290bf4261ed8dfd2dd",
+        "commit": null,
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

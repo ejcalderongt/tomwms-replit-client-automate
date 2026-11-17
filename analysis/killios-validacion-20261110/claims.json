@@ -1,0 +1,29 @@
+[
+  {
+    "id": "EJC20261110_KILLIOS_PLAN_VALIDACION_LOCAL",
+    "kind": "decision",
+    "statement": "Revalidar el paquete Killios con la matriz local; la evidencia historica y el helper aislado no habilitan publicar. La copia local es candidata de laboratorio pendiente de aislamiento.",
+    "sources": [
+      {
+        "path": "analysis/killios-validacion-20261110/evidencia.json",
+        "commit": null,
+        "sha256": "34c1c201b5fd87c30e5877cecbc45473cf320dd063da2d2ea0eb983fd0170445",
+        "content_state": "worktree-snapshot-not-attributed"
+      },
+      {
+        "path": "analysis/killios-validacion-20261110/matriz.md",
+        "commit": null,
+        "sha256": "fa0d3b560b477ece0b10c28714985f83f6eb298b3cad7768d3cf25fdd0b57363",
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "KILLIOS"
+    ],
+    "branches": [
+      "codex/killios-decimales-estados"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

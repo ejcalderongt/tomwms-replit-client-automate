@@ -1,0 +1,885 @@
+[
+  {
+    "id": "CKFK20261117-PENDING-REC28335",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Caja master J100000635, SKU AG00034526041365, OC 28359 detalle 2: referencia compartida convirtió 4/3 en 3/3; se corrigieron copias, saldos, temporales e incremento por PK en HH/servicio. Se preparó conciliación de seis unidades ya registradas para recibir una por HH. CKFK confirmó el resultado satisfactorio. Limite: Confirmación operativa del chat, sin SELECT posterior ni hashes de los binarios instalados. El agente no ejecutó DML. BOF está limpio al inventariar; HH y script DBA siguen pendientes.",
+    "sources": [
+      {
+        "path": "brain/handoffs/2026-11-17-ckfk-recepcion-28335/README.md",
+        "commit": null,
+        "sha256": "5f0bcdeff75311c04b36b1b260de298259ff4289323b3030991fa6e6a21a2487",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261117-recepcion-28335/confirmacion-ckfk.md",
+        "commit": null,
+        "sha256": "6a677462d1a12e6f78c20fec2b975d0d21f5218ad73a54b362820c4e41c60113",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261117-recepcion-28335/resumen-evidencia.json",
+        "commit": null,
+        "sha256": "86ff96849f83ea58691aa3c07914f2a8bdb56486f5d6e51221deb7e66a8cfc13",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-BODEGA-XML",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El servicio devolvía permitir_abrir_recepcion_enviada, ausente en clsBeBodega de HH estable y presente en dev_2028_merge. Se incorporó Element opcional false y accesores con CKFK. Clase real/parser aceptan true, false y ausencia; APK generado. Limite: No desactivar validación XML ni activar parámetros en BD por inferencia. Publicación e instalación no se deducen de compilar.",
+    "sources": [
+      {
+        "path": "analysis/20261117-recepcion-28335/bodega-compat-claims.json",
+        "commit": null,
+        "sha256": "bf239d97edd4cb8c642bd5a6dfc227d5c144ca29994dbaa5d163c820f59babca",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261117-recepcion-28335/bodega-xml-test.txt",
+        "commit": null,
+        "sha256": "cb51a27ba95d609b7ee0ea1940c6ac061227f6877bbbcfff08e643efd0009923",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-SAP-RESERVA",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Se instrumentó WarehouseCode y se revisó el caso DocEntry 137463/DocNum 31080, IdWMS 28360. No se demostró carrera por depuración: el lector espera respuesta y contenido. Un documento con bodega inválida se omite con motivo y se continúa el lote; si no hay aptas se retorna antes de limpiar intermedias. Limite: Fixtures y compilación reportados, no lectura HTTP/SAP integral ni prueba real del lote mixto. No reemplazar bodega faltante ni insertar esperas sin evidencia.",
+    "sources": [
+      {
+        "path": "analysis/20261117-sap-reserva-trace/README.md",
+        "commit": null,
+        "sha256": "bd9f7ab2968f1827d68f31b2439c419f4da2accc6b124cd19705b3cf8ec110ef",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261117-sap-reserva-trace/batch-claims.json",
+        "commit": null,
+        "sha256": "7716312e257338ecb01bae27e916fcde23058312dc5a4804f1057c0e366789f5",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-REEMPLAZO-VARIANTE",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Los reportes describen reparación en QA de 44 picking/39 despachos/39 salidas y causa de recurrencia en reserva 210071/picking 30168: se perdía variante entre stock, reserva, lectores y confirmaciones. Se cubrieron helpers y rutas normal/consolidada/verificación. Limite: El propio reporte distingue reparaciones ya observadas y otro script de dos filas entregado sin ejecutar. No atribuir despliegue ni cierre operativo completo HH; conservar las limitaciones de cada afirmación.",
+    "sources": [
+      {
+        "path": "analysis/mampa-reemplazo-20261116/claims.json",
+        "commit": null,
+        "sha256": "d6f2eb0d9040db3574f4e45ca0169cb5b691bd93fdb11652963923a9d2b99399",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/mampa-reemplazo-20261116/all-routes-report.json",
+        "commit": null,
+        "sha256": "635ff638767af51bf00f07e56c7061d60972d67523276f571e1a36ae5b1dc490",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-TRASLADO-MENSAJES",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Conservar no_linea al recargar para picking; tras reserva fallida consultar ausencia física por bodega/producto/variante; preservar motivos específicos y usar fallback neutro. Informar pedido no completado si hay fallos o descartes. Limite: No cambia reglas de reserva ni parámetros. El diagnóstico de stock es temporal; no se reimportó pedido ni se escribieron datos en la validación documentada.",
+    "sources": [
+      {
+        "path": "analysis/20261117-mampa-transfer-messages/claims.json",
+        "commit": null,
+        "sha256": "21f8bfa694db1d7164af6df72bdf481fefbc1ef7c49174cd61cd0540eea83a98",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261117-mampa-transfer-messages/report.json",
+        "commit": null,
+        "sha256": "5ea431721bbff82f0396171e50d72c3bc8c58bd29fe795a384c8b8f112a3fadb",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-HH-UBICACION",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El reporte describe consulta de reglas en ambos modos: incompatible permite continuar/cancelar con restrictivo apagado y bloquea con restrictivo activo. Caso MP-002/964. Limite: Pruebas aisladas y compilación documentadas; prueba en dispositivo/servicio pendiente en esa fuente. La identidad del cliente no decide la regla.",
+    "sources": [
+      {
+        "path": "analysis/20261117-hh-ubicacion-warning/claims.json",
+        "commit": null,
+        "sha256": "c04d57dced382b22e9fc5f3fe01d3b57174327a44d0368fa7305eaeab5f6ec19",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "POLINDUSTRIAS (alcance declarado del reporte)"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-VERIFICACION8981",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Incidente 8981: fechas agrupadas 1900/2000 impedían selección. La rama consolidada sin talla/color selecciona por producto, presentación y pendiente aunque el fallback complete lote/LP; conserva pTipo=1 y otros recorridos. Limite: El reporte acredita nueve escenarios y compilación con dobles UI/servicio, sin guardar el pedido real. Cliente no identificado de manera independiente.",
+    "sources": [
+      {
+        "path": "analysis/20261117-verificacion-8981/correccion.md",
+        "commit": null,
+        "sha256": "0739cdd7a178c1b147bc01c768bf14ad6695c5be0e0e6b879d2c45bdc349aa3a",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-PEDIDO171",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Detalle 1009 con NULL y reserva sin presentación; 1010 CAJA factor 20. La UI elegía la primera presentación antes de leer la recibida. Se conserva cero explícito y positivo disponible; -1 significa argumento omitido; kits quedaron fuera del recorrido observado. Limite: Ocho pruebas WinForms y BOF compilado según traza. No convertir datos por una discrepancia visual ni asumir guardar/reservar operativo validado.",
+    "sources": [
+      {
+        "path": "analysis/20261116-pedido171-presentacion/traza.md",
+        "commit": null,
+        "sha256": "09a9ccb64d9465e768ea2bfa1c7877a50fd5bb5e4eed531e7df827408cabe347",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261116-pedido171-presentacion/validation.json",
+        "commit": null,
+        "sha256": "b711df121b4dcebfef933dc6a1a3e4790397553e87950eafb4f3639809ac4bda",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (base de desarrollo de la fuente)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-PACKING-ESTADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El snapshot distingue packing de 300 en estado 3 frente a pendiente de 60 en estado 5. Se agregó estado a selección, acumulación y DTO de HH para evitar mezclar identidades. Limite: Reporte draft, cinco comprobaciones y compilación. No se modificó producción; conciliación y despliegue no confirmados.",
+    "sources": [
+      {
+        "path": "analysis/20261109-packing-estado/claims.json",
+        "commit": null,
+        "sha256": "c8745fe71f4d967fd07a2ff44a8d403c74ddbaa39ba6ca51b488a14824fddeb2",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "La Cumbre (bodega 89 en el snapshot)"
+    ],
+    "branches": [
+      "dev_2026_estable_prd"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-DESPACHO-PARCIAL",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: La adición a la propuesta indica consultar trans_pe_tipo.permitir_despacho_parcial: recibido distinto de verificado no bloquea cuando se permite parcial; verificado distinto de empacado conserva PACKING_NO_CUADRA. Limite: Documento histórico modificado, no validación independiente del código actual ni del despliegue.",
+    "sources": [
+      {
+        "path": "brain/_proposals/20260728-verificacion-despacho-parcial.md",
+        "commit": null,
+        "sha256": "f8038e168620c810e469f0c3d91a5bce18dcd3d6ee8d9e3b29fcb81cdc30d035",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "desconocida en la adición"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-ESTADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El laboratorio reprodujo transición Pickeado a Pendiente desde Actualizar_Estado_Pendiente sin cambiar cantidades. El botón Actualizar invoca el guardado, pero no acredita que se pulsara en el incidente. Limite: Causalidad de código en laboratorio, no atribución de acción a la operadora.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-8978-state-claims.json",
+        "commit": null,
+        "sha256": "c17d8f7848290327f0721a1401e3eed5e5672a103f4f411a3ff3a9e5a83491a1",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/cumbre-order-state-fix/tests.txt",
+        "commit": null,
+        "sha256": "98b9b7450311ba984ae7b25c2b405c62aa05339d8341775e84dcfc3119eb1557",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-DECIMAL",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El candidato de picking corrige rechazos por residuos reproducidos. LABDEC0003 recibió confirmación de operación local: pedido 8979/picking 4409 Despachado, despacho 11534 Finalizado; piezas 0.1/0.2 sin stock ni reservas remanentes de esa LP. Limite: Separar hipótesis de suficiencia productiva de confirmación del escenario de laboratorio. No sumar ambos como validación de todos los casos decimales.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-decimal-lab-claims.json",
+        "commit": null,
+        "sha256": "2cb996005036e64a1d6be6735c23377440ba3279e61d725d2d611f751b4bd5aa",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/cumbre-decimal-hh-fixture/final-claims.json",
+        "commit": null,
+        "sha256": "d6e3b5033025b222a3e89c9dabcdcc26d27e53333792c27131214941b933c268",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "LA CUMBRE"
+    ],
+    "branches": [
+      "codex/cumbre-picking-decimales",
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-SAP-DUPLICADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Cierre aportado: WMS completo una vez, SAP completo tres veces, 640 líneas/539 productos. Se perdió correspondencia al usar contador de línea SAP para marcar filas WMS. La versión posterior conserva IDs originales, huella por pedido/despacho, recuperación de marcas y control transaccional, SIN tabla nueva. Limite: La propuesta con tabla/journal fue retirada y no debe aplicarse. Pruebas de adaptadores no sustituyen DI API/SQL reales; no prometer exactly-once ni transacción distribuida. Alcance histórico declarado por ruta; requiere revisión antes de generalizar.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/cierre-integridad.txt",
+        "commit": null,
+        "sha256": "3333a9cac5454cb5fe0e26c40b742fa3039867c24e4e256f9737b158b6c5a8d2",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/prevencion-sin-tabla.txt",
+        "commit": null,
+        "sha256": "0c73560bcb48cc9ff3c074f762465f84eaf409724776456050e922c063363f40",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-SAP-INGRESO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Casos OC WMS 12077: comprobar BaseType/BaseEntry de toda entrada SAP antes de aceptar referencia, no solo DocEntry/DocNum. Errores de cierre/update y transacción SAP inactiva detienen el flujo; distinguir commit SAP de commit SQL y conciliar antes de reenviar. Limite: No se probó el origen histórico de la referencia ajena. No hay transacción distribuida ni limpieza automática de marcas previas; pruebas e integración pendientes según cada documento.",
+    "sources": [
+      {
+        "path": "analysis/20261024-sap-ingreso-referencia-ajena.md",
+        "commit": null,
+        "sha256": "7bb4da5c19139e051cbb54ea354e1ad59142ddb7b82581f709ffcee2c9273ec6",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261024-sap-ingreso-cierre-rollback-correccion.md",
+        "commit": null,
+        "sha256": "0f2b0f04fa9dd1a1e4c934078148cb21d8065793db02c246e039eee684048b5d",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (no inferido del proyecto SAPSYNCCUMBRE)"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-TRASLADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Sumar como Decimal y comparar a seis posiciones evita posibles falsos excesos Double. El error conserva progreso/log y devuelve False para continuar con otros pedidos, sin cambiar la ruta de éxito. Limite: Caso pedido 10332/despacho 13308 pendiente de prueba SAP. La causa numérica es compatible con evidencia, no se comprobaron los valores productivos internos.",
+    "sources": [
+      {
+        "path": "analysis/20261029-cumbre-traslados-correccion.md",
+        "commit": null,
+        "sha256": "f0d23970d393081d815acb0f78cbfbe88961b671e2da17045a015783ae8f28d4",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "dev_2026_estable_prd"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-CUMBRE-PERFORMANCE",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Resumen de recepción: 33 llamadas completadas, suma de tiempos cliente 8113 ms, sin errores ni advertencias de solapamiento en ese registro. El paquete de trazas desactivadas documenta compilación HH/servicio/DAL/SAP/BOF. Limite: La suma de tiempos no es latencia total ni comparación causal de rendimiento. Revisiones de producción y despliegue no verificados.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-performance-20261105/reception-summary.txt",
+        "commit": null,
+        "sha256": "68c4c682cfb530d107c0bbf45ee1a600a5e4f927986a167c72e14b4348835c73",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/cumbre-performance-20261105/no-traces-verification.txt",
+        "commit": null,
+        "sha256": "cce8e8a1474689175f492725c0bc64e3a9ca767c2d9ee67a8cd3f0e9c1bda04b",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (no inferido de la rama de trazas)"
+    ],
+    "branches": [
+      "codex/cumbre-trazas-desactivadas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-KILLIOS-ACEITE",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: WMS282 presenta existencia tres UN mayor que kardex, no prueba de faltante físico. Reproducción del motor de reserva demuestra 9→12 frente al corregido 9→9; corrección en 15 bloques y preservación de reservas documentada. Limite: Reproducir el mecanismo no demuestra que originó históricamente el +3. QAS con rollback puede consumir identities y dejar logs por conexiones independientes. Sin ajuste productivo automático.",
+    "sources": [
+      {
+        "path": "analysis/20261026-killios-aceite/informe.md",
+        "commit": null,
+        "sha256": "74ce11843652ed571b2e96075f2776287c7251df107b7fda7ef5d36148ffc7d2",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261026-killios-aceite/correccion-estable.md",
+        "commit": null,
+        "sha256": "d5a626134969ac600d0959724612e46ef9a0c029b22b1ffba97240d756a58802",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-KILLIOS-CEST",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Distinguir captura cajas/UN, fragmentos que conservan presentación y conversión que fabrica unidades. WMS272 conserva total mientras se fragmenta; backend documenta bloqueo/validación y normalización de residuos; 44 escenarios reportados tras recuperar QAS. Limite: Los 44 escenarios no son prueba desde pantalla/HTTP de la versión desplegada. No truncar o redondear producción por inferencia; conservar medias/cuarto de caja válidos cuando su resultado en UN sea entero.",
+    "sources": [
+      {
+        "path": "analysis/20261026-killios-aceite/decimales-unidades-wms272.md",
+        "commit": null,
+        "sha256": "799ff911d06358ac9c335966ffd8e003be6558513ae92723e7bedcf12ee63f73",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261026-killios-aceite/cambio-estado-backend-final.md",
+        "commit": null,
+        "sha256": "4fe1a88732a470e19e7fd52f9bdcdeaaecfdba143d4672465eb22000127aadcf",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "analysis/20261026-killios-aceite/stock-transformer-presentacion.md",
+        "commit": null,
+        "sha256": "6550fcab9b71d2536fe707bea76c3def663a5edf58c4c3eae9b372865f21fa0e",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "dev_2026_estable",
+      "codex/killios-decimales-estados"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-KILLIOS-PUBLICACION",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: La matriz separa evidencia histórica, fixture sintético, fuente/ensamblado y validación antes de publicar. DBA conserva propuestas de cajas/UN, presentación y aceite; su existencia no acredita ejecución. Limite: No es autorización de publicación. Los scripts se revisan individualmente, con alcance de inventario y aprobación explícita; no ejecutar el lote de pendientes como paquete.",
+    "sources": [
+      {
+        "path": "analysis/killios-validacion-20261110/matriz.md",
+        "commit": null,
+        "sha256": "fa0d3b560b477ece0b10c28714985f83f6eb298b3cad7768d3cf25fdd0b57363",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "Killios"
+    ],
+    "branches": [
+      "codex/killios-decimales-estados"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-PICKING-RACK",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Caso LP MP000023581: Ubic_Implosion_Auto y destino rack pueden activar consolidación aunque el operador solicite ubicación. El filtro exige disponibilidad y varias dimensiones de identidad; stock existente no garantiza que aparezca en VW_Stock_Res. Limite: Diagnóstico estático sin reproducir con BD del cliente; el mensaje existe en más de una ruta. Contrastar reservas, vista y llamada real antes de corregir datos.",
+    "sources": [
+      {
+        "path": "analysis/20261024-la-cumbre-picking-rack/DIAGNOSTICO.md",
+        "commit": null,
+        "sha256": "b21b4d9d401618fd9811d7c9a5bd3b1f2d4da3d7666614dc11749e452d7711df",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-UBIC-DUPLICADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: La vista/listado puede multiplicar filas por relaciones de usuarios/roles. Se documentó SELECT DISTINCT para filas exactamente iguales sin descartar tareas distintas; no prueba movimientos duplicados persistidos. Limite: Compilación documentada; grid operativo/DAL instalada pendientes en esa fuente. Filas distintas en campos ocultos no se fusionan.",
+    "sources": [
+      {
+        "path": "analysis/20261028-ubic-duplicado/diagnostico.md",
+        "commit": null,
+        "sha256": "db37bfc9e9d059e0cdef0671c83f5766714fded76dfd036b25a49304f39f8366",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "desconocida en el informe"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-MHS-ORIGEN",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: requiere_ubicacion_destino_picking y despacho_directo_picking activan política por funcionalidad. Reconocer asociaciones virtuales activas en ambos sentidos e identidad de ubicación entre bodegas, sin depender de ocupación o nombres; tercera bodega no debe excluir stock. Limite: Cobertura documentada BOF/Core/reserva/picking y pruebas aisladas; QA operativo pendiente. No inferir el estado actual por fecha del archivo.",
+    "sources": [
+      {
+        "path": "analysis/20261028-mhs-transferencias-no-solapadas/validacion.txt",
+        "commit": null,
+        "sha256": "09489fa4c76b4ab3da8f574b094ec3b64d19b221632c6bdbd0001fad1ffd8b8b",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MHS (evidencia delimitada)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-LOTE-VENCIMIENTO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Parámetro funcional trans_oc_ti.permitir_cambiar_lote_vencimiento, copia independiente y validación del saldo/origen por ID en servidor; recepción, stock y etiqueta usan captura real, lote OC conserva esperado. No aplica automáticamente a caja master/talla-color/pallet. Limite: Documento de entrega histórico: SQL no ejecutado ni operación real validada en esa etapa. Ruta de script histórica debe verificarse; no mover scripts ni aplicar DDL durante esta consolidación.",
+    "sources": [
+      {
+        "path": "analysis/20261029-mhs-lote-vencimiento/ENTREGA.txt",
+        "commit": null,
+        "sha256": "4f538aba16d4587805169b8dc61ed7f40b544941c982244b08ad6105327db13d",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MHS (caso documentado)"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-NAVSYNC-RECIBIDO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Compra, devolución y traslado existentes solo aceptan Quantity_Received si supera lo ya recibido; conservar demás actualizaciones y nuevas inserciones. Protección localizada en importadores, no en DAL compartida. Limite: Compilación y revisión documentadas; prueba SQL/NAV y concurrencia pendientes. No reconstruye cantidades históricas sobreescritas.",
+    "sources": [
+      {
+        "path": "analysis/20261029-navsync-conservar-recibido.md",
+        "commit": null,
+        "sha256": "0d8cdce9e4d132ca33e1f17f260adaf389835e35923d4be5270ef968696055ab",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (no inferido del nombre de rama)"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-NAVSYNC-DUPLICADO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Buscar con tipo WMS 12, no Document_Type NAV. Conservar encabezado existente, bloquear importación compartida, rechazar múltiples coincidencias y no reactivar anulados/cerrados por reimportación. Limite: No limpia duplicados históricos. No equivale a unicidad global para escritores externos. Prueba SQL/NAV no ejecutada en la fuente.",
+    "sources": [
+      {
+        "path": "analysis/20261029-navsync-devolucion-duplicada.md",
+        "commit": null,
+        "sha256": "ece360e9c8ebc7214c65a06ce30ae4b7583603343c1e6a47a0798b91f4cb0a63",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (no inferido del nombre de rama)"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-NAVSYNC-DESIGNER",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Caché de diseño DevExpress 25.2 frente a proyecto 26.1; tipos compilados no eran System.Void. Retirar caché y mover Inherits no resolvieron según Carolina; se revirtió el movimiento de herencia y se conservaron correcciones funcionales. Limite: Compilar/reflexión no verifica diseñador. Conservar resultados negativos y respaldos; no volver a presentar esos intentos como solución confirmada.",
+    "sources": [
+      {
+        "path": "analysis/20261029-navsync-designer-cache.md",
+        "commit": null,
+        "sha256": "71feb95b1241175545681196105f6e2a5f716b500608913177928d17411f73e1",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-OC-VACIA",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Cualquier fila de trans_re_det, incluso cantidad cero o recepción anulada, impide eliminar. Permitir ingreso NUEVA sin filas de detalle; preservar encabezados compartidos y transacción/bitácora consistentes. Limite: No cambió Tiene_Recepciones compartido ni se borraron documentos reales; pruebas y build son del entorno documentado.",
+    "sources": [
+      {
+        "path": "analysis/20261029-ingreso-recepcion-vacia.md",
+        "commit": null,
+        "sha256": "a80a6c2ada5e722eae049361599d06298250c1b9f9747c1258b11e57a9e11ebb",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "codex/byb-unidad-medida"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-WEBAPI-AJUSTES",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Endpoint pendientes-envio full/minimal incorpora fecha/usuario de encabezado y distingue PRESENTACION por IdPresentacion distinto de cero, no por factor. DAL carga nombre/ID de presentación; cantidades/UMBas se conservan. Replica documentada en tom_2028_prd. Limite: El GET puede tener efectos de estado existentes: no invocarlo como diagnóstico inocuo. Mapper/controlador simulados y compilación no prueban despliegue.",
+    "sources": [
+      {
+        "path": "analysis/20261105-webapi-ajustes/README.md",
+        "commit": null,
+        "sha256": "397011fb5142f29badf62f3ed9ac37b3e78764ebaab2aca29c72fc964b09bb47",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2028_merge",
+      "tom_2028_prd"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-MONITOR-OCUPACION",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Conservar estado actual del selector al terminar carga asíncrona, limpiar enlaces de series al volver a general; modo Bloqueadas excluyente usa identidad IdBodega+IdUbicacion sin filtrar ocupación. Cursor/selector se restauran en Finally, sin pausa artificial. Limite: Documento histórico no confirma UI contra cliente ni distribución del ejecutable; compilación final pudo quedar bloqueada por aplicación en uso.",
+    "sources": [
+      {
+        "path": "outputs/20260911-ocupacion-bloqueadas/resultado.md",
+        "commit": null,
+        "sha256": "1173edcd43262646881a1374f070cd807e8a9dfddf18e62aae4c21a1e21d26dd",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-MONITOR-READMODEL",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: Validación del laboratorio: recepción 10182/tarea 14876, vista una fila y procedimiento dos; la ubicación 9 existe en dos bodegas. SELECT corregido devuelve una al usar identidad de bodega y ubicación. Limite: alter_executed=false. La tarea cambió de estado durante diagnóstico; no se alteraron datos/objetos. El procedimiento pendiente requiere revisión, no aplicar automáticamente.",
+    "sources": [
+      {
+        "path": "analysis/20261113-monitor-tareas/validacion-readmodel.json",
+        "commit": null,
+        "sha256": "bc2173d2db60c2ea774c4b697c2afc9f65dc788f5a2017b4ef50396bb51e25e0",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (entorno TOMWMS_CUMBRE_DECIMAL_LAB declarado)"
+    ],
+    "branches": [
+      "desconocida en el resultado"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-PORTAL",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: El registro existente declara instalación separada en estación de Erik: autenticación Windows, arranque, login, inventario y KPIs; el runbook local gobierna otra PC. Limite: No se validaron PC de Carol, SQL auth ni winget en PC limpia. Mantener estado verificado original como declaración de esa fuente, sin otorgarlo a esta síntesis ni copiar credenciales.",
+    "sources": [
+      {
+        "path": "analysis/portal-installation-20261105/claims.json",
+        "commit": null,
+        "sha256": "0c523c0c70231e02b8f6f973a73eac6b84b6d7029bf494e492929753b43da7f2",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "brain/runbooks/portal-react-instalacion-otra-pc.md",
+        "commit": null,
+        "sha256": "8a94c502742fd69459c8c92ddfa8cd72356c6c0b345136bb7b91d24747d56499",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "CAREMED"
+    ],
+    "branches": [
+      "wms-brain",
+      "codex/portal-portable-20261105"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-GO-LIVE",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: MHS: diagnóstico por defecto para identities/correlativos. IODESA: DOWN conserva IDs actuales pero no recupera IDs originales ya reasignados por un UP sin respaldo. Limite: Revisar cada script, respaldar/probar y autorizar explícitamente. No interpretar inventario de scripts como prueba de ejecución ni como paquete listo para aplicar.",
+    "sources": [
+      {
+        "path": "deliverables/MHS_go_live/README.md",
+        "commit": null,
+        "sha256": "62309c0f035d216fb3b397d5fc16f9d442bd9ac33258be35207dd02a9563ae7b",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      },
+      {
+        "path": "deliverables/IODESA_identity_down/README.md",
+        "commit": null,
+        "sha256": "12c0c384d3d1e0a829be46b2cf89aa38c8b214caecf23e7e43143ea71f37632f",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "MHS",
+      "IODESA"
+    ],
+    "branches": [
+      "desconocida en los entregables"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  },
+  {
+    "id": "CKFK20261117-PENDING-GOBIERNO",
+    "kind": "fact",
+    "statement": "La evidencia local documenta: AGENTS pendiente incorpora CKFK para Carolina, reglas por funcionalidad sin identidad de empresa, carpetas habituales sin worktrees automáticos y script concreto antes de DML. Se conserva historia y autoría ajena; no se hace commit/push en esta actualización. Limite: La autorización para documentar no autoriza publicar, mezclar HH/BOF, modificar datos ni adoptar experimentos como política estable.",
+    "sources": [
+      {
+        "path": "AGENTS.md",
+        "commit": null,
+        "sha256": "24bae3cf2f0feb27ff2051f600b44dcdab951121a6949b15ef689530f258dcee",
+        "content_state": "local-snapshot-not-attributed",
+        "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000"
+      }
+    ],
+    "clients": [
+      "desconocido (regla de trabajo local, no regla de cliente)"
+    ],
+    "branches": [
+      "wms-brain"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "evidence_level": "report-content-reviewed; not independently revalidated"
+  }
+]

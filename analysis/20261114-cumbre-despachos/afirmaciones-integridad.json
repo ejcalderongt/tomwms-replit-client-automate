@@ -1,0 +1,230 @@
+[
+  {
+    "id": "EJC20261114-CUMBRE-26",
+    "kind": "fact",
+    "statement": "Las 640 lineas solicitadas del pedido 10512 coinciden por IdPedidoDet y cantidad con el unico despacho finalizado 13520 y con sus filas de interface.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-02-pedido.tsv",
+        "commit": null,
+        "sha256": "1b73ae368ca90c36b12c5e0b74f8c1d11295f4d5a05d73f8589ca37d5695c802",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-03-despachos.tsv",
+        "commit": null,
+        "sha256": "18d8e69f90ad1c89c5ed5935443c9d7e8e9fe0940f22dfb0be1f235ac94628d7",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-04-comparacion.tsv",
+        "commit": null,
+        "sha256": "90f70826a89d7e8e4dcd8cd2fa6eac9d39ce0ef817fbc4ebed3307ae767cf36d",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-05-cola.tsv",
+        "commit": null,
+        "sha256": "8ce271b819b234bd6f406b1c58ada4da29c00642571e45fddf7797a73382792c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-tipo-y-ruta.tsv",
+        "commit": null,
+        "sha256": "ea4d873f770d163ef7912875b4dfc080b7cf30923265a7c3f7429db2919b8ca0",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-27",
+    "kind": "fact",
+    "statement": "Los tres documentos SAP 71872,72820,72821 contienen los mismos 539 productos y todas las cantidades solicitadas del pedido 10512; estos resultados no evidencian un envio parcial.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-02-pedido.tsv",
+        "commit": null,
+        "sha256": "1b73ae368ca90c36b12c5e0b74f8c1d11295f4d5a05d73f8589ca37d5695c802",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-03-despachos.tsv",
+        "commit": null,
+        "sha256": "18d8e69f90ad1c89c5ed5935443c9d7e8e9fe0940f22dfb0be1f235ac94628d7",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-04-comparacion.tsv",
+        "commit": null,
+        "sha256": "90f70826a89d7e8e4dcd8cd2fa6eac9d39ce0ef817fbc4ebed3307ae767cf36d",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-05-cola.tsv",
+        "commit": null,
+        "sha256": "8ce271b819b234bd6f406b1c58ada4da29c00642571e45fddf7797a73382792c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-tipo-y-ruta.tsv",
+        "commit": null,
+        "sha256": "ea4d873f770d163ef7912875b4dfc080b7cf30923265a7c3f7429db2919b8ca0",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-28",
+    "kind": "fact",
+    "statement": "El tipo 6 del caso tiene genera_guia_remision=1, Marcar_Registros_Enviados_MI3=0 y permitir_despacho_parcial=1; Enviado_A_ERP y Sync_MI3 estan en 0.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-02-pedido.tsv",
+        "commit": null,
+        "sha256": "1b73ae368ca90c36b12c5e0b74f8c1d11295f4d5a05d73f8589ca37d5695c802",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-03-despachos.tsv",
+        "commit": null,
+        "sha256": "18d8e69f90ad1c89c5ed5935443c9d7e8e9fe0940f22dfb0be1f235ac94628d7",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-04-comparacion.tsv",
+        "commit": null,
+        "sha256": "90f70826a89d7e8e4dcd8cd2fa6eac9d39ce0ef817fbc4ebed3307ae767cf36d",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-05-cola.tsv",
+        "commit": null,
+        "sha256": "8ce271b819b234bd6f406b1c58ada4da29c00642571e45fddf7797a73382792c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-tipo-y-ruta.tsv",
+        "commit": null,
+        "sha256": "ea4d873f770d163ef7912875b4dfc080b7cf30923265a7c3f7429db2919b8ca0",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-29",
+    "kind": "fact",
+    "statement": "Precio, Costo y Total_linea son cero en las 640 lineas del pedido aportadas; esos campos no proporcionan un importe WMS esperado para comparar con la valoracion SAP de este caso.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-02-pedido.tsv",
+        "commit": null,
+        "sha256": "1b73ae368ca90c36b12c5e0b74f8c1d11295f4d5a05d73f8589ca37d5695c802",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-03-despachos.tsv",
+        "commit": null,
+        "sha256": "18d8e69f90ad1c89c5ed5935443c9d7e8e9fe0940f22dfb0be1f235ac94628d7",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-04-comparacion.tsv",
+        "commit": null,
+        "sha256": "90f70826a89d7e8e4dcd8cd2fa6eac9d39ce0ef817fbc4ebed3307ae767cf36d",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-integridad-05-cola.tsv",
+        "commit": null,
+        "sha256": "8ce271b819b234bd6f406b1c58ada4da29c00642571e45fddf7797a73382792c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-tipo-y-ruta.tsv",
+        "commit": null,
+        "sha256": "ea4d873f770d163ef7912875b4dfc080b7cf30923265a7c3f7429db2919b8ca0",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

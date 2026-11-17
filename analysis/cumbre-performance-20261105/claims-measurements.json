@@ -1,0 +1,27 @@
+[
+  {
+    "id": "EJC20261105-CUMBRE-EMULATOR-RECEPTION-MEASUREMENT",
+    "kind": "fact",
+    "statement": "Una captura de recepción HH 8.9.75 contiene 33 llamadas WS completadas en la ventana analizada, dos Guardar_Recepcion_S de 1276 y 249 ms y Finalizar_Recepcion_S de 498 ms. No demuestra costo de trazas ni rendimiento productivo.",
+    "sources": [
+      {
+        "path": "analysis/cumbre-performance-20261105/emulator-reception-completed.log",
+        "commit": null,
+        "sha256": "b3ab5f69a8a10344387c76e0920cf55af63f15e7e7cc11b77aae13ce66a2e78c"
+      },
+      {
+        "path": "tools/brain-quality/analyze_cumbre_reception_log.py",
+        "commit": null,
+        "sha256": "d1595e1fe3aa21d838c58a1399448deb5e791b754562c9b03f6f372b25a0ac87"
+      }
+    ],
+    "clients": [
+      "La Cumbre (prueba solicitada; destino QAS no verificado independientemente)"
+    ],
+    "branches": [
+      "installed HH 8.9.75; exact commit unknown"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

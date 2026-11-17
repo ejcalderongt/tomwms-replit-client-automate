@@ -1,0 +1,62 @@
+[
+  {
+    "id": "EJC20261116-PEDIDO171-PRESENTACION",
+    "kind": "fact",
+    "statement": "En la lectura del pedido 171, el detalle 1009 tiene IdPresentacion NULL y reserva 0; el detalle 1010 tiene presentacion 9 CAJA. El selector anterior sustituye el valor de las lineas al cargar en modo Editar.",
+    "sources": [
+      {
+        "path": "analysis/20261116-pedido171-presentacion/validation.json",
+        "commit": null,
+        "sha256": "b711df121b4dcebfef933dc6a1a3e4790397553e87950eafb4f3639809ac4bda",
+        "content_state": "worktree-snapshot-not-attributed"
+      },
+      {
+        "path": "analysis/20261116-pedido171-presentacion/frmPedido.before.vb",
+        "commit": null,
+        "sha256": "8e321f1b8e72043090a52578561583b4c1d35b3ec89f5ed858c98c3599c18960",
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "MHS DEV pedido 171"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261116-PEDIDO-PRESENTACION-DECISION",
+    "kind": "decision",
+    "statement": "Conservar cero explicito como unidad basica y el ID disponible recibido; permitir presentacion por defecto solo para argumento omitido (-1). El cambio es visual y no convierte cantidades ni modifica datos existentes.",
+    "sources": [
+      {
+        "path": "analysis/20261116-pedido171-presentacion/frmPedido.candidate.vb",
+        "commit": null,
+        "sha256": "f7df03d6c80d60cc73938fe61b8773696b47c04d906ad2c2210e1faaabb55100",
+        "content_state": "worktree-snapshot-not-attributed"
+      },
+      {
+        "path": "analysis/20261116-pedido171-presentacion/TestPedidoPresentacion.vb",
+        "commit": null,
+        "sha256": "39d53d65e0f3b287564866610e2046fd7752b6694858abfa67cbe0636f3396ba",
+        "content_state": "worktree-snapshot-not-attributed"
+      },
+      {
+        "path": "analysis/20261116-pedido171-presentacion/traza.md",
+        "commit": null,
+        "sha256": "09a9ccb64d9465e768ea2bfa1c7877a50fd5bb5e4eed531e7df827408cabe347",
+        "content_state": "worktree-snapshot-not-attributed"
+      }
+    ],
+    "clients": [
+      "MHS DEV pedido 171"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

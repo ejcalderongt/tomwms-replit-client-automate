@@ -1,0 +1,155 @@
+{
+  "completed_calls": 33,
+  "sum_client_call_ms": 8113,
+  "errors": [],
+  "overlap_reload_warnings": [],
+  "methods": [
+    {
+      "method": "GetSingleRec_JSON",
+      "calls": 1,
+      "total_ms": 1823,
+      "min_ms": 1823,
+      "max_ms": 1823
+    },
+    {
+      "method": "Guardar_Recepcion_S",
+      "calls": 2,
+      "total_ms": 1525,
+      "min_ms": 249,
+      "max_ms": 1276
+    },
+    {
+      "method": "Finalizar_Recepcion_S",
+      "calls": 1,
+      "total_ms": 498,
+      "min_ms": 498,
+      "max_ms": 498
+    },
+    {
+      "method": "Get_Producto_By_IdProductoBodega",
+      "calls": 2,
+      "total_ms": 402,
+      "min_ms": 108,
+      "max_ms": 294
+    },
+    {
+      "method": "Get_Detalle_By_IdRecepcionEnc",
+      "calls": 1,
+      "total_ms": 388,
+      "min_ms": 388,
+      "max_ms": 388
+    },
+    {
+      "method": "Get_Detalle_OC_By_IdOrdeCompraDet",
+      "calls": 2,
+      "total_ms": 385,
+      "min_ms": 180,
+      "max_ms": 205
+    },
+    {
+      "method": "Get_All_BeTrasReDet_By_IdOrdenCompraEnc",
+      "calls": 2,
+      "total_ms": 344,
+      "min_ms": 166,
+      "max_ms": 178
+    },
+    {
+      "method": "Get_Banderas_Recepcion",
+      "calls": 2,
+      "total_ms": 305,
+      "min_ms": 101,
+      "max_ms": 204
+    },
+    {
+      "method": "Existe_Lp",
+      "calls": 2,
+      "total_ms": 268,
+      "min_ms": 82,
+      "max_ms": 186
+    },
+    {
+      "method": "Actualizar_Estado_Recepcion",
+      "calls": 2,
+      "total_ms": 256,
+      "min_ms": 86,
+      "max_ms": 170
+    },
+    {
+      "method": "Get_All_Codigos_Barra_By_IdProducto",
+      "calls": 2,
+      "total_ms": 239,
+      "min_ms": 95,
+      "max_ms": 144
+    },
+    {
+      "method": "Get_Tipo_Etiqueta_By_IdTipoEtiqueta",
+      "calls": 2,
+      "total_ms": 223,
+      "min_ms": 79,
+      "max_ms": 144
+    },
+    {
+      "method": "Get_All_ProductoParametros_By_IdProducto_HH",
+      "calls": 2,
+      "total_ms": 223,
+      "min_ms": 105,
+      "max_ms": 118
+    },
+    {
+      "method": "Get_Estados_By_IdPropietario_And_IdBodegaHH",
+      "calls": 2,
+      "total_ms": 211,
+      "min_ms": 105,
+      "max_ms": 106
+    },
+    {
+      "method": "Guarda_Firma_Recepcion",
+      "calls": 1,
+      "total_ms": 198,
+      "min_ms": 198,
+      "max_ms": 198
+    },
+    {
+      "method": "Get_Detalle_OC_By_IdOrdenCompraEnc_HH2",
+      "calls": 1,
+      "total_ms": 197,
+      "min_ms": 197,
+      "max_ms": 197
+    },
+    {
+      "method": "Get_Resoluciones_Lp_By_IdOperador_And_IdBodega",
+      "calls": 2,
+      "total_ms": 184,
+      "min_ms": 89,
+      "max_ms": 95
+    },
+    {
+      "method": "Iniciar_Recepcion_OC",
+      "calls": 1,
+      "total_ms": 118,
+      "min_ms": 118,
+      "max_ms": 118
+    },
+    {
+      "method": "Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH",
+      "calls": 1,
+      "total_ms": 117,
+      "min_ms": 117,
+      "max_ms": 117
+    },
+    {
+      "method": "Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresa",
+      "calls": 1,
+      "total_ms": 108,
+      "min_ms": 108,
+      "max_ms": 108
+    },
+    {
+      "method": "Get_Single_BeTrans_OC_Estado",
+      "calls": 1,
+      "total_ms": 101,
+      "min_ms": 101,
+      "max_ms": 101
+    }
+  ]
+}

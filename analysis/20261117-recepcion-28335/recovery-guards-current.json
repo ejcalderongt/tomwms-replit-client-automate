@@ -1,0 +1,68 @@
+[
+  [
+    {
+      "prueba": "precondicion_1",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_2",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_3",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_4",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_5",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_6",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_7",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_8",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_9",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_10",
+      "resultado": "OK"
+    }
+  ],
+  [
+    {
+      "prueba": "precondicion_11",
+      "resultado": "OK"
+    }
+  ]
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "code_baseline": "c7a8d14acb81c70985fae56e7cbb25b53f03256d",
+    "status": "draft",
+    "clients": [
+      "La Cumbre (contexto HH; alcance del snapshot bodega 89)"
+    ],
+    "sources": [
+      {
+        "content_state": "local",
+        "path": "analysis/20261109-Get_All_Packing_By_IdPicking.xml",
+        "sha256": "b31368a0947191e4c4bab3376ad22c832b0e46733ee06e0c6a895e9523f8fcd4",
+        "commit": null
+      },
+      {
+        "content_state": "local",
+        "path": "analysis/20261109-Get_All_PickingUbic_By_PickingEnc.xml",
+        "sha256": "01d6adb59617536adbe36fa7f6242762ed62947b62cf5406cba4574552fd928e",
+        "commit": null
+      },
+      {
+        "content_state": "local",
+        "path": "analysis/20261109-packing-estado/hh.patch",
+        "sha256": "445cc8cde25521ca4125eaa6dc0938f2b72a8c24197afeac93b0a3d6a9dfd597",
+        "commit": null
+      }
+    ],
+    "validation": [
+      "compileDebugJavaWithJavac BUILD SUCCESSFUL",
+      "Replay Java con predicados extraidos: 5 comprobaciones PASS"
+    ],
+    "statement": "Snapshot del picking 5314 pedido 10575: MI PASTA 23054 JJ000030013 vence 2028-10-04 sin lote: packing 584161 estado 3 cantidad 300; pendiente estado 5 cantidad verificada 60. HH omitia estado al seleccionar y acumular; parche agrega estado a ambos filtros y al DTO de seleccion. No se modificaron datos productivos.",
+    "id": "EJC20261109-PACKING-5314-ESTADO",
+    "branches": [
+      "dev_2026_estable_prd"
+    ],
+    "limitations": [
+      "Sin despliegue ni prueba de escritura en produccion",
+      "Requiere reconciliacion autorizada de los datos ya acumulados",
+      "No sustituye una verificacion independiente"
+    ],
+    "validated_at": null,
+    "kind": "fact"
+  }
+]

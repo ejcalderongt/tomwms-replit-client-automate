@@ -1,0 +1,249 @@
+{
+  "query": "recepcion 28335 CKFK recuperacion caja master J100000635",
+  "method": "bm25",
+  "experimental": false,
+  "scope_policy": "strict-declared; missing metadata does not imply applicability",
+  "warning": "Sources are evidence candidates. Validate current code/data before treating historical claims as current facts.",
+  "results": [
+    {
+      "id": "handoffs/2026-11-17-ckfk-recepcion-28335/README.md",
+      "path": "brain/handoffs/2026-11-17-ckfk-recepcion-28335/README.md",
+      "score": 45.4034801771585,
+      "metadata": {
+        "clients": [
+          "MAMPA_QA"
+        ],
+        "branches": [
+          "dev_2026_estable"
+        ],
+        "scope_state": "declared",
+        "kind": "fact",
+        "validated_at": null,
+        "declared_status": "draft",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/handoffs/2026-11-17-ckfk-recepcion-28335/README.md",
+          "sha256": "5f0bcdeff75311c04b36b1b260de298259ff4289323b3030991fa6e6a21a2487",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [
+              "MAMPA_QA"
+            ],
+            "branches": [
+              "dev_2026_estable"
+            ],
+            "scope_state": "declared",
+            "kind": "fact",
+            "validated_at": null,
+            "declared_status": "draft",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "learnings/CKFK20261117-caja-master-saldos-identidad.md",
+      "path": "brain/learnings/CKFK20261117-caja-master-saldos-identidad.md",
+      "score": 36.60872434383644,
+      "metadata": {
+        "clients": [
+          "MAMPA_QA"
+        ],
+        "branches": [
+          "dev_2026_estable"
+        ],
+        "scope_state": "declared",
+        "kind": "decision",
+        "validated_at": null,
+        "declared_status": "draft",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/learnings/CKFK20261117-caja-master-saldos-identidad.md",
+          "sha256": "a04c36c4fa63829d638e9a1fcfc35b3def3877d9a3871a99fc6de73d2cd6333f",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [
+              "MAMPA_QA"
+            ],
+            "branches": [
+              "dev_2026_estable"
+            ],
+            "scope_state": "declared",
+            "kind": "decision",
+            "validated_at": null,
+            "declared_status": "draft",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "_index/ATLAS.md",
+      "path": "brain/_index/ATLAS.md",
+      "score": 29.58221780533946,
+      "metadata": {
+        "clients": [],
+        "branches": [
+          "dev_2023_estable",
+          "dev_2028_merge"
+        ],
+        "scope_state": "incomplete",
+        "kind": "unclassified",
+        "validated_at": null,
+        "declared_status": "unknown",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/_index/ATLAS.md",
+          "sha256": "f1c0026fc88a935e660eecf0c74f3733c4177814f225845a2c4b30068270cb61",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [
+              "dev_2023_estable",
+              "dev_2028_merge"
+            ],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "handoffs/2026-11-17-ckfk-pendientes/README.md",
+      "path": "brain/handoffs/2026-11-17-ckfk-pendientes/README.md",
+      "score": 25.108108656991327,
+      "metadata": {
+        "clients": [],
+        "branches": [
+          "codex/mhs-despacho-directo-picking",
+          "dev_2026_estable",
+          "main",
+          "wms-brain"
+        ],
+        "scope_state": "incomplete",
+        "kind": "fact",
+        "validated_at": null,
+        "declared_status": "draft",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/handoffs/2026-11-17-ckfk-pendientes/README.md",
+          "sha256": "337fa742ba3f727f66308ce4900facabe7db887000579804564676cca1bd15db",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [
+              "codex/mhs-despacho-directo-picking",
+              "dev_2026_estable",
+              "main",
+              "wms-brain"
+            ],
+            "scope_state": "incomplete",
+            "kind": "fact",
+            "validated_at": null,
+            "declared_status": "draft",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "unique"
+    },
+    {
+      "id": "handoffs/2026-05-22-codex-performance-bof-hh/ESTADO-ARTE-CAJA-MASTER-INV-CICLICO-2026-05-26.md",
+      "path": "brain/handoffs/2026-05-22-codex-performance-bof-hh/ESTADO-ARTE-CAJA-MASTER-INV-CICLICO-2026-05-26.md",
+      "score": 12.114745756658094,
+      "metadata": {
+        "clients": [],
+        "branches": [],
+        "scope_state": "incomplete",
+        "kind": "unclassified",
+        "validated_at": null,
+        "declared_status": "unknown",
+        "validation_state": "not-independently-validated",
+        "issues": []
+      },
+      "alternative_paths": [],
+      "knowledge_status": "legacy-unvalidated",
+      "source_evidence": [
+        {
+          "path": "brain/handoffs/2026-05-22-codex-performance-bof-hh/ESTADO-ARTE-CAJA-MASTER-INV-CICLICO-2026-05-26.md",
+          "sha256": "3e90ad7a8e5d7ad2097e0734b6f6e6f082848fd76fca100114b43214f46c8852",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        },
+        {
+          "path": "wms-brain/brain/handoffs/2026-05-22-codex-performance-bof-hh/ESTADO-ARTE-CAJA-MASTER-INV-CICLICO-2026-05-26.md",
+          "sha256": "16058fa804f6ac044071696e709d269b82dd33aef5eb2115aa9b38ad58dcfa97",
+          "commit": null,
+          "content_state": "worktree-snapshot-not-attributed",
+          "metadata": {
+            "clients": [],
+            "branches": [],
+            "scope_state": "incomplete",
+            "kind": "unclassified",
+            "validated_at": null,
+            "declared_status": "unknown",
+            "validation_state": "not-independently-validated",
+            "issues": []
+          },
+          "checkout_commit": "3bfa3d4babb8fff4cdecbae17c5798b34a466000",
+          "checkout_dirty": true
+        }
+      ],
+      "reconciliation": "body-equivalent"
+    }
+  ]
+}

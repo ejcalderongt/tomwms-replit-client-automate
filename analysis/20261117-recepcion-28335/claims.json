@@ -1,0 +1,102 @@
+[
+  {
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "status": "draft",
+    "id": "CKFK20261117-REC28335-REFERENCE",
+    "sources": [
+      {
+        "sha256": "ef2ecbe979a136c45533c7d8d1dd6b2591733f9c082d4fca0d2cbd7c8025885d",
+        "commit": "c497abbba4597e4304856f8e8ec2d49064079484",
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/baseline/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "original_path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "source_repository": "C:\\Users\\carol\\StudioProjects\\TOMHH2025",
+        "content_state": "snapshot-of-code-commit-with-checkout-CRLF"
+      },
+      {
+        "sha256": "0838a8c4970e18ad2f0d8bf94074aa89e59ae4ac2c939f0df5131eff645ef4a0",
+        "commit": null,
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/replay.txt"
+      }
+    ],
+    "kind": "fact",
+    "validated_at": null,
+    "statement": "El codigo local de Procesa_Caja_Master reutiliza el mismo objeto OC; la secuencia 4,3 produce dos cantidades 3 en el replay aislado.",
+    "branches": [
+      "dev_2026_estable"
+    ]
+  },
+  {
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "status": "draft",
+    "id": "CKFK20261117-REC28335-DATA",
+    "sources": [
+      {
+        "sha256": "86ff96849f83ea58691aa3c07914f2a8bdb56486f5d6e51221deb7e66a8cfc13",
+        "commit": null,
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/resumen-evidencia.json"
+      }
+    ],
+    "kind": "fact",
+    "validated_at": null,
+    "statement": "En QA, OC 28359 detalle 2 espera 7 y registra 6; recepcion 28335 contiene detalles 46491/46492 de 3 y existencias ambas ligadas a 46491; lotes 1348/1349 siguen en recibido 0.",
+    "branches": [
+      "dev_2026_estable"
+    ]
+  },
+  {
+    "clients": [
+      "MAMPA_QA"
+    ],
+    "status": "draft",
+    "id": "CKFK20261117-REC28335-CAUSE",
+    "sources": [
+      {
+        "sha256": "ef2ecbe979a136c45533c7d8d1dd6b2591733f9c082d4fca0d2cbd7c8025885d",
+        "commit": "c497abbba4597e4304856f8e8ec2d49064079484",
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/baseline/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "original_path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_list_rec_prod.java",
+        "source_repository": "C:\\Users\\carol\\StudioProjects\\TOMHH2025",
+        "content_state": "snapshot-of-code-commit-with-checkout-CRLF"
+      },
+      {
+        "sha256": "73a083f9c42b774328c3b0e0543d42302355202446cc0612f95f2f5738724343",
+        "commit": "c497abbba4597e4304856f8e8ec2d49064079484",
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/baseline/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+        "original_path": "StudioProjects/TOMHH2025/app/src/main/java/com/dts/tom/Transacciones/Recepcion/frm_recepcion_datos.java",
+        "source_repository": "C:\\Users\\carol\\StudioProjects\\TOMHH2025",
+        "content_state": "snapshot-of-code-commit-with-checkout-CRLF"
+      },
+      {
+        "sha256": "5208e19b31a8e714f876e559965c3d22b15481dfe828e56d3b74df5b0e0b88d1",
+        "commit": "33fd7795390bc1bd80970c8b83307d57bfdc3374",
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/baseline/TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Encabezado/clsLnTrans_re_enc_Partial.vb",
+        "original_path": "source/repos/TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Encabezado/clsLnTrans_re_enc_Partial.vb",
+        "source_repository": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF",
+        "content_state": "snapshot-of-code-commit-with-checkout-CRLF"
+      },
+      {
+        "sha256": "df7a3992490e96e5c1382cf92a1401f5bcdc51a6d6c2c3b226d1d9e074ed7d07",
+        "commit": "33fd7795390bc1bd80970c8b83307d57bfdc3374",
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/baseline/TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb",
+        "original_path": "source/repos/TOMWMS_BOF/TOMIMSV4/DAL/Transacciones/Recepcion/Recepcion_Detalle/clsLnTrans_re_det_Partial.vb",
+        "source_repository": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF",
+        "content_state": "snapshot-of-code-commit-with-checkout-CRLF"
+      },
+      {
+        "sha256": "86ff96849f83ea58691aa3c07914f2a8bdb56486f5d6e51221deb7e66a8cfc13",
+        "commit": null,
+        "path": "Documents/wms-brain/analysis/20261117-recepcion-28335/resumen-evidencia.json"
+      }
+    ],
+    "kind": "hypothesis",
+    "validated_at": null,
+    "statement": "La reutilizacion de referencia explica el 3+3 observado; LP vacia frente a J100000635 impide la correlacion de lotes del servicio y mantiene el requerimiento de escanear CM. Falta identificar hashes de APK y servicio desplegados.",
+    "branches": [
+      "dev_2026_estable"
+    ]
+  }
+]

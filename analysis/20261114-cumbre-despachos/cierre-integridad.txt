@@ -1,0 +1,79 @@
+#EJC20261114_CUMBRE_PEDIDO_COMPLETO
+Revision con resultados de integridad aportados por Carolina, 14/11/2026.
+Cliente La Cumbre; pedido 10512; despacho 13520; ruta SAP 09 a 89.
+
+CONCLUSION COMPROBADA CON LOS RESULTADOS APORTADOS
+
+El pedido se despacho completo una vez en TOMWMS y se transfirio completo tres
+veces en SAP. No hay evidencia de cantidades parciales en este caso.
+El fallo fue el marcado posterior al envio; las diferencias de monto aparecen
+en valoracion SAP, con las mismas cantidades, como se concilio anteriormente.
+
+CADENA COMPLETA POR IDENTIDAD Y CANTIDAD
+
+trans_pe_det: 640 lineas unicas del pedido, 539 productos.
+trans_despacho_det: 640 lineas del unico despacho 13520, estado Finalizado y
+activo=1, coincidentes por IdPedidoDet con lo solicitado.
+Cant_despachada del pedido: igual a Cantidad solicitada en cada una de las
+640 lineas. El resultado agregado de todos sus despachos coincide tambien.
+Cola: 640 filas que coinciden por IdDespachoDet/IdPedidoDet, producto y cantidad.
+SAP: cada DocEntry 71872, 72820 y 72821 contiene los mismos 539 productos y todas
+las cantidades solicitadas del pedido, sin productos faltantes, extras o
+cantidades diferentes. Cantidad agregada diagnostica 30371 en cada resultado;
+no usar esa suma entre productos como una unidad fisica universal.
+
+Todas las lineas del pedido tienen IdPresentacion NULL, IdUnidadMedidaBasica=1
+y EsPadre=0. La cola registra presentacion 0; no se encontro una conversion de
+presentacion que impida comparar estas cantidades directamente.
+
+PARAMETRIZACION REAL DEL CASO
+
+IdTipoPedido=6; IdBodega WMS=9; origen SAP=09; destino SAP=89.
+Referencia vacia y Codigo_Empresa_ERP vacio.
+genera_guia_remision=1.
+Marcar_Registros_Enviados_MI3=0.
+permitir_despacho_parcial=1.
+Enviado_A_ERP=0 y Sync_MI3=0 en la salida aportada.
+
+Con genera_guia_remision=1 NO se ejecuta el marcado automatico de Guardar_Pedido
+que requiere Not Genera_Guia_Remision. Marcar_Registros_Enviados_MI3=0 evita
+el marcado automatico de las filas al despachar en esta combinacion con
+Enviado_A_ERP=0. Las filas pendientes son esperadas: debe marcarlas el resultado
+real de la migracion. Estas banderas no justifican que SAP reciba repetidamente
+un traslado que ya acepto.
+permitir_despacho_parcial=1 permite varios despachos, pero los resultados de
+este pedido muestran uno solo y completo. No se propone cambiar esa bandera.
+
+MONTOS
+
+Precio, Costo y Total_linea estan en cero en las 640 lineas del pedido WMS.
+Por tanto, no hay un importe esperado en esos campos que permita contrastar
+el asiento SAP. No completar costos ni forzar precios para igualar la imagen.
+Los importes de OINM y los asientos ya conciliados son:
+71872/21865: 2,593,150.12 LPS;
+72820/21873: 2,592,416.59 LPS;
+72821/21874: 2,592,416.94 LPS.
+La diferencia de 0.35 entre los dos ultimos corresponde a TransValue de
+044000032111 (0.19) y 028400564656 (0.16), con iguales cantidades.
+El algoritmo preciso de costeo SAP no se determina solo con estos resultados.
+
+ESTADO DE LA CORRECCION
+
+La prevencion local permanece acotada a transferencia directa 09/9 hacia 89,
+con clave por pedido y despacho, lista exacta de Idtransaccion, intento durable
+antes de Add y recuperacion por clave SAP. Los otros flujos conservan el
+cuerpo anterior; el tipo/flag no se modifica para ocultar el incidente.
+
+Las 22 pruebas del motor y la compilacion previas siguen aplicando: no hubo
+cambio de codigo productivo al recibir estos datos. Se agrego validacion offline
+de las cuatro nuevas salidas y la conciliacion contra el pedido original.
+Sigue pendiente aplicar la migracion en QAS y validar con SQL/DI API reales,
+incluyendo permisos, bloqueos entre instancias y fallos entre Add y commit.
+No se modificaron pedidos, banderas, inventario, triggers ni bases productivas.
+
+Evidencia reproducible: validar-integridad-pedido.py,
+integridad-pedido-resultados.json, integridad-validacion.txt,
+afirmaciones-integridad.json e integridad-procedencia.json.
+Los datos son resultados compartidos por Carolina; no se consulto directamente
+produccion ni se restauro su base. Los registros de procedencia conservan
+hashes y estado draft, sin atribuir validacion independiente al despliegue.

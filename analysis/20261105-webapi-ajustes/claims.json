@@ -1,0 +1,41 @@
+[
+  {
+    "status": "draft",
+    "statement": "Cambio local: fecha del encabezado, usuario User_agr y tipo PRESENTACION si IdPresentacion no es cero, UNIDAD en otro caso, con nombre de presentacion; expuestos en respuestas full y minimal.",
+    "validated_at": null,
+    "kind": "fact",
+    "sources": [
+      {
+        "path": "WMS.DALCore/Ajustes/clsLn_vw_ajustes.cs",
+        "commit": "f6692e3d10a5350d790956fc4dc86b3cdd07b24a",
+        "sha256": "0b72d676a99adf3b616798094100df86a9cf928a47796ba78fc013487ea2b9fb",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": "WMS.EntityCore/Dtos/Ajustes/clsBeAjustesMI3.cs",
+        "commit": "f6692e3d10a5350d790956fc4dc86b3cdd07b24a",
+        "sha256": "b7deac34453b2569669729c8afaeab4c05f3d63dafc0b6fdafea27f119b247a7",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": "WMSWebAPI/Controllers/AjusteController.cs",
+        "commit": "f6692e3d10a5350d790956fc4dc86b3cdd07b24a",
+        "sha256": "4434b300651bd001f90d47ce45ec9c5df483a7b03d8ed796455f7a5e6bf05547",
+        "content_state": "working-tree-modified"
+      },
+      {
+        "path": "WMSWebAPI/Services/Ajustes/AjustesEnvioService.cs",
+        "commit": "f6692e3d10a5350d790956fc4dc86b3cdd07b24a",
+        "sha256": "6408cfbc5b7b70a09dca4cc2ac9145b0f62d88879ae6114a167bdc9a71a583f8",
+        "content_state": "working-tree-modified"
+      }
+    ],
+    "id": "EJC20261105_AJUSTES_API",
+    "clients": [
+      "no-identificado; alcance de codigo local, sin generalizacion funcional por cliente"
+    ],
+    "branches": [
+      "dev_2028_merge"
+    ]
+  }
+]

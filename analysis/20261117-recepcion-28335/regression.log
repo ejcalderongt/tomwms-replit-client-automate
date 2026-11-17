@@ -1,0 +1,18 @@
+PASS HH: order independence, references, immutable OC, recovery saldo=1, completed OC, variant mismatch
+
+  TestCajaMaster -> C:\Users\carol\Documents\wms-brain\analysis\20261117-recepcion-28335\tests\bin\TestCajaMaster.exe
+PASS server: 4+3 with empty physical LP, distinct lot PKs
+PASS reject: stale replay after successful receipt
+PASS server: recovery saldo 1 increments 3 to 4
+PASS reject: quantity exceeds sum of pending lots
+PASS reject: legacy duplicate temporary identities
+PASS reject: variant changed
+PASS reject: concurrent saldo changed
+PASS reject: mixed scanned licenses
+PASS reject: physical LP does not match scanned license
+PASS reject: stock quantity mismatch
+PASS reject: NaN quantity
+PASS reject: duplicate lot PK
+PASS reject: extra stock
+PASS server: without talla/color control
+PASS: production helper tested in memory; no SQL Server connection. Transaction locking/rollback not simulated.

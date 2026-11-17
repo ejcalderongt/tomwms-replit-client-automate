@@ -1,0 +1,25 @@
+[
+  {
+    "id": "CKFK261117ReservaLote",
+    "kind": "decision",
+    "statement": "Ante el caso de importación sin documento informado por Carolina, aislar los rechazos de validación de bodega por factura, informar DocNum y DocEntry, continuar las demás y resumir las omitidas; otras excepciones mantienen interrupción. Prueba real SAP pendiente.",
+    "sources": [
+      {
+        "path": "analysis/20261117-sap-reserva-trace/evidence/clsSyncSapFacturaReserva-batch.vb",
+        "commit": "31c73d606d4c0d47c6015e8e5f1c68b779ead6b2",
+        "sha256": "6e78694efd48827d32dcb5adb1fe11cd151b26603099d93bbca6110a290b31e0",
+        "content_state": "worktree-snapshot",
+        "original_path": "C:\\Users\\carol\\source\\repos\\TOMWMS_BOF\\SAPSYNCMAMPA\\Clases Interface Sync\\Factura_Reserva\\clsSyncSapFacturaReserva.vb",
+        "repository": "TOMWMS_BOF"
+      }
+    ],
+    "clients": [
+      "MAMPA"
+    ],
+    "branches": [
+      "dev_2026_estable"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]

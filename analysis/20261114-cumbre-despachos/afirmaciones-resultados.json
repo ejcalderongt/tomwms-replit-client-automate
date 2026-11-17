@@ -1,0 +1,614 @@
+[
+  {
+    "id": "EJC20261114-CUMBRE-13",
+    "kind": "fact",
+    "statement": "Los resultados WMS aportados contienen 640 filas SALIDA tipo 6 del pedido 10512/despacho 13520, todas pendientes y agrupables en 539 productos.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-14",
+    "kind": "fact",
+    "statement": "Los tres documentos SAP 71872/72820/72821 contienen los mismos 539 productos y las mismas cantidades por producto, coincidentes con las filas y detalles WMS aportados.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-15",
+    "kind": "fact",
+    "statement": "OINM confirma por producto los mismos movimientos de cantidad en 09 y 89 en los tres traslados; varian sus TransValue.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-16",
+    "kind": "fact",
+    "statement": "La diferencia de valoracion de 0.35 LPS entre 72820 y 72821 procede de los productos 044000032111 (0.19) y 028400564656 (0.16); no hay diferencia de cantidades.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft",
+    "supersedes": [
+      "EJC20261114-CUMBRE-12"
+    ]
+  },
+  {
+    "id": "EJC20261114-CUMBRE-17",
+    "kind": "fact",
+    "statement": "Hay tres errores de la ruta directa con el mensaje de SAP enviado y marcado WMS fallido, con referencia vacia, en las fechas de los tres traslados.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-18",
+    "kind": "fact",
+    "statement": "El orden persistido WTR1.LineNum en cada uno de los tres documentos produce cero coincidencias con el predicado de marcado WMS: mismo producto y no_linea igual a LineNum SAP mas uno. El orden por Idtransaccion del volcado produciria dos y no reproduce el orden emitido.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  },
+  {
+    "id": "EJC20261114-CUMBRE-19",
+    "kind": "fact",
+    "statement": "La duplicacion esta confirmada por tres DocEntry no anulados, cantidades identicas por producto, movimientos OINM coincidentes y referencia del mismo pedido/despacho. El mecanismo de marcado vacio se reproduce usando el orden persistido en cada traslado SAP.",
+    "sources": [
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-01-esquema-wms.tsv",
+        "commit": null,
+        "sha256": "80e6bb3e5ee10c44d54f60ea91a1b209dad344ad0a670cc036f4aceacc0d5871",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-02-lineas-sap.tsv",
+        "commit": null,
+        "sha256": "79e4a11b2113dfc285f1ec2fe5cd863b183a15c6d46216ec2753679067b552b2",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-03-comparacion-sap.tsv",
+        "commit": null,
+        "sha256": "e488e476c5ae9dc2b3a233c986e60db959bd347c0cb69413f8f4413639b6241a",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-04-cola.tsv",
+        "commit": null,
+        "sha256": "2c46e422a3f8d7a0865c03b6befe9d7b781fcf788e89f5e9e4872d87e52e859c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-oinm.tsv",
+        "commit": null,
+        "sha256": "f338215696aac9f4f129487208506a0d1f5d9c2e8b78a48fd08f6c1f8445e9f9",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-05-resumen.tsv",
+        "commit": null,
+        "sha256": "f83827029dff94f0a32fbc4c5e9364c5321e01b5cdf64151e6b876a77d7a1796",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-06-riesgo.tsv",
+        "commit": null,
+        "sha256": "5cbfa9c3ea9f569590b0b2286810efeea50673ceeb53d6e3a963affed95c3e9c",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-08-despacho.tsv",
+        "commit": null,
+        "sha256": "30213356180d77b7d9bdd02aae5bd82b4d56f6574e07b11b8fafd356b54da4d1",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-11-errores.tsv",
+        "commit": null,
+        "sha256": "5c56535e93e9e1eba544a27384ea4d860e32aaade0de88cc4adcfeb2d5132750",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-contextos-y-wms-cabecera.tsv",
+        "commit": null,
+        "sha256": "80a7a85b367fdc9a17ae9fb8889d29a5776ceb95d78f68bff92a023721617349",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-esquema-sap.tsv",
+        "commit": null,
+        "sha256": "99debff2cbe46f95e066fd24a6325747e513291c3070f9fa3bb3518edf6d5a80",
+        "content_state": "user-supplied-query-results"
+      },
+      {
+        "path": "analysis/20261114-cumbre-despachos/evidencia/resultado-sap-cabecera-asiento.tsv",
+        "commit": null,
+        "sha256": "90f726d92e99934c6bd4775fa733b09fda0435955691a91307083780d4e61b5e",
+        "content_state": "user-supplied-query-results"
+      }
+    ],
+    "clients": [
+      "La Cumbre"
+    ],
+    "branches": [
+      "codex/cumbre-decimales-y-trazas"
+    ],
+    "validated_at": null,
+    "status": "draft"
+  }
+]
